@@ -1,6 +1,8 @@
 /*
  * Copyright (C) 2000-2004 Damien Douxchamps  <ddouxchamps@users.sf.net>
  *
+ * PVN saving capability by Jacob (Jack) Gryn and Konstantinos G. Derpanis
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -65,14 +67,28 @@ SaveStartThread(camera_t* cam)
 	FreeChain(save_service);
 	return(-1);
       }
+      else { //detect file format
+	if (strncasecmp(info->filename_ext, ".pvn",4)==0) {
+	  info->format=SAVE_FORMAT_PVN;
+	}
+	else if ((strncasecmp(info->filename_ext, ".jpg",4)==0)||(strncasecmp(info->filename_ext, ".jpeg",5)==0)) {
+	  info->format=SAVE_FORMAT_JPEG;
+	}
+	else if (strncasecmp(info->filename_ext, ".raw",4)==0) {
+	  info->format=SAVE_FORMAT_RAW;
+	}
+	else {
+	  info->format=SAVE_FORMAT_OTHER;
+	}
+
+      }
     }
 
     info->period=cam->prefs.save_period;
     CommonChainSetup(cam, save_service,SERVICE_SAVE);
     
     info->buffer=NULL;
-    info->counter=0;
-    info->scratch=cam->prefs.save_scratch;
+    info->mode=cam->prefs.save_mode;
     info->datenum=cam->prefs.save_datenum;
     // if format extension is ".raw", we dump raw data on the file and perform no conversion
     info->rawdump=cam->prefs.save_convert;
@@ -81,7 +97,7 @@ SaveStartThread(camera_t* cam)
 
     info->bigbuffer=NULL;
 
-    if ((info->use_ram_buffer==TRUE)&&(info->scratch==SAVE_SCRATCH_VIDEO)) {
+    if ((info->use_ram_buffer==TRUE)&&(info->mode==SAVE_MODE_VIDEO)) {
       info->bigbuffer_position=0;
       info->bigbuffer=(unsigned char*)malloc(info->ram_buffer_size*sizeof(unsigned char));
       if (info->bigbuffer==NULL) {
@@ -134,6 +150,40 @@ SaveCleanupThread(void* arg)
   return(NULL);
 }
 
+double
+framerateAsDouble(int framerate_enum)
+{
+  switch(framerate_enum)  {
+  case FRAMERATE_1_875:
+    return(1.875);
+    break;
+  case FRAMERATE_3_75:
+    return(3.750);
+    break;
+  case FRAMERATE_7_5:
+    return(7.500);
+    break;
+  case FRAMERATE_15:
+    return(15.000);
+    break;
+  case FRAMERATE_30:
+    return(30.000);
+    break;
+  case FRAMERATE_60:
+    return(60.000);
+    break;
+  case FRAMERATE_120:
+    return(120.000);
+    break;
+  case FRAMERATE_240:
+    return(240.000);
+    break;
+  default:
+    return(0);
+    break;
+  }
+  return(0);
+}
 
 // TRUE if color mode is color, FALSE if MONO/GREYSCALE
 int
@@ -218,69 +268,44 @@ getConvertedBytesPerChannel(int buffer_color_mode)
 }
 
 
-// return Bytes in each channel
-int
-getBytesPerChannel(int buffer_color_mode)
-{
-  switch(buffer_color_mode) 
-  {
-    case COLOR_FORMAT7_MONO8:
-    case COLOR_FORMAT7_RAW8:
-    case COLOR_FORMAT7_YUV411:
-    case COLOR_FORMAT7_YUV444:
-    case COLOR_FORMAT7_RGB8:
-      return(1);
-      break;
-    case COLOR_FORMAT7_YUV422:
-    case COLOR_FORMAT7_MONO16:
-    case COLOR_FORMAT7_RAW16:
-    case COLOR_FORMAT7_MONO16S:
-    case COLOR_FORMAT7_RGB16:
-      return(2);
-      break;
-    default:
-      fprintf(stderr, "Unknown buffer format!\n");
-      return(0);
-      break;
-  }
-  return(0);
-}
-
 // return Bytes in each pixel (3*bytes per channel if colour)
-int
-getBytesPerPixel(int buffer_color_mode)
+float
+getAvgBytesPerPixel(int buffer_color_mode)
 {
   switch(buffer_color_mode) {
   case COLOR_FORMAT7_MONO8:
   case COLOR_FORMAT7_RAW8:
-    return(1);
+    return(1.0);
+    break;
+  case COLOR_FORMAT7_YUV411:
+    return(1.5);
     break;
   case COLOR_FORMAT7_MONO16:
   case COLOR_FORMAT7_RAW16:
   case COLOR_FORMAT7_MONO16S:
-    return(2);
+  case COLOR_FORMAT7_YUV422:
+    return(2.0);
     break;
-  case COLOR_FORMAT7_YUV411:
   case COLOR_FORMAT7_YUV444:
   case COLOR_FORMAT7_RGB8:
-    return(3);
+    return(3.0);
     break;
-  case COLOR_FORMAT7_YUV422:
   case COLOR_FORMAT7_RGB16:
-    return(6);
+    return(6.0);
     break;
   default:
     fprintf(stderr, "Unknown buffer format!\n");
-    return(0);
+    return(0.0);
     break;
   }
-  return(0);
+  return(0.0);
 }
+
 
 unsigned int
 getDepth(unsigned long bufsize, int mode, unsigned int height, unsigned int width)
 {
-  int bytes_per_pixel=getBytesPerPixel(mode);
+  int bytes_per_pixel=getAvgBytesPerPixel(mode);
   return((unsigned int)bufsize/(bytes_per_pixel*height*width));
 }
 
@@ -288,7 +313,7 @@ void
 convert_for_pvn(unsigned char *buffer, unsigned int width, unsigned int height,
 		unsigned int page, int buffer_color_mode, unsigned char *dest)
 {
-  unsigned char *buf_loc=buffer+page*getBytesPerPixel(buffer_color_mode)*width*height;
+  unsigned char *buf_loc=buffer+(int)(page*getAvgBytesPerPixel(buffer_color_mode)*width*height);
 
   if(dest==NULL)
     return;
@@ -329,17 +354,105 @@ void
 writePVNHeader(FILE *fd, unsigned int mode, unsigned int height, unsigned int width,
 	       unsigned int depth, unsigned int bpp, double framerate)
 {
-  unsigned int bytes_per_pixel;
   char magic[6];
 
-  if(isColor(mode)==FALSE) //greyscale
-    strcpy(magic,"PV5a");
+  if(isColor(mode)==FALSE) {//greyscale
+    if(mode == COLOR_FORMAT7_MONO16S)
+      strcpy(magic,"PV5b");
+    else
+      strcpy(magic,"PV5a");
+  }
   else // colour
     strcpy(magic,"PV6a");
 
-  bytes_per_pixel=getBytesPerPixel(mode);
   fprintf(fd,"%s\n%d %d %d\n%d %f\n", magic, width, height, depth, bpp, framerate);
 }
+
+
+void
+GetSaveFD(chain_t *save_service, FILE *fd, char *filename_out)
+{
+  savethread_info_t *info=save_service->data;
+
+  // get filename
+  switch (info->mode) {
+  case SAVE_MODE_VIDEO:
+  case SAVE_MODE_OVERWRITE:
+    sprintf(filename_out, "%s%s", info->filename,info->filename_ext);
+    break;
+  case SAVE_MODE_SEQUENTIAL:
+    switch (info->datenum) {
+    case SAVE_TAG_DATE:
+      sprintf(filename_out, "%s-%s%s", info->filename, save_service->current_buffer->captime_string, info->filename_ext);
+      break;
+    case SAVE_TAG_NUMBER:
+      sprintf(filename_out,"%s-%10.10lli%s", info->filename, save_service->processed_frames, info->filename_ext);
+      break;
+    }
+    break;
+  default:
+    break;
+  }
+
+  // open FD if
+  // - it's the first frame of a video
+  // - it's in picture saving mode AND it's not using imlib (which creates the fd from the filename itself)
+  // NOTE: the jpeg format is now joined with OTHER, but will have to be handled separately by ffmpeg (patch pending)
+
+  if ( ((info->mode==SAVE_MODE_VIDEO)&&(save_service->processed_frames==0)) ||
+       ((info->mode!=SAVE_MODE_VIDEO)&&(info->format!=SAVE_FORMAT_OTHER)&&(info->format!=SAVE_FORMAT_JPEG) ) ) { // <<<<<<< FFMPEG PATCH
+    fd=fopen(filename_out,"w");
+    if (fd==NULL) {
+      MainError("Can't create sequence file for saving");
+      return;
+    }
+  }
+  else {
+    // don't touch FD...
+  }
+  
+}
+
+
+void
+InitVideoFile(chain_t *save_service, FILE *fd)
+{
+  savethread_info_t *info;
+
+  info=(savethread_info_t*)save_service->data;
+
+  // (JG) if extension is PVN, write PVN header here
+  if ((info->format==SAVE_FORMAT_PVN) && (info->use_ram_buffer==FALSE)) {
+    writePVNHeader(fd, save_service->current_buffer->buffer_color_mode,
+		   save_service->current_buffer->height,
+		   save_service->current_buffer->width,
+		   0, getConvertedBytesPerChannel(save_service->current_buffer->buffer_color_mode)*8,
+		   framerateAsDouble(camera->misc_info.framerate));
+  }
+  
+  // other inits for other video formats come here...
+  // ...
+  
+}
+
+void
+FillRamBuffer(chain_t *save_service)
+{
+  savethread_info_t *info;
+
+  info=(savethread_info_t*)save_service->data;
+
+  if ((info->use_ram_buffer==TRUE)&&(info->mode==SAVE_MODE_VIDEO)) {
+    if (info->ram_buffer_size-info->bigbuffer_position>=save_service->current_buffer->buffer_image_bytes) {
+      memcpy(&info->bigbuffer[info->bigbuffer_position], save_service->current_buffer->image, save_service->current_buffer->buffer_image_bytes);
+      info->bigbuffer_position+=save_service->current_buffer->buffer_image_bytes;
+    }
+    else { // buffer is full, exit thread
+      info->cancel_req=1;
+    }
+  }
+}
+
 
 void*
 SaveThread(void* arg)
@@ -367,18 +480,6 @@ SaveThread(void* arg)
   pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED,NULL);
   pthread_mutex_unlock(&save_service->mutex_data);
 
-  if (info->scratch==SAVE_SCRATCH_VIDEO) {
-    sprintf(filename_out, "%s%s", info->filename,info->filename_ext);
-    fd=fopen(filename_out,"w");
-    if (fd==NULL)
-      MainError("Can't create sequence file for saving");
-    /*
-    if (info->use_ram_buffer>0) {
-      pthread_cleanup_push((void*)SaveCleanupThread, (void*) save_service);
-    }
-    */
-  }
-  
   // time inits:
   save_service->prev_time = times(&save_service->tms_buf);
   save_service->fps_frames=0;
@@ -399,77 +500,48 @@ SaveThread(void* arg)
 	if (save_service->current_buffer->width!=-1) {
 	  if (skip_counter>=(info->period-1)) {
 	    skip_counter=0;
-	    // get filename
-	    switch (info->scratch) {
-            case SAVE_SCRATCH_VIDEO:
-	      // (JG) if extension is PVN, write PVN header here
-	      if ((strncasecmp(info->filename_ext, ".pvn",4)==0) && (info->counter==0) && (info->use_ram_buffer==FALSE)) {
-	        info->counter++;
-		/*	        fprintf(stderr,"File Size: %ld, Filename: %s\n", info->bigbuffer_position, info->filename);
-				fprintf(stderr,"Image resolution: %d by %d, Bits Per Pixel (BPP): %d \n", 
-				save_service->current_buffer->width, save_service->current_buffer->height,
-				getConvertedBytesPerChannel(save_service->current_buffer->buffer_color_mode)*8);
-				fprintf(stderr,"FPS: %f\n",save_service->fps); // FPS of most recent frame *** FIX THIS TO DO DEFAULT FPS *** */
 
-	        writePVNHeader(fd, save_service->current_buffer->buffer_color_mode,
-			       save_service->current_buffer->height,
-			       save_service->current_buffer->width,
-			       0, getConvertedBytesPerChannel(save_service->current_buffer->buffer_color_mode)*8, 0);
-	      }
-	      break;
-	    case SAVE_SCRATCH_OVERWRITE:
-	      sprintf(filename_out, "%s%s", info->filename,info->filename_ext);
-	      break;
-	    case SAVE_SCRATCH_SEQUENTIAL:
-	      switch (info->datenum) {
-	      case SAVE_TAG_DATE:
-		sprintf(filename_out, "%s-%s%s", info->filename, save_service->current_buffer->captime_string, info->filename_ext);
-		break;
-	      case SAVE_TAG_NUMBER:
-		sprintf(filename_out,"%s-%10.10li%s", info->filename, info->counter++, info->filename_ext);
-		break;
-	      }
-	      break;
-	    default:
-	      break;
+	    // get file descriptor
+	    GetSaveFD(save_service, fd, filename_out);
+
+	    // write initial data for video (header,...)
+	    if ((info->mode==SAVE_MODE_VIDEO)&&(save_service->processed_frames==0)) {
+	      InitVideoFile(save_service, fd);
 	    }
+
 	    // rambuffer operation
-	    if ((info->use_ram_buffer==TRUE)&&(info->scratch==SAVE_SCRATCH_VIDEO)) {
-	      if (info->ram_buffer_size-info->bigbuffer_position>=save_service->current_buffer->buffer_image_bytes) {
-		memcpy(&info->bigbuffer[info->bigbuffer_position], save_service->current_buffer->image, save_service->current_buffer->buffer_image_bytes);
-		info->bigbuffer_position+=save_service->current_buffer->buffer_image_bytes;
-	      }
-	      else { // buffer is full, exit thread
-		info->cancel_req=1;
-	      }
+	    if ((info->use_ram_buffer==TRUE)&&(info->mode==SAVE_MODE_VIDEO)) {
+	      FillRamBuffer(save_service);
 	    }
-	    // normal operation
-	    else {
-	      if (info->rawdump>0) {
-		if (info->scratch!=SAVE_SCRATCH_VIDEO) {
-		  fd=fopen(filename_out,"w");
-		  if (fd==NULL)
-		    MainError("Can't create/open image file for saving");
-		  else {
-		    fwrite(save_service->current_buffer->image, 1, save_service->current_buffer->buffer_image_bytes, fd);
-		    fclose(fd);
-		  }
+	    else { // normal operation (no RAM buffer)
+	      switch (info->format) {
+	      case SAVE_FORMAT_RAW:
+		switch (info->mode) {
+		case SAVE_MODE_SEQUENTIAL:
+		case SAVE_MODE_OVERWRITE:
+		  fwrite(save_service->current_buffer->image, 1, save_service->current_buffer->buffer_image_bytes, fd);
+		  fclose(fd);
+		  break;
+		case SAVE_MODE_VIDEO:
+		  fwrite(save_service->current_buffer->image, 1, save_service->current_buffer->buffer_image_bytes, fd);
+		  break;
 		}
-		else { // video saving mode
-		  if ( (strncasecmp(info->filename_ext, ".pvn",4)!=0) ||
-		       (needsConversionForPVN(save_service->current_buffer->buffer_color_mode)==FALSE) ) {
-		    fwrite(save_service->current_buffer->image, 1, save_service->current_buffer->buffer_image_bytes, fd);
-		  }
-		  else {
-		    // we assume that if it needs conversion, the output of the conversion is an 8bpp RGB
-		    dest = (unsigned char*)malloc(3*save_service->current_buffer->width*save_service->current_buffer->height*sizeof(unsigned char));
-		    convert_for_pvn(save_service->current_buffer->image, save_service->current_buffer->width,
-				    save_service->current_buffer->height, 0, save_service->current_buffer->buffer_color_mode, dest);
-                    fwrite(dest, 1, 3*save_service->current_buffer->width*save_service->current_buffer->height, fd);
-                  }
+		break;
+	      case SAVE_FORMAT_PVN:
+		if (needsConversionForPVN(save_service->current_buffer->buffer_color_mode)>0) {
+		  // we assume that if it needs conversion, the output of the conversion is an 8bpp RGB
+		  dest = (unsigned char*)malloc(3*save_service->current_buffer->width*save_service->current_buffer->height*sizeof(unsigned char));
+		  convert_for_pvn(save_service->current_buffer->image, save_service->current_buffer->width,
+				  save_service->current_buffer->height, 0, save_service->current_buffer->buffer_color_mode, dest);
+		  fwrite(dest, 1, 3*save_service->current_buffer->width*save_service->current_buffer->height, fd);
 		}
-	      }
-	      else {
+		else {
+		  // no conversion, we can dump the data
+		  fwrite(save_service->current_buffer->image, 1, save_service->current_buffer->buffer_image_bytes, fd);
+		}
+		break;
+	      case SAVE_FORMAT_JPEG: // <<<<<<<<<<<<< to be updated by jpeg/ffmpeg patch
+	      case SAVE_FORMAT_OTHER:
 		convert_to_rgb(save_service->current_buffer, info->buffer);
 		im=gdk_imlib_create_image_from_data(info->buffer,NULL, save_service->current_buffer->width, save_service->current_buffer->height);
 		if (im != NULL) {
@@ -481,8 +553,10 @@ SaveThread(void* arg)
 		else {
 		  MainError("Can't create gdk image!");
 		}
-	      }
-	    }
+		break;
+
+	      } // end save format switch
+	    } // end ram buffer if
 	    save_service->fps_frames++;
 	    save_service->processed_frames++;
 	  }
@@ -506,23 +580,21 @@ SaveThread(void* arg)
     }
     usleep(0);
   }
-  if ((info->use_ram_buffer==TRUE)&&(info->scratch==SAVE_SCRATCH_VIDEO)) {
+
+  // we now have to close the video file properly and handle ram buffer operation
+
+  if ((info->use_ram_buffer==TRUE)&&(info->mode==SAVE_MODE_VIDEO)) {
     fwrite(info->bigbuffer, 1, info->bigbuffer_position, fd);
   }
 
-  if ((info->use_ram_buffer==TRUE)&&(info->scratch==SAVE_SCRATCH_VIDEO)&& (strncasecmp(info->filename_ext, ".pvn",4)==0)) {
-    /*    fprintf(stderr,"File Size: %ld, Filename: %s\n", info->bigbuffer_position, info->filename);
-	  fprintf(stderr,"Image resolution: %d by %d, Bits Per Pixel (BPP): %d \n", 
-	  save_service->current_buffer->width, save_service->current_buffer->height,
-	  getConvertedBytesPerChannel(save_service->current_buffer->buffer_color_mode)*8);
-	  fprintf(stderr,"FPS: %f\n",save_service->fps); // FPS of most recent frame  */
-
+  if ((info->use_ram_buffer==TRUE)&&(info->mode==SAVE_MODE_VIDEO)&&(info->format==SAVE_FORMAT_PVN)) {
     writePVNHeader(fd, save_service->current_buffer->buffer_color_mode,
 		   save_service->current_buffer->height,
 		   save_service->current_buffer->width,
 		   getDepth(info->bigbuffer_position, save_service->current_buffer->buffer_color_mode, 
 			    save_service->current_buffer->height, save_service->current_buffer->width),
-		   getConvertedBytesPerChannel(save_service->current_buffer->buffer_color_mode)*8, 0);
+		   getConvertedBytesPerChannel(save_service->current_buffer->buffer_color_mode)*8,
+		            framerateAsDouble(camera->misc_info.framerate));
 
     if(needsConversionForPVN(save_service->current_buffer->buffer_color_mode)==FALSE) {
       fwrite(info->bigbuffer, 1, info->bigbuffer_position, fd);
@@ -540,7 +612,7 @@ SaveThread(void* arg)
     }
   }
   
-  if ((info->scratch==SAVE_SCRATCH_VIDEO)&&(fd!=NULL)) {
+  if ((info->mode==SAVE_MODE_VIDEO)&&(fd!=NULL)) {
     fclose(fd);
   }
 

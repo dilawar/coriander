@@ -135,27 +135,12 @@ BuildPrefsSaveFrame(void)
 {
   // frame drop
   gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(main_window, "prefs_save_period"), camera->prefs.save_period);
-  // scratch
-  //fprintf(stderr,"building save scratch options. current: %d\n",camera->prefs.save_scratch);
-  switch(camera->prefs.save_scratch) {
-  case SAVE_SCRATCH_OVERWRITE:
-    gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(main_window, "prefs_save_scratch"),TRUE);
-    break;
-  case SAVE_SCRATCH_SEQUENTIAL:
-    gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(main_window, "prefs_save_seq"),TRUE);
-    break;
-  case SAVE_SCRATCH_VIDEO:
-    gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(main_window, "prefs_save_video"),TRUE);
-    break;
-  }
-  // scratch
-  if (camera->prefs.save_convert == SAVE_CONVERT_ON)
-    gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(main_window, "prefs_save_convert"),TRUE);
-  else
-    gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(main_window, "prefs_save_noconvert"),TRUE);
-  
+
   //filename
   gtk_entry_set_text(GTK_ENTRY(gnome_file_entry_gtk_entry(GNOME_FILE_ENTRY(lookup_widget(main_window, "save_basedir_entry")))), camera->prefs.save_basedir);
+
+  // mode
+  BuildSaveModeMenu();
 
   // file sequence tags
   if (camera->prefs.save_datenum==SAVE_TAG_DATE)
@@ -193,12 +178,12 @@ BuildPrefsFtpFrame(void)
 #ifdef HAVE_FTPLIB
   // frame drop
   gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(main_window, "prefs_ftp_period"), camera->prefs.ftp_period);
-  // scratch
-  switch(camera->prefs.ftp_scratch) {
-  case FTP_SCRATCH_OVERWRITE:
-    gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(main_window, "prefs_ftp_scratch"),TRUE);
+  // mode
+  switch(camera->prefs.ftp_mode) {
+  case FTP_MODE_OVERWRITE:
+    gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(main_window, "prefs_ftp_mode"),TRUE);
     break;
-  case FTP_SCRATCH_SEQUENTIAL:
+  case FTP_MODE_SEQUENTIAL:
     gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(main_window, "prefs_ftp_seq"),TRUE);
     break;
   }
@@ -216,7 +201,7 @@ BuildPrefsFtpFrame(void)
 #else
 
   gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_ftp_framedrop_frame"),FALSE);
-  gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_ftp_scratch_frame"),FALSE);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_ftp_mode_frame"),FALSE);
   gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_ftp_server_frame"),FALSE);
 
 #endif

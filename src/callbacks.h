@@ -175,7 +175,7 @@ on_prefs_save_seq_toggled              (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
 
 void
-on_prefs_save_scratch_toggled          (GtkToggleButton *togglebutton,
+on_prefs_save_mode_toggled          (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
 
 void
@@ -183,7 +183,7 @@ on_prefs_ftp_seq_toggled               (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
 
 void
-on_prefs_ftp_scratch_toggled           (GtkToggleButton *togglebutton,
+on_prefs_ftp_mode_toggled           (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
 
 void
@@ -418,6 +418,10 @@ on_save_basedir_subentry_changed      (GtkEditable     *editable,
 
 void
 on_grab_now_clicked                    (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_save_mode_menu_activate             (GtkEditable     *editable,
                                         gpointer         user_data);
 
 #endif // __CALLBACKS_H__

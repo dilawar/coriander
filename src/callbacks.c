@@ -880,36 +880,36 @@ on_prefs_save_seq_toggled              (GtkToggleButton *togglebutton,
   savethread_info_t* info;
   chain_t* service;
   if (togglebutton->active) {
-    camera->prefs.save_scratch=SAVE_SCRATCH_SEQUENTIAL;
+    camera->prefs.save_mode=SAVE_MODE_SEQUENTIAL;
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window,"use_ram_buffer")),0);
-    gnome_config_set_int("coriander/save/scratch",camera->prefs.save_scratch);
+    gnome_config_set_int("coriander/save/mode",camera->prefs.save_mode);
     gnome_config_sync();
     UpdatePrefsSaveFrame();
     service=GetService(camera,SERVICE_SAVE);
     if (service!=NULL) {
       info=service->data;
-      info->scratch=camera->prefs.save_scratch;
+      info->mode=camera->prefs.save_mode;
     }
   }
 }
 
 
 void
-on_prefs_save_scratch_toggled          (GtkToggleButton *togglebutton,
+on_prefs_save_mode_toggled          (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
   savethread_info_t* info;
   chain_t* service;
   if (togglebutton->active) {
-    camera->prefs.save_scratch=SAVE_SCRATCH_OVERWRITE;
+    camera->prefs.save_mode=SAVE_MODE_OVERWRITE;
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window,"use_ram_buffer")),0);
-    gnome_config_set_int("coriander/save/scratch",camera->prefs.save_scratch);
+    gnome_config_set_int("coriander/save/mode",camera->prefs.save_mode);
     gnome_config_sync();
     UpdatePrefsSaveFrame();
     service=GetService(camera,SERVICE_SAVE);
     if (service!=NULL) {
       info=service->data;
-      info->scratch=camera->prefs.save_scratch;
+      info->mode=camera->prefs.save_mode;
     }
   }
 }
@@ -922,14 +922,14 @@ on_prefs_save_video_toggled            (GtkToggleButton *togglebutton,
   savethread_info_t* info;
   chain_t* service;
   if (togglebutton->active) {
-    camera->prefs.save_scratch=SAVE_SCRATCH_VIDEO;
-    gnome_config_set_int("coriander/save/scratch",camera->prefs.save_scratch);
+    camera->prefs.save_mode=SAVE_MODE_VIDEO;
+    gnome_config_set_int("coriander/save/mode",camera->prefs.save_mode);
     gnome_config_sync();
     UpdatePrefsSaveFrame();
     service=GetService(camera,SERVICE_SAVE);
     if (service!=NULL) {
       info=service->data;
-      info->scratch=camera->prefs.save_scratch;
+      info->mode=camera->prefs.save_mode;
     }
   }
 }
@@ -979,34 +979,34 @@ on_prefs_ftp_seq_toggled               (GtkToggleButton *togglebutton,
   ftpthread_info_t* info;
   chain_t* service;
   if (togglebutton->active) {
-    camera->prefs.ftp_scratch=FTP_SCRATCH_SEQUENTIAL;
-    gnome_config_set_int("coriander/ftp/scratch",camera->prefs.ftp_scratch);
+    camera->prefs.ftp_mode=FTP_MODE_SEQUENTIAL;
+    gnome_config_set_int("coriander/ftp/mode",camera->prefs.ftp_mode);
     gnome_config_sync();
     UpdatePrefsFtpFrame();
     service=GetService(camera,SERVICE_FTP);
     if (service!=NULL) {
       info=service->data;
-      info->scratch=camera->prefs.ftp_scratch;
+      info->mode=camera->prefs.ftp_mode;
     }
   }
 }
 
 
 void
-on_prefs_ftp_scratch_toggled           (GtkToggleButton *togglebutton,
+on_prefs_ftp_mode_toggled           (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
   ftpthread_info_t* info;
   chain_t* service;
   if (togglebutton->active) {
-    camera->prefs.ftp_scratch=FTP_SCRATCH_OVERWRITE;
-    gnome_config_set_int("coriander/ftp/scratch",camera->prefs.ftp_scratch);
+    camera->prefs.ftp_mode=FTP_MODE_OVERWRITE;
+    gnome_config_set_int("coriander/ftp/mode",camera->prefs.ftp_mode);
     gnome_config_sync();
     UpdatePrefsFtpFrame();
     service=GetService(camera,SERVICE_FTP);
     if (service!=NULL) {
       info=service->data;
-      info->scratch=camera->prefs.ftp_scratch;
+      info->mode=camera->prefs.ftp_mode;
     }
   }
 }
@@ -1513,8 +1513,10 @@ on_save_basedir_subentry_changed      (GtkEditable     *editable,
   char *tmp_ptr;
   tmp_ptr=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"save_basedir_subentry")));
   strcpy(camera->prefs.save_basedir,tmp_ptr);
+  // FORMAT DETECTION SHOULD GO HERE, NOT IN SaveThreadStart() IN ORDER TO ADAPT THE GUI ACCORDING TO FILE FORMAT
   gnome_config_set_string("coriander/save/filename",camera->prefs.save_basedir);
   gnome_config_sync();
+  UpdatePrefsSaveFrame();
 }
 
 
@@ -1525,3 +1527,13 @@ on_grab_now_clicked                    (GtkButton       *button,
 
 }
 
+
+void
+on_save_mode_menu_activate             (GtkEditable     *editable,
+                                        gpointer         user_data)
+{
+  camera->prefs.save_mode=(int)user_data;
+  gnome_config_set_int("coriander/save/mode",camera->prefs.save_mode);
+  gnome_config_sync();
+  UpdatePrefsSaveFrame();
+}

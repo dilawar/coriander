@@ -1,7 +1,11 @@
-Coriander, (c) 2000-2004 Damien Douxchamps <ddouxchamps@users.sf.net>
+Coriander, (c) 2000-2005 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 1.0.2
 
+   Jan 17, 2005, by Damien Douxchamps
+   - started the cleanup of thread_save and the associated GUI controls
+   - applied a patch from Jacob Gryn for PVN
+	
    Jan 5, 2005, by Damien Douxchamps
    - merged the patch for PVN saving capability from Jacob Gryn
 	

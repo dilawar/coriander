@@ -56,7 +56,7 @@ typedef struct _CamPrefs
   int video1394_dropframes;
   int dma_buffer_size;
   char *save_basedir;
-  int save_scratch;
+  int save_mode;
   int save_period;
   int save_convert;
   int save_datenum;
@@ -67,7 +67,7 @@ typedef struct _CamPrefs
   char *ftp_password;
   char *ftp_filename;
   char *ftp_path;
-  int ftp_scratch;
+  int ftp_mode;
   int ftp_period;
   int ftp_datenum;
 

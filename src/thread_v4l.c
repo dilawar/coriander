@@ -52,7 +52,6 @@ V4lStartThread(camera_t* cam)
     CommonChainSetup(cam, v4l_service,SERVICE_V4L);
     
     info->v4l_buffer=NULL;
-    //info->counter=0;
 
     // COPY CAM->PREFS HERE
     strcpy(info->v4l_dev_name,cam->prefs.v4l_dev_name);

@@ -10,5 +10,7 @@ Xiong Quanren				-- big help debugging Bayer decoding functions
 Marcus Lim				-- test pattern function (discontinued)
 Andreas Micklei				-- Bus topology functions
 Olaf Ronneberger			-- Format7 massive debug
-Johan Knol				-- debug, additions, and some hot stuff for
-					   version 1.1...
+Johan Knol				-- debug, additions, and some hot stuff for version 1.1...
+Jacob (Jack) Gryn                       -- PVN saving capability
+Konstantinos G. Derpanis                -- PVN saving capability
+Frederic Devernay			-- Several bug fixes and enhancements

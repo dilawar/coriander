@@ -21,9 +21,9 @@
 
 typedef enum
 {
-  FTP_SCRATCH_SEQUENTIAL=0,
-  FTP_SCRATCH_OVERWRITE
-} ftp_scratch_t;
+  FTP_MODE_SEQUENTIAL=0,
+  FTP_MODE_OVERWRITE
+} ftp_mode_t;
  
 typedef enum
 {
@@ -45,10 +45,9 @@ typedef struct
   char               user[STRING_SIZE];
   char               path[STRING_SIZE];
   long int           period;
-  long int           counter;
   long int           imlib_buffer_size;
   unsigned char*     buffer;
-  int                scratch;
+  int                mode;
   int                datenum;
 #ifdef HAVE_FTPLIB
   netbuf             *ftp_handle;

@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2000-2003 Damien Douxchamps  <ddouxchamps@users.sf.net>
  *
- * PVN saving capability by Jacob (Jack) Gryn
+ * PVN saving capability by Jacob (Jack) Gryn and Konstantinos G. Derpanis
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,10 +23,18 @@
 
 typedef enum
 {
-  SAVE_SCRATCH_SEQUENTIAL=0,
-  SAVE_SCRATCH_OVERWRITE,
-  SAVE_SCRATCH_VIDEO
-} save_scratch_t;
+  SAVE_MODE_SEQUENTIAL=0,
+  SAVE_MODE_OVERWRITE,
+  SAVE_MODE_VIDEO
+} save_mode_t;
+
+typedef enum
+{
+  SAVE_FORMAT_RAW=0,
+  SAVE_FORMAT_PVN,
+  SAVE_FORMAT_JPEG,
+  SAVE_FORMAT_OTHER
+} save_format_t;
 
 typedef enum
 {
@@ -51,9 +59,9 @@ typedef struct
   int                cancel_req;
   char               filename[STRING_SIZE];
   char               filename_ext[STRING_SIZE];
-  long int           counter;
   unsigned char*     buffer;
-  int                scratch;
+  save_mode_t        mode;
+  save_format_t      format;
   int                datenum;
   long int           period;
   int                rawdump;
@@ -91,8 +99,11 @@ getConvertedBytesPerChannel(int buffer_color_mode);
 int
 getBytesPerChannel(int buffer_color_mode);
 
-int
-getBytesPerPixel(int buffer_color_mode);
+double
+framerateAsDouble(int framerate_enum);
+
+float
+getAvgBytesPerPixel(int buffer_color_mode);
 
 unsigned int
 getDepth(unsigned long bufsize, int mode, unsigned int height, unsigned int width);
@@ -100,5 +111,19 @@ getDepth(unsigned long bufsize, int mode, unsigned int height, unsigned int widt
 void
 convert_for_pvn(unsigned char *buffer, unsigned int width, unsigned int height,
 		unsigned int page, int buffer_color_mode, unsigned char *dest);
+
+void
+InitVideoFile(chain_t *save_service, FILE *fd);
+
+void
+writePVNHeader(FILE *fd, unsigned int mode, unsigned int height, unsigned int width,
+	       unsigned int depth, unsigned int bpp, double framerate);
+
+void
+GetSaveFD(chain_t *save_service, FILE *fd, char *filename_out);
+
+void
+FillRamBuffer(chain_t *save_service);
+
 
 #endif // __THREAD_SAVE_H__

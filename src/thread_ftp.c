@@ -46,7 +46,6 @@ FtpStartThread(camera_t* cam)
     pthread_mutex_lock(&ftp_service->mutex_data);
     info->period=cam->prefs.ftp_period;
     info->datenum=cam->prefs.ftp_datenum;
-    info->counter=0;
     strcpy(info->address, cam->prefs.ftp_address);
     strcpy(info->user, cam->prefs.ftp_user);
     strcpy(info->password, cam->prefs.ftp_password);
@@ -69,7 +68,7 @@ FtpStartThread(camera_t* cam)
     info->buffer=NULL;
     info->imlib_buffer_size=0;
     
-    info->scratch=cam->prefs.ftp_scratch;
+    info->mode=cam->prefs.ftp_mode;
     
 #ifdef HAVE_FTPLIB
     if (!OpenFtpConnection(info)) {
@@ -169,17 +168,17 @@ FtpThread(void* arg)
 	  if (skip_counter>=(info->period-1)) {
 	    skip_counter=0;
 	    convert_to_rgb(ftp_service->current_buffer, info->buffer);
-	    switch (info->scratch) {
-	    case FTP_SCRATCH_OVERWRITE:
+	    switch (info->mode) {
+	    case FTP_MODE_OVERWRITE:
 	      sprintf(filename_out, "%s%s", info->filename,info->filename_ext);
 	      break;
-	    case FTP_SCRATCH_SEQUENTIAL:
+	    case FTP_MODE_SEQUENTIAL:
 	      switch (info->datenum) {
 	      case FTP_TAG_DATE:
 		sprintf(filename_out, "%s-%s%s", info->filename, ftp_service->current_buffer->captime_string, info->filename_ext);
 		break;
 	      case FTP_TAG_NUMBER:
-		sprintf(filename_out,"%s-%10.10li%s", info->filename, info->counter++, info->filename_ext);
+		sprintf(filename_out,"%s-%10.10lli%s", info->filename, ftp_service->processed_frames, info->filename_ext);
 		break;
 	      }
 	      break;

@@ -55,4 +55,7 @@ BuildOverlayTypeMenu(void);
 void
 BuildOverlayPatternMenu(void);
 
+void
+BuildSaveModeMenu(void);
+
 #endif // __BUILDMENUS_H__
