@@ -103,15 +103,13 @@ GetFormat7Capabilities(raw1394handle_t handle, nodeid_t node, Format7Info *info)
 	if (dc1394_query_format7_color_coding(handle,node,f,&info->mode[i].color_coding)!=DC1394_SUCCESS)
 	  MainError("Got a problem querying format7 color coding");
 	
-	
 	//fprintf(stderr,"color coding for mode %d: 0x%x, current: %d\n", i,
 	//	      info->mode[i].color_coding, info->mode[i].color_coding_id);
 	
       }
     }
   }
-  info->edit_mode = MODE_FORMAT7_MIN;
-  
+  //info->edit_mode = MODE_FORMAT7_MIN;
 }
 
 void
@@ -165,7 +163,7 @@ ChangeModeAndFormat         (GtkMenuItem     *menuitem,
 
   if (format==FORMAT_SCALABLE_IMAGE_SIZE) {
     GetFormat7Capabilities(camera->handle, camera->id, format7_info);
-    format7_info->edit_mode=mode;
+    //format7_info->edit_mode=mode;
   }
 
   BuildAllWindows();

@@ -24,6 +24,8 @@ extern uiinfo_t* uiinfo;
 extern int camera_num;
 extern const char *help_key_bindings_keys[KEY_BINDINGS_NUM];
 extern const char *help_key_bindings_functions[KEY_BINDINGS_NUM];
+extern Format7Info* format7_info;
+extern dc1394_miscinfo* misc_info;
 
 void
 BuildPreferencesWindow(void)
@@ -39,6 +41,7 @@ BuildPreferencesWindow(void)
 void
 BuildFormat7Window(void)
 {
+  format7_info->edit_mode=misc_info->mode;
   BuildFormat7ModeFrame();
   BuildFormat7Ranges();
   BuildFormat7BppRange();
