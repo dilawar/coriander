@@ -1,0 +1,30 @@
+--- interface.c.orig	Tue Jan 29 22:48:48 2002
++++ interface.c	Tue Jan 29 22:51:34 2002
+@@ -580,6 +580,10 @@ create_commander_window (void)
+   GtkWidget *label83;
+   GtkWidget *main_status;
+ 
++  /* BEGIN additions by Dan Dennedy via interface.patch */
++  GtkAccelGroup *accel_group;
++  /* END additions */
++
+   commander_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+   gtk_object_set_data (GTK_OBJECT (commander_window), "commander_window", commander_window);
+   gtk_window_set_title (GTK_WINDOW (commander_window), _("Coriander 0.22"));
+@@ -598,8 +602,15 @@ create_commander_window (void)
+                             (GtkDestroyNotify) gtk_widget_unref);
+   gtk_widget_show (menubar);
+   gtk_box_pack_start (GTK_BOX (vbox26), menubar, FALSE, FALSE, 0);
++  
++  /* BEGIN additions by Dan Dennedy via interface.patch */
++  accel_group = gtk_accel_group_new();
++  gtk_accel_group_attach(accel_group, GTK_OBJECT(commander_window));
++  /* END additions */
++  
++  /* modified by Dan Dennedy for menu accellerators */
+   gnome_app_fill_menu (GTK_MENU_SHELL (menubar), menubar_uiinfo,
+-                       NULL, FALSE, 0);
++                       accel_group, TRUE, 0);
+ 
+   gtk_widget_ref (menubar_uiinfo[0].widget);
+   gtk_object_set_data_full (GTK_OBJECT (commander_window), "file",

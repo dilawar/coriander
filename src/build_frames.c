@@ -383,4 +383,6 @@ BuildPrefsReceiveFrame(void)
   gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(preferences_window, "prefs_receive_method_menu")),
 			      preferences.receive_method2index[preferences.receive_method]);
 
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_video1394_device")),
+		     preferences.video1394_device);
 }

@@ -64,9 +64,9 @@ SetPreferencesDefaults(void)
   strcpy(preferences.real_password,"password_string");
   strcpy(preferences.real_filename,"hello_world.rm");
   preferences.real_port=4040;
-  strcpy(preferences.real_title,"Hello World");
+  strcpy(preferences.real_title,"Hello_World");
   strcpy(preferences.real_author,"Myself");
-  strcpy(preferences.real_copyright,"(c)2032 Jenkins the Robot");
+  strcpy(preferences.real_copyright,"(c)2032_no_spaces_allowed!");
   preferences.real_recordable=0;
 #ifdef HAVE_REALLIB
   preferences.real_audience=REAL_AUDIENCE_LAN_HIGH;
@@ -78,6 +78,7 @@ SetPreferencesDefaults(void)
   preferences.real_compatibility=0;
   preferences.real_period=1;
 #endif
+  strcpy(preferences.video1394_device,"/dev/video1394");
 }
 
 void
@@ -140,10 +141,12 @@ WriteConfigFile(void)
   fprintf(fd,"%s %s\n",preferences_features[21],preferences.real_author);
   fprintf(fd,"%s %s\n",preferences_features[22],preferences.real_title);
   fprintf(fd,"%s %s\n",preferences_features[23],preferences.real_copyright);
-  fprintf(fd,"%s %s\n",preferences_features[24],preferences.real_recordable);
+  fprintf(fd,"%s %d\n",preferences_features[24],preferences.real_recordable);
   fprintf(fd,"%s %ld\n",preferences_features[25],preferences.real_audience);
   fprintf(fd,"%s %d\n",preferences_features[26],preferences.real_quality);
   fprintf(fd,"%s %d\n",preferences_features[27],preferences.real_compatibility);
+  fprintf(fd,"%s %d\n",preferences_features[28],preferences.real_period);
+  fprintf(fd,"%s %s\n",preferences_features[29],preferences.video1394_device);
 
   fclose(fd);
 }
@@ -156,6 +159,7 @@ ParseConfigFile(FILE* fd)
   char feature_string[STRING_SIZE],feature_value[STRING_SIZE];
   int check,feature_id, i;
   char *needle;
+  /* TODO: build a better string parser */
   check=fscanf(fd,"%s %s",feature_string, feature_value);
 
   while(check!=EOF)
@@ -172,6 +176,8 @@ ParseConfigFile(FILE* fd)
 	MainError("Invalid config item");
       else
 	{
+
+// printf("key=%s (%d), value=%s\n", feature_string, feature_id, feature_value);
 	  switch(feature_id)
 	    {
 	    case ONE_PUSH_TIMEOUT:
@@ -260,6 +266,10 @@ ParseConfigFile(FILE* fd)
 	      break;
 	    case REAL_PERIOD:
 	      preferences.real_period=atoi(feature_value);
+		  break;
+	    case VIDEO1394_DEVICE:
+	      strcpy(preferences.video1394_device,feature_value);
+	      break;
 	    default:
 	      MainError("Invalid config item id");
 	      break;

@@ -301,7 +301,8 @@ const char *preferences_features[PREFERENCE_ITEMS]= {
   "REAL_AUDIENCE",
   "REAL_QUALITY",
   "REAL_COMPATIBILITY",
-  "REAL_PERIOD"
+  "REAL_PERIOD",
+  "VIDEO1394_DEVICE"
 };
 
 const char *feature_menu_items_list[5]= {

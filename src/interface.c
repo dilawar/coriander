@@ -580,6 +580,10 @@ create_commander_window (void)
   GtkWidget *label83;
   GtkWidget *main_status;
 
+  /* BEGIN additions by Dan Dennedy via interface.patch */
+  GtkAccelGroup *accel_group;
+  /* END additions */
+
   commander_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_object_set_data (GTK_OBJECT (commander_window), "commander_window", commander_window);
   gtk_window_set_title (GTK_WINDOW (commander_window), _("Coriander 0.22"));
@@ -598,8 +602,15 @@ create_commander_window (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (menubar);
   gtk_box_pack_start (GTK_BOX (vbox26), menubar, FALSE, FALSE, 0);
+  
+  /* BEGIN additions by Dan Dennedy via interface.patch */
+  accel_group = gtk_accel_group_new();
+  gtk_accel_group_attach(accel_group, GTK_OBJECT(commander_window));
+  /* END additions */
+  
+  /* modified by Dan Dennedy for menu accellerators */
   gnome_app_fill_menu (GTK_MENU_SHELL (menubar), menubar_uiinfo,
-                       NULL, FALSE, 0);
+                       accel_group, TRUE, 0);
 
   gtk_widget_ref (menubar_uiinfo[0].widget);
   gtk_object_set_data_full (GTK_OBJECT (commander_window), "file",
@@ -3097,6 +3108,9 @@ create_preferences_window (void)
   GtkWidget *prefs_receive_method_menu;
   GtkWidget *prefs_receive_method_menu_menu;
   GtkWidget *glade_menuitem;
+  GtkWidget *hbox58;
+  GtkWidget *label84;
+  GtkWidget *prefs_video1394_device;
   GtkWidget *label50;
   GtkWidget *vbox53;
   GtkWidget *prefs_display_framedrop;
@@ -3332,7 +3346,7 @@ create_preferences_window (void)
   gtk_box_pack_start (GTK_BOX (vbox52), prefs_receive_frame, FALSE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (prefs_receive_frame), 5);
 
-  table45 = gtk_table_new (1, 1, FALSE);
+  table45 = gtk_table_new (2, 1, FALSE);
   gtk_widget_ref (table45);
   gtk_object_set_data_full (GTK_OBJECT (preferences_window), "table45", table45,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -3353,6 +3367,32 @@ create_preferences_window (void)
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (prefs_receive_method_menu_menu), glade_menuitem);
   gtk_option_menu_set_menu (GTK_OPTION_MENU (prefs_receive_method_menu), prefs_receive_method_menu_menu);
+
+  hbox58 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_ref (hbox58);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "hbox58", hbox58,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (hbox58);
+  gtk_table_attach (GTK_TABLE (table45), hbox58, 0, 1, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (hbox58), 5);
+
+  label84 = gtk_label_new (_("video1394 device:"));
+  gtk_widget_ref (label84);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "label84", label84,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label84);
+  gtk_box_pack_start (GTK_BOX (hbox58), label84, FALSE, FALSE, 0);
+  gtk_misc_set_alignment (GTK_MISC (label84), 1, 0.5);
+  gtk_misc_set_padding (GTK_MISC (label84), 2, 0);
+
+  prefs_video1394_device = gtk_entry_new ();
+  gtk_widget_ref (prefs_video1394_device);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "prefs_video1394_device", prefs_video1394_device,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (prefs_video1394_device);
+  gtk_box_pack_start (GTK_BOX (hbox58), prefs_video1394_device, TRUE, TRUE, 0);
 
   label50 = gtk_label_new (_("Receive"));
   gtk_widget_ref (label50);

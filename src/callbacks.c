@@ -826,6 +826,8 @@ on_prefs_save_button_clicked           (GtkButton       *button,
   strcpy(preferences.ftp_user,tmp);
   tmp=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_save_filename")));
   strcpy(preferences.save_filename,tmp);
+
+#ifdef HAVE_REALLIB
   tmp=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_address")));
   strcpy(preferences.real_address,tmp);
   tmp=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_user")));
@@ -840,6 +842,7 @@ on_prefs_save_button_clicked           (GtkButton       *button,
   strcpy(preferences.real_author,tmp);
   tmp=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_copyright")));
   strcpy(preferences.real_copyright,tmp);
+#endif
 
   preferences.op_timeout = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(preferences_window), "prefs_op_timeout_scale")));
   preferences.auto_update_frequency = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(preferences_window), "prefs_update_scale")));
@@ -848,7 +851,10 @@ on_prefs_save_button_clicked           (GtkButton       *button,
   preferences.ftp_period = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(preferences_window), "prefs_ftp_period")));
   preferences.real_port = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(preferences_window), "prefs_real_port")));
 
-  WriteConfigFile();
+  tmp=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_video1394_device")));
+  strcpy(preferences.video1394_device,tmp);
+
+WriteConfigFile();
 }
 
 

@@ -21,7 +21,7 @@
 
 #include "definitions.h"
 
-#define PREFERENCE_ITEMS 29
+#define PREFERENCE_ITEMS 30
 
 enum {
   ONE_PUSH_TIMEOUT=0,
@@ -52,7 +52,8 @@ enum {
   REAL_AUDIENCE,
   REAL_QUALITY,
   REAL_COMPATIBILITY,
-  REAL_PERIOD
+  REAL_PERIOD,
+  VIDEO1394_DEVICE
 };
 
 typedef struct _PrefsInfo
@@ -86,6 +87,7 @@ typedef struct _PrefsInfo
   int real_quality;
   int real_compatibility;
   int real_period;
+  char video1394_device[STRING_SIZE];
 
   int receive_method2index[2];
 

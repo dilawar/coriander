@@ -11,6 +11,19 @@ Changes towards version 0.23:
        to be done. For 16bpp grayscale and 48bpp RGB, only the MSB is used
        with REAL and DISPLAY services. A function to dump raw data for
        saving to disk/ftp will be added.   
+
+   Jan 31, 2002, by Dan Dennedy
+     - Added video1394_device to preferences struct and preferences
+       window. Coriander now requires CVS version of libdc1394
+       until a new version is released. The CVS version of libdc1394
+       also includes an updated kernel-video1394.h header. Therefore,
+       for video1394 support, you must also be running ieee1394 from
+       kernel 2.4.17 or linux1394 CVS since Oct 21.
+     - added interface.patch file to be run against interface.c whenever
+       Glade regenerates the code. The patch adds keyboard accellerator
+       support to menus. This is easier to maintain than the manual
+       instructions described in interface.mods.
+
 	
 Changes in version 0.22:
 
