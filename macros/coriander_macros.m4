@@ -23,7 +23,7 @@ AC_DEFUN([AC_CHECK_LIBDC],[
  	AC_MSG_RESULT($libdc1394)
  	if test x$libdc1394 = xyes; then
            LIBDC_LIBS="-ldc1394_control"
-           LIBDC_CFLAGS="",
+           LIBDC_CFLAGS=""
 	else
           AC_ERROR(libdc1394 is not installed or is too old.)
  	fi
