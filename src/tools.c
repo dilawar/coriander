@@ -17,6 +17,7 @@
  */
 
 #include "tools.h"
+#include "icons.h"
   
 #define YUV2RGB(y, u, v, r, g, b)\
   r = y + ((v*1436) >>10);\
@@ -1043,6 +1044,25 @@ NearestValue(int value, int step, int min, int max) {
   else
     return high;
 }
+
+void
+window_set_icon(GtkWidget* window) {
+
+  // This function is 'strongly inspired' by the related code found in gqview.
+
+#ifdef HAVE_GDK_PIXBUF
+  GdkPixbuf *pb;
+  GdkPixmap *pixmap;
+  GdkBitmap *mask;
+
+  pb = gdk_pixbuf_new_from_xpm_data((const gchar**)coriander_icon_xpm);
+  gdk_pixbuf_render_pixmap_and_mask(pb, &pixmap, &mask, 128);
+  gdk_pixbuf_unref(pb);
+  gdk_window_set_icon(window->window, NULL, pixmap, mask);
+#endif
+
+}
+
 
 /*
 void*

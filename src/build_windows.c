@@ -452,4 +452,5 @@ BuildHelpWindow(void)
 
   free(text[0]);
   free(text[1]);
+
 }

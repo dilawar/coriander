@@ -276,6 +276,7 @@ SDLInit(chain_t *display_service)
   const SDL_VideoInfo *sdl_videoinfo;
   SDL_Rect** modes;
   info=(displaythread_info_t*)display_service->data;
+  //SDL_Surface *icon_surface;
 
   info->sdlbpp=16;
   info->sdlflags=SDL_ANYFORMAT | SDL_RESIZABLE;
@@ -318,7 +319,12 @@ SDLInit(chain_t *display_service)
       return(0);
     }
   }
-    // Set requested video mode
+  /*
+  // set coriander icon
+  icon_surface=SDL_CreateRGBSurfaceFrom((void*)coriander_logo_xpm)
+  SDL_WM_SetIcon(icon_surface,NULL);
+  */
+  // Set requested video mode
   info->sdlbpp=SDL_VideoModeOK(display_service->current_buffer->width, display_service->current_buffer->height, 
 			       info->sdlbpp, info->sdlflags);
   
@@ -339,7 +345,7 @@ SDLInit(chain_t *display_service)
   SDL_ShowCursor(1);
   
   // set window title:
-  SDL_WM_SetCaption(camera->name,"");
+  SDL_WM_SetCaption(camera->name,camera->name);
 
   // this line broke everything for unknown reasons so I just remove it.
   //info->sdlvideo->format->BytesPerPixel=2;

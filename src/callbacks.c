@@ -66,6 +66,8 @@ on_about_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
   about_window = create_about_window ();
+  gtk_signal_connect(GTK_OBJECT(about_window), "realize",
+		     GTK_SIGNAL_FUNC(window_set_icon), about_window);
   gtk_widget_show (about_window);
 }
 
@@ -462,6 +464,8 @@ void
 on_preferences_window_activate         (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+  gtk_signal_connect(GTK_OBJECT(preferences_window), "realize",
+		     GTK_SIGNAL_FUNC(window_set_icon), preferences_window);
   gtk_widget_show(preferences_window);
 }
 
@@ -671,6 +675,8 @@ on_key_bindings_activate               (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
   help_window = create_help_window();
+  gtk_signal_connect(GTK_OBJECT(help_window), "realize",
+		     GTK_SIGNAL_FUNC(window_set_icon), help_window);
   BuildHelpWindow();
   gtk_widget_show(help_window);
 }

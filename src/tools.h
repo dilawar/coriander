@@ -32,6 +32,12 @@
 #include "thread_save.h"
 #include "thread_v4l.h"
 
+#ifdef HAVE_GDK_PIXBUF
+#include <gdk/gdk.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <gdk-pixbuf/gdk-pixbuf-loader.h>
+#endif
+
 /*
 typedef struct _whitebaldata
 {
@@ -114,6 +120,9 @@ SetFormat7Crop(int sx, int sy, int px, int py, int mode);
 
 int
 NearestValue(int value, int step, int min, int max);
+
+void
+window_set_icon(GtkWidget* window);
 
 #endif
 

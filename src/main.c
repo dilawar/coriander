@@ -72,7 +72,8 @@ main (int argc, char *argv[])
 {
   int i;
   int main_timeout;
-  
+  GtkWidget* err_window;
+
   main_timeout_ticker=0;
   WM_cancel_display=0;
   cameras=NULL;
@@ -95,14 +96,20 @@ main (int argc, char *argv[])
   // it seems that freeing some vars before a return() or an exit() prevent the program from exiting.
   // this only happens on some platforms, but I cleared the free() anyway.
   if (businfo->card_found==0) {
-    gtk_widget_show(create_no_handle_window());
+    err_window=create_no_handle_window();
+    gtk_signal_connect(GTK_OBJECT(err_window), "realize",
+		       GTK_SIGNAL_FUNC(window_set_icon), err_window);
+    gtk_widget_show(err_window);
     gtk_main();
     free(businfo);
     return(1);
   }
   else {
     if (businfo->camera_num<1) {
-      gtk_widget_show(create_no_camera_window());
+    err_window=create_no_camera_window();
+    gtk_signal_connect(GTK_OBJECT(err_window), "realize",
+		       GTK_SIGNAL_FUNC(window_set_icon), err_window);
+      gtk_widget_show(err_window);
       gtk_main();
       
       for (i=0;i<businfo->port_num;i++)
@@ -128,6 +135,9 @@ main (int argc, char *argv[])
   
   preferences_window= create_preferences_window();
   main_window = create_main_window();
+  gtk_signal_connect(GTK_OBJECT(main_window), "realize",
+		     GTK_SIGNAL_FUNC(window_set_icon), main_window);
+  
   format7_tab_presence=1;
   gtk_notebook_set_homogeneous_tabs(GTK_NOTEBOOK(lookup_widget(main_window,"notebook2")),TRUE);
   gtk_notebook_set_homogeneous_tabs(GTK_NOTEBOOK(lookup_widget(main_window,"notebook5")),TRUE);

@@ -183,3 +183,16 @@ AC_DEFUN([AC_CHECK_SSE2],[
 
 ])
 
+
+AC_DEFUN([AC_CHECK_GDK_PIXBUF],[
+	AC_SUBST(GDK_PIXBUF_CFLAGS)
+	AC_SUBST(GDK_PIXBUF_LIBS)
+	AC_CHECK_PROG(have_gdk_pixbuf_config, gdk-pixbuf-config, "found", "not found")
+	if test x$have_gdk_pixbuf_config = xfound; then
+	  GDK_PIXBUF_LIBS=`gdk-pixbuf-config --libs`
+	  GDK_PIXBUF_CFLAGS=`gdk-pixbuf-config --cflags`
+	  AC_DEFINE(HAVE_GDK_PIXBUF)
+	else
+	  AC_MSG_RESULT([GDK-pixbuf is required for WM icons.])
+	fi
+])

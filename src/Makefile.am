@@ -2,7 +2,7 @@
 
 # CPPFLAGS = 
 
-INCLUDES = -I$(top_srcdir)/intl $(GNOME_INCLUDEDIR) $(SDLLIB_CFLAGS) $(LIBRAW_CFLAGS) $(LIBDC_CFLAGS) -I/usr/include/gnome-xml
+INCLUDES = -I$(top_srcdir)/intl $(GNOME_INCLUDEDIR) $(SDLLIB_CFLAGS) $(LIBRAW_CFLAGS) $(LIBDC_CFLAGS) $(GDK_PIXBUF_CFLAGS) -I/usr/include/gnome-xml
 
 bin_PROGRAMS = coriander
 
@@ -33,9 +33,10 @@ coriander_SOURCES = \
 	conversions.c conversions.h \
 	topology.c topology.h \
 	preferences.c preferences.h \
-	raw1394support.h
+	raw1394support.h \
+	icons.h
 
 #$(INTLLIBS) removed from the line below
-coriander_LDADD = $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(PTHREAD_LIB) $(FTPLIB_LIBS) $(SDLLIB_LIBS) $(LIBDC_LIBS) $(LIBRAW_LIBS) -lgthread
+coriander_LDADD = $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(PTHREAD_LIB) $(FTPLIB_LIBS) $(SDLLIB_LIBS) $(LIBDC_LIBS) $(LIBRAW_LIBS) $(GDK_PIXBUF_LIBS) -lgthread
 
 
