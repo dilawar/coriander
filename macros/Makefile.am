@@ -22,7 +22,8 @@ MACROS=						\
   gnome.m4					\
   gperf-check.m4				\
   linger.m4					\
-  need-declaration.m4
+  need-declaration.m4				\
+  coriander_macros.m4
 
 EXTRA_DIST=$(MACROS) gnome-common.m4 autogen.sh
 MAINTAINERCLEANFILES=macros.dep

@@ -33,47 +33,12 @@ dnl Subst PACKAGE_PIXMAPS_DIR.
 PACKAGE_PIXMAPS_DIR="`gnome-config --datadir`/pixmaps/${PACKAGE}"
 AC_SUBST(PACKAGE_PIXMAPS_DIR)
 
-# Check for ftplib ###########################################################
-AC_CHECK_LIB(ftp, FtpInit,
-             AC_DEFINE(HAVE_FTPLIB)
-             FTP_LIB="-lftp",
-             AC_MSG_RESULT(ftplib is required for ftp support, disabled))
-AC_SUBST(FTP_LIB)
-
-# Check for realproducersdk ##################################################
-AC_MSG_CHECKING(for Real Producer SDK)
- real_sdk=no
- AC_TRY_COMPILE([
-	#include <realproducersdk/pncom.h>
-	#include <realproducersdk/rmaerror.h>
-	#include <realproducersdk/pnwintyp.h>
-	#include <realproducersdk/engtypes.h>
-	#include <realproducersdk/rmaenum.h>
-	#include <realproducersdk/rmapckts.h>
-	#include <realproducersdk/engstats.h>
-	#include <realproducersdk/engcodec.h>
- ],[
-  	IRMABuffer *pBuffer;
- ],[
- real_sdk=yes
- ])
- AC_MSG_RESULT($real_sdk)
- if test x$real_sdk = xyes; then
-  AC_DEFINE(HAVE_REALLIB)	
-  REAL_LIB="-L/usr/local/lib/realproducersdk -lenceng -ldl"
-  REAL_INCLUDEDIR="-I/usr/local/include/realproducersdk"
- fi
-AC_SUBST(REAL_LIB)
-AC_SUBST(REAL_INCLUDEDIR)
-
-# Check for SDL ###########################################################
-AC_CHECK_LIB(SDL, SDL_Init,
-             AC_DEFINE(HAVE_SDLLIB)
-             SDL_LIB="-lSDL"
-	     SDL_INCLUDEDIR="-I/usr/include/SDL",
-             AC_MSG_RESULT(SDL libs required for display. NO DISPLAY WILL BE AVAILABLE.))
-AC_SUBST(SDL_LIB)
-AC_SUBST(SDL_INCLUDEDIR)
+# CUSTOM CHECKS    ###########################################################
+AC_CHECK_LIBRAW
+AC_CHECK_LIBDC
+AC_CHECK_FTPLIB
+AC_CHECK_SDLLIB
+AC_CHECK_REALLIB
 
 dnl temporarily removed intl/Makefile and po/Makefile.in
 AC_OUTPUT([

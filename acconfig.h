@@ -10,3 +10,5 @@
 #undef HAVE_FTPLIB
 #undef HAVE_REALLIB
 #undef HAVE_SDLLIB
+#undef HAVE_LIBDC
+#undef HAVE_LIBRAW

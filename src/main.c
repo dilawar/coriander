@@ -82,7 +82,9 @@ main (int argc, char *argv[])
 
   gnome_init ("coriander", VERSION, argc, argv);
 
+      fprintf(stderr,"test0\n");
   handle=dc1394_create_handle(port);
+      fprintf(stderr,"testa\n");
   // probe the IEEE1394 bus for DC camera:
   if (handle==0)
     {
@@ -99,7 +101,6 @@ main (int argc, char *argv[])
     }
   else
     {
-  
   // allocate memory space for all camera infos & download all infos:
   cameras=(dc1394_camerainfo*)calloc(camera_num,sizeof(dc1394_camerainfo));
   feature_sets=(dc1394_feature_set*)calloc(camera_num,sizeof(dc1394_feature_set));

@@ -1,14 +1,14 @@
 ## Process this file with automake to produce Makefile.in
 
-CPPFLAGS = -D_REENTRANT -D_LINUX -D_LITTLE_ENDIAN -D_UNIX
+# CPPFLAGS = 
 
-INCLUDES = \
-	-I$(top_srcdir)/intl \
+INCLUDES = -I$(top_srcdir)/intl \
 	$(GNOME_INCLUDEDIR) \
-	$(REAL_INCLUDEDIR) \
-	$(SDL_INCLUDEDIR) \
+	$(REALLIB_CFLAGS) \
+	$(SDLLIB_CFLAGS) \
+	$(LIBRAW_CFLAGS) \
+	$(LIBDC_CFLAGS) \
 	-I/usr/include/gnome-xml
-
 
 bin_PROGRAMS = coriander
 
@@ -41,7 +41,8 @@ coriander_SOURCES = \
 
 LDFLAGS += -Xlinker --export-dynamic
 
-coriander_LDADD = $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(INTLLIBS) $(PTHREAD_LIB) \
-	 $(FTP_LIB) $(REAL_LIB) $(SDL_LIB) -ldc1394_control -lraw1394 -lgthread
+#$(INTLLIBS) removed from the line below
+coriander_LDADD = $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(PTHREAD_LIB) \
+	 $(FTPLIB_LIBS) $(REALLIB_LIBS) $(SDLLIB_LIBS) $(LIBDC_LIBS) $(LIBRAW_LIBS) -lgthread
 
 
