@@ -36,6 +36,7 @@ typedef struct
   raw1394handle_t         handle;
   receive_method_t        receive_method;
   dc1394_cameracapture    capture;
+
 } isothread_info;
 
 gint
