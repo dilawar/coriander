@@ -2,6 +2,11 @@ Coriander, (c) 2000-2002 Damien Douxchamps <douxchamps@ieee.org>
 
 Changes towards version 0.26
 
+   August 5, 2002, by Damien Douxchamps	
+   - Applied Ryutaroh Matsumoto's patch for NULL pointer segfault in
+     tools.c/MainError. Added the same if (commander_window!=NULL) to
+     tools.c/MainStatus for safety.
+	
    July 29, 2002, by Damien Douxchamps
    - added a cursor information in the main window. Needs some
      improvements for some things behave in a strange way (a
