@@ -164,6 +164,11 @@ create_main_window (void)
   GtkWidget *frame1;
   GtkWidget *vbox64;
   GtkWidget *prefs_display_keep_ratio;
+  GtkWidget *hbox69;
+  GtkWidget *display_redraw;
+  GtkObject *display_redraw_rate_adj;
+  GtkWidget *display_redraw_rate;
+  GtkWidget *label155;
   GtkWidget *label144;
   GtkWidget *vbox54;
   GtkWidget *prefs_save_file_frame;
@@ -1236,6 +1241,37 @@ create_main_window (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (prefs_display_keep_ratio);
   gtk_box_pack_start (GTK_BOX (vbox64), prefs_display_keep_ratio, FALSE, FALSE, 0);
+
+  hbox69 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_ref (hbox69);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "hbox69", hbox69,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (hbox69);
+  gtk_box_pack_start (GTK_BOX (vbox64), hbox69, TRUE, TRUE, 0);
+
+  display_redraw = gtk_check_button_new_with_label (_("Force display redraw at a rate of"));
+  gtk_widget_ref (display_redraw);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "display_redraw", display_redraw,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (display_redraw);
+  gtk_box_pack_start (GTK_BOX (hbox69), display_redraw, FALSE, FALSE, 0);
+
+  display_redraw_rate_adj = gtk_adjustment_new (4, 0.1, 100, 0.1, 1, 1);
+  display_redraw_rate = gtk_spin_button_new (GTK_ADJUSTMENT (display_redraw_rate_adj), 1, 1);
+  gtk_widget_ref (display_redraw_rate);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "display_redraw_rate", display_redraw_rate,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (display_redraw_rate);
+  gtk_box_pack_start (GTK_BOX (hbox69), display_redraw_rate, FALSE, TRUE, 0);
+  gtk_widget_set_usize (display_redraw_rate, 100, -2);
+
+  label155 = gtk_label_new (_("Hz"));
+  gtk_widget_ref (label155);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "label155", label155,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label155);
+  gtk_box_pack_start (GTK_BOX (hbox69), label155, FALSE, TRUE, 0);
+  gtk_misc_set_padding (GTK_MISC (label155), 5, 0);
 
   label144 = gtk_label_new (_("Display"));
   gtk_widget_ref (label144);
@@ -2794,6 +2830,12 @@ create_main_window (void)
                       NULL);
   gtk_signal_connect (GTK_OBJECT (prefs_display_keep_ratio), "toggled",
                       GTK_SIGNAL_FUNC (on_prefs_display_keep_ratio_toggled),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (display_redraw), "toggled",
+                      GTK_SIGNAL_FUNC (on_display_redraw_toggled),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (display_redraw_rate), "changed",
+                      GTK_SIGNAL_FUNC (on_display_redraw_rate_changed),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (prefs_save_filename), "changed",
                       GTK_SIGNAL_FUNC (on_prefs_save_filename_changed),

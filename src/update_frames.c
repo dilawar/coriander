@@ -39,6 +39,10 @@ UpdatePrefsGeneralFrame(void)
 void
 UpdatePrefsDisplayFrame(void)
 {
+  gtk_widget_set_sensitive(lookup_widget(main_window,"display_redraw_rate"),
+			   preferences.display_redraw==DISPLAY_REDRAW_ON);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"label155"),
+			   preferences.display_redraw==DISPLAY_REDRAW_ON);
 }
 
 void

@@ -234,6 +234,11 @@ BuildPrefsDisplayFrame(void)
   gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(main_window,"prefs_display_period"), preferences.display_period);
 
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window,"prefs_display_keep_ratio")), preferences.display_keep_ratio);
+
+  // display redraw
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window,"display_redraw")), preferences.display_redraw==DISPLAY_REDRAW_ON);
+
+  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(main_window,"display_redraw_rate"), preferences.display_redraw_rate);
 }
 
 void

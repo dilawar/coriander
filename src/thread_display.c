@@ -178,7 +178,9 @@ DisplayThread(void* arg)
 	  info->frames++;
 	  }
 	  else { //
-	    ConditionalTimeoutRedraw(display_service);
+	    if (preferences.display_redraw==DISPLAY_REDRAW_ON) {
+	      ConditionalTimeoutRedraw(display_service);
+	    }
 	    skip_counter++;
 	  }
 	  // FPS display:
@@ -188,7 +190,9 @@ DisplayThread(void* arg)
 	pthread_mutex_unlock(&display_service->mutex_data);
       }
       else { //
-	ConditionalTimeoutRedraw(display_service);
+	if (preferences.display_redraw==DISPLAY_REDRAW_ON) {
+	  ConditionalTimeoutRedraw(display_service);
+	}
 	pthread_mutex_unlock(&display_service->mutex_data);
       }
     }
@@ -211,9 +215,10 @@ ConditionalTimeoutRedraw(chain_t* service)
   if (service->current_buffer->width!=-1) {
     info->redraw_current_time=times(&info->redraw_tms_buf);
     interval=fabs((float)(info->redraw_current_time-info->redraw_prev_time)/sysconf(_SC_CLK_TCK));
-    if (interval>.25) { // redraw a minimal 4 times per second
+    if (interval>(1.0/preferences.display_redraw_rate)) { // redraw a minimal 4 times per second
 #ifdef HAVE_SDLLIB
       if (SDL_LockYUVOverlay(info->SDL_overlay) == 0) {
+	convert_to_yuv_for_SDL(service->current_buffer, info->SDL_overlay->pixels[0]);
 	SDLDisplayArea(service);
 	SDL_UnlockYUVOverlay(info->SDL_overlay);
 	SDL_DisplayYUVOverlay(info->SDL_overlay, &info->SDL_videoRect);

@@ -35,6 +35,12 @@
 #include "watch_thread.h"
 #include "preferences.h"
 
+typedef enum
+{
+  DISPLAY_REDRAW_OFF,
+  DISPLAY_REDRAW_ON
+} display_redraw_t;
+
 typedef struct
 {
   long int                period;

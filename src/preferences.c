@@ -34,6 +34,8 @@ LoadConfigFile(void)
   preferences.auto_update_frequency = gnome_config_get_float("coriander/global/auto_update_frequency=2.0");
   preferences.display_keep_ratio = gnome_config_get_int("coriander/display/keep_ratio=0");
   preferences.display_period = gnome_config_get_int("coriander/display/period=1");
+  preferences.display_redraw = gnome_config_get_int("coriander/display/redraw=1");
+  preferences.display_redraw_rate = gnome_config_get_float("coriander/display/redraw_rate=4.0");
   preferences.receive_method = gnome_config_get_int("coriander/receive/method=0");
   preferences.dma_buffer_size = gnome_config_get_int("coriander/receive/dma_buffer_size=10");
   preferences.video1394_device = gnome_config_get_string("coriander/receive/video1394_device=/dev/video1394/0");

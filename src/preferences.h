@@ -30,6 +30,8 @@ typedef struct _PrefsInfo
   float auto_update_frequency;
   int display_keep_ratio;
   int display_period;
+  int display_redraw;
+  float display_redraw_rate;
   int receive_method;
   char *video1394_device;
   int video1394_dropframes;

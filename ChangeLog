@@ -2,6 +2,11 @@ Coriander, (c) 2000-2003 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 1.00
 	
+   June 21, 2003, by Damien Douxchamps
+   - added a buffer copy when forcing an image redraw so that is keeps
+     working on display resize.
+   - added controls for the forced display redraw
+	
    June 19, 2003, by Damien Douxchamps
    - added a minimal display redraw rate of 4Hz. This avoids display
      'freeze' or blanking when the window is moved or overlapped while

@@ -1274,3 +1274,29 @@ on_dma_buffer_size_changed             (GtkEditable     *editable,
   //UpdatePrefsReceiveFrame();
 }
 
+
+void
+on_display_redraw_toggled              (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  if (togglebutton->active)
+    preferences.display_redraw=DISPLAY_REDRAW_ON;
+  else
+    preferences.display_redraw=DISPLAY_REDRAW_OFF;
+    
+  gnome_config_set_int("coriander/display/redraw",preferences.display_redraw);
+  gnome_config_sync();
+  UpdatePrefsDisplayFrame();
+}
+
+
+void
+on_display_redraw_rate_changed         (GtkEditable     *editable,
+                                        gpointer         user_data)
+{
+  preferences.display_redraw_rate=gtk_spin_button_get_value_as_float(GTK_SPIN_BUTTON(lookup_widget(main_window,"display_redraw_rate")));
+  gnome_config_set_float("coriander/display/redraw_rate",preferences.display_redraw_rate);
+  gnome_config_sync();
+  UpdatePrefsDisplayFrame();
+}
+
