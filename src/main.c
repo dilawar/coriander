@@ -83,21 +83,18 @@ main (int argc, char *argv[])
   gnome_init ("coriander", VERSION, argc, argv);
 
   businfo=(BusInfo_t*)malloc(sizeof(BusInfo_t));
-  //fprintf(stderr,"0x%x\n",businfo);
   businfo->handles=NULL;
   businfo->port_camera_num=NULL;
   businfo->camera_nodes=NULL;
   businfo->card_found=0;
 
   GetCameraNodes(businfo);
-  //fprintf(stderr,"Got camera nodes\n");
 
   // it seems that freeing some vars before a return() or an exit() prevent the program from exiting.
   // this only happens on some platforms, but I cleared the free() anyway.
   if (businfo->card_found==0) {
     gtk_widget_show(create_no_handle_window());
     gtk_main();
-    //fprintf(stderr,"0x%x\n",businfo);
     free(businfo);
     return(1);
   }
@@ -111,7 +108,6 @@ main (int argc, char *argv[])
       free(businfo->camera_nodes);
       free(businfo->port_camera_num);
       free(businfo->handles);
-      //fprintf(stderr,"0x%x\n",businfo);
       free(businfo);
       
       return(1);
@@ -123,27 +119,22 @@ main (int argc, char *argv[])
   GetCamerasInfo(businfo);
 
   raw1394_set_bus_reset_handler(businfo->handles[0], bus_reset_handler);
-  //fprintf(stderr,"Bus Reset set\n");
   GrabSelfIds(businfo->handles, businfo->port_num);
-  //fprintf(stderr,"Got selfid's\n");
   silent_ui_update=0;
   SetChannels();
   // current camera is the first camera:
   SetCurrentCamera(cameras->camera_info.euid_64);
-  //fprintf(stderr,"Set current camera\n");
   
-  //fprintf(stderr,"Creating prefs window\n");
   preferences_window= create_preferences_window();
-  //fprintf(stderr,"Creating main window\n");
   main_window = create_main_window();
+  gtk_notebook_set_homogeneous_tabs(GTK_NOTEBOOK(lookup_widget(main_window,"notebook2")),TRUE);
+  gtk_notebook_set_homogeneous_tabs(GTK_NOTEBOOK(lookup_widget(main_window,"notebook5")),TRUE);
 
-  //fprintf(stderr,"Building GUI...\n");
   // Setup the GUI in accordance with the camera capabilities
   GetContextStatus();
   BuildAllWindows();
-  //fprintf(stderr,"Windows built\n");
   UpdateAllWindows();
-  //fprintf(stderr,"Windows updated\n");
+
 #ifdef HAVE_SDLLIB
   WatchStartThread(&watchthread_info);
 #endif
