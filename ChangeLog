@@ -7,6 +7,7 @@ Changes in version 0.28
      It is no more required to check format/mode to have color info in
      following threads.
    - big buffer structure cleanup. Hopefuly this now works 100%
+   - moved window menu in the file menu. 
 	
    March 4, 2003, by Damien Douxchamps
    - only restart SDL if display size changes

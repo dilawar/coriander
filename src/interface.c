@@ -19,6 +19,21 @@
 
 static GnomeUIInfo file_menu_uiinfo[] =
 {
+  {
+    GNOME_APP_UI_ITEM, N_("Absolute Settings"),
+    NULL,
+    (gpointer) on_absolute_settings_window_activate, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    GDK_a, (GdkModifierType) GDK_CONTROL_MASK, NULL
+  },
+  {
+    GNOME_APP_UI_ITEM, N_("Format_7 Setup"),
+    NULL,
+    (gpointer) on_format7_window_activate, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    GDK_7, (GdkModifierType) GDK_CONTROL_MASK, NULL
+  },
+  GNOMEUIINFO_SEPARATOR,
   GNOMEUIINFO_MENU_PREFERENCES_ITEM (on_preferences_window_activate, NULL),
   GNOMEUIINFO_SEPARATOR,
   {
@@ -27,25 +42,6 @@ static GnomeUIInfo file_menu_uiinfo[] =
     (gpointer) on_exit_activate, NULL, NULL,
     GNOME_APP_PIXMAP_STOCK, GNOME_STOCK_MENU_EXIT,
     GDK_x, (GdkModifierType) GDK_CONTROL_MASK, NULL
-  },
-  GNOMEUIINFO_END
-};
-
-static GnomeUIInfo window_menu_uiinfo[] =
-{
-  {
-    GNOME_APP_UI_ITEM, N_("Format_7 Setup"),
-    NULL,
-    (gpointer) on_format7_window_activate, NULL, NULL,
-    GNOME_APP_PIXMAP_NONE, NULL,
-    GDK_7, (GdkModifierType) GDK_CONTROL_MASK, NULL
-  },
-  {
-    GNOME_APP_UI_ITEM, N_("Absolute Settings"),
-    NULL,
-    (gpointer) on_absolute_settings_window_activate, NULL, NULL,
-    GNOME_APP_PIXMAP_NONE, NULL,
-    GDK_a, (GdkModifierType) GDK_CONTROL_MASK, NULL
   },
   GNOMEUIINFO_END
 };
@@ -69,13 +65,6 @@ static GnomeUIInfo menubar_uiinfo[] =
     GNOME_APP_UI_SUBTREE, N_("_File"),
     NULL,
     file_menu_uiinfo, NULL, NULL,
-    GNOME_APP_PIXMAP_NONE, NULL,
-    0, (GdkModifierType) 0, NULL
-  },
-  {
-    GNOME_APP_UI_SUBTREE, N_("_Window"),
-    NULL,
-    window_menu_uiinfo, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
     0, (GdkModifierType) 0, NULL
   },
@@ -348,38 +337,38 @@ create_commander_window (void)
                             (GtkDestroyNotify) gtk_widget_unref);
 
   gtk_widget_ref (file_menu_uiinfo[0].widget);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "preferences",
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "absolute_settings_window",
                             file_menu_uiinfo[0].widget,
                             (GtkDestroyNotify) gtk_widget_unref);
 
   gtk_widget_ref (file_menu_uiinfo[1].widget);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "separator1",
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "format7_window",
                             file_menu_uiinfo[1].widget,
                             (GtkDestroyNotify) gtk_widget_unref);
 
   gtk_widget_ref (file_menu_uiinfo[2].widget);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "exit",
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "separator2",
                             file_menu_uiinfo[2].widget,
                             (GtkDestroyNotify) gtk_widget_unref);
 
+  gtk_widget_ref (file_menu_uiinfo[3].widget);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "preferences",
+                            file_menu_uiinfo[3].widget,
+                            (GtkDestroyNotify) gtk_widget_unref);
+
+  gtk_widget_ref (file_menu_uiinfo[4].widget);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "separator1",
+                            file_menu_uiinfo[4].widget,
+                            (GtkDestroyNotify) gtk_widget_unref);
+
+  gtk_widget_ref (file_menu_uiinfo[5].widget);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "exit",
+                            file_menu_uiinfo[5].widget,
+                            (GtkDestroyNotify) gtk_widget_unref);
+
   gtk_widget_ref (menubar_uiinfo[1].widget);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "window",
-                            menubar_uiinfo[1].widget,
-                            (GtkDestroyNotify) gtk_widget_unref);
-
-  gtk_widget_ref (window_menu_uiinfo[0].widget);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "format7_window",
-                            window_menu_uiinfo[0].widget,
-                            (GtkDestroyNotify) gtk_widget_unref);
-
-  gtk_widget_ref (window_menu_uiinfo[1].widget);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "absolute_settings_window",
-                            window_menu_uiinfo[1].widget,
-                            (GtkDestroyNotify) gtk_widget_unref);
-
-  gtk_widget_ref (menubar_uiinfo[2].widget);
   gtk_object_set_data_full (GTK_OBJECT (commander_window), "help",
-                            menubar_uiinfo[2].widget,
+                            menubar_uiinfo[1].widget,
                             (GtkDestroyNotify) gtk_widget_unref);
 
   gtk_widget_ref (help_menu_uiinfo[0].widget);
