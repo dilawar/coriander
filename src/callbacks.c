@@ -322,7 +322,7 @@ on_edit_format7_color_activate             (GtkMenuItem     *menuitem,
   int state[5];
 
   // if the mode is the 'live' mode:
-  if (edit_mode==misc_info->mode)
+  if (format7_info->edit_mode==misc_info->mode)
     IsoFlowCheck(state);
 
   if (dc1394_set_format7_color_coding_id(camera->handle, camera->id, format7_info->edit_mode, (int)user_data)!=DC1394_SUCCESS)
@@ -331,7 +331,7 @@ on_edit_format7_color_activate             (GtkMenuItem     *menuitem,
     format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].color_coding_id=(int)user_data;
 
   // if the mode is the 'live' mode:
-  if (edit_mode==misc_info->mode)
+  if (format7_info->edit_mode==misc_info->mode)
     {
       UpdateOptionFrame();
       UpdateFormat7BppRange();
