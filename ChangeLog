@@ -5,6 +5,7 @@ Changes towards version 1.0
    July 7, 2003, by Damien Douxchamps
    - removed stupid declaration that breaks with gcc2.x
    - updated the ftplib URL (thanks to Matthew Costello)
+   - fixed sensitivity of absolute setting whan feature is set to OFF.
 	
    July 2, 2003, by Damien Douxchamps
    - sync with libdc CVS.
