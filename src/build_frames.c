@@ -225,15 +225,8 @@ BuildPrefsReceiveFrame(void)
   GtkWidget* new_option_menu;
   GtkWidget* new_menu;
   GtkWidget* glade_menuitem;
-  int video_ok=0;
   int k=0;
-  struct stat statstruct;
 
-  if (stat("/dev/video1394",&statstruct)==0) {
-    // the device is there, check RW permissions
-    if ((statstruct.st_mode&&S_IRUSR)&&(statstruct.st_mode&&S_IWUSR))
-      video_ok=1;
-  }
   // BUILD A NEW  OPTION_MENU:
   gtk_widget_destroy(GTK_WIDGET(lookup_widget(main_window,"prefs_receive_method_menu"))); // remove previous menu
   
@@ -260,17 +253,15 @@ BuildPrefsReceiveFrame(void)
   preferences.receive_method2index[RECEIVE_METHOD_RAW1394]=k;
   k++;
 
-  if (video_ok==1) {
-    // 'video1394' menuitem optional addition:
-    glade_menuitem = gtk_menu_item_new_with_label (_("VIDEO1394"));
-    gtk_widget_show (glade_menuitem);
-    gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-    gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-			GTK_SIGNAL_FUNC (on_prefs_receive_method_activate),
-			(int*)RECEIVE_METHOD_VIDEO1394); 
-    preferences.receive_method2index[RECEIVE_METHOD_VIDEO1394]=k;
-    k++;
-  }
+  // 'video1394' menuitem optional addition:
+  glade_menuitem = gtk_menu_item_new_with_label (_("VIDEO1394"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
+		      GTK_SIGNAL_FUNC (on_prefs_receive_method_activate),
+		      (int*)RECEIVE_METHOD_VIDEO1394); 
+  preferences.receive_method2index[RECEIVE_METHOD_VIDEO1394]=k;
+  k++;
   
   gtk_option_menu_set_menu (GTK_OPTION_MENU (new_option_menu), new_menu);
 

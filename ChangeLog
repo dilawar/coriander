@@ -4,6 +4,8 @@ Changes towards version 0.99
 	
    June 3, 2003, by Damien Douxchamps
    - fixed the closing of a non-existant window in the bus-reset handler.
+   - video1394 is always available. If it fails an error message will be
+     displayed anyway.
 	
 Changes in version 0.33
 

@@ -26,7 +26,6 @@
 
 #include <gnome.h>
 #include <libdc1394/dc1394_control.h>
-#include <sys/stat.h>
 #include "support.h"
 #include "preferences.h"
 #include "definitions.h"
