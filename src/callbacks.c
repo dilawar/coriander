@@ -1036,33 +1036,6 @@ on_temp_window_activate                (GtkMenuItem     *menuitem,
 
 
 void
-on_set_all_auto_clicked                (GtkButton       *button,
-                                        gpointer         user_data)
-{
-  // TODO:
-  // for each feature, set to auto if available, else set to OP/auto, else do nothing
-}
-
-
-void
-on_set_all_man_clicked                 (GtkButton       *button,
-                                        gpointer         user_data)
-{
-  // TODO:
-  // for each feature, set to man if available, else do nothing
-}
-
-
-void
-on_lock_setup_toggled                  (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-  // TODO:
-  // pressed: set all to man, then lock all controls
-  // depressed: unlock all available controls
-}
-
-void
 on_load_mem_clicked                    (GtkButton       *button,
                                         gpointer         user_data)
 {
@@ -1120,12 +1093,14 @@ on_iso_start_clicked                   (GtkButton       *button,
   err=dc1394_get_iso_channel_and_speed(camera->handle, camera->id, &channel, &speed); //??
   if (!err) MainError("Could not get ISO channel and speed");
   err=dc1394_start_iso_transmission(camera->handle,camera->id);
-  if (!err) MainError("Could not start ISO transmission");
-
-  misc_info->is_iso_on=DC1394_TRUE;
-  gtk_widget_set_sensitive( GTK_WIDGET(lookup_widget( GTK_WIDGET(button), "capture_start")), TRUE);
-  gtk_widget_set_sensitive( GTK_WIDGET(lookup_widget( GTK_WIDGET(button), "capture_single")), TRUE);
-  
+  if (!err)
+    MainError("Could not start ISO transmission");
+  else
+    {
+      misc_info->is_iso_on=DC1394_TRUE;
+      gtk_widget_set_sensitive( GTK_WIDGET(lookup_widget( GTK_WIDGET(button), "capture_start")), TRUE);
+      gtk_widget_set_sensitive( GTK_WIDGET(lookup_widget( GTK_WIDGET(button), "capture_single")), TRUE);
+    }
   if (pi.is_open && (pi.handle == NULL) && (IsoStartThread(window)>0) )
     gIdleID = gtk_idle_add( porthole_idler, NULL);
 
@@ -1145,12 +1120,14 @@ on_iso_stop_clicked                    (GtkButton       *button,
       IsoStopThread();
     }
   err=dc1394_stop_iso_transmission(camera->handle,camera->id);
-  if (!err) MainError("Could not stop ISO transmission");
-
-  misc_info->is_iso_on=DC1394_FALSE;
-  gtk_widget_set_sensitive( lookup_widget( GTK_WIDGET(button), "capture_start"), FALSE); // added by DDouxchamps
-  gtk_widget_set_sensitive( lookup_widget( GTK_WIDGET(button), "capture_single"), FALSE);//
-
+  if (!err)
+    MainError("Could not stop ISO transmission");
+  else
+    {
+      misc_info->is_iso_on=DC1394_FALSE;
+      gtk_widget_set_sensitive( lookup_widget( GTK_WIDGET(button), "capture_start"), FALSE); // added by DDouxchamps
+      gtk_widget_set_sensitive( lookup_widget( GTK_WIDGET(button), "capture_single"), FALSE);//
+    }
   UpdateTransferStatusFrame();
 }
 
@@ -1168,12 +1145,16 @@ on_iso_restart_clicked                 (GtkButton       *button,
   err=dc1394_get_iso_channel_and_speed(camera->handle, camera->id, &channel, &speed);//??
   if (!err) MainError("Could not get ISO channel and speed");
   err=dc1394_start_iso_transmission(camera->handle,camera->id);
-  if (!err) MainError("Could not start ISO transmission");
-  misc_info->is_iso_on=DC1394_TRUE;
-  if (pi.is_open) IsoStartThread(window);
-  gtk_widget_set_sensitive( lookup_widget( GTK_WIDGET(button), "capture_start"), TRUE);
-  gtk_widget_set_sensitive( lookup_widget( GTK_WIDGET(button), "capture_stop"), TRUE);
-  gtk_widget_set_sensitive( lookup_widget( GTK_WIDGET(button), "capture_single"), TRUE);
+  if (!err)
+    MainError("Could not start ISO transmission");
+  else
+    {
+      misc_info->is_iso_on=DC1394_TRUE;
+      if (pi.is_open) IsoStartThread(window);
+      gtk_widget_set_sensitive( lookup_widget( GTK_WIDGET(button), "capture_start"), TRUE);
+      gtk_widget_set_sensitive( lookup_widget( GTK_WIDGET(button), "capture_stop"), TRUE);
+      gtk_widget_set_sensitive( lookup_widget( GTK_WIDGET(button), "capture_single"), TRUE);
+    }
   UpdateTransferStatusFrame();
 }
 
@@ -1360,7 +1341,7 @@ void
 on_preferences_activate                (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-
+  // FUTURE FEATURE
 }
 
 
@@ -1368,7 +1349,7 @@ void
 on_format6_window_activate             (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-
+  // FUTURE FEATURE
 }
 
 

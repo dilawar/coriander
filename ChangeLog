@@ -1,7 +1,19 @@
 Coriander, (c) 2000-2001 Damien Douxchamps <douxchamps@ieee.org>
+
+Changes towards version 0.18:
+
+    Sept 25, by Damien Douxchamps
+    - I removed some unfinalized things that were not making Coriander look
+      professional
+    - removed the feature locking frame in commander window, as well as the
+      associated 'framework' code. It was let untouched for too long...
+    - same thing for the slave-camera locking feature (commander window)
+    - moved the ISO control into the space left by the feature locking int the
+      commander window. That should make setup easier by avoiding systematic
+      pop-up of the now-large capture window.
 	
 Changes in version 0.17:
-      
+
     Sept 24, by Damien Douxchamps:
     - in an attempt to use radio buttons in the format selection menu, I
       changed the format/mode menu building procedure. Some parts have been
@@ -206,4 +218,5 @@ Changes in version 0.02, Dec. 29, 2000:
 Changes in version 0.01, Dec. 27, 2000:
 
     - first alpha version, still a lot of stuff missing...
+
 	

@@ -86,7 +86,7 @@ BuildCommanderWindow(void)
 {
   BuildPowerFrame();
   BuildTriggerFrame();
-  BuildLockFrame();
+  BuildIsoFrame();
   BuildCameraFrame();
   BuildMemoryFrame();
 
@@ -95,9 +95,7 @@ BuildCommanderWindow(void)
 void
 BuildCaptureWindow(void)
 {
-  BuildIsoFrame();
   BuildCaptureFrame();
-
   BuildRange(capture_window, FEATURE_CAPTURE_SIZE);
   BuildRange(capture_window, FEATURE_CAPTURE_QUALITY);
 

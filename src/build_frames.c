@@ -43,13 +43,6 @@ BuildCameraFrame(void)
 }
 
 void
-BuildLockFrame(void)
-{
-  // nothing to build!
-}
-
-
-void
 BuildTriggerFrame(void)
 {
   GtkAdjustment *adjustment;
@@ -108,10 +101,10 @@ void
 BuildIsoFrame(void)
 {
   // TODO: only if ISO capable
-  gtk_widget_set_sensitive(lookup_widget(capture_window,"iso_frame"),TRUE);
-  gtk_widget_set_sensitive(lookup_widget(capture_window,"iso_start"),TRUE);
-  gtk_widget_set_sensitive(lookup_widget(capture_window,"iso_restart"),TRUE);
-  gtk_widget_set_sensitive(lookup_widget(capture_window,"iso_stop"),TRUE);
+  gtk_widget_set_sensitive(lookup_widget(commander_window,"iso_frame"),TRUE);
+  gtk_widget_set_sensitive(lookup_widget(commander_window,"iso_start"),TRUE);
+  gtk_widget_set_sensitive(lookup_widget(commander_window,"iso_restart"),TRUE);
+  gtk_widget_set_sensitive(lookup_widget(commander_window,"iso_stop"),TRUE);
 
 }
 

@@ -516,18 +516,6 @@ on_temp_window_activate                (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
 void
-on_set_all_auto_clicked                (GtkButton       *button,
-                                        gpointer         user_data);
-
-void
-on_set_all_man_clicked                 (GtkButton       *button,
-                                        gpointer         user_data);
-
-void
-on_lock_setup_toggled                  (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
-
-void
 on_load_mem_clicked                    (GtkButton       *button,
                                         gpointer         user_data);
 

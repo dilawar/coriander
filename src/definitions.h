@@ -74,6 +74,9 @@ typedef struct _UIInfo
 {
   int overlay_power;
   int test_pattern;
+  int all_auto;
+  int all_man;
+  int all_lock;
 } UIInfo;
 
 typedef struct _StatusInfo
