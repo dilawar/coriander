@@ -2,6 +2,10 @@ Coriander, (c) 2000-2002 Damien Douxchamps <douxchamps@ieee.org>
 
 Changes towards version 0.24:
 
+   Mar 5, 2002, by Damien Douxchamps
+   - updated the capture function calls for Format7 compatibility.
+     This is just a quick hack, it will be tested further.
+	
    Mar 4, 2002, by Damien Douxchamps
    - corrected a bug in the timeout loops (added '==DC1394_TRUE')
 	

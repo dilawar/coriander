@@ -29,6 +29,7 @@
 #include "definitions.h"
 #include "tools.h" 
 
+extern Format7Info *format7_info;
 extern dc1394_miscinfo *misc_info;
 extern dc1394_camerainfo *camera;
 extern SelfIdPacket_t *selfid;
@@ -83,38 +84,80 @@ gint IsoStartThread(void)
 	{
 	case RECEIVE_METHOD_VIDEO1394:
 	  info->capture.dma_device_file = preferences.video1394_device;
-	  if (dc1394_dma_setup_capture(camera->handle, camera->id, misc_info->iso_channel, 
-				       misc_info->format, misc_info->mode, maxspeed,
-				       misc_info->framerate, DMA_BUFFERS, &info->capture)
-	      == DC1394_SUCCESS)
-	    {
-	      info->receive_method=RECEIVE_METHOD_VIDEO1394;
-	    }
+	  if (misc_info->format!=FORMAT_SCALABLE_IMAGE_SIZE)
+	    if (dc1394_dma_setup_capture(camera->handle, camera->id, misc_info->iso_channel, 
+					 misc_info->format, misc_info->mode, maxspeed,
+					 misc_info->framerate, DMA_BUFFERS, &info->capture)
+		== DC1394_SUCCESS)
+	      {
+		info->receive_method=RECEIVE_METHOD_VIDEO1394;
+	      }
+	    else
+	      {
+		MainError("Can't use VIDEO1394. Try RAW1394 receive mode.");
+		raw1394_destroy_handle(info->handle);
+		pthread_mutex_unlock(&iso_service->mutex_data);
+		FreeChain(iso_service);
+		return(-1);
+	      }
 	  else
-	    {
-	      MainError("Can't use VIDEO1394. Try RAW1394 receive mode.");
-	      raw1394_destroy_handle(info->handle);
-	      pthread_mutex_unlock(&iso_service->mutex_data);
-	      FreeChain(iso_service);
-	      return(-1);
-	    }
+	    if (dc1394_dma_setup_format7_capture(camera->handle, camera->id, misc_info->iso_channel, 
+						 misc_info->mode, maxspeed, 4096,
+						 format7_info->mode[misc_info->mode].pos_x,
+						 format7_info->mode[misc_info->mode].pos_y,
+						 format7_info->mode[misc_info->mode].size_x,
+						 format7_info->mode[misc_info->mode].size_y, 
+						 DMA_BUFFERS, &info->capture)
+		== DC1394_SUCCESS)
+	      {
+		info->receive_method=RECEIVE_METHOD_VIDEO1394;
+	      }
+	    else
+	      {
+		MainError("Can't use VIDEO1394. Try RAW1394 receive mode.");
+		raw1394_destroy_handle(info->handle);
+		pthread_mutex_unlock(&iso_service->mutex_data);
+		FreeChain(iso_service);
+		return(-1);
+	      }
 	  break;
 	case RECEIVE_METHOD_RAW1394:
-	  if (dc1394_setup_capture(camera->handle, camera->id, misc_info->iso_channel, 
-				    misc_info->format, misc_info->mode, maxspeed,
-				    misc_info->framerate, &info->capture)
-	      == DC1394_SUCCESS)
-	    {
-	      info->receive_method=RECEIVE_METHOD_RAW1394;
-	    }
+	  if (misc_info->format!=FORMAT_SCALABLE_IMAGE_SIZE)
+	    if (dc1394_setup_capture(camera->handle, camera->id, misc_info->iso_channel, 
+				     misc_info->format, misc_info->mode, maxspeed,
+				     misc_info->framerate, &info->capture)
+		== DC1394_SUCCESS)
+	      {
+		info->receive_method=RECEIVE_METHOD_RAW1394;
+	      }
+	    else
+	      {
+		MainError("Can't use RAW1394. Try VIDEO1394 receive mode.");
+		raw1394_destroy_handle(info->handle);
+		pthread_mutex_unlock(&iso_service->mutex_data);
+		FreeChain(iso_service);
+		return(-1);
+	      }
 	  else
-	    {
-	      MainError("Can't use RAW1394. Try VIDEO1394 receive mode.");
-	      raw1394_destroy_handle(info->handle);
-	      pthread_mutex_unlock(&iso_service->mutex_data);
-	      FreeChain(iso_service);
-	      return(-1);
-	    }
+	    if (dc1394_setup_format7_capture(camera->handle, camera->id, misc_info->iso_channel, 
+					     misc_info->mode, maxspeed, 4096, 
+					     format7_info->mode[misc_info->mode].pos_x,
+					     format7_info->mode[misc_info->mode].pos_y,
+					     format7_info->mode[misc_info->mode].size_x,
+					     format7_info->mode[misc_info->mode].size_y,
+					     &info->capture)
+		== DC1394_SUCCESS)
+	      {
+		info->receive_method=RECEIVE_METHOD_RAW1394;
+	      }
+	    else
+	      {
+		MainError("Can't use RAW1394. Try VIDEO1394 receive mode.");
+		raw1394_destroy_handle(info->handle);
+		pthread_mutex_unlock(&iso_service->mutex_data);
+		FreeChain(iso_service);
+		return(-1);
+	      }
 	  break;
 	}
       //fprintf(stderr," 1394 setup OK\n");
