@@ -106,7 +106,6 @@ AC_DEFUN([AC_CHECK_SDLLIB],[
 	fi
 ])
 
-
 AC_DEFUN([AC_CHECK_MMX],[
 	AC_MSG_CHECKING(for MMX support)
  	mmx=no
