@@ -33,12 +33,8 @@
 #include <libdc1394/dc1394_control.h>
 
 extern GtkWidget *porthole_window;
-extern GtkWidget *color_window;
-extern GtkWidget *aperture_window;
-extern GtkWidget *capture_window;
 extern GtkWidget *preferences_window;
-extern GtkWidget *temperature_window;
-extern GtkWidget *status_window;
+extern GtkWidget *commander_window;
 extern UIInfo *uiinfo;
 
 void
@@ -59,12 +55,12 @@ BuildFormat7Window(void)
 void
 BuildColorWindow(void)
 {
-  BuildRange(color_window, FEATURE_BRIGHTNESS);
-  BuildRange(color_window, FEATURE_GAMMA);
-  BuildRange(color_window, FEATURE_SATURATION);
-  BuildRange(color_window, FEATURE_HUE);
-  BuildRange(color_window, FEATURE_WHITE_BALANCE);
-  BuildRange(color_window, FEATURE_SHARPNESS);
+  BuildRange(commander_window, FEATURE_BRIGHTNESS);
+  BuildRange(commander_window, FEATURE_GAMMA);
+  BuildRange(commander_window, FEATURE_SATURATION);
+  BuildRange(commander_window, FEATURE_HUE);
+  BuildRange(commander_window, FEATURE_WHITE_BALANCE);
+  BuildRange(commander_window, FEATURE_SHARPNESS);
 }
 
 void
@@ -79,11 +75,11 @@ BuildPortholeWindow(void)
 void
 BuildApertureWindow(void)
 {
-  BuildRange(aperture_window, FEATURE_EXPOSURE);
-  BuildRange(aperture_window, FEATURE_IRIS);
-  BuildRange(aperture_window, FEATURE_SHUTTER);
-  BuildRange(aperture_window, FEATURE_GAIN);
-  BuildRange(aperture_window, FEATURE_OPTICAL_FILTER);
+  BuildRange(commander_window, FEATURE_EXPOSURE);
+  BuildRange(commander_window, FEATURE_IRIS);
+  BuildRange(commander_window, FEATURE_SHUTTER);
+  BuildRange(commander_window, FEATURE_GAIN);
+  BuildRange(commander_window, FEATURE_OPTICAL_FILTER);
 }
 
 void
@@ -99,14 +95,14 @@ BuildCommanderWindow(void)
 void
 BuildCaptureWindow(void)
 {
-  BuildRange(capture_window, FEATURE_CAPTURE_SIZE);
-  BuildRange(capture_window, FEATURE_CAPTURE_QUALITY);
+  BuildRange(commander_window, FEATURE_CAPTURE_SIZE);
+  BuildRange(commander_window, FEATURE_CAPTURE_QUALITY);
 }
 
 void
 BuildTemperatureWindow(void)
 {
-  BuildRange(temperature_window, FEATURE_TEMPERATURE);
+  BuildRange(commander_window, FEATURE_TEMPERATURE);
 }
 
 void
