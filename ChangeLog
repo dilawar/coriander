@@ -2,6 +2,9 @@ Coriander, (c) 2000-2002 Damien Douxchamps <douxchamps@ieee.org>
 
 Changes towards version 0.26
 
+   September 3, 2002, by Damien Douxchamps
+   - Stereo image decoding added (16bit->8+8bit)
+	
    August 26, 2002, by Damien Douxchamps
    - typo in Bayer menu corrected
    - small bayer code beautification

@@ -131,6 +131,7 @@ create_commander_window (void)
   GtkWidget *bayer_menu_menu;
   GtkWidget *pattern_menu;
   GtkWidget *pattern_menu_menu;
+  GtkWidget *stereo_button;
   GtkWidget *format_frame;
   GtkWidget *table60;
   GtkWidget *format_select;
@@ -772,6 +773,16 @@ create_commander_window (void)
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (pattern_menu_menu), glade_menuitem);
   gtk_option_menu_set_menu (GTK_OPTION_MENU (pattern_menu), pattern_menu_menu);
+
+  stereo_button = gtk_toggle_button_new_with_label (_("Stereo Decoding"));
+  gtk_widget_ref (stereo_button);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "stereo_button", stereo_button,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (stereo_button);
+  gtk_table_attach (GTK_TABLE (table61), stereo_button, 0, 2, 3, 4,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (stereo_button), 2);
 
   format_frame = gtk_frame_new (_("Format"));
   gtk_widget_ref (format_frame);
@@ -2307,6 +2318,9 @@ create_commander_window (void)
                       NULL);
   gtk_signal_connect (GTK_OBJECT (test_pattern), "toggled",
                       GTK_SIGNAL_FUNC (on_test_pattern_toggled),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (stereo_button), "toggled",
+                      GTK_SIGNAL_FUNC (on_stereo_button_toggled),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (service_iso), "toggled",
                       GTK_SIGNAL_FUNC (on_service_iso_toggled),

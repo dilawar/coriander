@@ -408,3 +408,7 @@ on_bayer_menu_activate           (GtkMenuItem     *menuitem,
 void
 on_bayer_pattern_menu_activate           (GtkMenuItem     *menuitem,
 					  gpointer         user_data);
+
+void
+on_stereo_button_toggled               (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);

@@ -100,6 +100,7 @@ typedef struct _UIInfo
   int all_lock;
   int bayer;
   int bayer_pattern;
+  int stereo;
 } UIInfo;
 
 typedef struct _StatusInfo

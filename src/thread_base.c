@@ -156,6 +156,7 @@ CommonChainSetup(chain_t* chain, service_t req_service, unsigned int camera)
       chain->mode=misc_info->mode;
       chain->bayer=uiinfo->bayer;
       chain->bayer_pattern=uiinfo->bayer_pattern;
+      chain->stereo_decoding=uiinfo->stereo;
       chain->format=misc_info->format;
       if (misc_info->format==FORMAT_SCALABLE_IMAGE_SIZE)
 	chain->format7_color_mode=format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].color_coding_id;
@@ -170,6 +171,8 @@ CommonChainSetup(chain_t* chain, service_t req_service, unsigned int camera)
 	  chain->height/=2;
 	  buffer_size/=4;
 	}
+      if (uiinfo->stereo==STEREO_DECODING)
+	chain->height*=2;
 
     }
   else
@@ -191,6 +194,7 @@ CommonChainSetup(chain_t* chain, service_t req_service, unsigned int camera)
 	  buffer_size=chain->bytes_per_frame;
 	  chain->bayer=chain->prev_chain->bayer;
 	  chain->bayer_pattern=chain->prev_chain->bayer_pattern;
+	  chain->stereo_decoding=chain->prev_chain->stereo_decoding;
 	  chain->format7_color_mode=chain->prev_chain->format7_color_mode;
 	  //fprintf(stderr,"color coding (slave): %d\n",chain->format7_color_mode);
 	}
@@ -200,11 +204,13 @@ CommonChainSetup(chain_t* chain, service_t req_service, unsigned int camera)
     {
       chain->current_buffer=(unsigned char*)malloc(buffer_size*sizeof(unsigned char));
       chain->next_buffer=(unsigned char*)malloc(buffer_size*sizeof(unsigned char));
+      //fprintf(stderr,"base size: %ld\n",buffer_size);
     }
-  else // we must allocate a much larger buffer: sx*sy*3 (RGB...)
+  else // we must allocate a much larger buffer: sx*sy*3 (RGB)
     {
       chain->current_buffer=(unsigned char*)malloc(chain->width*chain->height*3*sizeof(unsigned char));
       chain->next_buffer=(unsigned char*)malloc(chain->width*chain->height*3*sizeof(unsigned char));
+      //fprintf(stderr,"base size: %ld\n",chain->width*chain->height*3);
     }
   if ((chain->current_buffer==NULL)||(chain->current_buffer==NULL))
     fprintf(stderr,"Empty buffers allocated!\n");

@@ -35,6 +35,12 @@ typedef enum
 
 typedef enum
 {
+  NO_STEREO_DECODING,
+  STEREO_DECODING
+} stereo_decoding_t;
+
+typedef enum
+{
   BAYER_PATTERN_BGGR,
   BAYER_PATTERN_GRBG,
   BAYER_PATTERN_RGGB,

@@ -1254,3 +1254,14 @@ on_bayer_pattern_menu_activate           (GtkMenuItem     *menuitem,
   
   uiinfo->bayer_pattern=tmp;
 }
+
+void
+on_stereo_button_toggled               (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  if (togglebutton->active>0)
+    uiinfo->stereo=STEREO_DECODING;
+  else
+    uiinfo->stereo=NO_STEREO_DECODING;
+}
+

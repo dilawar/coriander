@@ -124,7 +124,7 @@ AC_DEFUN([AC_CHECK_SDLLIB],[
 	AC_SUBST(SDLLIB_CFLAGS)
 	AC_SUBST(SDLLIB_LIBS)
 	AC_CHECK_PROG(have_sdl_config, sdl-config, "found", "not found")
-	if test "x$have_sdl_config" = "xfound"; then
+	if test x$have_sdl_config = xfound; then
 	  SDLLIB_LIBS=`sdl-config --libs`
 	  SDLLIB_CFLAGS=`sdl-config --cflags`
 	  AC_DEFINE(HAVE_SDLLIB)

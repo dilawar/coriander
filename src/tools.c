@@ -575,4 +575,3 @@ GetRGBPix(int px, int py, chain_t *service, int* R, int* G, int* B)
   YUV2RGB(y,u,v,*R,*G,*B);
   fprintf(stderr,"YUV: %d %d %d RGB: %d %d %d\n",y,u,v,*R,*G,*B);
 }
-

@@ -44,7 +44,9 @@ extern Format7Info *format7_info;
 extern dc1394_miscinfo *misc_info;
 extern int current_camera;
 extern dc1394_camerainfo *camera;
+#ifdef HAVE_SDLLIB
 extern watchthread_info_t watchthread_info;
+#endif
 
 gint
 DisplayStartThread()
