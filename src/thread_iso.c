@@ -83,11 +83,10 @@ gint IsoStartThread(void)
       switch(preferences.receive_method)
 	{
 	case RECEIVE_METHOD_VIDEO1394:
-	  info->capture.dma_device_file = preferences.video1394_device;
 	  if (misc_info->format!=FORMAT_SCALABLE_IMAGE_SIZE)
 	    if (dc1394_dma_setup_capture(camera->handle, camera->id, misc_info->iso_channel, 
 					 misc_info->format, misc_info->mode, maxspeed,
-					 misc_info->framerate, DMA_BUFFERS, &info->capture)
+					 misc_info->framerate, DMA_BUFFERS, preferences.video1394_device, &info->capture)
 		== DC1394_SUCCESS)
 	      {
 		info->receive_method=RECEIVE_METHOD_VIDEO1394;
