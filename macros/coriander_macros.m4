@@ -21,11 +21,11 @@ AC_DEFUN([AC_CHECK_LIBDC],[
  	AC_MSG_RESULT($libdc1394)
  	if test x$libdc1394 = xno; then
           AC_ERROR(
-*************************************************************************
-**      libdc1394 is not installed.                                    **
-**      Source tarballs and CVS available on the SourceForge website:  **
-**      http://www.sf.net/projects/libdc1394                           **
-*************************************************************************)
+**************************************************************************
+**   libdc1394 is not installed.                                        **
+**   Please install libdc1394 version 0.9.1 or later.                   **
+**   Source tarball and CVS at:  http://www.sf.net/projects/libdc1394   **
+**************************************************************************)
  	fi
 ])
 
@@ -61,12 +61,11 @@ AC_DEFUN([AC_CHECK_LIBDC_VERSION],[
            LIBDC_CFLAGS=""
 	else
           AC_ERROR(
-*************************************************************************
-**      libdc1394 is too old.                                          **
-**      Please update to CVS.                                          **
-**      Source tarballs and CVS available on the SourceForge website:  **
-**      http://www.sf.net/projects/libdc1394	    		       **
-*************************************************************************)
+**************************************************************************
+**   libdc1394 is too old.                                              **
+**   Please update to at least version 0.9.1                            **
+**   Source tarball and CVS at:  http://www.sf.net/projects/libdc1394   **
+**************************************************************************)
  	fi
 ])
 
@@ -84,11 +83,11 @@ AC_DEFUN([AC_CHECK_LIBRAW],[
  	AC_MSG_RESULT($libraw1394)
  	if test x$libraw1394 = xno; then
           AC_ERROR(
-***************************************************************************
-**      libraw1394 is not installed.                                     **
-**      Please download version 0.9.0 or later.                          **
-**      Source tarballs and CVS at http://www.sf.net/projects/libraw1394 **
-***************************************************************************)
+**************************************************************************
+**   libraw1394 is not installed.                                       **
+**   Please install version 0.9.0 or later.                             **
+**   Source tarball and CVS at:  http://www.sf.net/projects/libraw1394  **
+**************************************************************************)
 	fi
 ])
 
@@ -112,11 +111,11 @@ AC_DEFUN([AC_CHECK_LIBRAW_VERSION],[
            LIBRAW_CFLAGS=""
 	else
           AC_ERROR(
-****************************************************************************
-**      libraw1394 is too old.					          **
-**      Please download version 0.9.0 or later.                           **
-**      Source tarballs and CVS at http://www.sf.net/projects/libraw1394  **
-****************************************************************************)
+**************************************************************************
+**   libraw1394 is too old.				     	        **
+**   Please update to at least version 0.9.0                            **
+**   Source tarball and CVS at:  http://www.sf.net/projects/libraw1394  **
+**************************************************************************)
 	fi
 ])
 
@@ -129,11 +128,11 @@ AC_DEFUN([AC_CHECK_FTPLIB],[
           FTPLIB_LIBS="-lftp"
           FTPLIB_CFLAGS="",
           AC_MSG_RESULT(
-****************************************************************************
-**      ftplib is required for FTP support.                               **
-**      Source tarball available at http://www.eclipse.net/~pfau/ftplib   **
-**      FTP SERVICE DISABLED                                              **
-****************************************************************************))
+**************************************************************************
+**   ftplib is required for FTP support.                                **
+**   Source tarball available at:  http://www.eclipse.net/~pfau/ftplib  **
+**   FTP SERVICE DISABLED                                               **
+**************************************************************************))
 ])
 
 AC_DEFUN([AC_CHECK_SDLLIB],[
@@ -146,11 +145,11 @@ AC_DEFUN([AC_CHECK_SDLLIB],[
 	  AC_DEFINE(HAVE_SDLLIB)
 	else
 	  AC_MSG_RESULT(
-*****************************************************************************
-**      SDL required for display support.                                  **
-**      SDL can be downloaded in various formats at http://www.libsdl.org  **
-**      DISPLAY SERVICE DISABLED                                           **
-*****************************************************************************)
+**************************************************************************
+**   SDL required for display support.                                  **
+**   SDL can be downloaded in various formats at http://www.libsdl.org  **
+**   DISPLAY SERVICE DISABLED                                           **
+**************************************************************************)
 	fi
 ])
 
@@ -182,11 +181,12 @@ AC_DEFUN([AC_CHECK_REALLIB],[
   	   REALLIB_CFLAGS="-I/usr/local/include/realproducersdk -D_REENTRANT -D_LINUX -D_LITTLE_ENDIAN -D_UNIX"
 	else
 	  AC_MSG_RESULT(
-**********************************************************************************
-**      RealNetworks 'RealProducerSDK' and 'RealServer' required for streaming  **
-**	support. Please have a look at the README.REAL file if you want to      **
-**      enable streaming. REAL SERVICE DISABLED                                 **
-**********************************************************************************) 
+**************************************************************************
+**   RealNetworks 'RealProducerSDK' and 'RealServer' required for       **
+**   streaming support. Please have a look at the README.REAL file if   **
+**   you want to enable streaming.                                      **
+**   REAL SERVICE DISABLED                                              **
+**************************************************************************)
  	fi
 
 ])
