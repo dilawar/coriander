@@ -355,6 +355,13 @@ static GnomeUIInfo format_menu_uiinfo[] =
 
 static GnomeUIInfo help_menu_uiinfo[] =
 {
+  {
+    GNOME_APP_UI_ITEM, N_("_Key bindings"),
+    NULL,
+    (gpointer) on_key_bindings_activate, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    0, (GdkModifierType) 0, NULL
+  },
   GNOMEUIINFO_MENU_ABOUT_ITEM (on_about_activate, NULL),
   GNOMEUIINFO_END
 };
@@ -580,13 +587,9 @@ create_commander_window (void)
   GtkWidget *label83;
   GtkWidget *main_status;
 
-  /* BEGIN additions by Dan Dennedy via interface.patch */
-  GtkAccelGroup *accel_group;
-  /* END additions */
-
   commander_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_object_set_data (GTK_OBJECT (commander_window), "commander_window", commander_window);
-  gtk_window_set_title (GTK_WINDOW (commander_window), _("Coriander 0.22"));
+  gtk_window_set_title (GTK_WINDOW (commander_window), _("Coriander 0.24"));
   gtk_window_set_policy (GTK_WINDOW (commander_window), FALSE, TRUE, TRUE);
 
   vbox26 = gtk_vbox_new (FALSE, 0);
@@ -602,15 +605,8 @@ create_commander_window (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (menubar);
   gtk_box_pack_start (GTK_BOX (vbox26), menubar, FALSE, FALSE, 0);
-  
-  /* BEGIN additions by Dan Dennedy via interface.patch */
-  accel_group = gtk_accel_group_new();
-  gtk_accel_group_attach(accel_group, GTK_OBJECT(commander_window));
-  /* END additions */
-  
-  /* modified by Dan Dennedy for menu accellerators */
   gnome_app_fill_menu (GTK_MENU_SHELL (menubar), menubar_uiinfo,
-                       accel_group, TRUE, 0);
+                       NULL, FALSE, 0);
 
   gtk_widget_ref (menubar_uiinfo[0].widget);
   gtk_object_set_data_full (GTK_OBJECT (commander_window), "file",
@@ -883,8 +879,13 @@ create_commander_window (void)
                             (GtkDestroyNotify) gtk_widget_unref);
 
   gtk_widget_ref (help_menu_uiinfo[0].widget);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "about",
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "key_bindings1",
                             help_menu_uiinfo[0].widget,
+                            (GtkDestroyNotify) gtk_widget_unref);
+
+  gtk_widget_ref (help_menu_uiinfo[1].widget);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "about",
+                            help_menu_uiinfo[1].widget,
                             (GtkDestroyNotify) gtk_widget_unref);
 
   hbox53 = gtk_hbox_new (FALSE, 0);
@@ -4391,5 +4392,66 @@ create_preferences_window (void)
                       NULL);
 
   return preferences_window;
+}
+
+GtkWidget*
+create_help_window (void)
+{
+  GtkWidget *help_window;
+  GtkWidget *table47;
+  GtkWidget *key_bindings;
+  GtkWidget *label91;
+  GtkWidget *label92;
+
+  help_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  gtk_object_set_data (GTK_OBJECT (help_window), "help_window", help_window);
+  gtk_window_set_title (GTK_WINDOW (help_window), _("Help"));
+  gtk_window_set_policy (GTK_WINDOW (help_window), FALSE, FALSE, TRUE);
+
+  table47 = gtk_table_new (1, 1, FALSE);
+  gtk_widget_ref (table47);
+  gtk_object_set_data_full (GTK_OBJECT (help_window), "table47", table47,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (table47);
+  gtk_container_add (GTK_CONTAINER (help_window), table47);
+  gtk_container_set_border_width (GTK_CONTAINER (table47), 10);
+
+  key_bindings = gtk_clist_new (2);
+  gtk_widget_ref (key_bindings);
+  gtk_object_set_data_full (GTK_OBJECT (help_window), "key_bindings", key_bindings,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (key_bindings);
+  gtk_table_attach (GTK_TABLE (table47), key_bindings, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+  gtk_clist_set_column_width (GTK_CLIST (key_bindings), 0, 80);
+  gtk_clist_set_column_width (GTK_CLIST (key_bindings), 1, 80);
+  gtk_clist_column_titles_show (GTK_CLIST (key_bindings));
+
+  label91 = gtk_label_new (_("Key"));
+  gtk_widget_ref (label91);
+  gtk_object_set_data_full (GTK_OBJECT (help_window), "label91", label91,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label91);
+  gtk_clist_set_column_widget (GTK_CLIST (key_bindings), 0, label91);
+
+  label92 = gtk_label_new (_("Function"));
+  gtk_widget_ref (label92);
+  gtk_object_set_data_full (GTK_OBJECT (help_window), "label92", label92,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label92);
+  gtk_clist_set_column_widget (GTK_CLIST (key_bindings), 1, label92);
+
+  gtk_signal_connect (GTK_OBJECT (help_window), "delete_event",
+                      GTK_SIGNAL_FUNC (gtk_widget_destroy),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (help_window), "destroy_event",
+                      GTK_SIGNAL_FUNC (gtk_widget_destroy),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (help_window), "destroy",
+                      GTK_SIGNAL_FUNC (gtk_widget_destroy),
+                      NULL);
+
+  return help_window;
 }
 

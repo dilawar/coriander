@@ -448,3 +448,7 @@ void
 on_format7_packet_size_changed               (GtkAdjustment    *adj,
 					      gpointer         user_data);
 #endif
+
+void
+on_key_bindings_activate               (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);

@@ -49,4 +49,7 @@ BuildStatusWindow(void);
 void
 BuildAllWindows(void);
 
+void
+BuildHelpWindow(void);
+
 #endif

@@ -10,3 +10,4 @@ GtkWidget* create_no_camera_window (void);
 GtkWidget* create_format6_window (void);
 GtkWidget* create_get_filename_dialog (void);
 GtkWidget* create_preferences_window (void);
+GtkWidget* create_help_window (void);

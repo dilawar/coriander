@@ -41,8 +41,10 @@
 
 GtkWidget *commander_window;
 GtkWidget *about_window;
+GtkWidget *help_window;
 GtkWidget *format7_window;
 GtkWidget *preferences_window;
+
 
 dc1394_camerainfo *camera;
 dc1394_camerainfo *cameras;

@@ -30,7 +30,7 @@
     <handler>on_commander_window_delete_event</handler>
     <last_modification_time>Tue, 26 Dec 2000 12:06:25 GMT</last_modification_time>
   </signal>
-  <title>Coriander 0.22</title>
+  <title>Coriander 0.24</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_NONE</position>
   <modal>False</modal>
@@ -736,6 +736,18 @@
 	<widget>
 	  <class>GtkMenu</class>
 	  <name>help_menu</name>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
+	    <name>key_bindings1</name>
+	    <signal>
+	      <name>activate</name>
+	      <handler>on_key_bindings_activate</handler>
+	      <last_modification_time>Thu, 21 Mar 2002 08:14:07 GMT</last_modification_time>
+	    </signal>
+	    <label>_Key bindings</label>
+	    <right_justify>False</right_justify>
+	  </widget>
 
 	  <widget>
 	    <class>GtkPixmapMenuItem</class>
@@ -6854,6 +6866,95 @@ RealPlayer 6.0 (G2)
 	  <expand>True</expand>
 	  <fill>False</fill>
 	</child>
+      </widget>
+    </widget>
+  </widget>
+</widget>
+
+<widget>
+  <class>GtkWindow</class>
+  <name>help_window</name>
+  <signal>
+    <name>delete_event</name>
+    <handler>gtk_widget_destroy</handler>
+    <last_modification_time>Thu, 21 Mar 2002 08:40:05 GMT</last_modification_time>
+  </signal>
+  <signal>
+    <name>destroy_event</name>
+    <handler>gtk_widget_destroy</handler>
+    <last_modification_time>Thu, 21 Mar 2002 08:40:14 GMT</last_modification_time>
+  </signal>
+  <signal>
+    <name>destroy</name>
+    <handler>gtk_widget_destroy</handler>
+    <last_modification_time>Thu, 21 Mar 2002 08:40:20 GMT</last_modification_time>
+  </signal>
+  <title>Help</title>
+  <type>GTK_WINDOW_TOPLEVEL</type>
+  <position>GTK_WIN_POS_NONE</position>
+  <modal>False</modal>
+  <allow_shrink>False</allow_shrink>
+  <allow_grow>False</allow_grow>
+  <auto_shrink>True</auto_shrink>
+
+  <widget>
+    <class>GtkTable</class>
+    <name>table47</name>
+    <border_width>10</border_width>
+    <rows>1</rows>
+    <columns>1</columns>
+    <homogeneous>False</homogeneous>
+    <row_spacing>0</row_spacing>
+    <column_spacing>0</column_spacing>
+
+    <widget>
+      <class>GtkCList</class>
+      <name>key_bindings</name>
+      <can_focus>True</can_focus>
+      <columns>2</columns>
+      <column_widths>80,80</column_widths>
+      <selection_mode>GTK_SELECTION_SINGLE</selection_mode>
+      <show_titles>True</show_titles>
+      <shadow_type>GTK_SHADOW_IN</shadow_type>
+      <child>
+	<left_attach>0</left_attach>
+	<right_attach>1</right_attach>
+	<top_attach>0</top_attach>
+	<bottom_attach>1</bottom_attach>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+	<xexpand>True</xexpand>
+	<yexpand>True</yexpand>
+	<xshrink>False</xshrink>
+	<yshrink>False</yshrink>
+	<xfill>True</xfill>
+	<yfill>True</yfill>
+      </child>
+
+      <widget>
+	<class>GtkLabel</class>
+	<child_name>CList:title</child_name>
+	<name>label91</name>
+	<label>Key</label>
+	<justify>GTK_JUSTIFY_CENTER</justify>
+	<wrap>False</wrap>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+      </widget>
+
+      <widget>
+	<class>GtkLabel</class>
+	<child_name>CList:title</child_name>
+	<name>label92</name>
+	<label>Function</label>
+	<justify>GTK_JUSTIFY_CENTER</justify>
+	<wrap>False</wrap>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
       </widget>
     </widget>
   </widget>

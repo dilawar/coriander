@@ -1,4 +1,4 @@
-Known bugs for version 0.22:
+Known bugs for version 0.24:
 
 - The REAL service is untested and only runs with some distros. It does not
   work on RH-7.2

@@ -46,6 +46,7 @@
 
 extern GtkWidget *format7_window;
 extern GtkWidget *about_window;
+extern GtkWidget *help_window;
 extern GtkWidget *commander_window;
 extern GtkWidget *preferences_window;
 extern dc1394_camerainfo *camera;
@@ -1279,5 +1280,15 @@ on_prefs_real_audience_dsl512_toggled  (GtkToggleButton *togglebutton,
   else
     preferences.real_audience=(preferences.real_audience & (~REAL_AUDIENCE_512_DSL_CABLE));
   //fprintf(stderr,"audience flags: 0x%x\n",preferences.real_audience);
+}
+
+
+void
+on_key_bindings_activate               (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+  help_window = create_help_window();
+  BuildHelpWindow();
+  gtk_widget_show(help_window);
 }
 

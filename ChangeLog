@@ -1,6 +1,11 @@
 Coriander, (c) 2000-2002 Damien Douxchamps <douxchamps@ieee.org>
 
-Changes towards version 0.24:
+Changes towards version 0.25
+	
+   Mar 21, 2002, by Damien Douxchamps
+   - added a key bindings window in the help menu.
+	
+Changes in version 0.24:
 
    Mar 18, 2002, by Damien Douxchamps
    - corrected a bug in the strings: the program crashed when a

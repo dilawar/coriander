@@ -33,8 +33,11 @@
 #include <libdc1394/dc1394_control.h>
 
 extern GtkWidget *commander_window;
+extern GtkWidget *help_window;
 extern UIInfo *uiinfo;
 extern int camera_num;
+extern const char *help_key_bindings_keys[5];
+extern const char *help_key_bindings_functions[5];
 
 void
 BuildPreferencesWindow(void)
@@ -129,4 +132,28 @@ BuildAllWindows(void)
   BuildTemperatureWindow();
   BuildFormat7Window();
   BuildStatusWindow();
+}
+
+void
+BuildHelpWindow(void)
+{
+  int i;
+  GtkCList* clist;
+  char *text[2];
+  clist=GTK_CLIST(lookup_widget(help_window,"key_bindings"));
+
+  text[0]=(char*)malloc(STRING_SIZE*sizeof(char));
+  text[1]=(char*)malloc(STRING_SIZE*sizeof(char));
+
+  gtk_clist_set_column_justification(clist,0,GTK_JUSTIFY_CENTER);
+  for (i=0;i<5;i++)
+    {
+      strcpy(text[0],help_key_bindings_keys[i]);
+      strcpy(text[1],help_key_bindings_functions[i]);
+      gtk_clist_append(clist,text);
+    }
+  gtk_clist_set_column_auto_resize(clist,0,1);
+  gtk_clist_set_column_auto_resize(clist,1,1);
+  free(text[0]);
+  free(text[1]);
 }
