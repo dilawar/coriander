@@ -57,4 +57,7 @@ UpdatePrefsSaveFrame(void);
 void
 UpdatePrefsFtpFrame(void);
 
+void
+UpdateServicesFrame(void);
+
 #endif
