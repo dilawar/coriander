@@ -144,11 +144,7 @@ BuildCameraMenu(void)
   GtkWidget* camera_id;
   GtkWidget* camera_id_menu;
   GtkWidget* glade_menuitem;
-<<<<<<< build_menus.c
   char tmp[STRING_SIZE];
-=======
-  char tmp[256];
->>>>>>> 1.6
 
   gtk_widget_destroy(GTK_WIDGET (lookup_widget(commander_window,"camera_select"))); // remove previous menu
 

@@ -260,60 +260,21 @@ void SelectCamera(int i)
   uiinfo=&uiinfos[current_camera];
   selfid=&selfids[current_camera];
   image_pipe=image_pipes[current_camera];
-<<<<<<< tools.c
-=======
   //DisplayActiveServices();//////////
->>>>>>> 1.16
 }
 
 void
 SetChannels(void)
 {
-<<<<<<< tools.c
   unsigned int channel, speed, i;
-=======
-  int *forbid;
-  int finished=0, i;
-  unsigned int channel, speed;
 
-  forbid=(int*)malloc(camera_num*sizeof(int));
->>>>>>> 1.16
-  
   for (i=0;i<camera_num;i++)
     {
-<<<<<<< tools.c
       if (dc1394_get_iso_channel_and_speed(cameras[i].handle, cameras[i].id, &channel, &speed)!=DC1394_SUCCESS)
-=======
-      if (dc1394_get_iso_channel_and_speed(cameras[i].handle, cameras[i].id, &forbid[i], &speed)!=DC1394_SUCCESS)
->>>>>>> 1.16
 	MainError("Can't get iso channel and speed");
-<<<<<<< tools.c
       if (dc1394_set_iso_channel_and_speed(cameras[i].handle, cameras[i].id, cameras[i].id, speed)!=DC1394_SUCCESS)
 	MainError("Can't set iso channel and speed");
-=======
->>>>>>> 1.16
     }
-<<<<<<< tools.c
-=======
-
-  channel=0;
-  while (finished!=1)
-    { 
-      finished=1;
-      for (i=0;i<camera_num;i++)
-	if (channel==forbid[i])
-	  {
-	    channel++;
-	    finished=0;
-	  }
-    }
-  free(forbid);
-
-  if(dc1394_set_iso_channel_and_speed(cameras[camera_index].handle, cameras[camera_index].id, channel, speed)!=DC1394_SUCCESS)
-    MainError("Can't set iso channel and speed");
-
-  misc_infos[i].iso_channel=channel;
->>>>>>> 1.16
 }
 
 void MainError(const char *string)
