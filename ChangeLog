@@ -1,11 +1,10 @@
-2004-02-24  Johan Knol  <johan@frija.iduna.nl>
-
-
 Coriander, (c) 2000-2004 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 1.0.0
 
    February 24, 2004, by Johan Knol
+   - src/thread_display.c (SDLDisplayArea): another fix for odd width MONO8
+	when drawing the selection
    - src/conversions.c (y2uyvy): fixed bug #887745
 	
    February 16, 2004, by Damien Douxchamps

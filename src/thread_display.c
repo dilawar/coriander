@@ -419,7 +419,7 @@ convert_to_yuv_for_SDL(buffer_t *buffer, SDL_Overlay *sdloverlay)
 void
 SDLDisplayArea(chain_t *display_service)
 {
-  displaythread_info_t *info;
+  displaythread_info_t *info=(displaythread_info_t*)display_service->data;
   unsigned char *pimage;
   int upper_left[2];
   int lower_right[2];
@@ -427,7 +427,6 @@ SDLDisplayArea(chain_t *display_service)
   int tmp;
   register int i;
   register int j;
-  info=(displaythread_info_t*)display_service->data;
 
   pthread_mutex_lock(&watchthread_info.mutex_area);
   if (watchthread_info.draw==1) {
@@ -435,7 +434,6 @@ SDLDisplayArea(chain_t *display_service)
     upper_left[1]=watchthread_info.pos[1];
     lower_right[0]=watchthread_info.pos[0]+watchthread_info.size[0]-1;
     lower_right[1]=watchthread_info.pos[1]+watchthread_info.size[1]-1;
-    pimage=info->sdloverlay->pixels[0];
     width=display_service->current_buffer->width;
     pthread_mutex_unlock(&watchthread_info.mutex_area);
     
@@ -450,14 +448,15 @@ SDLDisplayArea(chain_t *display_service)
       upper_left[1]=tmp;
     }
 
-    for (i=upper_left[1];i<=lower_right[1];i++)
-      for (j=upper_left[0];j<=lower_right[0];j++)
-	pimage[(i*width+j)*2]=(unsigned char)(255-pimage[(i*width+j)*2]);
-    
-  }
-  else
+    for (i=upper_left[1];i<=lower_right[1];i++) {
+      pimage=info->sdloverlay->pixels[0]+i*info->sdloverlay->pitches[0];
+      for (j=upper_left[0];j<=lower_right[0];j++) {
+	pimage[j*2]=(unsigned char)(255-pimage[j*2]);
+      }
+    }
+  } else {
     pthread_mutex_unlock(&watchthread_info.mutex_area);
-  
+  }
 }
 
 void
