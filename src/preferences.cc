@@ -48,7 +48,6 @@ LoadConfigFile(void)
   int i;
 
   char tmp[1024];
-  const char *camera_name_str =  "coriander/camera_names/";
 
   preferences.op_timeout = gnome_config_get_float("coriander/global/one_push_timeout=10.0");
   preferences.auto_update = gnome_config_get_int("coriander/global/auto_update=1");
@@ -85,7 +84,7 @@ LoadConfigFile(void)
 
   for (i=0;i<camera_num;i++)
     {
-      sprintf(tmp,"%s%llx=Node %d: %s %s",camera_name_str, cameras[i].euid_64,cameras[i].id, cameras[i].vendor, cameras[i].model);
+      sprintf(tmp,"coriander/camera_names/%llx=%s %s",cameras[i].euid_64, cameras[i].vendor, cameras[i].model);
       preferences.camera_names[i] = gnome_config_get_string(tmp);
     }
 }

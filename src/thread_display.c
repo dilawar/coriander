@@ -232,7 +232,6 @@ DisplayStopThread(unsigned int camera)
 int
 sdlInit(chain_t *display_service)
 {
-  char tmp[STRING_SIZE];
   displaythread_info_t *info;
   const SDL_VideoInfo *sdl_videoinfo;
   info=(displaythread_info_t*)display_service->data;
@@ -281,8 +280,7 @@ sdlInit(chain_t *display_service)
   SDL_ShowCursor(1);
   
   // set window title:
-  sprintf(tmp,"Node %d: %s %s",camera->id,camera->vendor,camera->model);
-  SDL_WM_SetCaption(tmp,"");
+  SDL_WM_SetCaption(preferences.camera_names[current_camera],"");
 
   // Create YUV Overlay
   info->SDL_overlay = SDL_CreateYUVOverlay(display_service->width, display_service->height, 

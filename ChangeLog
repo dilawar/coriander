@@ -3,7 +3,11 @@ Coriander, (c) 2000-2002 Damien Douxchamps <douxchamps@ieee.org>
 Changes towards version 0.26
 
    September 4, 2002, by Damien Douxchamps
-   - Set sensitiveness of stereo decoding button
+   - set sensitiveness of stereo decoding button
+   - use custom names for display window title
+   - don't use "node %d" for default camera names as the node number
+     is then memorized as preferences, which in turns leads to the
+     possibility that two camera names will contain the same node id.
 	
    September 3, 2002, by Damien Douxchamps
    - Stereo image decoding added (16bit->8+8bit)
