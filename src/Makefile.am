@@ -2,12 +2,7 @@
 
 # CPPFLAGS = 
 
-INCLUDES = -I$(top_srcdir)/intl \
-	$(GNOME_INCLUDEDIR) \
-	$(SDLLIB_CFLAGS) \
-	$(LIBRAW_CFLAGS) \
-	$(LIBDC_CFLAGS) \
-	-I/usr/include/gnome-xml
+INCLUDES = -I$(top_srcdir)/intl $(GNOME_INCLUDEDIR) $(SDLLIB_CFLAGS) $(LIBRAW_CFLAGS) $(LIBDC_CFLAGS) -I/usr/include/gnome-xml
 
 bin_PROGRAMS = coriander
 
