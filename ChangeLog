@@ -9,6 +9,7 @@ Changes towards version 1.0.2
    - fixed a PVN issue (Jacob Gryn)
    - fixed missing recall of 'use_ram_buffer'
    - types are more explicit in the calculation of buffer_image_bytes (fixes YUV411 issue)
+   - patch from Olaf Hering
 	
    Feb 1, 2005, by Damien Douxchamps
    - fixed save-to-PVN

@@ -22,21 +22,6 @@ dnl Add the languages which your application supports here.
 dnl ALL_LINGUAS=""
 dnl AM_GNU_GETTEXT
 
-dnl Set PACKAGE_LOCALE_DIR in config.h.
-if test "x${prefix}" = "xNONE"; then
-  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${ac_default_prefix}/${DATADIRNAME}/locale", [locales dir])
-else
-  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${prefix}/${DATADIRNAME}/locale", [locales dir])
-fi
-
-dnl Subst PACKAGE_PIXMAPS_DIR.
-if test "x${prefix}" = "xNONE"; then
-  PACKAGE_PIXMAPS_DIR="`gnome-config --datadir`/pixmaps/${PACKAGE}"
-else
-  PACKAGE_PIXMAPS_DIR="${prefix}/${PACKAGE}"
-fi
-AC_SUBST(PACKAGE_PIXMAPS_DIR)
-
 # CUSTOM CHECKS    ###########################################################
 AC_CHECK_LFS
 AC_CHECK_GDK_PIXBUF
@@ -51,6 +36,18 @@ AC_CHECK_LIBDC_VERSION_COMPILE
 AC_CHECK_LIBDC_VERSION_FUNCTION
 AC_CHECK_FTPLIB
 AC_CHECK_SDLLIB
+
+dnl Set PACKAGE_LOCALE_DIR in config.h.
+  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, DATADIR "/locale", [locales dir])
+
+dnl Subst PACKAGE_PIXMAPS_DIR.
+if test "x${prefix}" = "xNONE"; then
+  PACKAGE_PIXMAPS_DIR="`gnome-config --datadir`/pixmaps/${PACKAGE}"
+else
+  PACKAGE_PIXMAPS_DIR="${datadir}/pixmaps/${PACKAGE}"
+fi
+AC_SUBST(PACKAGE_PIXMAPS_DIR)
+
 
 dnl temporarily removed intl/Makefile and po/Makefile.in
 AC_OUTPUT([

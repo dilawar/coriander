@@ -1,8 +1,9 @@
 ## Process this file with automake to produce Makefile.in
 
 # CPPFLAGS = 
-
-INCLUDES = -I$(top_srcdir)/intl $(GNOME_INCLUDEDIR) $(SDLLIB_CFLAGS) $(LIBRAW_CFLAGS) $(LIBDC_CFLAGS) $(GDK_PIXBUF_CFLAGS) $(COR_LFS_CFLAGS) $(PROC_CFLAGS) -I/usr/include/gnome-xml
+AM_CFLAGS = -DDATADIR="$(datadir)"
+CFLAGS    = $(SDLLIB_CFLAGS) $(LIBRAW_CFLAGS) $(LIBDC_CFLAGS) $(GDK_PIXBUF_CFLAGS) $(COR_LFS_CFLAGS) $(PROC_CFLAGS)
+INCLUDES  = -I$(top_srcdir)/intl $(GNOME_INCLUDEDIR) -I/usr/include/gnome-xml
 
 bin_PROGRAMS = coriander
 
