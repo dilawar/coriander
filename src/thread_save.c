@@ -105,6 +105,7 @@ SaveStartThread(void)
       pthread_mutex_unlock(&save_service->mutex_data);
       
     }
+  //fprintf(stderr," SAVE service started\n");
 
   return (1);
 }
@@ -155,8 +156,10 @@ SaveThread(void* arg)
 	{
 	  pthread_mutex_unlock(&info->mutex_cancel_save);
 	  pthread_mutex_lock(&save_service->mutex_data);
+	  //fprintf(stderr,"Rolling buffers\n");
 	  if(RollBuffers(save_service)) // have buffers been rolled?
 	    {
+	      pthread_mutex_unlock(&save_service->mutex_data);
 	      convert_to_rgb(save_service->current_buffer, info->save_buffer,
 			     save_service->mode, save_service->width,
 			     save_service->height, save_service->bytes_per_frame);
@@ -176,7 +179,8 @@ SaveThread(void* arg)
 	      gdk_imlib_save_image(im, filename_out, NULL);
 	      if (im != NULL) gdk_imlib_kill_image(im);
 	    }
-	  pthread_mutex_unlock(&save_service->mutex_data);
+	  else
+	    pthread_mutex_unlock(&save_service->mutex_data);
 	}
     }
 }
@@ -191,6 +195,7 @@ SaveStopThread(void)
 
   if (save_service!=NULL)// if SAVE service running...
     {
+      //fprintf(stderr,"SAVE service found, stopping\n");
       info=(savethread_info*)save_service->data;
       /* Clean cancel handler: */
       pthread_mutex_lock(&info->mutex_cancel_save);
@@ -212,6 +217,7 @@ SaveStopThread(void)
       pthread_mutex_unlock(&save_service->mutex_data);
       FreeChain(save_service);
 
+      //fprintf(stderr," SAVE service stopped\n");
     }
 
   return (1);
