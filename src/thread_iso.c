@@ -51,7 +51,7 @@ gint IsoStartThread(camera_t* cam)
     info->handle = NULL;
     
     // the iso receive handler gets its own raw1394 handle to free the controls
-    if ( (info->handle = dc1394_create_handle(0)) < 0) {
+    if ( (info->handle = dc1394_create_handle(0)) < 0) { // THIS PORT FIXED TO ZERO IS WRONG !!!!!!!!!!!!!!!!!!!!!!!!
       FreeChain(iso_service);
       return(-1);
     }

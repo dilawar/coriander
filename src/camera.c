@@ -27,13 +27,13 @@ GetCameraNodes(BusInfo_t* bi) {
   raw1394handle_t tmp_handle;
   int port;
 
-  tmp_handle=raw1394_new_handle();
+  tmp_handle=dc1394_create_handle(0); // start with port 0
   bi->card_found=0;
   bi->camera_num=0;
 
   if (tmp_handle!=NULL) {
     bi->port_num=raw1394_get_port_info(tmp_handle, NULL, 0);
-    raw1394_destroy_handle(tmp_handle);
+    dc1394_destroy_handle(tmp_handle);
     bi->camera_nodes=(nodeid_t**)malloc(bi->port_num*sizeof(nodeid_t*));
     bi->port_camera_num=(int*)malloc(bi->port_num*sizeof(int));
     bi->handles=(raw1394handle_t *)malloc(bi->port_num*sizeof(raw1394handle_t));
@@ -63,6 +63,7 @@ GetCamerasInfo(BusInfo_t* bi) {
 	camera_ptr=NewCamera();
 	GetCameraData(bi->handles[port], bi->camera_nodes[port][i], camera_ptr);
 	AppendCamera(camera_ptr);
+	//fprintf(stderr,"Got camera info\n");
       }
     }
   }
@@ -70,8 +71,11 @@ GetCamerasInfo(BusInfo_t* bi) {
 
 camera_t*
 NewCamera(void) {
+  camera_t* cam;
 
-  return((camera_t*)malloc(sizeof(camera_t)));
+  cam=(camera_t*)malloc(sizeof(camera_t));
+  pthread_mutex_init(&cam->uimutex, NULL);
+  return cam;
 
 }
 
@@ -91,6 +95,7 @@ GetCameraData(raw1394handle_t handle, nodeid_t node, camera_t* camera) {
   camera->bayer=NO_BAYER_DECODING;
   camera->stereo=NO_STEREO_DECODING;
   camera->bpp=8;
+  //fprintf(stderr,"Got camera data\n");
   pthread_mutex_unlock(&camera->uimutex);
 
 }

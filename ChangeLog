@@ -2,6 +2,9 @@ Coriander, (c) 2000-2003 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 0.99.3
 
+   August 16, 2003, by Damien Douxchamps
+   - added missing mutex init during in NewCamera()
+	
    August 8, 2003, by Damien Douxchamps
    - fixed a little GTK problem during camera addition on the bus.
 	

@@ -140,17 +140,17 @@ UpdateRangeValue(GtkWidget* widget, int feature)
   if (camera->feature_set.feature[feature-FEATURE_MIN].readout_capable) {
     switch(feature) {
     case FEATURE_WHITE_BALANCE:
-      while(!stable) {
+      //      while(!stable) {
 	err=dc1394_get_white_balance(camera->camera_info.handle,camera->camera_info.id,&valueBU,&valueRV);
-	if (((valueBU==prec_valueBU)&&(valueRV==prec_valueRV))||(err<0))
+	/*	if (((valueBU==prec_valueBU)&&(valueRV==prec_valueRV))||(err<0))
 	  stable=1;
 	else {
 	  prec_valueBU=valueBU;
 	  prec_valueRV=valueRV;
 	  usleep(100000);// wait 1/10 sec
 	  //fprintf(stderr,"values: %d %d\n",valueBU,valueRV);
-	}
-      }
+	  }
+	  }*/
       if (err<0)
 	MainError("Could not get white balance value");
       else {
@@ -166,16 +166,16 @@ UpdateRangeValue(GtkWidget* widget, int feature)
       }
       break;
     case FEATURE_TEMPERATURE:
-      while(!stable) {
+      //while(!stable) {
 	err=dc1394_get_temperature(camera->camera_info.handle,camera->camera_info.id,&valuegoal,&valuecurrent);
-	if (((valuegoal==prec_valuegoal)&&(valuecurrent==prec_valuecurrent))||(err<0))
+	/*if (((valuegoal==prec_valuegoal)&&(valuecurrent==prec_valuecurrent))||(err<0))
 	  stable=1;
 	else {
 	  prec_valuegoal=valuegoal;
 	  prec_valuecurrent=valuecurrent;
 	  usleep(100000);// wait 1/10 sec
 	}
-      }
+	}*/
       if (err<0)
 	MainError("Could not get temperature value");
       else {
@@ -190,15 +190,15 @@ UpdateRangeValue(GtkWidget* widget, int feature)
       }
       break;
     default:
-      while(!stable) {
+      //while(!stable) {
 	err=dc1394_get_feature_value(camera->camera_info.handle,camera->camera_info.id,feature,&value);
-	if ((value==prec_value)||(err<0))
+	/*if ((value==prec_value)||(err<0))
 	  stable=1;
 	else {
 	  prec_value=value;
 	  usleep(100000);// wait 1/10 sec
 	}
-      }
+	}*/
       if (err<0) MainError("Could not get feature value");
       else {
 	sprintf(stemp,"feature_%d_scale",feature);

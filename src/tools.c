@@ -692,7 +692,7 @@ ResumeFPSDisplay(void)
 int
 bus_reset_handler(raw1394handle_t handle, unsigned int generation) {
 
-  BusInfo_t bi;
+  BusInfo_t bi; // WHY NOT USE THE BUS_INFO GLOBAL VARIABLE HERE???
   int i;
   int port;
   camera_t* camera_ptr;
@@ -733,6 +733,7 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation) {
 	    // If ISO is on, stop it and restart it.
 	    if (GetService(camera_ptr,SERVICE_ISO)!=NULL) {
 	      IsoStopThread(camera_ptr);
+	      usleep(5000);
 	      IsoStartThread(camera_ptr);
 	    }
 	    break;

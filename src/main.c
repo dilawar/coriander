@@ -57,7 +57,6 @@ camera_t* camera;
 camera_t* cameras;
 
 BusInfo_t* businfo;
-//whitebal_data_t *whitebal_data;
 
 unsigned int main_timeout_ticker;
 unsigned int WM_cancel_display;
@@ -83,12 +82,10 @@ main (int argc, char *argv[])
 #endif
   gnome_init ("coriander", VERSION, argc, argv);
 
-  //whitebal_data=(whitebal_data_t*)malloc(sizeof(whitebal_data));
-
   businfo=(BusInfo_t*)malloc(sizeof(businfo));
 
   GetCameraNodes(businfo);
-
+  //fprintf(stderr,"Got camera nodes\n");
 
   // it seems that freeing some vars before a return() or an exit() prevent the program from exiting.
   // this only happens on some platforms, but I cleared the free() anyway.
@@ -115,26 +112,29 @@ main (int argc, char *argv[])
   GetCamerasInfo(businfo);
 
   raw1394_set_bus_reset_handler(businfo->handles[0], bus_reset_handler);
+  //fprintf(stderr,"Bus Reset set\n");
   GrabSelfIds(businfo->handles, businfo->port_num);
+  //fprintf(stderr,"Got selfid's\n");
   silent_ui_update=0;
   SetChannels();
   // current camera is the first camera:
   SetCurrentCamera(cameras->camera_info.euid_64);
-  // Create the permanent control windows.
-  // (note BTW that other windows like 'file_selector' are created
-  //  and destroyed on purpose while the following windows always exist.)
+  //fprintf(stderr,"Set current camera\n");
   
   g_thread_init(NULL);
   
+  fprintf(stderr,"Creating prefs window\n");
   preferences_window= create_preferences_window();
+  fprintf(stderr,"Creating main window\n");
   main_window = create_main_window();
 
-  //absolute_settings_window = create_absolute_settings_window();
-  
+  //fprintf(stderr,"Building GUI...\n");
   // Setup the GUI in accordance with the camera capabilities
   GetContextStatus();
   BuildAllWindows();
+  //fprintf(stderr,"Windows built\n");
   UpdateAllWindows();
+  //fprintf(stderr,"Windows updated\n");
 #ifdef HAVE_SDLLIB
   WatchStartThread(&watchthread_info);
 #endif
