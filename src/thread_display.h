@@ -43,23 +43,18 @@ typedef struct
 
 #ifdef HAVE_SDLLIB
 
+  // general SDL stuff
   long unsigned int SDL_flags;
   int SDL_bpp;
   SDL_Surface *SDL_video;   // video surface
   SDL_Overlay *SDL_overlay; // video overlay surface
   SDL_Rect SDL_videoRect;   // video rectangle for overlay surface
+
+  // events
   pthread_mutex_t         mutex_cancel_event;
   int                     cancel_event_req;
-
   pthread_mutex_t         mutex_event;
   pthread_t               event_thread;
-
-  pthread_mutex_t         mutex_area;
-  int                     upper_left[2];
-  int                     lower_right[2];
-  int                     f7_step[2];
-  int                     draw;
-  int                     mouse_down;
 
 #endif
 

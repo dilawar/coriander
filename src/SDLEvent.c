@@ -34,12 +34,14 @@
 #include "definitions.h"
 #include "preferences.h"
 #include "tools.h"
+#include "watch_thread.h"
 
 extern PrefsInfo preferences;
 extern Format7Info *format7_info;
 extern GtkWidget *format7_window;
 extern dc1394_camerainfo *camera;
 extern dc1394_miscinfo *misc_info;
+extern watchthread_info_t watchthread_info;
 
 int
 SDLEventStartThread(chain_t *display_service)
@@ -53,7 +55,6 @@ SDLEventStartThread(chain_t *display_service)
   pthread_mutex_lock(&info->mutex_cancel_event);
   info->cancel_event_req=0;
   pthread_mutex_unlock(&info->mutex_cancel_event);
-
   if (pthread_create(&info->event_thread, NULL, SDLEventThread, (void*)display_service))
     return(1);
   else
@@ -65,7 +66,7 @@ SDLEventThread(void *arg)
 {
   chain_t* display_service;
   displaythread_info_t *info;
-
+ 
   display_service=(chain_t*)arg;
   pthread_mutex_lock(&display_service->mutex_data);
   info=(displaythread_info_t*)display_service->data;
@@ -105,7 +106,6 @@ SDLEventStopThread(chain_t *display_service)
 {
   displaythread_info_t *info;
   info=(displaythread_info_t*)display_service->data;
-  
   // send request for cancellation:
   pthread_mutex_lock(&info->mutex_cancel_event);
   info->cancel_event_req=1;
@@ -113,7 +113,6 @@ SDLEventStopThread(chain_t *display_service)
   
   // when cancellation occured, join:
   pthread_join(info->event_thread, NULL);
-  
 }
 
 
@@ -156,57 +155,6 @@ SDLHandleEvent(chain_t *display_service)
 
 
 void
-SDLResizeDisplay(chain_t *display_service, int width, int height)
-{    
-  displaythread_info_t *info;
-  info=(displaythread_info_t*)display_service->data;
-  
-  if (preferences.display_keep_ratio>0)
-    {
-      // keep aspect ratio and resize following which dimension we change
-      if (abs(width-info->SDL_videoRect.w) >= (abs(height-info->SDL_videoRect.h)))
-	{
-	  // we changed the width, set height accordingly
-	  info->SDL_videoRect.w = width;
-	  info->SDL_videoRect.h = (width * display_service->height) / display_service->width;
-	}
-      else
-	{
-	  // we changed the hieght, set width accordingly
-	  info->SDL_videoRect.w = (height * display_service->width) / display_service->height;
-	  info->SDL_videoRect.h = height;
-	}
-    }
-  else
-    {
-      // bypass aspect keep:
-      info->SDL_videoRect.w = width;
-      info->SDL_videoRect.h = height;
-    }
-      
-  // Free overlay & video surface
-  SDL_FreeYUVOverlay(info->SDL_overlay);
-  SDL_FreeSurface(info->SDL_video);
-  
-  // Set requested video mode
-  info->SDL_video = SDL_SetVideoMode(info->SDL_videoRect.w, info->SDL_videoRect.h, info->SDL_bpp, info->SDL_flags);
-  if (info->SDL_video == NULL)
-    {
-      SDL_Quit();
-      fprintf(stderr,"Error realocating video overlay after resize\n");
-    }
-
-  // Create YUV Overlay
-  info->SDL_overlay = SDL_CreateYUVOverlay(display_service->width, display_service->height,
-					   SDL_UYVY_OVERLAY,info->SDL_video);
-  if (info->SDL_overlay == NULL)
-    {
-      SDL_Quit();
-      fprintf(stderr,"Error creating video overlay after resize\n");
-    }
-}
-
-void
 OnKeyPressed(chain_t *display_service, int key, int mod)
 {
   displaythread_info_t *info;
@@ -223,8 +171,12 @@ OnKeyPressed(chain_t *display_service, int key, int mod)
       SDL_WM_ToggleFullScreen(info->SDL_video);
       break;
     case SDLK_c:
-      // crop image (under development)
+      // crop image
       SDLCropImage(display_service);
+      break;
+    case SDLK_m:
+      // set F7 image to max size
+      SDLSetMaxSize(display_service);
       break;
     case SDLK_GREATER:
       // image size *2
@@ -260,16 +212,16 @@ OnMouseDown(chain_t *display_service, int button, int x, int y)
   switch (button)
     {
     case SDL_BUTTON_LEFT:
-      pthread_mutex_lock(&info->mutex_area);
-      info->draw=1;
-      info->mouse_down=1;
+      pthread_mutex_lock(&watchthread_info.mutex_area);
+      watchthread_info.draw=1;
+      watchthread_info.mouse_down=1;
       // there is some adaptation because the display size can be different
       // from the real image size. (i.e. the image can be resized)
-      info->upper_left[0]= ((x*display_service->width /info->SDL_videoRect.w));
-      info->upper_left[1]= ((y*display_service->height/info->SDL_videoRect.h));
-      info->lower_right[0]=((x*display_service->width /info->SDL_videoRect.w));
-      info->lower_right[1]=((y*display_service->height/info->SDL_videoRect.h));
-      pthread_mutex_unlock(&info->mutex_area);
+      watchthread_info.upper_left[0]= ((x*display_service->width /info->SDL_videoRect.w));
+      watchthread_info.upper_left[1]= ((y*display_service->height/info->SDL_videoRect.h));
+      watchthread_info.lower_right[0]=((x*display_service->width /info->SDL_videoRect.w));
+      watchthread_info.lower_right[1]=((y*display_service->height/info->SDL_videoRect.h));
+      pthread_mutex_unlock(&watchthread_info.mutex_area);
       break;
     case SDL_BUTTON_MIDDLE:
       break;
@@ -291,13 +243,13 @@ OnMouseUp(chain_t *display_service, int button, int x, int y)
   switch (button)
     {
     case SDL_BUTTON_LEFT:
-      pthread_mutex_lock(&info->mutex_area);
-      info->mouse_down=0;
+      pthread_mutex_lock(&watchthread_info.mutex_area);
+      watchthread_info.mouse_down=0;
       // there is some adaptation because the display size can be different
       // from the real image size. (i.e. the image can be resized)
       //info->lower_right[0]=x*display_service->width/info->SDL_videoRect.w;
       //info->lower_right[1]=y*display_service->height/info->SDL_videoRect.h;
-      pthread_mutex_unlock(&info->mutex_area);
+      pthread_mutex_unlock(&watchthread_info.mutex_area);
       break;
     case SDL_BUTTON_MIDDLE:
       break;
@@ -315,100 +267,99 @@ OnMouseMotion(chain_t *display_service, int x, int y)
 {
   displaythread_info_t *info;
   info=(displaythread_info_t*)display_service->data;
-  pthread_mutex_lock(&info->mutex_area);
-  if (info->mouse_down==1)
+  pthread_mutex_lock(&watchthread_info.mutex_area);
+  if (watchthread_info.mouse_down==1)
     {
       // there is some adaptation because the display size can be different
       // from the real image size. (i.e. the image can be resized)
-      info->lower_right[0]=x*display_service->width/info->SDL_videoRect.w;
-      info->lower_right[1]=y*display_service->height/info->SDL_videoRect.h;
+      watchthread_info.lower_right[0]=x*display_service->width/info->SDL_videoRect.w;
+      watchthread_info.lower_right[1]=y*display_service->height/info->SDL_videoRect.h;
     }
-  pthread_mutex_unlock(&info->mutex_area);
+  pthread_mutex_unlock(&watchthread_info.mutex_area);
+}
+
+void
+SDLResizeDisplay(chain_t *display_service, int width, int height)
+{    
+  displaythread_info_t *info;
+  info=(displaythread_info_t*)display_service->data;
+  
+  if (preferences.display_keep_ratio>0)
+    {
+      // keep aspect ratio and resize following which dimension we change
+      if (abs(width-info->SDL_videoRect.w) >= (abs(height-info->SDL_videoRect.h)))
+	{
+	  // we changed the width, set height accordingly
+	  info->SDL_videoRect.w = width;
+	  info->SDL_videoRect.h = (width * display_service->height) / display_service->width;
+	}
+      else
+	{
+	  // we changed the hieght, set width accordingly
+	  info->SDL_videoRect.w = (height * display_service->width) / display_service->height;
+	  info->SDL_videoRect.h = height;
+	}
+    }
+  else
+    {
+      // bypass aspect keep:
+      info->SDL_videoRect.w = width;
+      info->SDL_videoRect.h = height;
+    }
+      
+  // Free overlay & video surface
+  SDL_FreeYUVOverlay(info->SDL_overlay);
+  SDL_FreeSurface(info->SDL_video);
+  
+  // Set requested video mode
+  info->SDL_video = SDL_SetVideoMode(info->SDL_videoRect.w,
+				     info->SDL_videoRect.h,
+				     info->SDL_bpp,
+				     info->SDL_flags);
+  if (info->SDL_video == NULL)
+    {
+      SDL_Quit();
+      fprintf(stderr,"Error realocating video overlay after resize\n");
+    }
+
+  // Create YUV Overlay
+  info->SDL_overlay = SDL_CreateYUVOverlay(display_service->width, display_service->height,
+					   SDL_UYVY_OVERLAY,info->SDL_video);
+  if (info->SDL_overlay == NULL)
+    {
+      SDL_Quit();
+      fprintf(stderr,"Error creating video overlay after resize\n");
+    }
 }
 
 
 void
 SDLCropImage(chain_t *display_service)
 {
-  int tmp;
-  int upper_left[2];
-  int lower_right[2];
-  int pos[2];
-  int size[2];
-  int state[5];
-  GtkAdjustment* adj2;
-  displaythread_info_t *info;
-  info=(displaythread_info_t*)display_service->data;
+  pthread_mutex_lock(&watchthread_info.mutex_area);
 
-  pthread_mutex_lock(&info->mutex_area);
-  info->draw=0;
-  upper_left[0]=info->upper_left[0];
-  upper_left[1]=info->upper_left[1];
-  lower_right[0]=info->lower_right[0];
-  lower_right[1]=info->lower_right[1];
-  pthread_mutex_unlock(&info->mutex_area);
-      
-  if (lower_right[0]<upper_left[0])
-    {
-      tmp=lower_right[0];
-      lower_right[0]=upper_left[0];
-      upper_left[0]=tmp;
-    }
-  if (lower_right[1]<upper_left[1])
-    {
-      tmp=lower_right[1];
-      lower_right[1]=upper_left[1];
-      upper_left[1]=tmp;
-    }
-
+  watchthread_info.draw=0;
   if (display_service->format==FORMAT_SCALABLE_IMAGE_SIZE)
-    {
-      pos[0]=(upper_left[0]/info->f7_step[0])*info->f7_step[0];
-      pos[1]=(upper_left[1]/info->f7_step[1])*info->f7_step[1];
-      size[0]=(lower_right[0]/info->f7_step[0])*info->f7_step[0]+info->f7_step[0];
-      size[1]=(lower_right[1]/info->f7_step[1])*info->f7_step[1]+info->f7_step[1];
-      size[0]=size[0]-pos[0];
-      size[1]=size[1]-pos[1];
-      /*
-      fprintf(stderr,"corners: [%d %d] [%d %d], pos: [%d %d], size[%d %d]\n",
-	      upper_left[0],upper_left[1],lower_right[0],lower_right[1],
-	      pos[0],pos[1],size[0],size[1]);
-      
-      IsoFlowCheck(state);
-      fprintf(stderr,"ISO check completed\n");
-      if ((!dc1394_set_format7_image_size(camera->handle,camera->id, misc_info->mode, size[0], size[1]))||
-	  (!dc1394_set_format7_image_position(camera->handle,camera->id, misc_info->mode, pos[0], pos[1])))
-	//MainError("Could not set Format7 image size and position");
-	  fprintf(stderr,"error setting size/pos.\n");
-      else
-	{
-	  format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].size_x=size[0];
-	  format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].size_y=size[1];
-	  format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].pos_x=pos[0];
-	  format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].pos_y=pos[1];
-	  fprintf(stderr,"buffered size/pos set.\n");
-	  
-	  adj2=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(format7_window, "format7_hposition_scale")));
-	  adj2->upper=format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].max_size_x-size[0];
-	  gtk_signal_emit_by_name(GTK_OBJECT (adj2), "changed");
-	  adj2=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(format7_window, "format7_vposition_scale")));
-	  adj2->upper=format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].max_size_y-size[1];
-	  gtk_signal_emit_by_name(GTK_OBJECT (adj2), "changed");
-	  adj2=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(format7_window, "format7_hsize_scale")));
-	  adj2->upper=format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].max_size_x-pos[0];
-	  gtk_signal_emit_by_name(GTK_OBJECT (adj2), "changed");
-	  adj2=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(format7_window, "format7_vsize_scale")));
-	  adj2->upper=format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].max_size_y-pos[1];
-	  gtk_signal_emit_by_name(GTK_OBJECT (adj2), "changed");
-	  
-	}
+    watchthread_info.crop=1;
 
-      IsoFlowResume(state);
-      */
-    }
-      
-  pthread_mutex_unlock(&info->mutex_area);
+  pthread_mutex_unlock(&watchthread_info.mutex_area);
+    
 }
 
+void
+SDLSetMaxSize(chain_t *display_service)
+{
+  pthread_mutex_lock(&watchthread_info.mutex_area);
+  if (display_service->format==FORMAT_SCALABLE_IMAGE_SIZE)
+    {
+      watchthread_info.crop=1;
+      watchthread_info.upper_left[0]=0;
+      watchthread_info.upper_left[1]=0;
+      watchthread_info.lower_right[0]=format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].max_size_x;
+      watchthread_info.lower_right[1]=format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].max_size_y;
+    }
+  pthread_mutex_unlock(&watchthread_info.mutex_area);
+
+}
 
 #endif

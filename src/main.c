@@ -33,6 +33,7 @@
 #include "update_windows.h"
 #include "definitions.h"
 #include "tools.h"
+#include "watch_thread.h"
 #include "preferences.h"
 #include "thread_base.h"
 #include "raw1394support.h"
@@ -64,6 +65,8 @@ CtxtInfo ctxt;
 SelfIdPacket_t *selfid;
 SelfIdPacket_t *selfids;
 PrefsInfo preferences;
+watchthread_info_t watchthread_info;
+
 int silent_ui_update;
 
 int camera_num;
@@ -141,9 +144,10 @@ main (int argc, char *argv[])
   GetContextStatus();
   BuildAllWindows();
   UpdateAllWindows();
+  WatchStartThread(&watchthread_info);
+
 
   MainStatus("Welcome to Coriander...");
-
   gtk_widget_show (commander_window); // this is the only window shown at boot-time
 
   gtk_main();
@@ -154,6 +158,8 @@ main (int argc, char *argv[])
       SelectCamera(i);
       CleanThreads(CLEAN_MODE_NO_UI_UPDATE);
     }
+
+  WatchStopThread(&watchthread_info);
 
   free(cameras);
   free(feature_sets);

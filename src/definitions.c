@@ -280,18 +280,20 @@ const char *feature_menu_items_list[5]= {
   "N/A"
 };
 
-const char *help_key_bindings_keys[5]= {
+const char *help_key_bindings_keys[KEY_BINDINGS_NUM]= {
   "c",
   "n",
   ">",
   "<",
-  "f"
+  "f",
+  "m"
 }; 
 
-const char *help_key_bindings_functions[5]= {
+const char *help_key_bindings_functions[KEY_BINDINGS_NUM]= {
   "Sets the AOI to the one defined by the area (Format7)",
   "Set image zoom to normal (1:1)",
   "Zoom image, factor 2",
   "Shrink image, factor 2",
-  "Toggle full-screen mode"
+  "Toggle full-screen mode",
+  "Switch to maximum size (Format7)" 
 }; 

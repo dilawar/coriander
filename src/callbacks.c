@@ -579,7 +579,9 @@ on_format7_packet_size_changed               (GtkAdjustment    *adj,
 					      gpointer         user_data)
 {
   int bpp;
+  int state[5];
 
+  IsoFlowCheck(state);
   if (dc1394_set_format7_byte_per_packet(camera->handle, camera->id, 
 					 format7_info->edit_mode, (int)adj->value)!=DC1394_SUCCESS)
     MainError("Could not change Format7 bytes per packet");
@@ -588,6 +590,7 @@ on_format7_packet_size_changed               (GtkAdjustment    *adj,
 
   dc1394_query_format7_byte_per_packet(camera->handle,camera->id,format7_info->edit_mode,&bpp);
 
+  IsoFlowResume(state);
   //fprintf(stderr,"bpp: %d (should set to %d)\n",bpp, (int)adj->value);
 }
 
@@ -698,10 +701,15 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
 				       gpointer         user_data)
 {
   GtkAdjustment* adj2;
+  int state[5];
+  int step;
 
   switch((int)user_data)
     {
       case FORMAT7_SIZE_X:
+	if (format7_info->edit_mode==misc_info->mode) IsoFlowCheck(state);
+	step=format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].step_x;
+	adj->value=((int)adj->value/step)*step;
 	if (!dc1394_set_format7_image_size(camera->handle,camera->id, format7_info->edit_mode,
 					   adj->value, format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].size_y))
 	  MainError("Could not set Format7 image size");
@@ -711,11 +719,16 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
 	    // adjust the pos_x adjustment so that (size_x+pos_x)<=max_size_x:
 	    adj2=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(format7_window, "format7_hposition_scale")));
 	    adj2->upper=format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].max_size_x-adj->value;
+	    gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
 	    gtk_signal_emit_by_name(GTK_OBJECT (adj2), "changed");
 	  }
+	if (format7_info->edit_mode==misc_info->mode) IsoFlowResume(state);
 	break;
 
       case FORMAT7_SIZE_Y:
+	if (format7_info->edit_mode==misc_info->mode) IsoFlowCheck(state);
+	step=format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].step_y;
+	adj->value=((int)adj->value/step)*step;
 	if (!dc1394_set_format7_image_size(camera->handle,camera->id, format7_info->edit_mode,
 					   format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].size_x, adj->value))
 	  MainError("Could not set Format7 image size");
@@ -725,11 +738,16 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
 	    // adjust the pos_y adjustment so that (size_y+pos_y)<=max_size_y:
 	    adj2=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(format7_window, "format7_vposition_scale")));
 	    adj2->upper=format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].max_size_y-adj->value;
+	    gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
 	    gtk_signal_emit_by_name(GTK_OBJECT (adj2), "changed");
 	  }
+	if (format7_info->edit_mode==misc_info->mode) IsoFlowResume(state);
 	break;
 
       case FORMAT7_POS_X:
+	if (format7_info->edit_mode==misc_info->mode) IsoFlowCheck(state);
+	step=format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].step_x;
+	adj->value=((int)adj->value/step)*step;
 	if (!dc1394_set_format7_image_position(camera->handle,camera->id, format7_info->edit_mode,
 					      adj->value, format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].pos_y))
 	  MainError("Could not set Format7 image position");
@@ -739,11 +757,16 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
 	    // adjust the size_x adjustment so that (size_x+pos_x)<=max_size_x:
 	    adj2=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(format7_window, "format7_hsize_scale")));
 	    adj2->upper=format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].max_size_x-adj->value;
+	    gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
 	    gtk_signal_emit_by_name(GTK_OBJECT (adj2), "changed");
 	  }
+	if (format7_info->edit_mode==misc_info->mode) IsoFlowResume(state);
 	break;
 
       case FORMAT7_POS_Y:
+	if (format7_info->edit_mode==misc_info->mode) IsoFlowCheck(state);
+	step=format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].step_y;
+	adj->value=((int)adj->value/step)*step;
 	if (!dc1394_set_format7_image_position(camera->handle,camera->id, format7_info->edit_mode,
 					      format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].pos_x, adj->value))
 	  MainError("Cannot set Format7 image position");
@@ -753,8 +776,10 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
 	    // adjust the size_y adjustment so that (size_y+pos_y)<=max_size_y:
 	    adj2=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(format7_window, "format7_vsize_scale")));
 	    adj2->upper=format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].max_size_y-adj->value;
+	    gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
 	    gtk_signal_emit_by_name(GTK_OBJECT (adj2), "changed");
 	  }
+	if (format7_info->edit_mode==misc_info->mode) IsoFlowResume(state);
 	break;
 
       default:

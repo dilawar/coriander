@@ -36,8 +36,8 @@ extern GtkWidget *commander_window;
 extern GtkWidget *help_window;
 extern UIInfo *uiinfo;
 extern int camera_num;
-extern const char *help_key_bindings_keys[5];
-extern const char *help_key_bindings_functions[5];
+extern const char *help_key_bindings_keys[KEY_BINDINGS_NUM];
+extern const char *help_key_bindings_functions[KEY_BINDINGS_NUM];
 
 void
 BuildPreferencesWindow(void)
@@ -146,7 +146,7 @@ BuildHelpWindow(void)
   text[1]=(char*)malloc(STRING_SIZE*sizeof(char));
 
   gtk_clist_set_column_justification(clist,0,GTK_JUSTIFY_CENTER);
-  for (i=0;i<5;i++)
+  for (i=0;i<KEY_BINDINGS_NUM;i++)
     {
       strcpy(text[0],help_key_bindings_keys[i]);
       strcpy(text[1],help_key_bindings_functions[i]);

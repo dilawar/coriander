@@ -19,6 +19,7 @@ coriander_SOURCES = \
 	definitions.c definitions.h \
 	thread_base.c thread_base.h \
 	thread_iso.c thread_iso.h \
+	watch_thread.c watch_thread.h \
 	SDLEvent.c SDLEvent.h \
 	thread_display.c thread_display.h \
 	thread_ftp.c thread_ftp.h \

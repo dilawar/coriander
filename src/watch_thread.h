@@ -16,8 +16,8 @@
  * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __SDLEVENT_H__
-#define __SDLEVENT_H__
+#ifndef __WATCH_THREAD_H__
+#define __WATCH_THREAD_H__
 
 #ifdef HAVE_SDLLIB
 
@@ -25,43 +25,31 @@
 #include "thread_display.h"
 #include "thread_base.h"
 
-#define EVENTS_SLEEP_MS 50
+typedef struct
+{
+  pthread_t       thread;
+  pthread_mutex_t mutex_cancel_watch;
+  int             cancel_watch_req;
+
+  // area drawing:
+  pthread_mutex_t mutex_area;
+  int             upper_left[2];
+  int             lower_right[2];
+  int             f7_step[2];
+  int             draw;
+  int             mouse_down;
+  int             crop;
+} watchthread_info_t;
+
 
 int
-SDLEventStartThread(chain_t *display_service);
+WatchStartThread(watchthread_info_t* info);
 
 void*
-SDLEventThread(void *arg);
-
-void
-SDLEventStopThread(chain_t *display_service);
+WatchThread(void *arg);
 
 int
-SDLHandleEvent(chain_t *display_service);
-
-void
-SDLResizeDisplay(chain_t *display_service, int width, int height);
-
-void
-OnKeyPressed(chain_t *display_service, int key, int mod);
-
-void
-OnKeyReleased(chain_t *display_service, int key, int mod);
-
-void
-OnMouseDown(chain_t *display_service, int button, int x, int y);
-
-void
-OnMouseUp(chain_t *display_service, int button, int x, int y);
-
-void
-OnMouseMotion(chain_t *display_service, int x, int y);
-
-void
-SDLCropImage(chain_t *display_service);
-
-void
-SDLSetMaxSize(chain_t *display_service);
+WatchStopThread(watchthread_info_t* info);
 
 #endif
 

@@ -37,12 +37,14 @@
 #include "thread_base.h"
 #include "thread_display.h"
 #include "thread_iso.h"
+#include "watch_thread.h"
 
 extern PrefsInfo preferences;
 extern Format7Info *format7_info;
 extern dc1394_miscinfo *misc_info;
 extern int current_camera;
 extern dc1394_camerainfo *camera;
+extern watchthread_info_t watchthread_info;
 
 gint
 DisplayStartThread()
@@ -302,12 +304,8 @@ sdlInit(chain_t *display_service)
   info->SDL_videoRect.w=display_service->width;
   info->SDL_videoRect.h=display_service->height;
 
-  // video cropping features:
-  pthread_mutex_init(&info->mutex_area, NULL);
-  info->draw=0;
-  info->mouse_down=0;
-  info->f7_step[0]=format7_info->mode[display_service->mode-MODE_FORMAT7_MIN].step_x;
-  info->f7_step[1]=format7_info->mode[display_service->mode-MODE_FORMAT7_MIN].step_y;
+  watchthread_info.f7_step[0]=format7_info->mode[display_service->mode-MODE_FORMAT7_MIN].step_x;
+  watchthread_info.f7_step[1]=format7_info->mode[display_service->mode-MODE_FORMAT7_MIN].step_y;
 
   SDLEventStartThread(display_service);
 
@@ -389,8 +387,8 @@ convert_to_yuv_for_SDL(unsigned char *src, unsigned char *dest, int mode,
 	case COLOR_FORMAT7_RGB16:
 	  rgb482uyvy(src,dest,width*height);
 	  break;
-	  //default:
-	  //fprintf(stderr,"Unknown color format: %d\n",f7_colormode);
+	default:
+	  fprintf(stderr,"Unknown color format: %d\n",f7_colormode);
 	}
       break;
     }
@@ -409,16 +407,16 @@ SDLDisplayArea(chain_t *display_service)
   register int j;
   info=(displaythread_info_t*)display_service->data;
 
-  pthread_mutex_lock(&info->mutex_area);
-  if (info->draw==1)
+  pthread_mutex_lock(&watchthread_info.mutex_area);
+  if (watchthread_info.draw==1)
     {
-      upper_left[0]=info->upper_left[0];
-      upper_left[1]=info->upper_left[1];
-      lower_right[0]=info->lower_right[0];
-      lower_right[1]=info->lower_right[1];
+      upper_left[0]=watchthread_info.upper_left[0];
+      upper_left[1]=watchthread_info.upper_left[1];
+      lower_right[0]=watchthread_info.lower_right[0];
+      lower_right[1]=watchthread_info.lower_right[1];
       pimage=info->SDL_overlay->pixels[0];
       width=display_service->width;
-      pthread_mutex_unlock(&info->mutex_area);
+      pthread_mutex_unlock(&watchthread_info.mutex_area);
       
       if (lower_right[0]<upper_left[0])
 	{
@@ -439,7 +437,7 @@ SDLDisplayArea(chain_t *display_service)
       
     }
   else
-    pthread_mutex_unlock(&info->mutex_area);
+    pthread_mutex_unlock(&watchthread_info.mutex_area);
     
 }
 

@@ -1,10 +1,22 @@
 Coriander, (c) 2000-2002 Damien Douxchamps <douxchamps@ieee.org>
 
 Changes towards version 0.25
+
+   Mar 24, 2002, by Damien Douxchamps
+   - finished the interactive region selection for F7.
+   - added the 'm' shortcut to switch to max size in F7.
+	
+   Mar 23, 2002, by Damien Douxchamps
+   - changed the F7 range update policy to 'delayed': the value only
+     changes when the mouse does not move. This avoid continuous
+     format changes and allow the threads to be restarted a reasonable
+     number of times.
+   - the ranges for F7 now respect the stepping values thanks to some
+     range tweaking.
 	
    Mar 21, 2002, by Damien Douxchamps
    - added a key bindings window in the help menu.
-	
+
 Changes in version 0.24:
 
    Mar 18, 2002, by Damien Douxchamps
