@@ -2,6 +2,9 @@ Coriander, (c) 2000-2003 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 0.32
 
+   April 28, 2003, by Paul Rybski
+   - fixed conversion bug for YUV444->RGB mode.
+	
    April 25, 2003, by Damien Douxchamps
    - absolute values are updated when moving the normal control sliders
 	

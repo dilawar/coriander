@@ -315,7 +315,7 @@ rgb482rgb (unsigned char *src, unsigned char *dest, int NumPixels) {
 void
 uyv2rgb (unsigned char *src, unsigned char *dest, int NumPixels)
 {
-  register int i = (NumPixels << 1)-1;
+  register int i = NumPixels + ( NumPixels << 1 ) -1;
   register int j = NumPixels + ( NumPixels << 1 ) -1;
   register int y, u, v;
   register int r, g, b;
