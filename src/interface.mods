@@ -1,0 +1,12 @@
+In create_commander_window:
+
+add the declaration:
+GtkAccelGroup *accel_group;
+
+search for gnome_app_fill_menu, add before it:
+accel_group = gtk_accel_group_new();
+gtk_accel_group_attach(accel_group, GTK_OBJECT(commander_window));
+
+replace it with:
+  gnome_app_fill_menu (GTK_MENU_SHELL (menubar), menubar_uiinfo,
+                       accel_group, TRUE, 0);
