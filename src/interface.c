@@ -202,7 +202,7 @@ create_main_window (void)
   GtkObject *prefs_v4l_period_adj;
   GtkWidget *prefs_v4l_period;
   GtkWidget *label150;
-  GtkWidget *frame10;
+  GtkWidget *v4l_output_device_frame;
   GtkWidget *hbox64;
   GtkWidget *prefs_v4l_dev_name;
   GtkWidget *label146;
@@ -1504,20 +1504,20 @@ create_main_window (void)
   gtk_box_pack_start (GTK_BOX (hbox63), label150, FALSE, FALSE, 2);
   gtk_misc_set_padding (GTK_MISC (label150), 5, 8);
 
-  frame10 = gtk_frame_new (_("Output device"));
-  gtk_widget_ref (frame10);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "frame10", frame10,
+  v4l_output_device_frame = gtk_frame_new (_("Output device"));
+  gtk_widget_ref (v4l_output_device_frame);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "v4l_output_device_frame", v4l_output_device_frame,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (frame10);
-  gtk_box_pack_start (GTK_BOX (vbox79), frame10, FALSE, TRUE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (frame10), 5);
+  gtk_widget_show (v4l_output_device_frame);
+  gtk_box_pack_start (GTK_BOX (vbox79), v4l_output_device_frame, FALSE, TRUE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (v4l_output_device_frame), 5);
 
   hbox64 = gtk_hbox_new (FALSE, 0);
   gtk_widget_ref (hbox64);
   gtk_object_set_data_full (GTK_OBJECT (main_window), "hbox64", hbox64,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hbox64);
-  gtk_container_add (GTK_CONTAINER (frame10), hbox64);
+  gtk_container_add (GTK_CONTAINER (v4l_output_device_frame), hbox64);
   gtk_container_set_border_width (GTK_CONTAINER (hbox64), 5);
 
   prefs_v4l_dev_name = gtk_entry_new ();

@@ -64,7 +64,7 @@ FtpStartThread(camera_t* cam)
       MainError("You should supply an extension");
       pthread_mutex_unlock(&ftp_service->mutex_data);
       FreeChain(ftp_service);
-      return(0);
+      return(-1);
     }
     
     tmp[0] = '\0';// cut filename before point
@@ -82,13 +82,13 @@ FtpStartThread(camera_t* cam)
       MainError("Failed to open FTP connection");
       pthread_mutex_unlock(&ftp_service->mutex_data);
       FreeChain(ftp_service);
-      return(0);
+      return(-1);
     }
 #else
     MainError("You don't have FTPLIB");
     pthread_mutex_unlock(&ftp_service->mutex_data);
     FreeChain(ftp_service);
-    return(0);
+    return(-1);
 #endif
     //pthread_mutex_unlock(&ftp_service->mutex_data);
     
@@ -377,7 +377,7 @@ gboolean OpenFtpConnection(ftpthread_info_t* info)
 
   FtpInit();
 
-  MainStatus("Ftp: starting...\n");
+  //MainStatus("Ftp: starting...\n");
   if (!FtpConnect(info->address, &info->ftp_handle)) {
     MainError("Ftp: connection to server failed");
     return FALSE;

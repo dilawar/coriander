@@ -44,17 +44,34 @@ UpdatePrefsDisplayFrame(void)
 void
 UpdatePrefsReceiveFrame(void)
 {
+  // thread presence balnking: default some to ON
+  gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_receive_frame"), TRUE);
+
+  // normal:
   gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_video1394_device"),
 			   preferences.receive_method==RECEIVE_METHOD_VIDEO1394);
   gtk_widget_set_sensitive(lookup_widget(main_window,"label84"),
 			   preferences.receive_method==RECEIVE_METHOD_VIDEO1394);
   gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_receive_dropframes"),
 			   preferences.receive_method==RECEIVE_METHOD_VIDEO1394);
+
+  // thread presence balnking:
+  if (GetService(camera,SERVICE_ISO)!=NULL)
+    gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_receive_frame"), FALSE);
 }
 
 void
 UpdatePrefsSaveFrame(void)
 {
+  // thread presence balnking: default some to ON
+  gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_save_file_frame"), TRUE);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"ram_buffer_frame"), TRUE);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"use_ram_buffer"), TRUE);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_save_scratch"), TRUE);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_save_seq"), TRUE);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_save_video"), TRUE);
+
+  // normal:
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (lookup_widget(main_window,"prefs_save_noconvert")),
 			       preferences.save_scratch==SAVE_SCRATCH_SEQUENCE);
   gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_save_convert"),
@@ -65,6 +82,22 @@ UpdatePrefsSaveFrame(void)
 			   preferences.save_scratch==SAVE_SCRATCH_SEQUENTIAL);
   gtk_widget_set_sensitive(lookup_widget(main_window,"ram_buffer_frame"), preferences.use_ram_buffer && (preferences.save_scratch==SAVE_SCRATCH_SEQUENCE));
   gtk_widget_set_sensitive(lookup_widget(main_window,"use_ram_buffer"), preferences.save_scratch==SAVE_SCRATCH_SEQUENCE);
+
+  // thread presence balnking:
+  if (GetService(camera,SERVICE_SAVE)!=NULL) {
+    gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_save_file_frame"), FALSE);
+    gtk_widget_set_sensitive(lookup_widget(main_window,"ram_buffer_frame"), FALSE);
+    gtk_widget_set_sensitive(lookup_widget(main_window,"use_ram_buffer"), FALSE);
+    if (preferences.save_scratch==SAVE_SCRATCH_SEQUENCE) {
+      gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_save_scratch"), FALSE);
+      gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_save_seq"), FALSE);
+    }
+    else
+      gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_save_video"), FALSE);
+  }
+      
+    
+
 }
 
 
@@ -75,11 +108,27 @@ UpdatePrefsFtpFrame(void)
 			   preferences.ftp_scratch==FTP_SCRATCH_SEQUENTIAL);
   gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_ftp_num_tag"),
 			   preferences.ftp_scratch==FTP_SCRATCH_SEQUENTIAL);
+
+  // thread presence balnking:
+  if (GetService(camera,SERVICE_FTP)!=NULL) {
+    gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_ftp_server_frame"),FALSE);
+  }
+  else {
+    gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_ftp_server_frame"),TRUE);
+  }
+    
 }
 
 void
 UpdatePrefsV4lFrame(void)
 {
+  // thread presence balnking:
+  if (GetService(camera,SERVICE_V4L)!=NULL) {
+    gtk_widget_set_sensitive(lookup_widget(main_window,"v4l_output_device_frame"),FALSE);
+  }
+  else {
+    gtk_widget_set_sensitive(lookup_widget(main_window,"v4l_output_device_frame"),TRUE);
+  }
 }
 
 

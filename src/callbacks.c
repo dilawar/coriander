@@ -411,7 +411,7 @@ on_service_iso_toggled                 (GtkToggleButton *togglebutton,
     else
       IsoStopThread(camera);
   }
-
+  UpdatePrefsReceiveFrame();
 }
 
 
@@ -434,6 +434,7 @@ on_service_display_toggled             (GtkToggleButton *togglebutton,
       pthread_mutex_unlock(&camera->uimutex);
     } 
   }
+  UpdatePrefsDisplayFrame();
 }
 
 
@@ -449,6 +450,7 @@ on_service_save_toggled                (GtkToggleButton *togglebutton,
     else
       SaveStopThread(camera);
   }
+  UpdatePrefsSaveFrame();
 }
 
 
@@ -464,6 +466,7 @@ on_service_ftp_toggled                 (GtkToggleButton *togglebutton,
     else
       FtpStopThread(camera);
   }
+  UpdatePrefsFtpFrame();
 }
 
 
@@ -481,6 +484,7 @@ on_service_v4l_toggled                 (GtkToggleButton *togglebutton,
     else
       V4lStopThread(camera);
   }
+  UpdatePrefsV4lFrame();
 }
 
 

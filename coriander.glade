@@ -2426,7 +2426,7 @@ St. Field
 
 		<widget>
 		  <class>GtkFrame</class>
-		  <name>frame10</name>
+		  <name>v4l_output_device_frame</name>
 		  <border_width>5</border_width>
 		  <label>Output device</label>
 		  <label_xalign>0</label_xalign>

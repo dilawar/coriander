@@ -57,7 +57,7 @@ SaveStartThread(camera_t* cam)
       MainError("You should supply an extension");
       pthread_mutex_unlock(&save_service->mutex_data);
       FreeChain(save_service);
-      return(0);
+      return(-1);
     }
     
     tmp[0] = '\0';// cut filename before point
@@ -84,7 +84,7 @@ SaveStartThread(camera_t* cam)
 	MainError("Could not allocate memory for RAM buffer save service");
 	pthread_mutex_unlock(&save_service->mutex_data);
 	FreeChain(save_service);
-	return(0);
+	return(-1);
       }
     }
 
@@ -117,25 +117,6 @@ SaveStartThread(camera_t* cam)
   //fprintf(stderr," SAVE service started\n");
   
   return (1);
-}
-
-
-void*
-SaveCleanupThread(void* arg) 
-{
-  chain_t* save_service;
-  savethread_info_t *info;
-
-  save_service=(chain_t*)arg;
-  info=(savethread_info_t*)save_service->data;
-  /* Specific cleanups: */
-
-  /* Mendatory cleanups: */
-  pthread_mutex_unlock(&save_service->mutex_data);
-
-  //fprintf(stderr,"cleanup thread!<n");
-
-  return(NULL);
 }
 
 int
@@ -172,6 +153,26 @@ SaveShowFPS(gpointer *data)
 
 
 void*
+SaveCleanupThread(void* arg) 
+{
+  chain_t* save_service;
+  savethread_info_t *info;
+
+  save_service=(chain_t*)arg;
+  info=(savethread_info_t*)save_service->data;
+  /* Specific cleanups: */
+
+  SaveStopThread(save_service->camera);
+
+  /* Mendatory cleanups: */
+  //pthread_mutex_unlock(&save_service->mutex_data);
+
+  //fprintf(stderr,"cleanup thread!<n");
+
+  return(NULL);
+}
+
+void*
 SaveThread(void* arg)
 {
   static gchar filename_out[STRING_SIZE];
@@ -199,7 +200,7 @@ SaveThread(void* arg)
       MainError("Can't open file for saving");
     /*
     if (info->use_ram_buffer>0) {
-      pthread_cleanup_push((void*)SaveStopThread, (void*) save_service->camera);
+      pthread_cleanup_push((void*)SaveCleanupThread, (void*) save_service);
     }
     */
   }
