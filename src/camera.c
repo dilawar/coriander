@@ -27,22 +27,23 @@ GetCameraNodes(BusInfo_t* bi) {
   raw1394handle_t tmp_handle;
   int port;
 
-  tmp_handle=dc1394_create_handle(0); // start with port 0
+  tmp_handle=raw1394_new_handle();
   bi->card_found=0;
   bi->camera_num=0;
 
   if (tmp_handle!=NULL) {
     bi->port_num=raw1394_get_port_info(tmp_handle, NULL, 0);
-    dc1394_destroy_handle(tmp_handle);
+    raw1394_destroy_handle(tmp_handle);
     bi->camera_nodes=(nodeid_t**)malloc(bi->port_num*sizeof(nodeid_t*));
     bi->port_camera_num=(int*)malloc(bi->port_num*sizeof(int));
     bi->handles=(raw1394handle_t *)malloc(bi->port_num*sizeof(raw1394handle_t));
-    
+    //fprintf(stderr,"portnum: %d\n",bi->port_num);
     for (port=0;port<bi->port_num;port++) {
       // get a handle to the current interface card
       bi->handles[port]=dc1394_create_handle(port);
       if (bi->handles[port]!=0) { // if the card is present
 	bi->card_found=1;
+	//fprintf(stderr,"card found\n");
 	// probe the IEEE1394 bus for DC camera:
 	bi->camera_nodes[port]=dc1394_get_camera_nodes(bi->handles[port], &(bi->port_camera_num[port]), 0); // 0 not to show the cams.
 	bi->camera_num+=bi->port_camera_num[port];

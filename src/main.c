@@ -99,10 +99,12 @@ main (int argc, char *argv[])
     if (businfo->camera_num<1) {
       gtk_widget_show(create_no_camera_window());
       gtk_main();
-      //free(businfo->camera_nodes);
-      //free(businfo->port_camera_num);
-      //free(businfo->handles);
-      //free(businfo);
+      /*
+      free(businfo->camera_nodes);
+      free(businfo->port_camera_num);
+      free(businfo->handles);
+      free(businfo);
+      */
       return(1);
     }
   }
@@ -121,11 +123,9 @@ main (int argc, char *argv[])
   SetCurrentCamera(cameras->camera_info.euid_64);
   //fprintf(stderr,"Set current camera\n");
   
-  g_thread_init(NULL);
-  
-  fprintf(stderr,"Creating prefs window\n");
+  //fprintf(stderr,"Creating prefs window\n");
   preferences_window= create_preferences_window();
-  fprintf(stderr,"Creating main window\n");
+  //fprintf(stderr,"Creating main window\n");
   main_window = create_main_window();
 
   //fprintf(stderr,"Building GUI...\n");
@@ -142,9 +142,9 @@ main (int argc, char *argv[])
   gtk_widget_show (main_window); // this is the only window shown at boot-time
   
   main_timeout=gtk_timeout_add(10, (GtkFunction)main_timeout_handler, (gpointer*)businfo->port_num);
-  //gdk_threads_enter();
+
   gtk_main();
-  //gdk_threads_leave();
+
 #ifdef HAVE_SDLLIB
   WatchStopThread(&watchthread_info);
 #endif
@@ -164,7 +164,6 @@ main (int argc, char *argv[])
   free(businfo->camera_nodes);
   free(businfo->handles);
   free(businfo->port_camera_num);
-  //free(whitebal_data);
   
   return 0;
 }
