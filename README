@@ -2,7 +2,7 @@
 
   		       C   O   R   I   A   N   D   E   R
 
-			     version 1.0.0-pre1
+			     version 1.0.0-pre2
 
 	         The Gnome IEEE-1394 Digital Camera Controller
 
@@ -42,24 +42,21 @@ about the libdc1394 library [2]. However, it's a real problem when you
 need to quickly setup a demo or get some frames for testing. If, just
 like me, you also had this problem, Coriander is for you [4]!
 
-This version can be considered as 'stable but with room for
-improvements'. Please have a look at the TODO, ChangeLog and BUGS
-files to see the current status of the project. Contributors are most
-welcome so if you're interrested in making this program better don't
-hesitate to contact me.
+This version can be considered stable. Please have a look at the TODO,
+ChangeLog and BUGS files to see the current status of the project.
+Contributors are most welcome so if you're interrested in making this
+program better don't hesitate to contact me.
 
 The latest version can be found on the SourceForge website:
 
 http://sourceforge.net/projects/coriander
 
-If you're wondering about a user manual, I'm afraid there's nothing
-close to that available right now. I don't think it's absolutely
-necessary: the GUI should be self-explanatory.
+There is a user manual available at the same URL. Please read it before
+sending tons-o-emails to me!! ;-)
 
-As I can only test Coriander with the camera I have (a DFW-VL500 from
-Sony), a lot of features have NOT been tested, and I just can't do it
-in an easy way.  If you have another camera, please test Coriander and
-send me an email with the bugs you identified.
+As I can only test Coriander with the cameras I have which means some
+features have not been tested. If you have another camera, please test
+Coriander and send me an email with the bugs you identified.
 
 'Hope you enjoy this software (well if you don't, just contribute to
 make it better! ;-)

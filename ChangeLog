@@ -1,6 +1,6 @@
 Coriander, (c) 2000-2004 Damien Douxchamps <ddouxchamps@users.sf.net>
 
-Changes towards version 1.0.0
+Changes in version 1.0.0-pre2
 
    March 30, 2004, by Damien Douxchamps
    - update white balance control after changing the filter control. This

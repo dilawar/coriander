@@ -7,7 +7,8 @@ Contributors:
 --------------
 Yasutoshi Onishi			-- big help debugging Format7
 Xiong Quanren				-- big help debugging Bayer decoding functions
-Marcu Lim				-- test pattern function (discontinued)
+Marcus Lim				-- test pattern function (discontinued)
 Andreas Micklei				-- Bus topology functions
 Olaf Ronneberger			-- Format7 massive debug
-
+Johan Knol				-- debug, additions, and some hot stuff for
+					   version 1.1...
