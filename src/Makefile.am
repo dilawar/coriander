@@ -40,7 +40,7 @@ coriander_SOURCES = \
 	topology.c topology.h \
 	preferences.cc preferences.h
 
-LDFLAGS += -Xlinker --export-dynamic
+AM_LDFLAGS = -Xlinker --export-dynamic
 
 #$(INTLLIBS) removed from the line below
 coriander_LDADD = $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(PTHREAD_LIB) \

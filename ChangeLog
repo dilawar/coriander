@@ -1,5 +1,10 @@
 Coriander, (c) 2000-2002 Damien Douxchamps <ddouxchamps@users.sf.net>
 
+Changes towards version 0.28
+
+   November 24, 2002, by Damien Douxchamps
+   - updated the macro file to check for a recent libdc.
+	
 Changes in version 0.27
 
    November 20, 2002, by Damien Douxchamps

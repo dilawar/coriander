@@ -20,9 +20,12 @@ AC_DEFUN([AC_CHECK_LIBDC],[
  	])
  	AC_MSG_RESULT($libdc1394)
  	if test x$libdc1394 = xno; then
-          AC_ERROR(**      libdc1394 is not installed.
-**      Source tarballs and CVS available on the SourceForge website:
-**      http://www.sf.net/projects/libdc1394)
+          AC_ERROR(
+*************************************************************************
+**      libdc1394 is not installed.                                    **
+**      Source tarballs and CVS available on the SourceForge website:  **
+**      http://www.sf.net/projects/libdc1394                           **
+*************************************************************************)
  	fi
 ])
 
@@ -46,6 +49,7 @@ AC_DEFUN([AC_CHECK_LIBDC_VERSION],[
         dc1394_dma_setup_capture(info.handle, info.id,
                          1, 1, 1, 1, 1, 1, 1,
                          dmafile, &capture);
+	dc1394_query_absolute_feature_value(info.handle, info.id, 1,&value);
  	],[
  	libdc1394=ok
  	],[
@@ -56,10 +60,13 @@ AC_DEFUN([AC_CHECK_LIBDC_VERSION],[
            LIBDC_LIBS="-ldc1394_control"
            LIBDC_CFLAGS=""
 	else
-          AC_ERROR(**      libdc1394 is too old.
-**      Please update at least to 0.9.0-2.
-**      Source tarballs and CVS available on the SourceForge website:
-**      http://www.sf.net/projects/libdc1394)
+          AC_ERROR(
+*************************************************************************
+**      libdc1394 is too old.                                          **
+**      Please update to CVS.                                          **
+**      Source tarballs and CVS available on the SourceForge website:  **
+**      http://www.sf.net/projects/libdc1394	    		       **
+*************************************************************************)
  	fi
 ])
 
@@ -76,9 +83,12 @@ AC_DEFUN([AC_CHECK_LIBRAW],[
  	])
  	AC_MSG_RESULT($libraw1394)
  	if test x$libraw1394 = xno; then
-          AC_ERROR(**      libraw1394 is not installed.
-**      Please download version 0.9.0 or later.
-**      Source tarballs and CVS at http://www.sf.net/projects/libraw1394)
+          AC_ERROR(
+***************************************************************************
+**      libraw1394 is not installed.                                     **
+**      Please download version 0.9.0 or later.                          **
+**      Source tarballs and CVS at http://www.sf.net/projects/libraw1394 **
+***************************************************************************)
 	fi
 ])
 
@@ -101,9 +111,12 @@ AC_DEFUN([AC_CHECK_LIBRAW_VERSION],[
            LIBRAW_LIBS="-lraw1394"
            LIBRAW_CFLAGS=""
 	else
-          AC_ERROR(**      libraw1394 is too old.
-**      Please download version 0.9.0 or later.
-**      Source tarballs and CVS at http://www.sf.net/projects/libraw1394)
+          AC_ERROR(
+****************************************************************************
+**      libraw1394 is too old.					          **
+**      Please download version 0.9.0 or later.                           **
+**      Source tarballs and CVS at http://www.sf.net/projects/libraw1394  **
+****************************************************************************)
 	fi
 ])
 
@@ -115,9 +128,12 @@ AC_DEFUN([AC_CHECK_FTPLIB],[
           AC_DEFINE(HAVE_FTPLIB)
           FTPLIB_LIBS="-lftp"
           FTPLIB_CFLAGS="",
-          AC_MSG_RESULT(**      ftplib is required for FTP support.
-**      Source tarball available at http://www.eclipse.net/~pfau/ftplib
-**      FTP SERVICE DISABLED))
+          AC_MSG_RESULT(
+****************************************************************************
+**      ftplib is required for FTP support.                               **
+**      Source tarball available at http://www.eclipse.net/~pfau/ftplib   **
+**      FTP SERVICE DISABLED                                              **
+****************************************************************************))
 ])
 
 AC_DEFUN([AC_CHECK_SDLLIB],[
@@ -129,9 +145,12 @@ AC_DEFUN([AC_CHECK_SDLLIB],[
 	  SDLLIB_CFLAGS=`sdl-config --cflags`
 	  AC_DEFINE(HAVE_SDLLIB)
 	else
-	  AC_MSG_RESULT(**      SDL required for display support.
-**      SDL can be downloaded in various formats at http://www.libsdl.org
-**      DISPLAY SERVICE DISABLED)
+	  AC_MSG_RESULT(
+*****************************************************************************
+**      SDL required for display support.                                  **
+**      SDL can be downloaded in various formats at http://www.libsdl.org  **
+**      DISPLAY SERVICE DISABLED                                           **
+*****************************************************************************)
 	fi
 ])
 
@@ -162,9 +181,12 @@ AC_DEFUN([AC_CHECK_REALLIB],[
   	   REALLIB_LIBS="-L/usr/local/lib/realproducersdk -lenceng -ldl"
   	   REALLIB_CFLAGS="-I/usr/local/include/realproducersdk -D_REENTRANT -D_LINUX -D_LITTLE_ENDIAN -D_UNIX"
 	else
-	  AC_MSG_RESULT(**      RealNetworks 'RealProducerSDK' and 'RealServer' required for streaming
-**	support. Please have a look at the README.REAL file if you want to
-**      enable streaming. REAL SERVICE DISABLED) 
+	  AC_MSG_RESULT(
+**********************************************************************************
+**      RealNetworks 'RealProducerSDK' and 'RealServer' required for streaming  **
+**	support. Please have a look at the README.REAL file if you want to      **
+**      enable streaming. REAL SERVICE DISABLED                                 **
+**********************************************************************************) 
  	fi
 
 ])
