@@ -1489,7 +1489,98 @@ on_prefs_save_choose_clicked           (GtkButton       *button,
   gtk_widget_show(dialog);
 }
 
+/*
+void
+on_capture_single_clicked              (GtkButton       *button,
+                                        gpointer         user_data)
+{
+  if (capture_single_frame()) {
+    GtkWidget *dialog = create_save_single_dialog();
+    gtk_widget_show(dialog);
+  }
+  
+}
 
+gboolean
+on_save_single_dialog_delete_event     (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data)
+{
+    GtkWidget *dialog = gtk_widget_get_toplevel(widget);
+    gtk_widget_destroy(dialog);
+
+    return FALSE;
+}
+
+
+void
+on_save_single_dialog_ok_clicked       (GtkButton       *button,
+                                        gpointer         user_data)
+{
+  
+    GtkWidget *dialog = gtk_widget_get_toplevel(GTK_WIDGET(button));
+    GtkWidget *window = lookup_widget(capture_window, "capture_window");
+    gchar *filename = gtk_file_selection_get_filename(GTK_FILE_SELECTION(dialog));
+    gtk_widget_hide(dialog);
+    save_single_frame(filename);
+    
+    if (ci.ftp_enable) 
+    {
+      ci.ftp_address = gtk_entry_get_text( GTK_ENTRY(lookup_widget(window, "entry_capture_ftp_address")));
+      ci.ftp_path = gtk_entry_get_text( GTK_ENTRY(lookup_widget(window, "entry_capture_ftp_path")));
+      ci.ftp_user = gtk_entry_get_text( GTK_ENTRY(lookup_widget(window, "entry_capture_ftp_user")));
+      ci.ftp_passwd = gtk_entry_get_text( GTK_ENTRY(lookup_widget(window, "entry_capture_ftp_passwd")));
+      ftp_single_frame(filename, ci.ftp_address, ci.ftp_path, filename, ci.ftp_user, ci.ftp_passwd);
+    }
+    gtk_widget_destroy(dialog);
+  
+}
+
+void
+on_save_single_dialog_cancel_clicked   (GtkButton       *button,
+                                        gpointer         user_data)
+{
+    GtkWidget *dialog = gtk_widget_get_toplevel(GTK_WIDGET(button));
+    gtk_widget_destroy(dialog);
+}
+
+
+void
+on_capture_multi_dialog_ok_clicked     (GtkButton       *button,
+                                        gpointer         user_data)
+{
+    gchar *filename;
+    GtkWidget *window = lookup_widget(capture_window, "preferences_window");
+    GtkWidget *dialog = gtk_widget_get_toplevel(GTK_WIDGET(button));
+    filename = gtk_file_selection_get_filename(GTK_FILE_SELECTION(dialog));
+    gtk_widget_hide(dialog);
+    if (capture_multi_start(filename)) {
+      gtk_widget_set_sensitive( GTK_WIDGET(lookup_widget( GTK_WIDGET(window), "capture_start")), FALSE);
+      gtk_widget_set_sensitive( GTK_WIDGET(lookup_widget( GTK_WIDGET(window), "capture_stop")), TRUE);
+      gtk_widget_set_sensitive( GTK_WIDGET(lookup_widget( GTK_WIDGET(window), "capture_single")), FALSE);
+
+      if (ci.ftp_enable) 
+      {
+        ci.ftp_address = gtk_entry_get_text( GTK_ENTRY(lookup_widget(window, "entry_capture_ftp_address")));
+        ci.ftp_path = gtk_entry_get_text( GTK_ENTRY(lookup_widget(window, "entry_capture_ftp_path")));
+        ci.ftp_user = gtk_entry_get_text( GTK_ENTRY(lookup_widget(window, "entry_capture_ftp_user")));
+        ci.ftp_passwd = gtk_entry_get_text( GTK_ENTRY(lookup_widget(window, "entry_capture_ftp_passwd")));
+        ftp_single_frame(filename, ci.ftp_address, ci.ftp_path, filename, ci.ftp_user, ci.ftp_passwd);
+      }
+
+      if (ci.frequency == CAPTURE_FREQ_IMMEDIATE)
+        gCaptureIdleID = gtk_idle_add( capture_idler, NULL);
+      else
+        {
+          ci.period = gtk_spin_button_get_value_as_int( GTK_SPIN_BUTTON(lookup_widget( GTK_WIDGET(window), "spinbutton_capture_freq_periodic")));
+          gCaptureIdleID = gtk_timeout_add( ci.period * 1000, capture_idler, NULL);
+        }
+    }
+    gtk_widget_destroy(dialog);
+  
+}
+
+*/
 void
 on_get_filename_dialog_ok_clicked      (GtkButton       *button,
                                         gpointer         user_data)
