@@ -3111,10 +3111,6 @@ create_about_window (void)
     "Damien Douxchamps <ddouxchamps@users.sf.net>",
     "Dan Dennedy <dan@dennedy.org>",
     "See the AUTHORS file for more authors and contributors",
-    "",
-    "Special thanks to Yasutoshi Onishi, Franck Meschberger",
-    "and Masato Tsujie for lenting cameras to test Format_7",
-    "and v1.30 advanced features.",
     NULL
   };
   GtkWidget *about_window;
@@ -3122,7 +3118,7 @@ create_about_window (void)
   about_window = gnome_about_new ("Coriander", VERSION,
                         _("Copyright 2000-2004 Damien Douxchamps"),
                         authors,
-                        _("The Gnome IEEE1394 Digital Camera Controller website is\nhttp://sourceforge.net/projects/coriander"),
+                        _("The Gnome IEEE1394 Digital Camera Controller website is\nhttp://coriander.sourceforge.net"),
                         "coriander/coriander-logo.png");
   gtk_object_set_data (GTK_OBJECT (about_window), "about_window", about_window);
   gtk_window_set_modal (GTK_WINDOW (about_window), TRUE);

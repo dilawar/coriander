@@ -5506,13 +5506,9 @@ anything in the GUI at all...</label>
   <authors>Damien Douxchamps &lt;ddouxchamps@users.sf.net&gt;
 Dan Dennedy &lt;dan@dennedy.org&gt;
 See the AUTHORS file for more authors and contributors
-
-Special thanks to Yasutoshi Onishi, Franck Meschberger
-and Masato Tsujie for lenting cameras to test Format_7
-and v1.30 advanced features.
 </authors>
   <comments>The Gnome IEEE1394 Digital Camera Controller website is
-http://sourceforge.net/projects/coriander</comments>
+http://coriander.sourceforge.net</comments>
 </widget>
 
 <widget>
