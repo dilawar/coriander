@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT(configure.in)
-AM_INIT_AUTOMAKE(coriander, 1.0.0-pre3)
+AM_INIT_AUTOMAKE(coriander, 1.0.0)
 AM_CONFIG_HEADER(config.h)
 
 

@@ -1,8 +1,3 @@
-Known bugs/limiations for version 1.0.0-pre3:
+Known bugs/limiations for version 1.0.0:
 
-- If you want to use coriander remotely, i.e. run coriander on
-  a remote machine with a display export, the BPP settings of
-  computer displays should be the same.
-- F7 seems to have some troubles during capture: changing mode
-  format even only once disable any further capture until the
-  camera is rebooted. This happens only with some cameras.
+None at this time.

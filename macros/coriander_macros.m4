@@ -17,7 +17,7 @@ AC_DEFUN([AC_CHECK_LIBDC],[
  	if test x$libdc1394 = xno; then
           AC_ERROR([libdc1394 is not installed.  
 **************************************************************************
-**   Please install libdc1394 version >= 0.9.3                          **
+**   Please install libdc1394 version >= 1.0.0                          **
 **   Source tarball and CVS at:  http://www.sf.net/projects/libdc1394   **
 **************************************************************************])
  	fi
@@ -33,7 +33,7 @@ AC_DEFUN([AC_CHECK_LIBDC_VERSION_FUNCTION],[
 	else
           AC_ERROR([libdc1394 is too old. 
 **************************************************************************
-**   Please upgrade to the current CVS or to a version >= 0.9.4         **
+**   Please upgrade to the current CVS or to a version >= 1.0.0         **
 **   Source tarball and CVS at:  http://www.sf.net/projects/libdc1394   **
 **************************************************************************])
  	fi
@@ -49,7 +49,7 @@ AC_DEFUN([AC_CHECK_LIBDC_VERSION_COMPILE],[
 	int main(void) {
 	raw1394handle_t handle;
 	dc1394_cameracapture camera;
-	  dc1394_dma_setup_capture(handle, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	  dc1394_dma_setup_capture(handle, 0, 0, 0, 0, 0, 0, 0, 0,
 	                           "tmp", &camera);
 	  return 0;
 	}
@@ -60,7 +60,7 @@ AC_DEFUN([AC_CHECK_LIBDC_VERSION_COMPILE],[
 	else
           AC_ERROR([libdc1394 is too old. 
 **************************************************************************
-**   Please upgrade to the current CVS or to a version >= 0.9.4         **
+**   Please upgrade to the current CVS or to a version >= 1.0.0         **
 **   Source tarball and CVS at:  http://www.sf.net/projects/libdc1394   **
 **************************************************************************])
  	fi
