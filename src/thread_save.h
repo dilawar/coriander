@@ -23,6 +23,7 @@
 
 
 #include <pthread.h>
+#include "thread_base.h"
 #include "definitions.h"
 
 typedef enum
@@ -45,6 +46,7 @@ typedef struct
   unsigned char*     save_buffer;
   int                save_scratch;
   long int           period;
+  int                rawdump;
 
 } savethread_info_t;
 
@@ -59,5 +61,8 @@ SaveThread(void* arg);
 
 gint
 SaveStopThread(void);
+
+void
+Dump2File(char *name, chain_t *service);
 
 #endif

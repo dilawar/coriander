@@ -49,8 +49,8 @@ LoadConfigFile(void)
   preferences.receive_method = gnome_config_get_int("coriander/receive/method=0");
   g_free(preferences.video1394_device);
   preferences.video1394_device = gnome_config_get_string("coriander/receive/video1394_device=/dev/video1394");
-  preferences.save_filename = gnome_config_get_string("coriander/save/filename=test.jpg");
   g_free(preferences.save_filename);
+  preferences.save_filename = gnome_config_get_string("coriander/save/filename=test.jpg");
   preferences.save_scratch = gnome_config_get_int("coriander/save/scratch=0");
   preferences.save_period = gnome_config_get_int("coriander/save/period=1");
   g_free(preferences.ftp_address);

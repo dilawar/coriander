@@ -812,36 +812,39 @@ void
 on_prefs_save_button_clicked           (GtkButton       *button,
                                         gpointer         user_data)
 {
-  gchar *tmp;
+  g_free(preferences.save_filename);
+  preferences.save_filename=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_save_filename")));
+  g_free(preferences.video1394_device);
+  preferences.video1394_device=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_video1394_device")));
 
-  tmp=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_ftp_address")));
-  strcpy(preferences.ftp_address,tmp);
-  tmp=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_ftp_filename")));
-  strcpy(preferences.ftp_filename,tmp);
-  tmp=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_ftp_path")));
-  strcpy(preferences.ftp_path,tmp);
-  tmp=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_ftp_password")));
-  strcpy(preferences.ftp_password,tmp);
-  tmp=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_ftp_user")));
-  strcpy(preferences.ftp_user,tmp);
-  tmp=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_save_filename")));
-  strcpy(preferences.save_filename,tmp);
+#ifdef HAVE_FTPLIB
+  g_free(preferences.ftp_address);
+  preferences.ftp_address=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_ftp_address")));
+  g_free(preferences.ftp_filename);
+  preferences.ftp_filename=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_ftp_filename")));
+  g_free(preferences.ftp_path);
+  preferences.ftp_path=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_ftp_path")));
+  g_free(preferences.ftp_password);
+  preferences.ftp_password=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_ftp_password")));
+  g_free(preferences.ftp_user);
+  preferences.ftp_user=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_ftp_user")));
+#endif
 
 #ifdef HAVE_REALLIB
+  g_free(preferences.real_address);
   tmp=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_address")));
-  strcpy(preferences.real_address,tmp);
+  g_free(preferences.real_user);
   tmp=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_user")));
-  strcpy(preferences.real_user,tmp);
+  g_free(preferences.real_password);
   tmp=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_password")));
-  strcpy(preferences.real_password,tmp);
+  g_free(preferences.real_fielname);
   tmp=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_filename")));
-  strcpy(preferences.real_filename,tmp);
+  g_free(preferences.real_title);
   tmp=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_title")));
-  strcpy(preferences.real_title,tmp);
+  g_free(preferences.real_author);
   tmp=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_author")));
-  strcpy(preferences.real_author,tmp);
+  g_free(preferences.real_copyright);
   tmp=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_copyright")));
-  strcpy(preferences.real_copyright,tmp);
 #endif
 
   preferences.op_timeout = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(preferences_window), "prefs_op_timeout_scale")));
@@ -850,9 +853,6 @@ on_prefs_save_button_clicked           (GtkButton       *button,
   preferences.save_period = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(preferences_window), "prefs_save_period")));
   preferences.ftp_period = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(preferences_window), "prefs_ftp_period")));
   preferences.real_port = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(preferences_window), "prefs_real_port")));
-
-  tmp=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_video1394_device")));
-  strcpy(preferences.video1394_device,tmp);
 
   WriteConfigFile();
 }

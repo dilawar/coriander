@@ -79,7 +79,9 @@ SaveStartThread(void)
 
       info->counter=0;
       info->save_scratch=preferences.save_scratch;
-
+      // if format extension is ".raw", we dump raw data on the file and perform no conversion
+      info->rawdump=(strstr(".raw",info->filename_ext)!=NULL);
+       
       pthread_mutex_unlock(&save_service->mutex_data);
 
       /* Insert chain and start service*/
@@ -165,9 +167,6 @@ SaveThread(void* arg)
 	      if (skip_counter==(info->period-1))
 		{
 		  skip_counter=0;
-		  convert_to_rgb(save_service->current_buffer, info->save_buffer,
-				 save_service->mode, save_service->width,
-				 save_service->height);
 		  if (info->save_scratch == SAVE_SCRATCH_OVERWRITE)
 		    {
 		      sprintf(filename_out, "%s%s", info->filename,info->filename_ext);
@@ -179,10 +178,18 @@ SaveThread(void* arg)
 				info->counter++, info->filename_ext);
 		      }
 		  
-		  im=gdk_imlib_create_image_from_data(info->save_buffer,NULL,
-						      save_service->width, save_service->height);
-		  gdk_imlib_save_image(im, filename_out, NULL);
-		  if (im != NULL) gdk_imlib_kill_image(im);
+		  if (info->rawdump)
+		    Dump2File(filename_out,save_service);
+		  else
+		    {
+		      convert_to_rgb(save_service->current_buffer, info->save_buffer,
+				     save_service->mode, save_service->width,
+				     save_service->height);
+		      im=gdk_imlib_create_image_from_data(info->save_buffer,NULL,
+							  save_service->width, save_service->height);
+		      gdk_imlib_save_image(im, filename_out, NULL);
+		      if (im != NULL) gdk_imlib_kill_image(im);
+		    }
 		}
 	      else
 		skip_counter++;
@@ -233,4 +240,18 @@ SaveStopThread(void)
     }
 
   return (1);
+}
+
+void
+Dump2File( char *name, chain_t *service)
+{
+  FILE *fd;
+  fd=fopen(name,"w");
+  if (fd==NULL)
+    MainError("Can't open file for saving");
+  else
+    {
+      fwrite(service->current_buffer, 1, service->bytes_per_frame, fd);
+      fclose(fd);
+    }
 }
