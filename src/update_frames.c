@@ -39,7 +39,7 @@ UpdatePrefsDisplayFrame(void)
 {
   gtk_widget_set_sensitive(lookup_widget(main_window,"display_redraw_rate"),
 			   camera->prefs.display_redraw==DISPLAY_REDRAW_ON);
-  gtk_widget_set_sensitive(lookup_widget(main_window,"label155"),
+  gtk_widget_set_sensitive(lookup_widget(main_window,"label155a"),
 			   camera->prefs.display_redraw==DISPLAY_REDRAW_ON);
 
   UpdatePrefsDisplayOverlayFrame();
@@ -572,37 +572,54 @@ void
 UpdateServiceTree(void)
 {
   char **temp;
-  int i;
-  GtkCList *list;
+  int i, j, n, s, service_id;
   camera_t* cam;
   chain_t* service;
   char tmp_string[20];
-  //fprintf(stderr,"test-----------------------\n");
+  GtkTreeModel *model;
+  GtkTreeStore *store;
+  GtkTreeView *view;
+  GtkTreeIter first_cam, cam_leaf, first_service, service_leaf;
 
-  list=(GtkCList*)(lookup_widget(main_window,"service_clist"));
+  view  = (GtkTreeView*)lookup_widget(main_window,"service_tree");
+  model = gtk_tree_view_get_model(view);
+  store = GTK_TREE_STORE(model);
 
   temp=(char**)malloc(3*sizeof(char*));
   for (i=0;i<3;i++) {
     temp[i]=(char*)malloc(STRING_SIZE*sizeof(char));
   }
-  
-  // freeze the clist
-  gtk_clist_freeze(list);
-  
-  // clear the clist
-  gtk_clist_clear(list);
+
+  gtk_tree_model_get_iter_first(model, &cam_leaf);
 
   cam=cameras;
   while(cam!=NULL) {
-    //fprintf(stderr,"test1\n");
-    sprintf(temp[0],"%s",cam->prefs.name);
-    sprintf(temp[1]," ");
-    sprintf(temp[2]," ");
-    gtk_clist_append (list, temp);
-    for (i=SERVICE_ISO;i<=SERVICE_FTP;i++) {
-      service=GetService(cam,i);
+    n = gtk_tree_model_iter_n_children  (model, &cam_leaf);
+    //fprintf(stderr,"Initial number of services in list: %d\n",n);
+
+    if (n>0) {
+      gtk_tree_model_iter_children(model, &service_leaf, &cam_leaf);
+      // check that each existing service is alive
+      for (i=0;i<n;i++) {
+	gtk_tree_model_get (model, &service_leaf, 3, &service_id, -1);
+	if (GetService(cam,service_id)==NULL) {
+	  // remove this service row
+	  //fprintf(stderr,"Service dead, removing\n");
+	  gtk_tree_store_remove(store, &service_leaf);
+	}
+	// go to next service
+	if (service_leaf.user_data!=NULL)
+	  gtk_tree_model_iter_next(model, &service_leaf);
+      }
+    }
+    //n = gtk_tree_model_iter_n_children  (model, &cam_leaf);
+    //fprintf(stderr,"Number of services in list after cleanup: %d\n",n);
+
+    for (s=SERVICE_ISO;s<=SERVICE_FTP;s++) {
+      service=GetService(cam,s);
       if (service!=NULL) {
 
+	// update volatile data in all cases
 	if (service->fps_frames>0) {
 	  sprintf(tmp_string," %.3f",service->fps);
 	  sprintf(temp[1],"%.5f", service->fps);
@@ -612,10 +629,17 @@ UpdateServiceTree(void)
 	  sprintf(temp[1],"%.5f", fabs(0.0));
 	}
 
-	switch(i) {
+	pthread_mutex_lock(&service->mutex_data);
+	service->prev_time=service->current_time;
+	service->fps_frames=0;
+	pthread_mutex_unlock(&service->mutex_data);
+
+	sprintf(temp[2],"%llu", service->processed_frames);
+
+	// update main window FPS counters
+	switch(s) {
 	case SERVICE_ISO:
-	  //fprintf(stderr,"rec\n");
-	  sprintf(temp[0],"     Receive");
+	  sprintf(temp[0],"Receive");
 	  if (cam==camera) {
 	    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_receive"),
 				 ctxt.fps_receive_ctxt, ctxt.fps_receive_id);
@@ -624,8 +648,7 @@ UpdateServiceTree(void)
 	  }
 	  break;
 	case SERVICE_DISPLAY:
-	  //fprintf(stderr,"dis\n");
-	  sprintf(temp[0],"     Display");
+	  sprintf(temp[0],"Display");
 	  if (cam==camera) {
 	    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_display"),
 				 ctxt.fps_display_ctxt, ctxt.fps_display_id);
@@ -634,8 +657,7 @@ UpdateServiceTree(void)
 	    }
 	  break;
 	case SERVICE_SAVE:
-	  //fprintf(stderr,"sav\n");
-	  sprintf(temp[0],"     Save   ");
+	  sprintf(temp[0],"Save");
 	  if (cam==camera) {
 	    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_save"),
 				 ctxt.fps_save_ctxt, ctxt.fps_save_id);
@@ -644,7 +666,7 @@ UpdateServiceTree(void)
 	  }
 	  break;
 	case SERVICE_V4L:
-	  sprintf(temp[0],"     V4L    ");
+	  sprintf(temp[0],"V4L");
 	  if (cam==camera) {
 	    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_v4l"),
 				 ctxt.fps_v4l_ctxt, ctxt.fps_v4l_id);
@@ -653,7 +675,7 @@ UpdateServiceTree(void)
 	  }
 	  break;
 	case SERVICE_FTP:
-	  sprintf(temp[0],"     FTP    ");
+	  sprintf(temp[0],"FTP");
 	  if (cam==camera) {
 	    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_ftp"),
 				 ctxt.fps_ftp_ctxt, ctxt.fps_ftp_id);
@@ -665,20 +687,41 @@ UpdateServiceTree(void)
 	  sprintf(temp[0],"!! Unknown service ID !!");
 	  break;
 	}
-	
-	pthread_mutex_lock(&service->mutex_data);
-	service->prev_time=service->current_time;
-	service->fps_frames=0;
-	pthread_mutex_unlock(&service->mutex_data);
 
-	sprintf(temp[2],"%llu", service->processed_frames);
-	gtk_clist_append (list, temp);
+	// find service in the list
+	n = gtk_tree_model_iter_n_children  (model, &cam_leaf);
+	if (n>0) {
+	  gtk_tree_model_iter_children(model, &service_leaf, &cam_leaf);
+	  for (j=0;j<n;j++) {
+	    gtk_tree_model_get(model, &service_leaf, 3, &service_id, -1);
+	    //fprintf(stderr,"service_id of node %d: %d\n",j,service_id);
+	    if (service_id==s) {
+	      //fprintf(stderr,"  service found\n");
+	      break;
+	    }
+	    // go to next service
+	    if (service_leaf.user_data!=NULL)
+	      gtk_tree_model_iter_next(model, &service_leaf);
+	  }
+	}
+	else {
+	  service_id=-1; //force add
+	}
+	// if not there, create a new row and label it
+	if (service_id!=s) {
+	  //fprintf(stderr,"Add service id %d\n",s);
+	  gtk_tree_store_append(store, &service_leaf, &cam_leaf);
+	  gtk_tree_store_set(store, &service_leaf, 0, temp[0], 3, s, -1);
+	}
+	gtk_tree_store_set(store, &service_leaf, 1, temp[1], 2, temp[2], -1);
+
       }
       else {
-	switch(i) {
+	// we need to clear the FPS counters in the main window
+      
+	switch(s) {
 	case SERVICE_ISO:
 	  if (cam==camera) {
-	    //fprintf(stderr,"rec1\n");
 	    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_receive"),
 				 ctxt.fps_receive_ctxt, ctxt.fps_receive_id);
 	    ctxt.fps_receive_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_receive"),
@@ -687,7 +730,6 @@ UpdateServiceTree(void)
 	  break;
 	case SERVICE_DISPLAY:
 	  if (cam==camera) {
-	    //fprintf(stderr,"dis1\n");
 	    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_display"),
 				 ctxt.fps_display_ctxt, ctxt.fps_display_id);
 	    ctxt.fps_receive_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_display"),
@@ -696,7 +738,6 @@ UpdateServiceTree(void)
 	  break;
 	case SERVICE_SAVE:
 	  if (cam==camera) {
-	    //fprintf(stderr,"sav1\n");
 	    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_save"),
 				 ctxt.fps_save_ctxt, ctxt.fps_save_id);
 	    ctxt.fps_receive_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_save"),
@@ -723,24 +764,19 @@ UpdateServiceTree(void)
 	  sprintf(temp[0],"!! Unknown service ID !!");
 	  break;
 	}
-
       }
     }
+    //n = gtk_tree_model_iter_n_children  (model, &cam_leaf);
+    //fprintf(stderr,"Number of services in list after adding: %d\n",n);
+
     cam=cam->next;
   }
-
-  //gtk_clist_set_column_width (list, 0, 200);
-  //gtk_clist_set_column_width (list, 1, 100);
-
-  //fprintf(stderr,"test3\n");
-  // unfreeze the clist
-  gtk_clist_thaw(list);
 
   for (i=0;i<3;i++) {
     free(temp[i]);
   }
   free(temp);
-  //fprintf(stderr,"test4\n");
+
 }
 
 void

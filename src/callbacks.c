@@ -53,8 +53,6 @@ on_about_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
   about_window = create_about_window ();
-  gtk_signal_connect(GTK_OBJECT(about_window), "realize",
-		     GTK_SIGNAL_FUNC(window_set_icon), about_window);
   gtk_widget_show (about_window);
 }
 
@@ -279,42 +277,38 @@ on_format7_packet_size_changed               (GtkAdjustment    *adj,
   int bpp;
   int state;
   int value;
-  
+
   value=(int)adj->value;
 
   value=NearestValue(value,camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].min_bpp,
 		     camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].min_bpp,
 		     camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].max_bpp);
 
-  // do something if we were called by a first generation signal:
-  if (gtk_signal_n_emissions_by_name(GTK_OBJECT (adj), "changed")==0) {
-
-    IsoFlowCheck(&state);
+  IsoFlowCheck(&state);
+  
+  if (dc1394_set_format7_byte_per_packet(camera->camera_info.handle, camera->camera_info.id, 
+					 camera->format7_info.edit_mode, value)!=DC1394_SUCCESS)
+    MainError("Could not change Format7 bytes per packet");
+  
+  if (dc1394_query_format7_byte_per_packet(camera->camera_info.handle, camera->camera_info.id,
+					   camera->format7_info.edit_mode,&bpp)!=DC1394_SUCCESS) 
+    MainError("Could not query Format7 bytes per packet");
+  else {
+    camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].bpp=bpp;
+    if (bpp==0)
+      fprintf(stderr,"BPP is zero in %s at line %d\n",__FUNCTION__,__LINE__);
     
-    if (dc1394_set_format7_byte_per_packet(camera->camera_info.handle, camera->camera_info.id, 
-					   camera->format7_info.edit_mode, value)!=DC1394_SUCCESS)
-      MainError("Could not change Format7 bytes per packet");
-
-    if (dc1394_query_format7_byte_per_packet(camera->camera_info.handle, camera->camera_info.id,
-					     camera->format7_info.edit_mode,&bpp)!=DC1394_SUCCESS) 
-      MainError("Could not query Format7 bytes per packet");
-    else {
-      camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].bpp=bpp;
-      if (bpp==0)
-	fprintf(stderr,"BPP is zero in %s at line %d\n",__FUNCTION__,__LINE__);
-      
-      // tell the range to change its setting
-      adj->value=bpp;
-      gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
-      
-      usleep(DELAY);
-    }
-
-    GetFormat7ModeInfo(camera, camera->format7_info.edit_mode);
-    UpdateFormat7InfoFrame();
-    IsoFlowResume(&state);
+    // tell the range to change its setting
+    adj->value=bpp;
+    g_signal_emit_by_name((gpointer) adj, "changed");
     
+    usleep(DELAY);
   }
+  
+  GetFormat7ModeInfo(camera, camera->format7_info.edit_mode);
+  UpdateFormat7InfoFrame();
+  IsoFlowResume(&state);
+  
 } 
 
 void
@@ -461,8 +455,6 @@ void
 on_preferences_window_activate         (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-  gtk_signal_connect(GTK_OBJECT(preferences_window), "realize",
-		     GTK_SIGNAL_FUNC(window_set_icon), preferences_window);
   gtk_widget_show(preferences_window);
 }
 
@@ -677,8 +669,6 @@ on_key_bindings_activate               (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
   help_window = create_help_window();
-  gtk_signal_connect(GTK_OBJECT(help_window), "realize",
-		     GTK_SIGNAL_FUNC(window_set_icon), help_window);
   BuildHelpWindow();
   gtk_widget_show(help_window);
 }
@@ -695,7 +685,7 @@ on_camera_name_text_changed            (GtkEditable     *editable,
   const char *camera_name_str =  "coriander/camera_names/";
   //fprintf(stderr,"name changed\n");
   tmp=(char*)malloc(STRING_SIZE*sizeof(char));
-  tmp_ptr=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window, "camera_name_text")));
+  tmp_ptr=(char*)gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window, "camera_name_text")));
   sprintf(tmp,"%s%llx",camera_name_str, camera->camera_info.euid_64);
   gnome_config_set_string(tmp,tmp_ptr);
   gnome_config_sync();
@@ -811,7 +801,7 @@ on_prefs_ftp_address_changed           (GtkEditable     *editable,
                                         gpointer         user_data)
 {
   char *tmp_ptr;
-  tmp_ptr=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"prefs_ftp_address")));
+  tmp_ptr=(char*)gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"prefs_ftp_address")));
   strcpy(camera->prefs.ftp_address,tmp_ptr);
   gnome_config_set_string("coriander/ftp/address",camera->prefs.ftp_address);
   gnome_config_sync();
@@ -823,7 +813,7 @@ on_prefs_ftp_path_changed              (GtkEditable     *editable,
                                         gpointer         user_data)
 {
   char *tmp_ptr;
-  tmp_ptr=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"prefs_ftp_path")));
+  tmp_ptr=(char*)gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"prefs_ftp_path")));
   strcpy(camera->prefs.ftp_path,tmp_ptr);
   gnome_config_set_string("coriander/ftp/path",camera->prefs.ftp_path);
   gnome_config_sync();
@@ -836,7 +826,7 @@ on_prefs_ftp_user_changed              (GtkEditable     *editable,
                                         gpointer         user_data)
 {
   char *tmp_ptr;
-  tmp_ptr=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"prefs_ftp_user")));
+  tmp_ptr=(char*)gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"prefs_ftp_user")));
   strcpy(camera->prefs.ftp_user,tmp_ptr);
   gnome_config_set_string("coriander/ftp/user",camera->prefs.ftp_user);
   gnome_config_sync();
@@ -849,7 +839,7 @@ on_prefs_ftp_password_changed          (GtkEditable     *editable,
                                         gpointer         user_data)
 {
   char *tmp_ptr;
-  tmp_ptr=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"prefs_ftp_password")));
+  tmp_ptr=(char*)gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"prefs_ftp_password")));
   strcpy(camera->prefs.ftp_password,tmp_ptr);
   // don't save passwords!
   //gnome_config_set_string("coriander/ftp/password",preferences.ftp_password);
@@ -862,7 +852,7 @@ on_prefs_ftp_filename_changed          (GtkEditable     *editable,
                                         gpointer         user_data)
 {
   char *tmp_ptr;
-  tmp_ptr=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"prefs_ftp_filename")));
+  tmp_ptr=(char*)gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"prefs_ftp_filename")));
   strcpy(camera->prefs.ftp_filename,tmp_ptr);
   gnome_config_set_string("coriander/ftp/filename",camera->prefs.ftp_filename);
   gnome_config_sync();
@@ -1043,7 +1033,7 @@ on_prefs_video1394_device_changed      (GtkEditable     *editable,
                                         gpointer         user_data)
 {
   char *tmp_ptr;
-  tmp_ptr=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"prefs_video1394_device")));
+  tmp_ptr=(char*)gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"prefs_video1394_device")));
   strcpy(camera->prefs.video1394_device,tmp_ptr);
   gnome_config_set_string("coriander/receive/video1394_device",camera->prefs.video1394_device);
   gnome_config_sync();
@@ -1055,7 +1045,7 @@ on_prefs_v4l_dev_name_changed      (GtkEditable     *editable,
                                   gpointer         user_data)
 {
   char *tmp_ptr;
-  tmp_ptr=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"prefs_v4l_dev_name")));
+  tmp_ptr=(char*)gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"prefs_v4l_dev_name")));
   strcpy(camera->prefs.v4l_dev_name,tmp_ptr);
   gnome_config_set_string("coriander/v4l/v4l_dev_name",camera->prefs.v4l_dev_name);
   gnome_config_sync();
@@ -1504,7 +1494,7 @@ on_overlay_file_subentry_changed       (GtkEditable     *editable,
                                         gpointer         user_data)
 {
   char *tmp_ptr;
-  tmp_ptr=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"overlay_file_subentry")));
+  tmp_ptr=(char*)gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"overlay_file_subentry")));
   strcpy(camera->prefs.overlay_filename,tmp_ptr);
   gnome_config_set_string("coriander/display/overlay_filename",camera->prefs.overlay_filename);
   gnome_config_sync();
@@ -1518,7 +1508,7 @@ on_save_filename_subentry_changed      (GtkEditable     *editable,
   char *tmp_ptr;
   gchar *tmp;
 
-  tmp_ptr=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"save_filename_subentry")));
+  tmp_ptr=(char*)gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"save_filename_subentry")));
   strcpy(camera->prefs.save_filename,tmp_ptr);
   strcpy(camera->prefs.save_filename_base,tmp_ptr);
   gnome_config_set_string("coriander/save/filename",camera->prefs.save_filename);

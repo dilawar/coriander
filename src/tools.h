@@ -94,8 +94,10 @@ SetFormat7Crop(int sx, int sy, int px, int py, int mode);
 int
 NearestValue(int value, int step, int min, int max);
 
+/*
 void
 window_set_icon(GtkWidget* window);
+*/
 
 void
 GetXvInfo(xvinfo_t *xvinfo);

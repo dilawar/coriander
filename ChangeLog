@@ -1,5 +1,12 @@
 Coriander, (c) 2000-2005 Damien Douxchamps <ddouxchamps@users.sf.net>
 
+Changes towards version 2.0.0
+	
+   Apr 5, 2005, by Damien Douxchamps
+   - first port to Gnome 2.x. Still on the todo list:
+	+ remove the two pango warnings at startup
+	+ replace GdkImLib which is deprecated
+	
 Changes towards version 1.0.2
 
    Mar 18, 2005, by Damien Douxchamps

@@ -80,4 +80,7 @@ BuildOptionFrame(void);
 void
 BuildBandwidthFrame(void);
 
+void
+BuildSeviceTreeFrame(void);
+
 #endif // __BUILDFRAMES_H__

@@ -70,7 +70,7 @@ BuildTriggerModeMenu(void)
 	glade_menuitem = gtk_menu_item_new_with_label (_(trigger_mode_list[i]));
 	gtk_widget_show (glade_menuitem);
 	gtk_menu_append (GTK_MENU (trigger_mode_menu), glade_menuitem);
-	gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate", GTK_SIGNAL_FUNC (on_trigger_mode_activate), (int*)f);
+	g_signal_connect ((gpointer) glade_menuitem, "activate", G_CALLBACK (on_trigger_mode_activate), (int*)f);
       }
       else
 	index[i]=0;
@@ -125,7 +125,7 @@ BuildMemoryChannelMenu(void)
 
   channel_num = gtk_option_menu_new ();
   gtk_widget_ref (channel_num);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "memory_channel", channel_num,
+  gtk_object_set_data_full ((gpointer) main_window, "memory_channel", channel_num,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (channel_num);
   gtk_table_attach_defaults (GTK_TABLE (lookup_widget(main_window,"table16")), channel_num, 0, 1, 0, 1);
@@ -137,8 +137,8 @@ BuildMemoryChannelMenu(void)
     glade_menuitem = gtk_menu_item_new_with_label (_(channel_num_list[i]));
     gtk_widget_show (glade_menuitem);
     gtk_menu_append (GTK_MENU (channel_num_menu), glade_menuitem);
-    gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-			GTK_SIGNAL_FUNC (on_memory_channel_activate),
+    g_signal_connect ((gpointer) glade_menuitem, "activate",
+			G_CALLBACK (on_memory_channel_activate),
 			(int*)i); // i is an int passed in a pointer variable. This is 'normal'.
   }
 
@@ -163,7 +163,7 @@ BuildCameraMenu(void)
 
   camera_id = gtk_option_menu_new ();
   gtk_widget_ref (camera_id);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "camera_select", camera_id,
+  gtk_object_set_data_full ((gpointer) main_window, "camera_select", camera_id,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (camera_id);
   gtk_table_attach_defaults (GTK_TABLE (lookup_widget(main_window,"table9")), camera_id, 1, 2, 0, 1);
@@ -178,8 +178,8 @@ BuildCameraMenu(void)
     glade_menuitem = gtk_menu_item_new_with_label (_(camera_ptr->prefs.name));
     gtk_widget_show (glade_menuitem);
     gtk_menu_append (GTK_MENU (camera_id_menu), glade_menuitem);
-    gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-			GTK_SIGNAL_FUNC (on_camera_select_activate),
+    g_signal_connect ((gpointer) glade_menuitem, "activate",
+			G_CALLBACK (on_camera_select_activate),
 			(camera_t*)camera_ptr);
     if (camera_ptr==camera) {
       current_camera_id=i;
@@ -212,7 +212,7 @@ BuildFormat7ModeMenu(void)
 
   mode_num = gtk_option_menu_new ();
   gtk_widget_ref (mode_num);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "format7_mode", mode_num,
+  gtk_object_set_data_full ((gpointer) main_window, "format7_mode", mode_num,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (mode_num);
   gtk_table_attach_defaults (GTK_TABLE (lookup_widget(main_window,"table19")), mode_num, 0, 1, 0, 1);
@@ -227,8 +227,8 @@ BuildFormat7ModeMenu(void)
       glade_menuitem = gtk_menu_item_new_with_label (_(format7_mode_list[i]));
       gtk_widget_show (glade_menuitem);
       gtk_menu_append (GTK_MENU (mode_num_menu), glade_menuitem);
-      gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-			  GTK_SIGNAL_FUNC (on_edit_format7_mode_activate),
+      g_signal_connect ((gpointer) glade_menuitem, "activate",
+			  G_CALLBACK (on_edit_format7_mode_activate),
 			  (int*)f); // i is an int passed in a pointer variable. This is 'normal'.
     }
     else
@@ -263,7 +263,7 @@ BuildFormat7ColorMenu(void)
 
   color_num = gtk_option_menu_new ();
   gtk_widget_ref (color_num);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "format7_color", color_num,
+  gtk_object_set_data_full ((gpointer) main_window, "format7_color", color_num,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (color_num);
   gtk_table_attach_defaults (GTK_TABLE (lookup_widget(main_window,"table19")), color_num, 2, 3, 0, 1);
@@ -278,8 +278,8 @@ BuildFormat7ColorMenu(void)
       glade_menuitem = gtk_menu_item_new_with_label (_(format7_color_list[i]));
       gtk_widget_show (glade_menuitem);
       gtk_menu_append (GTK_MENU (color_num_menu), glade_menuitem);
-      gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-			  GTK_SIGNAL_FUNC (on_edit_format7_color_activate),
+      g_signal_connect ((gpointer) glade_menuitem, "activate",
+			  G_CALLBACK (on_edit_format7_color_activate),
 			  (int*)f); // f is an int passed in a pointer variable. This is 'normal'.
     }
     else
@@ -319,7 +319,7 @@ BuildFpsMenu(void)
     
     fps = gtk_option_menu_new ();
     gtk_widget_ref (fps);
-    gtk_object_set_data_full (GTK_OBJECT (main_window), "fps_menu", fps,
+    gtk_object_set_data_full ((gpointer) main_window, "fps_menu", fps,
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (fps);
     gtk_table_attach_defaults (GTK_TABLE (lookup_widget(main_window,"table17")), fps, 0, 2, 2, 3);
@@ -335,8 +335,8 @@ BuildFpsMenu(void)
 	glade_menuitem = gtk_menu_item_new_with_label (_(fps_label_list[i]));
 	gtk_widget_show (glade_menuitem);
 	gtk_menu_append (GTK_MENU (fps_menu), glade_menuitem);
-	gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-			    GTK_SIGNAL_FUNC (on_fps_activate),
+	g_signal_connect ((gpointer) glade_menuitem, "activate",
+			    G_CALLBACK (on_fps_activate),
 			    (int*)f);
       }
       else
@@ -375,7 +375,7 @@ BuildFormatMenu(void)
 
   mode_num = gtk_option_menu_new ();
   gtk_widget_ref (mode_num);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "format_select", mode_num,
+  gtk_object_set_data_full ((gpointer) main_window, "format_select", mode_num,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (mode_num);
   gtk_table_attach_defaults (GTK_TABLE (lookup_widget(main_window,"table60")), mode_num, 0, 1, 0, 1);
@@ -406,8 +406,8 @@ BuildFormatMenu(void)
       glade_menuitem = gtk_menu_item_new_with_label (_(format0_list[f-MODE_FORMAT0_MIN]));
       gtk_widget_show (glade_menuitem);
       gtk_menu_append (GTK_MENU (mode_num_menu), glade_menuitem);
-      gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-			  GTK_SIGNAL_FUNC (ChangeModeAndFormat),
+      g_signal_connect ((gpointer) glade_menuitem, "activate",
+			  G_CALLBACK (ChangeModeAndFormat),
 			  (int*)f); // i is an int passed in a pointer variable. This is 'normal'.
     }
     else
@@ -431,8 +431,8 @@ BuildFormatMenu(void)
       glade_menuitem = gtk_menu_item_new_with_label (_(format1_list[f-MODE_FORMAT1_MIN]));
       gtk_widget_show (glade_menuitem);
       gtk_menu_append (GTK_MENU (mode_num_menu), glade_menuitem);
-      gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-			  GTK_SIGNAL_FUNC (ChangeModeAndFormat),
+      g_signal_connect ((gpointer) glade_menuitem, "activate",
+			  G_CALLBACK (ChangeModeAndFormat),
 			  (int*)f); // i is an int passed in a pointer variable. This is 'normal'.
     }
     else
@@ -456,8 +456,8 @@ BuildFormatMenu(void)
       glade_menuitem = gtk_menu_item_new_with_label (_(format2_list[f-MODE_FORMAT2_MIN]));
       gtk_widget_show (glade_menuitem);
       gtk_menu_append (GTK_MENU (mode_num_menu), glade_menuitem);
-      gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-			  GTK_SIGNAL_FUNC (ChangeModeAndFormat),
+      g_signal_connect ((gpointer) glade_menuitem, "activate",
+			  G_CALLBACK (ChangeModeAndFormat),
 			  (int*)f); // i is an int passed in a pointer variable. This is 'normal'.
     }
     else
@@ -481,8 +481,8 @@ BuildFormatMenu(void)
       glade_menuitem = gtk_menu_item_new_with_label (_(format6_list[f-MODE_FORMAT6_MIN]));
       gtk_widget_show (glade_menuitem);
       gtk_menu_append (GTK_MENU (mode_num_menu), glade_menuitem);
-      gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-			  GTK_SIGNAL_FUNC (ChangeModeAndFormat),
+      g_signal_connect ((gpointer) glade_menuitem, "activate",
+			  G_CALLBACK (ChangeModeAndFormat),
 			  (int*)f); // i is an int passed in a pointer variable. This is 'normal'.
     }
     else
@@ -506,8 +506,8 @@ BuildFormatMenu(void)
       glade_menuitem = gtk_menu_item_new_with_label (_(format7_list[f-MODE_FORMAT7_MIN]));
       gtk_widget_show (glade_menuitem);
       gtk_menu_append (GTK_MENU (mode_num_menu), glade_menuitem);
-      gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-			  GTK_SIGNAL_FUNC (ChangeModeAndFormat),
+      g_signal_connect ((gpointer) glade_menuitem, "activate",
+			  G_CALLBACK (ChangeModeAndFormat),
 			  (int*)f); // i is an int passed in a pointer variable. This is 'normal'.
     }
     else
@@ -534,7 +534,7 @@ BuildBayerMenu(void)
   
   new_option_menu = gtk_option_menu_new ();
   gtk_widget_ref (new_option_menu);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "bayer_menu", new_option_menu,
+  gtk_object_set_data_full ((gpointer) main_window, "bayer_menu", new_option_menu,
 			    (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (new_option_menu);
   gtk_table_attach (GTK_TABLE (lookup_widget(main_window,"table61")),
@@ -549,50 +549,50 @@ BuildBayerMenu(void)
   glade_menuitem = gtk_menu_item_new_with_label (_("No Bayer"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-		      GTK_SIGNAL_FUNC (on_bayer_menu_activate),
+  g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (on_bayer_menu_activate),
 		      (int*)NO_BAYER_DECODING); 
   // add nearest_neighbor option
   glade_menuitem = gtk_menu_item_new_with_label (_("Nearest"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-		      GTK_SIGNAL_FUNC (on_bayer_menu_activate),
+  g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (on_bayer_menu_activate),
 		      (int*)BAYER_DECODING_NEAREST); 
   // add simple option
   glade_menuitem = gtk_menu_item_new_with_label (_("Simple"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-		      GTK_SIGNAL_FUNC (on_bayer_menu_activate),
+  g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (on_bayer_menu_activate),
 		      (int*)BAYER_DECODING_SIMPLE); 
   // add edge sense option
   glade_menuitem = gtk_menu_item_new_with_label (_("Edge Sense"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-		      GTK_SIGNAL_FUNC (on_bayer_menu_activate),
+  g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (on_bayer_menu_activate),
 		      (int*)BAYER_DECODING_EDGE_SENSE); 
   // add downsample option
   glade_menuitem = gtk_menu_item_new_with_label (_("Downsample"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-		      GTK_SIGNAL_FUNC (on_bayer_menu_activate),
+  g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (on_bayer_menu_activate),
 		      (int*)BAYER_DECODING_DOWNSAMPLE); 
   // add bilinear option
   glade_menuitem = gtk_menu_item_new_with_label (_("Bilinear"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-		      GTK_SIGNAL_FUNC (on_bayer_menu_activate),
+  g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (on_bayer_menu_activate),
 		      (int*)BAYER_DECODING_BILINEAR); 
   // add HQ linear option
   glade_menuitem = gtk_menu_item_new_with_label (_("HQ Linear"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-		      GTK_SIGNAL_FUNC (on_bayer_menu_activate),
+  g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (on_bayer_menu_activate),
 		      (int*)BAYER_DECODING_HQLINEAR); 
   
   gtk_option_menu_set_menu (GTK_OPTION_MENU (new_option_menu), new_menu);
@@ -616,7 +616,7 @@ BuildBayerPatternMenu(void)
   
   new_option_menu = gtk_option_menu_new ();
   gtk_widget_ref (new_option_menu);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "pattern_menu", new_option_menu,
+  gtk_object_set_data_full ((gpointer) main_window, "pattern_menu", new_option_menu,
 			    (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (new_option_menu);
   gtk_table_attach (GTK_TABLE (lookup_widget(main_window,"table61")),
@@ -631,37 +631,37 @@ BuildBayerPatternMenu(void)
   glade_menuitem = gtk_menu_item_new_with_label (_("BGGR"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-		      GTK_SIGNAL_FUNC (on_bayer_pattern_menu_activate),
+  g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (on_bayer_pattern_menu_activate),
 		      (int*)COLOR_FILTER_FORMAT7_BGGR); 
   // add GRBG option
   glade_menuitem = gtk_menu_item_new_with_label (_("GRBG"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-		      GTK_SIGNAL_FUNC (on_bayer_pattern_menu_activate),
+  g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (on_bayer_pattern_menu_activate),
 		      (int*)COLOR_FILTER_FORMAT7_GRBG); 
   // add RGGB option
   glade_menuitem = gtk_menu_item_new_with_label (_("RGGB"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-		      GTK_SIGNAL_FUNC (on_bayer_pattern_menu_activate),
+  g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (on_bayer_pattern_menu_activate),
 		      (int*)COLOR_FILTER_FORMAT7_RGGB); 
   // add GBRG option
   glade_menuitem = gtk_menu_item_new_with_label (_("GBRG"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-		      GTK_SIGNAL_FUNC (on_bayer_pattern_menu_activate),
+  g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (on_bayer_pattern_menu_activate),
 		      (int*)COLOR_FILTER_FORMAT7_GBRG); 
   /*
   // add Auto option
   glade_menuitem = gtk_menu_item_new_with_label (_("Auto"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-		      GTK_SIGNAL_FUNC (on_bayer_pattern_menu_activate),
+  g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (on_bayer_pattern_menu_activate),
 		      (int*)0); 
   */
   gtk_option_menu_set_menu (GTK_OPTION_MENU (new_option_menu), new_menu);
@@ -687,7 +687,7 @@ BuildStereoMenu(void)
   
   new_option_menu = gtk_option_menu_new ();
   gtk_widget_ref (new_option_menu);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "stereo_menu", new_option_menu,
+  gtk_object_set_data_full ((gpointer) main_window, "stereo_menu", new_option_menu,
 			    (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (new_option_menu);
   gtk_table_attach (GTK_TABLE (lookup_widget(main_window,"table61")),
@@ -702,22 +702,22 @@ BuildStereoMenu(void)
   glade_menuitem = gtk_menu_item_new_with_label (_("No Stereo"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-		      GTK_SIGNAL_FUNC (on_stereo_menu_activate),
+  g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (on_stereo_menu_activate),
 		      (int*)NO_STEREO_DECODING); 
   // add interlaced option
   glade_menuitem = gtk_menu_item_new_with_label (_("St. Interlaced"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-		      GTK_SIGNAL_FUNC (on_stereo_menu_activate),
+  g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (on_stereo_menu_activate),
 		      (int*)STEREO_DECODING_INTERLACED); 
   // add field option
   glade_menuitem = gtk_menu_item_new_with_label (_("St. Field"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-		      GTK_SIGNAL_FUNC (on_stereo_menu_activate),
+  g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (on_stereo_menu_activate),
 		      (int*)STEREO_DECODING_FIELD); 
   
   gtk_option_menu_set_menu (GTK_OPTION_MENU (new_option_menu), new_menu);
@@ -741,7 +741,7 @@ BuildOverlayPatternMenu(void)
   
   new_option_menu = gtk_option_menu_new ();
   gtk_widget_ref (new_option_menu);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "overlay_pattern_menu", new_option_menu,
+  gtk_object_set_data_full ((gpointer) main_window, "overlay_pattern_menu", new_option_menu,
 			    (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (new_option_menu);
   gtk_table_attach (GTK_TABLE (lookup_widget(main_window,"table80")),
@@ -756,32 +756,32 @@ BuildOverlayPatternMenu(void)
   glade_menuitem = gtk_menu_item_new_with_label (_("OFF"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-		      GTK_SIGNAL_FUNC (on_overlay_pattern_menu_activate),
+  g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (on_overlay_pattern_menu_activate),
 		      (int*)OVERLAY_PATTERN_OFF);
  
   // Rectangle
   glade_menuitem = gtk_menu_item_new_with_label (_("Rectangle"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-		      GTK_SIGNAL_FUNC (on_overlay_pattern_menu_activate),
+  g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (on_overlay_pattern_menu_activate),
 		      (int*)OVERLAY_PATTERN_RECTANGLE);
 
   // Small cross
   glade_menuitem = gtk_menu_item_new_with_label (_("Small Cross"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-		      GTK_SIGNAL_FUNC (on_overlay_pattern_menu_activate),
+  g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (on_overlay_pattern_menu_activate),
 		      (int*)OVERLAY_PATTERN_SMALL_CROSS);
   
   // Large cross
   glade_menuitem = gtk_menu_item_new_with_label (_("Large Cross"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-		      GTK_SIGNAL_FUNC (on_overlay_pattern_menu_activate),
+  g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (on_overlay_pattern_menu_activate),
 		      (int*)OVERLAY_PATTERN_LARGE_CROSS);
   
   // Golden mean (rem: golden mean is more complex and involves the golden ratio of 1.618...
@@ -789,8 +789,8 @@ BuildOverlayPatternMenu(void)
   glade_menuitem = gtk_menu_item_new_with_label (_("Thirds"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-		      GTK_SIGNAL_FUNC (on_overlay_pattern_menu_activate),
+  g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (on_overlay_pattern_menu_activate),
 		      (int*)OVERLAY_PATTERN_GOLDEN_MEAN);
  
   /*
@@ -798,8 +798,8 @@ BuildOverlayPatternMenu(void)
   glade_menuitem = gtk_menu_item_new_with_label (_("Custom image"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-		      GTK_SIGNAL_FUNC (on_overlay_pattern_menu_activate),
+  g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (on_overlay_pattern_menu_activate),
 		      (int*)OVERLAY_PATTERN_IMAGE);
   */
   gtk_option_menu_set_menu (GTK_OPTION_MENU (new_option_menu), new_menu);
@@ -823,7 +823,7 @@ BuildOverlayTypeMenu(void)
   
   new_option_menu = gtk_option_menu_new ();
   gtk_widget_ref (new_option_menu);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "overlay_type_menu", new_option_menu,
+  gtk_object_set_data_full ((gpointer) main_window, "overlay_type_menu", new_option_menu,
 			    (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (new_option_menu);
   gtk_table_attach (GTK_TABLE (lookup_widget(main_window,"table80")),
@@ -838,24 +838,24 @@ BuildOverlayTypeMenu(void)
   glade_menuitem = gtk_menu_item_new_with_label (_("Replace"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-		      GTK_SIGNAL_FUNC (on_overlay_type_menu_activate),
+  g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (on_overlay_type_menu_activate),
 		      (int*)OVERLAY_TYPE_REPLACE);
 
   // Random
   glade_menuitem = gtk_menu_item_new_with_label (_("Random"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-		      GTK_SIGNAL_FUNC (on_overlay_type_menu_activate),
+  g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (on_overlay_type_menu_activate),
 		      (int*)OVERLAY_TYPE_RANDOM);
 
   // Invert
   glade_menuitem = gtk_menu_item_new_with_label (_("Invert"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-		      GTK_SIGNAL_FUNC (on_overlay_type_menu_activate),
+  g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (on_overlay_type_menu_activate),
 		      (int*)OVERLAY_TYPE_INVERT);
   
   /*  
@@ -863,8 +863,8 @@ BuildOverlayTypeMenu(void)
   glade_menuitem = gtk_menu_item_new_with_label (_("Average"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-		      GTK_SIGNAL_FUNC (on_overlay_type_menu_activate),
+  g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (on_overlay_type_menu_activate),
 		      (int*)OVERLAY_TYPE_AVERAGE);
   */
   gtk_option_menu_set_menu (GTK_OPTION_MENU (new_option_menu), new_menu);
@@ -888,7 +888,7 @@ BuildSaveFormatMenu(void)
   
   new_option_menu = gtk_option_menu_new ();
   gtk_widget_ref (new_option_menu);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "save_format_menu", new_option_menu,
+  gtk_object_set_data_full ((gpointer) main_window, "save_format_menu", new_option_menu,
 			    (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (new_option_menu);
   gtk_table_attach (GTK_TABLE (lookup_widget(main_window,"table82")),
@@ -903,96 +903,96 @@ BuildSaveFormatMenu(void)
   glade_menuitem = gtk_menu_item_new_with_label (_("--- Still: ---"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-		      GTK_SIGNAL_FUNC (UpdateSaveFilenameFrame),
+  g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (UpdateSaveFilenameFrame),
 		      (void*)0);
   
   // 
   glade_menuitem = gtk_menu_item_new_with_label (_("png"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-		      GTK_SIGNAL_FUNC (on_save_format_menu_activate),
+  g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (on_save_format_menu_activate),
 		      (int*)SAVE_FORMAT_PNG);
   
   // 
   glade_menuitem = gtk_menu_item_new_with_label (_("jpeg"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-		      GTK_SIGNAL_FUNC (on_save_format_menu_activate),
+  g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (on_save_format_menu_activate),
 		      (int*)SAVE_FORMAT_JPEG);
   
   // 
   glade_menuitem = gtk_menu_item_new_with_label (_("tiff"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-		      GTK_SIGNAL_FUNC (on_save_format_menu_activate),
+  g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (on_save_format_menu_activate),
 		      (int*)SAVE_FORMAT_TIFF);
   
   // 
   glade_menuitem = gtk_menu_item_new_with_label (_("ppm/pgm"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-		      GTK_SIGNAL_FUNC (on_save_format_menu_activate),
+  g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (on_save_format_menu_activate),
 		      (int*)SAVE_FORMAT_PPMPGM);
   
   // 
   glade_menuitem = gtk_menu_item_new_with_label (_("xpm"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-		      GTK_SIGNAL_FUNC (on_save_format_menu_activate),
+  g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (on_save_format_menu_activate),
 		      (int*)SAVE_FORMAT_XPM);
   
   // 
   glade_menuitem = gtk_menu_item_new_with_label (_("eim"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-		      GTK_SIGNAL_FUNC (on_save_format_menu_activate),
+  g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (on_save_format_menu_activate),
 		      (int*)SAVE_FORMAT_EIM);
   
   // 
   glade_menuitem = gtk_menu_item_new_with_label (_("raw (still)"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-		      GTK_SIGNAL_FUNC (on_save_format_menu_activate),
+  g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (on_save_format_menu_activate),
 		      (int*)SAVE_FORMAT_RAW);
   
   // DUMMY
   glade_menuitem = gtk_menu_item_new_with_label (_("--- Video: ---"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-		      GTK_SIGNAL_FUNC (UpdateSaveFilenameFrame),
+  g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (UpdateSaveFilenameFrame),
 		      (void*)0);
   
   // 
   glade_menuitem = gtk_menu_item_new_with_label (_("raw (video)"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-		      GTK_SIGNAL_FUNC (on_save_format_menu_activate),
+  g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (on_save_format_menu_activate),
 		      (int*)SAVE_FORMAT_RAW_VIDEO);
 
   // 
   glade_menuitem = gtk_menu_item_new_with_label (_("pvn"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-		      GTK_SIGNAL_FUNC (on_save_format_menu_activate),
+  g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (on_save_format_menu_activate),
 		      (int*)SAVE_FORMAT_PVN);
 #ifdef HAVE_FFMPEG
   //
   glade_menuitem = gtk_menu_item_new_with_label (_("mpeg"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-		      GTK_SIGNAL_FUNC (on_save_format_menu_activate),
+  g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (on_save_format_menu_activate),
 		      (int*)SAVE_FORMAT_MPEG);
 #endif
 
@@ -1015,7 +1015,7 @@ BuildSaveAppendMenu(void)
   
   new_option_menu = gtk_option_menu_new ();
   gtk_widget_ref (new_option_menu);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "save_append_menu", new_option_menu,
+  gtk_object_set_data_full ((gpointer) main_window, "save_append_menu", new_option_menu,
 			    (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (new_option_menu);
   gtk_table_attach (GTK_TABLE (lookup_widget(main_window,"table82")),
@@ -1030,16 +1030,16 @@ BuildSaveAppendMenu(void)
   glade_menuitem = gtk_menu_item_new_with_label (_("number"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-		      GTK_SIGNAL_FUNC (on_save_append_menu_activate),
+  g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (on_save_append_menu_activate),
 		      (int*)SAVE_APPEND_NUMBER);
   
   // 
   glade_menuitem = gtk_menu_item_new_with_label (_("date and time"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-		      GTK_SIGNAL_FUNC (on_save_append_menu_activate),
+  g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (on_save_append_menu_activate),
 		      (int*)SAVE_APPEND_DATE_TIME);
   
   if ((camera->prefs.save_to_dir==0)||(camera->prefs.save_format>=SAVE_FORMAT_RAW_VIDEO)) {
@@ -1047,8 +1047,8 @@ BuildSaveAppendMenu(void)
     glade_menuitem = gtk_menu_item_new_with_label (_("none (overwrite)"));
     gtk_widget_show (glade_menuitem);
     gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-    gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-			GTK_SIGNAL_FUNC (on_save_append_menu_activate),
+    g_signal_connect ((gpointer) glade_menuitem, "activate",
+			G_CALLBACK (on_save_append_menu_activate),
 			(int*)SAVE_APPEND_NONE);
   }
   else {

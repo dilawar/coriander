@@ -548,7 +548,7 @@ void MainError(const char *string)
 
   sprintf(temp,"ERROR: %s\n",string);
   if (main_window !=NULL) {
-    gtk_text_insert((GtkText*)lookup_widget(main_window,"main_status"), NULL,NULL,NULL,temp,-1);
+    gtk_text_buffer_set_text(gtk_text_view_get_buffer(GTK_TEXT_VIEW(lookup_widget(main_window,"main_status"))),string, -1);
   }
   free(temp);
 }
@@ -559,7 +559,7 @@ void MainStatus(const char *string)
   temp=(char*)malloc(STRING_SIZE*sizeof(char));
   sprintf(temp,"%s\n",string);
   if (main_window !=NULL) {
-    gtk_text_insert((GtkText*)lookup_widget(main_window,"main_status"), NULL,NULL,NULL,temp,-1);
+    gtk_text_buffer_set_text(gtk_text_view_get_buffer(GTK_TEXT_VIEW(lookup_widget(main_window,"main_status"))),string, -1);
   }
   free(temp);
 }
@@ -581,7 +581,7 @@ void MessageBox( gchar *message)
   GtkWidget *dialog_window;
   
   dialog_window = gtk_dialog_new();
-  gtk_signal_connect( GTK_OBJECT(dialog_window), "destroy", GTK_SIGNAL_FUNC(MessageBox_destroy), dialog_window);
+  g_signal_connect( (gpointer)dialog_window, "destroy", G_CALLBACK (MessageBox_destroy), dialog_window);
   gtk_window_set_title (GTK_WINDOW(dialog_window), "Coriander Message");
   gtk_container_border_width (GTK_CONTAINER(dialog_window), 5);
   label = gtk_label_new (message);
@@ -589,7 +589,7 @@ void MessageBox( gchar *message)
   gtk_box_pack_start (GTK_BOX(GTK_DIALOG(dialog_window)->vbox), label, TRUE, TRUE, 0);
   gtk_widget_show (label);
   button = gtk_button_new_with_label ("OK");
-  gtk_signal_connect (GTK_OBJECT(button), "clicked", GTK_SIGNAL_FUNC(MessageBox_clicked), dialog_window);
+  g_signal_connect ((gpointer) button, "clicked", G_CALLBACK (MessageBox_clicked), dialog_window);
   GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
   gtk_box_pack_start (GTK_BOX(GTK_DIALOG(dialog_window)->action_area), button, TRUE, TRUE, 0);
   gtk_widget_grab_default (button);
@@ -651,7 +651,7 @@ SetAbsValue(int feature)
 
  
   sprintf(stemp,"feature_%d_abs_entry",feature);
-  stringp=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,stemp)));
+  stringp=(char*)gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,stemp)));
   value=atof(stringp);
   if (dc1394_set_absolute_feature_value(camera->camera_info.handle, camera->camera_info.id, feature, value)!=DC1394_SUCCESS) {
     MainError("Can't set absolute value!");
@@ -1007,64 +1007,61 @@ SetFormat7Crop(int sx, int sy, int px, int py, int mode) {
 	
   int state;
   Format7ModeInfo_t *info;
-  GtkAdjustment *adjsx, *adjsy, *adjpx, *adjpy;
+  GtkAdjustment *adjsx, *adjsy, *adjpx, *adjpy, *adj_bpp;
 
   info=&camera->format7_info.mode[mode-MODE_FORMAT7_MIN];
-
+  
   adjpx=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_hposition_scale")));
   adjpy=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_vposition_scale")));
   adjsx=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_hsize_scale")));
   adjsy=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_vsize_scale")));
+  adj_bpp=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_packet_size")));
   
-  // do something if we were called by a first generation signal:
-  if ((gtk_signal_n_emissions_by_name(GTK_OBJECT (adjpx), "changed")==0)&&
-      (gtk_signal_n_emissions_by_name(GTK_OBJECT (adjpy), "changed")==0)&&
-      (gtk_signal_n_emissions_by_name(GTK_OBJECT (adjsx), "changed")==0)&&
-      (gtk_signal_n_emissions_by_name(GTK_OBJECT (adjsy), "changed")==0)) {
-
-    if (mode==camera->misc_info.mode) {
-      IsoFlowCheck(&state);
-    }
-    
-    // the order in which we apply the F7 changes is important.
-    // example: from size=128x128, pos=128x128, we can't go to size=1280x1024 by just changing the size.
-    // We need to set the position to 0x0 first.
-    //fprintf(stderr,"Setting format7 to pos=[%d %d], size=[%d %d]\n",px,py,sx,sy);
-    if (dc1394_set_format7_image_position(camera->camera_info.handle,camera->camera_info.id, mode, 0, 0)!=DC1394_SUCCESS)
-      MainError("Could not set Format7 image position to zero");
-    if ((dc1394_set_format7_image_size(camera->camera_info.handle,camera->camera_info.id, mode, sx, sy)!=DC1394_SUCCESS)||
-	(dc1394_set_format7_image_position(camera->camera_info.handle,camera->camera_info.id, mode, px, py)!=DC1394_SUCCESS))
-      MainError("Could not set Format7 image size and position");
-    else {
-      info->size_x=sx;
-      info->size_y=sy;
-      info->pos_x=px;
-      info->pos_y=py;
-    }
-    
-    // tell the ranges to change their settings
-    adjpx->upper=info->max_size_x-sx;
-    adjpx->value=px;
-    gtk_signal_emit_by_name(GTK_OBJECT (adjpx), "changed");
-    
-    adjpy->upper=info->max_size_y-sy;
-    adjpy->value=py;
-    gtk_signal_emit_by_name(GTK_OBJECT (adjpy), "changed");
-    
-    adjsx->upper=info->max_size_x-px;
-    adjsx->value=sx;
-    gtk_signal_emit_by_name(GTK_OBJECT (adjsx), "changed");
-    
-    adjsy->upper=info->max_size_y-py;
-    adjsy->value=sy;
-    gtk_signal_emit_by_name(GTK_OBJECT (adjsy), "changed");
-    
-    usleep(DELAY);
-
-    if (mode==camera->misc_info.mode) {
-      IsoFlowResume(&state);
-    }
+  if (mode==camera->misc_info.mode) {
+    IsoFlowCheck(&state);
   }
+  
+  // the order in which we apply the F7 changes is important.
+  // example: from size=128x128, pos=128x128, we can't go to size=1280x1024 by just changing the size.
+  // We need to set the position to 0x0 first.
+  //fprintf(stderr,"Setting format7 to pos=[%d %d], size=[%d %d]\n",px,py,sx,sy);
+  if (dc1394_set_format7_image_position(camera->camera_info.handle,camera->camera_info.id, mode, 0, 0)!=DC1394_SUCCESS)
+    MainError("Could not set Format7 image position to zero");
+  if ((dc1394_set_format7_image_size(camera->camera_info.handle,camera->camera_info.id, mode, sx, sy)!=DC1394_SUCCESS)||
+      (dc1394_set_format7_image_position(camera->camera_info.handle,camera->camera_info.id, mode, px, py)!=DC1394_SUCCESS))
+    MainError("Could not set Format7 image size and position");
+  else {
+    info->size_x=sx;
+    info->size_y=sy;
+    info->pos_x=px;
+    info->pos_y=py;
+  }
+  
+  // tell the ranges to change their settings
+  adjpx->upper=info->max_size_x-sx;
+  adjpx->value=px;
+  g_signal_emit_by_name((gpointer) adjpx, "changed");
+  
+  adjpy->upper=info->max_size_y-sy;
+  adjpy->value=py;
+  g_signal_emit_by_name((gpointer) adjpy, "changed");
+  
+  adjsx->upper=info->max_size_x-px;
+  adjsx->value=sx;
+  g_signal_emit_by_name((gpointer) adjsx, "changed");
+  
+  adjsy->upper=info->max_size_y-py;
+  adjsy->value=sy;
+  g_signal_emit_by_name((gpointer) adjsy, "changed");
+  
+  g_signal_emit_by_name((gpointer) adj_bpp, "changed"); // not needed??
+  
+  usleep(DELAY);
+  
+  if (mode==camera->misc_info.mode) {
+    IsoFlowResume(&state);
+  }
+  
 } 
 
 int
@@ -1088,7 +1085,7 @@ NearestValue(int value, int step, int min, int max) {
   else
     return high;
 }
-
+/*
 void
 window_set_icon(GtkWidget* window) {
 
@@ -1106,6 +1103,7 @@ window_set_icon(GtkWidget* window) {
 #endif
 
 }
+*/
 
 /* The following function is a strip-down version of the program 'xvinfo' of the XFree86 project. */
 void

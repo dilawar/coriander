@@ -1,8 +1,10 @@
 ## Process this file with automake to produce Makefile.in
 
-# CPPFLAGS = 
-# AM_CFLAGS = -DDATADIR="$(datadir)"
-INCLUDES  = $(SDLLIB_CFLAGS) $(LIBRAW_CFLAGS) $(LIBDC_CFLAGS) $(GDK_PIXBUF_CFLAGS) $(COR_LFS_CFLAGS) $(MMX_CFLAGS) $(SSE_CFLAGS) $(SSE2_CFLAGS) -I$(top_srcdir)/intl $(GNOME_INCLUDEDIR) $(FFMPEG_CFLAGS) -I/usr/include/gnome-xml
+INCLUDES = \
+	-DPACKAGE_DATA_DIR=\""$(datadir)"\" \
+	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
+	@PACKAGE_CFLAGS@ \
+        $(SDLLIB_CFLAGS) $(LIBRAW_CFLAGS) $(LIBDC_CFLAGS) $(COR_LFS_CFLAGS) $(MMX_CFLAGS) $(SSE_CFLAGS) $(SSE2_CFLAGS) $(FFMPEG_CFLAGS)
 
 bin_PROGRAMS = coriander
 
@@ -39,8 +41,5 @@ coriander_SOURCES = \
 	subtitles.c subtitles.h \
 	raw1394support.h 
 
-#$(INTLLIBS) removed from the line below
-coriander_LDADD = $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(PTHREAD_LIB) $(FTPLIB_LIBS) $(SDLLIB_LIBS) $(LIBDC_LIBS) $(LIBRAW_LIBS) $(GDK_PIXBUF_LIBS) $(XV_LIBS) $(COR_LFS_LDFLAGS) -lgthread $(FFMPEG_LIBS)
-#-ldl -lvorbis -lvorbisenc -logg
-
+coriander_LDADD = @PACKAGE_LIBS@ $(INTLLIBS) $(PTHREAD_LIB) $(FTPLIB_LIBS) $(SDLLIB_LIBS) $(LIBDC_LIBS) $(LIBRAW_LIBS) $(XV_LIBS) $(COR_LFS_LDFLAGS) -lgthread $(FFMPEG_LIBS)
 

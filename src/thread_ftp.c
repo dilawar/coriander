@@ -133,7 +133,7 @@ FtpThread(void* arg)
   static gchar filename_out[STRING_SIZE];
   chain_t* ftp_service=NULL;
   ftpthread_info_t *info=NULL;
-  GdkImlibImage *im=NULL;
+  //GdkImlibImage *im=NULL; // V20***
   long int skip_counter;
   float tmp;
 
@@ -185,8 +185,8 @@ FtpThread(void* arg)
 	    default:
 	      break;
 	    }
-		    
-	    im=gdk_imlib_create_image_from_data(info->buffer, NULL, ftp_service->current_buffer->width, ftp_service->current_buffer->height);
+	    // V20***   
+	    //im=gdk_imlib_create_image_from_data(info->buffer, NULL, ftp_service->current_buffer->width, ftp_service->current_buffer->height);
 #ifdef HAVE_FTPLIB
 	    if (!CheckFtpConnection(info)) {
 	      MainError("Ftp connection lost for good");
@@ -195,15 +195,17 @@ FtpThread(void* arg)
 	      info->cancel_req=1;
 	      pthread_mutex_unlock(&info->mutex_cancel);
 	    }
-	    else {
-	      FtpPutFrame(filename_out, im, info);
+	    else { 
+	      // V20***
+	      //FtpPutFrame(filename_out, im, info);
 	    }
 #endif
 	    ftp_service->fps_frames++;
 	    ftp_service->processed_frames++;
 
-	    if (im != NULL)
-	      gdk_imlib_kill_image(im);
+	    // V20***
+	    //if (im != NULL)
+	    //  gdk_imlib_kill_image(im);
 	  }
 	  else
 	    skip_counter++;
@@ -382,7 +384,8 @@ CheckFtpConnection(ftpthread_info_t* info)
     }
   return TRUE;
 }
-
+// V20***
+/*
 gboolean
 FtpPutFrame(char *filename, GdkImlibImage *im, ftpthread_info_t* info)
 {
@@ -404,5 +407,5 @@ FtpPutFrame(char *filename, GdkImlibImage *im, ftpthread_info_t* info)
   free(tmp);
   return TRUE;
 }
-
+*/
 #endif // HAVE_FTPLIB

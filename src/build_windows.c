@@ -306,6 +306,7 @@ BuildFormat7Window(void)
     gtk_widget_ref (bar);
     gtk_object_set_data_full (GTK_OBJECT (main_window), "format7_imagebytes", bar,
 			      (GtkDestroyNotify) gtk_widget_unref);
+    gtk_statusbar_set_has_resize_grip (GTK_STATUSBAR (bar), FALSE);
     gtk_widget_show (bar);
     gtk_table_attach (GTK_TABLE (table), bar, 1, 2, 1, 2,
 		      (GtkAttachOptions) (GTK_FILL),
@@ -315,6 +316,7 @@ BuildFormat7Window(void)
     gtk_widget_ref (bar);
     gtk_object_set_data_full (GTK_OBJECT (main_window), "format7_imagepixels", bar,
 			      (GtkDestroyNotify) gtk_widget_unref);
+    gtk_statusbar_set_has_resize_grip (GTK_STATUSBAR (bar), FALSE);
     gtk_widget_show (bar);
     gtk_table_attach (GTK_TABLE (table), bar, 1, 2, 0, 1,
 		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
@@ -322,7 +324,7 @@ BuildFormat7Window(void)
 
     label = gtk_label_new (_("Padding :  "));
     gtk_widget_ref (label);
-    gtk_object_set_data_full (GTK_OBJECT (main_window), "label159", label,
+    gtk_object_set_data_full (GTK_OBJECT (main_window), "label159a", label,
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (label);
     gtk_table_attach (GTK_TABLE (table), label, 2, 3, 0, 1,
@@ -332,7 +334,7 @@ BuildFormat7Window(void)
     
     label = gtk_label_new (_("Total size:  "));
     gtk_widget_ref (label);
-    gtk_object_set_data_full (GTK_OBJECT (main_window), "label160", label,
+    gtk_object_set_data_full (GTK_OBJECT (main_window), "label160a", label,
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (label);
     gtk_table_attach (GTK_TABLE (table), label, 2, 3, 1, 2,
@@ -344,6 +346,7 @@ BuildFormat7Window(void)
     gtk_widget_ref (bar);
     gtk_object_set_data_full (GTK_OBJECT (main_window), "format7_padding", bar,
 			      (GtkDestroyNotify) gtk_widget_unref);
+    gtk_statusbar_set_has_resize_grip (GTK_STATUSBAR (bar), FALSE);
     gtk_widget_show (bar);
     gtk_table_attach (GTK_TABLE (table), bar, 3, 4, 0, 1,
 		      (GtkAttachOptions) (GTK_FILL),
@@ -353,6 +356,7 @@ BuildFormat7Window(void)
     gtk_widget_ref (bar);
     gtk_object_set_data_full (GTK_OBJECT (main_window), "format7_totalbytes", bar,
 			      (GtkDestroyNotify) gtk_widget_unref);
+    gtk_statusbar_set_has_resize_grip (GTK_STATUSBAR (bar), FALSE);
     gtk_widget_show (bar);
     gtk_table_attach (GTK_TABLE (table), bar, 3, 4, 1, 2,
 		      (GtkAttachOptions) (GTK_FILL),
@@ -413,6 +417,7 @@ BuildStatusWindow(void)
   BuildCameraStatusFrame();
   BuildTransferStatusFrame();
   BuildBandwidthFrame();
+  BuildSeviceTreeFrame();
 }
 
 void
@@ -429,23 +434,59 @@ void
 BuildHelpWindow(void)
 {
   int i;
-  GtkCList* clist;
-  char *text[2];
-  clist=GTK_CLIST(lookup_widget(help_window,"key_bindings"));
+  GtkTreeViewColumn *col;
+  GtkCellRenderer   *renderer;
+  GtkTreeView       *tree_view;
+  GtkTreeStore      *treestore;
+  GtkTreeIter       toplevel, child;
+  GtkTreeModel      *model;
 
-  text[0]=(char*)malloc(STRING_SIZE*sizeof(char));
-  text[1]=(char*)malloc(STRING_SIZE*sizeof(char));
+  //fprintf(stderr,"Start building tree...");
+  tree_view=(GtkTreeView*)lookup_widget(help_window,"key_bindings");
 
-  gtk_clist_set_column_justification(clist,0,GTK_JUSTIFY_CENTER);
+  // --- First column ---
+  col = gtk_tree_view_column_new();
+  gtk_tree_view_column_set_title(col, "Key");
+
+  // pack tree view column into tree view
+  gtk_tree_view_append_column(tree_view, col);
+  renderer = gtk_cell_renderer_text_new();
+
+  // pack cell renderer into tree view column
+  gtk_tree_view_column_pack_start(col, renderer, TRUE);
+
+  // connect 'text' property of the cell renderer to model column that contains the camera
+  gtk_tree_view_column_add_attribute(col, renderer, "text", 0);
+
+  // --- Second column ---
+  col = gtk_tree_view_column_new();
+  gtk_tree_view_column_set_title(col, "Function");
+
+  // pack tree view column into tree view
+  gtk_tree_view_append_column(tree_view, col);
+  renderer = gtk_cell_renderer_text_new();
+
+  // pack cell renderer into tree view column
+  gtk_tree_view_column_pack_start(col, renderer, TRUE);
+
+  // connect 'text' property of the cell renderer to model column that contains the camera
+  gtk_tree_view_column_add_attribute(col, renderer, "text", 1);
+
+  // --- create model and fill with camera names ---
+  treestore = gtk_tree_store_new(2, G_TYPE_STRING, G_TYPE_STRING); 
+
+  // Append help lines:
   for (i=0;i<KEY_BINDINGS_NUM;i++) {
-    strcpy(text[0],help_key_bindings_keys[i]);
-    strcpy(text[1],help_key_bindings_functions[i]);
-    gtk_clist_append(clist,text);
+    gtk_tree_store_append(treestore, &toplevel, NULL);
+    gtk_tree_store_set(treestore, &toplevel, 0, help_key_bindings_keys[i], 1, help_key_bindings_functions[i], -1);
   }
-  gtk_clist_set_column_auto_resize(clist,0,1);
-  gtk_clist_set_column_auto_resize(clist,1,1);
 
-  free(text[0]);
-  free(text[1]);
+  model = GTK_TREE_MODEL(treestore);
+
+  gtk_tree_view_set_model(tree_view, model);
+
+  g_object_unref(model); // destroy model automatically with view
+  
+  gtk_tree_selection_set_mode(gtk_tree_view_get_selection(tree_view), GTK_SELECTION_NONE);
 
 }

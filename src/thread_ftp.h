@@ -75,8 +75,9 @@ FtpThreadCheckParams(chain_t *ftp_service);
 gboolean
 OpenFtpConnection(ftpthread_info_t* info);
 
-gboolean
-FtpPutFrame(char *filename, GdkImlibImage *im, ftpthread_info_t* info);
+// V20***
+//gboolean
+//FtpPutFrame(char *filename, GdkImlibImage *im, ftpthread_info_t* info);
 
 void
 CloseFtpConnection(netbuf *ftp_handle);

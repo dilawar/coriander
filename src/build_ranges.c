@@ -183,45 +183,45 @@ void BuildRange(int feature)
     glade_menuitem = gtk_menu_item_new_with_label (_(feature_menu_items_list[RANGE_MENU_OFF]));
     gtk_widget_show (glade_menuitem);
     gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-    gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-			GTK_SIGNAL_FUNC (on_range_menu_activate),
-			(int*)(feature*1000+RANGE_MENU_OFF)); // i is an int passed in a pointer variable. This is 'normal'.
+    g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (on_range_menu_activate),
+		      (int*)(feature*1000+RANGE_MENU_OFF)); // i is an int passed in a pointer variable. This is 'normal'.
   }
   // 'man' menuitem optional addition:
   if (camera->feature_set.feature[feature-FEATURE_MIN].manual_capable>0) {
     glade_menuitem = gtk_menu_item_new_with_label (_(feature_menu_items_list[RANGE_MENU_MAN]));
     gtk_widget_show (glade_menuitem);
     gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-    gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-			GTK_SIGNAL_FUNC (on_range_menu_activate),
-			(int*)(feature*1000+RANGE_MENU_MAN));
+    g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (on_range_menu_activate),
+		      (int*)(feature*1000+RANGE_MENU_MAN));
   }
   // 'auto' menuitem optional addition:
   if (camera->feature_set.feature[feature-FEATURE_MIN].auto_capable>0) {
     glade_menuitem = gtk_menu_item_new_with_label (_(feature_menu_items_list[RANGE_MENU_AUTO]));
     gtk_widget_show (glade_menuitem);
     gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-    gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-			GTK_SIGNAL_FUNC (on_range_menu_activate),
-			(int*)(feature*1000+RANGE_MENU_AUTO));
+    g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (on_range_menu_activate),
+		      (int*)(feature*1000+RANGE_MENU_AUTO));
   }
   // 'single' menuitem optional addition:
   if (camera->feature_set.feature[feature-FEATURE_MIN].one_push>0) {
     glade_menuitem = gtk_menu_item_new_with_label (_(feature_menu_items_list[RANGE_MENU_SINGLE]));
     gtk_widget_show (glade_menuitem);
     gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-    gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-			GTK_SIGNAL_FUNC (on_range_menu_activate),
-			(int*)(feature*1000+RANGE_MENU_SINGLE));
+    g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (on_range_menu_activate),
+		      (int*)(feature*1000+RANGE_MENU_SINGLE));
   }
   // 'absolute' menuitem optional addition:
   if (camera->feature_set.feature[feature-FEATURE_MIN].absolute_capable>0) {
     glade_menuitem = gtk_menu_item_new_with_label (_(feature_menu_items_list[RANGE_MENU_ABSOLUTE]));
     gtk_widget_show (glade_menuitem);
     gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-    gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-			GTK_SIGNAL_FUNC (on_range_menu_activate),
-			(int*)(feature*1000+RANGE_MENU_ABSOLUTE));
+    g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (on_range_menu_activate),
+		      (int*)(feature*1000+RANGE_MENU_ABSOLUTE));
   }
   
   gtk_option_menu_set_menu (GTK_OPTION_MENU (new_option_menu), new_menu);
@@ -266,8 +266,8 @@ void BuildRange(int feature)
     gtk_range_set_adjustment((GtkRange*)scale2,adjustment2);
 
     // connect:
-    gtk_signal_connect (GTK_OBJECT (adjustment), "value_changed", GTK_SIGNAL_FUNC (on_scale_value_changed), (int*) FEATURE_WHITE_BALANCE+BU);
-    gtk_signal_connect (GTK_OBJECT (adjustment2), "value_changed", GTK_SIGNAL_FUNC (on_scale_value_changed), (int*) FEATURE_WHITE_BALANCE+RV);
+    g_signal_connect ((gpointer) adjustment, "value_changed", G_CALLBACK (on_scale_value_changed), (int*) FEATURE_WHITE_BALANCE+BU);
+    g_signal_connect ((gpointer) (adjustment2), "value_changed", G_CALLBACK (on_scale_value_changed), (int*) FEATURE_WHITE_BALANCE+RV);
     break;
   case FEATURE_TEMPERATURE:
     adjustment=(GtkAdjustment*)gtk_adjustment_new(camera->feature_set.feature[feature-FEATURE_MIN].min,
@@ -305,7 +305,7 @@ void BuildRange(int feature)
     gtk_range_set_adjustment((GtkRange*)scale,adjustment);
     gtk_range_set_adjustment((GtkRange*)scale2,adjustment2);
     // connect:
-    gtk_signal_connect (GTK_OBJECT (adjustment), "value_changed", GTK_SIGNAL_FUNC (on_scale_value_changed), (int*) FEATURE_TEMPERATURE);
+    g_signal_connect ((gpointer) adjustment, "value_changed", G_CALLBACK (on_scale_value_changed), (int*) FEATURE_TEMPERATURE);
     break;
   case FEATURE_WHITE_SHADING:
     fprintf(stderr,"Not implemented\n");
@@ -337,7 +337,7 @@ void BuildRange(int feature)
 
     gtk_range_set_adjustment((GtkRange*)scale,adjustment);
     // connect:
-    gtk_signal_connect (GTK_OBJECT (adjustment), "value_changed", GTK_SIGNAL_FUNC (on_scale_value_changed), (int*) feature);
+    g_signal_connect ((gpointer) adjustment, "value_changed", G_CALLBACK (on_scale_value_changed), (int*) feature);
     
   }
   // common action for absolute settings:
@@ -353,8 +353,8 @@ void BuildRange(int feature)
     gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), abs_entry, 2, RANGE_TABLE_WIDTH-1, 0, 1,
 		      (GtkAttachOptions) (GTK_EXPAND|GTK_FILL),
 		      (GtkAttachOptions) (0), 0, 0);
-    gtk_signal_connect (GTK_OBJECT (abs_entry), "activate",
-                      GTK_SIGNAL_FUNC (on_abs_entry_activate),
+    g_signal_connect ((gpointer) abs_entry, "activate",
+                      G_CALLBACK (on_abs_entry_activate),
                       (int*)feature);
     // label
     label = gtk_label_new (_(feature_abs_label_list[feature-FEATURE_MIN]));
@@ -390,35 +390,35 @@ BuildFormat7Ranges(void)
   // define adjustement for X-position
   adjustment_px=(GtkAdjustment*)gtk_adjustment_new(info->pos_x,0,info->max_size_x-info->size_x,info->unit_pos_x,info->unit_pos_x*4,0);
   gtk_range_set_adjustment((GtkRange*)lookup_widget(main_window, "format7_hposition_scale"),adjustment_px);
-  camera->format7_info.scale_posx_handle=gtk_signal_connect(GTK_OBJECT (adjustment_px), "value_changed", 
-							    GTK_SIGNAL_FUNC (on_format7_value_changed), (int*) FORMAT7_POS_X);
+  camera->format7_info.scale_posx_handle=g_signal_connect((gpointer) adjustment_px, "value_changed", 
+							    G_CALLBACK (on_format7_value_changed), (int*) FORMAT7_POS_X);
   gtk_range_set_update_policy ((GtkRange*)lookup_widget(main_window, "format7_hposition_scale"), GTK_UPDATE_DELAYED);
   
   // define adjustement for Y-position 
   adjustment_py=(GtkAdjustment*)gtk_adjustment_new(info->pos_y,0,info->max_size_y-info->size_y,info->unit_pos_y,info->unit_pos_y*4,0);
   gtk_range_set_adjustment((GtkRange*)lookup_widget(main_window, "format7_vposition_scale"),adjustment_py);
-  camera->format7_info.scale_posy_handle=gtk_signal_connect(GTK_OBJECT (adjustment_py), "value_changed", 
-							    GTK_SIGNAL_FUNC (on_format7_value_changed), (int*) FORMAT7_POS_Y);
+  camera->format7_info.scale_posy_handle=g_signal_connect((gpointer) adjustment_py, "value_changed", 
+							    G_CALLBACK (on_format7_value_changed), (int*) FORMAT7_POS_Y);
   gtk_range_set_update_policy ((GtkRange*)lookup_widget(main_window, "format7_vposition_scale"), GTK_UPDATE_DELAYED);
 
   // define adjustement for X-size
   adjustment_sx=(GtkAdjustment*)gtk_adjustment_new(info->size_x,info->unit_size_x,info->max_size_x-info->pos_x,info->unit_size_x,info->unit_size_x*4,0);
   gtk_range_set_adjustment((GtkRange*)lookup_widget(main_window, "format7_hsize_scale"),adjustment_sx);
-  camera->format7_info.scale_sizex_handle=gtk_signal_connect(GTK_OBJECT (adjustment_sx), "value_changed", 
-							     GTK_SIGNAL_FUNC (on_format7_value_changed), (int*) FORMAT7_SIZE_X);
+  camera->format7_info.scale_sizex_handle=g_signal_connect((gpointer) adjustment_sx, "value_changed", 
+							     G_CALLBACK (on_format7_value_changed), (int*) FORMAT7_SIZE_X);
   gtk_range_set_update_policy ((GtkRange*)lookup_widget(main_window, "format7_hsize_scale"), GTK_UPDATE_DELAYED);
 
   // define adjustement for X-size
   adjustment_sy=(GtkAdjustment*)gtk_adjustment_new(info->size_y,info->unit_size_y,info->max_size_y-info->pos_y,info->unit_size_y,info->unit_size_y*4,0);
   gtk_range_set_adjustment((GtkRange*)lookup_widget(main_window, "format7_vsize_scale"),adjustment_sy);
-  camera->format7_info.scale_sizey_handle=gtk_signal_connect(GTK_OBJECT (adjustment_sy), "value_changed", 
-							     GTK_SIGNAL_FUNC (on_format7_value_changed), (int*) FORMAT7_SIZE_Y);
+  camera->format7_info.scale_sizey_handle=g_signal_connect((gpointer) adjustment_sy, "value_changed", 
+							     G_CALLBACK (on_format7_value_changed), (int*) FORMAT7_SIZE_Y);
   gtk_range_set_update_policy ((GtkRange*)lookup_widget(main_window, "format7_vsize_scale"), GTK_UPDATE_DELAYED);
 
-  gtk_signal_emit_by_name(GTK_OBJECT (adjustment_sx), "changed");
-  gtk_signal_emit_by_name(GTK_OBJECT (adjustment_sy), "changed");
-  gtk_signal_emit_by_name(GTK_OBJECT (adjustment_px), "changed");
-  gtk_signal_emit_by_name(GTK_OBJECT (adjustment_sy), "changed");
+  g_signal_emit_by_name((gpointer) adjustment_sx, "changed");
+  g_signal_emit_by_name((gpointer) adjustment_sy, "changed");
+  g_signal_emit_by_name((gpointer) adjustment_px, "changed");
+  g_signal_emit_by_name((gpointer) adjustment_py, "changed");
 
 }
 
@@ -432,7 +432,7 @@ BuildFormat7BppRange(void)
   adjustment_packet=(GtkAdjustment*)gtk_adjustment_new(info->bpp,info->min_bpp,info->max_bpp,1,(info->max_bpp-info->min_bpp)/16,0);
   // min_bpp is the minimum bpp, but also the 'unit' bpp.
   gtk_range_set_adjustment((GtkRange*)lookup_widget(main_window, "format7_packet_size"),adjustment_packet);
-  gtk_signal_connect(GTK_OBJECT (adjustment_packet), "value_changed", GTK_SIGNAL_FUNC (on_format7_packet_size_changed),(int*)0);
+  g_signal_connect((gpointer) adjustment_packet, "value_changed", G_CALLBACK (on_format7_packet_size_changed),(int*)0);
   gtk_range_set_update_policy ((GtkRange*)lookup_widget(main_window, "format7_packet_size"), GTK_UPDATE_DELAYED);
   
 }

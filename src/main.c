@@ -36,10 +36,14 @@ main (int argc, char *argv[])
   silent_ui_update=0;
 
 #ifdef ENABLE_NLS
-  bindtextdomain (PACKAGE, PACKAGE_LOCALE_DIR);
-  textdomain (PACKAGE);
+  bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
+  bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+  textdomain (GETTEXT_PACKAGE);
 #endif
-  gnome_init ("coriander", VERSION, argc, argv);
+  gnome_program_init (PACKAGE, VERSION, LIBGNOMEUI_MODULE,
+                      argc, argv,
+                      GNOME_PARAM_APP_DATADIR, PACKAGE_DATA_DIR,
+                      NULL);
 
   businfo=(BusInfo_t*)malloc(sizeof(BusInfo_t));
   businfo->handles=NULL;
@@ -56,8 +60,6 @@ main (int argc, char *argv[])
   // this only happens on some platforms, but I cleared the free() anyway.
   if (businfo->card_found==0) {
     err_window=create_no_handle_window();
-    gtk_signal_connect(GTK_OBJECT(err_window), "realize",
-		       GTK_SIGNAL_FUNC(window_set_icon), err_window);
     gtk_widget_show(err_window);
     gtk_main();
     free(businfo);
@@ -66,8 +68,6 @@ main (int argc, char *argv[])
   else {
     if (businfo->camera_num<1) {
     err_window=create_no_camera_window();
-    gtk_signal_connect(GTK_OBJECT(err_window), "realize",
-		       GTK_SIGNAL_FUNC(window_set_icon), err_window);
       gtk_widget_show(err_window);
       gtk_main();
       
@@ -96,8 +96,6 @@ main (int argc, char *argv[])
   
   preferences_window= create_preferences_window();
   main_window = create_main_window();
-  gtk_signal_connect(GTK_OBJECT(main_window), "realize",
-		     GTK_SIGNAL_FUNC(window_set_icon), main_window);
   
   format7_tab_presence=1;
   gtk_notebook_set_homogeneous_tabs(GTK_NOTEBOOK(lookup_widget(main_window,"notebook2")),TRUE);

@@ -157,11 +157,11 @@ UpdateRangeValue(GtkWidget* widget, int feature)
 	sprintf(stemp,"feature_%d_bu_scale",feature);
 	adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(widget, stemp)));
 	adj->value=valueBU;
-	gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
+	g_signal_emit_by_name((gpointer) adj, "changed");
 	sprintf(stemp,"feature_%d_rv_scale",feature);
 	adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(widget, stemp)));
 	adj->value=valueRV;
-	gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
+	g_signal_emit_by_name((gpointer) adj, "changed");
 	//fprintf(stderr,"white balance updated\n");
       }
       break;
@@ -182,11 +182,11 @@ UpdateRangeValue(GtkWidget* widget, int feature)
 	sprintf(stemp,"feature_%d_target_scale",feature);
 	adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(widget,stemp)));
 	adj->value=valuegoal;
-	gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
+	g_signal_emit_by_name((gpointer) adj, "changed");
 	sprintf(stemp,"feature_%d_current_scale",feature);
 	adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(widget, stemp)));
 	adj->value=valuecurrent;
-	gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
+	g_signal_emit_by_name((gpointer) adj, "changed");
       }
       break;
     default:
@@ -204,7 +204,7 @@ UpdateRangeValue(GtkWidget* widget, int feature)
 	sprintf(stemp,"feature_%d_scale",feature);
 	adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(widget, stemp)));
 	adj->value=value;
-	gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
+	g_signal_emit_by_name((gpointer) adj, "changed");
       }
       break;
     }
@@ -235,7 +235,7 @@ UpdateFormat7BppRange(void)
       adj->value=info->bpp;
       adj->step_increment=1;
       adj->page_increment=(info->max_bpp-info->min_bpp)/16;
-      gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
+      g_signal_emit_by_name((gpointer) adj, "changed");
     }
     else
       MainError("Can't get bpp info from camera");
@@ -260,7 +260,7 @@ UpdateFormat7Ranges(void)
   adj->lower=0;
   adj->step_increment=info->unit_pos_x;
   adj->page_increment=adj->step_increment*4;
-  gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
+  g_signal_emit_by_name((gpointer) adj, "changed");
 
   // define adjustement for Y-position 
   adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_vposition_scale")));
@@ -269,7 +269,7 @@ UpdateFormat7Ranges(void)
   adj->lower=0;
   adj->step_increment=info->unit_pos_y;
   adj->page_increment=adj->step_increment*4;
-  gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
+  g_signal_emit_by_name((gpointer) adj, "changed");
 
   // define adjustement for X-size
   adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_hsize_scale")));
@@ -278,7 +278,7 @@ UpdateFormat7Ranges(void)
   adj->lower=info->unit_size_x;
   adj->step_increment=info->unit_size_x;
   adj->page_increment=adj->step_increment*4;
-  gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
+  g_signal_emit_by_name((gpointer) adj, "changed");
 
   // define adjustement for Y-size
   adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_vsize_scale")));
@@ -287,7 +287,7 @@ UpdateFormat7Ranges(void)
   adj->lower=info->unit_size_y;
   adj->step_increment=info->unit_size_y;
   adj->page_increment=adj->step_increment*4;
-  gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
+  g_signal_emit_by_name((gpointer) adj, "changed");
 
 }
 
