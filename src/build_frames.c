@@ -153,30 +153,30 @@ void
 BuildPrefsSaveFrame(void)
 {
   // frame drop
-  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(preferences_window,
+  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(commander_window,
 							  "prefs_save_period"), preferences.save_period);
   // scratch
   switch(preferences.save_scratch)
     {
     case SAVE_SCRATCH_OVERWRITE:
-      gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(preferences_window,
+      gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(commander_window,
 								   "prefs_save_scratch"),TRUE);
       break;
     case SAVE_SCRATCH_SEQUENTIAL:
-      gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(preferences_window,
+      gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(commander_window,
 								   "prefs_save_seq"),TRUE);
       break;
     }
   // scratch
   if (preferences.save_convert == SAVE_CONVERT_ON)
-    gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(preferences_window,
+    gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(commander_window,
 								 "prefs_save_convert"),TRUE);
   else
-    gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(preferences_window,
+    gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(commander_window,
 								 "prefs_save_noconvert"),TRUE);
 
   //filename
-  gtk_entry_set_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_save_filename")),
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(commander_window, "prefs_save_filename")),
 		     preferences.save_filename);
 }
 
@@ -195,37 +195,37 @@ BuildPrefsFtpFrame(void)
 {
 #ifdef HAVE_FTPLIB
   // frame drop
-  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(preferences_window,
+  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(commander_window,
 							  "prefs_ftp_period"), preferences.ftp_period);
   // scratch
   switch(preferences.ftp_scratch)
     {
     case FTP_SCRATCH_OVERWRITE:
-      gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(preferences_window,
+      gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(commander_window,
 								   "prefs_ftp_scratch"),TRUE);
       break;
     case FTP_SCRATCH_SEQUENTIAL:
-      gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(preferences_window,
+      gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(commander_window,
 								   "prefs_ftp_seq"),TRUE);
       break;
     }
   // file,... names
-  gtk_entry_set_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_ftp_filename")),
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(commander_window, "prefs_ftp_filename")),
 		     preferences.ftp_filename);
-  gtk_entry_set_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_ftp_address")),
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(commander_window, "prefs_ftp_address")),
 		     preferences.ftp_address);
-  gtk_entry_set_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_ftp_password")),
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(commander_window, "prefs_ftp_password")),
 		     preferences.ftp_password);
-  gtk_entry_set_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_ftp_path")),
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(commander_window, "prefs_ftp_path")),
 		     preferences.ftp_path);
-  gtk_entry_set_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_ftp_user")),
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(commander_window, "prefs_ftp_user")),
 		     preferences.ftp_user);
 
 #else
 
-  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_ftp_framedrop_frame"),FALSE);
-  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_ftp_scratch_frame"),FALSE);
-  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_ftp_server_frame"),FALSE);
+  gtk_widget_set_sensitive(lookup_widget(commander_window,"prefs_ftp_framedrop_frame"),FALSE);
+  gtk_widget_set_sensitive(lookup_widget(commander_window,"prefs_ftp_scratch_frame"),FALSE);
+  gtk_widget_set_sensitive(lookup_widget(commander_window,"prefs_ftp_server_frame"),FALSE);
 
 #endif
 
@@ -239,7 +239,7 @@ BuildPrefsRealFrame(void)
   GtkOptionMenu* option_menu;
   int i;
 
-  option_menu=(GtkOptionMenu*)lookup_widget(preferences_window, "prefs_real_quality");
+  option_menu=(GtkOptionMenu*)lookup_widget(commander_window, "prefs_real_quality");
   menu=(GtkMenu*)gtk_option_menu_get_menu(option_menu);
   for (i=0;i<4;i++)
     {
@@ -250,7 +250,7 @@ BuildPrefsRealFrame(void)
 			  (int*)i); 
     }
 
-  option_menu=(GtkOptionMenu*)lookup_widget(preferences_window, "prefs_real_compatibility");
+  option_menu=(GtkOptionMenu*)lookup_widget(commander_window, "prefs_real_compatibility");
   menu=(GtkMenu*)gtk_option_menu_get_menu(option_menu);
   for (i=0;i<2;i++)
     {
@@ -262,64 +262,64 @@ BuildPrefsRealFrame(void)
     }
 
 #ifdef HAVE_REALLIB
-  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_real_server_frame"),TRUE);
-  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_real_infos_frame"),TRUE);
-  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_real_stream_frame"),TRUE);
+  gtk_widget_set_sensitive(lookup_widget(commander_window,"prefs_real_server_frame"),TRUE);
+  gtk_widget_set_sensitive(lookup_widget(commander_window,"prefs_real_infos_frame"),TRUE);
+  gtk_widget_set_sensitive(lookup_widget(commander_window,"prefs_real_stream_frame"),TRUE);
 
   // names
-  gtk_entry_set_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_filename")),
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(commander_window, "prefs_real_filename")),
 		     preferences.real_filename);
-  gtk_entry_set_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_address")),
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(commander_window, "prefs_real_address")),
 		     preferences.real_address);
-  gtk_entry_set_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_password")),
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(commander_window, "prefs_real_password")),
 		     preferences.real_password);
-  gtk_entry_set_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_user")),
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(commander_window, "prefs_real_user")),
 		     preferences.real_user);
-  gtk_entry_set_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_title")),
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(commander_window, "prefs_real_title")),
 		     preferences.real_title);
-  gtk_entry_set_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_author")),
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(commander_window, "prefs_real_author")),
 		     preferences.real_author);
-  gtk_entry_set_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_copyright")),
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(commander_window, "prefs_real_copyright")),
 		     preferences.real_copyright);
 
   // port
-  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(preferences_window, "prefs_real_port"),
+  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(commander_window, "prefs_real_port"),
 			    preferences.real_port);
 
   // menu history
-  gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(preferences_window, "prefs_real_quality")),
+  gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(commander_window, "prefs_real_quality")),
 			      preferences.real_quality);
-  gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(preferences_window, "prefs_real_compatibility")),
+  gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(commander_window, "prefs_real_compatibility")),
 			      preferences.real_compatibility);
 
   // recordable?
-  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(preferences_window, "prefs_real_recordable")),
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window, "prefs_real_recordable")),
 			       preferences.real_recordable);
 
   // audience flags:
-  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(preferences_window, "prefs_real_audience_28k")),
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window, "prefs_real_audience_28k")),
 			       preferences.real_audience & REAL_AUDIENCE_28_MODEM);
-  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(preferences_window, "prefs_real_audience_56k")),
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window, "prefs_real_audience_56k")),
 			       preferences.real_audience & REAL_AUDIENCE_56_MODEM);
-  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(preferences_window, "prefs_real_audience_sisdn")),
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window, "prefs_real_audience_sisdn")),
 			       preferences.real_audience & REAL_AUDIENCE_SINGLE_ISDN);
-  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(preferences_window, "prefs_real_audience_disdn")),
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window, "prefs_real_audience_disdn")),
 			       preferences.real_audience & REAL_AUDIENCE_DUAL_ISDN);
-  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(preferences_window, "prefs_real_audience_lan")),
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window, "prefs_real_audience_lan")),
 			       preferences.real_audience & REAL_AUDIENCE_LAN_HIGH);
-  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(preferences_window, "prefs_real_audience_dsl256")),
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window, "prefs_real_audience_dsl256")),
 			       preferences.real_audience & REAL_AUDIENCE_256_DSL_CABLE);
-  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(preferences_window, "prefs_real_audience_dsl384")),
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window, "prefs_real_audience_dsl384")),
 			       preferences.real_audience & REAL_AUDIENCE_384_DSL_CABLE);
-  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(preferences_window, "prefs_real_audience_dsl512")),
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window, "prefs_real_audience_dsl512")),
 			       preferences.real_audience & REAL_AUDIENCE_512_DSL_CABLE);
 
 
 #else
-  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_real_server_frame"),FALSE);
-  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_real_infos_frame"),FALSE);
-  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_real_stream_frame"),FALSE);
-  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_real_audience_frame"),FALSE);
+  gtk_widget_set_sensitive(lookup_widget(commander_window,"prefs_real_server_frame"),FALSE);
+  gtk_widget_set_sensitive(lookup_widget(commander_window,"prefs_real_infos_frame"),FALSE);
+  gtk_widget_set_sensitive(lookup_widget(commander_window,"prefs_real_stream_frame"),FALSE);
+  gtk_widget_set_sensitive(lookup_widget(commander_window,"prefs_real_audience_frame"),FALSE);
 #endif
 
 }
@@ -328,10 +328,10 @@ void
 BuildPrefsDisplayFrame(void)
 {
   // frame drop
-  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(preferences_window,"prefs_display_period"),
+  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(commander_window,"prefs_display_period"),
 			    preferences.display_period);
 
-  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(preferences_window,"prefs_display_keep_ratio")),
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"prefs_display_keep_ratio")),
 			       preferences.display_keep_ratio);
 }
 
@@ -351,14 +351,14 @@ BuildPrefsReceiveFrame(void)
       video_ok=1;
 
   // BUILD A NEW  OPTION_MENU:
-  gtk_widget_destroy(GTK_WIDGET(lookup_widget(preferences_window,"prefs_receive_method_menu"))); // remove previous menu
+  gtk_widget_destroy(GTK_WIDGET(lookup_widget(commander_window,"prefs_receive_method_menu"))); // remove previous menu
   
   new_option_menu = gtk_option_menu_new ();
   gtk_widget_ref (new_option_menu);
-  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "prefs_receive_method_menu", new_option_menu,
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "prefs_receive_method_menu", new_option_menu,
 			    (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (new_option_menu);
-  gtk_table_attach (GTK_TABLE (lookup_widget(preferences_window,"table45")),
+  gtk_table_attach (GTK_TABLE (lookup_widget(commander_window,"table45")),
 		    new_option_menu, 0, 1, 0, 1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
@@ -392,12 +392,12 @@ BuildPrefsReceiveFrame(void)
   gtk_option_menu_set_menu (GTK_OPTION_MENU (new_option_menu), new_menu);
 
   // menu history
-  gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(preferences_window, "prefs_receive_method_menu")),
+  gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(commander_window, "prefs_receive_method_menu")),
 			      preferences.receive_method2index[preferences.receive_method]);
 
-  gtk_entry_set_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_video1394_device")),
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(commander_window, "prefs_video1394_device")),
 		     preferences.video1394_device);
-  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(preferences_window, "prefs_receive_dropframes")),
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window, "prefs_receive_dropframes")),
 		     preferences.video1394_dropframes);
 }
 

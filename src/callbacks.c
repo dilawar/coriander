@@ -750,7 +750,7 @@ void
 on_prefs_display_period_changed        (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  preferences.display_period=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(preferences_window,"prefs_display_period")));
+  preferences.display_period=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(commander_window,"prefs_display_period")));
   gnome_config_set_int("coriander/display/period",preferences.display_period);
   gnome_config_sync();
 }
@@ -759,7 +759,7 @@ void
 on_prefs_save_period_changed           (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  preferences.save_period=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(preferences_window,"prefs_save_period")));
+  preferences.save_period=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(commander_window,"prefs_save_period")));
   gnome_config_set_int("coriander/save/period",preferences.save_period);
   gnome_config_sync();
 }
@@ -769,7 +769,7 @@ void
 on_prefs_ftp_period_changed            (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  preferences.ftp_period=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(preferences_window,"prefs_ftp_period")));
+  preferences.ftp_period=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(commander_window,"prefs_ftp_period")));
   gnome_config_set_int("coriander/ftp/period",preferences.ftp_period);
   gnome_config_sync();
 }
@@ -779,7 +779,7 @@ void
 on_prefs_ftp_address_changed           (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  preferences.ftp_address=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window,"prefs_ftp_address")));
+  preferences.ftp_address=gtk_entry_get_text(GTK_ENTRY(lookup_widget(commander_window,"prefs_ftp_address")));
   gnome_config_set_string("coriander/ftp/address",preferences.ftp_address);
   gnome_config_sync();
 }
@@ -789,7 +789,7 @@ void
 on_prefs_ftp_path_changed              (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  preferences.ftp_path=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window,"prefs_ftp_path")));
+  preferences.ftp_path=gtk_entry_get_text(GTK_ENTRY(lookup_widget(commander_window,"prefs_ftp_path")));
   gnome_config_set_string("coriander/ftp/path",preferences.ftp_path);
   gnome_config_sync();
 
@@ -800,7 +800,7 @@ void
 on_prefs_ftp_user_changed              (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  preferences.ftp_user=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window,"prefs_ftp_user")));
+  preferences.ftp_user=gtk_entry_get_text(GTK_ENTRY(lookup_widget(commander_window,"prefs_ftp_user")));
   gnome_config_set_string("coriander/ftp/user",preferences.ftp_user);
   gnome_config_sync();
 
@@ -811,7 +811,7 @@ void
 on_prefs_ftp_password_changed          (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  preferences.ftp_password=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window,"prefs_ftp_password")));
+  preferences.ftp_password=gtk_entry_get_text(GTK_ENTRY(lookup_widget(commander_window,"prefs_ftp_password")));
   gnome_config_set_string("coriander/ftp/password",preferences.ftp_password);
   gnome_config_sync();
 }
@@ -821,7 +821,7 @@ void
 on_prefs_ftp_filename_changed          (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  preferences.ftp_filename=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window,"prefs_ftp_filename")));
+  preferences.ftp_filename=gtk_entry_get_text(GTK_ENTRY(lookup_widget(commander_window,"prefs_ftp_filename")));
   gnome_config_set_string("coriander/ftp/filename",preferences.ftp_filename);
   gnome_config_sync();
 }
@@ -831,7 +831,7 @@ void
 on_prefs_real_address_changed          (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  preferences.real_address=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window,"prefs_real_address")));
+  preferences.real_address=gtk_entry_get_text(GTK_ENTRY(lookup_widget(commander_window,"prefs_real_address")));
   gnome_config_set_string("coriander/real/address",preferences.real_address);
   gnome_config_sync();
 }
@@ -840,7 +840,7 @@ void
 on_prefs_save_filename_changed         (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  preferences.save_filename=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window,"prefs_save_filename")));
+  preferences.save_filename=gtk_entry_get_text(GTK_ENTRY(lookup_widget(commander_window,"prefs_save_filename")));
   gnome_config_set_string("coriander/save/filename",preferences.save_filename);
   gnome_config_sync();
 }
@@ -851,7 +851,7 @@ void
 on_prefs_real_filename_changed         (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  preferences.real_filename=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window,"prefs_real_filename")));
+  preferences.real_filename=gtk_entry_get_text(GTK_ENTRY(lookup_widget(commander_window,"prefs_real_filename")));
   gnome_config_set_string("coriander/real/filename",preferences.real_filename);
   gnome_config_sync();
 }
@@ -861,7 +861,7 @@ void
 on_prefs_real_user_changed             (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  preferences.real_user=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window,"prefs_real_user")));
+  preferences.real_user=gtk_entry_get_text(GTK_ENTRY(lookup_widget(commander_window,"prefs_real_user")));
   gnome_config_set_string("coriander/real/user",preferences.real_user);
   gnome_config_sync();
 }
@@ -871,7 +871,7 @@ void
 on_prefs_real_password_changed         (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  preferences.real_password=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window,"prefs_real_password")));
+  preferences.real_password=gtk_entry_get_text(GTK_ENTRY(lookup_widget(commander_window,"prefs_real_password")));
   gnome_config_set_string("coriander/real/password",preferences.real_password);
   gnome_config_sync();
 }
@@ -881,7 +881,7 @@ void
 on_prefs_real_port_changed             (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  preferences.real_port=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(preferences_window,"prefs_real_port")));
+  preferences.real_port=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(commander_window,"prefs_real_port")));
   gnome_config_set_int("coriander/real/port",preferences.real_port);
   gnome_config_sync();
 
@@ -892,7 +892,7 @@ void
 on_prefs_real_title_changed            (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  preferences.real_title=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window,"prefs_real_title")));
+  preferences.real_title=gtk_entry_get_text(GTK_ENTRY(lookup_widget(commander_window,"prefs_real_title")));
   gnome_config_set_string("coriander/real/title",preferences.real_title);
   gnome_config_sync();
 
@@ -903,7 +903,7 @@ void
 on_prefs_real_author_changed           (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  preferences.real_author=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window,"prefs_real_author")));
+  preferences.real_author=gtk_entry_get_text(GTK_ENTRY(lookup_widget(commander_window,"prefs_real_author")));
   gnome_config_set_string("coriander/real/author",preferences.real_author);
   gnome_config_sync();
 
@@ -914,7 +914,7 @@ void
 on_prefs_real_copyright_changed        (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  preferences.real_copyright=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window,"prefs_real_copyright")));
+  preferences.real_copyright=gtk_entry_get_text(GTK_ENTRY(lookup_widget(commander_window,"prefs_real_copyright")));
   gnome_config_set_string("coriander/real/copyright",preferences.real_copyright);
   gnome_config_sync();
 
@@ -1002,7 +1002,7 @@ on_get_filename_dialog_ok_clicked      (GtkButton       *button,
 {
   GtkWidget *dialog = gtk_widget_get_toplevel(GTK_WIDGET(button));
   gchar *filename = gtk_file_selection_get_filename(GTK_FILE_SELECTION(dialog));
-  gtk_entry_set_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_save_filename")),filename);
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(commander_window, "prefs_save_filename")),filename);
   gtk_widget_destroy(dialog);
 }
 
@@ -1203,7 +1203,7 @@ void
 on_prefs_video1394_device_changed      (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  preferences.video1394_device=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window,"prefs_video1394_device")));
+  preferences.video1394_device=gtk_entry_get_text(GTK_ENTRY(lookup_widget(commander_window,"prefs_video1394_device")));
   gnome_config_set_string("coriander/receive/video1394_device",preferences.video1394_device);
   gnome_config_sync();
 
