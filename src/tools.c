@@ -684,39 +684,47 @@ StopFPSDisplay(int camera)
   service=GetService(SERVICE_ISO,current_camera);
   if (service!=NULL) {
     infoiso=(isothread_info_t*)service->data;
+    //fprintf(stderr,"Stopping iso fps, id %d...",infoiso->timeout_func_id);
     gtk_timeout_remove(infoiso->timeout_func_id);
     gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"fps_receive"),
 			 ctxt.fps_receive_ctxt, ctxt.fps_receive_id);
     ctxt.fps_receive_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"fps_receive"),
 					   ctxt.fps_receive_ctxt, "");
+    //fprintf(stderr,"done\n");
   
   } 
  service=GetService(SERVICE_DISPLAY,current_camera);
   if (service!=NULL) {
     infodisplay=(displaythread_info_t*)service->data;
+    //fprintf(stderr,"Stopping display fps, id %d...",infodisplay->timeout_func_id);
     gtk_timeout_remove(infodisplay->timeout_func_id);
     gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"fps_display"),
 			 ctxt.fps_display_ctxt, ctxt.fps_display_id);
     ctxt.fps_display_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"fps_display"),
 					   ctxt.fps_display_ctxt, "");
+    //fprintf(stderr,"done\n");
   }
  service=GetService(SERVICE_SAVE,current_camera);
   if (service!=NULL) {
     infosave=(savethread_info_t*)service->data;
+    //fprintf(stderr,"Stopping save fps, id %d...",infosave->timeout_func_id);
     gtk_timeout_remove(infosave->timeout_func_id);
     gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"fps_save"),
 			 ctxt.fps_save_ctxt, ctxt.fps_save_id);
     ctxt.fps_save_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"fps_save"),
 					   ctxt.fps_save_ctxt, "");
+    //fprintf(stderr,"done\n");
   }
  service=GetService(SERVICE_FTP,current_camera);
   if (service!=NULL) {
     infoftp=(ftpthread_info_t*)service->data;
+    //fprintf(stderr,"Stopping ftp fps, id %d...",infoftp->timeout_func_id);
     gtk_timeout_remove(infoftp->timeout_func_id);
     gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"fps_ftp"),
 			 ctxt.fps_ftp_ctxt, ctxt.fps_ftp_id);
     ctxt.fps_ftp_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"fps_ftp"),
 					   ctxt.fps_ftp_ctxt, "");
+    //fprintf(stderr,"done\n");
   }
 }
 
@@ -732,22 +740,30 @@ ResumeFPSDisplay(int camera)
   service=GetService(SERVICE_ISO,current_camera);
   if (service!=NULL) {
     infoiso=(isothread_info_t*)service->data;
+    //fprintf(stderr,"Starting iso fps...");
     infoiso->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)IsoShowFPS, (gpointer*) service);
+    //fprintf(stderr,"done: id= %d\n",infoiso->timeout_func_id);
   } 
  service=GetService(SERVICE_DISPLAY,current_camera);
   if (service!=NULL) {
     infodisplay=(displaythread_info_t*)service->data;
+    //fprintf(stderr,"Starting display fps...");
     infodisplay->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)DisplayShowFPS, (gpointer*) service);
+    //fprintf(stderr,"done: id= %d\n",infodisplay->timeout_func_id);
   }
  service=GetService(SERVICE_SAVE,current_camera);
   if (service!=NULL) {
     infosave=(savethread_info_t*)service->data;
+    //fprintf(stderr,"Starting save fps...");
     infosave->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)SaveShowFPS, (gpointer*) service);
+    //fprintf(stderr,"done: id= %d\n",infosave->timeout_func_id);
   }
  service=GetService(SERVICE_FTP,current_camera);
   if (service!=NULL) {
     infoftp=(ftpthread_info_t*)service->data;
+    //fprintf(stderr,"Starting ftp fps...");
     infoftp->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)FtpShowFPS, (gpointer*) service);
+    //fprintf(stderr,"done: id= %d\n",infoftp->timeout_func_id);
   }
 }
       
