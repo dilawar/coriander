@@ -89,8 +89,8 @@ Software requirements:
 _______________________
 
 Software requirements are now more or less correctly probed by the configure
-script: libdc1394, libraw1394, MMX/SSE capabilities, libftp, Real streaming
-toolboxes and SDL libs are checked.
+script: libdc1394, libraw1394, MMX/SSE capabilities, libftp and SDL libs are
+checked.
 
 - a kernel with 1394 support [3], preferably at least a 2.4.17
   WITH CVS for ieee1394 at a date later than 2001-12-20 (very important).
@@ -104,8 +104,6 @@ toolboxes and SDL libs are checked.
 - Glade (for development only)
 - automake 1.4
 - autoconf 2.13
-- RealServer and RealProducerSDK for REAL support (please read the README.REAL
-  file)
 
 In order to have Xv support within SDL, you will maybe need some custom
 drivers, e.g. for Nvidia chipsets [10] or for ATI Rage chipsets [6].

@@ -4,7 +4,6 @@
 
 INCLUDES = -I$(top_srcdir)/intl \
 	$(GNOME_INCLUDEDIR) \
-	$(REALLIB_CFLAGS) \
 	$(SDLLIB_CFLAGS) \
 	$(LIBRAW_CFLAGS) \
 	$(LIBDC_CFLAGS) \
@@ -24,8 +23,6 @@ coriander_SOURCES = \
 	thread_display.c thread_display.h \
 	thread_ftp.c thread_ftp.h \
 	thread_save.c thread_save.h \
-	RealErrorSink.cc RealErrorSink.h \
-	thread_real.cc thread_real.h \
 	tools.c tools.h \
 	callbacks.c callbacks.h \
 	update_frames.c update_frames.h \
@@ -38,12 +35,12 @@ coriander_SOURCES = \
 	build_ranges.c build_ranges.h \
 	conversions.c conversions.h \
 	topology.c topology.h \
-	preferences.cc preferences.h
+	preferences.c preferences.h
 
 AM_LDFLAGS = -Xlinker --export-dynamic
 
 #$(INTLLIBS) removed from the line below
 coriander_LDADD = $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(PTHREAD_LIB) \
-	 $(FTPLIB_LIBS) $(REALLIB_LIBS) $(SDLLIB_LIBS) $(LIBDC_LIBS) $(LIBRAW_LIBS) -lgthread
+	 $(FTPLIB_LIBS) $(SDLLIB_LIBS) $(LIBDC_LIBS) $(LIBRAW_LIBS) -lgthread
 
 

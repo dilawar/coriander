@@ -18,8 +18,6 @@ _______________________________________________________________________________
 	- some status window features missing
 - misc stuff:
 	- add some artwork in the buttons for clearer presentation
-- services:
-	- Real streaming service testing
 - long term:
 	- add advanced features capability. This would probably require a
 	  DB of the supported cameras (Is there any cam supporting this

@@ -162,45 +162,6 @@ AC_DEFUN([AC_CHECK_SDLLIB],[
 	fi
 ])
 
-AC_DEFUN([AC_CHECK_REALLIB],[
-	AC_SUBST(REALLIB_CFLAGS)
-	AC_SUBST(REALLIB_LIBS)
-	AC_MSG_CHECKING(for Real Producer SDK)
- 	real_sdk=no
- 	AC_TRY_COMPILE([
-	#include <realproducersdk/pncom.h>
-	#include <realproducersdk/rmaerror.h>
-	#include <realproducersdk/pnwintyp.h>
-	#include <realproducersdk/engtypes.h>
-	#include <realproducersdk/rmaenum.h>
-	#include <realproducersdk/rmapckts.h>
-	#include <realproducersdk/engstats.h>
-	#include <realproducersdk/engcodec.h>
- 	],[
-  	IRMABuffer *pBuffer;
- 	],[
- 	real_sdk=yes
- 	],[
- 	real_sdk=no
- 	])
- 	AC_MSG_RESULT($real_sdk)
- 	if test x$real_sdk = xyes; then
-  	   AC_DEFINE(HAVE_REALLIB)	
-  	   REALLIB_LIBS="-L/usr/local/lib/realproducersdk -lenceng -ldl"
-  	   REALLIB_CFLAGS="-I/usr/local/include/realproducersdk -D_REENTRANT -D_LINUX -D_LITTLE_ENDIAN -D_UNIX"
-	else
-	  AC_MSG_RESULT(
-
-**************************************************************************
-**   RealNetworks 'RealProducerSDK' and 'RealServer' required for       **
-**   streaming support. Please have a look at the README.REAL file if   **
-**   you want to enable streaming.                                      **
-**   REAL SERVICE DISABLED                                              **
-**************************************************************************)
- 	fi
-
-])
-
 
 AC_DEFUN([AC_CHECK_MMX],[
 	AC_MSG_CHECKING(for MMX support)

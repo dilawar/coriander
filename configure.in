@@ -43,7 +43,6 @@ AC_CHECK_LIBDC
 AC_CHECK_LIBDC_VERSION
 AC_CHECK_FTPLIB
 AC_CHECK_SDLLIB
-AC_CHECK_REALLIB
 
 dnl temporarily removed intl/Makefile and po/Makefile.in
 AC_OUTPUT([

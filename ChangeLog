@@ -4,6 +4,8 @@ Changes towards version 0.32
 
    April 22, 2003, by Damien Douxchamps
    - removed most of err=dc1394... schemes by if (dc1394...!=DC1394_SUCCESS)
+   - removed Real service, as it never worked and now all the Real system
+     has changed, making it completely obsolete.
 	
 Changes in version 0.31
 
