@@ -1,9 +1,10 @@
 Coriander, (c) 2000-2002 Damien Douxchamps <douxchamps@ieee.org>
 
-
-	
 Changes towards version 0.24:
 
+   Mar 4, 2002, by Damien Douxchamps
+   - corrected a bug in the timeout loops (added '==DC1394_TRUE')
+	
    Feb 27, 2002, by Damien Douxchamps
    - added some code to the color conversion functions so that
      they now work with format7.

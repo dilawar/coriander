@@ -503,7 +503,8 @@ on_save_mem_clicked                    (GtkButton       *button,
 	MainError("Could not save setup to memory channel");
       else
 	{
-	  while ( value && (timeout_bin<(unsigned long int)(preferences.op_timeout*1000000.0)) )
+	  while ((value==DC1394_TRUE)
+		 &&(timeout_bin<(unsigned long int)(preferences.op_timeout*1000000.0)) )
 	    {
 	      usleep(step);
 	      if (!dc1394_is_memory_save_in_operation(camera->handle,camera->id, &value))
@@ -1108,7 +1109,8 @@ on_range_menu_activate             (GtkMenuItem     *menuitem,
       else
 	{
 	  SetScaleSensitivity(GTK_WIDGET(menuitem),feature,FALSE);
-	  while ( value && (timeout_bin<(unsigned long int)(preferences.op_timeout*1000000.0)) )
+	  while ((value==DC1394_TRUE) 
+		 && (timeout_bin<(unsigned long int)(preferences.op_timeout*1000000.0)) )
 	    {
 	      usleep(step);
 	      if (!dc1394_is_one_push_in_operation(camera->handle, camera->id, feature, &value))
