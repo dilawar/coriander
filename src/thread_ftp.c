@@ -236,6 +236,8 @@ FtpThread(void* arg)
 	      FtpPutFrame(filename_out, im, info);
 	    }
 #endif
+	    info->frames++;
+
 	    if (im != NULL)
 	      gdk_imlib_kill_image(im);
 	  }
@@ -244,7 +246,6 @@ FtpThread(void* arg)
 	  
 	  // FPS display:
 	  info->current_time=times(&info->tms_buf);
-	  info->frames++;
 	}
 	pthread_mutex_unlock(&ftp_service->mutex_data);
       }

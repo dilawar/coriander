@@ -188,7 +188,7 @@ V4lThread(void* arg)
       if(RollBuffers(v4l_service)) { // have buffers been rolled?
 	// check params
 	V4lThreadCheckParams(v4l_service);
-
+	
 	convert_to_rgb(v4l_service->current_buffer, info->v4l_buffer);
 
 	swap_rb(info->v4l_buffer, v4l_service->current_buffer->width*v4l_service->current_buffer->height*3);
@@ -197,15 +197,14 @@ V4lThread(void* arg)
 	  if (skip_counter==(info->period-1)) {
 	    skip_counter=0;
 	    write(info->v4l_dev,info->v4l_buffer,v4l_service->current_buffer->width*v4l_service->current_buffer->height*3);
+	    info->frames++;
 	  }
+	  else
+	    skip_counter++;
+	  
+	  // FPS display
+	  info->current_time=times(&info->tms_buf);
 	}
-	else
-	  skip_counter++;
-	
-	// FPS display
-	info->current_time=times(&info->tms_buf);
-	info->frames++;
-
 	pthread_mutex_unlock(&v4l_service->mutex_data);
       }
       else {

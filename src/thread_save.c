@@ -237,13 +237,15 @@ SaveThread(void* arg)
 	      gdk_imlib_save_image(im, filename_out, NULL);
 	      if (im != NULL) gdk_imlib_kill_image(im);
 	    }
+	    
+	    info->frames++;
+
 	  }
 	  else
 	    skip_counter++;
 	  
 	  // FPS display
 	  info->current_time=times(&info->tms_buf);
-	  info->frames++;
 	}
 	pthread_mutex_unlock(&save_service->mutex_data);
       }
