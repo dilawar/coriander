@@ -82,7 +82,12 @@ main (int argc, char *argv[])
 #endif
   gnome_init ("coriander", VERSION, argc, argv);
 
-  businfo=(BusInfo_t*)malloc(sizeof(businfo));
+  businfo=(BusInfo_t*)malloc(sizeof(BusInfo_t));
+  //fprintf(stderr,"0x%x\n",businfo);
+  businfo->handles=NULL;
+  businfo->port_camera_num=NULL;
+  businfo->camera_nodes=NULL;
+  businfo->card_found=0;
 
   GetCameraNodes(businfo);
   //fprintf(stderr,"Got camera nodes\n");
@@ -92,19 +97,23 @@ main (int argc, char *argv[])
   if (businfo->card_found==0) {
     gtk_widget_show(create_no_handle_window());
     gtk_main();
-    //free(businfo);
+    //fprintf(stderr,"0x%x\n",businfo);
+    free(businfo);
     return(1);
   }
   else {
     if (businfo->camera_num<1) {
       gtk_widget_show(create_no_camera_window());
       gtk_main();
-      /*
+      
+      for (i=0;i<businfo->port_num;i++)
+	free(businfo->camera_nodes[i]);
       free(businfo->camera_nodes);
       free(businfo->port_camera_num);
       free(businfo->handles);
+      //fprintf(stderr,"0x%x\n",businfo);
       free(businfo);
-      */
+      
       return(1);
     }
   }

@@ -34,9 +34,27 @@ GetCameraNodes(BusInfo_t* bi) {
   if (tmp_handle!=NULL) {
     bi->port_num=raw1394_get_port_info(tmp_handle, NULL, 0);
     raw1394_destroy_handle(tmp_handle);
-    bi->camera_nodes=(nodeid_t**)malloc(bi->port_num*sizeof(nodeid_t*));
-    bi->port_camera_num=(int*)malloc(bi->port_num*sizeof(int));
-    bi->handles=(raw1394handle_t *)malloc(bi->port_num*sizeof(raw1394handle_t));
+
+    if ((bi->camera_nodes!=NULL)&&(bi->port_camera_num!=NULL)&&(bi->handles!=NULL)) {
+      for (port=0;port<bi->port_num;port++)
+	free(bi->camera_nodes[port]);
+      free(bi->camera_nodes);
+      free(bi->port_camera_num);
+      free(bi->handles);
+      bi->camera_nodes=NULL;
+      bi->port_camera_num=NULL;
+      bi->handles=NULL;
+    }
+
+    if ((bi->camera_nodes==NULL)&&(bi->port_camera_num==NULL)&&(bi->handles==NULL)) {
+      bi->camera_nodes=(nodeid_t**)malloc(bi->port_num*sizeof(nodeid_t*));
+      bi->port_camera_num=(int*)malloc(bi->port_num*sizeof(int));
+      bi->handles=(raw1394handle_t *)malloc(bi->port_num*sizeof(raw1394handle_t));
+    }
+    else {
+      fprintf(stderr,"ERROR allocating bus info structures!\n");
+    }
+    
     //fprintf(stderr,"portnum: %d\n",bi->port_num);
     for (port=0;port<bi->port_num;port++) {
       // get a handle to the current interface card

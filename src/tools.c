@@ -701,6 +701,9 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation) {
   dc1394_camerainfo camera_info;
   unsigned long long int new_guids[128];
 
+  bi.handles=NULL;
+  bi.port_camera_num=NULL;
+  bi.camera_nodes=NULL;
   //fprintf(stderr,"Bus reset detected by gtk timeout. Generation: %d\n",generation);
 
   gtk_widget_set_sensitive(main_window,FALSE);
@@ -836,6 +839,10 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation) {
   // re-set ISO channels. This might be necessary before restarting the iso threads
   SetChannels();
 
+  free(bi.handles);
+  free(bi.port_camera_num);
+  free(bi.camera_nodes);
+
   return(1);
 }
 
@@ -867,8 +874,7 @@ main_timeout_handler(gpointer* port_num) {
   if (!(main_timeout_ticker%1000)) { // every second
     for (i=0;i<businfo->port_num;i++) {
       cooked1394_read(businfo->handles[i], 0xffc0 | raw1394_get_local_id(businfo->handles[i]),
-		      CSR_REGISTER_BASE + CSR_CYCLE_TIME, 4,
-		      (quadlet_t *) &quadlet);
+		      CSR_REGISTER_BASE + CSR_CYCLE_TIME, 4, (quadlet_t *) &quadlet);
     }
     //fprintf(stderr,"dummy read\n");
   }

@@ -2,6 +2,9 @@ Coriander, (c) 2000-2003 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 0.99.3
 
+   August 18, 2003, by Damien Douxchamps
+   - fixed stupid businfo allocation in main.c
+
    August 16, 2003, by Damien Douxchamps
    - added missing mutex init during in NewCamera()
 	
