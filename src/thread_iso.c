@@ -231,11 +231,14 @@ IsoThread(void* arg)
   pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS,NULL);
   pthread_mutex_unlock(&iso_service->mutex_data);
 
-  cond16bit=((iso_service->mode==MODE_640x480_MONO16)||
-	     (iso_service->mode==MODE_800x600_MONO16)||
-	     (iso_service->mode==MODE_1024x768_MONO16)||
-	     (iso_service->mode==MODE_1280x960_MONO16)||
-	     (iso_service->mode==MODE_1600x1200_MONO16));
+  if (iso_service->format!=FORMAT_SCALABLE_IMAGE_SIZE)
+    cond16bit=((iso_service->mode==MODE_640x480_MONO16)||
+	       (iso_service->mode==MODE_800x600_MONO16)||
+	       (iso_service->mode==MODE_1024x768_MONO16)||
+	       (iso_service->mode==MODE_1280x960_MONO16)||
+	       (iso_service->mode==MODE_1600x1200_MONO16));
+  else
+    cond16bit=(format7_info->mode[iso_service->mode].color_coding_id==COLOR_FORMAT7_MONO16);
 
   if (cond16bit>0)
     temp=(unsigned char*)malloc(iso_service->width*iso_service->height*sizeof(unsigned char));
@@ -257,24 +260,18 @@ IsoThread(void* arg)
       switch (iso_service->bayer)
 	{
 	case BAYER_DECODING_NEAREST:
-	  //fprintf(stderr,"Nearest decoding...");
 	  if (cond16bit>0)
 	    y162y((unsigned char *)info->capture.capture_buffer,temp,
 		  iso_service->width*iso_service->height);
-	  BayerNearestNeighbor(temp,
-			       iso_service->current_buffer,
+	  BayerNearestNeighbor(temp, iso_service->current_buffer,
 			       iso_service->width, iso_service->height);
-	  //fprintf(stderr,"done\n");
 	  break;
 	case BAYER_DECODING_EDGE_SENSE:
-	  //fprintf(stderr,"Edge Sense decoding...");
 	  if (cond16bit>0)
 	    y162y((unsigned char *)info->capture.capture_buffer,temp,
 		  iso_service->width*iso_service->height);
-	  BayerEdgeSense(temp,
-			 iso_service->current_buffer,
+	  BayerEdgeSense(temp, iso_service->current_buffer,
 			 iso_service->width, iso_service->height);
-	  //fprintf(stderr,"done\n");
 	  break;
 	default:
 	  memcpy(iso_service->current_buffer,
@@ -286,7 +283,6 @@ IsoThread(void* arg)
 	  
       pthread_mutex_lock(&iso_service->mutex_data);
       RollBuffers(iso_service);
-      //fprintf(stderr,"Got one frame\n");
       pthread_mutex_unlock(&iso_service->mutex_data);
       pthread_cleanup_pop(0);
     }
