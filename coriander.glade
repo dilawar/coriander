@@ -5244,7 +5244,6 @@ anything in the GUI at all...</label>
 		    <xpad>0</xpad>
 		    <ypad>0</ypad>
 		  </widget>
-
 		</widget>
 	      </widget>
 	    </widget>
@@ -5538,6 +5537,7 @@ anything in the GUI at all...</label>
   <class>GnomeAbout</class>
   <name>about_window</name>
   <modal>True</modal>
+  <logo>coriander-half.png</logo>
   <copyright>Copyright 2000-2004 Damien Douxchamps</copyright>
   <authors>Damien Douxchamps &lt;ddouxchamps@users.sf.net&gt;
 Dan Dennedy &lt;dan@dennedy.org&gt;

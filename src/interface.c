@@ -2823,9 +2823,9 @@ create_main_window (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (service_clist);
   gtk_container_add (GTK_CONTAINER (scrolledwindow3), service_clist);
-  gtk_clist_set_column_width (GTK_CLIST (service_clist), 0, 1800);
+  gtk_clist_set_column_width (GTK_CLIST (service_clist), 0, 200);
   gtk_clist_set_column_width (GTK_CLIST (service_clist), 1, 60);
-  gtk_clist_set_column_width (GTK_CLIST (service_clist), 2, 60);
+  gtk_clist_set_column_width (GTK_CLIST (service_clist), 2, 80);
   gtk_clist_column_titles_show (GTK_CLIST (service_clist));
 
   label170 = gtk_label_new (_("Service"));
@@ -3163,7 +3163,7 @@ create_about_window (void)
                         _("Copyright 2000-2004 Damien Douxchamps"),
                         authors,
                         _("The Gnome IEEE1394 Digital Camera Controller website is\nhttp://sourceforge.net/projects/coriander"),
-                        NULL);
+                        "coriander/coriander-half.png");
   gtk_object_set_data (GTK_OBJECT (about_window), "about_window", about_window);
   gtk_window_set_modal (GTK_WINDOW (about_window), TRUE);
 
