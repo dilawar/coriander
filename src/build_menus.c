@@ -40,7 +40,7 @@ BuildTriggerModeMenu(void)
   quadlet_t value;
   int k=0;
   int index[NUM_TRIGGER_MODE];
-
+  unsigned int current_trigger_mode;
   GtkWidget* trigger_mode;
   GtkWidget* trigger_mode_menu;
   GtkWidget* glade_menuitem;
@@ -79,10 +79,11 @@ BuildTriggerModeMenu(void)
     gtk_option_menu_set_menu (GTK_OPTION_MENU (trigger_mode), trigger_mode_menu);
     
     // sets the active menu item:
-    //fprintf(stderr,"trig: max: %d, default: %d\n",NUM_TRIGGER_MODE,
-    //	  feature_set->feature[FEATURE_TRIGGER-FEATURE_MIN].trigger_mode);
-    gtk_option_menu_set_history (GTK_OPTION_MENU (trigger_mode),
-				 index[camera->feature_set.feature[FEATURE_TRIGGER-FEATURE_MIN].trigger_mode]);
+    if (dc1394_get_trigger_mode(camera->camera_info.handle,camera->camera_info.id, &current_trigger_mode)!=DC1394_SUCCESS)
+      MainError("Could not query current trigger mode");
+
+    //fprintf(stderr,"current trigger mode: %d\n",current_trigger_mode - TRIGGER_MODE_MIN);
+    gtk_option_menu_set_history (GTK_OPTION_MENU (trigger_mode), index[current_trigger_mode - TRIGGER_MODE_MIN]);
     
   }
   else {

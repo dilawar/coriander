@@ -1,5 +1,11 @@
 Coriander, (c) 2000-2003 Damien Douxchamps <ddouxchamps@users.sf.net>
 
+Changes towards version 0.99.4
+
+   August 27, 2003, by Damien Douxchamps
+   - Fixed trigger mode menu, at last. Thanks to Rich Walker for pointing
+     this out.
+
 Changes in version 0.99.3
 
    August 25, 2003, by Damien Douxchamps
