@@ -2,6 +2,9 @@ Coriander, (c) 2000-2003 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 0.32
 	
+   April 30, 2003, by Damien Douxchamps
+   - stop/resume FPS display when changing camera
+	
    April 29, 2003, by Damien Douxchamps
    - fixed absolute value update when moving the normal control sliders
    - fixed service buttons update on camera change

@@ -94,5 +94,11 @@ SetAbsValue(int feature);
 void
 GetAbsValue(int feature);
 
+void
+StopFPSDisplay(int camera);
+
+void
+ResumeFPSDisplay(int camera);
+
 #endif
 

@@ -670,3 +670,84 @@ GetAbsValue(int feature)
     gtk_entry_set_text(GTK_ENTRY(lookup_widget(absolute_settings_window,feature_abs_entry_list[feature-FEATURE_MIN])),string);
   }
 }
+
+
+void
+StopFPSDisplay(int camera)
+{
+  chain_t *service;
+  isothread_info_t* infoiso;
+  displaythread_info_t* infodisplay;
+  savethread_info_t* infosave;
+  ftpthread_info_t* infoftp;
+
+  service=GetService(SERVICE_ISO,current_camera);
+  if (service!=NULL) {
+    infoiso=(isothread_info_t*)service->data;
+    gtk_timeout_remove(infoiso->timeout_func_id);
+    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"fps_receive"),
+			 ctxt.fps_receive_ctxt, ctxt.fps_receive_id);
+    ctxt.fps_receive_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"fps_receive"),
+					   ctxt.fps_receive_ctxt, "");
+  
+  } 
+ service=GetService(SERVICE_DISPLAY,current_camera);
+  if (service!=NULL) {
+    infodisplay=(displaythread_info_t*)service->data;
+    gtk_timeout_remove(infodisplay->timeout_func_id);
+    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"fps_display"),
+			 ctxt.fps_display_ctxt, ctxt.fps_display_id);
+    ctxt.fps_display_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"fps_display"),
+					   ctxt.fps_display_ctxt, "");
+  }
+ service=GetService(SERVICE_SAVE,current_camera);
+  if (service!=NULL) {
+    infosave=(savethread_info_t*)service->data;
+    gtk_timeout_remove(infosave->timeout_func_id);
+    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"fps_save"),
+			 ctxt.fps_save_ctxt, ctxt.fps_save_id);
+    ctxt.fps_save_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"fps_save"),
+					   ctxt.fps_save_ctxt, "");
+  }
+ service=GetService(SERVICE_FTP,current_camera);
+  if (service!=NULL) {
+    infoftp=(ftpthread_info_t*)service->data;
+    gtk_timeout_remove(infoftp->timeout_func_id);
+    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"fps_ftp"),
+			 ctxt.fps_ftp_ctxt, ctxt.fps_ftp_id);
+    ctxt.fps_ftp_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"fps_ftp"),
+					   ctxt.fps_ftp_ctxt, "");
+  }
+}
+
+void
+ResumeFPSDisplay(int camera)
+{
+  chain_t *service;
+  isothread_info_t* infoiso;
+  displaythread_info_t* infodisplay;
+  savethread_info_t* infosave;
+  ftpthread_info_t* infoftp;
+
+  service=GetService(SERVICE_ISO,current_camera);
+  if (service!=NULL) {
+    infoiso=(isothread_info_t*)service->data;
+    infoiso->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)IsoShowFPS, (gpointer*) service);
+  } 
+ service=GetService(SERVICE_DISPLAY,current_camera);
+  if (service!=NULL) {
+    infodisplay=(displaythread_info_t*)service->data;
+    infodisplay->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)DisplayShowFPS, (gpointer*) service);
+  }
+ service=GetService(SERVICE_SAVE,current_camera);
+  if (service!=NULL) {
+    infosave=(savethread_info_t*)service->data;
+    infosave->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)SaveShowFPS, (gpointer*) service);
+  }
+ service=GetService(SERVICE_FTP,current_camera);
+  if (service!=NULL) {
+    infoftp=(ftpthread_info_t*)service->data;
+    infoftp->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)FtpShowFPS, (gpointer*) service);
+  }
+}
+      
