@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2001 Damien Douxchamps  <douxchamps@ieee.org>
+ * Copyright (C) 2000-2002 Damien Douxchamps  <douxchamps@ieee.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -153,7 +153,7 @@ void
 ParseConfigFile(FILE* fd)
 {
 
-  char feature_string[256],feature_value[256];
+  char feature_string[STRING_SIZE],feature_value[STRING_SIZE];
   int check,feature_id, i;
   char *needle;
   check=fscanf(fd,"%s %s",feature_string, feature_value);
@@ -277,7 +277,7 @@ GetFileName(void)
   char *out;
   const char * filename="/.coriander";
 
-  out=(char*)malloc(256*sizeof(char));
+  out=(char*)malloc(STRING_SIZE*sizeof(char));
 
   path=getenv("HOME");
 

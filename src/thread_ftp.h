@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2001 Damien Douxchamps  <douxchamps@ieee.org>
+ * Copyright (C) 2000-2002 Damien Douxchamps  <douxchamps@ieee.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@
 #endif
 
 #include <pthread.h> 
+#include "definitions.h"
 
 typedef enum
 {
@@ -40,12 +41,12 @@ typedef struct
 
   pthread_mutex_t    mutex_cancel_ftp;
   int                cancel_ftp_req;
-  char               filename[256];
-  char               filename_ext[256];
-  char               address[256];
-  char               password[256];
-  char               user[256];
-  char               path[256];
+  char               filename[STRING_SIZE];
+  char               filename_ext[STRING_SIZE];
+  char               address[STRING_SIZE];
+  char               password[STRING_SIZE];
+  char               user[STRING_SIZE];
+  char               path[STRING_SIZE];
   long int           period;
   long int           counter;
   long int           imlib_buffer_size;

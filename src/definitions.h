@@ -24,6 +24,7 @@
 #define  RV                  2000     // scales of the FEATURE_WHITE_BALANCE feature
 #define  NO                 FALSE
 #define  YES                 TRUE
+#define  STRING_SIZE         1024
  
 typedef enum {
   REAL_AUDIENCE_28_MODEM=1,    // 20 kbps
@@ -100,7 +101,7 @@ typedef struct _UIInfo
 
 typedef struct _StatusInfo
 {
-  char name[256];
+  char name[STRING_SIZE];
   quadlet_t guid;
   
 } StatusInfo;

@@ -3,8 +3,8 @@
  *
  *            -- The IEEE-1394 Digital Camera controller --
  *
- * Copyright (C) 2000-2001 Damien Douxchamps  <douxchamps@ieee.org>
- *               Video Overlay by Dan Dennedy <ddennedy@coolsite.net>
+ * Copyright (C) 2000-2002 Damien Douxchamps  <douxchamps@ieee.org>
+ *               Ftp and conversions by Dan Dennedy <ddennedy@coolsite.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -80,9 +80,7 @@ main (int argc, char *argv[])
   textdomain (PACKAGE);
 #endif
 
-  g_thread_init(NULL);
   gnome_init ("coriander", VERSION, argc, argv);
-  gdk_imlib_init();
 
   handle=dc1394_create_handle(port);
   // probe the IEEE1394 bus for DC camera:
@@ -125,9 +123,7 @@ main (int argc, char *argv[])
     }
   GrabSelfIds(handle);
   silent_ui_update=0;
-
-  for (i=0;i<camera_num;i++)
-    SetChannel(i);
+  SetChannels();
 
   // current camera is the first camera:
   SelectCamera(0);
@@ -148,9 +144,7 @@ main (int argc, char *argv[])
 
   gtk_widget_show (commander_window); // this is the only window shown at boot-time
 
-  gdk_threads_enter();
   gtk_main();
-  gdk_threads_leave();
 
   // clean all threads for all cams:
   for (i=0;i<camera_num;i++)

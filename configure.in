@@ -71,7 +71,7 @@ AC_CHECK_LIB(SDL, SDL_Init,
              AC_DEFINE(HAVE_SDLLIB)
              SDL_LIB="-lSDL"
 	     SDL_INCLUDEDIR="-I/usr/include/SDL",
-             AC_MSG_RESULT(SDL libs required for SDL display. Disabled.))
+             AC_MSG_RESULT(SDL libs required for display. NO DISPLAY WILL BE AVAILABLE.))
 AC_SUBST(SDL_LIB)
 AC_SUBST(SDL_INCLUDEDIR)
 

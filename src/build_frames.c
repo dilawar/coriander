@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2001 Damien Douxchamps  <douxchamps@ieee.org>
+ * Copyright (C) 2000-2002 Damien Douxchamps  <douxchamps@ieee.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -87,6 +87,8 @@ BuildTriggerFrame(void)
   gtk_spin_button_set_adjustment((GtkSpinButton*)lookup_widget(commander_window, "trigger_count"),adjustment);
  
   // TODO: connect signal
+  gtk_signal_connect (GTK_OBJECT (lookup_widget(commander_window, "trigger_count")), "changed",
+				  GTK_SIGNAL_FUNC (on_trigger_value_changed), (int*)1); // (dummy user data)
 }
 
 

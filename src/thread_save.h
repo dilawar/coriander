@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2001 Damien Douxchamps  <douxchamps@ieee.org>
+ * Copyright (C) 2000-2002 Damien Douxchamps  <douxchamps@ieee.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,8 @@
 #define __THREAD_SAVE_H__
 
 
-#include <pthread.h>  
+#include <pthread.h>
+#include "definitions.h"
 
 typedef enum
 {
@@ -38,8 +39,8 @@ typedef struct
 
   pthread_mutex_t    mutex_cancel_save;
   int                cancel_save_req;
-  char               filename[256];
-  char               filename_ext[256];
+  char               filename[STRING_SIZE];
+  char               filename_ext[STRING_SIZE];
   long int           counter;
   unsigned char*     save_buffer;
   int                save_scratch;

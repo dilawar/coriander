@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2001 Damien Douxchamps  <douxchamps@ieee.org>
+ * Copyright (C) 2000-2002 Damien Douxchamps  <douxchamps@ieee.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,6 +18,8 @@
 
 #ifndef __PREFERENCES_H__
 #define __PREFERENCES_H__
+
+#include "definitions.h"
 
 #define PREFERENCE_ITEMS 29
 
@@ -64,21 +66,21 @@ typedef struct _PrefsInfo
   char save_filename[256];
   int save_scratch;
   int save_period;
-  char ftp_address[256];
-  char ftp_user[256];
-  char ftp_password[256];
-  char ftp_filename[256];
-  char ftp_path[256];
+  char ftp_address[STRING_SIZE];
+  char ftp_user[STRING_SIZE];
+  char ftp_password[STRING_SIZE];
+  char ftp_filename[STRING_SIZE];
+  char ftp_path[STRING_SIZE];
   int ftp_scratch;
   int ftp_period;
-  char real_address[256];
-  char real_user[256];
-  char real_password[256];
-  char real_filename[256];
+  char real_address[STRING_SIZE];
+  char real_user[STRING_SIZE];
+  char real_password[STRING_SIZE];
+  char real_filename[STRING_SIZE];
   int real_port;
-  char real_author[256];
-  char real_title[256];
-  char real_copyright[256];
+  char real_author[STRING_SIZE];
+  char real_title[STRING_SIZE];
+  char real_copyright[STRING_SIZE];
   int real_recordable;
   unsigned long int real_audience;
   int real_quality;

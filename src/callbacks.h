@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2001 Damien Douxchamps  <douxchamps@ieee.org>
+ * Copyright (C) 2000-2002 Damien Douxchamps  <douxchamps@ieee.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -212,6 +212,10 @@ on_trigger_polarity_toggled            (GtkToggleButton *togglebutton,
 
 void
 on_trigger_mode_activate               (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_trigger_value_changed               (GtkAdjustment    *adj,
                                         gpointer         user_data);
 
 void

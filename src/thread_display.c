@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2001 Damien Douxchamps  <douxchamps@ieee.org>
+ * Copyright (C) 2000-2002 Damien Douxchamps  <douxchamps@ieee.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -224,7 +224,7 @@ DisplayStopThread(unsigned int camera)
 int
 sdlInit(chain_t *display_service)
 {
-  char tmp[256];
+  char tmp[STRING_SIZE];
   displaythread_info_t *info;
   info=(displaythread_info_t*)display_service->data;
 

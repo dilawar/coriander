@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2001 Damien Douxchamps  <douxchamps@ieee.org>
+ * Copyright (C) 2000-2002 Damien Douxchamps  <douxchamps@ieee.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -454,6 +454,17 @@ on_trigger_external_toggled            (GtkToggleButton *togglebutton,
     feature_set->feature[FEATURE_TRIGGER-FEATURE_MIN].is_on=togglebutton->active;
   UpdateTriggerFrame();
 }
+
+void
+on_trigger_value_changed               (GtkAdjustment    *adj,
+                                        gpointer         user_data)
+{
+  if (!dc1394_set_feature_value(camera->handle, camera->id, FEATURE_TRIGGER, adj->value))
+    MainError("Could not set external trigger count");
+  else
+    feature_set->feature[FEATURE_TRIGGER-FEATURE_MIN].value=adj->value;
+}
+
 
 void
 on_memory_channel_activate              (GtkMenuItem     *menuitem,

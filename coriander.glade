@@ -3633,7 +3633,7 @@
   <name>about_window</name>
   <modal>True</modal>
   <logo>coriander-big.png</logo>
-  <copyright>Copyright 2000-2001 Damien Douxchamps</copyright>
+  <copyright>Copyright 2000-2002 Damien Douxchamps</copyright>
   <authors>Damien Douxchamps &lt;douxchamps@ieee.org&gt;
 Dan Dennedy &lt;dan@dennedy.org&gt;
 Marcus Lim &lt;marcuzlim@yahoo.com&gt;

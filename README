@@ -4,12 +4,16 @@
 
 	         The Gnome IEEE-1394 Digital Camera controller
 
-	           by Damien Douxchamps <douxchamps@ieee.org>
+	   (C) 2000-2002 by Damien Douxchamps <douxchamps@ieee.org>
 
 ==========================================================================
 		
 
+<<<<<<< README
+(This README is for version 0.22.)
+=======
 (This README is for version 0.21.)
+>>>>>>> 1.10
 
 Hello world!
 
@@ -93,32 +97,32 @@ _______________________
   ieee1394, ohci1394, raw1394 and video1394
 - XFree 3.3.6 (XFree 4.1.0 recommended for video overlay)
 - Gtk 1.2 & Gtk-devel
-- libraw1394 installed (version 0.9) [5]
+- libraw1394 installed (version 0.9 or later) [5]
 - libdc1394 installed (version 0.8.3 or later) [2]
 - ftplib installed for FTP support [9]
-- SDL installed for SDL support [11]
+- SDL installed for display support [11]
 - Glade (for development only)
 - automake 1.4
 - autoconf 2.13
 - RealServer and RealProducerSDK for REAL support (please read the README.REAL
   file)
 
-In order to have Xv support you will maybe need some custom drivers, e.g. for
-Nvidia chipsets [10] or for ATI Rage chipsets [6].
+In order to have Xv support within SDL, you will maybe need some custom drivers,
+e.g. for Nvidia chipsets [10] or for ATI Rage chipsets [6].
 
 
 References:
 _______________________
 
-[1] 1394 T.A.	: http://www.1394ta.org
-[2] libdc1394	: http://sourceforge.net/projects/libdc1394
-[3] linux1394	: http://sourceforge.net/projects/linux1394
-[4] Coriander	: http://sourceforge.net/projects/coriander
-[5] linux1394	: http://sourceforge.net/projects/libraw1394
-[6] LiViD    	: http://www.linuxvideo.org
+[1] 1394 T.A.		: http://www.1394ta.org
+[2] libdc1394		: http://sourceforge.net/projects/libdc1394
+[3] linux1394		: http://sourceforge.net/projects/linux1394
+[4] Coriander		: http://sourceforge.net/projects/coriander
+[5] linux1394		: http://sourceforge.net/projects/libraw1394
+[6] LiViD    		: http://www.linuxvideo.org
 [7] 1394 IIDC camera list:
 	http://www.tele.ucl.ac.be/PEOPLE/DOUXCHAMPS/ieee1394/cameras/
 [8] linux1394 HOWTO,...	: http://linux1394.sourceforge.net
-[9] ftplib 	: http://www.eclipse.net/~pfau/ftplib
-[10] Nvidia	: http://www.nvidia.com
-[10] SDL	: http://www.libsdl.org
+[9] ftplib 		: http://www.eclipse.net/~pfau/ftplib
+[10] Nvidia		: http://www.nvidia.com
+[10] SDL		: http://www.libsdl.org

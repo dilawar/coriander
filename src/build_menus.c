@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2001 Damien Douxchamps  <douxchamps@ieee.org>
+ * Copyright (C) 2000-2002 Damien Douxchamps  <douxchamps@ieee.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -144,7 +144,11 @@ BuildCameraMenu(void)
   GtkWidget* camera_id;
   GtkWidget* camera_id_menu;
   GtkWidget* glade_menuitem;
+<<<<<<< build_menus.c
+  char tmp[STRING_SIZE];
+=======
   char tmp[256];
+>>>>>>> 1.6
 
   gtk_widget_destroy(GTK_WIDGET (lookup_widget(commander_window,"camera_select"))); // remove previous menu
 
@@ -286,7 +290,7 @@ BuildFpsMenu(void)
   int k=0;
   int new_framerate=0;
   dc1394bool_t cont=DC1394_TRUE;
-  char temp[256];
+  char temp[STRING_SIZE];
 
   if( misc_info->format == FORMAT_SCALABLE_IMAGE_SIZE)
   {

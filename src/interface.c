@@ -2475,7 +2475,7 @@ create_about_window (void)
   GtkWidget *about_window;
 
   about_window = gnome_about_new ("Coriander", VERSION,
-                        _("Copyright 2000-2001 Damien Douxchamps"),
+                        _("Copyright 2000-2002 Damien Douxchamps"),
                         authors,
                         _("The Gnome IEEE1394 Digital Camera Controller.\nWebsite: http://sourceforge.net/projects/coriander"),
                         "coriander/coriander-big.png");

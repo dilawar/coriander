@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2001 Damien Douxchamps  <douxchamps@ieee.org>
+ * Copyright (C) 2000-2002 Damien Douxchamps  <douxchamps@ieee.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/* $Id: raw1394support.h,v 1.2 2001-12-21 13:52:06 ddouxchamps Exp $
+/* $Id: raw1394support.h,v 1.3 2002-01-02 15:19:19 ddouxchamps Exp $
  *
  * raw1394.h - Linux IEEE-1394 Subsystem RAW 1394 support library
  * for some compatibility with older library

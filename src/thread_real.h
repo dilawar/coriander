@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2001 Damien Douxchamps  <douxchamps@ieee.org>
+ * Copyright (C) 2000-2002 Damien Douxchamps  <douxchamps@ieee.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 #define __THREAD_REAL_H__
 
 #include "thread_base.h"
+#include "definitions.h"
  
 #ifdef HAVE_REALLIB
 #include "RealErrorSink.h"
@@ -52,14 +53,14 @@ typedef struct
   pthread_mutex_t    mutex_cancel_real;
   int                cancel_real_req;
   unsigned char*     real_buffer;
-  char               realServerAddress[256];
-  char               realServerStreamName[256];
+  char               realServerAddress[STRING_SIZE];
+  char               realServerStreamName[STRING_SIZE];
   long unsigned int  realServerPort;
-  char               realServerLogin[256];
-  char               realServerPassword[256];
-  char               streamTitle[256];
-  char               streamAuthor[256];
-  char               streamCopyright[256];
+  char               realServerLogin[STRING_SIZE];
+  char               realServerPassword[STRING_SIZE];
+  char               streamTitle[STRING_SIZE];
+  char               streamAuthor[STRING_SIZE];
+  char               streamCopyright[STRING_SIZE];
   int                recordable;
   long int           audienceFlags;
   long int           videoQuality;

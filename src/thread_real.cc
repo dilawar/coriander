@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2001 Damien Douxchamps  <douxchamps@ieee.org>
+ * Copyright (C) 2000-2002 Damien Douxchamps  <douxchamps@ieee.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,7 +57,7 @@ RealStartThread(void)
 
   if (real_service==NULL)// if no REAL service running...
     {
-      fprintf(stderr,"No REAL service found, inserting new one\n");
+      //fprintf(stderr,"No REAL service found, inserting new one\n");
       real_service=(chain_t*)malloc(sizeof(chain_t));
       real_service->data=(void*)malloc(sizeof(realthread_info_t));
       info=(realthread_info_t*)real_service->data;
@@ -74,7 +74,7 @@ RealStartThread(void)
       /* setup real_thread: */
       pthread_mutex_lock(&real_service->mutex_data);
       // first copy prefs data into the info struct
-      fprintf(stderr," Copy prefs data\n");
+      //fprintf(stderr," Copy prefs data\n");
       strcpy(info->realServerAddress, preferences.real_address);
       strcpy(info->realServerStreamName, preferences.real_filename);
       strcpy(info->realServerLogin, preferences.real_user);
@@ -94,7 +94,7 @@ RealStartThread(void)
 
       info->real_buffer=(unsigned char *)malloc(real_service->width*real_service->height*3*sizeof(unsigned char)); //RGB
 
-      fprintf(stderr,"SETUP FINISHED\n");
+      //fprintf(stderr,"SETUP FINISHED\n");
       pthread_mutex_unlock(&real_service->mutex_data);
 
       /* Insert chain and start service*/
@@ -122,7 +122,7 @@ RealStartThread(void)
       pthread_mutex_unlock(&real_service->mutex_data);
       
     }
-  fprintf(stderr," REAL service started\n");
+  //fprintf(stderr," REAL service started\n");
 
   return (1);
 }
@@ -147,7 +147,7 @@ RealCleanupThread(void* arg)
 void*
 RealThread(void* arg)
 {
-  static gchar filename_out[256];
+  static gchar filename_out[STRING_SIZE];
   chain_t* real_service=NULL;
   realthread_info_t *info=NULL;
   long int skip_counter;
@@ -163,12 +163,12 @@ RealThread(void* arg)
   pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED,NULL);
   pthread_mutex_unlock(&real_service->mutex_data);
 
-  fprintf(stderr,"About to enter while\n");
+  //fprintf(stderr,"About to enter while\n");
 #ifdef HAVE_REALLIB
   while (SUCCEEDED(info->res))
     { 
       /* Clean cancel handlers */
-      fprintf(stderr,"Check cancel\n");
+      //fprintf(stderr,"Check cancel\n");
       pthread_mutex_lock(&info->mutex_cancel_real);
       if (info->cancel_real_req>0)
 	{
@@ -177,10 +177,10 @@ RealThread(void* arg)
 	}
       else
 	{
-	  fprintf(stderr,"Locking mutexes\n");
+	  //fprintf(stderr,"Locking mutexes\n");
 	  pthread_mutex_unlock(&info->mutex_cancel_real);
 	  pthread_mutex_lock(&real_service->mutex_data);
-	  fprintf(stderr,"Rolling buffers\n");
+	  //fprintf(stderr,"Rolling buffers\n");
 	  if(RollBuffers(real_service)) // have buffers been rolled?
 	    {
 	      if (skip_counter==(info->period-1))
@@ -193,16 +193,16 @@ RealThread(void* arg)
 				 info->real_buffer, real_service->mode,
 				 real_service->width, real_service->height);// RGB
 
-		  fprintf(stderr,"Setting pointer to sample\n");
+		  //fprintf(stderr,"Setting pointer to sample\n");
 		  info->res = info->pSample->SetBuffer(info->real_buffer,
 						       real_service->width*real_service->height*3, 0 ,0); // RGB
 		  
 	      
 		  if(SUCCEEDED(info->res))
 		    {
-		      fprintf(stderr,"Encoding\n");
+		      //fprintf(stderr,"Encoding\n");
 		      info->res = info->pVideoPin->Encode(info->pSample);
-		      fprintf(stderr,"Encoded!\n");
+		      //fprintf(stderr,"Encoded!\n");
 		    }
 		  
 		  if(SUCCEEDED(info->res) && info->pErrorSinkObject->g_bErrorOccurred)
@@ -234,7 +234,7 @@ RealThread(void* arg)
     }
 #endif // HAVE_REALLIB
   return ((void*)0); // error: thread exited.
-  fprintf(stderr,"Thread exited\n");
+  //fprintf(stderr,"Thread exited\n");
 }
 
 
@@ -305,7 +305,7 @@ int RealSetup(realthread_info_t *info, chain_t *service)
     //////////////////////////////////////////////////////////
 
 #ifdef HAVE_REALLIB
-  fprintf(stderr,"Setting up REAL thread\n");
+  //fprintf(stderr,"Setting up REAL thread\n");
 
   if(SUCCEEDED(info->res))
     {
@@ -350,7 +350,7 @@ int RealSetup(realthread_info_t *info, chain_t *service)
 
   if(SUCCEEDED(info->res))
   {
-    fprintf(stderr," Building engine\n");
+    //fprintf(stderr," Building engine\n");
     info->res = RMACreateRMBuildEngine(&info->pBuildEngine);
   }
   
@@ -360,9 +360,19 @@ int RealSetup(realthread_info_t *info, chain_t *service)
   //
   //////////////////////////////////////////////////////////
 
+  if (!SUCCEEDED(info->res))
+    {
+      fprintf(stderr,"\n===== WARNING =====\n");
+      fprintf(stderr,"There was a problem launching the encoder engine.\n");
+      fprintf(stderr,"This is most probably due to the fact that you have a recent distro (typicaly\n");
+      fprintf(stderr,"RH 7.1 or 7.2). If you wan to be a betatester for Real streaming in Coriander,\n");
+      fprintf(stderr,"you should install a RH 6.2 or equivalent distro. Real Networks has no SDK for\n");
+      fprintf(stderr,"recent Linux versions!\n");
+    }
+
   if(SUCCEEDED(info->res))
     {
-      fprintf(stderr," Get video pin\n");
+      //fprintf(stderr," Get video pin\n");
       IUnknown* tempUnk = NULL;
       IRMAEnumeratorIUnknown* pPinEnum = NULL;
 	
@@ -421,7 +431,7 @@ int RealSetup(realthread_info_t *info, chain_t *service)
 
   if(SUCCEEDED(info->res))
     {
-      fprintf(stderr," Create media sample object\n");
+      //fprintf(stderr," Create media sample object\n");
 	    
       IRMABuildClassFactory*  pClassFactory = NULL;
 	    
@@ -448,7 +458,7 @@ int RealSetup(realthread_info_t *info, chain_t *service)
 
   if(SUCCEEDED(info->res))
     {
-      fprintf(stderr," Build engine properties\n");
+      //fprintf(stderr," Build engine properties\n");
       //
       // Do only video, no audio, no events, or image maps 
       //
@@ -496,7 +506,7 @@ int RealSetup(realthread_info_t *info, chain_t *service)
 
   if(SUCCEEDED(info->res))
     {
-      fprintf(stderr," Setup clip properties\n");
+      //fprintf(stderr," Setup clip properties\n");
       IRMAClipProperties* pClipProps = NULL;
 
       //
@@ -707,7 +717,7 @@ int RealSetup(realthread_info_t *info, chain_t *service)
 
   if(SUCCEEDED(info->res))
     {
-      fprintf(stderr," Setup video format\n");
+      //fprintf(stderr," Setup video format\n");
       IRMAPinProperties* pPinProps = NULL;
       IRMAVideoPinProperties* pVideoPinProps = NULL;
 
@@ -785,7 +795,7 @@ int RealSetup(realthread_info_t *info, chain_t *service)
 
     if(SUCCEEDED(info->res))
     {
-      fprintf(stderr," Register error sink\n");
+      //fprintf(stderr," Register error sink\n");
         IUnknown *pMyErrorSinkObject = NULL;
 	IRMAErrorSink *pErrorSink = NULL;
 	IRMAErrorSinkControl *pErrorSinkControl = NULL;
@@ -816,7 +826,7 @@ int RealSetup(realthread_info_t *info, chain_t *service)
 	PN_RELEASE(pErrorSinkControl);
 	PN_RELEASE(pMyErrorSinkObject);
     }
-  fprintf(stderr,"Setup finished.\n");
+    //fprintf(stderr,"Setup finished.\n");
 
 #endif //HAVE_REALLIB
 

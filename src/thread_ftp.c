@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2001 Damien Douxchamps  <douxchamps@ieee.org>
+ * Copyright (C) 2000-2002 Damien Douxchamps  <douxchamps@ieee.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -151,7 +151,7 @@ FtpCleanupThread(void* arg)
 void*
 FtpThread(void* arg)
 {
-  static gchar filename_out[256];
+  static gchar filename_out[STRING_SIZE];
   chain_t* ftp_service=NULL;
   ftpthread_info_t *info=NULL;
   GdkImlibImage *im=NULL;
@@ -272,7 +272,7 @@ FtpStopThread(void)
 #ifdef HAVE_FTPLIB
 gboolean OpenFtpConnection(ftpthread_info_t* info)
 {
-  char  tmp[256];
+  char  tmp[STRING_SIZE];
 
   FtpInit();
 
@@ -331,7 +331,7 @@ gboolean
 FtpPutFrame(char *filename, GdkImlibImage *im, ftpthread_info_t* info)
 {
   //netbuf **file_handle=NULL;
-  char tmp[256];
+  char tmp[STRING_SIZE];
 
 
   // we have to write to a local tmp file to convert...

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2001 Damien Douxchamps  <douxchamps@ieee.org>
+ * Copyright (C) 2000-2002 Damien Douxchamps  <douxchamps@ieee.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -163,7 +163,7 @@ UpdateFormat7ModeFrame(void)
 void
 UpdateCameraStatusFrame(void)
 {
-  char temp[256];
+  char temp[STRING_SIZE];
   int err;
   quadlet_t sw_version;
 
@@ -247,7 +247,7 @@ UpdateCameraStatusFrame(void)
 void
 UpdateTransferStatusFrame(void)
 {
-  char temp[256];
+  char temp[STRING_SIZE];
   int err;
   sprintf(temp," %d",misc_info->iso_channel);
 
