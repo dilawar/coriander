@@ -228,6 +228,7 @@ convert_to_rgb(buffer_t *buffer, unsigned char *dest)
 {
   switch(buffer->buffer_color_mode) {
   case COLOR_FORMAT7_MONO8:
+  case COLOR_FORMAT7_RAW8:
     y2rgb(buffer->image,dest,buffer->width*buffer->height);
     break;
   case COLOR_FORMAT7_YUV411:
@@ -243,6 +244,7 @@ convert_to_rgb(buffer_t *buffer, unsigned char *dest)
     memcpy(dest,buffer->image,3*buffer->width*buffer->height);
     break;
   case COLOR_FORMAT7_MONO16:
+  case COLOR_FORMAT7_RAW16:
     y162rgb(buffer->image,dest,buffer->width*buffer->height,buffer->bpp);
     break;
   case COLOR_FORMAT7_RGB16:

@@ -367,6 +367,7 @@ convert_to_yuv_for_SDL(buffer_t *buffer, SDL_Overlay *sdloverlay, int overlay_by
 
   switch(buffer->buffer_color_mode) {
   case COLOR_FORMAT7_MONO8:
+  case COLOR_FORMAT7_RAW8:
     y2uyvy(buffer->image, dest, buffer->width, buffer->height, 
 	   sdloverlay->pitches[0], overlay_byte_order);
     break;
@@ -383,6 +384,7 @@ convert_to_yuv_for_SDL(buffer_t *buffer, SDL_Overlay *sdloverlay, int overlay_by
     rgb2uyvy(buffer->image,dest,buffer->width*buffer->height, overlay_byte_order);
     break;
   case COLOR_FORMAT7_MONO16:
+  case COLOR_FORMAT7_RAW16:
     y162uyvy(buffer->image,dest,buffer->width*buffer->height,buffer->bpp, overlay_byte_order);
     break;
   case COLOR_FORMAT7_RGB16:

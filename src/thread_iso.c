@@ -404,7 +404,8 @@ IsoThreadCheckParams(chain_t *iso_service)
   }
   else {
     // warning: little change, might have big effect
-    info->cond16bit=(iso_service->camera->format7_info.mode[iso_service->current_buffer->mode-MODE_FORMAT7_MIN].color_coding_id==COLOR_FORMAT7_MONO16);
+    info->cond16bit=((iso_service->camera->format7_info.mode[iso_service->current_buffer->mode-MODE_FORMAT7_MIN].color_coding_id==COLOR_FORMAT7_MONO16)||
+		     (iso_service->camera->format7_info.mode[iso_service->current_buffer->mode-MODE_FORMAT7_MIN].color_coding_id==COLOR_FORMAT7_RAW16));
   }
 
   // the buffer sizes. If a size is not good, re-allocate.
@@ -595,19 +596,19 @@ SetColorMode(buffer_t *buffer)
 	buffer->buffer_color_mode=buffer->format7_color_mode;
 	switch (buffer->format7_color_mode) {
 	case COLOR_FORMAT7_MONO8:
+	case COLOR_FORMAT7_RAW8:
 	  bpp=1;
 	  break;
 	case COLOR_FORMAT7_MONO16:
+	case COLOR_FORMAT7_RAW16:
 	  bpp=2;
 	  break;
 	case COLOR_FORMAT7_RGB8:
+	case COLOR_FORMAT7_YUV444:
 	  bpp=3;
 	  break;
 	case COLOR_FORMAT7_RGB16:
 	  bpp=6;
-	  break;
-	case COLOR_FORMAT7_YUV444:
-	  bpp=3;
 	  break;
 	case COLOR_FORMAT7_YUV422:
 	  bpp=2;
