@@ -67,7 +67,7 @@ _______________________
 
 Basically, you should just type:
 
-./configure
+./autogen.sh
 make
 make install
 
@@ -104,6 +104,11 @@ checked.
 - Glade (for development only)
 - automake 1.4
 - autoconf 2.13
+- vloopback module v 0.90 for v4l support [12]. You should apply the patch
+  found in the nice effectv program [13] the 0.90 version in order to have
+  it working. Effectv can be used to check that v4l is working. Note that
+  if you use videoN as v4l device in Coriander, the device other applications
+  can use is video(N+1). V4l service works also well with Gnomemeeting [14].
 
 In order to have Xv support within SDL, you will maybe need some custom
 drivers, e.g. for Nvidia chipsets [10] or for ATI Rage chipsets [6].
@@ -124,3 +129,6 @@ _______________________
 [9] ftplib 		: http://www.eclipse.net/~pfau/ftplib
 [10] Nvidia		: http://www.nvidia.com
 [11] SDL		: http://www.libsdl.org
+[12] vloopback		: http://motion.technolust.cx/vloopback/
+[13] effectv		: http://effectv.sf.net/
+[14] Gnomemeeting	: http://www.gnomemeeting.org

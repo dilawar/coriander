@@ -158,8 +158,8 @@ main (int argc, char *argv[])
       MainStatus("Welcome to Coriander...");
       gtk_widget_show (commander_window); // this is the only window shown at boot-time
       
-      //gdk_threads_enter();
       main_timeout=gtk_timeout_add(1000, (GtkFunction)main_timeout_handler, (gpointer*)portmax);
+      //gdk_threads_enter();
       gtk_main();
       //gdk_threads_leave();
       

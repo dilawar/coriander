@@ -545,8 +545,10 @@ on_service_v4l_toggled                 (GtkToggleButton *togglebutton,
 {
   if (!silent_ui_update) {
     if (togglebutton->active) {
-      if (V4lStartThread()==-1)
+      if (V4lStartThread()==-1) {
 	gtk_toggle_button_set_active(togglebutton,0);
+	gtk_widget_show(create_v4l_failure_window());
+      }
     }
     else
       V4lStopThread();

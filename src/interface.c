@@ -3609,3 +3609,42 @@ create_absolute_settings_window (void)
   return absolute_settings_window;
 }
 
+GtkWidget*
+create_v4l_failure_window (void)
+{
+  GtkWidget *v4l_failure_window;
+  GtkWidget *dialog_vbox4;
+  GtkWidget *button6;
+  GtkWidget *dialog_action_area4;
+
+  /* We create it with an OK button, and then remove the button, to work
+     around a bug in gnome-libs. */
+  v4l_failure_window = gnome_message_box_new (_("Warning: Could not start V4L service\n\nPlease check that:\n- you have v4l support in your kernel\n- v4l kernel modules are loaded, if any\n- you have read/write permission on the selected video device\n- the vloopback module is loaded"),
+                              GNOME_MESSAGE_BOX_WARNING,
+                              GNOME_STOCK_BUTTON_OK, NULL);
+  gtk_container_remove (GTK_CONTAINER (GNOME_DIALOG (v4l_failure_window)->action_area), GNOME_DIALOG (v4l_failure_window)->buttons->data);
+  GNOME_DIALOG (v4l_failure_window)->buttons = NULL;
+  gtk_object_set_data (GTK_OBJECT (v4l_failure_window), "v4l_failure_window", v4l_failure_window);
+  gtk_window_set_title (GTK_WINDOW (v4l_failure_window), _("Coriander Warning"));
+  gtk_window_set_policy (GTK_WINDOW (v4l_failure_window), FALSE, FALSE, FALSE);
+
+  dialog_vbox4 = GNOME_DIALOG (v4l_failure_window)->vbox;
+  gtk_object_set_data (GTK_OBJECT (v4l_failure_window), "dialog_vbox4", dialog_vbox4);
+  gtk_widget_show (dialog_vbox4);
+
+  gnome_dialog_append_button (GNOME_DIALOG (v4l_failure_window), GNOME_STOCK_BUTTON_OK);
+  button6 = GTK_WIDGET (g_list_last (GNOME_DIALOG (v4l_failure_window)->buttons)->data);
+  gtk_widget_ref (button6);
+  gtk_object_set_data_full (GTK_OBJECT (v4l_failure_window), "button6", button6,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (button6);
+  GTK_WIDGET_SET_FLAGS (button6, GTK_CAN_DEFAULT);
+
+  dialog_action_area4 = GNOME_DIALOG (v4l_failure_window)->action_area;
+  gtk_widget_ref (dialog_action_area4);
+  gtk_object_set_data_full (GTK_OBJECT (v4l_failure_window), "dialog_action_area4", dialog_action_area4,
+                            (GtkDestroyNotify) gtk_widget_unref);
+
+  return v4l_failure_window;
+}
+

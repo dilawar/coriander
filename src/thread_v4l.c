@@ -29,6 +29,7 @@ V4lStartThread(void)
 {
   chain_t* v4l_service=NULL;
   v4lthread_info_t *info=NULL;
+  char stemp[STRING_SIZE];
 
   v4l_service=GetService(SERVICE_V4L);
 
@@ -66,8 +67,8 @@ V4lStartThread(void)
     info->v4l_dev=-1;
     info->v4l_dev = open(info->v4l_dev_name, O_RDWR);
     if (info->v4l_dev < 0) {
-      MainError("Failed to open V4L device");
-      MainError(info->v4l_dev_name);
+      sprintf(stemp,"Failed to open V4L device %s",info->v4l_dev_name);
+      MainError(stemp);
       FreeChain(v4l_service);
       return(-1);
     }

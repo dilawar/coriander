@@ -2,14 +2,14 @@ Coriander, (c) 2000-2003 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 0.33
 
+   May 27, 2003, by Damien Douxchamps
+   - misc updates in the save service.
+   - added warning window for V4L service.
+	
    May 26, 2003, by Damien Douxchamps
    - FPS display now takes into account the period setting.
-	
-   May 26, 2003, by Damien Douxchamps
    - V4L loopback test & debug. It works!! Only 3 hours to develop this new
      service! :-)
-	
-   May 26, 2003, by Damien Douxchamps
    - First prototype of vloopback service, based on the very nice example
      by Dan Dennedy found in libdc1394.
 	
@@ -287,8 +287,6 @@ Changes in version 0.26
    August 5, 2002, by Damien Douxchamps
    - updated macros/coriander-macros.m4 to check for latest changes
      in libdc1394.
-	
-   August 5, 2002, by Damien Douxchamps	
    - Applied Ryutaroh Matsumoto's patch for NULL pointer segfault in
      tools.c/MainError. Added the same if (commander_window!=NULL) to
      tools.c/MainStatus for safety.
@@ -442,8 +440,6 @@ Changes in version 0.23:
    Feb 6, 2002, by Damien Douxchamps
    - small changes to configure macros.
    - changed some GUI layout in the preferences window
-	
-   Feb 6, 2002, by Damien Douxchamps
    - added the shading of the audience frame (real preferences)
    - added the shading of the video device field (receive preferences)
    - upgraded the preferences parser to gnome-config, as suggested by Dan.
@@ -558,8 +554,6 @@ Changes in version 0.20:
 	
     Dec 14, 2001, by Damien Douxchamps
     - make Real preference dialogs available only if Real is available
-	
-    Dec 14, 2001, by Damien Douxchamps
     - added a Real streaming service. This is not yet tested.
 	
     Nov 26, 2001, by Damien Douxchamps:

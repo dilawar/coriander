@@ -234,8 +234,15 @@ SaveThread(void* arg)
 	    else {
 	      convert_to_rgb(save_service->current_buffer, info->save_buffer);
 	      im=gdk_imlib_create_image_from_data(info->save_buffer,NULL, save_service->current_buffer->width, save_service->current_buffer->height);
-	      gdk_imlib_save_image(im, filename_out, NULL);
-	      if (im != NULL) gdk_imlib_kill_image(im);
+	      if (im != NULL) {
+		if (gdk_imlib_save_image(im, filename_out, NULL)==0) {
+		  MainError("Can't save image with Imlib!");
+		}
+		gdk_imlib_kill_image(im);
+	      }
+	      else {
+		MainError("Can't create gdk image!");
+	      }
 	    }
 	    
 	    info->frames++;

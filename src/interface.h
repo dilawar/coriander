@@ -11,3 +11,4 @@ GtkWidget* create_get_filename_dialog (void);
 GtkWidget* create_preferences_window (void);
 GtkWidget* create_help_window (void);
 GtkWidget* create_absolute_settings_window (void);
+GtkWidget* create_v4l_failure_window (void);
