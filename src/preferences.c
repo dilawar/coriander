@@ -63,6 +63,7 @@ LoadConfigFile(void)
   preferences.auto_update            = gnome_config_get_int("coriander/global/auto_update=1");
   preferences.auto_update_frequency  = gnome_config_get_float("coriander/global/auto_update_frequency=2.0");
   preferences.sync_control           = gnome_config_get_float("coriander/global/sync_control=0");
+  preferences.overlay_byte_order     = gnome_config_get_int("coriander/global/overlay_byte_order=0");
 }
 
 void

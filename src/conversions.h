@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2003 Damien Douxchamps  <ddouxchamps@users.sf.net>
+ * Copyright (C) 2000-2004 Damien Douxchamps  <ddouxchamps@users.sf.net>
  *                         Dan Dennedy  <dan@dennedy.org>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -22,11 +22,12 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <libdc1394/dc1394_control.h>
 
 typedef enum
 {
-  NO_BAYER_DECODING,
+  NO_BAYER_DECODING=0,
   BAYER_DECODING_NEAREST,
   BAYER_DECODING_EDGE_SENSE,
   BAYER_DECODING_DOWNSAMPLE,
@@ -35,41 +36,47 @@ typedef enum
 
 typedef enum
 {
-  NO_STEREO_DECODING,
+  NO_STEREO_DECODING=0,
   STEREO_DECODING_INTERLACED,
   STEREO_DECODING_FIELD
 } stereo_decoding_t;
 
+enum
+{
+  OVERLAY_BYTE_ORDER_YUYV=0,
+  OVERLAY_BYTE_ORDER_UYVY
+};
+
 // UYVY <-> YUYV
 void
-uyvy2yuyv (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels);
+uyvy2yuyv (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels, int byte_order);
 
 void
-yuyv2uyvy (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels);
+yuyv2uyvy (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels, int byte_order);
 
 // XXX -> UYVY
 void
-uyyvyy2uyvy (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels);
+uyyvyy2uyvy (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels, int byte_order);
 
 void
-uyv2uyvy (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels);
+uyv2uyvy (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels, int byte_order);
 
 void
 y2uyvy (unsigned char *src, unsigned char *dest, 
 	unsigned long src_width, unsigned long src_height,
-	unsigned long dest_pitch);
+	unsigned long dest_pitch, int byte_order);
 
 void
-y162uyvy (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels, int bits);
+y162uyvy (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels, int bits, int byte_order);
 
 void
 y162y (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels, int bits);
 
 void
-rgb2uyvy (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels);
+rgb2uyvy (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels, int byte_order);
 
 void
-rgb482uyvy (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels);
+rgb482uyvy (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels, int byte_order);
 
 // XXX -> RGB
 void

@@ -5536,8 +5536,10 @@ anything in the GUI at all...</label>
 Dan Dennedy &lt;dan@dennedy.org&gt;
 See the AUTHORS file for more authors and contributors
 </authors>
-  <comments>The Gnome IEEE1394 Digital Camera Controller website is
-http://coriander.sourceforge.net</comments>
+  <comments>Coriander home page is http://coriander.sourceforge.net
+ 
+ 
+Special thanks to Hamamatsu Corporation and Allied Vision Technologies for helping the development of Coriander through the gracious lease and/or donation of vision hardware.</comments>
 </widget>
 
 <widget>
@@ -5930,6 +5932,67 @@ controlled with the AV/C protocol, please refer to http://www.linux1394.org</mes
 	  <yalign>0.5</yalign>
 	  <xpad>5</xpad>
 	  <ypad>8</ypad>
+	  <child>
+	    <padding>0</padding>
+	    <expand>False</expand>
+	    <fill>False</fill>
+	  </child>
+	</widget>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkFrame</class>
+      <name>frame10</name>
+      <border_width>5</border_width>
+      <label>Overlay byte order</label>
+      <label_xalign>0</label_xalign>
+      <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+      <child>
+	<padding>0</padding>
+	<expand>True</expand>
+	<fill>True</fill>
+      </child>
+
+      <widget>
+	<class>GtkHBox</class>
+	<name>hbox70</name>
+	<homogeneous>True</homogeneous>
+	<spacing>0</spacing>
+
+	<widget>
+	  <class>GtkRadioButton</class>
+	  <name>overlay_byte_order_YUYV</name>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>toggled</name>
+	    <handler>on_overlay_byte_order_YUYV_toggled</handler>
+	    <last_modification_time>Sun, 07 Nov 2004 14:56:49 GMT</last_modification_time>
+	  </signal>
+	  <label>YUYV</label>
+	  <active>False</active>
+	  <draw_indicator>True</draw_indicator>
+	  <group>overlay_byte_order</group>
+	  <child>
+	    <padding>5</padding>
+	    <expand>False</expand>
+	    <fill>False</fill>
+	  </child>
+	</widget>
+
+	<widget>
+	  <class>GtkRadioButton</class>
+	  <name>overlay_byte_order_UYVY</name>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>toggled</name>
+	    <handler>on_overlay_byte_order_UYVY_toggled</handler>
+	    <last_modification_time>Sun, 07 Nov 2004 14:56:38 GMT</last_modification_time>
+	  </signal>
+	  <label>UYVY</label>
+	  <active>False</active>
+	  <draw_indicator>True</draw_indicator>
+	  <group>overlay_byte_order</group>
 	  <child>
 	    <padding>0</padding>
 	    <expand>False</expand>

@@ -1482,3 +1482,28 @@ on_sync_control_button_toggled        (GtkToggleButton *togglebutton,
 }
 
 
+void
+on_overlay_byte_order_YUYV_toggled     (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  if (togglebutton->active)
+    preferences.overlay_byte_order=OVERLAY_BYTE_ORDER_YUYV;
+  else
+    preferences.overlay_byte_order=OVERLAY_BYTE_ORDER_UYVY;
+  gnome_config_set_int("coriander/global/overlay_byte_order",preferences.overlay_byte_order);
+  gnome_config_sync();
+}
+
+
+void
+on_overlay_byte_order_UYVY_toggled     (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+    if (togglebutton->active)
+    preferences.overlay_byte_order=OVERLAY_BYTE_ORDER_UYVY;
+  else
+    preferences.overlay_byte_order=OVERLAY_BYTE_ORDER_YUYV;
+  gnome_config_set_int("coriander/global/overlay_byte_order",preferences.overlay_byte_order);
+  gnome_config_sync();
+}
+

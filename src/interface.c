@@ -3133,7 +3133,7 @@ create_about_window (void)
   about_window = gnome_about_new ("Coriander", VERSION,
                         _("Copyright 2000-2004 Damien Douxchamps"),
                         authors,
-                        _("The Gnome IEEE1394 Digital Camera Controller website is\nhttp://coriander.sourceforge.net"),
+                        _("Coriander home page is http://coriander.sourceforge.net\n \n \nSpecial thanks to Hamamatsu Corporation and Allied Vision Technologies for helping the development of Coriander through the gracious lease and/or donation of vision hardware."),
                         "coriander/coriander-logo.png");
   gtk_object_set_data (GTK_OBJECT (about_window), "about_window", about_window);
   gtk_window_set_modal (GTK_WINDOW (about_window), TRUE);
@@ -3287,6 +3287,11 @@ create_preferences_window (void)
   GtkObject *prefs_update_scale_adj;
   GtkWidget *prefs_update_scale;
   GtkWidget *label80;
+  GtkWidget *frame10;
+  GtkWidget *hbox70;
+  GSList *overlay_byte_order_group = NULL;
+  GtkWidget *overlay_byte_order_YUYV;
+  GtkWidget *overlay_byte_order_UYVY;
 
   preferences_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_object_set_data (GTK_OBJECT (preferences_window), "preferences_window", preferences_window);
@@ -3385,6 +3390,37 @@ create_preferences_window (void)
   gtk_box_pack_start (GTK_BOX (hbox44), label80, FALSE, FALSE, 0);
   gtk_misc_set_padding (GTK_MISC (label80), 5, 8);
 
+  frame10 = gtk_frame_new (_("Overlay byte order"));
+  gtk_widget_ref (frame10);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "frame10", frame10,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (frame10);
+  gtk_box_pack_start (GTK_BOX (vbox46), frame10, TRUE, TRUE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (frame10), 5);
+
+  hbox70 = gtk_hbox_new (TRUE, 0);
+  gtk_widget_ref (hbox70);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "hbox70", hbox70,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (hbox70);
+  gtk_container_add (GTK_CONTAINER (frame10), hbox70);
+
+  overlay_byte_order_YUYV = gtk_radio_button_new_with_label (overlay_byte_order_group, _("YUYV"));
+  overlay_byte_order_group = gtk_radio_button_group (GTK_RADIO_BUTTON (overlay_byte_order_YUYV));
+  gtk_widget_ref (overlay_byte_order_YUYV);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "overlay_byte_order_YUYV", overlay_byte_order_YUYV,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (overlay_byte_order_YUYV);
+  gtk_box_pack_start (GTK_BOX (hbox70), overlay_byte_order_YUYV, FALSE, FALSE, 5);
+
+  overlay_byte_order_UYVY = gtk_radio_button_new_with_label (overlay_byte_order_group, _("UYVY"));
+  overlay_byte_order_group = gtk_radio_button_group (GTK_RADIO_BUTTON (overlay_byte_order_UYVY));
+  gtk_widget_ref (overlay_byte_order_UYVY);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "overlay_byte_order_UYVY", overlay_byte_order_UYVY,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (overlay_byte_order_UYVY);
+  gtk_box_pack_start (GTK_BOX (hbox70), overlay_byte_order_UYVY, FALSE, FALSE, 0);
+
   gtk_signal_connect (GTK_OBJECT (preferences_window), "destroy_event",
                       GTK_SIGNAL_FUNC (gtk_widget_hide),
                       NULL);
@@ -3402,6 +3438,12 @@ create_preferences_window (void)
                       NULL);
   gtk_signal_connect (GTK_OBJECT (prefs_update_scale), "changed",
                       GTK_SIGNAL_FUNC (on_prefs_update_scale_changed),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (overlay_byte_order_YUYV), "toggled",
+                      GTK_SIGNAL_FUNC (on_overlay_byte_order_YUYV_toggled),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (overlay_byte_order_UYVY), "toggled",
+                      GTK_SIGNAL_FUNC (on_overlay_byte_order_UYVY_toggled),
                       NULL);
 
   return preferences_window;

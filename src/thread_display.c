@@ -22,6 +22,7 @@ extern GtkWidget *main_window;
 extern CtxtInfo_t ctxt;
 extern camera_t* camera;
 extern xvinfo_t xvinfo;
+extern Prefs_t preferences;
 
 #ifdef HAVE_SDLLIB
 extern watchthread_info_t watchthread_info;
@@ -130,7 +131,7 @@ DisplayThread(void* arg)
 #ifdef HAVE_SDLLIB
 	    if (info->sdloverlay!=NULL) {
 	      if (SDL_LockYUVOverlay(info->sdloverlay) == 0) {
-		convert_to_yuv_for_SDL(display_service->current_buffer, info->sdloverlay);
+		convert_to_yuv_for_SDL(display_service->current_buffer, info->sdloverlay, preferences.overlay_byte_order);
 		
 		SDLDisplayArea(display_service);
 		
@@ -191,7 +192,7 @@ ConditionalTimeoutRedraw(chain_t* service)
 #ifdef HAVE_SDLLIB
       if (SDL_LockYUVOverlay(info->sdloverlay) == 0) {
 	//MainStatus("Conditional display redraw");
-	convert_to_yuv_for_SDL(service->current_buffer, info->sdloverlay);
+	convert_to_yuv_for_SDL(service->current_buffer, info->sdloverlay, preferences.overlay_byte_order);
 	SDLDisplayArea(service);
 	SDL_UnlockYUVOverlay(info->sdloverlay);
 	SDL_DisplayYUVOverlay(info->sdloverlay, &info->sdlvideorect);
@@ -338,15 +339,22 @@ SDLInit(chain_t *display_service)
   //info->sdlvideo->format->BytesPerPixel=2;
 
   // Create YUV Overlay
-#ifdef YUYV
-   info->sdloverlay = SDL_CreateYUVOverlay(display_service->current_buffer->width,
- 					  display_service->current_buffer->height,
- 					  SDL_YUY2_OVERLAY,info->sdlvideo);
-#else 
-  info->sdloverlay = SDL_CreateYUVOverlay(display_service->current_buffer->width,
-					  display_service->current_buffer->height,
-					  SDL_UYVY_OVERLAY,info->sdlvideo);
-#endif
+  switch(preferences.overlay_byte_order) {
+  case OVERLAY_BYTE_ORDER_YUYV:
+    info->sdloverlay = SDL_CreateYUVOverlay(display_service->current_buffer->width,
+					    display_service->current_buffer->height,
+					    SDL_YUY2_OVERLAY,info->sdlvideo);
+    break;
+  case OVERLAY_BYTE_ORDER_UYVY:
+    info->sdloverlay = SDL_CreateYUVOverlay(display_service->current_buffer->width,
+					    display_service->current_buffer->height,
+					    SDL_UYVY_OVERLAY,info->sdlvideo);
+    break;
+  default:
+    fprintf(stderr,"Invalid overlay byte order\n");
+    break;
+  }
+  
 
   if (info->sdloverlay==NULL) {
     MainError(SDL_GetError());
@@ -361,32 +369,32 @@ SDLInit(chain_t *display_service)
 
 // we should optimize this for RGB too: RGB modes could use RGB-SDL instead of YUV overlay
 void
-convert_to_yuv_for_SDL(buffer_t *buffer, SDL_Overlay *sdloverlay)
+convert_to_yuv_for_SDL(buffer_t *buffer, SDL_Overlay *sdloverlay, int overlay_byte_order)
 {
   unsigned char *dest=sdloverlay->pixels[0];
 
   switch(buffer->buffer_color_mode) {
   case COLOR_FORMAT7_MONO8:
     y2uyvy(buffer->image, dest, buffer->width, buffer->height, 
-	   sdloverlay->pitches[0]);
+	   sdloverlay->pitches[0], overlay_byte_order);
     break;
   case COLOR_FORMAT7_YUV411:
-    uyyvyy2uyvy(buffer->image,dest,buffer->width*buffer->height);
+    uyyvyy2uyvy(buffer->image,dest,buffer->width*buffer->height, overlay_byte_order);
     break;
   case COLOR_FORMAT7_YUV422:
-    yuyv2uyvy(buffer->image,dest,buffer->width*buffer->height);
+    yuyv2uyvy(buffer->image,dest,buffer->width*buffer->height, overlay_byte_order);
     break;
   case COLOR_FORMAT7_YUV444:
-    uyv2uyvy(buffer->image,dest,buffer->width*buffer->height);
+    uyv2uyvy(buffer->image,dest,buffer->width*buffer->height, overlay_byte_order);
     break;
   case COLOR_FORMAT7_RGB8:
-    rgb2uyvy(buffer->image,dest,buffer->width*buffer->height);
+    rgb2uyvy(buffer->image,dest,buffer->width*buffer->height, overlay_byte_order);
     break;
   case COLOR_FORMAT7_MONO16:
-    y162uyvy(buffer->image,dest,buffer->width*buffer->height,buffer->bpp);
+    y162uyvy(buffer->image,dest,buffer->width*buffer->height,buffer->bpp, overlay_byte_order);
     break;
   case COLOR_FORMAT7_RGB16:
-    rgb482uyvy(buffer->image,dest,buffer->width*buffer->height);
+    rgb482uyvy(buffer->image,dest,buffer->width*buffer->height, overlay_byte_order);
     break;
   }
 }

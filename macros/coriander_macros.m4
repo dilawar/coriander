@@ -116,7 +116,7 @@ AC_DEFUN([AC_CHECK_FTPLIB],[
 	AC_SUBST(FTPLIB_CFLAGS)
 	AC_SUBST(FTPLIB_LIBS)
 	AC_CHECK_LIB(ftp, FtpInit,
-          AC_DEFINE(HAVE_FTPLIB)
+          AC_DEFINE(HAVE_FTPLIB,1,[defined if libftp is available])
           FTPLIB_LIBS="-lftp"
           FTPLIB_CFLAGS="",
           AC_MSG_RESULT([ftplib is required for FTP support.
@@ -133,7 +133,7 @@ AC_DEFUN([AC_CHECK_SDLLIB],[
 	if test x$have_sdl_config = xfound; then
 	  SDLLIB_LIBS=`sdl-config --libs`
 	  SDLLIB_CFLAGS=`sdl-config --cflags`
-	  AC_DEFINE(HAVE_SDLLIB)
+	  AC_DEFINE(HAVE_SDLLIB,1,[defined if libsdl is available])
 	else
 	  AC_MSG_RESULT([SDL required for display support.
 **************************************************************************
@@ -163,7 +163,7 @@ AC_DEFUN([AC_CHECK_MMX],[
  	])
  	AC_MSG_RESULT($mmx)
  	if test x$mmx = xyes; then
-  	   AC_DEFINE(MMX_SUPPORT)
+  	   AC_DEFINE(MMX_SUPPORT,1,[defined if MMX is available])
  	fi
 
 ])
@@ -188,7 +188,7 @@ AC_DEFUN([AC_CHECK_SSE],[
  	])
  	AC_MSG_RESULT($sse)
  	if test x$sse = xyes; then
-  	   AC_DEFINE(SSE_SUPPORT)
+  	   AC_DEFINE(SSE_SUPPORT,1,[defined if SSE is available])
  	fi
 
 ])
@@ -215,7 +215,7 @@ AC_DEFUN([AC_CHECK_SSE2],[
  	])
  	AC_MSG_RESULT($sse2)
  	if test x$sse2 = xyes; then
-  	   AC_DEFINE(SSE2_SUPPORT)
+  	   AC_DEFINE(SSE2_SUPPORT,1,[defined if SSE2 is available])
  	fi
 
 ])
@@ -228,7 +228,7 @@ AC_DEFUN([AC_CHECK_GDK_PIXBUF],[
 	if test x$have_gdk_pixbuf_config = xfound; then
 	  GDK_PIXBUF_LIBS=`gdk-pixbuf-config --libs`
 	  GDK_PIXBUF_CFLAGS=`gdk-pixbuf-config --cflags`
-	  AC_DEFINE(HAVE_GDK_PIXBUF)
+	  AC_DEFINE(HAVE_GDK_PIXBUF,1,[defined if gdk-pixbuf is available])
 	else
 	  AC_MSG_RESULT([GDK-pixbuf is required for WM icons.])
 	fi
@@ -247,7 +247,7 @@ AC_DEFUN([AC_CHECK_XV],[
  	if test x$xv = xok; then
            XV_LIBS="-lXv"
            XV_CFLAGS=""
-	   AC_DEFINE(HAVE_XV)
+	   AC_DEFINE(HAVE_XV,1,[defined if XV video overlay is available])
 	else
           AC_ERROR([The XV overlay libraries were not found 
 **************************************************************************

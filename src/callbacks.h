@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2003 Damien Douxchamps  <ddouxchamps@users.sf.net>
+ * Copyright (C) 2000-2004 Damien Douxchamps  <ddouxchamps@users.sf.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@
 #include "update_ranges.h"
 #include "thread_iso.h"
 #include "build_menus.h"
+#include "conversions.h"
 
 gboolean
 on_main_window_delete_event       (GtkWidget       *widget,
@@ -425,6 +426,14 @@ on_prefs_display_scale_changed         (GtkEditable     *editable,
 
 void
 on_sync_control_button_toggled        (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_overlay_byte_order_YUYV_toggled     (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_overlay_byte_order_UYVY_toggled     (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
 
 #endif

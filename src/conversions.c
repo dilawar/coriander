@@ -21,11 +21,6 @@
 
 extern void swab();
 
-// The following #define is there for the users who experience green/purple
-// images in the display. This seems to be a videocard driver problem.
-
-#define YUYV // instead of the standard UYVY
-
 // color conversion functions from Bart Nabbe.
 // corrected by Damien: bad coeficients in YUV2RGB
 #define YUV2RGB(y, u, v, r, g, b)\
@@ -65,95 +60,139 @@ extern void swab();
  **********************************************************************/
 
 void
-yuyv2uyvy(unsigned char *src, unsigned char *dest, unsigned long long int NumPixels)
+yuyv2uyvy(unsigned char *src, unsigned char *dest, unsigned long long int NumPixels, int byte_order)
 {
-#ifdef YUYV
-  swab(src, dest, NumPixels << 1);
-#else
-  memcpy(dest,src, NumPixels<<1);
-#endif
+  switch (byte_order) {
+  case OVERLAY_BYTE_ORDER_YUYV:
+    swab(src, dest, NumPixels << 1);
+    break;
+  case OVERLAY_BYTE_ORDER_UYVY:
+    memcpy(dest,src, NumPixels<<1);
+    break;
+  default:
+    fprintf(stderr,"Invalid overlay byte order\n");
+    break;
+  }
 }
 
 void
-uyvy2yuyv(unsigned char *src, unsigned char *dest, unsigned long long int NumPixels)
+uyvy2yuyv(unsigned char *src, unsigned char *dest, unsigned long long int NumPixels, int byte_order)
 {
-#ifdef YUYV
-  swab(src, dest, NumPixels << 1);
-#else
-  memcpy(dest,src, NumPixels<<1);
-#endif
+  switch (byte_order) {
+  case OVERLAY_BYTE_ORDER_YUYV:
+    swab(src, dest, NumPixels << 1);
+    break;
+  case OVERLAY_BYTE_ORDER_UYVY:
+    memcpy(dest,src, NumPixels<<1);
+    break;
+  default:
+    fprintf(stderr,"Invalid overlay byte order\n");
+    break;
+  }
 }
 void
-uyyvyy2uyvy (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels)
+uyyvyy2uyvy (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels, int byte_order)
 {
   register int i=NumPixels + (NumPixels >> 1)-1;
   register int j=(NumPixels << 1)-1;
   register int y0, y1, y2, y3, u, v;
 
-  while (i > 0) {
-    y3 = src[i--];
-    y2 = src[i--];
-    v  = src[i--];
-    y1 = src[i--];
-    y0 = src[i--];
-    u  = src[i--];
-#ifdef YUYV
-    dest[j--] = v;
-    dest[j--] = y3;
-    dest[j--] = u;
-    dest[j--] = y2;
-    
-    dest[j--] = v;
-    dest[j--] = y1;
-    dest[j--] = u;
-    dest[j--] = y0;
-#else // UYVY
-    dest[j--] = y3;
-    dest[j--] = v;
-    dest[j--] = y2;
-    dest[j--] = u;
-    
-    dest[j--] = y1;
-    dest[j--] = v;
-    dest[j--] = y0;
-    dest[j--] = u;
-#endif
+  switch (byte_order) {
+  case OVERLAY_BYTE_ORDER_YUYV:
+    while (i > 0) {
+      y3 = src[i--];
+      y2 = src[i--];
+      v  = src[i--];
+      y1 = src[i--];
+      y0 = src[i--];
+      u  = src[i--];
+
+      dest[j--] = v;
+      dest[j--] = y3;
+      dest[j--] = u;
+      dest[j--] = y2;
+      
+      dest[j--] = v;
+      dest[j--] = y1;
+      dest[j--] = u;
+      dest[j--] = y0;
+    }
+    break;
+  case OVERLAY_BYTE_ORDER_UYVY:
+    while (i > 0) {
+      y3 = src[i--];
+      y2 = src[i--];
+      v  = src[i--];
+      y1 = src[i--];
+      y0 = src[i--];
+      u  = src[i--];
+
+      dest[j--] = y3;
+      dest[j--] = v;
+      dest[j--] = y2;
+      dest[j--] = u;
+      
+      dest[j--] = y1;
+      dest[j--] = v;
+      dest[j--] = y0;
+      dest[j--] = u;
+    }
+    break;
+  default:
+    fprintf(stderr,"Invalid overlay byte order\n");
+    break;
   }
+
 }
 
 void
-uyv2uyvy (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels)
+uyv2uyvy (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels, int byte_order)
 {
   register int i = NumPixels + (NumPixels << 1)-1;
   register int j = (NumPixels << 1)-1;
   register int y0, y1, u0, u1, v0, v1;
 
-  while (i > 0) {
-    v1 = src[i--];
-    y1 = src[i--];
-    u1 = src[i--];
-    v0 = src[i--];
-    y0 = src[i--];
-    u0 = src[i--];
-    
-#ifdef YUYV
-    dest[j--] = (v0+v1) >> 1;
-    dest[j--] = y1;
-    dest[j--] = (u0+u1) >> 1;
-    dest[j--] = y0;
-#else // UYVY
-    dest[j--] = y1;
-    dest[j--] = (v0+v1) >> 1;
-    dest[j--] = y0;
-    dest[j--] = (u0+u1) >> 1;
-#endif
+  switch (byte_order) {
+  case OVERLAY_BYTE_ORDER_YUYV:
+    while (i > 0) {
+      v1 = src[i--];
+      y1 = src[i--];
+      u1 = src[i--];
+      v0 = src[i--];
+      y0 = src[i--];
+      u0 = src[i--];
+
+      dest[j--] = (v0+v1) >> 1;
+      dest[j--] = y1;
+      dest[j--] = (u0+u1) >> 1;
+      dest[j--] = y0;
     }
+    break;
+  case OVERLAY_BYTE_ORDER_UYVY:
+    while (i > 0) {
+      v1 = src[i--];
+      y1 = src[i--];
+      u1 = src[i--];
+      v0 = src[i--];
+      y0 = src[i--];
+      u0 = src[i--];
+
+      dest[j--] = y1;
+      dest[j--] = (v0+v1) >> 1;
+      dest[j--] = y0;
+      dest[j--] = (u0+u1) >> 1;
+    }
+    break;
+  default:
+    fprintf(stderr,"Invalid overlay byte order\n");
+    break;
+  }
 }
 
 void
 y2uyvy (unsigned char *src, unsigned char *dest, 
 	unsigned long src_width, unsigned long src_height,
-	unsigned long dest_pitch)
+	unsigned long dest_pitch, int byte_order)
 {
   if ((src_width*2) == dest_pitch) {
     // do it the quick way
@@ -161,73 +200,107 @@ y2uyvy (unsigned char *src, unsigned char *dest,
     register int j = (src_width*src_height << 1) - 1;
     register int y0, y1;
     
-    while (i > 0) {
-      y1 = src[i--];
-      y0 = src[i--];
-#ifdef YUYV
-      dest[j--] = 128;
-      dest[j--] = y1;
-      dest[j--] = 128;
-      dest[j--] = y0;
-#else // UYVY
-      dest[j--] = y1;
-      dest[j--] = 128;
-      dest[j--] = y0;
-      dest[j--] = 128;
-#endif
+    switch (byte_order) {
+    case OVERLAY_BYTE_ORDER_YUYV:
+      while (i > 0) {
+	y1 = src[i--];
+	y0 = src[i--];
+	dest[j--] = 128;
+	dest[j--] = y1;
+	dest[j--] = 128;
+	dest[j--] = y0;
+      }
+      break;
+    case OVERLAY_BYTE_ORDER_UYVY:
+      while (i > 0) {
+	y1 = src[i--];
+	y0 = src[i--];
+	dest[j--] = y1;
+	dest[j--] = 128;
+	dest[j--] = y0;
+	dest[j--] = 128;
+      }
+      break;
+    default:
+      fprintf(stderr,"Invalid overlay byte order\n");
+      break;
     }
   } else { // src_width*2 != dest_pitch
     register int x, y;
 
     //assert ((dest_pitch - 2*src_width)==1);
 
-    y=src_height;
-    while (y--) {
-      x=src_width;
-      while (x--) {
-#ifdef YUYV
-	*dest++ = *src++;
+    switch (byte_order) {
+    case OVERLAY_BYTE_ORDER_YUYV:
+      y=src_height;
+      while (y--) {
+	x=src_width;
+	while (x--) {
+	  *dest++ = *src++;
+	  *dest++ = 128;
+	}
+	// padding required, duplicate last column
+	*dest++ = *(src-1);
 	*dest++ = 128;
-#else
-	*dest++ = 128;
-	*dest++ = *src++;
-#endif
       }
-      // padding required, duplicate last collumn
-#ifdef YUYV
-      *dest++ = *(src-1);
-      *dest++ = 128;
-#else
-      *dest++ = 128;
-      *dest++ = *(src-1);
-#endif
+      break;
+    case OVERLAY_BYTE_ORDER_UYVY:
+      y=src_height;
+      while (y--) {
+	x=src_width;
+	while (x--) {
+	  *dest++ = 128;
+	  *dest++ = *src++;
+	}
+	// padding required, duplicate last column
+	*dest++ = 128;
+	*dest++ = *(src-1);
+      }
+      break;
+    default:
+      fprintf(stderr,"Invalid overlay byte order\n");
+      break;
     }
   }
 }
 
 void
-y162uyvy (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels, int bits)
+y162uyvy (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels, int bits, int byte_order)
 {
   register int i = (NumPixels << 1)-1;
   register int j = (NumPixels << 1)-1;
   register int y0, y1;
-  while (i > 0) {
-    y1 = src[i--];
-    y1 = (y1 + (((int)src[i--])<<8))>>(bits-8);
-    y0 = src[i--];
-    y0 = (y0 + (((int)src[i--])<<8))>>(bits-8);
-#ifdef YUYV
-    dest[j--] = 128;
-    dest[j--] = y1;
-    dest[j--] = 128;
-    dest[j--] = y0;
-#else // UYVY
-    dest[j--] = y1;
-    dest[j--] = 128;
-    dest[j--] = y0;
-    dest[j--] = 128;
-#endif
+
+  switch (byte_order) {
+  case OVERLAY_BYTE_ORDER_YUYV:
+    while (i > 0) {
+      y1 = src[i--];
+      y1 = (y1 + (((int)src[i--])<<8))>>(bits-8);
+      y0 = src[i--];
+      y0 = (y0 + (((int)src[i--])<<8))>>(bits-8);
+      dest[j--] = 128;
+      dest[j--] = y1;
+      dest[j--] = 128;
+      dest[j--] = y0;
+    }
+    break;
+  case OVERLAY_BYTE_ORDER_UYVY:
+    while (i > 0) {
+      y1 = src[i--];
+      y1 = (y1 + (((int)src[i--])<<8))>>(bits-8);
+      y0 = src[i--];
+      y0 = (y0 + (((int)src[i--])<<8))>>(bits-8);
+      dest[j--] = y1;
+      dest[j--] = 128;
+      dest[j--] = y0;
+      dest[j--] = 128;
+    }
+    break;
+  default:
+    fprintf(stderr,"Invalid overlay byte order\n");
+    break;
   }
+
 }
 
 void
@@ -244,71 +317,108 @@ y162y (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels
 }
 
 void
-rgb2uyvy (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels)
+rgb2uyvy (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels, int byte_order)
 {
   register int i = NumPixels + ( NumPixels << 1 )-1;
   register int j = (NumPixels << 1)-1;
   register int y0, y1, u0, u1, v0, v1 ;
   register int r, g, b;
 
-  while (i > 0) {
-    b = (unsigned char) src[i--];
-    g = (unsigned char) src[i--];
-    r = (unsigned char) src[i--];
-    RGB2YUV (r, g, b, y0, u0 , v0);
-    b = (unsigned char) src[i--];
-    g = (unsigned char) src[i--];
-    r = (unsigned char) src[i--];
-    RGB2YUV (r, g, b, y1, u1 , v1);
-#ifdef YUYV
-    dest[j--] = (v0+v1) >> 1;
-    dest[j--] = y0;
-    dest[j--] = (u0+u1) >> 1;
-    dest[j--] = y1;
-#else // UYVY
-    dest[j--] = y0;
-    dest[j--] = (v0+v1) >> 1;
-    dest[j--] = y1;
-    dest[j--] = (u0+u1) >> 1;
-#endif
+  switch (byte_order) {
+  case OVERLAY_BYTE_ORDER_YUYV:
+    while (i > 0) {
+      b = (unsigned char) src[i--];
+      g = (unsigned char) src[i--];
+      r = (unsigned char) src[i--];
+      RGB2YUV (r, g, b, y0, u0 , v0);
+      b = (unsigned char) src[i--];
+      g = (unsigned char) src[i--];
+      r = (unsigned char) src[i--];
+      RGB2YUV (r, g, b, y1, u1 , v1);
+      dest[j--] = (v0+v1) >> 1;
+      dest[j--] = y0;
+      dest[j--] = (u0+u1) >> 1;
+      dest[j--] = y1;
+    }
+    break;
+  case OVERLAY_BYTE_ORDER_UYVY:
+    while (i > 0) {
+      b = (unsigned char) src[i--];
+      g = (unsigned char) src[i--];
+      r = (unsigned char) src[i--];
+      RGB2YUV (r, g, b, y0, u0 , v0);
+      b = (unsigned char) src[i--];
+      g = (unsigned char) src[i--];
+      r = (unsigned char) src[i--];
+      RGB2YUV (r, g, b, y1, u1 , v1);
+      dest[j--] = y0;
+      dest[j--] = (v0+v1) >> 1;
+      dest[j--] = y1;
+      dest[j--] = (u0+u1) >> 1;
+    }
+    break;
+  default:
+    fprintf(stderr,"Invalid overlay byte order\n");
+    break;
   }
 }
 
 void
-rgb482uyvy (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels)
+rgb482uyvy (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels, int byte_order)
 {
   register int i = ( (NumPixels + ( NumPixels << 1 )) << 1 ) -1;
   register int j = (NumPixels << 1)-1;
   register int y0, y1, u0, u1, v0, v1 ;
   register int r, g, b;
 
-  while (i > 0) {
-    i--;
-    b = (unsigned char) src[i--];
-    i--;
-    g = (unsigned char) src[i--];
-    i--;
-    r = (unsigned char) src[i--];
-    i--;
-    RGB2YUV (r, g, b, y0, u0 , v0);
-    b = (unsigned char) src[i--];
-    i--;
-    g = (unsigned char) src[i--];
-    i--;
-    r = (unsigned char) src[i--];
-    RGB2YUV (r, g, b, y1, u1 , v1);
-    
-#ifdef YUYV
-    dest[j--] = (v0+v1) >> 1;
-    dest[j--] = y0;
-    dest[j--] = (u0+u1) >> 1;
-    dest[j--] = y1;
-#else // UYVY
-    dest[j--] = y0;
-    dest[j--] = (v0+v1) >> 1;
-    dest[j--] = y1;
-    dest[j--] = (u0+u1) >> 1;
-#endif
+  switch (byte_order) {
+  case OVERLAY_BYTE_ORDER_YUYV:
+    while (i > 0) {
+      i--;
+      b = (unsigned char) src[i--];
+      i--;
+      g = (unsigned char) src[i--];
+      i--;
+      r = (unsigned char) src[i--];
+      i--;
+      RGB2YUV (r, g, b, y0, u0 , v0);
+      b = (unsigned char) src[i--];
+      i--;
+      g = (unsigned char) src[i--];
+      i--;
+      r = (unsigned char) src[i--];
+      RGB2YUV (r, g, b, y1, u1 , v1);
+      dest[j--] = (v0+v1) >> 1;
+      dest[j--] = y0;
+      dest[j--] = (u0+u1) >> 1;
+      dest[j--] = y1;
+    } 
+    break;
+  case OVERLAY_BYTE_ORDER_UYVY:
+    while (i > 0) {
+      i--;
+      b = (unsigned char) src[i--];
+      i--;
+      g = (unsigned char) src[i--];
+      i--;
+      r = (unsigned char) src[i--];
+      i--;
+      RGB2YUV (r, g, b, y0, u0 , v0);
+      b = (unsigned char) src[i--];
+      i--;
+      g = (unsigned char) src[i--];
+      i--;
+      r = (unsigned char) src[i--];
+      RGB2YUV (r, g, b, y1, u1 , v1);
+      dest[j--] = y0;
+      dest[j--] = (v0+v1) >> 1;
+      dest[j--] = y1;
+      dest[j--] = (u0+u1) >> 1;
+    }
+    break;
+  default:
+    fprintf(stderr,"Invalid overlay byte order\n");
+    break;
   }
 }
 

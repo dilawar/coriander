@@ -93,6 +93,8 @@ typedef struct _Prefs
   int auto_update;
   float auto_update_frequency;
   int sync_control;
+  
+  int overlay_byte_order;
 
   struct _CamPrefs camprefs;
 
