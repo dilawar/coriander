@@ -2,6 +2,10 @@ Coriander, (c) 2000-2004 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes since version 1.0.0
 
+   Nov 11, 2004, by Damien Douxchamps
+   - update configure.in to avoid writing in a global dir during a local
+     installation.
+	
    Nov 7, 2004, by Damien Douxchamps
    - update of the 'About' window
    - update the autoconf scripts
