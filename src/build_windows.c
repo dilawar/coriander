@@ -41,7 +41,6 @@ void
 BuildFormat7Window(void)
 {
   int f;
-  GtkWidget* handlebox1;
   GtkWidget* notebook2;
   GtkWidget* vbox;
   GtkWidget* hbox;
@@ -87,14 +86,6 @@ BuildFormat7Window(void)
   }
 
   if (camera->format7_info.edit_mode>=0) {
-    // we should build the full tab here
-
-    // build a new box for F7
-    handlebox1 = gtk_handle_box_new ();
-    gtk_widget_ref (handlebox1);
-    gtk_object_set_data_full (GTK_OBJECT (main_window), "handlebox1", handlebox1,
-			      (GtkDestroyNotify) gtk_widget_unref);
-    gtk_widget_show (handlebox1);
 
     label = gtk_label_new (_("Format 7"));
     gtk_widget_ref (label);
@@ -102,16 +93,15 @@ BuildFormat7Window(void)
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (label);
 
-    // the format7 tab should be placed in position 3 here:
-    gtk_notebook_insert_page(GTK_NOTEBOOK (notebook2), GTK_WIDGET(handlebox1),label, 3);
-
     // big vbox for the whole tab
     vbox = gtk_vbox_new (FALSE, 0);
     gtk_widget_ref (vbox);
     gtk_object_set_data_full (GTK_OBJECT (main_window), "vbox34", vbox,
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (vbox);
-    gtk_container_add (GTK_CONTAINER (handlebox1), vbox);
+
+    // the format7 tab should be placed in position 3 here:
+    gtk_notebook_insert_page(GTK_NOTEBOOK (notebook2), GTK_WIDGET(vbox),label, 3);
 
     // mode frame
     frame = gtk_frame_new (_("Current mode"));

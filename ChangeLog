@@ -4,6 +4,7 @@ Changes towards version 1.0.0
 	
    January 16, 2004, by Damien Douxchamps
    - introduced a new logo
+   - removed handleboxes due to bad behaviour.
 	
    January 15, 2004, by Damien Douxchamps
    - debugging versioning issues in format7 registers
