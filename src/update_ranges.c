@@ -259,10 +259,7 @@ UpdateFormat7Ranges(void)
   adj->value=info->pos_x;
   adj->upper=info->max_size_x-info->size_x;
   adj->lower=0;
-  if (info->use_unit_pos>0)
-    adj->step_increment=info->step_pos_x;
-  else
-    adj->step_increment=info->step_x;
+  adj->step_increment=info->unit_pos_x;
   adj->page_increment=adj->step_increment*4;
   gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
 
@@ -271,10 +268,7 @@ UpdateFormat7Ranges(void)
   adj->value=info->pos_y;
   adj->upper=info->max_size_y-info->size_y;
   adj->lower=0;
-  if (info->use_unit_pos>0)
-    adj->step_increment=info->step_pos_y;
-  else
-    adj->step_increment=info->step_y;
+  adj->step_increment=info->unit_pos_y;
   adj->page_increment=adj->step_increment*4;
   gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
 
@@ -282,18 +276,18 @@ UpdateFormat7Ranges(void)
   adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_hsize_scale")));
   adj->value=info->size_x;
   adj->upper=info->max_size_x-info->pos_x;
-  adj->lower=info->step_x;
-  adj->page_increment=info->step_x*4;
-  adj->step_increment=info->step_x;
+  adj->lower=info->unit_size_x;
+  adj->step_increment=info->unit_size_x;
+  adj->page_increment=adj->step_increment*4;
   gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
 
-  // define adjustement for X-size
+  // define adjustement for Y-size
   adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_vsize_scale")));
   adj->value=info->size_y;
   adj->upper=info->max_size_y-info->pos_y;
-  adj->lower=info->step_y;
-  adj->page_increment=info->step_y*4;
-  adj->step_increment=info->step_y;
+  adj->lower=info->unit_size_y;
+  adj->step_increment=info->unit_size_y;
+  adj->page_increment=adj->step_increment*4;
   gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
 
 }

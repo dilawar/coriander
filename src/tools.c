@@ -89,17 +89,26 @@ GetFormat7ModeInfo(raw1394handle_t handle, nodeid_t node, int mode, Format7Info_
   if (info->mode[i].present>0) { // check for mode presence before query
     if (dc1394_query_format7_max_image_size(handle,node,mode,&info->mode[i].max_size_x,&info->mode[i].max_size_y)!=DC1394_SUCCESS)
       MainError("Got a problem querying format7 max image size");
-    if (dc1394_query_format7_unit_size(handle,node,mode,&info->mode[i].step_x,&info->mode[i].step_y)!=DC1394_SUCCESS)
+    if (dc1394_query_format7_unit_size(handle,node,mode,&info->mode[i].unit_size_x,&info->mode[i].unit_size_y)!=DC1394_SUCCESS)
       MainError("Got a problem querying format7 unit size");
     // quick hack to keep size/position even. If pos/size is ODD, strange color/distorsions occur on some cams
     // (e.g. Basler cams). This will have to really fixed later.
     // REM: this is fixed by using the unit_position:
     // fprintf(stderr,"Using pos units = %d %d\n",info->mode[i].step_pos_x,info->mode[i].step_pos_y);
-    if (dc1394_query_format7_unit_position(handle,node,mode,&info->mode[i].step_pos_x,&info->mode[i].step_pos_y)!=DC1394_SUCCESS)
+    if (dc1394_query_format7_unit_position(handle,node,mode,&info->mode[i].unit_pos_x,&info->mode[i].unit_pos_y)!=DC1394_SUCCESS) {
       MainError("Got a problem querying format7 unit position");
-    info->mode[i].use_unit_pos=((info->mode[i].step_pos_x>0)&&(info->mode[i].step_pos_x<info->mode[i].max_size_x)&&
-				(info->mode[i].step_pos_y>0)&&(info->mode[i].step_pos_y<info->mode[i].max_size_y));
-    
+      info->mode[i].unit_pos_x=0;
+      info->mode[i].unit_pos_y=0;
+    }
+    if (!((info->mode[i].unit_pos_x>0)&&(info->mode[i].unit_pos_x<info->mode[i].max_size_x)&&
+	  (info->mode[i].unit_pos_y>0)&&(info->mode[i].unit_pos_y<info->mode[i].max_size_y))) {
+      fprintf(stderr,"UNIT_POS [%d %d] disabled, using UNIT_SIZE instead\n",info->mode[i].unit_pos_x,info->mode[i].unit_pos_y);
+      info->mode[i].unit_pos_x=info->mode[i].unit_size_x;
+      info->mode[i].unit_pos_y=info->mode[i].unit_size_y;
+    }
+    else {
+      fprintf(stderr,"UNIT_POS [%d %d] is valid and will be used\n",info->mode[i].unit_pos_x,info->mode[i].unit_pos_y);
+    }
     if (dc1394_query_format7_image_position(handle,node,mode,&info->mode[i].pos_x,&info->mode[i].pos_y)!=DC1394_SUCCESS)
       MainError("Got a problem querying format7 image position");
     if (dc1394_query_format7_image_size(handle,node,mode,&info->mode[i].size_x,&info->mode[i].size_y)!=DC1394_SUCCESS)

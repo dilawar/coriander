@@ -428,25 +428,19 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
     switch((int)user_data) {
     case FORMAT7_SIZE_X:
       sx=adj->value;
-      sx=NearestValue(sx,info->step_x, info->step_x, info->max_size_x - px);
+      sx=NearestValue(sx,info->unit_size_x, info->unit_size_x, info->max_size_x - px);
       break;
     case FORMAT7_SIZE_Y:
       sy=adj->value;
-      sy=NearestValue(sy,info->step_y, info->step_y, info->max_size_y - py);
+      sy=NearestValue(sy,info->unit_size_y, info->unit_size_y, info->max_size_y - py);
       break;
     case FORMAT7_POS_X:
       px=adj->value;
-      if (info->use_unit_pos>0)
-	px=NearestValue(px,info->step_pos_x, 0, info->max_size_x - info->step_pos_x);
-      else
-	px=NearestValue(px,info->step_x, 0, info->max_size_x - info->step_x);
+      px=NearestValue(px,info->unit_pos_x, 0, info->max_size_x - info->unit_pos_x);
       break;
     case FORMAT7_POS_Y:
       py=adj->value;
-      if (info->use_unit_pos>0)
-	py=NearestValue(py,info->step_pos_y, 0, info->max_size_y - info->step_pos_y);
-      else
-	py=NearestValue(py,info->step_y, 0, info->max_size_y - info->step_y);
+      py=NearestValue(py,info->unit_pos_y, 0, info->max_size_y - info->unit_pos_y);
       break;
     }
     SetFormat7Crop(sx,sy,px,py, camera->format7_info.edit_mode);

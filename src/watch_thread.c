@@ -133,41 +133,36 @@ GetValidF7Crop(watchthread_info_t *wtinfo, chain_t* display_service) {
   
   if (camera->misc_info.format==FORMAT_SCALABLE_IMAGE_SIZE) {
     f7info=&camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN];
-    
-    if (f7info->use_unit_pos>0) {
-      wtinfo->pos[0]=wtinfo->upper_left[0]-wtinfo->upper_left[0]%f7info->step_pos_x;
-      wtinfo->pos[1]=wtinfo->upper_left[1]-wtinfo->upper_left[1]%f7info->step_pos_y;
-    }
-    else {
-      wtinfo->pos[0]=wtinfo->upper_left[0]-wtinfo->upper_left[0]%f7info->step_x;
-      wtinfo->pos[1]=wtinfo->upper_left[1]-wtinfo->upper_left[1]%f7info->step_y;
-    }
+
+    // step_pos=step if no step_pos is supported.
+    wtinfo->pos[0]=wtinfo->upper_left[0]-wtinfo->upper_left[0]%f7info->unit_pos_x;
+    wtinfo->pos[1]=wtinfo->upper_left[1]-wtinfo->upper_left[1]%f7info->unit_pos_y;
 
     wtinfo->size[0]=wtinfo->lower_right[0]-wtinfo->pos[0];
-    if (wtinfo->size[0]%f7info->step_x>0) {
-      wtinfo->size[0]=wtinfo->size[0]+f7info->step_x;
+    if (wtinfo->size[0]%f7info->unit_size_x>0) {
+      wtinfo->size[0]=wtinfo->size[0]+f7info->unit_size_x;
     }
-    wtinfo->size[0]=wtinfo->size[0]-wtinfo->size[0]%f7info->step_x;
-    if (wtinfo->size[0]<f7info->step_x)
-      wtinfo->size[0]=f7info->step_x;
+    wtinfo->size[0]=wtinfo->size[0]-wtinfo->size[0]%f7info->unit_size_x;
+    if (wtinfo->size[0]<f7info->unit_size_x)
+      wtinfo->size[0]=f7info->unit_size_x;
 
     wtinfo->size[1]=wtinfo->lower_right[1]-wtinfo->pos[1];
-    if (wtinfo->size[1]%f7info->step_y>0) {
-      wtinfo->size[1]=wtinfo->size[1]+f7info->step_y;
+    if (wtinfo->size[1]%f7info->unit_size_y>0) {
+      wtinfo->size[1]=wtinfo->size[1]+f7info->unit_size_y;
     }
-    wtinfo->size[1]=wtinfo->size[1]-wtinfo->size[1]%f7info->step_y;
-    if (wtinfo->size[1]<f7info->step_y)
-      wtinfo->size[1]=f7info->step_y;
+    wtinfo->size[1]=wtinfo->size[1]-wtinfo->size[1]%f7info->unit_size_y;
+    if (wtinfo->size[1]<f7info->unit_size_y)
+      wtinfo->size[1]=f7info->unit_size_y;
 
     //fprintf(stderr,"[%d %d] [%d %d]  ",wtinfo->upper_left[0],wtinfo->upper_left[1],wtinfo->lower_right[0],wtinfo->lower_right[1]);
     //fprintf(stderr,"[%d %d] [%d %d]\n",wtinfo->pos[0],wtinfo->pos[1],wtinfo->size[0],wtinfo->size[1]);
     // optional recentering:
-    if ((f7info->use_unit_pos>0)&&(f7info->step_pos_x<f7info->step_x)) {
+    if ((f7info->unit_pos_x<f7info->unit_size_x)||(f7info->unit_pos_y<f7info->unit_size_y)) {
       mov[0]=(wtinfo->lower_right[0]-wtinfo->upper_left[0])/2+wtinfo->upper_left[0]-(wtinfo->pos[0]+wtinfo->size[0]/2);
       mov[1]=(wtinfo->lower_right[1]-wtinfo->upper_left[1])/2+wtinfo->upper_left[1]-(wtinfo->pos[1]+wtinfo->size[1]/2);
       
-      mov[0]=(mov[0]/f7info->step_pos_x)*f7info->step_pos_x;
-      mov[1]=(mov[1]/f7info->step_pos_y)*f7info->step_pos_y;
+      mov[0]=(mov[0]/f7info->unit_pos_x)*f7info->unit_pos_x;
+      mov[1]=(mov[1]/f7info->unit_pos_y)*f7info->unit_pos_y;
 
       wtinfo->pos[0]+=mov[0];
       wtinfo->pos[1]+=mov[1];
