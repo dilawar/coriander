@@ -117,7 +117,7 @@ NewCamera(void) {
   cam->prefs.ftp_filename =(char*)malloc(STRING_SIZE*sizeof(char));
   cam->prefs.ftp_path =(char*)malloc(STRING_SIZE*sizeof(char));
   cam->prefs.v4l_dev_name =(char*)malloc(STRING_SIZE*sizeof(char));
-  //cam->prefs.name = (char*)malloc(STRING_SIZE*sizeof(char));
+  cam->prefs.name = (char*)malloc(STRING_SIZE*sizeof(char));
   cam->prefs.save_filename = (char*)malloc(STRING_SIZE*sizeof(char));
   pthread_mutex_init(&cam->uimutex, NULL);
   return cam;
@@ -187,19 +187,16 @@ void
 RemoveCamera(u_int64_t guid) {
 
   camera_t* ptr;
-  //fprintf(stderr,"removing camera # 0x%llx\n",guid);
   ptr=cameras;
   while (ptr->camera_info.euid_64!=guid) {
     ptr=ptr->next;
   }
-  //fprintf(stderr,"\tcamera ptr: 0x%x\n",ptr);
 
   V4lStopThread(ptr);
   FtpStopThread(ptr);
   SaveStopThread(ptr);
   DisplayStopThread(ptr);
   IsoStopThread(ptr);
-  //fprintf(stderr,"\tthreads cleared\n");
 
   if (ptr->prev!=NULL) // not first camera?
     ptr->prev->next=ptr->next;
@@ -216,11 +213,7 @@ RemoveCamera(u_int64_t guid) {
       ptr->prev->next=NULL;
   }
 
-  //fprintf(stderr,"\tstruct bypassed\n");
-
   FreeCamera(ptr);
-  //fprintf(stderr,"\tcamera freed\n");
-
 }
 
 void
@@ -232,10 +225,9 @@ FreeCamera(camera_t* cam) {
   free(cam->prefs.ftp_filename); 
   free(cam->prefs.ftp_path); 
   free(cam->prefs.v4l_dev_name); 
-  //free(cam->prefs.name);
+  free(cam->prefs.name);
   free(cam->prefs.save_filename);
   free(cam);
   cam=NULL;
-
 }
 

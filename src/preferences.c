@@ -67,7 +67,7 @@ LoadConfigFile(void)
 void
 CopyCameraPrefs(camera_t* cam) {
 
-  char *tmp;
+  char *tmp, *tmp_ptr;
 
   cam->prefs.display_keep_ratio     = preferences.camprefs.display_keep_ratio;
   cam->prefs.display_period         = preferences.camprefs.display_period;
@@ -91,10 +91,12 @@ CopyCameraPrefs(camera_t* cam) {
   strcpy(cam->prefs.v4l_dev_name    , preferences.camprefs.v4l_dev_name);
   strcpy(cam->prefs.video1394_device, preferences.camprefs.video1394_device);
   preferences.camprefs.ftp_password = "";
-
+  
   tmp=(char*)malloc(STRING_SIZE*sizeof(char));
   sprintf(tmp,"coriander/camera_names/%llx=%s %s",cam->camera_info.euid_64,
 	  cam->camera_info.vendor, cam->camera_info.model);
-  cam->prefs.name = gnome_config_get_string(tmp);
+  tmp_ptr=gnome_config_get_string(tmp);
+  strcpy(cam->prefs.name,tmp_ptr);
   free(tmp);
+
 }

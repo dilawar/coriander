@@ -214,6 +214,11 @@ BuildPrefsFtpFrame(void)
   gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window, "prefs_ftp_path")), camera->prefs.ftp_path);
   gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window, "prefs_ftp_user")), camera->prefs.ftp_user);
 
+  //fprintf(stderr,"%s\n",camera->prefs.ftp_filename);
+  //fprintf(stderr,"%s\n",camera->prefs.ftp_address);
+  //fprintf(stderr,"%s\n",camera->prefs.ftp_path);
+  //fprintf(stderr,"%s\n",camera->prefs.ftp_user);
+
 #else
 
   gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_ftp_framedrop_frame"),FALSE);
@@ -321,8 +326,8 @@ BuildPrefsReceiveFrame(void)
   // menu history
   gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(main_window, "prefs_receive_method_menu")),
 			      camera->prefs.receive_method2index[camera->prefs.receive_method]);
-
-  gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window, "prefs_video1394_device")), camera->prefs.video1394_device);
+  //fprintf(stderr,"camera 0x%x: video1394: %s\n",camera,camera->prefs.video1394_device);
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window, "prefs_video1394_device")), _(camera->prefs.video1394_device));
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window, "prefs_receive_dropframes")), camera->prefs.video1394_dropframes);
 
   gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(main_window, "dma_buffer_size"), camera->prefs.dma_buffer_size);

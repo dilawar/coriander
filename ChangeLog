@@ -2,6 +2,9 @@ Coriander, (c) 2000-2004 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 1.0.0
 	
+   Jun 1st, 2004, by Damien Douxchamps
+   - more fixes related to the preferences problem with strings
+	
    May 19, 2004, by Damien Douxchamps
    - debugged new bayer pattern decoder
 	

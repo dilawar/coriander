@@ -280,6 +280,8 @@ on_camera_select_activate              (GtkMenuItem     *menuitem,
   if (camera->want_to_display>0)
     DisplayStartThread(camera);
 
+  //fprintf(stderr,"camera: %s\n",camera->prefs.name);
+
   // redraw all:
   BuildAllWindows();
   UpdateAllWindows();
@@ -698,17 +700,16 @@ void
 on_camera_name_text_changed            (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  char *tmp;
+  char *tmp, *tmp_ptr;
   const char *camera_name_str =  "coriander/camera_names/";
-  
+  //fprintf(stderr,"name changed\n");
   tmp=(char*)malloc(STRING_SIZE*sizeof(char));
-  camera->prefs.name=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window, "camera_name_text")));
+  tmp_ptr=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window, "camera_name_text")));
   sprintf(tmp,"%s%llx",camera_name_str, camera->camera_info.euid_64);
-  
-  gnome_config_set_string(tmp,camera->prefs.name);
+  gnome_config_set_string(tmp,tmp_ptr);
   gnome_config_sync();
+  strcpy(camera->prefs.name,tmp_ptr);
   BuildCameraMenu();
-
   free(tmp);
 }
 
@@ -818,7 +819,9 @@ void
 on_prefs_ftp_address_changed           (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  camera->prefs.ftp_address=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"prefs_ftp_address")));
+  char *tmp_ptr;
+  tmp_ptr=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"prefs_ftp_address")));
+  strcpy(camera->prefs.ftp_address,tmp_ptr);
   gnome_config_set_string("coriander/ftp/address",camera->prefs.ftp_address);
   gnome_config_sync();
 }
@@ -828,7 +831,9 @@ void
 on_prefs_ftp_path_changed              (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  camera->prefs.ftp_path=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"prefs_ftp_path")));
+  char *tmp_ptr;
+  tmp_ptr=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"prefs_ftp_path")));
+  strcpy(camera->prefs.ftp_path,tmp_ptr);
   gnome_config_set_string("coriander/ftp/path",camera->prefs.ftp_path);
   gnome_config_sync();
 
@@ -839,7 +844,9 @@ void
 on_prefs_ftp_user_changed              (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  camera->prefs.ftp_user=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"prefs_ftp_user")));
+  char *tmp_ptr;
+  tmp_ptr=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"prefs_ftp_user")));
+  strcpy(camera->prefs.ftp_user,tmp_ptr);
   gnome_config_set_string("coriander/ftp/user",camera->prefs.ftp_user);
   gnome_config_sync();
 
@@ -850,7 +857,9 @@ void
 on_prefs_ftp_password_changed          (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  camera->prefs.ftp_password=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"prefs_ftp_password")));
+  char *tmp_ptr;
+  tmp_ptr=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"prefs_ftp_password")));
+  strcpy(camera->prefs.ftp_password,tmp_ptr);
   // don't save passwords!
   //gnome_config_set_string("coriander/ftp/password",preferences.ftp_password);
   //gnome_config_sync();
@@ -861,7 +870,9 @@ void
 on_prefs_ftp_filename_changed          (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  camera->prefs.ftp_filename=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"prefs_ftp_filename")));
+  char *tmp_ptr;
+  tmp_ptr=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"prefs_ftp_filename")));
+  strcpy(camera->prefs.ftp_filename,tmp_ptr);
   gnome_config_set_string("coriander/ftp/filename",camera->prefs.ftp_filename);
   gnome_config_sync();
 }
@@ -871,7 +882,9 @@ void
 on_prefs_save_filename_changed         (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  camera->prefs.save_filename=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"prefs_save_filename")));
+  char *tmp_ptr;
+  tmp_ptr=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"prefs_save_filename")));
+  strcpy(camera->prefs.save_filename,tmp_ptr);
   gnome_config_set_string("coriander/save/filename",camera->prefs.save_filename);
   gnome_config_sync();
 }
@@ -1078,7 +1091,9 @@ void
 on_prefs_video1394_device_changed      (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  camera->prefs.video1394_device=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"prefs_video1394_device")));
+  char *tmp_ptr;
+  tmp_ptr=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"prefs_video1394_device")));
+  strcpy(camera->prefs.video1394_device,tmp_ptr);
   gnome_config_set_string("coriander/receive/video1394_device",camera->prefs.video1394_device);
   gnome_config_sync();
 
@@ -1088,7 +1103,9 @@ void
 on_prefs_v4l_dev_name_changed      (GtkEditable     *editable,
                                   gpointer         user_data)
 {
-  camera->prefs.v4l_dev_name=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"prefs_v4l_dev_name")));
+  char *tmp_ptr;
+  tmp_ptr=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"prefs_v4l_dev_name")));
+  strcpy(camera->prefs.v4l_dev_name,tmp_ptr);
   gnome_config_set_string("coriander/v4l/v4l_dev_name",camera->prefs.v4l_dev_name);
   gnome_config_sync();
 

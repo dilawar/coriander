@@ -190,7 +190,6 @@ BuildCameraMenu(void)
     camera_ptr=camera_ptr->next;
     i++;
   }
-
   gtk_option_menu_set_menu (GTK_OPTION_MENU (camera_id), camera_id_menu);
 
   // sets the active menu item:
