@@ -2,6 +2,9 @@ Coriander, (c) 2000-2003 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 1.0.0
 	
+   December 28, 2003, by Damien Douxchamps
+   - fixed format7 interactive changes issues.
+
    December 27, 2003, by Damien Douxchamps
    - inline format7 tab generation
    - passwords are no longer stored

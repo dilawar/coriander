@@ -975,6 +975,7 @@ SetFormat7Crop(int sx, int sy, int px, int py, int mode) {
     // the order in which we apply the F7 changes is important.
     // example: from size=128x128, pos=128x128, we can't go to size=1280x1024 by just changing the size.
     // We need to set the position to 0x0 first.
+    //fprintf(stderr,"Setting format7 to pos=[%d %d], size=[%d %d]\n",px,py,sx,sy);
     if (dc1394_set_format7_image_position(camera->camera_info.handle,camera->camera_info.id, mode, 0, 0)!=DC1394_SUCCESS)
       MainError("Could not set Format7 image position to zero");
     if ((dc1394_set_format7_image_size(camera->camera_info.handle,camera->camera_info.id, mode, sx, sy)!=DC1394_SUCCESS)||

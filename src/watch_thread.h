@@ -48,6 +48,8 @@ typedef struct
   int             draw;
   int             mouse_down;
   int             crop;
+  int             abs_pos[2];
+
 } watchthread_info_t;
 
 

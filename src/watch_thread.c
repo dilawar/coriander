@@ -59,9 +59,9 @@ void*
 WatchThread(void *arg)
 {
   watchthread_info_t *info;
- 
   info=(watchthread_info_t*)arg;
  
+  
   pthread_mutex_lock(&info->mutex_area);
   pthread_setcancelstate(PTHREAD_CANCEL_DISABLE,NULL);
   pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED,NULL);
@@ -78,9 +78,26 @@ WatchThread(void *arg)
       pthread_mutex_lock(&info->mutex_area);
       
       if (info->crop>0) {
-	//fprintf(stderr,"pos: [%d %d], size[%d %d]\n",info->pos[0],info->pos[1],info->size[0],info->size[1]);
-	SetFormat7Crop(info->size[0],info->size[1],info->pos[0],info->pos[1],camera->misc_info.mode);
-	UpdateFormat7BppRange();
+	if (camera->misc_info.format==FORMAT_SCALABLE_IMAGE_SIZE) {
+	  if (dc1394_query_format7_image_position(camera->camera_info.handle, camera->camera_info.id, camera->misc_info.mode,
+						  &camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN].pos_x,
+						  &camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN].pos_y)!=DC1394_SUCCESS)
+	    MainError("Could not get format7 image position");
+	  // if we did reset to max size, don't do the addition:
+	  if ((info->size[0]==camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN].max_size_x)&&
+	      (info->size[1]==camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN].max_size_y))
+	    SetFormat7Crop(info->size[0],info->size[1],info->pos[0],info->pos[1],camera->misc_info.mode);
+	  else {
+	    SetFormat7Crop(info->size[0],info->size[1],
+			   info->pos[0]+camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN].pos_x,
+			   info->pos[1]+camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN].pos_y,
+			   camera->misc_info.mode);
+	  }
+	  UpdateFormat7BppRange();
+	}
+	else {
+	  SetFormat7Crop(info->size[0],info->size[1],info->pos[0],info->pos[1],camera->misc_info.mode);
+	}
 	info->crop=0;
       }
       
@@ -131,12 +148,17 @@ GetValidF7Crop(watchthread_info_t *wtinfo, chain_t* display_service) {
       wtinfo->size[0]=wtinfo->size[0]+f7info->step_x;
     }
     wtinfo->size[0]=wtinfo->size[0]-wtinfo->size[0]%f7info->step_x;
+    if (wtinfo->size[0]<f7info->step_x)
+      wtinfo->size[0]=f7info->step_x;
 
     wtinfo->size[1]=wtinfo->lower_right[1]-wtinfo->pos[1];
     if (wtinfo->size[1]%f7info->step_y>0) {
       wtinfo->size[1]=wtinfo->size[1]+f7info->step_y;
     }
     wtinfo->size[1]=wtinfo->size[1]-wtinfo->size[1]%f7info->step_y;
+    if (wtinfo->size[1]<f7info->step_y)
+      wtinfo->size[1]=f7info->step_y;
+
     //fprintf(stderr,"[%d %d] [%d %d]  ",wtinfo->upper_left[0],wtinfo->upper_left[1],wtinfo->lower_right[0],wtinfo->lower_right[1]);
     //fprintf(stderr,"[%d %d] [%d %d]\n",wtinfo->pos[0],wtinfo->pos[1],wtinfo->size[0],wtinfo->size[1]);
     // optional recentering:
@@ -149,6 +171,7 @@ GetValidF7Crop(watchthread_info_t *wtinfo, chain_t* display_service) {
 
       wtinfo->pos[0]+=mov[0];
       wtinfo->pos[1]+=mov[1];
+      //fprintf(stderr," [%d %d] [%d %d]\n",wtinfo->pos[0],wtinfo->pos[1],wtinfo->size[0],wtinfo->size[1]);
     }
     
     // check boundaries:
@@ -156,10 +179,10 @@ GetValidF7Crop(watchthread_info_t *wtinfo, chain_t* display_service) {
       wtinfo->pos[0]=0;
     if (wtinfo->pos[1]<0)
       wtinfo->pos[1]=0;
-    if (wtinfo->pos[0]+wtinfo->size[0]>display_service->current_buffer->width-1)
-      wtinfo->pos[0]-=wtinfo->pos[0]+wtinfo->size[0]-display_service->current_buffer->width+1;
-    if (wtinfo->pos[1]+wtinfo->size[1]>display_service->current_buffer->height-1)
-      wtinfo->pos[1]-=wtinfo->pos[1]+wtinfo->size[1]-display_service->current_buffer->height+1;
+    if (wtinfo->pos[0]+wtinfo->size[0]-1>display_service->current_buffer->width)
+      wtinfo->pos[0]-=wtinfo->pos[0]+wtinfo->size[0]-display_service->current_buffer->width; // there was a +1 here
+    if (wtinfo->pos[1]+wtinfo->size[1]-1>display_service->current_buffer->height)
+      wtinfo->pos[1]-=wtinfo->pos[1]+wtinfo->size[1]-display_service->current_buffer->height; // there was a +1 here
 
   }
   else {
@@ -169,6 +192,7 @@ GetValidF7Crop(watchthread_info_t *wtinfo, chain_t* display_service) {
     wtinfo->size[1]=wtinfo->lower_right[1]-wtinfo->upper_left[1];
   }
 
+  //fprintf(stderr," [%d %d] [%d %d]\n",wtinfo->pos[0],wtinfo->pos[1],wtinfo->size[0],wtinfo->size[1]);
 }
 
 #endif

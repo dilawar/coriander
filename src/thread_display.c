@@ -429,8 +429,8 @@ SDLDisplayArea(chain_t *display_service)
   if (watchthread_info.draw==1) {
     upper_left[0]=watchthread_info.pos[0];
     upper_left[1]=watchthread_info.pos[1];
-    lower_right[0]=watchthread_info.pos[0]+watchthread_info.size[0];
-    lower_right[1]=watchthread_info.pos[1]+watchthread_info.size[1];
+    lower_right[0]=watchthread_info.pos[0]+watchthread_info.size[0]-1;
+    lower_right[1]=watchthread_info.pos[1]+watchthread_info.size[1]-1;
     pimage=info->sdloverlay->pixels[0];
     width=display_service->current_buffer->width;
     pthread_mutex_unlock(&watchthread_info.mutex_area);
