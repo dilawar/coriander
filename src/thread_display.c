@@ -389,12 +389,13 @@ convert_to_yuv_for_xv(unsigned char *src, unsigned char *dest, int mode, int wid
 
 void gdkPut(chain_t *display_service)
 {
-
+  fprintf(stderr,"putting GDK frame...");
   displaythread_info *info;
   info=(displaythread_info*)display_service->data;
 
   gdk_draw_rgb_image(info->drawable->window, info->drawable->style->fg_gc[info->drawable->state],
 		     0, 0, display_service->width, display_service->height, GDK_RGB_DITHER_MAX, 
 		     info->gdk_buffer, display_service->width*3);
+  fprintf(stderr," done.\n");
 }
 

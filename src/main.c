@@ -55,8 +55,6 @@ dc1394_feature_set *feature_set;
 dc1394_feature_set *feature_sets;
 dc1394_miscinfo *misc_info;
 dc1394_miscinfo *misc_infos;
-//dc1394_cameracapture *capture;
-//dc1394_cameracapture *captures;
 chain_t **image_pipes;
 chain_t *image_pipe;
 Format7Info *format7_infos;
@@ -162,13 +160,18 @@ main (int argc, char *argv[])
   BuildAllWindows();
   UpdateAllWindows();
 
-  //MainError("Good morning Doctor...");
+  MainStatus("Welcome to Coriander...");
 
   gdk_threads_enter();
   gtk_main();
   gdk_threads_leave();
 
-  // I should destroy the handles here...
+  // clean all threads for all cams:
+  for (i=0;i<camera_num;i++)
+    {
+      SelectCamera(i);
+      CleanThreads(CLEAN_MODE_NO_UI_UPDATE);
+    }
 
   free(cameras);
   free(feature_sets);
@@ -179,6 +182,8 @@ main (int argc, char *argv[])
   free(selfids);
 
     } // end of if no handle check
+  raw1394_destroy_handle(handle);
+
     } // end of if no camera check
   
 

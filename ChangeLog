@@ -2,6 +2,9 @@ Coriander, (c) 2000-2001 Damien Douxchamps <douxchamps@ieee.org>
 
 Changes towards version 0.20:
 
+    Nov 26, by Damien Douxchamps:
+    - added handle release and thread cleanup at the end of main.c
+	
     Nov 20, by Damien Douxchamps:
     - added some #ifdef HAVE_FTPLIB to avoid compilation problems.
 	
