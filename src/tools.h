@@ -104,5 +104,8 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation);
 int
 main_timeout_handler(gpointer* port_num);
 
+void
+SetFormat7Crop(int sx, int sy, int px, int py);
+
 #endif
 

@@ -5,6 +5,7 @@ Changes towards version 0.33
    May 30, 2003, by Damien Douxchamps
    - removed absolute control window. Absolute controls are now in placed
      in their respective range frame.
+   - fixed not-so-obvious-but-definitely-harmful F7 bugs.
 	
    May 28, 2003, by Damien Douxchamps
    - fixed missing #includes in thread_display.h. Thanks to Marc Leconte

@@ -156,6 +156,8 @@ ChangeModeAndFormat         (GtkMenuItem     *menuitem,
 
 void IsoFlowCheck(int *state)
 { 
+  //fprintf(stderr,"Iso flow stopped\n");
+
   if (dc1394_get_iso_status(camera->camera_info.handle, camera->camera_info.id, &camera->misc_info.is_iso_on)!=DC1394_SUCCESS)
     MainError("Could not get ISO status");
   else {
@@ -208,6 +210,7 @@ void IsoFlowResume(int *state)
     }
     UpdateIsoFrame();
   }
+  //fprintf(stderr,"Iso flow restarted\n");
 }
 
 void GetContextStatus()
@@ -746,3 +749,87 @@ main_timeout_handler(gpointer* port_num) {
   }
   return(1);
 }
+
+
+void
+SetFormat7Crop(int sx, int sy, int px, int py) {
+	
+  int state;
+  Format7ModeInfo *info;
+  GtkAdjustment *adjsx, *adjsy, *adjpx, *adjpy;
+
+  info=&camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN];
+
+  // use +step/2 to 'round' instead of using 'floor'
+  // (don't do this: it breaks with bad values...)
+  //sx=sx+info->step_x/2;
+  sx=sx-sx%info->step_x;
+  //sy=sy+info->step_y/2;
+  sy=sy-sy%info->step_y;
+
+  if (info->use_unit_pos>0) {
+    //px=px+info->step_pos_x/2;
+    px=px-px%info->step_pos_x;
+    //py=py+info->step_pos_y/2;
+    py=py-py%info->step_pos_y;
+  }
+  else {
+    //px=px+info->step_x/2;
+    px=px-px%info->step_x;
+    //py=py+info->step_y/2;
+    py=py-py%info->step_y;
+  }
+  adjpx=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_hposition_scale")));
+  adjpy=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_vposition_scale")));
+  adjsx=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_hsize_scale")));
+  adjsy=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_vsize_scale")));
+  
+  // do something if we were called by a first generation signal:
+  if ((gtk_signal_n_emissions_by_name(GTK_OBJECT (adjpx), "changed")==0)&&
+      (gtk_signal_n_emissions_by_name(GTK_OBJECT (adjpy), "changed")==0)&&
+      (gtk_signal_n_emissions_by_name(GTK_OBJECT (adjsx), "changed")==0)&&
+      (gtk_signal_n_emissions_by_name(GTK_OBJECT (adjsy), "changed")==0)) {
+
+    if (camera->format7_info.edit_mode==camera->misc_info.mode) {
+      IsoFlowCheck(&state);
+    }
+    
+    // the order in which we apply the F7 changes is important.
+    // example: from size=128x128, pos=128x128, we can't go to size=1280x1024 by just changing the size.
+    // We need to set the position to 0x0 first.
+    if (dc1394_set_format7_image_position(camera->camera_info.handle,camera->camera_info.id, camera->misc_info.mode, 0, 0)!=DC1394_SUCCESS)
+      MainError("Could not set Format7 image position to zero");
+    if ((dc1394_set_format7_image_size(camera->camera_info.handle,camera->camera_info.id, camera->misc_info.mode, sx, sy)!=DC1394_SUCCESS)||
+	(dc1394_set_format7_image_position(camera->camera_info.handle,camera->camera_info.id, camera->misc_info.mode, px, py)!=DC1394_SUCCESS))
+      MainError("Could not set Format7 image size and position");
+    else {
+      info->size_x=sx;
+      info->size_y=sy;
+      info->pos_x=px;
+      info->pos_y=py;
+    }
+    
+    // tell the ranges to change their settings
+    adjpx->upper=info->max_size_x-sx;
+    adjpx->value=px;
+    gtk_signal_emit_by_name(GTK_OBJECT (adjpx), "changed");
+    
+    adjpy->upper=info->max_size_y-sy;
+    adjpy->value=py;
+    gtk_signal_emit_by_name(GTK_OBJECT (adjpy), "changed");
+    
+    adjsx->upper=info->max_size_x-px;
+    adjsx->value=sx;
+    gtk_signal_emit_by_name(GTK_OBJECT (adjsx), "changed");
+    
+    adjsy->upper=info->max_size_y-py;
+    adjsy->value=sy;
+    gtk_signal_emit_by_name(GTK_OBJECT (adjsy), "changed");
+    
+    usleep(100e3);
+    
+    if (camera->format7_info.edit_mode==camera->misc_info.mode) {
+      IsoFlowResume(&state);
+    }
+  }
+} 

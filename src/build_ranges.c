@@ -384,7 +384,7 @@ BuildFormat7Ranges(void)
     adjustment_px=(GtkAdjustment*)gtk_adjustment_new(info->pos_x,0,info->max_size_x-info->size_x,info->step_x,info->step_x*4,0);
 
   gtk_range_set_adjustment((GtkRange*)lookup_widget(main_window, "format7_hposition_scale"),adjustment_px);
-  gtk_signal_connect(GTK_OBJECT (adjustment_px), "value_changed", GTK_SIGNAL_FUNC (on_format7_value_changed), (int*) FORMAT7_POS_X);
+  camera->format7_info.scale_posx_handle=gtk_signal_connect(GTK_OBJECT (adjustment_px), "value_changed", GTK_SIGNAL_FUNC (on_format7_value_changed), (int*) FORMAT7_POS_X);
   gtk_range_set_update_policy ((GtkRange*)lookup_widget(main_window, "format7_hposition_scale"), GTK_UPDATE_DELAYED);
   
   // define adjustement for Y-position 
@@ -394,19 +394,19 @@ BuildFormat7Ranges(void)
     adjustment_py=(GtkAdjustment*)gtk_adjustment_new(info->pos_y,0,info->max_size_y-info->size_y,info->step_y,info->step_y*4,0);
 
   gtk_range_set_adjustment((GtkRange*)lookup_widget(main_window, "format7_vposition_scale"),adjustment_py);
-  gtk_signal_connect(GTK_OBJECT (adjustment_py), "value_changed", GTK_SIGNAL_FUNC (on_format7_value_changed), (int*) FORMAT7_POS_Y);
+  camera->format7_info.scale_posy_handle=gtk_signal_connect(GTK_OBJECT (adjustment_py), "value_changed", GTK_SIGNAL_FUNC (on_format7_value_changed), (int*) FORMAT7_POS_Y);
   gtk_range_set_update_policy ((GtkRange*)lookup_widget(main_window, "format7_vposition_scale"), GTK_UPDATE_DELAYED);
 
   // define adjustement for X-size
   adjustment_sx=(GtkAdjustment*)gtk_adjustment_new(info->size_x,info->step_x,info->max_size_x-info->pos_x,info->step_x,info->step_x*4,0);
   gtk_range_set_adjustment((GtkRange*)lookup_widget(main_window, "format7_hsize_scale"),adjustment_sx);
-  gtk_signal_connect(GTK_OBJECT (adjustment_sx), "value_changed", GTK_SIGNAL_FUNC (on_format7_value_changed), (int*) FORMAT7_SIZE_X);
+  camera->format7_info.scale_sizex_handle=gtk_signal_connect(GTK_OBJECT (adjustment_sx), "value_changed", GTK_SIGNAL_FUNC (on_format7_value_changed), (int*) FORMAT7_SIZE_X);
   gtk_range_set_update_policy ((GtkRange*)lookup_widget(main_window, "format7_hsize_scale"), GTK_UPDATE_DELAYED);
 
   // define adjustement for X-size
   adjustment_sy=(GtkAdjustment*)gtk_adjustment_new(info->size_y,info->step_y,info->max_size_y-info->pos_y,info->step_y,info->step_y*4,0);
   gtk_range_set_adjustment((GtkRange*)lookup_widget(main_window, "format7_vsize_scale"),adjustment_sy);
-  gtk_signal_connect(GTK_OBJECT (adjustment_sy), "value_changed", GTK_SIGNAL_FUNC (on_format7_value_changed), (int*) FORMAT7_SIZE_Y);
+  camera->format7_info.scale_sizey_handle=gtk_signal_connect(GTK_OBJECT (adjustment_sy), "value_changed", GTK_SIGNAL_FUNC (on_format7_value_changed), (int*) FORMAT7_SIZE_Y);
   gtk_range_set_update_policy ((GtkRange*)lookup_widget(main_window, "format7_vsize_scale"), GTK_UPDATE_DELAYED);
 
   gtk_signal_emit_by_name(GTK_OBJECT (adjustment_sx), "changed");

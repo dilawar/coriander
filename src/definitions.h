@@ -95,6 +95,11 @@ typedef struct _Format7Info
   Format7ModeInfo mode[NUM_MODE_FORMAT7];
   int edit_mode;
 
+  int scale_posx_handle;
+  int scale_posy_handle;
+  int scale_sizex_handle;
+  int scale_sizey_handle;
+
 } Format7Info;
 
 typedef struct _CameraInfo_T {

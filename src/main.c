@@ -119,88 +119,97 @@ main (int argc, char *argv[])
   if (card_found==0) {
     gtk_widget_show(create_no_handle_window());
     gtk_main ();
+    free(camera_nodes);
+    free(port_camera_num);
+    free(handles);
+    exit(1);
   }
   else {
     if (camera_num<1) {
       gtk_widget_show(create_no_camera_window());
       gtk_main ();
-    }
-    else { // we have at least one camera on one interface card.
-      // get camera infos and serialize the port info for each camera
-      index=0;
-      for (port=0;port<portmax;port++) {
-	if (handles[port]!=0)
-	  for (cam=0;cam<port_camera_num[port];cam++) {
-	    camera_ptr=NewCamera();
-	    GetCameraData(handles[port], camera_nodes[port][cam], camera_ptr);
-	    AppendCamera(camera_ptr);
-	  }
-      }
-
-      raw1394_set_bus_reset_handler(handles[0], bus_reset_handler);
-      GrabSelfIds(handles, portmax);
-      silent_ui_update=0;
-      SetChannels();
-      // current camera is the first camera:
-      SetCurrentCamera(cameras->camera_info.euid_64);
-      // Create the permanent control windows.
-      // (note BTW that other windows like 'file_selector' are created
-      //  and destroyed on purpose while the following windows always exist.)
-      
-      g_thread_init(NULL);
-      
-      preferences_window= create_preferences_window();
-      main_window = create_main_window();
-      //absolute_settings_window = create_absolute_settings_window();
-      
-      // Setup the GUI in accordance with the camera capabilities
-      GetContextStatus();
-      BuildAllWindows();
-      UpdateAllWindows();
-#ifdef HAVE_SDLLIB
-      WatchStartThread(&watchthread_info);
-#endif
-      MainStatus("Welcome to Coriander...");
-      gtk_widget_show (main_window); // this is the only window shown at boot-time
-      
-      main_timeout=gtk_timeout_add(10, (GtkFunction)main_timeout_handler, (gpointer*)portmax);
-      //gdk_threads_enter();
-      gtk_main();
-      //gdk_threads_leave();
-      
-      // clean all threads for all cams:
-      camera=cameras;
-      while (camera!=NULL) {
-	FtpStopThread();
-	SaveStopThread();
-	DisplayStopThread();
-	IsoStopThread();
-	camera=camera->next;
-      }
-      
-#ifdef HAVE_SDLLIB
-      WatchStopThread(&watchthread_info);
-#endif
-
-      gtk_timeout_remove(main_timeout);
-
-      while (cameras!=NULL) {
-	RemoveCamera(cameras->camera_info.euid_64);
-      }
-
-      for (i=0;i<portmax;i++) {
-	if (handles[i]!=0)
-	  raw1394_destroy_handle(handles[i]);
-	free(camera_nodes[i]);
-      }
-      
       free(camera_nodes);
-      free(handles);
       free(port_camera_num);
-      
-    } // end of if no handle check
-    
-  } // end of if no camera check
+      free(handles);
+      exit(1);
+    }
+  }
+
+  //fprintf(stderr,"Camera(s) found: %d\n",camera_num);
+
+  // we have at least one camera on one interface card.
+  // get camera infos and serialize the port info for each camera
+  index=0;
+  for (port=0;port<portmax;port++) {
+    if (handles[port]!=0)
+      for (cam=0;cam<port_camera_num[port];cam++) {
+	camera_ptr=NewCamera();
+	GetCameraData(handles[port], camera_nodes[port][cam], camera_ptr);
+	AppendCamera(camera_ptr);
+      }
+  }
+  
+  raw1394_set_bus_reset_handler(handles[0], bus_reset_handler);
+  GrabSelfIds(handles, portmax);
+  silent_ui_update=0;
+  SetChannels();
+  // current camera is the first camera:
+  SetCurrentCamera(cameras->camera_info.euid_64);
+  // Create the permanent control windows.
+  // (note BTW that other windows like 'file_selector' are created
+  //  and destroyed on purpose while the following windows always exist.)
+  
+  g_thread_init(NULL);
+  
+  preferences_window= create_preferences_window();
+  main_window = create_main_window();
+  //absolute_settings_window = create_absolute_settings_window();
+  
+  // Setup the GUI in accordance with the camera capabilities
+  GetContextStatus();
+  BuildAllWindows();
+  UpdateAllWindows();
+#ifdef HAVE_SDLLIB
+  WatchStartThread(&watchthread_info);
+#endif
+  MainStatus("Welcome to Coriander...");
+  gtk_widget_show (main_window); // this is the only window shown at boot-time
+  
+  main_timeout=gtk_timeout_add(10, (GtkFunction)main_timeout_handler, (gpointer*)portmax);
+  //gdk_threads_enter();
+  gtk_main();
+  //gdk_threads_leave();
+  
+  // clean all threads for all cams:
+  camera=cameras;
+  while (camera!=NULL) {
+    FtpStopThread();
+    SaveStopThread();
+    DisplayStopThread();
+    IsoStopThread();
+    camera=camera->next;
+  }
+  
+#ifdef HAVE_SDLLIB
+  WatchStopThread(&watchthread_info);
+#endif
+  
+  gtk_timeout_remove(main_timeout);
+  
+  while (cameras!=NULL) {
+    RemoveCamera(cameras->camera_info.euid_64);
+  }
+  
+  for (i=0;i<portmax;i++) {
+    if (handles[i]!=0)
+      raw1394_destroy_handle(handles[i]);
+    free(camera_nodes[i]);
+  }
+  
+  free(camera_nodes);
+  free(handles);
+  free(port_camera_num);
+  
   //free(whitebal_data);
   
   return 0;
