@@ -145,6 +145,7 @@ AC_DEFUN([AC_CHECK_SDLLIB],[
 ])
 
 AC_DEFUN([AC_CHECK_MMX],[
+	AC_SUBST(MMX_CFLAGS)
 	AC_MSG_CHECKING(for MMX support)
  	mmx=no
  	AC_TRY_RUN([
@@ -165,11 +166,15 @@ AC_DEFUN([AC_CHECK_MMX],[
  	AC_MSG_RESULT($mmx)
  	if test x$mmx = xyes; then
   	   AC_DEFINE(MMX_SUPPORT,1,[defined if MMX is available])
+	   MMX_CFLAGS="-mmmx"
+	else
+	   MMX_CFLAGS=""
  	fi
 
 ])
 
 AC_DEFUN([AC_CHECK_SSE],[
+	AC_SUBST(SSE_CFLAGS)
 	AC_MSG_CHECKING(for SSE support)
  	sse=no
  	AC_TRY_RUN([
@@ -190,13 +195,16 @@ AC_DEFUN([AC_CHECK_SSE],[
  	AC_MSG_RESULT($sse)
  	if test x$sse = xyes; then
   	   AC_DEFINE(SSE_SUPPORT,1,[defined if SSE is available])
+	   SSE_CFLAGS="-msse -march=i686 -mcpu=i686"
+	else
+	   SSE_CFLAGS=""
  	fi
 
 ])
 
 
 AC_DEFUN([AC_CHECK_SSE2],[
-	AC_SUBST(PROC_CFLAGS)
+	AC_SUBST(SSE2_CFLAGS)
 	AC_MSG_CHECKING(for SSE2 support)
  	sse2=no
  	AC_TRY_RUN([
@@ -218,13 +226,12 @@ AC_DEFUN([AC_CHECK_SSE2],[
  	AC_MSG_RESULT($sse2)
  	if test x$sse2 = xyes; then
   	   AC_DEFINE(SSE2_SUPPORT,1,[defined if SSE2 is available])
-	   PROC_CFLAGS="-march=i686 -mcpu=i686"
+	   SSE2_CFLAGS="-msse2"
 	else
-	   PROC_CFLAGS=""
+	   SSE2_CFLAGS=""
  	fi
 
 ])
-
 
 AC_DEFUN([AC_CHECK_GDK_PIXBUF],[
 	AC_SUBST(GDK_PIXBUF_CFLAGS)

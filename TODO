@@ -49,6 +49,7 @@ _______________________________________________________________________________
 	- integrate MPEG patch
 	- verify the compilation flags originally used for mpeg (-mmx,...)
 	- add options to MPEG service (codec, basic params?)
+	- FTP seems to be broken. To be checked.
 
 - long term:
 	- add advanced features capability. This would probably require a

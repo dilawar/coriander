@@ -2,7 +2,7 @@
 
 # CPPFLAGS = 
 AM_CFLAGS = -DDATADIR="$(datadir)"
-CFLAGS    = $(SDLLIB_CFLAGS) $(LIBRAW_CFLAGS) $(LIBDC_CFLAGS) $(GDK_PIXBUF_CFLAGS) $(COR_LFS_CFLAGS) $(PROC_CFLAGS)
+CFLAGS    = $(SDLLIB_CFLAGS) $(LIBRAW_CFLAGS) $(LIBDC_CFLAGS) $(GDK_PIXBUF_CFLAGS) $(COR_LFS_CFLAGS) $(MMX_CFLAGS) $(SSE_CFLAGS) $(SSE2_CFLAGS)
 INCLUDES  = -I$(top_srcdir)/intl $(GNOME_INCLUDEDIR) -I/usr/include/gnome-xml -I/usr/include/ffmpeg -I/usr/local/ffmpeg -I/usr/local/ffmpeg/libavcodec -I/usr/local/ffmpeg/libavformat
 
 bin_PROGRAMS = coriander

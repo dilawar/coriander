@@ -2,6 +2,11 @@ Coriander, (c) 2000-2005 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 1.0.2
 
+   Feb 4, 2005, by Damien Douxchamps
+   - fixed wrong bytes per pixel in getDepth() (thread_save.c)
+   - updated the AUTHOR file
+   - updated macros to use mmx, sse amd sse2 flags
+	
    Feb 3, 2005, by Damien Douxchamps
    - MPEG integration. Not working yet, but compile. Note that there is NO autodetection
      of the necessary libraries so that you may not be able to compile. In that case you

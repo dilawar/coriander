@@ -292,8 +292,8 @@ getAvgBytesPerPixel(int buffer_color_mode)
 unsigned int
 getDepth(unsigned long bufsize, int mode, unsigned int height, unsigned int width)
 {
-  int bytes_per_pixel=getAvgBytesPerPixel(mode);
-  return((unsigned int)bufsize/(bytes_per_pixel*height*width));
+  float bytes_per_pixel=getAvgBytesPerPixel(mode);
+  return((unsigned int)(bufsize/(bytes_per_pixel*height*width)));
 }
 
 void
