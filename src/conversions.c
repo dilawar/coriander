@@ -429,212 +429,29 @@ y162rgb (unsigned char *src, unsigned char *dest, int NumPixels) {
  ****************************************************************/
 
 void
-BayerNearestNeighborPlanar(unsigned char *src, unsigned char *dest, int sx, int sy)
-{
-  unsigned char *outR, *outG, *outB;
-  register int i,j;
-
-  // sx and sy should be even
-  // first pixel should be Green, second red:
-  // G R G R G R G R
-  // B G B G B G B G
-  // G R G R G R G R
-  outR=&dest[0];
-  outG=&dest[sx*sy];
-  outB=&dest[sx*sy*2];
-
-  // copy original RGB data to output images
-  for (i=0;i<sy;i+=2)
-    for (j=0;j<sx;j+=2)
-      {
-	outG[i*sx+j]=src[i*sx+j];
-	outG[(i+1)*sx+(j+1)]=src[(i+1)*sx+(j+1)];
-	outR[i*sx+j+1]=src[i*sx+j+1];
-	outB[(i+1)*sx+j]=src[(i+1)*sx+j];
-      }
-
-  // R channel
-  for (i=0;i<sy-1;i+=2)
-    for (j=0;j<sx-1;j+=2)
-      outR[i*sx+j]=outR[i*sx+j+1];
-
-  for (i=1;i<sy;i+=2)
-    for (j=0;j<sx-1;j+=2)
-      {
-	outR[i*sx+j]=outR[(i-1)*sx+j+1];
-	outR[i*sx+j+1]=outR[(i-1)*sx+j+1];
-      }
-      
-  // B channel
-  for (i=0;i<sy-1;i+=2)//every two lines
-    for (j=0;j<sx-1;j+=2)
-      {
-	outB[i*sx+j]=outB[(i+1)*sx+j];
-	outB[i*sx+j+1]=outB[(i+1)*sx+j];
-      }
-
-  for (i=1;i<sy;i+=2)
-    for (j=1;j<sx;j+=2)
-      outB[i*sx+j]=outB[i*sx+j-1];
-      
-
-  // using lower direction for G channel
-
-  // G channel
-  for (i=0;i<sy-1;i+=2)//every two lines
-    for (j=1;j<sx;j+=2)
-      outG[i*sx+j]=outG[(i+1)*sx+j];
-
-  for (i=1;i<sy-2;i+=2)//every two lines
-    for (j=0;j<sx-1;j+=2)
-      outG[i*sx+j]=outG[(i+1)*sx+j];
-
-  // copy it for the next line
-  for (j=0;j<sx-1;j+=2)
-    outG[(sy-1)*sx+j]=outG[(sx-2)*sx+j];
-}
-
-
-void
-BayerEdgeSensePlanar(unsigned char *src, unsigned char *dest, int sx, int sy)
-{
-  unsigned char *outR, *outG, *outB;
-  register int i,j;
-  int dh, dv;
-  int tmp;
-
-  // sx and sy should be even
-  // first pixel should be Green, second red:
-  // G R G R G R G R
-  // B G B G B G B G
-  // G R G R G R G R
-
-  outR=&dest[0];
-  outG=&dest[sx*sy];
-  outB=&dest[sx*sy*2];
-
-  // copy original RGB data to output images
-  for (i=0;i<sy;i+=2)
-    for (j=0;j<sx;j+=2)
-      {
-	outG[i*sx+j]=src[i*sx+j];
-	outG[(i+1)*sx+(j+1)]=src[(i+1)*sx+(j+1)];
-	outR[i*sx+j+1]=src[i*sx+j+1];
-	outB[(i+1)*sx+j]=src[(i+1)*sx+j];
-      }
-
-  // process GREEN channel
-  for (i=3;i<sy-2;i+=2)
-    for (j=2;j<sx-3;j+=2)
-      {
-	dh=abs((outB[i*sx+j-2]+outB[i*sx+j+2])/2-outB[i*sx+j]);
-	dv=abs((outB[(i-2)*sx+j]+outB[(i+2)*sx+j])/2-outB[i*sx+j]);
-	if (dh<dv)
-	  tmp=(outG[i*sx+j-1]+outG[i*sx+j+1])/2;
-	else
-	  if (dh>dv)
-	    tmp=(outG[(i-1)*sx+j]+outG[(i+1)*sx+j])/2;
-	  else
-	    tmp=(outG[i*sx+j-1]+outG[i*sx+j+1]+outG[(i-1)*sx+j]+outG[(i+1)*sx+j])/4;
-	CLIP(tmp,outG[i*sx+j]);
-      }
-
-  for (i=2;i<sy-3;i+=2)
-    for (j=3;j<sx-2;j+=2)
-      {
-	dh=abs((outR[i*sx+j-2]+outR[i*sx+j+2])/2-outR[i*sx+j]);
-	dv=abs((outR[(i-2)*sx+j]+outR[(i+2)*sx+j])/2-outR[i*sx+j]);
-	if (dh<dv)
-	  tmp=(outG[i*sx+j-1]+outG[i*sx+j+1])/2;
-	else
-	  if (dh>dv)
-	    tmp=(outG[(i-1)*sx+j]+outG[(i+1)*sx+j])/2;
-	  else
-	    tmp=(outG[i*sx+j-1]+outG[i*sx+j+1]+outG[(i-1)*sx+j]+outG[(i+1)*sx+j])/4;
-	CLIP(tmp,outG[i*sx+j]);
-      }
-
-  // process RED channel
-  for (i=0;i<sy-1;i+=2)
-    for (j=2;j<sx-1;j+=2)
-      {
-	tmp=outG[i*sx+j]+(outR[i*sx+j-1]-outG[i*sx+j-1]+
-			  outR[i*sx+j+1]-outG[i*sx+j+1])/2;
-	CLIP(tmp,outR[i*sx+j]);
-      }
-  for (i=1;i<sy-2;i+=2)
-    {
-      for (j=1;j<sx;j+=2)
-	{
-	  tmp=outG[i*sx+j]+(outR[(i-1)*sx+j]-outG[(i-1)*sx+j]+
-			    outR[(i+1)*sx+j]-outG[(i+1)*sx+j])/2;
-	  CLIP(tmp,outR[i*sx+j]);
-	}
-      for (j=2;j<sx-1;j+=2)
-	{
-	  tmp=outG[i*sx+j]+(outR[(i-1)*sx+j-1]-outG[(i-1)*sx+j-1]+
-			    outR[(i-1)*sx+j+1]-outG[(i-1)*sx+j+1]+
-			    outR[(i+1)*sx+j-1]-outG[(i+1)*sx+j-1]+
-			    outR[(i+1)*sx+j+1]-outG[(i+1)*sx+j+1])/4;
-	  CLIP(tmp,outR[i*sx+j]);
-	}
-    }
-
-  // process BLUE channel
-  for (i=1;i<sy;i+=2)
-    for (j=1;j<sx-2;j+=2)
-      {
-	tmp=outG[i*sx+j]+(outB[i*sx+j-1]-outG[i*sx+j-1]+
-			  outB[i*sx+j+1]-outG[i*sx+j+1])/2;
-	CLIP(tmp,outB[i*sx+j]);
-      }
-
-  for (i=2;i<sy-1;i+=2)
-    {
-      for (j=0;j<sx-1;j+=2)
-	{
-	  tmp=outG[i*sx+j]+(outB[(i-1)*sx+j]-outG[(i-1)*sx+j]+
-			    outB[(i+1)*sx+j]-outG[(i+1)*sx+j])/2;
-	  CLIP(tmp,outB[i*sx+j]);
-	}
-      for (j=1;j<sx-2;j+=2)
-	{
-	  tmp=outG[i*sx+j]+(outB[(i-1)*sx+j-1]-outG[(i-1)*sx+j-1]+
-			    outB[(i-1)*sx+j+1]-outG[(i-1)*sx+j+1]+
-			    outB[(i+1)*sx+j-1]-outG[(i+1)*sx+j-1]+
-			    outB[(i+1)*sx+j+1]-outG[(i+1)*sx+j+1])/4;
-	  CLIP(tmp,outB[i*sx+j]);
-	}
-    }
-
-}
-
-void
 BayerNearestNeighbor(unsigned char *src, unsigned char *dest, int sx, int sy, bayer_pattern_t type)
 {
   unsigned char *outR, *outG, *outB;
   register int i,j;
-  unsigned char *tmp;
 
   // sx and sy should be even
-  outR=&dest[0];
-  outG=&dest[1];
-  outB=&dest[2];
-
-  // swap R/B fields for some modes
-  if (type==BAYER_PATTERN_GBRG)
+  switch (type)
     {
-      tmp=outR;
-      outR=outB;
-      outB=tmp;
-      type=BAYER_PATTERN_GRBG;
-    }
-  if (type==BAYER_PATTERN_RGGB)
-    {
-      tmp=outR;
-      outR=outB;
-      outB=tmp;
-      type=BAYER_PATTERN_BGGR;
+    case BAYER_PATTERN_GRBG:
+    case BAYER_PATTERN_BGGR:
+      outR=&dest[0];
+      outG=&dest[1];
+      outB=&dest[2];
+      break;
+    case BAYER_PATTERN_GBRG:
+    case BAYER_PATTERN_RGGB:
+      outR=&dest[2];
+      outG=&dest[1];
+      outB=&dest[0];
+      break;
+    default:
+      outR=NULL;outG=NULL;outB=NULL;
+      break;
     }
 
   switch (type)
@@ -744,27 +561,25 @@ BayerEdgeSense(unsigned char *src, unsigned char *dest, int sx, int sy, bayer_pa
   register int i,j;
   int dh, dv;
   int tmp;
-  unsigned char *outT;
+
   // sx and sy should be even
-
-  outR=&dest[0];
-  outG=&dest[1];
-  outB=&dest[2];
-
-  // swap R/B fields for some modes
-  if (type==BAYER_PATTERN_GBRG)
+  switch (type)
     {
-      outT=outR;
-      outR=outB;
-      outB=outT;
-      type=BAYER_PATTERN_GRBG;
-    }
-  if (type==BAYER_PATTERN_RGGB)
-    {
-      outT=outR;
-      outR=outB;
-      outB=outT;
-      type=BAYER_PATTERN_BGGR;
+    case BAYER_PATTERN_GRBG:
+    case BAYER_PATTERN_BGGR:
+      outR=&dest[0];
+      outG=&dest[1];
+      outB=&dest[2];
+      break;
+    case BAYER_PATTERN_GBRG:
+    case BAYER_PATTERN_RGGB:
+      outR=&dest[2];
+      outG=&dest[1];
+      outB=&dest[0];
+      break;
+    default:
+      outR=NULL;outG=NULL;outB=NULL;
+      break;
     }
 
   switch (type)
@@ -970,30 +785,28 @@ void
 BayerDownsample(unsigned char *src, unsigned char *dest, int sx, int sy, bayer_pattern_t type)
 {
   unsigned char *outR, *outG, *outB;
-  int tmp;
-  unsigned char *outT;
   register int i,j;
+  int tmp;
 
   // sx and sy should be even
- 
-  outR=&dest[0];
-  outG=&dest[1];
-  outB=&dest[2];
 
-  // swap R/B fields for some modes
-  if (type==BAYER_PATTERN_GBRG)
+  switch (type)
     {
-      outT=outR;
-      outR=outB;
-      outB=outT;
-      type=BAYER_PATTERN_GRBG;
-    }
-  if (type==BAYER_PATTERN_RGGB)
-    {
-      outT=outR;
-      outR=outB;
-      outB=outT;
-      type=BAYER_PATTERN_BGGR;
+    case BAYER_PATTERN_GRBG:
+    case BAYER_PATTERN_BGGR:
+      outR=&dest[0];
+      outG=&dest[1];
+      outB=&dest[2];
+      break;
+    case BAYER_PATTERN_GBRG:
+    case BAYER_PATTERN_RGGB:
+      outR=&dest[2];
+      outG=&dest[1];
+      outB=&dest[0];
+      break;
+    default:
+      outR=NULL;outG=NULL;outB=NULL;
+      break;
     }
 
   switch (type)
