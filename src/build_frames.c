@@ -231,15 +231,44 @@ BuildPrefsFtpFrame(void)
 void
 BuildPrefsDisplayFrame(void)
 {
+  //GtkAdjustment* adj;
+  //chain_t* service;
   // frame drop
   gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(main_window,"prefs_display_period"), preferences.display_period);
 
+  // keep aspect ratio
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window,"prefs_display_keep_ratio")), preferences.display_keep_ratio);
 
   // display redraw
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window,"display_redraw")), preferences.display_redraw==DISPLAY_REDRAW_ON);
-
   gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(main_window,"display_redraw_rate"), preferences.display_redraw_rate);
+
+  /*
+
+  // display scaling
+  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(main_window,"prefs_display_scale"), preferences.display_scale);
+  
+  adj=gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON (lookup_widget(main_window, "prefs_display_scale")));
+
+  service=GetService(camera, SERVICE_DISPLAY);
+  if (service==NULL) {
+    adj->upper=10;
+    adj->lower=0;
+  }
+  else {
+    // do something smart here...
+    adj->upper=10;
+    adj->lower=0;
+  }
+  adj->step_increment=1;
+  adj->page_increment=1;
+  if (adj->value<adj->lower)
+    adj->value=adj->lower;
+  if (adj->value>adj->upper)
+    adj->value=adj->upper;
+  gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
+  
+  */
 }
 
 void

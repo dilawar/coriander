@@ -56,6 +56,7 @@ int silent_ui_update;
 camera_t* camera;
 camera_t* cameras;
 
+xvinfo_t xvinfo;
 BusInfo_t* businfo;
 
 unsigned int format7_tab_presence;
@@ -90,6 +91,9 @@ main (int argc, char *argv[])
   businfo->port_camera_num=NULL;
   businfo->camera_nodes=NULL;
   businfo->card_found=0;
+
+  GetXvInfo(&xvinfo);
+  //fprintf(stderr,"%d %d\n", xvinfo.max_height, xvinfo.max_width);
 
   GetCameraNodes(businfo);
 

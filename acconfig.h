@@ -16,3 +16,4 @@
 #undef MMX_SUPPORT
 #undef SSE_SUPPORT
 #undef SSE2_SUPPORT
+#undef HAVE_XV

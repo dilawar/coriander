@@ -31,6 +31,7 @@
 #include "thread_ftp.h"
 #include "thread_save.h"
 #include "thread_v4l.h"
+#include "definitions.h"
 
 #ifdef HAVE_GDK_PIXBUF
 #include <gdk/gdk.h>
@@ -38,16 +39,28 @@
 #include <gdk-pixbuf/gdk-pixbuf-loader.h>
 #endif
 
-/*
-typedef struct _whitebaldata
-{
-  int x;
-  int y;
-  chain_t *service;
-  pthread_t thread;
+#ifdef HAVE_XV
+// X11 includes for the simplified XVinfo
+#include <X11/Xlib.h>
+#include <X11/extensions/Xvlib.h>
+#include <ctype.h>
 
-} whitebal_data_t;
-*/
+#endif
+
+typedef struct _xvinfo
+{
+#ifdef HAVE_XV
+  Display *dpy;
+  XvAdaptorInfo *ainfo;
+  XvEncodingInfo *encodings;
+  XvImageFormatValues *formats;
+  unsigned int nencode, nadaptors;
+  int numImages;
+  int ImageEncodings;
+#endif
+  int max_height;
+  int max_width;
+} xvinfo_t;
 
 void
 GetFormat7Capabilities(camera_t* cam);
@@ -87,13 +100,7 @@ MessageBox(gchar *message);
 
 void
 SetScaleSensitivity(GtkWidget* widget, int feature, dc1394bool_t sense);
-/*
-void
-GetRGBPix(int px, int py, chain_t *service, int* R, int* G, int* B);
 
-void*
-AutoWhiteBalance(void* arg);
-*/
 void
 SetAbsoluteControl(int feature, int power);
 
@@ -123,6 +130,9 @@ NearestValue(int value, int step, int min, int max);
 
 void
 window_set_icon(GtkWidget* window);
+
+void
+GetXvInfo(xvinfo_t *xvinfo);
 
 #endif
 

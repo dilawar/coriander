@@ -30,6 +30,7 @@ typedef struct _PrefsInfo
   float auto_update_frequency;
   int display_keep_ratio;
   int display_period;
+  //int display_scale;
   int display_redraw;
   float display_redraw_rate;
   int receive_method;

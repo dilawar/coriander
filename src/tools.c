@@ -1063,138 +1063,88 @@ window_set_icon(GtkWidget* window) {
 
 }
 
+/* The following function is a strip-down version of the program 'xvinfo' of the XFree86 project. */
+void
+GetXvInfo(xvinfo_t *xvinfo) {
 
-/*
-void*
-AutoWhiteBalance(void* arg)
-{
-  whitebal_data_t *info;
-  int currentB=0, currentR=0;
-  int span,center;
-  int prevB, prevR;
-  int pixB, pixR;
-  int prevpixB, prevpixR;
-  float kB, kR, oB, oR;
-  unsigned char *prev_ptr;
-  int target;
-  int progressB=1, progressR=1;
-  int px, py;
-  chain_t *service;
+#ifdef HAVE_XV
 
-  info=(whitebal_data_t*)arg;
+  unsigned int ver, rev, eventB, reqB, errorB; 
+  int i, j, n; 
 
-  service=info->service;
-  px=info->x;
-  py=info->y;
+  if(!(xvinfo->dpy = XOpenDisplay(NULL))) {
+    MainError("Unable to open display");
+    return;
+  }
+  
+  if((Success != XvQueryExtension(xvinfo->dpy, &ver, &rev, &reqB, &eventB, &errorB))) {
+    MainError("xvinfo: No X-Video Extension");
+    return;
+  }
 
-  fprintf(stderr,"Entering Auto White Balance...\n");
+  i=0; // 0: we use only the first screen
+  XvQueryAdaptors(xvinfo->dpy, RootWindow(xvinfo->dpy, i), &xvinfo->nadaptors, &xvinfo->ainfo);
+  j=0; // 0: we use only the first adaptor
+  XvQueryEncodings(xvinfo->dpy, xvinfo->ainfo[j].base_id, &xvinfo->nencode, &xvinfo->encodings);
 
-  prevB=feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].BU_value;
-  prevR=feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].RV_value;
-
-  fprintf(stderr,"grabbing RGB...\n");
-
-  GetRGBPix(px, py, service, &prevpixR, &target, &prevpixB);
-
-  fprintf(stderr,"RGB initial value: %d %d %d\n",prevpixR, target, prevpixB);
-
-  span=(feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].max-
-	feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].min);
-  center=((feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].max-
-	   feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].min)/2+
-	  feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].min);
-
-  fprintf(stderr,"span: %d, center: %d\n",span,center);
-  fprintf(stderr,"current whitebal: %d %d\n",prevB, prevR);
-
-  // move 10%*range from current value towards center.
-  if (prevB>center)
-    currentB=prevB-span/10;
-  else
-    currentB=prevB+span/10;
-
-  if (prevR>center)
-    currentR=prevR-span/10;
-  else
-    currentR=prevR+span/10;
-  fprintf(stderr,"first whitebal shift: %d %d\n",currentB, currentR);
-
-  while (progressB||progressR)
-    {
-      fprintf(stderr,"Set whitebal to %d %d\n",currentB, currentR);
-      // get pixel 'color' value (R and B for RGB, U and V for YUV)
-      if (dc1394_set_white_balance(camera->handle,camera->id,currentB,currentR)!=DC1394_SUCCESS)
-	{
-	  MainError("Can't set whitebal parameters in auto white balance proc");
-	  return(0);
-	}
-
-      // wait for buffer pointer to change
-      prev_ptr=service->current_buffer;
-      //fprintf(stderr,"prev buffer: 0x%x\n",prev_ptr);
-      while (prev_ptr==service->current_buffer)
-	usleep(DELAY);// .05 sec
-      
-      // re-grab pixel value (and average with 3x3 mask??)
-      GetRGBPix(px,py,service, &pixR, &target, &pixB);
-      fprintf(stderr,"New RGB values: %d %d %d\n",pixR,target,pixB);
-     
-      // estimate linear law:
-      kB=(pixB-prevpixB)/(currentB-prevB);
-      kR=(pixR-prevpixR)/(currentR-prevR);
-      oB=pixB-kB*currentB;
-      oR=pixR-kR*currentR;
-      
-      // memorize data as old
-      prevpixB=pixB;
-      prevpixR=pixR;
-      prevB=currentB;
-      prevR=currentR;
-
-      // make an prediction:
-      currentB=(target-oB)/kB;
-      currentR=(target-oR)/kR;
-
-      // clamp values in range limit:
-      if (currentB>feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].max)
-	currentB=feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].max;
-      if (currentB<feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].min)
-	currentB=feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].min;
-      if (currentR>feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].max)
-	currentR=feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].max;
-      if (currentR<feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].min)
-	currentR=feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].min;
-
-      // update condition
-      progressB=(abs(pixB-target)<abs(prevpixB-target));
-      progressR=(abs(pixR-target)<abs(prevpixR-target));
+  if(xvinfo->encodings && xvinfo->nencode) {
+    xvinfo->ImageEncodings = 0;
+    
+    for(n = 0; n < xvinfo->nencode; n++) {
+      if(!strcmp(xvinfo->encodings[n].name, "XV_IMAGE"))
+	xvinfo->ImageEncodings++;
     }
 
-  fprintf(stderr,"Leaving Auto White Balance\n");
+    if(xvinfo->ImageEncodings && (xvinfo->ainfo[j].type & XvImageMask)) {
+      //char imageName[5] = {0, 0, 0, 0, 0};
+      
+      for(n = 0; n < xvinfo->nencode; n++) {
+	if(!strcmp(xvinfo->encodings[n].name, "XV_IMAGE")) {
+	  //fprintf(stdout, "maximum XvImage size: %li x %li\n", xvinfo->encodings[n].width, xvinfo->encodings[n].height);
+	  xvinfo->max_height=(int)xvinfo->encodings[n].height;
+	  xvinfo->max_width=(int)xvinfo->encodings[n].width;
+	  break;
+	}
+      }
+      /*
+      formats = XvListImageFormats(dpy, ainfo[j].base_id, &numImages);   
+      fprintf(stdout, "    Number of image formats: %i\n", numImages);
 
-  return(0);
+      for(n = 0; n < numImages; n++) {
+	memcpy(imageName, &(formats[n].id), 4);
+	fprintf(stdout, "      id: 0x%x", formats[n].id);
+	if(isprint(imageName[0]) && isprint(imageName[1]) && isprint(imageName[2]) && isprint(imageName[3])) {
+	  fprintf(stdout, " (%s)\n", imageName);
+	} else {
+	  fprintf(stdout, "\n");
+	}
+	fprintf(stdout, "        bits per pixel: %i\n", formats[n].bits_per_pixel);
+	fprintf(stdout, "        number of planes: %i\n", formats[n].num_planes);
+	fprintf(stdout, "        type: %s (%s)\n",
+		(formats[n].type == XvRGB) ? "RGB" : "YUV",
+		(formats[n].format == XvPacked) ? "packed" : "planar");
+	if(formats[n].type == XvRGB) {
+	  fprintf(stdout, "        depth: %i\n", formats[n].depth);
+	  fprintf(stdout, "        red, green, blue masks: 0x%x, 0x%x, 0x%x\n", 
+		  formats[n].red_mask,
+		  formats[n].green_mask,
+		  formats[n].blue_mask);
+	} 
+      }
+      if(formats) XFree(formats);
+      */
+    }
+      
+    XvFreeEncodingInfo(xvinfo->encodings);
+  }
+
+  XvFreeAdaptorInfo(xvinfo->ainfo);
+
+#else
+  xvinfo->max_height=-1;
+  xvinfo->max_width=-1;
+#endif
+
+  //fprintf(stderr,"%d %d\n", xvinfo->max_height, xvinfo->max_width);
 }
 
-
-void
-GetRGBPix(int px, int py, chain_t *service, int* R, int* G, int* B)
-{
-  int u, y, v;
-  displaythread_info_t *info=NULL;
-  info=(displaythread_info_t*)service->data;
-
-  //pthread_mutex_lock(&service->mutex_struct);
-  //pthread_mutex_lock(&service->mutex_data);
-
-  // we work in display thread, therefor the format is always YUYV
-  y=0;//info->SDL_overlay->pixels[0][(py*service->width+px)*2];
-  u=0;//info->SDL_overlay->pixels[0][(((py*service->width+px)>>1)<<2)+1]-127;
-  v=0;//info->SDL_overlay->pixels[0][(((py*service->width+px)>>1)<<2)+3]-127;
-
-  //pthread_mutex_unlock(&service->mutex_data);
-  //pthread_mutex_unlock(&service->mutex_struct);
-
-  YUV2RGB(y,u,v,*R,*G,*B);
-  fprintf(stderr,"YUV: %d %d %d RGB: %d %d %d\n",y,u,v,*R,*G,*B);
-}
-*/

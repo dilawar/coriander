@@ -410,8 +410,6 @@ void
 on_dma_buffer_size_changed             (GtkEditable     *editable,
                                         gpointer         user_data);
 
-#endif
-
 void
 on_display_redraw_toggled              (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
@@ -419,3 +417,10 @@ on_display_redraw_toggled              (GtkToggleButton *togglebutton,
 void
 on_display_redraw_rate_changed         (GtkEditable     *editable,
                                         gpointer         user_data);
+/*
+void
+on_prefs_display_scale_changed         (GtkEditable     *editable,
+                                        gpointer         user_data);
+*/
+
+#endif

@@ -20,7 +20,7 @@
     <handler>on_main_window_delete_event</handler>
     <last_modification_time>Wed, 28 May 2003 13:01:45 GMT</last_modification_time>
   </signal>
-  <title>Coriander 0.99.9</title>
+  <title>Coriander 1.0.0-pre1</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_NONE</position>
   <modal>False</modal>
@@ -1572,35 +1572,6 @@
 		  </widget>
 
 		  <widget>
-		    <class>GtkEntry</class>
-		    <name>prefs_video1394_device</name>
-		    <can_focus>True</can_focus>
-		    <signal>
-		      <name>changed</name>
-		      <handler>on_prefs_video1394_device_changed</handler>
-		      <last_modification_time>Fri, 05 Jul 2002 10:02:23 GMT</last_modification_time>
-		    </signal>
-		    <editable>True</editable>
-		    <text_visible>True</text_visible>
-		    <text_max_length>0</text_max_length>
-		    <text></text>
-		    <child>
-		      <left_attach>2</left_attach>
-		      <right_attach>3</right_attach>
-		      <top_attach>0</top_attach>
-		      <bottom_attach>1</bottom_attach>
-		      <xpad>0</xpad>
-		      <ypad>0</ypad>
-		      <xexpand>True</xexpand>
-		      <yexpand>False</yexpand>
-		      <xshrink>False</xshrink>
-		      <yshrink>False</yshrink>
-		      <xfill>True</xfill>
-		      <yfill>False</yfill>
-		    </child>
-		  </widget>
-
-		  <widget>
 		    <class>GtkHBox</class>
 		    <name>hbox68</name>
 		    <homogeneous>False</homogeneous>
@@ -1704,6 +1675,35 @@
 		      <xpad>0</xpad>
 		      <ypad>0</ypad>
 		      <xexpand>False</xexpand>
+		      <yexpand>False</yexpand>
+		      <xshrink>False</xshrink>
+		      <yshrink>False</yshrink>
+		      <xfill>True</xfill>
+		      <yfill>False</yfill>
+		    </child>
+		  </widget>
+
+		  <widget>
+		    <class>GtkEntry</class>
+		    <name>prefs_video1394_device</name>
+		    <can_focus>True</can_focus>
+		    <signal>
+		      <name>changed</name>
+		      <handler>on_prefs_video1394_device_changed</handler>
+		      <last_modification_time>Fri, 05 Jul 2002 10:02:23 GMT</last_modification_time>
+		    </signal>
+		    <editable>True</editable>
+		    <text_visible>True</text_visible>
+		    <text_max_length>0</text_max_length>
+		    <text></text>
+		    <child>
+		      <left_attach>2</left_attach>
+		      <right_attach>3</right_attach>
+		      <top_attach>0</top_attach>
+		      <bottom_attach>1</bottom_attach>
+		      <xpad>2</xpad>
+		      <ypad>0</ypad>
+		      <xexpand>True</xexpand>
 		      <yexpand>False</yexpand>
 		      <xshrink>False</xshrink>
 		      <yshrink>False</yshrink>
@@ -2284,7 +2284,7 @@ St. Field
 		    <xalign>0.5</xalign>
 		    <yalign>0.5</yalign>
 		    <xpad>5</xpad>
-		    <ypad>0</ypad>
+		    <ypad>8</ypad>
 		    <child>
 		      <padding>0</padding>
 		      <expand>False</expand>
@@ -2456,6 +2456,10 @@ St. Field
 		  </widget>
 		</widget>
 	      </widget>
+
+	      <widget>
+		<class>Placeholder</class>
+	      </widget>
 	    </widget>
 
 	    <widget>
@@ -2565,7 +2569,7 @@ St. Field
 		    <xalign>0.5</xalign>
 		    <yalign>0.5</yalign>
 		    <xpad>5</xpad>
-		    <ypad>0</ypad>
+		    <ypad>8</ypad>
 		    <child>
 		      <padding>0</padding>
 		      <expand>False</expand>
@@ -3309,36 +3313,6 @@ St. Field
 
 		  <widget>
 		    <class>GtkEntry</class>
-		    <name>prefs_ftp_address</name>
-		    <height>22</height>
-		    <can_focus>True</can_focus>
-		    <signal>
-		      <name>changed</name>
-		      <handler>on_prefs_ftp_address_changed</handler>
-		      <last_modification_time>Fri, 05 Jul 2002 10:03:19 GMT</last_modification_time>
-		    </signal>
-		    <editable>True</editable>
-		    <text_visible>True</text_visible>
-		    <text_max_length>0</text_max_length>
-		    <text></text>
-		    <child>
-		      <left_attach>1</left_attach>
-		      <right_attach>2</right_attach>
-		      <top_attach>0</top_attach>
-		      <bottom_attach>1</bottom_attach>
-		      <xpad>0</xpad>
-		      <ypad>1</ypad>
-		      <xexpand>True</xexpand>
-		      <yexpand>False</yexpand>
-		      <xshrink>False</xshrink>
-		      <yshrink>False</yshrink>
-		      <xfill>True</xfill>
-		      <yfill>False</yfill>
-		    </child>
-		  </widget>
-
-		  <widget>
-		    <class>GtkEntry</class>
 		    <name>prefs_ftp_path</name>
 		    <height>22</height>
 		    <can_focus>True</can_focus>
@@ -3455,6 +3429,36 @@ St. Field
 
 		  <widget>
 		    <class>GtkEntry</class>
+		    <name>prefs_ftp_address</name>
+		    <height>22</height>
+		    <can_focus>True</can_focus>
+		    <signal>
+		      <name>changed</name>
+		      <handler>on_prefs_ftp_address_changed</handler>
+		      <last_modification_time>Fri, 05 Jul 2002 10:03:19 GMT</last_modification_time>
+		    </signal>
+		    <editable>True</editable>
+		    <text_visible>True</text_visible>
+		    <text_max_length>0</text_max_length>
+		    <text></text>
+		    <child>
+		      <left_attach>1</left_attach>
+		      <right_attach>2</right_attach>
+		      <top_attach>0</top_attach>
+		      <bottom_attach>1</bottom_attach>
+		      <xpad>0</xpad>
+		      <ypad>1</ypad>
+		      <xexpand>True</xexpand>
+		      <yexpand>False</yexpand>
+		      <xshrink>False</xshrink>
+		      <yshrink>False</yshrink>
+		      <xfill>True</xfill>
+		      <yfill>False</yfill>
+		    </child>
+		  </widget>
+
+		  <widget>
+		    <class>GtkEntry</class>
 		    <name>prefs_ftp_filename</name>
 		    <can_focus>True</can_focus>
 		    <signal>
@@ -3472,7 +3476,7 @@ St. Field
 		      <top_attach>4</top_attach>
 		      <bottom_attach>5</bottom_attach>
 		      <xpad>0</xpad>
-		      <ypad>0</ypad>
+		      <ypad>1</ypad>
 		      <xexpand>True</xexpand>
 		      <yexpand>False</yexpand>
 		      <xshrink>False</xshrink>

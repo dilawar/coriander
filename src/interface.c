@@ -139,13 +139,13 @@ create_main_window (void)
   GtkWidget *label84;
   GtkWidget *prefs_receive_method_menu;
   GtkWidget *prefs_receive_method_menu_menu;
-  GtkWidget *prefs_video1394_device;
   GtkWidget *hbox68;
   GtkWidget *label153;
   GtkObject *dma_buffer_size_adj;
   GtkWidget *dma_buffer_size;
   GtkWidget *label154;
   GtkWidget *prefs_receive_dropframes;
+  GtkWidget *prefs_video1394_device;
   GtkWidget *hbox59;
   GtkWidget *iso_frame;
   GtkWidget *table62;
@@ -245,11 +245,11 @@ create_main_window (void)
   GtkWidget *label_ftp_path;
   GtkWidget *label_ftp_user;
   GtkWidget *label_ftp_passwd;
-  GtkWidget *prefs_ftp_address;
   GtkWidget *prefs_ftp_path;
   GtkWidget *prefs_ftp_user;
   GtkWidget *prefs_ftp_password;
   GtkWidget *label54;
+  GtkWidget *prefs_ftp_address;
   GtkWidget *prefs_ftp_filename;
   GtkWidget *prefs_ftp_framedrop_frame;
   GtkWidget *hbox52;
@@ -368,7 +368,7 @@ create_main_window (void)
 
   main_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_object_set_data (GTK_OBJECT (main_window), "main_window", main_window);
-  gtk_window_set_title (GTK_WINDOW (main_window), _("Coriander 0.99.9"));
+  gtk_window_set_title (GTK_WINDOW (main_window), _("Coriander 1.0.0-pre1"));
   gtk_window_set_policy (GTK_WINDOW (main_window), FALSE, TRUE, TRUE);
 
   vbox26 = gtk_vbox_new (FALSE, 0);
@@ -1104,15 +1104,6 @@ create_main_window (void)
   gtk_menu_append (GTK_MENU (prefs_receive_method_menu_menu), glade_menuitem);
   gtk_option_menu_set_menu (GTK_OPTION_MENU (prefs_receive_method_menu), prefs_receive_method_menu_menu);
 
-  prefs_video1394_device = gtk_entry_new ();
-  gtk_widget_ref (prefs_video1394_device);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "prefs_video1394_device", prefs_video1394_device,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (prefs_video1394_device);
-  gtk_table_attach (GTK_TABLE (table45), prefs_video1394_device, 2, 3, 0, 1,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-
   hbox68 = gtk_hbox_new (FALSE, 0);
   gtk_widget_ref (hbox68);
   gtk_object_set_data_full (GTK_OBJECT (main_window), "hbox68", hbox68,
@@ -1156,6 +1147,15 @@ create_main_window (void)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_tooltips_set_tip (tooltips, prefs_receive_dropframes, _("Enable this to reduce delay"), NULL);
+
+  prefs_video1394_device = gtk_entry_new ();
+  gtk_widget_ref (prefs_video1394_device);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "prefs_video1394_device", prefs_video1394_device,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (prefs_video1394_device);
+  gtk_table_attach (GTK_TABLE (table45), prefs_video1394_device, 2, 3, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 2, 0);
 
   hbox59 = gtk_hbox_new (TRUE, 0);
   gtk_widget_ref (hbox59);
@@ -1450,7 +1450,7 @@ create_main_window (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label77);
   gtk_box_pack_start (GTK_BOX (hbox55), label77, FALSE, FALSE, 0);
-  gtk_misc_set_padding (GTK_MISC (label77), 5, 0);
+  gtk_misc_set_padding (GTK_MISC (label77), 5, 8);
 
   prefs_display_period_adj = gtk_adjustment_new (1, 1, 9999, 1, 10, 10);
   prefs_display_period = gtk_spin_button_new (GTK_ADJUSTMENT (prefs_display_period_adj), 1, 0);
@@ -1589,7 +1589,7 @@ create_main_window (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label76);
   gtk_box_pack_start (GTK_BOX (hbox_capture_freq_periodic), label76, FALSE, FALSE, 0);
-  gtk_misc_set_padding (GTK_MISC (label76), 5, 0);
+  gtk_misc_set_padding (GTK_MISC (label76), 5, 8);
 
   prefs_save_period_adj = gtk_adjustment_new (1, 1, 9999, 1, 10, 10);
   prefs_save_period = gtk_spin_button_new (GTK_ADJUSTMENT (prefs_save_period_adj), 1, 0);
@@ -1933,16 +1933,6 @@ create_main_window (void)
   gtk_misc_set_alignment (GTK_MISC (label_ftp_passwd), 1, 0.5);
   gtk_misc_set_padding (GTK_MISC (label_ftp_passwd), 2, 0);
 
-  prefs_ftp_address = gtk_entry_new ();
-  gtk_widget_ref (prefs_ftp_address);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "prefs_ftp_address", prefs_ftp_address,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (prefs_ftp_address);
-  gtk_table_attach (GTK_TABLE (table_capture_ftp), prefs_ftp_address, 1, 2, 0, 1,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 1);
-  gtk_widget_set_usize (prefs_ftp_address, -2, 22);
-
   prefs_ftp_path = gtk_entry_new ();
   gtk_widget_ref (prefs_ftp_path);
   gtk_object_set_data_full (GTK_OBJECT (main_window), "prefs_ftp_path", prefs_ftp_path,
@@ -1984,6 +1974,16 @@ create_main_window (void)
                     (GtkAttachOptions) (0), 0, 0);
   gtk_label_set_justify (GTK_LABEL (label54), GTK_JUSTIFY_RIGHT);
 
+  prefs_ftp_address = gtk_entry_new ();
+  gtk_widget_ref (prefs_ftp_address);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "prefs_ftp_address", prefs_ftp_address,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (prefs_ftp_address);
+  gtk_table_attach (GTK_TABLE (table_capture_ftp), prefs_ftp_address, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 1);
+  gtk_widget_set_usize (prefs_ftp_address, -2, 22);
+
   prefs_ftp_filename = gtk_entry_new ();
   gtk_widget_ref (prefs_ftp_filename);
   gtk_object_set_data_full (GTK_OBJECT (main_window), "prefs_ftp_filename", prefs_ftp_filename,
@@ -1991,7 +1991,7 @@ create_main_window (void)
   gtk_widget_show (prefs_ftp_filename);
   gtk_table_attach (GTK_TABLE (table_capture_ftp), prefs_ftp_filename, 1, 2, 4, 5,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
+                    (GtkAttachOptions) (0), 0, 1);
 
   prefs_ftp_framedrop_frame = gtk_frame_new (_("Frame drop"));
   gtk_widget_ref (prefs_ftp_framedrop_frame);
@@ -2981,14 +2981,14 @@ create_main_window (void)
   gtk_signal_connect (GTK_OBJECT (service_v4l), "toggled",
                       GTK_SIGNAL_FUNC (on_service_v4l_toggled),
                       NULL);
-  gtk_signal_connect (GTK_OBJECT (prefs_video1394_device), "changed",
-                      GTK_SIGNAL_FUNC (on_prefs_video1394_device_changed),
-                      NULL);
   gtk_signal_connect (GTK_OBJECT (dma_buffer_size), "changed",
                       GTK_SIGNAL_FUNC (on_dma_buffer_size_changed),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (prefs_receive_dropframes), "toggled",
                       GTK_SIGNAL_FUNC (on_prefs_receive_drop_frames_toggled),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (prefs_video1394_device), "changed",
+                      GTK_SIGNAL_FUNC (on_prefs_video1394_device_changed),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (iso_stop), "clicked",
                       GTK_SIGNAL_FUNC (on_iso_stop_clicked),
@@ -3068,9 +3068,6 @@ create_main_window (void)
   gtk_signal_connect (GTK_OBJECT (prefs_v4l_dev_name), "changed",
                       GTK_SIGNAL_FUNC (on_prefs_v4l_dev_name_changed),
                       NULL);
-  gtk_signal_connect (GTK_OBJECT (prefs_ftp_address), "changed",
-                      GTK_SIGNAL_FUNC (on_prefs_ftp_address_changed),
-                      NULL);
   gtk_signal_connect (GTK_OBJECT (prefs_ftp_path), "changed",
                       GTK_SIGNAL_FUNC (on_prefs_ftp_path_changed),
                       NULL);
@@ -3079,6 +3076,9 @@ create_main_window (void)
                       NULL);
   gtk_signal_connect (GTK_OBJECT (prefs_ftp_password), "changed",
                       GTK_SIGNAL_FUNC (on_prefs_ftp_password_changed),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (prefs_ftp_address), "changed",
+                      GTK_SIGNAL_FUNC (on_prefs_ftp_address_changed),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (prefs_ftp_filename), "changed",
                       GTK_SIGNAL_FUNC (on_prefs_ftp_filename_changed),

@@ -1,7 +1,13 @@
 Coriander, (c) 2000-2004 Damien Douxchamps <ddouxchamps@users.sf.net>
 
-Changes towards version 1.0.0
+Changes in version 1.0.0-pre1
 	
+   January 31, 2004, by Damien Douxchamps
+   - added an X check for the maximum overlay size.
+
+   January 30, 2004, by Damien Douxchamps
+   - removed debug message
+
    January 28, 2004, by Damien Douxchamps
    - defined DELAY as 50ms delay and make it standard for almost
      all the pauses we use.

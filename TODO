@@ -1,6 +1,6 @@
 _______________________________________________________________________________
 
-	              Open issues for Coriander 0.99.9 ...
+	              Open issues for Coriander 1.0.0-pre1 ...
 	          Damien Douxchamps <ddouxchamps@users.sf.net>
 _______________________________________________________________________________
 
@@ -13,21 +13,17 @@ _______________________________________________________________________________
 - video:
     	- add a button somewhere to quickly capture an image and save it to
 	  disk (this was previously called "capture single").
+	- use available XV color modes to avoid conversions
+	- allow downsampling for every service
 
 - refresh/update:
 	- regularly update ranges in auto-mode
 
-- multi-camera:
-	- control-lock function for stereo cameras
-
-- features:
-	- add FORMAT_6 capabilities
-	- add auto-lock, man-lock and current-setup-lock function
-
 - misc stuff:
-	- add some artwork in the buttons for clearer presentation
 	- add autofocus, autowhitebalance and autoexposure (autocontrast)
 	  in software
+
+-services:
 	- add an SHM service
 	- update the V4L service
 

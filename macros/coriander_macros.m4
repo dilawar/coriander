@@ -17,7 +17,7 @@ AC_DEFUN([AC_CHECK_LIBDC],[
  	if test x$libdc1394 = xno; then
           AC_ERROR([libdc1394 is not installed.  
 **************************************************************************
-**   Please install libdc1394 version > 0.9.2                           **
+**   Please install libdc1394 version >= 0.9.3                          **
 **   Source tarball and CVS at:  http://www.sf.net/projects/libdc1394   **
 **************************************************************************])
  	fi
@@ -26,14 +26,14 @@ AC_DEFUN([AC_CHECK_LIBDC],[
 AC_DEFUN([AC_CHECK_LIBDC_VERSION],[
 	AC_SUBST(LIBDC_CFLAGS)
 	AC_SUBST(LIBDC_LIBS)
- 	AC_CHECK_LIB(dc1394_control,dc1394_get_camera_port,libdc1394=ok,libdc1394=old,-lraw1394)
+ 	AC_CHECK_LIB(dc1394_control,GetCameraControlRegister,libdc1394=ok,libdc1394=old,-lraw1394)
  	if test x$libdc1394 = xok; then
            LIBDC_LIBS="-ldc1394_control"
            LIBDC_CFLAGS=""
 	else
           AC_ERROR([libdc1394 is too old. 
 **************************************************************************
-**   Please upgrade to the current CVS or to a version > 0.9.2          **
+**   Please upgrade to the current CVS or to a version >= 0.9.2         **
 **   Source tarball and CVS at:  http://www.sf.net/projects/libdc1394   **
 **************************************************************************])
  	fi
@@ -195,4 +195,27 @@ AC_DEFUN([AC_CHECK_GDK_PIXBUF],[
 	else
 	  AC_MSG_RESULT([GDK-pixbuf is required for WM icons.])
 	fi
+])
+
+AC_DEFUN([AC_CHECK_XV],[
+	AC_SUBST(XV_CFLAGS)
+	AC_SUBST(XV_LIBS)
+	AC_MSG_CHECKING(for Xv extension)
+	AC_TRY_COMPILE([
+	#include <X11/Xlib.h>
+ 	#include <X11/extensions/Xvlib.h>],[
+	int main(void) { (void) XvGetPortAttribute(0, 0, 0, 0); return 0; }
+	],xv=ok,xv=no);
+	AC_MSG_RESULT($xv)
+ 	if test x$xv = xok; then
+           XV_LIBS="-lXv"
+           XV_CFLAGS=""
+	   AC_DEFINE(HAVE_XV)
+	else
+          AC_ERROR([The XV overlay libraries were not found 
+**************************************************************************
+**   Please correct your X11 installation. Run 'xvinfo' to check if     **
+**   your system has overlay capabilities.                              **
+**************************************************************************])
+ 	fi
 ])

@@ -739,7 +739,24 @@ on_prefs_display_period_changed        (GtkEditable     *editable,
     info->period=preferences.display_period;
   }
 }
-
+/*
+void
+on_prefs_display_scale_changed         (GtkEditable     *editable,
+                                        gpointer         user_data)
+{
+  displaythread_info_t* info;
+  chain_t* service;
+  preferences.display_scale=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(main_window,"prefs_display_scale")));
+  gnome_config_set_int("coriander/display/scale",preferences.display_scale);
+  gnome_config_sync();
+  service=GetService(camera,SERVICE_DISPLAY);
+  if (service!=NULL) {
+    info=service->data;
+    info->scale_previous=info->scale;
+    info->scale=preferences.display_scale;
+  }
+}
+*/
 void
 on_prefs_save_period_changed           (GtkEditable     *editable,
                                         gpointer         user_data)
@@ -1368,4 +1385,5 @@ on_display_redraw_rate_changed         (GtkEditable     *editable,
   gnome_config_sync();
   UpdatePrefsDisplayFrame();
 }
+
 

@@ -22,6 +22,7 @@ extern PrefsInfo preferences;
 extern GtkWidget *main_window;
 extern CtxtInfo_t ctxt;
 extern camera_t* camera;
+extern xvinfo_t xvinfo;
 
 #ifdef HAVE_SDLLIB
 extern watchthread_info_t watchthread_info;
@@ -167,17 +168,17 @@ DisplayThread(void* arg)
 #ifdef HAVE_SDLLIB
 	    if (SDL_LockYUVOverlay(info->sdloverlay) == 0) {
 	      convert_to_yuv_for_SDL(display_service->current_buffer, info->sdloverlay->pixels[0]);
-
+	      
 	      SDLDisplayArea(display_service);
-
+	      
 	      SDL_UnlockYUVOverlay(info->sdloverlay);
 	      SDL_DisplayYUVOverlay(info->sdloverlay, &info->sdlvideorect);
-
+	      
 	      info->redraw_prev_time=times(&info->redraw_tms_buf);
 	    }
 #endif
-	  display_service->fps_frames++;
-	  display_service->processed_frames++;
+	    display_service->fps_frames++;
+	    display_service->processed_frames++;
 	  }
 	  else { //
 	    if (preferences.display_redraw==DISPLAY_REDRAW_ON) {
@@ -188,7 +189,6 @@ DisplayThread(void* arg)
 	  // FPS display:
 	  display_service->current_time=times(&display_service->tms_buf);
 	}
-	
 	pthread_mutex_unlock(&display_service->mutex_data);
       }
       else { //
@@ -220,7 +220,7 @@ ConditionalTimeoutRedraw(chain_t* service)
     if (interval>(1.0/preferences.display_redraw_rate)) { // redraw e.g. 4 times per second
 #ifdef HAVE_SDLLIB
       if (SDL_LockYUVOverlay(info->sdloverlay) == 0) {
-	MainStatus("Conditional display redraw");
+	//MainStatus("Conditional display redraw");
 	convert_to_yuv_for_SDL(service->current_buffer, info->sdloverlay->pixels[0]);
 	SDLDisplayArea(service);
 	SDL_UnlockYUVOverlay(info->sdloverlay);
@@ -284,47 +284,55 @@ SDLInit(chain_t *display_service)
 
   // Initialize the SDL library (video subsystem)
   if ( SDL_Init(SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE) == -1) {
-    MainError("Couldn't initialize SDL video subsystem");
+    fprintf(stderr,"Couldn't initialize SDL video subsystem\n");
     return(0);
   }
   
   sdl_videoinfo = SDL_GetVideoInfo();
-
-  if (sdl_videoinfo->hw_available) {
-    //fprintf(stderr,"Using HW surface\n");
-    info->sdlflags|= SDL_HWSURFACE;
-    info->sdlflags|= SDL_HWACCEL;
-    info->sdlflags&= ~SDL_SWSURFACE;
+  
+  if ((xvinfo.max_width!=-1)&&(xvinfo.max_height!=-1)) {
+    // if the XV area is too small, we use software accelleration
+    if ((xvinfo.max_width<display_service->current_buffer->width)||
+	(xvinfo.max_height<display_service->current_buffer->height)) {
+      //fprintf(stderr,"Using SW surface\n");
+      info->sdlflags|= SDL_SWSURFACE;
+      info->sdlflags&= ~SDL_HWSURFACE;
+      info->sdlflags&= ~SDL_HWACCEL;
+    }
+    else {
+      //fprintf(stderr,"Using HW surface\n");
+      info->sdlflags|= SDL_HWSURFACE;
+      info->sdlflags|= SDL_HWACCEL;
+      info->sdlflags&= ~SDL_SWSURFACE;
+    }
   }
   else {
-    //fprintf(stderr,"Using SW surface\n");
+    // try HW accel and pray...
     info->sdlflags|= SDL_SWSURFACE;
     info->sdlflags&= ~SDL_HWSURFACE;
     info->sdlflags&= ~SDL_HWACCEL;
   }
 
-  // force the system to try hardware accel
-  info->sdlflags|= SDL_HWSURFACE;
-  info->sdlflags|= SDL_HWACCEL;
-
   modes=SDL_ListModes(NULL,info->sdlflags);
   if (modes!=(SDL_Rect**)-1) {
     // not all resolutions are OK for this video card. For safety we switch to software accel
-    MainError("No SDL mode available with hardware accel. Trying without HWSURFACE");
+    fprintf(stderr,"No SDL mode available with hardware accel. Trying without HWSURFACE\n");
     info->sdlflags&= ~SDL_HWSURFACE;
     info->sdlflags&= ~SDL_HWACCEL;
     modes=SDL_ListModes(NULL,info->sdlflags);
     if (modes!=(SDL_Rect**)-1) {
-      MainError("Still no modes available. Can't start SDL!");
+      fprintf(stderr,"Still no modes available. Can't start SDL!\n");
       SDL_Quit();
       return(0);
     }
   }
+
   /*
   // set coriander icon
   icon_surface=SDL_CreateRGBSurfaceFrom((void*)coriander_logo_xpm)
   SDL_WM_SetIcon(icon_surface,NULL);
   */
+
   // Set requested video mode
   info->sdlbpp=SDL_VideoModeOK(display_service->current_buffer->width, display_service->current_buffer->height, 
 			       info->sdlbpp, info->sdlflags);
@@ -475,7 +483,9 @@ DisplayThreadCheckParams(chain_t *display_service)
   display_service->local_param_copy.bpp=display_service->current_buffer->bpp;
   display_service->local_param_copy.bayer_pattern=display_service->current_buffer->bayer_pattern;
   if (display_service->current_buffer->width==-1)
-    fprintf(stderr,"Error: display size: %dx%d\n",display_service->current_buffer->width,display_service->current_buffer->height);
+    fprintf(stderr,"Error: display size: %dx%d\n",
+	    display_service->current_buffer->width,
+	    display_service->current_buffer->height);
 
   // if some parameters changed, we need to re-allocate the local buffers and restart the display
   if ((display_service->current_buffer->width!=display_service->local_param_copy.width)||
@@ -491,20 +501,10 @@ DisplayThreadCheckParams(chain_t *display_service)
       (display_service->current_buffer->stereo_decoding!=display_service->local_param_copy.stereo_decoding)||
       (display_service->current_buffer->bayer!=display_service->local_param_copy.bayer)
       ) {
-    if ((display_service->local_param_copy.width==-1)&&(display_service->current_buffer->width!=-1)) {
-      first_time=1;
-    }
-    else {
-      first_time=0;
-    }
-    
-    if ((display_service->current_buffer->width!=display_service->local_param_copy.width)||
-	(display_service->current_buffer->height!=display_service->local_param_copy.height)) {
-      size_change=1;
-    }
-    else {
-      size_change=0;
-    }
+
+    first_time=((display_service->local_param_copy.width==-1)&&(display_service->current_buffer->width!=-1));
+    size_change=((display_service->current_buffer->width!=display_service->local_param_copy.width)||
+		 (display_service->current_buffer->height!=display_service->local_param_copy.height));
     
     // copy all new parameters:
     display_service->local_param_copy.width=display_service->current_buffer->width;
@@ -524,8 +524,10 @@ DisplayThreadCheckParams(chain_t *display_service)
 	SDLQuit(display_service);
       }
       SDLInit(display_service);
+	
     }
   }
+
 }
 
 
