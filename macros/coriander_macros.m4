@@ -68,7 +68,7 @@ AC_DEFUN([AC_CHECK_LIBDC_VERSION],[
 
 **************************************************************************
 **   libdc1394 is too old.                                              **
-**   Please update to the current CVS                                   **
+**   Please update to the current CVS or to a version > 0.9.1           **
 **   Source tarball and CVS at:  http://www.sf.net/projects/libdc1394   **
 **************************************************************************)
  	fi

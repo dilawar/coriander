@@ -351,7 +351,7 @@ create_main_window (void)
 
   main_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_object_set_data (GTK_OBJECT (main_window), "main_window", main_window);
-  gtk_window_set_title (GTK_WINDOW (main_window), _("Coriander 0.99.4"));
+  gtk_window_set_title (GTK_WINDOW (main_window), _("Coriander 0.99.5"));
   gtk_window_set_policy (GTK_WINDOW (main_window), FALSE, TRUE, TRUE);
 
   vbox26 = gtk_vbox_new (FALSE, 0);

@@ -1,4 +1,4 @@
-Known bugs for version 0.99.4:
+Known bugs for version 0.99.5:
 
 - If you want to use coriander remotely, i.e. run coriander on
   a remote machine with a display export, the BPP settings of
@@ -6,4 +6,4 @@ Known bugs for version 0.99.4:
 - it seems that the trigger mode menu still makes some problems.
 - F7 seems to have some troubles during capture: changing mode
   format even only once disable any further capture until the
-  camera is rebooted.
+  camera is rebooted. This happens only with some cameras.

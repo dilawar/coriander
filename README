@@ -2,14 +2,14 @@
 
   		       C   O   R   I   A   N   D   E   R
 
-	         The Gnome IEEE-1394 Digital Camera controller
+	         The Gnome IEEE-1394 Digital Camera Controller
 
 	   (C) 2000-2003 by Damien Douxchamps <ddouxchamps@users.sf.net>
 
 ==========================================================================
 		
 
-(This README is for version 0.99.4)
+(This README is for version 0.99.5)
 
 Hello world!
 
@@ -86,8 +86,8 @@ _______________________
 
 - A linux box,
 - an 1394 interface card (PCI, CardBus, whatever...). Try to get an
-  OHCI card as their support is better under linux.
-- a digital camera compatible with DC specs v1.04 or later.
+  OHCI card as their support is better under Linux.
+- a digital camera compatible with IIDC specs v1.04 or later.
 
 
 
@@ -123,18 +123,17 @@ drivers, e.g. for Nvidia chipsets [10] or for ATI Rage chipsets [6].
 References:
 _______________________
 
-[1] 1394 T.A.		: http://www.1394ta.org
-[2] libdc1394		: http://sourceforge.net/projects/libdc1394
-[3] linux1394		: http://www.linux1394.org
-[4] Coriander		: http://sourceforge.net/projects/coriander
-[5] linux1394		: http://sourceforge.net/projects/libraw1394
-[6] LiViD    		: http://www.linuxvideo.org
-[7] 1394 IIDC camera list:
-	http://www.tele.ucl.ac.be/PEOPLE/DOUXCHAMPS/ieee1394/cameras/
-[8] linux1394 HOWTO	: http://www.linux1394.org/start_req.html
-[9] ftplib 		: http://nbpfaus.net/~pfau/ftplib/
-[10] Nvidia		: http://www.nvidia.com
-[11] SDL		: http://www.libsdl.org
-[12] vloopback		: http://motion.technolust.cx/vloopback/
-[13] effectv		: http://effectv.sf.net/
-[14] Gnomemeeting	: http://www.gnomemeeting.org
+[1] 1394 T.A.		  : http://www.1394ta.org
+[2] libdc1394		  : http://sourceforge.net/projects/libdc1394
+[3] linux1394		  : http://www.linux1394.org
+[4] Coriander		  : http://sourceforge.net/projects/coriander
+[5] linux1394		  : http://sourceforge.net/projects/libraw1394
+[6] LiViD    		  : http://www.linuxvideo.org
+[7] 1394 IIDC camera list : http://www.tele.ucl.ac.be/PEOPLE/DOUXCHAMPS/ieee1394/cameras/
+[8] linux1394 HOWTO	  : http://www.linux1394.org/start_req.html
+[9] ftplib 		  : http://nbpfaus.net/~pfau/ftplib/
+[10] Nvidia		  : http://www.nvidia.com
+[11] SDL		  : http://www.libsdl.org
+[12] vloopback		  : http://motion.technolust.cx/vloopback/
+[13] effectv		  : http://effectv.sf.net/
+[14] Gnomemeeting	  : http://www.gnomemeeting.org

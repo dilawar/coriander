@@ -1,7 +1,7 @@
 _______________________________________________________________________________
 
-	                    Open issues for Coriander 0.99.4 ...
-	   Damien Douxchamps <ddouxchamps@users.sf.net> , July 1, 2003
+	              Open issues for Coriander 0.99.5 ...
+	          Damien Douxchamps <ddouxchamps@users.sf.net>
 _______________________________________________________________________________
 
 - video:
@@ -24,6 +24,7 @@ _______________________________________________________________________________
 	- add some artwork in the buttons for clearer presentation
 	- add autofocus, autowhitebalance and autoexposure (autocontrast)
 	  in software.
+	- add an SHM service
 
 - long term:
 	- add advanced features capability. This would probably require a
