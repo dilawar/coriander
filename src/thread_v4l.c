@@ -58,7 +58,7 @@ V4lStartThread(void)
     //info->counter=0;
 
     // COPY PREFERENCES HERE
-    strcpy(preferences.v4l_dev_name,info->v4l_dev_name);
+    strcpy(info->v4l_dev_name,preferences.v4l_dev_name);
     //info->v4l_scratch=preferences.v4l_scratch;
     //info->rawdump=preferences.v4l_convert;
 
@@ -66,7 +66,8 @@ V4lStartThread(void)
     info->v4l_dev=-1;
     info->v4l_dev = open(info->v4l_dev_name, O_RDWR);
     if (info->v4l_dev < 0) {
-      perror ("Failed to open Video4Linux device");
+      MainError("Failed to open V4L device");
+      MainError(info->v4l_dev_name);
       FreeChain(v4l_service);
       return(-1);
     }
@@ -187,10 +188,15 @@ V4lThread(void* arg)
       if(RollBuffers(v4l_service)) { // have buffers been rolled?
 	// check params
 	V4lThreadCheckParams(v4l_service);
+
+	convert_to_rgb(v4l_service->current_buffer, info->v4l_buffer);
+
+	swap_rb(info->v4l_buffer, v4l_service->current_buffer->width*v4l_service->current_buffer->height*3);
+
 	if (v4l_service->current_buffer->width!=-1) {
 	  if (skip_counter==(info->period-1)) {
 	    skip_counter=0;
-	    write(info->v4l_dev,v4l_service->current_buffer->image,v4l_service->current_buffer->bytes_per_frame);
+	    write(info->v4l_dev,info->v4l_buffer,v4l_service->current_buffer->width*v4l_service->current_buffer->height*3);
 	  }
 	}
 	else
@@ -339,4 +345,20 @@ V4lThreadCheckParams(chain_t *v4l_service)
       }
     }
   }
+}
+
+void
+swap_rb(unsigned char *image, int i) {
+
+  unsigned char t;
+  i--;
+  //fprintf(stderr,"first image index: %d\n",i);
+
+  while (i>0) {
+    t=image[i];
+    image[i]=image[i-2];
+    image[i-2]=t;
+    i-=3;
+  }
+
 }

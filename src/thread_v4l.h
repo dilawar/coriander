@@ -81,4 +81,7 @@ V4lStopThread(void);
 void
 V4lThreadCheckParams(chain_t *v4l_service);
 
+void
+swap_rb(unsigned char *image, int size);
+
 #endif

@@ -3,6 +3,10 @@ Coriander, (c) 2000-2003 Damien Douxchamps <ddouxchamps@users.sf.net>
 Changes towards version 0.33
 
    May 26, 2003, by Damien Douxchamps
+   - V4L loopback test & debug. It works!! Only 3 hours to develop this new
+     service! :-)
+	
+   May 26, 2003, by Damien Douxchamps
    - First prototype of vloopback service, based on the very nice example
      by Dan Dennedy found in libdc1394.
 	
