@@ -491,7 +491,7 @@ BayerNearestNeighborPlanar(unsigned char *src, unsigned char *dest, int sx, int 
 
   // copy it for the next line
   for (j=0;j<sx-1;j+=2)
-    outG[(sx-1)*sx+j]=outG[(sx-2)*sx+j];
+    outG[(sy-1)*sx+j]=outG[(sx-2)*sx+j];
 }
 
 
@@ -673,7 +673,7 @@ BayerNearestNeighbor(unsigned char *src, unsigned char *dest, int sx, int sy, ba
       
       // copy it for the next line
       for (j=0;j<sx-1;j+=2)
-	outG[((sx-1)*sx+j)*3]=outG[((sx-2)*sx+j)*3];
+	outG[((sy-1)*sx+j)*3]=outG[((sy-2)*sx+j)*3];
       
       break;
     case BAYER_PATTERN_BGGR: //-------------------------------------------
@@ -718,7 +718,7 @@ BayerNearestNeighbor(unsigned char *src, unsigned char *dest, int sx, int sy, ba
       
       // copy it for the next line
       for (j=0;j<sx-1;j+=2)
-	outG[((sx-1)*sx+j+1)*3]=outG[((sx-2)*sx+j+1)*3];
+	outG[((sy-1)*sx+j+1)*3]=outG[((sy-2)*sx+j+1)*3];
 
       break;
 
