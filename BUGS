@@ -1,4 +1,4 @@
-Known bugs for version 0.28:
+Known bugs for version 0.29:
 
 - The REAL service is untested and only runs with some distros. It does not
   work on RedHat version higher or equal to RH-7.2

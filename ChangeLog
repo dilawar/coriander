@@ -1,6 +1,6 @@
-Coriander, (c) 2000-2002 Damien Douxchamps <ddouxchamps@users.sf.net>
+Coriander, (c) 2000-2003 Damien Douxchamps <ddouxchamps@users.sf.net>
 
-Changes towards version 0.29
+Changes in version 0.29
 
    April 9, 2003, by Damien Douxchamps
    - fixed a display color bug with YUV 422 modes. Thanks to Laurent
