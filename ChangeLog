@@ -5,6 +5,9 @@ Changes towards version 0.26
    August 21, 2002, by Damien Douxchamps
    - bug introduced yesterday fixed in isothread.
    - added bayer decoding with format_7
+   - added alternative bayer decoding. Two patterns are now supported:
+       BGGR: B G    and    GRBG: G R
+	     G R                 B G
 	
    August 20, 2002, by Damien Douxchamps
    - support Y16 in bayer decoding

@@ -57,6 +57,7 @@ typedef struct _Chain_T
   int             mode;
   int             format;
   bayer_decoding_t bayer;
+  bayer_pattern_t  bayer_pattern;
   int             format7_color_mode;
 } chain_t;
 

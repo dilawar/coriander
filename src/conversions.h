@@ -32,6 +32,12 @@ typedef enum
   BAYER_DECODING_EDGE_SENSE
 } bayer_decoding_t;
 
+typedef enum
+{
+  BAYER_PATTERN_BGGR,
+  BAYER_PATTERN_GRBG
+} bayer_pattern_t;
+
 // UYVY <-> YUYV
 void
 uyvy2yuyv (unsigned char *src, unsigned char *dest, int NumPixels);
@@ -82,10 +88,10 @@ y162rgb (unsigned char *src, unsigned char *dest, int NumPixels);
 
 // BAYER -> RGB
 void
-BayerNearestNeighbor(unsigned char *src, unsigned char *dest, int sx, int sy);
+BayerNearestNeighbor(unsigned char *src, unsigned char *dest, int sx, int sy, bayer_pattern_t type);
 
 void
-BayerEdgeSense(unsigned char *src, unsigned char *dest, int sx, int sy);
+BayerEdgeSense(unsigned char *src, unsigned char *dest, int sx, int sy, bayer_pattern_t type);
 
 void
 BayerNearestNeighborPlanar(unsigned char *src, unsigned char *dest, int sx, int sy);

@@ -99,6 +99,7 @@ typedef struct _UIInfo
   int all_man;
   int all_lock;
   int bayer;
+  int bayer_pattern;
 } UIInfo;
 
 typedef struct _StatusInfo

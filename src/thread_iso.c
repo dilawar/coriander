@@ -264,14 +264,14 @@ IsoThread(void* arg)
 	    y162y((unsigned char *)info->capture.capture_buffer,temp,
 		  iso_service->width*iso_service->height);
 	  BayerNearestNeighbor(temp, iso_service->current_buffer,
-			       iso_service->width, iso_service->height);
+			       iso_service->width, iso_service->height, iso_service->bayer_pattern);
 	  break;
 	case BAYER_DECODING_EDGE_SENSE:
 	  if (cond16bit>0)
 	    y162y((unsigned char *)info->capture.capture_buffer,temp,
 		  iso_service->width*iso_service->height);
 	  BayerEdgeSense(temp, iso_service->current_buffer,
-			 iso_service->width, iso_service->height);
+			 iso_service->width, iso_service->height, iso_service->bayer_pattern);
 	  break;
 	default:
 	  memcpy(iso_service->current_buffer,

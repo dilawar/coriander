@@ -608,75 +608,129 @@ BayerEdgeSensePlanar(unsigned char *src, unsigned char *dest, int sx, int sy)
     }
 
 }
+
 void
-BayerNearestNeighbor(unsigned char *src, unsigned char *dest, int sx, int sy)
+BayerNearestNeighbor(unsigned char *src, unsigned char *dest, int sx, int sy, bayer_pattern_t type)
 {
   unsigned char *outR, *outG, *outB;
   register int i,j;
 
   // sx and sy should be even
   // first pixel should be Green, second red:
-  // G R G R G R G R
-  // B G B G B G B G
-  // G R G R G R G R
+
+  // G R
+  // B G
+
+  // or
+
+  // B G
+  // G R
+
   outR=&dest[0];
   outG=&dest[1];
   outB=&dest[2];
-
-  // copy original RGB data to output images
-  for (i=0;i<sy;i+=2)
-    for (j=0;j<sx;j+=2)
-      {
-	outG[(i*sx+j)*3]=src[i*sx+j];
-	outG[((i+1)*sx+(j+1))*3]=src[(i+1)*sx+(j+1)];
-	outR[(i*sx+j+1)*3]=src[i*sx+j+1];
-	outB[((i+1)*sx+j)*3]=src[(i+1)*sx+j];
-      }
-
-  // R channel
-  for (i=0;i<sy-1;i+=2)
-    for (j=0;j<sx-1;j+=2)
-      outR[(i*sx+j)*3]=outR[(i*sx+j+1)*3];
-
-  for (i=1;i<sy;i+=2)
-    for (j=0;j<sx-1;j+=2)
-      {
-	outR[(i*sx+j)*3]=outR[((i-1)*sx+j+1)*3];
-	outR[(i*sx+j+1)*3]=outR[((i-1)*sx+j+1)*3];
-      }
+  switch (type)
+    {
+    case BAYER_PATTERN_GRBG: //-------------------------------------------
+      // copy original RGB data to output images
+      for (i=0;i<sy;i+=2)
+	for (j=0;j<sx;j+=2)
+	  {
+	    outG[(i*sx+j)*3]=src[i*sx+j];
+	    outG[((i+1)*sx+(j+1))*3]=src[(i+1)*sx+(j+1)];
+	    outR[(i*sx+j+1)*3]=src[i*sx+j+1];
+	    outB[((i+1)*sx+j)*3]=src[(i+1)*sx+j];
+	  }
       
-  // B channel
-  for (i=0;i<sy-1;i+=2)//every two lines
-    for (j=0;j<sx-1;j+=2)
-      {
-	outB[(i*sx+j)*3]=outB[((i+1)*sx+j)*3];
-	outB[(i*sx+j+1)*3]=outB[((i+1)*sx+j)*3];
-      }
-
-  for (i=1;i<sy;i+=2)
-    for (j=1;j<sx;j+=2)
-      outB[(i*sx+j)*3]=outB[(i*sx+j-1)*3];
+      // R channel
+      for (i=0;i<sy;i+=2)
+	for (j=0;j<sx-1;j+=2)
+	  {
+	    outR[(i*sx+j)*3]=outR[(i*sx+j+1)*3];
+	    outR[((i+1)*sx+j+1)*3]=outR[(i*sx+j+1)*3];
+	    outR[((i+1)*sx+j)*3]=outR[(i*sx+j+1)*3];
+	  }
       
+      // B channel
+      for (i=0;i<sy-1;i+=2)//every two lines
+	for (j=0;j<sx-1;j+=2)
+	  {
+	    outB[(i*sx+j)*3]=outB[((i+1)*sx+j)*3];
+	    outB[(i*sx+j+1)*3]=outB[((i+1)*sx+j)*3];
+	    outB[((i+1)*sx+j+1)*3]=outB[((i+1)*sx+j)*3];
+	  }
+      
+      // using lower direction for G channel
+      
+      // G channel
+      for (i=0;i<sy-1;i+=2)//every two lines
+	for (j=1;j<sx;j+=2)
+	  outG[(i*sx+j)*3]=outG[((i+1)*sx+j)*3];
+      
+      for (i=1;i<sy-2;i+=2)//every two lines
+	for (j=0;j<sx-1;j+=2)
+	  outG[(i*sx+j)*3]=outG[((i+1)*sx+j)*3];
+      
+      // copy it for the next line
+      for (j=0;j<sx-1;j+=2)
+	outG[((sx-1)*sx+j)*3]=outG[((sx-2)*sx+j)*3];
+      
+      break;
+    case BAYER_PATTERN_BGGR: //-------------------------------------------
+      // copy original data
+      for (i=0;i<sy;i+=2)
+	for (j=0;j<sx;j+=2)
+	  {
+	    outB[(i*sx+j)*3]=src[i*sx+j];
+	    outR[((i+1)*sx+(j+1))*3]=src[(i+1)*sx+(j+1)];
+	    outG[(i*sx+j+1)*3]=src[i*sx+j+1];
+	    outG[((i+1)*sx+j)*3]=src[(i+1)*sx+j];
+	  }
 
-  // using lower direction for G channel
+      // R channel
+      for (i=0;i<sy;i+=2)
+	for (j=0;j<sx-1;j+=2)
+	  {
+	    outR[(i*sx+j)*3]=outR[((i+1)*sx+j+1)*3];
+	    outR[(i*sx+j+1)*3]=outR[((i+1)*sx+j+1)*3];
+	    outR[((i+1)*sx+j)*3]=outR[((i+1)*sx+j+1)*3];
+	  }
+      
+      // B channel
+      for (i=0;i<sy-1;i+=2)//every two lines
+	for (j=0;j<sx-1;j+=2)
+	  {
+	    outB[((i+1)*sx+j)*3]=outB[(i*sx+j)*3];
+	    outB[(i*sx+j+1)*3]=outB[(i*sx+j)*3];
+	    outB[((i+1)*sx+j+1)*3]=outB[(i*sx+j)*3];
+	  }
 
-  // G channel
-  for (i=0;i<sy-1;i+=2)//every two lines
-    for (j=1;j<sx;j+=2)
-      outG[(i*sx+j)*3]=outG[((i+1)*sx+j)*3];
+      // using lower direction for G channel
+      
+      // G channel
+      for (i=0;i<sy-1;i+=2)//every two lines
+	for (j=0;j<sx-1;j+=2)
+	  outG[(i*sx+j)*3]=outG[((i+1)*sx+j)*3];
+      
+      for (i=1;i<sy-2;i+=2)//every two lines
+	for (j=0;j<sx-1;j+=2)
+	  outG[(i*sx+j+1)*3]=outG[((i+1)*sx+j+1)*3];
+      
+      // copy it for the next line
+      for (j=0;j<sx-1;j+=2)
+	outG[((sx-1)*sx+j+1)*3]=outG[((sx-2)*sx+j+1)*3];
 
-  for (i=1;i<sy-2;i+=2)//every two lines
-    for (j=0;j<sx-1;j+=2)
-      outG[(i*sx+j)*3]=outG[((i+1)*sx+j)*3];
+      break;
 
-  // copy it for the next line
-  for (j=0;j<sx-1;j+=2)
-    outG[((sx-1)*sx+j)*3]=outG[((sx-2)*sx+j)*3];
+    default:  //-------------------------------------------
+      fprintf(stderr,"Bad Bayer pattern ID\n");
+      break;
+    }
 }
 
 
 void
-BayerEdgeSense(unsigned char *src, unsigned char *dest, int sx, int sy)
+BayerEdgeSense(unsigned char *src, unsigned char *dest, int sx, int sy, bayer_pattern_t type)
 {
   unsigned char *outR, *outG, *outB;
   register int i,j;
@@ -685,106 +739,213 @@ BayerEdgeSense(unsigned char *src, unsigned char *dest, int sx, int sy)
 
   // sx and sy should be even
   // first pixel should be Green, second red:
-  // G R G R G R G R
-  // B G B G B G B G
-  // G R G R G R G R
+ 
+  // G R 
+  // B G
+
+  // or 
+  
+  // B G
+  // G R
 
   outR=&dest[0];
   outG=&dest[1];
   outB=&dest[2];
-
-  // copy original RGB data to output images
-  for (i=0;i<sy;i+=2)
-    for (j=0;j<sx;j+=2)
-      {
-	outG[(i*sx+j)*3]=src[i*sx+j];
-	outG[((i+1)*sx+(j+1))*3]=src[(i+1)*sx+(j+1)];
-	outR[(i*sx+j+1)*3]=src[i*sx+j+1];
-	outB[((i+1)*sx+j)*3]=src[(i+1)*sx+j];
-      }
-
-  // process GREEN channel
-  for (i=3;i<sy-2;i+=2)
-    for (j=2;j<sx-3;j+=2)
-      {
-	dh=abs((outB[(i*sx+j-2)*3]+outB[(i*sx+j+2)*3])/2-outB[(i*sx+j)*3]);
-	dv=abs((outB[((i-2)*sx+j)*3]+outB[((i+2)*sx+j)*3])/2-outB[(i*sx+j)*3]);
-	if (dh<dv)
-	  tmp=(outG[(i*sx+j-1)*3]+outG[(i*sx+j+1)*3])/2;
-	else
-	  if (dh>dv)
-	    tmp=(outG[((i-1)*sx+j)*3]+outG[((i+1)*sx+j)*3])/2;
-	  else
-	    tmp=(outG[(i*sx+j-1)*3]+outG[(i*sx+j+1)*3]+outG[((i-1)*sx+j)*3]+outG[((i+1)*sx+j)*3])/4;
-	CLIP(tmp,outG[(i*sx+j)*3]);
-      }
-
-  for (i=2;i<sy-3;i+=2)
-    for (j=3;j<sx-2;j+=2)
-      {
-	dh=abs((outR[(i*sx+j-2)*3]+outR[(i*sx+j+2)*3])/2-outR[(i*sx+j)*3]);
-	dv=abs((outR[((i-2)*sx+j)*3]+outR[((i+2)*sx+j)*3])/2-outR[(i*sx+j)*3]);
-	if (dh<dv)
-	  tmp=(outG[(i*sx+j-1)*3]+outG[(i*sx+j+1)*3])/2;
-	else
-	  if (dh>dv)
-	    tmp=(outG[((i-1)*sx+j)*3]+outG[((i+1)*sx+j)*3])/2;
-	  else
-	    tmp=(outG[(i*sx+j-1)*3]+outG[(i*sx+j+1)*3]+outG[((i-1)*sx+j)*3]+outG[((i+1)*sx+j)*3])/4;
-	CLIP(tmp,outG[(i*sx+j)*3]);
-      }
-
-  // process RED channel
-  for (i=0;i<sy-1;i+=2)
-    for (j=2;j<sx-1;j+=2)
-      {
-	tmp=outG[(i*sx+j)*3]+(outR[(i*sx+j-1)*3]-outG[(i*sx+j-1)*3]+
-			  outR[(i*sx+j+1)*3]-outG[(i*sx+j+1)*3])/2;
-	CLIP(tmp,outR[(i*sx+j)*3]);
-      }
-  for (i=1;i<sy-2;i+=2)
+  switch (type)
     {
-      for (j=1;j<sx;j+=2)
+    case BAYER_PATTERN_GRBG://---------------------------------------------------------
+      // copy original RGB data to output images
+      for (i=0;i<sy;i+=2)
+	for (j=0;j<sx;j+=2)
+	  {
+	    outG[(i*sx+j)*3]=src[i*sx+j];
+	    outG[((i+1)*sx+(j+1))*3]=src[(i+1)*sx+(j+1)];
+	    outR[(i*sx+j+1)*3]=src[i*sx+j+1];
+	    outB[((i+1)*sx+j)*3]=src[(i+1)*sx+j];
+	  }
+      
+      // process GREEN channel
+      for (i=3;i<sy-2;i+=2)
+	for (j=2;j<sx-3;j+=2)
+	  {
+	    dh=abs((outB[(i*sx+j-2)*3]+outB[(i*sx+j+2)*3])/2-outB[(i*sx+j)*3]);
+	    dv=abs((outB[((i-2)*sx+j)*3]+outB[((i+2)*sx+j)*3])/2-outB[(i*sx+j)*3]);
+	    if (dh<dv)
+	      tmp=(outG[(i*sx+j-1)*3]+outG[(i*sx+j+1)*3])/2;
+	    else
+	      if (dh>dv)
+		tmp=(outG[((i-1)*sx+j)*3]+outG[((i+1)*sx+j)*3])/2;
+	      else
+		tmp=(outG[(i*sx+j-1)*3]+outG[(i*sx+j+1)*3]+outG[((i-1)*sx+j)*3]+outG[((i+1)*sx+j)*3])/4;
+	    CLIP(tmp,outG[(i*sx+j)*3]);
+	  }
+      
+      for (i=2;i<sy-3;i+=2)
+	for (j=3;j<sx-2;j+=2)
+	  {
+	    dh=abs((outR[(i*sx+j-2)*3]+outR[(i*sx+j+2)*3])/2-outR[(i*sx+j)*3]);
+	    dv=abs((outR[((i-2)*sx+j)*3]+outR[((i+2)*sx+j)*3])/2-outR[(i*sx+j)*3]);
+	    if (dh<dv)
+	      tmp=(outG[(i*sx+j-1)*3]+outG[(i*sx+j+1)*3])/2;
+	    else
+	      if (dh>dv)
+		tmp=(outG[((i-1)*sx+j)*3]+outG[((i+1)*sx+j)*3])/2;
+	      else
+		tmp=(outG[(i*sx+j-1)*3]+outG[(i*sx+j+1)*3]+outG[((i-1)*sx+j)*3]+outG[((i+1)*sx+j)*3])/4;
+	    CLIP(tmp,outG[(i*sx+j)*3]);
+	  }
+      
+      // process RED channel
+      for (i=0;i<sy-1;i+=2)
+	for (j=2;j<sx-1;j+=2)
+	  {
+	    tmp=outG[(i*sx+j)*3]+(outR[(i*sx+j-1)*3]-outG[(i*sx+j-1)*3]+
+				  outR[(i*sx+j+1)*3]-outG[(i*sx+j+1)*3])/2;
+	    CLIP(tmp,outR[(i*sx+j)*3]);
+	  }
+      for (i=1;i<sy-2;i+=2)
 	{
-	  tmp=outG[(i*sx+j)*3]+(outR[((i-1)*sx+j)*3]-outG[((i-1)*sx+j)*3]+
-			    outR[((i+1)*sx+j)*3]-outG[((i+1)*sx+j)*3])/2;
-	  CLIP(tmp,outR[(i*sx+j)*3]);
+	  for (j=1;j<sx;j+=2)
+	    {
+	      tmp=outG[(i*sx+j)*3]+(outR[((i-1)*sx+j)*3]-outG[((i-1)*sx+j)*3]+
+				    outR[((i+1)*sx+j)*3]-outG[((i+1)*sx+j)*3])/2;
+	      CLIP(tmp,outR[(i*sx+j)*3]);
+	    }
+	  for (j=2;j<sx-1;j+=2)
+	    {
+	      tmp=outG[(i*sx+j)*3]+(outR[((i-1)*sx+j-1)*3]-outG[((i-1)*sx+j-1)*3]+
+				    outR[((i-1)*sx+j+1)*3]-outG[((i-1)*sx+j+1)*3]+
+				    outR[((i+1)*sx+j-1)*3]-outG[((i+1)*sx+j-1)*3]+
+				    outR[((i+1)*sx+j+1)*3]-outG[((i+1)*sx+j+1)*3])/4;
+	      CLIP(tmp,outR[(i*sx+j)*3]);
+	    }
 	}
-      for (j=2;j<sx-1;j+=2)
+      
+      // process BLUE channel
+      for (i=1;i<sy;i+=2)
+	for (j=1;j<sx-2;j+=2)
+	  {
+	    tmp=outG[(i*sx+j)*3]+(outB[(i*sx+j-1)*3]-outG[(i*sx+j-1)*3]+
+				  outB[(i*sx+j+1)*3]-outG[(i*sx+j+1)*3])/2;
+	    CLIP(tmp,outB[(i*sx+j)*3]);
+	  }
+      
+      for (i=2;i<sy-1;i+=2)
 	{
-	  tmp=outG[(i*sx+j)*3]+(outR[((i-1)*sx+j-1)*3]-outG[((i-1)*sx+j-1)*3]+
-			    outR[((i-1)*sx+j+1)*3]-outG[((i-1)*sx+j+1)*3]+
-			    outR[((i+1)*sx+j-1)*3]-outG[((i+1)*sx+j-1)*3]+
-			    outR[((i+1)*sx+j+1)*3]-outG[((i+1)*sx+j+1)*3])/4;
-	  CLIP(tmp,outR[(i*sx+j)*3]);
+	  for (j=0;j<sx-1;j+=2)
+	    {
+	      tmp=outG[(i*sx+j)*3]+(outB[((i-1)*sx+j)*3]-outG[((i-1)*sx+j)*3]+
+				    outB[((i+1)*sx+j)*3]-outG[((i+1)*sx+j)*3])/2;
+	      CLIP(tmp,outB[(i*sx+j)*3]);
+	    }
+	  for (j=1;j<sx-2;j+=2)
+	    {
+	      tmp=outG[(i*sx+j)*3]+(outB[((i-1)*sx+j-1)*3]-outG[((i-1)*sx+j-1)*3]+
+				    outB[((i-1)*sx+j+1)*3]-outG[((i-1)*sx+j+1)*3]+
+				    outB[((i+1)*sx+j-1)*3]-outG[((i+1)*sx+j-1)*3]+
+				    outB[((i+1)*sx+j+1)*3]-outG[((i+1)*sx+j+1)*3])/4;
+	      CLIP(tmp,outB[(i*sx+j)*3]);
+	    }
 	}
+      break;
+
+    case BAYER_PATTERN_BGGR: //---------------------------------------------------------
+      // copy original RGB data to output images
+      for (i=0;i<sy;i+=2)
+	for (j=0;j<sx;j+=2)
+	  {
+	    outB[(i*sx+j)*3]=src[i*sx+j];
+	    outR[((i+1)*sx+(j+1))*3]=src[(i+1)*sx+(j+1)];
+	    outG[(i*sx+j+1)*3]=src[i*sx+j+1];
+	    outG[((i+1)*sx+j)*3]=src[(i+1)*sx+j];
+	  }
+      
+      // process GREEN channel
+      for (i=2;i<sy-2;i+=2)
+	for (j=2;j<sx-3;j+=2)
+	  {
+	    dh=abs((outB[(i*sx+j-2)*3]+outB[(i*sx+j+2)*3])/2-outB[(i*sx+j)*3]);
+	    dv=abs((outB[((i-2)*sx+j)*3]+outB[((i+2)*sx+j)*3])/2-outB[(i*sx+j)*3]);
+	    if (dh<dv)
+	      tmp=(outG[(i*sx+j-1)*3]+outG[(i*sx+j+1)*3])/2;
+	    else
+	      if (dh>dv)
+		tmp=(outG[((i-1)*sx+j)*3]+outG[((i+1)*sx+j)*3])/2;
+	      else
+		tmp=(outG[(i*sx+j-1)*3]+outG[(i*sx+j+1)*3]+outG[((i-1)*sx+j)*3]+outG[((i+1)*sx+j)*3])/4;
+	    CLIP(tmp,outG[(i*sx+j)*3]);
+	  }
+      
+      for (i=3;i<sy-3;i+=2)
+	for (j=3;j<sx-2;j+=2)
+	  {
+	    dh=abs((outR[(i*sx+j-2)*3]+outR[(i*sx+j+2)*3])/2-outR[(i*sx+j)*3]);
+	    dv=abs((outR[((i-2)*sx+j)*3]+outR[((i+2)*sx+j)*3])/2-outR[(i*sx+j)*3]);
+	    if (dh<dv)
+	      tmp=(outG[(i*sx+j-1)*3]+outG[(i*sx+j+1)*3])/2;
+	    else
+	      if (dh>dv)
+		tmp=(outG[((i-1)*sx+j)*3]+outG[((i+1)*sx+j)*3])/2;
+	      else
+		tmp=(outG[(i*sx+j-1)*3]+outG[(i*sx+j+1)*3]+outG[((i-1)*sx+j)*3]+outG[((i+1)*sx+j)*3])/4;
+	    CLIP(tmp,outG[(i*sx+j)*3]);
+	  }
+      
+      // process RED channel
+      for (i=1;i<sy-1;i+=2) // G-points (1/2)
+	for (j=2;j<sx-1;j+=2)
+	  {
+	    tmp=outG[(i*sx+j)*3]+(outR[(i*sx+j-1)*3]-outG[(i*sx+j-1)*3]+
+				  outR[(i*sx+j+1)*3]-outG[(i*sx+j+1)*3])/2;
+	    CLIP(tmp,outR[(i*sx+j)*3]);
+	  }
+      for (i=2;i<sy-2;i+=2) 
+	{
+	  for (j=1;j<sx;j+=2) // G-points (2/2)
+	    {
+	      tmp=outG[(i*sx+j)*3]+(outR[((i-1)*sx+j)*3]-outG[((i-1)*sx+j)*3]+
+				    outR[((i+1)*sx+j)*3]-outG[((i+1)*sx+j)*3])/2;
+	      CLIP(tmp,outR[(i*sx+j)*3]);
+	    }
+	  for (j=2;j<sx-1;j+=2) // B-points
+	    {
+	      tmp=outG[(i*sx+j)*3]+(outR[((i-1)*sx+j-1)*3]-outG[((i-1)*sx+j-1)*3]+
+				    outR[((i-1)*sx+j+1)*3]-outG[((i-1)*sx+j+1)*3]+
+				    outR[((i+1)*sx+j-1)*3]-outG[((i+1)*sx+j-1)*3]+
+				    outR[((i+1)*sx+j+1)*3]-outG[((i+1)*sx+j+1)*3])/4;
+	      CLIP(tmp,outR[(i*sx+j)*3]);
+	    }
+	}
+      
+      // process BLUE channel
+      for (i=0;i<sy;i+=2)
+	for (j=1;j<sx-2;j+=2)
+	  {
+	    tmp=outG[(i*sx+j)*3]+(outB[(i*sx+j-1)*3]-outG[(i*sx+j-1)*3]+
+				  outB[(i*sx+j+1)*3]-outG[(i*sx+j+1)*3])/2;
+	    CLIP(tmp,outB[(i*sx+j)*3]);
+	  }
+      
+      for (i=1;i<sy-1;i+=2)
+	{
+	  for (j=0;j<sx-1;j+=2)
+	    {
+	      tmp=outG[(i*sx+j)*3]+(outB[((i-1)*sx+j)*3]-outG[((i-1)*sx+j)*3]+
+				    outB[((i+1)*sx+j)*3]-outG[((i+1)*sx+j)*3])/2;
+	      CLIP(tmp,outB[(i*sx+j)*3]);
+	    }
+	  for (j=1;j<sx-2;j+=2)
+	    {
+	      tmp=outG[(i*sx+j)*3]+(outB[((i-1)*sx+j-1)*3]-outG[((i-1)*sx+j-1)*3]+
+				    outB[((i-1)*sx+j+1)*3]-outG[((i-1)*sx+j+1)*3]+
+				    outB[((i+1)*sx+j-1)*3]-outG[((i+1)*sx+j-1)*3]+
+				    outB[((i+1)*sx+j+1)*3]-outG[((i+1)*sx+j+1)*3])/4;
+	      CLIP(tmp,outB[(i*sx+j)*3]);
+	    }
+	}
+      break;
+    default: //---------------------------------------------------------
+      fprintf(stderr,"Bad bayer pattern ID\n");
+      break;
     }
-
-  // process BLUE channel
-  for (i=1;i<sy;i+=2)
-    for (j=1;j<sx-2;j+=2)
-      {
-	tmp=outG[(i*sx+j)*3]+(outB[(i*sx+j-1)*3]-outG[(i*sx+j-1)*3]+
-			  outB[(i*sx+j+1)*3]-outG[(i*sx+j+1)*3])/2;
-	CLIP(tmp,outB[(i*sx+j)*3]);
-      }
-
-  for (i=2;i<sy-1;i+=2)
-    {
-      for (j=0;j<sx-1;j+=2)
-	{
-	  tmp=outG[(i*sx+j)*3]+(outB[((i-1)*sx+j)*3]-outG[((i-1)*sx+j)*3]+
-			    outB[((i+1)*sx+j)*3]-outG[((i+1)*sx+j)*3])/2;
-	  CLIP(tmp,outB[(i*sx+j)*3]);
-	}
-      for (j=1;j<sx-2;j+=2)
-	{
-	  tmp=outG[(i*sx+j)*3]+(outB[((i-1)*sx+j-1)*3]-outG[((i-1)*sx+j-1)*3]+
-			    outB[((i-1)*sx+j+1)*3]-outG[((i-1)*sx+j+1)*3]+
-			    outB[((i+1)*sx+j-1)*3]-outG[((i+1)*sx+j-1)*3]+
-			    outB[((i+1)*sx+j+1)*3]-outG[((i+1)*sx+j+1)*3])/4;
-	  CLIP(tmp,outB[(i*sx+j)*3]);
-	}
-    }
-
 }
