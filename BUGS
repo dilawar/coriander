@@ -1,3 +1,6 @@
-Known bugs for version 0.99.2:
+Known bugs for version 0.99.3:
 
-None right now. That's good because we are reaching 1.0...
+- full-screen should zoom the image to screen resolution
+- someone experienced a problem with the BuildTriggerMenu
+  function. I can't reproduce it, but it seems there's
+  somthing lurking there. 
