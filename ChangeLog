@@ -2,6 +2,9 @@ Coriander, (c) 2000-2004 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes since version 1.0.0
 
+   Sep 23, 2004, by Damien Douxchamps
+   - applied patch from Arne to properly handle UYVY overlays
+	
    Sep 17, 2004, by Damien Douxchamps
    - start to update coriander for IIDC 1.31
 

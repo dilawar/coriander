@@ -336,9 +336,16 @@ SDLInit(chain_t *display_service)
   //info->sdlvideo->format->BytesPerPixel=2;
 
   // Create YUV Overlay
+#ifdef YUYV
+   info->sdloverlay = SDL_CreateYUVOverlay(display_service->current_buffer->width,
+ 					  display_service->current_buffer->height,
+ 					  SDL_YUY2_OVERLAY,info->sdlvideo);
+#else 
   info->sdloverlay = SDL_CreateYUVOverlay(display_service->current_buffer->width,
 					  display_service->current_buffer->height,
-					  SDL_YUY2_OVERLAY,info->sdlvideo);
+					  SDL_UYVY_OVERLAY,info->sdlvideo);
+#endif
+
   if (info->sdloverlay==NULL) {
     MainError(SDL_GetError());
     SDL_Quit();

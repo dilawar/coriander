@@ -1,12 +1,12 @@
 ==========================================================================
 
-  		       C   O   R   I   A   N   D   E   R
+  		    C   O   R   I   A   N   D   E   R
 
-			     version 1.0.0-pre3
+			     version 1.0.0
 
-	         The Gnome IEEE-1394 Digital Camera Controller
+	      The Gnome IEEE-1394 Digital Camera Controller
 
-	   (C) 2000-2004 by Damien Douxchamps <ddouxchamps@users.sf.net>
+     (C) 2000-2004 by Damien Douxchamps <ddouxchamps@users.sf.net>
 
 ==========================================================================
 		
@@ -95,23 +95,23 @@ Software requirements are now more or less correctly probed by the configure
 script: libdc1394, libraw1394, MMX/SSE capabilities, libftp and SDL libs are
 checked.
 
-- a kernel with 1394 support [3], preferably at least a 2.4.17
-  WITH CVS for ieee1394 at a date later than 2001-12-20 (very important).
+- a kernel with 1394 support [3], preferably a recent 2.6.X
   Kernel modules to be compiled: ieee1394, ohci1394, raw1394 and video1394
 - XFree 3.3.6 (XFree 4.1.0 recommended for video overlay)
 - Gtk 1.2 & Gtk-devel
-- libraw1394 [5] and libdc1394 [2] installed. A CVS version of libdc1394 later
-  than 2002-02-01 is required. 
+- libraw1394 [5] and libdc1394 [2] installed. You need at least libdc1394
+  1.0.0.
 - ftplib installed for FTP support [9]
 - SDL installed for display support [11]
 - Glade (for development only)
 - automake 1.4
 - autoconf 2.13
-- vloopback module v 0.90 for v4l support [12]. You should apply the patch
+- vloopback module v 0.92 for v4l support [12]. You should apply the patch
   found in the nice effectv program [13] the 0.90 version in order to have
   it working. Effectv can be used to check that v4l is working. Note that
   if you use videoN as v4l device in Coriander, the device other applications
   can use is video(N+1). V4l service works also well with Gnomemeeting [14].
+  vloopback will only work with kernels 2.6 if you use the latest patch.
 
 In order to have Xv support within SDL, you will maybe need some custom
 drivers, e.g. for Nvidia chipsets [10] or for ATI Rage chipsets [6].
