@@ -222,6 +222,7 @@ create_main_window (void)
   GtkWidget *prefs_save_num_tag;
   GtkWidget *prefs_save_mode_menu;
   GtkWidget *prefs_save_mode_menu_menu;
+  GtkWidget *save_to_dir;
   GtkWidget *ram_buffer_frame;
   GtkWidget *table75;
   GtkWidget *malloc_test;
@@ -1743,7 +1744,7 @@ create_main_window (void)
   gtk_box_pack_start (GTK_BOX (vbox54), prefs_save_mode_frame, FALSE, FALSE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (prefs_save_mode_frame), 5);
 
-  table74 = gtk_table_new (1, 3, FALSE);
+  table74 = gtk_table_new (2, 3, FALSE);
   gtk_widget_ref (table74);
   gtk_object_set_data_full (GTK_OBJECT (main_window), "table74", table74,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1791,6 +1792,15 @@ create_main_window (void)
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (prefs_save_mode_menu_menu), glade_menuitem);
   gtk_option_menu_set_menu (GTK_OPTION_MENU (prefs_save_mode_menu), prefs_save_mode_menu_menu);
+
+  save_to_dir = gtk_check_button_new_with_label (_("Save to a directory"));
+  gtk_widget_ref (save_to_dir);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "save_to_dir", save_to_dir,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (save_to_dir);
+  gtk_table_attach (GTK_TABLE (table74), save_to_dir, 1, 3, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
 
   ram_buffer_frame = gtk_frame_new (_("RAM buffering"));
   gtk_widget_ref (ram_buffer_frame);
@@ -3119,6 +3129,9 @@ create_main_window (void)
                       NULL);
   gtk_signal_connect (GTK_OBJECT (prefs_save_num_tag), "toggled",
                       GTK_SIGNAL_FUNC (on_prefs_save_num_tag_toggled),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (save_to_dir), "toggled",
+                      GTK_SIGNAL_FUNC (on_save_to_dir_toggled),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (malloc_test), "clicked",
                       GTK_SIGNAL_FUNC (on_malloc_test_clicked),

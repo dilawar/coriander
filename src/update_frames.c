@@ -84,6 +84,8 @@ UpdatePrefsSaveFrame(void)
 			   camera->prefs.save_mode==SAVE_MODE_SEQUENTIAL);
   gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_save_num_tag"),
 			   camera->prefs.save_mode==SAVE_MODE_SEQUENTIAL);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"save_to_dir"),
+			   camera->prefs.save_mode==SAVE_MODE_SEQUENTIAL);
   gtk_widget_set_sensitive(lookup_widget(main_window,"ram_buffer_frame"),
 			   camera->prefs.save_mode==SAVE_MODE_VIDEO);
   gtk_widget_set_sensitive(lookup_widget(main_window,"use_ram_buffer"),

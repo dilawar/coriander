@@ -34,13 +34,14 @@ LoadConfigFile(void)
   preferences.camprefs.receive_method       = gnome_config_get_int("coriander/receive/method=0");
   preferences.camprefs.dma_buffer_size      = gnome_config_get_int("coriander/receive/dma_buffer_size=10");
   preferences.camprefs.video1394_dropframes = gnome_config_get_int("coriander/receive/video1394_dropframes=0");
-  preferences.camprefs.save_mode         = gnome_config_get_int("coriander/save/mode=0");
+  preferences.camprefs.save_mode            = gnome_config_get_int("coriander/save/mode=0");
   preferences.camprefs.save_period          = gnome_config_get_int("coriander/save/period=1");
   preferences.camprefs.save_convert         = gnome_config_get_int("coriander/save/convert=0");
   preferences.camprefs.save_datenum         = gnome_config_get_int("coriander/save/datenum=1");
+  preferences.camprefs.save_to_dir          = gnome_config_get_int("coriander/save/save_to_dir=0");
   preferences.camprefs.use_ram_buffer       = gnome_config_get_int("coriander/save/use_ram_buffer=0");
   preferences.camprefs.ram_buffer_size      = gnome_config_get_int("coriander/save/ram_buffer_size=100");
-  preferences.camprefs.ftp_mode          = gnome_config_get_int("coriander/ftp/mode=0");
+  preferences.camprefs.ftp_mode             = gnome_config_get_int("coriander/ftp/mode=0");
   preferences.camprefs.ftp_period           = gnome_config_get_int("coriander/ftp/period=1");
   preferences.camprefs.ftp_datenum          = gnome_config_get_int("coriander/ftp/datenum=1");
   preferences.camprefs.v4l_period           = gnome_config_get_int("coriander/v4l/period=1");
@@ -87,6 +88,7 @@ CopyCameraPrefs(camera_t* cam) {
   cam->prefs.save_mode              = preferences.camprefs.save_mode;
   cam->prefs.save_period            = preferences.camprefs.save_period;
   cam->prefs.save_datenum           = preferences.camprefs.save_datenum;
+  cam->prefs.save_to_dir            = preferences.camprefs.save_to_dir;
   cam->prefs.ram_buffer_size        = preferences.camprefs.ram_buffer_size;
   cam->prefs.ftp_mode               = preferences.camprefs.ftp_mode;
   cam->prefs.ftp_period             = preferences.camprefs.ftp_period;

@@ -63,6 +63,7 @@ typedef struct _CamPrefs
   int save_period;
   int save_convert;
   int save_datenum;
+  int save_to_dir;
   int use_ram_buffer;
   unsigned int ram_buffer_size;
   char *ftp_address;

@@ -148,6 +148,9 @@ BuildPrefsSaveFrame(void)
   else
     gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(main_window, "prefs_save_num_tag"),TRUE);
 
+  // save to dir mode:
+  gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(main_window, "save_to_dir"),camera->prefs.save_to_dir>0);
+
   // ram buffer
   gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(main_window, "use_ram_buffer"),camera->prefs.use_ram_buffer);
   gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(main_window,"ram_buffer_size"), camera->prefs.ram_buffer_size);

@@ -117,6 +117,7 @@ V4lThread(void* arg)
   v4lthread_info_t *info=NULL;
   long int skip_counter;
   float tmp;
+  struct video_picture p;
   
   v4l_service=(chain_t*)arg;
   pthread_mutex_lock(&v4l_service->mutex_data);
@@ -147,14 +148,32 @@ V4lThread(void* arg)
 	// check params
 	V4lThreadCheckParams(v4l_service);
 	
-	convert_to_rgb(v4l_service->current_buffer, info->v4l_buffer);
+	/* IF we have mono data then set V4L for mono(grey) output */
+	/* Only do this ONCE before writing the first frame */
+	if (v4l_service->current_buffer->buffer_color_mode == COLOR_FORMAT7_MONO8 && v4l_service->processed_frames==0) {
+	  MainStatus("Setting V4L device to GREY palette");
+	  if (ioctl(info->v4l_dev,VIDIOCGPICT,&p) < 0) 
+	    MainError("ioctl(VIDIOCGPICT) error");
+	  else {
+	    p.palette = VIDEO_PALETTE_GREY;
+	    if (ioctl(info->v4l_dev,VIDIOCSPICT,&p) < 0) 
+	      MainError("ioctl(VIDIOCSPICT) Error");
+	  }
+	}
 
-	swap_rb(info->v4l_buffer, v4l_service->current_buffer->width*v4l_service->current_buffer->height*3);
+	// Convert to RGB unless we are using direct GREY palette
+	if (v4l_service->current_buffer->buffer_color_mode != COLOR_FORMAT7_MONO8) {
+	  convert_to_rgb(v4l_service->current_buffer, info->v4l_buffer);
+	  swap_rb(info->v4l_buffer, v4l_service->current_buffer->width*v4l_service->current_buffer->height*3);
+	}
 
 	if (v4l_service->current_buffer->width!=-1) {
 	  if (skip_counter>=(info->period-1)) {
 	    skip_counter=0;
-	    write(info->v4l_dev,info->v4l_buffer,v4l_service->current_buffer->width*v4l_service->current_buffer->height*3);
+	    if (v4l_service->current_buffer->buffer_color_mode != COLOR_FORMAT7_MONO8)
+	      write(info->v4l_dev,info->v4l_buffer,v4l_service->current_buffer->width*v4l_service->current_buffer->height*3);
+	    else
+	      write(info->v4l_dev,v4l_service->current_buffer->image,v4l_service->current_buffer->width*v4l_service->current_buffer->height);
 	    v4l_service->fps_frames++;
 	    v4l_service->processed_frames++;
 	  }

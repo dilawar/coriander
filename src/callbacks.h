@@ -420,4 +420,8 @@ void
 on_save_mode_menu_activate             (GtkEditable     *editable,
                                         gpointer         user_data);
 
+void
+on_save_to_dir_toggled                 (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
 #endif // __CALLBACKS_H__

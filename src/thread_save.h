@@ -57,14 +57,16 @@ typedef struct
 
   pthread_mutex_t    mutex_cancel;
   int                cancel_req;
-  char               filename[STRING_SIZE];
+  char               filename_base[STRING_SIZE];
   char               filename_ext[STRING_SIZE];
+  char               destdir[STRING_SIZE];
   unsigned char*     buffer;
   save_mode_t        mode;
   save_format_t      format;
   int                datenum;
   long int           period;
   int                rawdump;
+  int                save_to_dir;
   unsigned char*     bigbuffer;
   unsigned long int  bigbuffer_position;
   unsigned long int  ram_buffer_size;

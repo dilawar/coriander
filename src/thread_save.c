@@ -45,7 +45,7 @@ SaveStartThread(camera_t* cam)
     
     /* setup save_thread: handles, ...*/
     pthread_mutex_lock(&save_service->mutex_data);
-    strcpy(info->filename, cam->prefs.save_filename);
+    strcpy(info->filename_base, cam->prefs.save_filename_base);
     strcpy(info->filename_ext, cam->prefs.save_filename_ext);
 
     /*
@@ -67,11 +67,13 @@ SaveStartThread(camera_t* cam)
     ////////////////////////// REMOVE THESE COPIES ///////////////////////
     /// we freeze the gui controls to avoid any changes instead //////////
     /// cleanup to be performed on every service /////////////////////////
+    //////// THIS SHOULD BE DONE FOR EVERY SERVICE ///////////////////////
 
     info->buffer=NULL;
     info->mode=cam->prefs.save_mode;
     info->format=cam->prefs.save_format;
     info->datenum=cam->prefs.save_datenum;
+    info->save_to_dir=cam->prefs.save_to_dir;
     // if format extension is ".raw", we dump raw data on the file and perform no conversion
     info->rawdump=cam->prefs.save_convert;
     info->use_ram_buffer=cam->prefs.use_ram_buffer;
@@ -350,6 +352,37 @@ writePVNHeader(FILE *fd, unsigned int mode, unsigned int height, unsigned int wi
   fprintf(fd,"%s\n%d %d %d\n%d %f\n", magic, width, height, depth, bpp, framerate);
 }
 
+static gint
+CreateSettingsFile(char *destdir)
+{
+  char *fname = NULL;
+  FILE *fd = NULL;
+  int i;
+  extern char* fps_label_list[NUM_FRAMERATES];
+  extern char* feature_name_list[NUM_FEATURES];
+  extern Prefs_t preferences;
+  
+  fname = (char*)malloc(STRING_SIZE*sizeof(char));
+  sprintf(fname,"%s/camera_setup.txt",destdir);
+  fd = fopen(fname,"w");
+  if (fd==NULL) {
+    MainError("Cannot open settings file - write permission error");
+    return(0);
+  }
+  
+  fprintf(fd,"fps=%s\n", fps_label_list[camera->misc_info.framerate-FRAMERATE_MIN]);
+  fprintf(fd,"sync_control=%d\n",preferences.sync_control);
+  
+  for(i=FEATURE_MIN; i<=FEATURE_MAX; ++i) {
+    if (camera->feature_set.feature[i-FEATURE_MIN].available)
+      fprintf(fd,"%s=%d\n", feature_name_list[i-FEATURE_MIN],
+	      camera->feature_set.feature[i-FEATURE_MIN].value);
+  }
+
+  fclose(fd);
+  return(1);
+}
+
 
 void
 GetSaveFD(chain_t *save_service, FILE *fd, char *filename_out)
@@ -360,16 +393,49 @@ GetSaveFD(chain_t *save_service, FILE *fd, char *filename_out)
   switch (info->mode) {
   case SAVE_MODE_VIDEO:
   case SAVE_MODE_OVERWRITE:
-    sprintf(filename_out, "%s%s", info->filename,info->filename_ext);
+    sprintf(filename_out, "%s%s", info->filename_base,info->filename_ext);
     break;
   case SAVE_MODE_SEQUENTIAL:
-    switch (info->datenum) {
-    case SAVE_TAG_DATE:
-      sprintf(filename_out, "%s-%s%s", info->filename, save_service->current_buffer->captime_string, info->filename_ext);
-      break;
-    case SAVE_TAG_NUMBER:
-      sprintf(filename_out,"%s-%10.10lli%s", info->filename, save_service->processed_frames, info->filename_ext);
-      break;
+    // first handle the case of save-to-dir
+    if (info->save_to_dir==0) {
+      switch (info->datenum) {
+      case SAVE_TAG_DATE:
+	sprintf(filename_out, "%s-%s%s", info->filename_base, save_service->current_buffer->captime_string, info->filename_ext);
+	break;
+      case SAVE_TAG_NUMBER:
+	sprintf(filename_out,"%s-%10.10lli%s", info->filename_base, save_service->processed_frames, info->filename_ext);
+	break;
+      }
+    }
+    else { // we save to a directory...
+      // 1. create the directory and write a setup file if it's the first frame
+      if (save_service->processed_frames==0) {
+	// note that we append a time tag to allow safe re-launch of the thread (it will prevent overwriting
+	// previous results)
+	sprintf(info->destdir,"%s-%s",info->filename_base,save_service->current_buffer->captime_string);
+
+	// Optional: get rid of "-mmm" ms 
+	//if (strlen(destdir) > 4)
+	//destdir[strlen(destdir)-4]=0;
+	
+	if (mkdir(info->destdir,0755)) {
+	  MainError("Could not create directory");
+	  info->cancel_req = 1; // not threadsafe, but should be ok
+	}
+	// Create a file with camera settings
+	CreateSettingsFile(info->destdir);
+      }
+
+      // 2. build the filename
+      switch (info->datenum) {
+      case SAVE_TAG_DATE:
+	sprintf(filename_out, "%s/%s%s", info->destdir, save_service->current_buffer->captime_string, info->filename_ext);
+	break;
+      case SAVE_TAG_NUMBER:
+	sprintf(filename_out,"%s/%10.10lli%s", info->destdir, save_service->processed_frames, info->filename_ext);
+	break;
+      }
+      // 3. done!
     }
     break;
   default:

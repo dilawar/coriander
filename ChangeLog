@@ -2,6 +2,11 @@ Coriander, (c) 2000-2005 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 1.0.2
 
+   Jan 26, 2005, by Damien Douxchamps
+   - more efficient V4l thread for black and white mode
+   - save-to-dir is completed. This code is based on the patch of 'AW'
+     (sorry, forgot the name)
+	
    Jan 18, 2005, by Damien Douxchamps
    - continue cleanup
 	

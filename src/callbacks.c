@@ -1576,3 +1576,14 @@ on_save_mode_menu_activate             (GtkEditable     *editable,
   gnome_config_sync();
   UpdatePrefsSaveFrame();
 }
+
+void
+on_save_to_dir_toggled                 (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  camera->prefs.save_to_dir=togglebutton->active;
+  gnome_config_set_int("coriander/save/save_to_dir",camera->prefs.save_to_dir);
+  gnome_config_sync();
+  UpdatePrefsSaveFrame();
+}
+
