@@ -363,13 +363,13 @@ SDLInit(chain_t *display_service)
   info->sdlvideorect.y=0;
   info->sdlvideorect.w=display_service->current_buffer->width;
   info->sdlvideorect.h=display_service->current_buffer->height;
-
+  /*
   watchthread_info.f7_step[0]=display_service->camera->format7_info.mode[display_service->current_buffer->mode-MODE_FORMAT7_MIN].step_x;
   watchthread_info.f7_step[1]=display_service->camera->format7_info.mode[display_service->current_buffer->mode-MODE_FORMAT7_MIN].step_y;
   watchthread_info.f7_step_pos[0]=display_service->camera->format7_info.mode[display_service->current_buffer->mode-MODE_FORMAT7_MIN].step_pos_x;
   watchthread_info.f7_step_pos[1]=display_service->camera->format7_info.mode[display_service->current_buffer->mode-MODE_FORMAT7_MIN].step_pos_y;
   watchthread_info.use_unit_pos=display_service->camera->format7_info.mode[display_service->current_buffer->mode-MODE_FORMAT7_MIN].use_unit_pos;
-
+  */
   SDLEventStartThread(display_service);
 
   return(1);
@@ -379,6 +379,7 @@ SDLInit(chain_t *display_service)
 void
 convert_to_yuv_for_SDL(buffer_t *buffer, unsigned char *dest)
 {
+  //fprintf(stderr,"bpp:%d\n",buffer->bpp);
   switch(buffer->buffer_color_mode) {
   case COLOR_FORMAT7_MONO8:
     y2uyvy(buffer->image,dest,buffer->width*buffer->height);
@@ -420,10 +421,10 @@ SDLDisplayArea(chain_t *display_service)
 
   pthread_mutex_lock(&watchthread_info.mutex_area);
   if (watchthread_info.draw==1) {
-    upper_left[0]=watchthread_info.upper_left[0];
-    upper_left[1]=watchthread_info.upper_left[1];
-    lower_right[0]=watchthread_info.lower_right[0];
-    lower_right[1]=watchthread_info.lower_right[1];
+    upper_left[0]=watchthread_info.pos[0];
+    upper_left[1]=watchthread_info.pos[1];
+    lower_right[0]=watchthread_info.pos[0]+watchthread_info.size[0];
+    lower_right[1]=watchthread_info.pos[1]+watchthread_info.size[1];
     pimage=info->sdloverlay->pixels[0];
     width=display_service->current_buffer->width;
     pthread_mutex_unlock(&watchthread_info.mutex_area);

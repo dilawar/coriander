@@ -683,7 +683,8 @@ StopFPSDisplay(void)
 					   ctxt.fps_receive_ctxt, "");
   
   } 
-  // we don't need to stop display FPS: the thread is completely disabled if necessary.
+
+  // we don't need to stop DISPLAY service FPS: the thread is completely disabled if necessary.
   
   service=GetService(camera, SERVICE_SAVE);
   if (service!=NULL) {
@@ -1026,7 +1027,7 @@ NearestValue(int value, int step, int min, int max) {
 
   int low, high;
 
-  if (((min-max)%step) !=0) {
+  if (((max-min)%step) !=0) {
     MainError("Stange values entered in NearestValue...");
   }
 

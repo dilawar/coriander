@@ -204,6 +204,11 @@ OnMouseDown(chain_t *display_service, int button, int x, int y)
 {
   displaythread_info_t *info;
   info=(displaythread_info_t*)display_service->data;
+  Format7ModeInfo* f7info;
+
+  if (camera->misc_info.format==FORMAT_SCALABLE_IMAGE_SIZE) {
+    f7info=&camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN];
+  }
 
   switch (button) {
   case SDL_BUTTON_LEFT:
@@ -212,10 +217,19 @@ OnMouseDown(chain_t *display_service, int button, int x, int y)
     watchthread_info.mouse_down=1;
     // there is some adaptation because the display size can be different
     // from the real image size. (i.e. the image can be resized)
-    watchthread_info.upper_left[0]= ((x*display_service->current_buffer->width /info->sdlvideorect.w));
-    watchthread_info.upper_left[1]= ((y*display_service->current_buffer->height/info->sdlvideorect.h));
-    watchthread_info.lower_right[0]=((x*display_service->current_buffer->width /info->sdlvideorect.w));
-    watchthread_info.lower_right[1]=((y*display_service->current_buffer->height/info->sdlvideorect.h));
+    watchthread_info.first[0]= ((x*display_service->current_buffer->width /info->sdlvideorect.w));
+    watchthread_info.first[1]= ((y*display_service->current_buffer->height/info->sdlvideorect.h));
+
+    // zero size at first click, -> copy click coordinate to second corner
+    watchthread_info.second[0]=watchthread_info.first[0];
+    watchthread_info.second[1]=watchthread_info.first[1];
+    watchthread_info.upper_left[0]=watchthread_info.first[0];
+    watchthread_info.upper_left[1]=watchthread_info.first[1];
+    watchthread_info.lower_right[0]=watchthread_info.first[0];
+    watchthread_info.lower_right[1]=watchthread_info.first[1];
+
+    GetValidF7Crop(&watchthread_info, display_service);
+
     pthread_mutex_unlock(&watchthread_info.mutex_area);
     break;
   case SDL_BUTTON_MIDDLE:
@@ -238,7 +252,7 @@ OnMouseDown(chain_t *display_service, int button, int x, int y)
     //pthread_create(&whitebal_data->thread, NULL, AutoWhiteBalance, (void*)&whitebal_data);
     break;
   default:
-    fprintf(stderr,"Bad button ID in SDL!\n");
+    //fprintf(stderr,"Bad button ID in SDL!\n");
     break;
   }
 }
@@ -265,7 +279,7 @@ OnMouseUp(chain_t *display_service, int button, int x, int y)
   case SDL_BUTTON_RIGHT:
     break;
   default:
-    fprintf(stderr,"Bad button ID in SDL!\n");
+    //fprintf(stderr,"Bad button ID in SDL!\n");
     break;
   }
 }
@@ -275,14 +289,36 @@ void
 OnMouseMotion(chain_t *display_service, int x, int y)
 {
   displaythread_info_t *info;
-  //int col_r,col_g,col_b,col_y,col_u,col_v;
+
   info=(displaythread_info_t*)display_service->data;
   pthread_mutex_lock(&watchthread_info.mutex_area);
+
   if (watchthread_info.mouse_down==1) {
-    // there is some adaptation because the display size can be different
-    // from the real image size. (i.e. the image can be resized)
-    watchthread_info.lower_right[0]=x*display_service->current_buffer->width/info->sdlvideorect.w;
-    watchthread_info.lower_right[1]=y*display_service->current_buffer->height/info->sdlvideorect.h;
+    watchthread_info.second[0]=x*display_service->current_buffer->width/info->sdlvideorect.w;
+    watchthread_info.second[1]=y*display_service->current_buffer->height/info->sdlvideorect.h;
+
+    // we need to flip the corners if the pointer moves backwards
+    if (watchthread_info.second[0]<watchthread_info.first[0])
+      watchthread_info.upper_left[0]=watchthread_info.second[0];
+    else
+      watchthread_info.upper_left[0]=watchthread_info.first[0];
+
+    if (watchthread_info.second[1]<watchthread_info.first[1])
+      watchthread_info.upper_left[1]=watchthread_info.second[1];
+    else
+      watchthread_info.upper_left[1]=watchthread_info.first[1];
+
+    if (watchthread_info.second[0]>=watchthread_info.first[0])
+      watchthread_info.lower_right[0]=watchthread_info.second[0];
+    else
+      watchthread_info.lower_right[0]=watchthread_info.first[0];
+
+    if (watchthread_info.second[1]>=watchthread_info.first[1])
+      watchthread_info.lower_right[1]=watchthread_info.second[1];
+    else
+      watchthread_info.lower_right[1]=watchthread_info.first[1];
+   
+    GetValidF7Crop(&watchthread_info,display_service);
   }
   pthread_mutex_unlock(&watchthread_info.mutex_area);
   
@@ -374,10 +410,10 @@ SDLSetMaxSize(chain_t *display_service)
   pthread_mutex_lock(&watchthread_info.mutex_area);
   if (display_service->current_buffer->format==FORMAT_SCALABLE_IMAGE_SIZE) {
     watchthread_info.crop=1;
-    watchthread_info.upper_left[0]=0;
-    watchthread_info.upper_left[1]=0;
-    watchthread_info.lower_right[0]=camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN].max_size_x;
-    watchthread_info.lower_right[1]=camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN].max_size_y;
+    watchthread_info.pos[0]=0;
+    watchthread_info.pos[1]=0;
+    watchthread_info.size[0]=camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN].max_size_x;
+    watchthread_info.size[1]=camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN].max_size_y;
   }
   pthread_mutex_unlock(&watchthread_info.mutex_area);
 

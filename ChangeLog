@@ -2,6 +2,10 @@ Coriander, (c) 2000-2003 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 1.0.0
 
+   December 16, 2003, by Damien Douxchamps
+   - update the way interactive boxes are defined (F7 cropping)
+   - fixed some other issues, including some serious ones.
+	
    December 15, 2003, by Damien Douxchamps
    - fixed temp buffer pointer problem in thread_iso.c
    - updated the way values are rounded for format7 controls

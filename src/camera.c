@@ -147,10 +147,13 @@ SetCurrentCamera(u_int64_t guid) {
   camera_t* ptr;
   ptr=cameras;
 
-  while (ptr->camera_info.euid_64!=guid) {
+  while ((ptr->camera_info.euid_64!=guid)&&(ptr->next!=NULL)) {
     ptr=ptr->next;
   }
-  camera=ptr;
+  if (ptr->camera_info.euid_64!=guid)
+    fprintf(stderr,"Kaai! Can't find camera GUID in the camera stack!\n");
+  else
+    camera=ptr;
 }
 
 void

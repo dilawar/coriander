@@ -31,6 +31,10 @@ extern camera_t* cameras;
 extern PrefsInfo preferences;
 extern int silent_ui_update;
 
+#ifdef HAVE_SDLLIB
+extern watchthread_info_t watchthread_info;
+#endif
+
 gboolean
 on_main_window_delete_event       (GtkWidget       *widget,
                                         GdkEvent        *event,
@@ -256,22 +260,32 @@ on_camera_select_activate              (GtkMenuItem     *menuitem,
 
   // close current display (we don't want display to be used by 2 threads at the same time 'cause SDL forbids it)
   DisplayStopThread(camera);
+  fprintf(stderr,"display stopped\n");
 
   // stop all FPS displays:
   StopFPSDisplay();
+  fprintf(stderr,"FPS display stopped\n");
 
   // set current camera pointers:
   SetCurrentCamera(camera_ptr->camera_info.euid_64);
+  fprintf(stderr,"camera selected\n");
+
+  watchthread_info.draw=0;
+  watchthread_info.mouse_down=0;
+  watchthread_info.crop=0;
 
   if (camera->want_to_display>0)
     DisplayStartThread(camera);
+  fprintf(stderr,"display restarted\n");
 
   // redraw all:
   BuildAllWindows();
   UpdateAllWindows();
+  fprintf(stderr,"GUI redraw\n");
 
   // resume all FPS displays:
   ResumeFPSDisplay();
+  fprintf(stderr,"FPS display resumed\n");
 }
 
 void
@@ -416,11 +430,11 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
     switch((int)user_data) {
     case FORMAT7_SIZE_X:
       sx=adj->value;
-      sx=NearestValue(sx,info->step_x, info->step_x, info->max_size_x);
+      sx=NearestValue(sx,info->step_x, info->step_x, info->max_size_x - px);
       break;
     case FORMAT7_SIZE_Y:
       sy=adj->value;
-      sy=NearestValue(sy,info->step_y, info->step_y, info->max_size_y);
+      sy=NearestValue(sy,info->step_y, info->step_y, info->max_size_y - py);
       break;
     case FORMAT7_POS_X:
       px=adj->value;
@@ -1081,9 +1095,9 @@ on_bayer_pattern_menu_activate           (GtkMenuItem     *menuitem,
   int tmp;
   tmp=(int)user_data;
   
-  pthread_mutex_unlock(&camera->uimutex);
+  //pthread_mutex_unlock(&camera->uimutex);
   camera->bayer_pattern=tmp;
-  pthread_mutex_unlock(&camera->uimutex);
+  //pthread_mutex_unlock(&camera->uimutex);
 }
 
 void
@@ -1093,9 +1107,9 @@ on_stereo_menu_activate               (GtkToggleButton *menuitem,
   int tmp;
   tmp=(int)user_data;
   
-  pthread_mutex_unlock(&camera->uimutex);
+  //pthread_mutex_unlock(&camera->uimutex);
   camera->stereo=tmp;
-  pthread_mutex_unlock(&camera->uimutex);
+  //pthread_mutex_unlock(&camera->uimutex);
 
   UpdateOptionFrame();
 
@@ -1122,10 +1136,11 @@ on_mono16_bpp_changed                  (GtkEditable     *editable,
 {
   int value;
   value=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(main_window,"mono16_bpp")));
-  pthread_mutex_lock(&camera->uimutex);
+  // thread locking does seem to lock everything indeed...
+  //pthread_mutex_lock(&camera->uimutex);
   camera->bpp=value;
   //fprintf(stderr,"uiinfo->bpp = %d\n",uiinfo->bpp);
-  pthread_mutex_unlock(&camera->uimutex);
+  //pthread_mutex_unlock(&camera->uimutex);
 }
 
 

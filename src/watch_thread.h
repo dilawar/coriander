@@ -41,9 +41,13 @@ typedef struct
   pthread_mutex_t mutex_area;
   int             upper_left[2];
   int             lower_right[2];
-  int             f7_step[2];
-  int             f7_step_pos[2];
-  int             use_unit_pos;
+  int             first[2];
+  int             second[2];
+  int             pos[2];
+  int             size[2];
+  //int             f7_step[2];
+  //int             f7_step_pos[2];
+  //int             use_unit_pos;
   int             draw;
   int             mouse_down;
   int             crop;
@@ -58,6 +62,9 @@ WatchThread(void *arg);
 
 int
 WatchStopThread(watchthread_info_t* info);
+
+void
+GetValidF7Crop(watchthread_info_t *wtinfo, chain_t *display_service);
 
 #endif
 

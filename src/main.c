@@ -135,22 +135,23 @@ main (int argc, char *argv[])
   BuildAllWindows();
   UpdateAllWindows();
 
-#ifdef HAVE_SDLLIB
-  WatchStartThread(&watchthread_info);
-#endif
   MainStatus("Welcome to Coriander...");
   gtk_widget_show (main_window); // this is the only window shown at boot-time
   
   main_timeout=gtk_timeout_add(10, (GtkFunction)main_timeout_handler, (gpointer*)businfo->port_num);
 
+#ifdef HAVE_SDLLIB
+  WatchStartThread(&watchthread_info);
+#endif
+
   gtk_main();
 
+  gtk_timeout_remove(main_timeout);
+  
 #ifdef HAVE_SDLLIB
   WatchStopThread(&watchthread_info);
 #endif
-  
-  gtk_timeout_remove(main_timeout);
-  
+
   while (cameras!=NULL) {
     RemoveCamera(cameras->camera_info.euid_64);
   }
