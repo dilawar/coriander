@@ -26,6 +26,7 @@ extern watchthread_info_t watchthread_info;
 extern camera_t* camera;
 extern int WM_cancel_display;
 extern cursor_info_t cursor_info;
+extern xvinfo_t xvinfo;
 //extern whitebal_data_t* whitebal_data;
 
 // This should be probed automatically.
@@ -351,6 +352,10 @@ SDLResizeDisplay(chain_t *display_service, int width, int height)
 {    
   displaythread_info_t *info;
   info=(displaythread_info_t*)display_service->data;
+  int prev_height, prev_width;
+
+  prev_width=info->sdlvideorect.w;
+  prev_height=info->sdlvideorect.h;
 
   // check that the size is not too small or too large.
   if ((width<1)||(height<1)||(width>MAX_DISPLAY_WIDTH)||(height>MAX_DISPLAY_HEIGHT))
@@ -375,45 +380,45 @@ SDLResizeDisplay(chain_t *display_service, int width, int height)
     info->sdlvideorect.h = height;
   }
 
-  //fprintf(stderr,"Changing display size:\n");
+  // maximize display size to XV size if necessary
+  if ((xvinfo.max_width!=-1)&&(xvinfo.max_height!=-1)) {
+    if (info->sdlvideorect.w>xvinfo.max_width) {
+      info->sdlvideorect.w=xvinfo.max_width;
+    }
+    if (info->sdlvideorect.h>xvinfo.max_height) {
+      info->sdlvideorect.h=xvinfo.max_height;
+    }
+  }
 
-  // Free overlay & video surface
-  SDL_FreeYUVOverlay(info->sdloverlay);
-  
-  //fprintf(stderr,"\tFreed YUV overlay\n");
-  SDL_FreeSurface(info->sdlvideo);
-  //fprintf(stderr,"\tFreed surface\n");
 
-  // Set requested video mode
-  //info->sdlbpp   = SDL_VideoModeOK (info->sdlvideorect.w, info->sdlvideorect.h,
-  //				    info->sdlbpp, info->sdlflags);
-  info->sdlvideo = SDL_SetVideoMode(info->sdlvideorect.w, info->sdlvideorect.h,
-				    info->sdlbpp, info->sdlflags);
-  
-  if (info->sdlvideo == NULL) {
-    MainError(SDL_GetError());
-    SDL_Quit();
-    return;
+  // if size change is effective, re-set SDL stuff
+  if ((prev_width!=info->sdlvideorect.w)||(prev_height!=info->sdlvideorect.h)) {
+
+    // Free overlay & video surface
+    SDL_FreeYUVOverlay(info->sdloverlay);
+    SDL_FreeSurface(info->sdlvideo);
+    
+    // new video mode
+    info->sdlvideo = SDL_SetVideoMode(info->sdlvideorect.w, info->sdlvideorect.h,
+				      info->sdlbpp, info->sdlflags);
+    if (info->sdlvideo == NULL) {
+      MainError(SDL_GetError());
+      SDL_Quit();
+      return;
+    }
+    
+    // Create YUV Overlay  
+    info->sdloverlay = SDL_CreateYUVOverlay(display_service->current_buffer->width,
+					    display_service->current_buffer->height,
+					    SDL_YUY2_OVERLAY, info->sdlvideo);
+    if (info->sdloverlay==NULL) {
+      MainError(SDL_GetError());
+      SDL_Quit();
+      return;
+    }
+
   }
-  /*
-  if (SDL_SetColorKey(info->sdlvideo, SDL_SRCCOLORKEY, 0x0) < 0 ) {
-    MainError(SDL_GetError());
-  }
-  */
-  //info->sdlvideo->format->BytesPerPixel=2;
   
-  // Create YUV Overlay
-  
-  info->sdloverlay = SDL_CreateYUVOverlay(display_service->current_buffer->width,
-					  display_service->current_buffer->height,
-					  SDL_YUY2_OVERLAY, info->sdlvideo);
-  if (info->sdloverlay==NULL) {
-    MainError(SDL_GetError());
-    SDL_Quit();
-    return;
-  }
-  
-  //fprintf(stderr,"\tOverlay created\n");
 }
 
 

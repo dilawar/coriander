@@ -1,5 +1,10 @@
 Coriander, (c) 2000-2004 Damien Douxchamps <ddouxchamps@users.sf.net>
 
+Changes towards version 1.0.0
+
+   May 3, 2004, by Damien Douxchamps
+   - overlay size is now checked and should not go over the allowed XV size
+	
 Changes in version 1.0.0-pre2
 
    March 30, 2004, by Damien Douxchamps

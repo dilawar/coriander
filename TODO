@@ -4,7 +4,7 @@ _______________________________________________________________________________
 	          Damien Douxchamps <ddouxchamps@users.sf.net>
 _______________________________________________________________________________
 
-- urgent:
+- short term:
 	- record and play 'scenario' files (files containing a list of
 	  timed commands)
 	- record and recall camera setup files
@@ -22,8 +22,9 @@ _______________________________________________________________________________
 - misc stuff:
 	- add autofocus, autowhitebalance and autoexposure (autocontrast)
 	  in software
+	- allow broadcast mode (usefull for sync...)
 
--services:
+- services:
 	- add an SHM service
 	- update the V4L service
 

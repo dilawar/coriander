@@ -337,12 +337,24 @@ SDLInit(chain_t *display_service)
   SDL_WM_SetIcon(icon_surface,NULL);
   */
 
+  info->sdlvideorect.x=0;
+  info->sdlvideorect.y=0;
+  info->sdlvideorect.w=display_service->current_buffer->width;
+  info->sdlvideorect.h=display_service->current_buffer->height;
+
+  // maximize display size to XV size if necessary
+  if ((xvinfo.max_width!=-1)&&(xvinfo.max_height!=-1)) {
+    if (info->sdlvideorect.w>xvinfo.max_width) {
+      info->sdlvideorect.w=xvinfo.max_width;
+    }
+    if (info->sdlvideorect.h>xvinfo.max_height) {
+      info->sdlvideorect.h=xvinfo.max_height;
+    }
+  }
+
   // Set requested video mode
-  info->sdlbpp=SDL_VideoModeOK(display_service->current_buffer->width, display_service->current_buffer->height, 
-			       info->sdlbpp, info->sdlflags);
-  
-  info->sdlvideo = SDL_SetVideoMode(display_service->current_buffer->width, display_service->current_buffer->height, 
-				    info->sdlbpp, info->sdlflags);
+  info->sdlbpp = SDL_VideoModeOK(info->sdlvideorect.w, info->sdlvideorect.h, info->sdlbpp, info->sdlflags);
+  info->sdlvideo = SDL_SetVideoMode(info->sdlvideorect.w, info->sdlvideorect.h, info->sdlbpp, info->sdlflags);
 
   if (info->sdlvideo == NULL) {
     MainError(SDL_GetError());
@@ -372,11 +384,6 @@ SDLInit(chain_t *display_service)
     SDL_Quit();
     return(0);
   }
-
-  info->sdlvideorect.x=0;
-  info->sdlvideorect.y=0;
-  info->sdlvideorect.w=display_service->current_buffer->width;
-  info->sdlvideorect.h=display_service->current_buffer->height;
 
   SDLEventStartThread(display_service);
 
