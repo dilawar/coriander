@@ -41,10 +41,36 @@ BuildPreferencesWindow(void)
 void
 BuildFormat7Window(void)
 {
-  format7_info->edit_mode=misc_info->mode;
-  BuildFormat7ModeFrame();
-  BuildFormat7Ranges();
-  BuildFormat7BppRange();
+  int f;
+  // this window is built only if the camera supports F7. If there is a support,
+  // the default edit mode is either the currently selected mode (F7 active) or
+  // the first available mode (F7 inactive)
+
+  // if we are using F7, choose current F7 mode as default
+  if (misc_info->format==FORMAT_SCALABLE_IMAGE_SIZE) {
+    format7_info->edit_mode=misc_info->mode;
+  }
+  // if we are NOT using F7, check if an F7 mode is supported and use the first one as default
+  else { 
+    // get first supported F7 mode
+    f=MODE_FORMAT7_MIN;
+    while ((format7_info->mode[f].present==0)&&(f<=MODE_FORMAT7_MAX))
+      f++;
+    
+    if (format7_info->mode[f].present==0) {
+      // F7 not supported. don't build anything
+      format7_info->edit_mode=-1;
+    }
+    else {
+      format7_info->edit_mode=f;
+    }
+  }
+
+  if (format7_info->edit_mode>0) {
+    BuildFormat7ModeFrame();
+    BuildFormat7Ranges();
+    BuildFormat7BppRange();
+  }
 }
 
 void

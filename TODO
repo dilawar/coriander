@@ -1,29 +1,37 @@
 _______________________________________________________________________________
 
 	                    Open issues for Coriander 0.32 ...
-	   Damien Douxchamps <ddouxchamps@users.sf.net> , April 25, 2003
+	   Damien Douxchamps <ddouxchamps@users.sf.net> , May 17, 2003
 _______________________________________________________________________________
 
 - video:
-    	- I will add a button somewhere to quickly capture an image 
-     	  and save it to disk (this was previously called "capture single").
+    	- add a button somewhere to quickly capture an image and save it to
+	  disk (this was previously called "capture single").
+
 - refresh/update:
 	- regularly update ranges in auto-mode
+	- position of video overaly does not follow window position when not
+	  receiving any frame.
+
 - multi-camera:
 	- control-lock function for stereo cameras
+
 - features:
 	- add FORMAT_6 capabilities
 	- add auto-lock, man-lock and current-setup-lock functions
 	- hot plug capability (detect and handle bus reset)
 	- some status window features missing
+
 - misc stuff:
 	- add some artwork in the buttons for clearer presentation
 	- add autofocus, autowhitebalance and autoexposure (autocontrast)
 	  in software.
+	- Coriander should be hot-plug capable.
+
 - long term:
 	- add advanced features capability. This would probably require a
 	  DB of the supported cameras (Is there any cam supporting this
 	  anyway?)
 	- record and play 'scenario' files (files containing a list of
 	  timed commands)
-	- record and recall setup files
+	- record and recall camera setup files

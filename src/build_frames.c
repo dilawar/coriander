@@ -122,8 +122,6 @@ BuildGlobalIsoFrame(void)
 void
 BuildFormat7ModeFrame(void)
 {
-  if (misc_info->format==FORMAT_SCALABLE_IMAGE_SIZE)
-    format7_info->edit_mode=misc_info->mode;
   BuildFormat7ModeMenu();
   BuildFormat7ColorMenu();
 }
