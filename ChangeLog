@@ -2,6 +2,9 @@ Coriander, (c) 2000-2002 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 0.28
 
+   February 28, 2003, by Damien Douxchamps
+   - fixed compiling issue with gcc 2.95
+	
    February 27, 2003, by Damien Douxchamps
    - image filenames for save and FTP have a date/time appened instead
      of a long number. This date/time is the computer local time when

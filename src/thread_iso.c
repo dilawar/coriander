@@ -427,9 +427,9 @@ IsoThreadCheckParams(chain_t *iso_service)
 {
 
   isothread_info_t *info;
-  info=(isothread_info_t*)iso_service->data;
   int change_detected=0;
   int temp_requested_size=0;
+  info=(isothread_info_t*)iso_service->data;
   // copy harmless parameters anyway:
   iso_service->current_buffer->bpp=uiinfo->bpp;
   iso_service->current_buffer->bayer_pattern=uiinfo->bayer_pattern;
