@@ -175,35 +175,35 @@ const char * format_list[5]= {
 };
 
 const char * format0_list[NUM_FORMAT0_MODES]= {
-  "Mode_0: 160x120 YUV (4:4:4)",
-  "Mode_1: 320x240 YUV (4:2:2)",
-  "Mode_2: 640x480 YUV (4:1:1)",
-  "Mode_3: 640x480 YUV (4:2:2)",
-  "Mode_4: 640x480 RGB 24bpp",
-  "Mode_5: 640x480 Mono 8bpp",
-  "Mode_6: 640x480 Mono 16bpp"
+  "Format_0, Mode_0: 160x120 YUV (4:4:4)",
+  "Format_0, Mode_1: 320x240 YUV (4:2:2)",
+  "Format_0, Mode_2: 640x480 YUV (4:1:1)",
+  "Format_0, Mode_3: 640x480 YUV (4:2:2)",
+  "Format_0, Mode_4: 640x480 RGB 24bpp",
+  "Format_0, Mode_5: 640x480 Mono 8bpp",
+  "Format_0, Mode_6: 640x480 Mono 16bpp"
 };
 
 const char * format1_list[NUM_FORMAT1_MODES]= {
-  "Mode_0: 800x600 YUV (4:2:2)",
-  "Mode_1: 800x600 RGB 24bpp",
-  "Mode_2: 800x600 Mono 8bpp",
-  "Mode_3: 1024x768 YUV (4:2:2)",
-  "Mode_4: 1024x768 RGB 24bpp",
-  "Mode_5: 1024x768 Mono 8bpp",
-  "Mode_6: 800x600 Mono 16bpp",
-  "Mode_7: 1024x768 Mono 16bpp"
+  "Format_1, Mode_0: 800x600 YUV (4:2:2)",
+  "Format_1, Mode_1: 800x600 RGB 24bpp",
+  "Format_1, Mode_2: 800x600 Mono 8bpp",
+  "Format_1, Mode_3: 1024x768 YUV (4:2:2)",
+  "Format_1, Mode_4: 1024x768 RGB 24bpp",
+  "Format_1, Mode_5: 1024x768 Mono 8bpp",
+  "Format_1, Mode_6: 800x600 Mono 16bpp",
+  "Format_1, Mode_7: 1024x768 Mono 16bpp"
 };
 
 const char * format2_list[NUM_FORMAT2_MODES]= {
-  "Mode_0: 1280x960 YUV (4:2:2)",
-  "Mode_1: 1280x960 RGB 24bpp",
-  "Mode_2: 1280x960 Mono 8bpp",
-  "Mode_3: 1600x1200 YUV (4:2:2)",
-  "Mode_4: 1600x1200 RGB 24bpp",
-  "Mode_5: 1600x1200 Mono 8bpp",
-  "Mode_6: 1280x960 Mono 16bpp",
-  "Mode_7: 1600x1200 Mono 16bpp"
+  "Format_2, Mode_0: 1280x960 YUV (4:2:2)",
+  "Format_2, Mode_1: 1280x960 RGB 24bpp",
+  "Format_2, Mode_2: 1280x960 Mono 8bpp",
+  "Format_2, Mode_3: 1600x1200 YUV (4:2:2)",
+  "Format_2, Mode_4: 1600x1200 RGB 24bpp",
+  "Format_2, Mode_5: 1600x1200 Mono 8bpp",
+  "Format_2, Mode_6: 1280x960 Mono 16bpp",
+  "Format_2, Mode_7: 1600x1200 Mono 16bpp"
 };
 
 const char * format6_list[NUM_FORMAT6_MODES]= {

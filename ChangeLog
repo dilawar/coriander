@@ -2,6 +2,10 @@ Coriander, (c) 2000-2003 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 0.99.3
 
+   July 18, 2003, by Damien Douxchamps
+   - format7 mode 7 could not be seen in the F7 tab/mode selector
+   - added format tags for mode names in the format menu
+	
    July 17, 2003, by Damien Douxchamps
    - fixed white balance sliders that were not updated
 	

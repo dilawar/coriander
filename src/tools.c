@@ -55,7 +55,7 @@ GetFormat7Capabilities(raw1394handle_t handle, nodeid_t node, Format7Info *info)
   if (dc1394_query_supported_modes(handle, node, FORMAT_SCALABLE_IMAGE_SIZE, &value)!=DC1394_SUCCESS)
     MainError("Could not query Format7 supported modes");
   else {
-    for (i=0,f=MODE_FORMAT7_MIN;f<MODE_FORMAT7_MAX;f++,i++) {
+    for (i=0,f=MODE_FORMAT7_MIN;f<=MODE_FORMAT7_MAX;f++,i++) {
       info->mode[i].present= (value & (0x1<<(31-i)) );
       if (info->mode[i].present) { // check for mode presence before query
 	if (dc1394_query_format7_max_image_size(handle,node,f,&info->mode[i].max_size_x,&info->mode[i].max_size_y)!=DC1394_SUCCESS)
