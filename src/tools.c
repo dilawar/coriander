@@ -699,7 +699,8 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation) {
   bi.camera_nodes=NULL;
   MainStatus("Bus reset detected");
 
-  StopFPSDisplay();
+  if (camera!=NULL)
+    StopFPSDisplay();
 
   gtk_widget_set_sensitive(main_window,FALSE);
 
@@ -778,8 +779,14 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation) {
 					       ic, speed)!=DC1394_SUCCESS)
 	    MainError("Can't set iso channel and speed");
 	  //fprintf(stderr,"   Channel set to %d\n",ic);
-	  AppendCamera(new_camera);
-	}	
+	  if (cameras==NULL) {
+	    AppendCamera(new_camera);
+	    SetCurrentCamera(new_camera->camera_info.euid_64);
+	  }
+	  else {
+	    AppendCamera(new_camera);
+	  }
+	}
       }
     }
   }
@@ -817,7 +824,8 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation) {
 
 	  // delete structs:
 	  RemoveCamera(camera_ptr->camera_info.euid_64);
-
+	  cameras=NULL;
+	  camera=NULL;
 	}
 	else {
 	  //fprintf(stderr,"  Selecting the first non-removed camera as current camera\n");
@@ -877,17 +885,26 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation) {
     watchthread_info.mouse_down=0;
     watchthread_info.crop=0;
 #endif
-
+    /*
+    if (new_camera!=NULL)
+      fprintf(stderr," handle: 0x%x\n",new_camera->camera_info.handle);
+    
+    if (camera!=NULL)
+      fprintf(stderr," handle: 0x%x\n",camera->camera_info.handle);
+    fprintf(stderr,"camera: 0x%x\n",camera);
+    */
     //fprintf(stderr,"Want to display: %d\n",camera->want_to_display);
-    if (camera->want_to_display>0)
-      DisplayStartThread(camera);
+    if (camera!=NULL) {
+      if (camera->want_to_display>0)
+	DisplayStartThread(camera);
 
-    BuildAllWindows();
-    //fprintf(stderr,"finished building GUI\n");
-    UpdateAllWindows();
-    //fprintf(stderr,"finished updating GUI\n");
+      BuildAllWindows();
+      //fprintf(stderr,"finished building GUI\n");
+      UpdateAllWindows();
+      //fprintf(stderr,"finished updating GUI\n");
 
-    gtk_widget_set_sensitive(main_window,TRUE);
+      gtk_widget_set_sensitive(main_window,TRUE);
+    }
   }
 
   GrabSelfIds(bi.handles, bi.port_num);
@@ -913,8 +930,8 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation) {
   free(bi.port_camera_num);
   free(bi.camera_nodes);
 
-  
-  ResumeFPSDisplay();
+  if (camera!=NULL)
+    ResumeFPSDisplay();
     
   //fprintf(stderr,"resumed fps display\n");
 
