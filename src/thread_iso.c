@@ -219,10 +219,23 @@ IsoThread(void* arg)
 {
   chain_t *iso_service;
   isothread_info_t *info;
-
+  unsigned char *temp;
+  int cond16bit;
   // we should only use mutex_data in this function
 
   iso_service=(chain_t*)arg;
+
+  cond16bit=((iso_service->mode==MODE_640x480_MONO16)||
+	     (iso_service->mode==MODE_800x600_MONO16)||
+	     (iso_service->mode==MODE_1024x768_MONO16)||
+	     (iso_service->mode==MODE_1280x960_MONO16)||
+	     (iso_service->mode==MODE_1600x1200_MONO16));
+
+  if (cond16bit>0)
+    temp=(unsigned char*)malloc(iso_service->width*iso_service->height*sizeof(unsigned char));
+  else
+    temp=(unsigned char *)info->capture.capture_buffer;
+
   pthread_mutex_lock(&iso_service->mutex_data);
   info=(isothread_info_t*)iso_service->data;
   pthread_setcancelstate(PTHREAD_CANCEL_ENABLE,NULL);
@@ -245,20 +258,20 @@ IsoThread(void* arg)
 	{
 	case BAYER_DECODING_NEAREST:
 	  //fprintf(stderr,"Nearest decoding...");
-	  if ((iso_service->mode==MODE_640x480_MONO16)||
-	      (iso_service->mode==MODE_800x600_MONO16)||
-	      (iso_service->mode==MODE_1024x768_MONO16)||
-	      (iso_service->mode==MODE_1280x960_MONO16)||
-	      (iso_service->mode==MODE_1600x1200_MONO16))
-	    
-	  BayerNearestNeighbor((unsigned char *)info->capture.capture_buffer,
+	  if (cond16bit>0)
+	    y162y((unsigned char *)info->capture.capture_buffer,temp,
+		  iso_service->width*iso_service->height);
+	  BayerNearestNeighbor(temp,
 			       iso_service->current_buffer,
 			       iso_service->width, iso_service->height);
 	  //fprintf(stderr,"done\n");
 	  break;
 	case BAYER_DECODING_EDGE_SENSE:
 	  //fprintf(stderr,"Edge Sense decoding...");
-	  BayerEdgeSense((unsigned char *)info->capture.capture_buffer,
+	  if (cond16bit>0)
+	    y162y((unsigned char *)info->capture.capture_buffer,temp,
+		  iso_service->width*iso_service->height);
+	  BayerEdgeSense(temp,
 			 iso_service->current_buffer,
 			 iso_service->width, iso_service->height);
 	  //fprintf(stderr,"done\n");
@@ -277,6 +290,10 @@ IsoThread(void* arg)
       pthread_mutex_unlock(&iso_service->mutex_data);
       pthread_cleanup_pop(0);
     }
+
+  if (cond16bit>0)
+    free(temp);
+
 }
 
 
