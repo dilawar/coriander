@@ -4,6 +4,8 @@ Changes towards version 1.0.2
 
    Feb 14, 2005, by Damien Douxchamps
    - proper detection of the FFMPEG libraries
+   - Save to STDOUT. I hope I will have time to add mencoder auto-launch
+     in the future
 	
    Feb 12, 2005, by Damien Douxchamps
    - use dummy menu items to separate video/still formats

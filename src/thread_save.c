@@ -74,6 +74,7 @@ SaveStartThread(camera_t* cam)
     info->format=cam->prefs.save_format;
     info->append=cam->prefs.save_append;
     info->save_to_dir=cam->prefs.save_to_dir;
+    info->save_to_stdout=cam->prefs.save_to_stdout;
     // if format extension is ".raw", we dump raw data on the file and perform no conversion
     //info->rawdump=cam->prefs.save_convert;
     info->use_ram_buffer=cam->prefs.use_ram_buffer;
@@ -395,6 +396,11 @@ GetSaveFD(chain_t *save_service, FILE **fd, char *filename_out)
   savethread_info_t *info=save_service->data;
   // NOTE: the jpeg format is now joined with other imlib formats, but will have to be handled separately by ffmpeg (patch pending)
 
+  if (info->save_to_stdout>0) {
+    *fd=stdout;
+    return DC1394_SUCCESS;
+  }
+
   // get filename
   switch (info->format) {
   case SAVE_FORMAT_PNG:
@@ -543,7 +549,7 @@ InitVideoFile(chain_t *save_service, FILE *fd, char *filename_out)
 #ifdef HAVE_FFMPEG
   if ((info->format==SAVE_FORMAT_MPEG) && (info->use_ram_buffer==FALSE)) {//-----------------------------------
     // MPEG
-    fprintf(stderr,"setting up mpeg codec\n");
+    //fprintf(stderr,"setting up mpeg codec\n");
     //video_encode_init(save_service->current_buffer->width,
     //		      save_service->current_buffer->height, CODEC_ID_MPEG1VIDEO);
 

@@ -1632,3 +1632,14 @@ on_iso_nodrop_toggled                  (GtkToggleButton *togglebutton,
   gnome_config_sync();
 }
 
+
+void
+on_save_to_stdout_toggled              (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  camera->prefs.save_to_stdout=togglebutton->active;
+  gnome_config_set_int("coriander/save/save_to_stdout",camera->prefs.save_to_stdout);
+  gnome_config_sync();
+  UpdatePrefsSaveFrame();
+}
+

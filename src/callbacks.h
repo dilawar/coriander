@@ -436,4 +436,8 @@ void
 on_iso_nodrop_toggled                  (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
 
+void
+on_save_to_stdout_toggled              (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
 #endif // __CALLBACKS_H__

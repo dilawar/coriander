@@ -65,6 +65,7 @@ typedef struct
   long int           period;
   int                rawdump;
   int                save_to_dir;
+  int                save_to_stdout;
   unsigned char*     bigbuffer;
   unsigned long int  bigbuffer_position;
   unsigned long int  ram_buffer_size;

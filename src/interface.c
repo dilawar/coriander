@@ -208,7 +208,6 @@ create_main_window (void)
   GtkWidget *table81;
   GtkWidget *label175;
   GtkWidget *label174;
-  GtkWidget *save_filename_status;
   GtkWidget *label176;
   GtkWidget *save_filename_entry;
   GtkWidget *save_filename_subentry;
@@ -219,6 +218,8 @@ create_main_window (void)
   GtkWidget *save_to_dir;
   GtkWidget *save_format_menu;
   GtkWidget *save_format_menu_menu;
+  GtkWidget *save_to_stdout;
+  GtkWidget *save_filename_status;
   GtkWidget *hbox71;
   GtkWidget *prefs_save_framedrop;
   GtkWidget *hbox_capture_freq_periodic;
@@ -1697,16 +1698,6 @@ create_main_window (void)
   gtk_label_set_justify (GTK_LABEL (label174), GTK_JUSTIFY_LEFT);
   gtk_misc_set_padding (GTK_MISC (label174), 5, 2);
 
-  save_filename_status = gtk_statusbar_new ();
-  gtk_widget_ref (save_filename_status);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "save_filename_status", save_filename_status,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (save_filename_status);
-  gtk_table_attach (GTK_TABLE (table81), save_filename_status, 1, 3, 3, 4,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (save_filename_status), 2);
-
   label176 = gtk_label_new (_("Format:"));
   gtk_widget_ref (label176);
   gtk_object_set_data_full (GTK_OBJECT (main_window), "label176", label176,
@@ -1824,6 +1815,25 @@ create_main_window (void)
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (save_format_menu_menu), glade_menuitem);
   gtk_option_menu_set_menu (GTK_OPTION_MENU (save_format_menu), save_format_menu_menu);
+
+  save_to_stdout = gtk_check_button_new_with_label (_("Output to STDOUT"));
+  gtk_widget_ref (save_to_stdout);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "save_to_stdout", save_to_stdout,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (save_to_stdout);
+  gtk_table_attach (GTK_TABLE (table82), save_to_stdout, 1, 2, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  save_filename_status = gtk_statusbar_new ();
+  gtk_widget_ref (save_filename_status);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "save_filename_status", save_filename_status,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (save_filename_status);
+  gtk_table_attach (GTK_TABLE (table81), save_filename_status, 1, 3, 3, 4,
+                    (GtkAttachOptions) (GTK_SHRINK | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (save_filename_status), 2);
 
   hbox71 = gtk_hbox_new (FALSE, 0);
   gtk_widget_ref (hbox71);
@@ -3211,6 +3221,9 @@ create_main_window (void)
                       NULL);
   gtk_signal_connect (GTK_OBJECT (save_to_dir), "toggled",
                       GTK_SIGNAL_FUNC (on_save_to_dir_toggled),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (save_to_stdout), "toggled",
+                      GTK_SIGNAL_FUNC (on_save_to_stdout_toggled),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (prefs_save_period), "changed",
                       GTK_SIGNAL_FUNC (on_prefs_save_period_changed),

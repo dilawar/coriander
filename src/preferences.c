@@ -39,6 +39,7 @@ LoadConfigFile(void)
   preferences.camprefs.save_period          = gnome_config_get_int("coriander/save/period=1");
   preferences.camprefs.save_append          = gnome_config_get_int("coriander/save/append=0");
   preferences.camprefs.save_to_dir          = gnome_config_get_int("coriander/save/save_to_dir=0");
+  preferences.camprefs.save_to_stdout       = gnome_config_get_int("coriander/save/save_to_stdout=0");
   preferences.camprefs.use_ram_buffer       = gnome_config_get_int("coriander/save/use_ram_buffer=0");
   preferences.camprefs.ram_buffer_size      = gnome_config_get_int("coriander/save/ram_buffer_size=100");
   preferences.camprefs.ftp_mode             = gnome_config_get_int("coriander/ftp/mode=0");
@@ -90,6 +91,7 @@ CopyCameraPrefs(camera_t* cam) {
   cam->prefs.save_period            = preferences.camprefs.save_period;
   cam->prefs.save_append            = preferences.camprefs.save_append;
   cam->prefs.save_to_dir            = preferences.camprefs.save_to_dir;
+  cam->prefs.save_to_stdout         = preferences.camprefs.save_to_stdout;
   cam->prefs.use_ram_buffer         = preferences.camprefs.use_ram_buffer;
   cam->prefs.ram_buffer_size        = preferences.camprefs.ram_buffer_size;
   cam->prefs.ftp_mode               = preferences.camprefs.ftp_mode;
