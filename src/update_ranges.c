@@ -233,6 +233,8 @@ UpdateFormat7BppRange(void)
 	adj->upper=info->max_bpp;
 	adj->lower=info->min_bpp;
 	adj->value=info->bpp;
+	adj->step_increment=1;
+	adj->page_increment=(info->max_bpp-info->min_bpp)/16;
 	gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
       }
     else
@@ -244,3 +246,58 @@ UpdateFormat7BppRange(void)
   //format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].max_bpp,
   //format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].min_bpp);
 }
+
+void
+UpdateFormat7Ranges(void)
+{
+  GtkAdjustment  *adj;
+  Format7ModeInfo *info;
+  info=&format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN];
+
+  //fprintf(stderr,"size: %d %d\n",info->max_size_x,info->max_size_y);
+  // define the adjustments for the 4 format7 controls. Note that (pos_x+size_x)<=max_size_x which yields some inter-dependencies
+
+  // define adjustement for X-position
+  adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(format7_window, "format7_hposition_scale")));
+  adj->value=info->pos_x;
+  adj->upper=info->max_size_x-info->size_x;
+  adj->lower=0;
+  if (info->use_unit_pos>0)
+    adj->step_increment=info->step_pos_x;
+  else
+    adj->step_increment=info->step_x;
+  adj->page_increment=adj->step_increment*4;
+  gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
+
+  // define adjustement for Y-position 
+  adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(format7_window, "format7_vposition_scale")));
+  adj->value=info->pos_y;
+  adj->upper=info->max_size_y-info->size_y;
+  adj->lower=0;
+  if (info->use_unit_pos>0)
+    adj->step_increment=info->step_pos_y;
+  else
+    adj->step_increment=info->step_y;
+  adj->page_increment=adj->step_increment*4;
+  gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
+
+  // define adjustement for X-size
+  adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(format7_window, "format7_hsize_scale")));
+  adj->value=info->size_x;
+  adj->upper=info->max_size_x-info->pos_x;
+  adj->lower=info->step_x;
+  adj->page_increment=info->step_x*4;
+  adj->step_increment=info->step_x;
+  gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
+
+  // define adjustement for X-size
+  adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(format7_window, "format7_vsize_scale")));
+  adj->value=info->size_y;
+  adj->upper=info->max_size_y-info->pos_y;
+  adj->lower=info->step_y;
+  adj->page_increment=info->step_y*4;
+  adj->step_increment=info->step_y;
+  gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
+
+}
+

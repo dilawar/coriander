@@ -179,9 +179,9 @@ BuildFormat7Ranges(void)
 
   // define adjustement for X-position
   if (info->use_unit_pos>0)
-    adjustment_px=(GtkAdjustment*)gtk_adjustment_new(info->pos_x,0,info->max_size_x-info->size_x,info->step_x,info->step_x*4,0);
-  else
     adjustment_px=(GtkAdjustment*)gtk_adjustment_new(info->pos_x,0,info->max_size_x-info->size_x,info->step_pos_x,info->step_pos_x*4,0);
+  else
+    adjustment_px=(GtkAdjustment*)gtk_adjustment_new(info->pos_x,0,info->max_size_x-info->size_x,info->step_x,info->step_x*4,0);
 
   gtk_range_set_adjustment((GtkRange*)lookup_widget(format7_window, "format7_hposition_scale"),adjustment_px);
   gtk_signal_connect(GTK_OBJECT (adjustment_px), "value_changed", GTK_SIGNAL_FUNC (on_format7_value_changed), (int*) FORMAT7_POS_X);
@@ -189,9 +189,9 @@ BuildFormat7Ranges(void)
   
   // define adjustement for Y-position 
   if (info->use_unit_pos>0)
-    adjustment_py=(GtkAdjustment*)gtk_adjustment_new(info->pos_y,0,info->max_size_y-info->size_y,info->step_y,info->step_y*4,0);
-  else
     adjustment_py=(GtkAdjustment*)gtk_adjustment_new(info->pos_y,0,info->max_size_y-info->size_y,info->step_pos_y,info->step_pos_y*4,0);
+  else
+    adjustment_py=(GtkAdjustment*)gtk_adjustment_new(info->pos_y,0,info->max_size_y-info->size_y,info->step_y,info->step_y*4,0);
 
   gtk_range_set_adjustment((GtkRange*)lookup_widget(format7_window, "format7_vposition_scale"),adjustment_py);
   gtk_signal_connect(GTK_OBJECT (adjustment_py), "value_changed", GTK_SIGNAL_FUNC (on_format7_value_changed), (int*) FORMAT7_POS_Y);
@@ -209,6 +209,11 @@ BuildFormat7Ranges(void)
   gtk_signal_connect(GTK_OBJECT (adjustment_sy), "value_changed", GTK_SIGNAL_FUNC (on_format7_value_changed), (int*) FORMAT7_SIZE_Y);
   gtk_range_set_update_policy ((GtkRange*)lookup_widget(format7_window, "format7_vsize_scale"), GTK_UPDATE_DELAYED);
 
+  gtk_signal_emit_by_name(GTK_OBJECT (adjustment_sx), "changed");
+  gtk_signal_emit_by_name(GTK_OBJECT (adjustment_sy), "changed");
+  gtk_signal_emit_by_name(GTK_OBJECT (adjustment_px), "changed");
+  gtk_signal_emit_by_name(GTK_OBJECT (adjustment_sy), "changed");
+
 }
 
 void
@@ -218,7 +223,7 @@ BuildFormat7BppRange(void)
   Format7ModeInfo *info;
   info=&format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN];
   // define adjustment for packet size:
-  adjustment_packet=(GtkAdjustment*)gtk_adjustment_new(info->bpp,info->min_bpp,info->max_bpp,info->min_bpp,16*info->min_bpp,0);
+  adjustment_packet=(GtkAdjustment*)gtk_adjustment_new(info->bpp,info->min_bpp,info->max_bpp,1,(info->max_bpp-info->min_bpp)/16,0);
   // min_bpp is the minimum bpp, but also the 'unit' bpp.
   gtk_range_set_adjustment((GtkRange*)lookup_widget(format7_window, "format7_packet_size"),adjustment_packet);
   gtk_signal_connect(GTK_OBJECT (adjustment_packet), "value_changed", GTK_SIGNAL_FUNC (on_format7_packet_size_changed),(int*)0);

@@ -28,6 +28,7 @@
 #include "update_menus.h"
 #include "update_ranges.h"
 #include "update_windows.h"
+#include "build_menus.h"
 #include "tools.h"
 #include <libdc1394/dc1394_control.h> 
 
@@ -36,14 +37,13 @@ extern GtkWidget *commander_window;
 void
 UpdateFormat7Window(void)
 {
-  // TODO:
   // update ranges
+  UpdateFormat7Ranges();
+  UpdateFormat7BppRange();
+  BuildFormat7ColorMenu();
 
   // TODO:
   // update values in data fields
-
-  UpdateFormat7ModeFrame();
-
 }
 
 void

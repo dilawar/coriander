@@ -313,7 +313,6 @@ on_edit_format7_mode_activate             (GtkMenuItem     *menuitem,
 					   gpointer         user_data)
 {
   format7_info->edit_mode=(int)user_data;
-  BuildFormat7Window();
   UpdateFormat7Window();
 }
 
@@ -337,6 +336,7 @@ on_edit_format7_color_activate             (GtkMenuItem     *menuitem,
     {
       UpdateOptionFrame();
       UpdateFormat7BppRange();
+      UpdateFormat7Ranges();
       IsoFlowResume(state);
     }
 

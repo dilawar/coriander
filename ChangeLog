@@ -2,6 +2,11 @@ Coriander, (c) 2000-2002 Damien Douxchamps <douxchamps@ieee.org>
 
 Changes towards version 0.27
 
+   November 18, 2002, by Damien Douxchamps
+   - updated F7 code window build/update. This was messy because there
+     was among others some circular references (and a lot of other
+     things).
+	
    November 2, 2002, by Damien Douxchamps
    - updated F7 code: a bug had been introduced on Oct. 31, plus
      some better handling of F7 control via SDL.

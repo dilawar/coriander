@@ -194,6 +194,8 @@ BuildFormat7ModeMenu(void)
   int k=0;
   int index[NUM_MODE_FORMAT7];
 
+  //fprintf(stderr,"building F7 mode menu\n");
+
   GtkWidget* mode_num;
   GtkWidget* mode_num_menu;
   GtkWidget* glade_menuitem;
@@ -232,7 +234,6 @@ BuildFormat7ModeMenu(void)
   // sets the active menu item: // default: use the first mode for edit
   //fprintf(stderr,"F7 mode: max: %d, default: %d\n",
   //	  NUM_MODE_FORMAT7,format7_info->edit_mode-MODE_FORMAT7_MIN);
-
   gtk_option_menu_set_history (GTK_OPTION_MENU (mode_num), 
 			       index[format7_info->edit_mode-MODE_FORMAT7_MIN]);
 
@@ -245,6 +246,8 @@ BuildFormat7ColorMenu(void)
   int i, f;
   int k=0;
   int index[NUM_COLOR_FORMAT7];
+
+  //fprintf(stderr,"building F7 color menu\n");
 
   GtkWidget* color_num;
   GtkWidget* color_num_menu;
@@ -284,8 +287,10 @@ BuildFormat7ColorMenu(void)
   // sets the active menu item:
   //fprintf(stderr,"F7 mode: max: %d, default: %d\n",NUM_COLOR_FORMAT7,
   //	  format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].color_coding_id);
+  //fprintf(stderr,"current mode: %d\n", format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].color_coding_id);
+  //fprintf(stderr,"history set to %d\n",index[format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].color_coding_id-COLOR_FORMAT7_MIN]);
   gtk_option_menu_set_history (GTK_OPTION_MENU (color_num),
-			       index[format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].color_coding_id]);
+			       index[format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].color_coding_id-COLOR_FORMAT7_MIN]);
 
 }
 
