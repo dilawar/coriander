@@ -70,6 +70,7 @@ UpdateCommanderWindow(void)
   UpdateMemoryFrame();
   UpdateFormatMenu();
   UpdateIsoFrame();
+  UpdateServicesFrame();
 }
 
 void
