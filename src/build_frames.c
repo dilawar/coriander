@@ -93,14 +93,13 @@ void
 BuildPowerFrame(void)
 {
   quadlet_t basic_funcs;
-  int err;
   // these two functions are always present:
   gtk_widget_set_sensitive(lookup_widget(commander_window,"power_frame"),TRUE);
   gtk_widget_set_sensitive(lookup_widget(commander_window,"power_reset"),TRUE);
 
   // activate if camera capable of power on/off:
-  err=dc1394_query_basic_functionality(camera->handle,camera->id,&basic_funcs);
-  if (err<0) MainError("Could not query basic functionalities");
+  if (dc1394_query_basic_functionality(camera->handle,camera->id,&basic_funcs)!=DC1394_SUCCESS)
+    MainError("Could not query basic functionalities");
 
   gtk_widget_set_sensitive(lookup_widget(commander_window,"power_on"),(basic_funcs & 0x1<<16));
   gtk_widget_set_sensitive(lookup_widget(commander_window,"power_off"),(basic_funcs & 0x1<<16));
@@ -122,9 +121,9 @@ BuildMemoryFrame(void)
 void
 BuildIsoFrame(void)
 {
-  int err;
   // TODO: only if ISO capable
-  err=dc1394_get_iso_status(camera->handle,camera->id,&misc_info->is_iso_on);
+  if (dc1394_get_iso_status(camera->handle,camera->id,&misc_info->is_iso_on)!=DC1394_SUCCESS)
+    MainError("Can't get ISO status");
   gtk_widget_set_sensitive(lookup_widget(commander_window,"iso_frame"),TRUE);
   gtk_widget_set_sensitive(lookup_widget(commander_window,"iso_start"),!misc_info->is_iso_on);
   gtk_widget_set_sensitive(lookup_widget(commander_window,"iso_restart"),misc_info->is_iso_on);

@@ -36,6 +36,11 @@
 #include "watch_thread.h"
 #include "preferences.h"
 #include "thread_base.h"
+#include "thread_iso.h"
+#include "thread_save.h"
+#include "thread_ftp.h"
+#include "thread_real.h"
+#include "thread_display.h"
 #include "raw1394support.h"
 #include <libdc1394/dc1394_control.h>
 #include <libraw1394/raw1394.h>
@@ -78,7 +83,7 @@ whitebal_data_t *whitebal_data;
 int
 main (int argc, char *argv[])
 {
-  int err, i, cam;
+  int i, cam;
   nodeid_t **camera_nodes=NULL; 
   raw1394handle_t *handles=NULL;
   raw1394handle_t tmp_handle;
@@ -151,12 +156,12 @@ main (int argc, char *argv[])
 	      if (handles[port]!=0)
 		for (cam=0;cam<port_camera_num[port];cam++)
 		  {
-		    err=dc1394_get_camera_info(handles[port], camera_nodes[port][cam], &cameras[index]);
-		    if (err<0) MainError("Could not get camera basic information!");
-		    err=dc1394_get_camera_misc_info(cameras[index].handle, cameras[index].id, &misc_infos[index]);
-		    if (err<0) MainError("Could not get camera misc information!");
-		    err=dc1394_get_camera_feature_set(cameras[index].handle, cameras[index].id, &feature_sets[index]);
-		    if (err<0) MainError("Could not get camera feature information!");
+		    if (dc1394_get_camera_info(handles[port], camera_nodes[port][cam], &cameras[index])!=DC1394_SUCCESS)
+		    MainError("Could not get camera basic information!");
+		    if (dc1394_get_camera_misc_info(cameras[index].handle, cameras[index].id, &misc_infos[index])!=DC1394_SUCCESS)
+		    MainError("Could not get camera misc information!");
+		    if (dc1394_get_camera_feature_set(cameras[index].handle, cameras[index].id, &feature_sets[index])!=DC1394_SUCCESS)
+		    MainError("Could not get camera feature information!");
 		    GetFormat7Capabilities(cameras[index].handle, cameras[index].id, &format7_infos[index]);
 		    image_pipes[index]=NULL;
 		    pthread_mutex_lock(&uiinfos[index].mutex);

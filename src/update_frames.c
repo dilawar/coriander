@@ -178,7 +178,6 @@ void
 UpdateCameraStatusFrame(void)
 {
   char temp[STRING_SIZE];
-  int err;
   quadlet_t sw_version;
   quadlet_t value[3];
 
@@ -236,20 +235,17 @@ UpdateCameraStatusFrame(void)
 				     ctxt.delay_ctxt, temp);
 
   // IIDC software revision:
-  err=dc1394_get_sw_version(camera->handle, camera->id, &sw_version);
-  if (err<0)
-    {
-      MainError("Could not get the IIDC software revision");
-      sw_version=0x000000;
-    }
-  switch (sw_version)
-    {
-    case 0x000100: sprintf(temp," 1.04");break;
-    case 0x000101: sprintf(temp," 1.20");break;
-    case 0x000102: sprintf(temp," 1.30");break;
-    case 0x000114: sprintf(temp," Point Grey 114");break;
-    default: sprintf(temp," Unknown");
-    }
+  if (dc1394_get_sw_version(camera->handle, camera->id, &sw_version)!=DC1394_SUCCESS) {
+    MainError("Could not get the IIDC software revision");
+    sw_version=0x000000;
+  }
+  switch (sw_version) {
+  case 0x000100: sprintf(temp," 1.04");break;
+  case 0x000101: sprintf(temp," 1.20");break;
+  case 0x000102: sprintf(temp," 1.30");break;
+  case 0x000114: sprintf(temp," Point Grey 114");break;
+  default: sprintf(temp," Unknown");
+  }
   gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"camera_dc_status"),
 		       ctxt.dc_ctxt, ctxt.dc_id);
   ctxt.dc_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(commander_window,"camera_dc_status"),
@@ -274,7 +270,6 @@ void
 UpdateTransferStatusFrame(void)
 {
   char temp[STRING_SIZE];
-  int err;
   sprintf(temp," %d",misc_info->iso_channel);
   gtk_statusbar_remove( (GtkStatusbar*) lookup_widget(commander_window,"iso_channel_status"), ctxt.iso_channel_ctxt, ctxt.iso_channel_id);
   ctxt.iso_channel_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"iso_channel_status"), ctxt.iso_channel_ctxt, temp);
@@ -283,7 +278,8 @@ UpdateTransferStatusFrame(void)
   gtk_statusbar_remove( (GtkStatusbar*) lookup_widget(commander_window,"iso_speed_status"), ctxt.iso_speed_ctxt, ctxt.iso_speed_id);
   ctxt.iso_speed_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"iso_speed_status"), ctxt.iso_speed_ctxt, " N/A");
 
-  err=dc1394_get_iso_channel_and_speed(camera->handle, camera->id, &misc_info->iso_channel, &misc_info->iso_speed);
+  if (dc1394_get_iso_channel_and_speed(camera->handle, camera->id, &misc_info->iso_channel, &misc_info->iso_speed)!=DC1394_SUCCESS)
+    MainError("Can't get ISO channel and speed");
   sprintf(temp," %d",misc_info->iso_channel);
   gtk_statusbar_remove( (GtkStatusbar*) lookup_widget(commander_window,"iso_channel_status"), ctxt.iso_channel_ctxt, ctxt.iso_channel_id);
   ctxt.iso_channel_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"iso_channel_status"), ctxt.iso_channel_ctxt, temp);

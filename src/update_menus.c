@@ -41,15 +41,13 @@ extern char* format7_list[8];
 
 void UpdateFormatMenu(void)
 {
-  int err;
   quadlet_t formats;
 
-  err= dc1394_query_supported_formats(camera->handle, camera->id, &formats);
-  if (err<0)
-    {
-      MainError("Could not query supported formats");
-      formats=0x0;
-    }
+  if (dc1394_query_supported_formats(camera->handle, camera->id, &formats)!=DC1394_SUCCESS) {
+    MainError("Could not query supported formats");
+    formats=0x0;
+  }
+
   // also disable 'window menu' items (this should go in another function, I know...)
   gtk_widget_set_sensitive(lookup_widget(commander_window,"format7_window"),formats & (0x1<<24) );
   //gtk_widget_set_sensitive(lookup_widget(commander_window,"format6_window"),formats & (0x1<<25) );
