@@ -165,6 +165,13 @@ BuildPrefsSaveFrame(void)
 								   "prefs_save_seq"),TRUE);
       break;
     }
+  // scratch
+  if (preferences.save_convert == SAVE_CONVERT_ON)
+    gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(preferences_window,
+								 "prefs_save_convert"),TRUE);
+  else
+    gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(preferences_window,
+								 "prefs_save_noconvert"),TRUE);
 
   //filename
   gtk_entry_set_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_save_filename")),

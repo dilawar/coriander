@@ -2,6 +2,9 @@ Coriander, (c) 2000-2002 Damien Douxchamps <douxchamps@ieee.org>
 
 Changes towards version 0.26
 
+   October 16, 2002, by Damien Douxchamps
+   - fixed convert button behavior for save service 
+	
    October 15, 2002, by Damien Douxchamps
    - changed step_x to step_y for the F7 range Y setting.
 	
