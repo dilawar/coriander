@@ -83,6 +83,14 @@ GetFormat7Capabilities(raw1394handle_t handle, nodeid_t node, Format7Info *info)
 	      err=1;
 	      err*=dc1394_query_format7_max_image_size(handle,node,f,&info->mode[i].max_size_x,&info->mode[i].max_size_y);
 	      err*=dc1394_query_format7_unit_size(handle,node,f,&info->mode[i].step_x,&info->mode[i].step_y);
+	      // quick hack to keep size/position even. If pos/size is ODD, strange color/distorsions occur on some cams
+	      // (e.g. Basler cams). This will have to really fixed later.
+	      //fprintf(stderr,"mode %d, step: [%d %d]\n",i,info->mode[i].step_x,info->mode[i].step_y);
+	      /*if (info->mode[i].step_x<2)
+		info->mode[i].step_x=2;
+	      if (info->mode[i].step_y<2)
+	      info->mode[i].step_y=2;*/
+
 	      err*=dc1394_query_format7_image_position(handle,node,f,&info->mode[i].pos_x,&info->mode[i].pos_y);
 	      err*=dc1394_query_format7_image_size(handle,node,f,&info->mode[i].size_x,&info->mode[i].size_y);
 	      

@@ -144,6 +144,7 @@ CommonChainSetup(chain_t* chain, service_t req_service, unsigned int camera)
       chain->height=info_iso->capture.frame_height;
       chain->bytes_per_frame=buffer_size;
       chain->mode=misc_info->mode;
+      chain->format=misc_info->format;
       if (misc_info->format==FORMAT_SCALABLE_IMAGE_SIZE)
 	chain->format7_color_mode=format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].color_coding_id;
       else
@@ -165,6 +166,7 @@ CommonChainSetup(chain_t* chain, service_t req_service, unsigned int camera)
 	  chain->height=chain->prev_chain->height;
 	  chain->width=chain->prev_chain->width;
 	  chain->mode=chain->prev_chain->mode;
+	  chain->format=chain->prev_chain->format;
 	  chain->bytes_per_frame=chain->prev_chain->bytes_per_frame;
 	  buffer_size=chain->bytes_per_frame;
 	  chain->format7_color_mode=chain->prev_chain->format7_color_mode;

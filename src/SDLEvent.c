@@ -36,6 +36,10 @@
 #include "tools.h"
 
 extern PrefsInfo preferences;
+extern Format7Info *format7_info;
+extern GtkWidget *format7_window;
+extern dc1394_camerainfo *camera;
+extern dc1394_miscinfo *misc_info;
 
 int
 SDLEventStartThread(chain_t *display_service)
@@ -131,19 +135,18 @@ SDLHandleEvent(chain_t *display_service)
 	  break;
 	case SDL_KEYDOWN:
 	  OnKeyPressed(display_service,event.key.keysym.sym, event.key.keysym.mod);
-	  //fprintf(stderr,"Key down: %d %d\n", event.key.keysym.sym, event.key.keysym.mod);
 	  break;
 	case SDL_KEYUP:
 	  OnKeyReleased(display_service,event.key.keysym.sym, event.key.keysym.mod);
-	  //fprintf(stderr,"Key up: %d %d\n", event.key.keysym.sym, event.key.keysym.mod);
 	  break;
 	case SDL_MOUSEBUTTONDOWN:
 	  OnMouseDown(display_service,event.button.button, event.button.x, event.button.y);
-	  //fprintf(stderr, "Mouse down: %d at [%d %d]\n", event.button.button, event.button.x, event.button.y);
 	  break;
 	case SDL_MOUSEBUTTONUP:
 	  OnMouseUp(display_service,event.button.button, event.button.x, event.button.y);
-	  //fprintf(stderr, "Mouse up: %d at [%d %d]\n", event.button.button, event.button.x, event.button.y);
+	  break;
+	case SDL_MOUSEMOTION:
+	  OnMouseMotion(display_service, event.motion.x, event.motion.y);
 	  break;
 	}
       pthread_mutex_unlock(&display_service->mutex_data);
@@ -212,18 +215,26 @@ OnKeyPressed(chain_t *display_service, int key, int mod)
   switch (key)
     {
     case SDLK_n:
+      // set display to normal size
       SDLResizeDisplay(display_service, display_service->width, display_service->height);
       break;
     case SDLK_f:
+      // toggle fullscreen mode
       SDL_WM_ToggleFullScreen(info->SDL_video);
       break;
+    case SDLK_c:
+      // crop image (under development)
+      SDLCropImage(display_service);
+      break;
     case SDLK_GREATER:
+      // image size *2
       if (mod&(SDLK_LSHIFT|SDLK_RSHIFT))
 	SDLResizeDisplay(display_service, info->SDL_videoRect.w/2, info->SDL_videoRect.h/2);
       else
 	SDLResizeDisplay(display_service, info->SDL_videoRect.w*2, info->SDL_videoRect.h*2);
       break;
     case SDLK_LESS:
+      // image size /2
       if (mod&(SDLK_LSHIFT|SDLK_RSHIFT))
 	SDLResizeDisplay(display_service, info->SDL_videoRect.w*2, info->SDL_videoRect.h*2);
       else
@@ -242,12 +253,162 @@ OnKeyReleased(chain_t *display_service, int key, int mod)
 void
 OnMouseDown(chain_t *display_service, int button, int x, int y)
 {
+  
+  displaythread_info_t *info;
+  info=(displaythread_info_t*)display_service->data;
 
+  switch (button)
+    {
+    case SDL_BUTTON_LEFT:
+      pthread_mutex_lock(&info->mutex_area);
+      info->draw=1;
+      info->mouse_down=1;
+      // there is some adaptation because the display size can be different
+      // from the real image size. (i.e. the image can be resized)
+      info->upper_left[0]= ((x*display_service->width /info->SDL_videoRect.w));
+      info->upper_left[1]= ((y*display_service->height/info->SDL_videoRect.h));
+      info->lower_right[0]=((x*display_service->width /info->SDL_videoRect.w));
+      info->lower_right[1]=((y*display_service->height/info->SDL_videoRect.h));
+      pthread_mutex_unlock(&info->mutex_area);
+      break;
+    case SDL_BUTTON_MIDDLE:
+      break;
+    case SDL_BUTTON_RIGHT:
+      break;
+    default:
+      fprintf(stderr,"Bad button ID in SDL!\n");
+      break;
+    }
 }
 
 void
 OnMouseUp(chain_t *display_service, int button, int x, int y)
 {
 
+  displaythread_info_t *info;
+  info=(displaythread_info_t*)display_service->data;
+
+  switch (button)
+    {
+    case SDL_BUTTON_LEFT:
+      pthread_mutex_lock(&info->mutex_area);
+      info->mouse_down=0;
+      // there is some adaptation because the display size can be different
+      // from the real image size. (i.e. the image can be resized)
+      //info->lower_right[0]=x*display_service->width/info->SDL_videoRect.w;
+      //info->lower_right[1]=y*display_service->height/info->SDL_videoRect.h;
+      pthread_mutex_unlock(&info->mutex_area);
+      break;
+    case SDL_BUTTON_MIDDLE:
+      break;
+    case SDL_BUTTON_RIGHT:
+      break;
+    default:
+      fprintf(stderr,"Bad button ID in SDL!\n");
+      break;
+    }
 }
+
+
+void
+OnMouseMotion(chain_t *display_service, int x, int y)
+{
+  displaythread_info_t *info;
+  info=(displaythread_info_t*)display_service->data;
+  pthread_mutex_lock(&info->mutex_area);
+  if (info->mouse_down==1)
+    {
+      // there is some adaptation because the display size can be different
+      // from the real image size. (i.e. the image can be resized)
+      info->lower_right[0]=x*display_service->width/info->SDL_videoRect.w;
+      info->lower_right[1]=y*display_service->height/info->SDL_videoRect.h;
+    }
+  pthread_mutex_unlock(&info->mutex_area);
+}
+
+
+void
+SDLCropImage(chain_t *display_service)
+{
+  int tmp;
+  int upper_left[2];
+  int lower_right[2];
+  int pos[2];
+  int size[2];
+  int state[5];
+  GtkAdjustment* adj2;
+  displaythread_info_t *info;
+  info=(displaythread_info_t*)display_service->data;
+
+  pthread_mutex_lock(&info->mutex_area);
+  info->draw=0;
+  upper_left[0]=info->upper_left[0];
+  upper_left[1]=info->upper_left[1];
+  lower_right[0]=info->lower_right[0];
+  lower_right[1]=info->lower_right[1];
+  pthread_mutex_unlock(&info->mutex_area);
+      
+  if (lower_right[0]<upper_left[0])
+    {
+      tmp=lower_right[0];
+      lower_right[0]=upper_left[0];
+      upper_left[0]=tmp;
+    }
+  if (lower_right[1]<upper_left[1])
+    {
+      tmp=lower_right[1];
+      lower_right[1]=upper_left[1];
+      upper_left[1]=tmp;
+    }
+
+  if (display_service->format==FORMAT_SCALABLE_IMAGE_SIZE)
+    {
+      pos[0]=(upper_left[0]/info->f7_step[0])*info->f7_step[0];
+      pos[1]=(upper_left[1]/info->f7_step[1])*info->f7_step[1];
+      size[0]=(lower_right[0]/info->f7_step[0])*info->f7_step[0]+info->f7_step[0];
+      size[1]=(lower_right[1]/info->f7_step[1])*info->f7_step[1]+info->f7_step[1];
+      size[0]=size[0]-pos[0];
+      size[1]=size[1]-pos[1];
+      /*
+      fprintf(stderr,"corners: [%d %d] [%d %d], pos: [%d %d], size[%d %d]\n",
+	      upper_left[0],upper_left[1],lower_right[0],lower_right[1],
+	      pos[0],pos[1],size[0],size[1]);
+      
+      IsoFlowCheck(state);
+      fprintf(stderr,"ISO check completed\n");
+      if ((!dc1394_set_format7_image_size(camera->handle,camera->id, misc_info->mode, size[0], size[1]))||
+	  (!dc1394_set_format7_image_position(camera->handle,camera->id, misc_info->mode, pos[0], pos[1])))
+	//MainError("Could not set Format7 image size and position");
+	  fprintf(stderr,"error setting size/pos.\n");
+      else
+	{
+	  format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].size_x=size[0];
+	  format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].size_y=size[1];
+	  format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].pos_x=pos[0];
+	  format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].pos_y=pos[1];
+	  fprintf(stderr,"buffered size/pos set.\n");
+	  
+	  adj2=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(format7_window, "format7_hposition_scale")));
+	  adj2->upper=format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].max_size_x-size[0];
+	  gtk_signal_emit_by_name(GTK_OBJECT (adj2), "changed");
+	  adj2=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(format7_window, "format7_vposition_scale")));
+	  adj2->upper=format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].max_size_y-size[1];
+	  gtk_signal_emit_by_name(GTK_OBJECT (adj2), "changed");
+	  adj2=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(format7_window, "format7_hsize_scale")));
+	  adj2->upper=format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].max_size_x-pos[0];
+	  gtk_signal_emit_by_name(GTK_OBJECT (adj2), "changed");
+	  adj2=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(format7_window, "format7_vsize_scale")));
+	  adj2->upper=format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].max_size_y-pos[1];
+	  gtk_signal_emit_by_name(GTK_OBJECT (adj2), "changed");
+	  
+	}
+
+      IsoFlowResume(state);
+      */
+    }
+      
+  pthread_mutex_unlock(&info->mutex_area);
+}
+
+
 #endif

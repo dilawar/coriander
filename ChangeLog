@@ -2,6 +2,21 @@ Coriander, (c) 2000-2002 Damien Douxchamps <douxchamps@ieee.org>
 
 Changes towards version 0.24:
 
+   Mar 18, 2002, by Damien Douxchamps
+   - corrected a bug in the strings: the program crashed when a
+     preference string was changed twice. Thanks to 'inet' SF user.
+	
+   Mar 17, 2002, by Damien Douxchamps
+   - started to implement an interactive format selection for
+     format7. This is necessary because the sliders do not respect
+     the 'step' argument the way I wanted. Currently, you can draw
+     a window using the left mouse button, and you can clear it
+     by pressing 'c'. the 'c' key will be used for cropping.
+	
+   Mar 16, 2002, by Damien Douxchamps
+   - added GUID display in status window
+   - more F7 debug (ranges adjustments)
+	
    Mar 15, 2002, by Damien Douxchamps
    - lots of bugfixes for format7, trigger, and user interface.
    - more bugfixes for format7 color coding.
@@ -458,5 +473,3 @@ Changes in version 0.02, Dec. 29, 2000:
 Changes in version 0.01, Dec. 27, 2000:
 
     - first alpha version, still a lot of stuff missing...
-
-	

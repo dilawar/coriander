@@ -707,7 +707,6 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
 	else 
 	  {
 	    format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].size_x=adj->value;
-
 	    // adjust the pos_x adjustment so that (size_x+pos_x)<=max_size_x:
 	    adj2=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(format7_window, "format7_hposition_scale")));
 	    adj2->upper=format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].max_size_x-adj->value;
@@ -828,47 +827,39 @@ void
 on_prefs_save_button_clicked           (GtkButton       *button,
                                         gpointer         user_data)
 {
-  g_free(preferences.save_filename);
   preferences.save_filename=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_save_filename")));
-  g_free(preferences.video1394_device);
   preferences.video1394_device=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_video1394_device")));
 
 #ifdef HAVE_FTPLIB
-  g_free(preferences.ftp_address);
   preferences.ftp_address=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_ftp_address")));
-  g_free(preferences.ftp_filename);
   preferences.ftp_filename=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_ftp_filename")));
-  g_free(preferences.ftp_path);
   preferences.ftp_path=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_ftp_path")));
-  g_free(preferences.ftp_password);
   preferences.ftp_password=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_ftp_password")));
-  g_free(preferences.ftp_user);
   preferences.ftp_user=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_ftp_user")));
 #endif
 
 #ifdef HAVE_REALLIB
-  g_free(preferences.real_address);
   preferences.real_address=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_address")));
-  g_free(preferences.real_user);
   preferences.real_user=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_user")));
-  g_free(preferences.real_password);
   preferences.real_password=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_password")));
-  g_free(preferences.real_filename);
   preferences.real_filename=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_filename")));
-  g_free(preferences.real_title);
   preferences.real_title=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_title")));
-  g_free(preferences.real_author);
   preferences.real_author=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_author")));
-  g_free(preferences.real_copyright);
   preferences.real_copyright=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_copyright")));
 #endif
 
-  preferences.op_timeout = gtk_spin_button_get_value_as_float(GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(preferences_window), "prefs_op_timeout_scale")));
-  preferences.auto_update_frequency = gtk_spin_button_get_value_as_float(GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(preferences_window), "prefs_update_scale")));
-  preferences.display_period = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(preferences_window), "prefs_display_period")));
-  preferences.save_period = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(preferences_window), "prefs_save_period")));
-  preferences.ftp_period = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(preferences_window), "prefs_ftp_period")));
-  preferences.real_port = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(preferences_window), "prefs_real_port")));
+  preferences.op_timeout = gtk_spin_button_get_value_as_float(GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(preferences_window),
+											    "prefs_op_timeout_scale")));
+  preferences.auto_update_frequency = gtk_spin_button_get_value_as_float(GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(preferences_window),
+												       "prefs_update_scale")));
+  preferences.display_period = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(preferences_window),
+											      "prefs_display_period")));
+  preferences.save_period = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(preferences_window),
+											   "prefs_save_period")));
+  preferences.ftp_period = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(preferences_window),
+											  "prefs_ftp_period")));
+  preferences.real_port = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(preferences_window),
+											 "prefs_real_port")));
 
   WriteConfigFile();
 }

@@ -54,6 +54,7 @@ typedef struct _Chain_T
   int             height;
   long int        bytes_per_frame;
   int             mode;
+  int             format;
   int             format7_color_mode;
 
 } chain_t;

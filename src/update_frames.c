@@ -172,6 +172,11 @@ UpdateCameraStatusFrame(void)
   char temp[STRING_SIZE];
   int err;
   quadlet_t sw_version;
+  quadlet_t value[3];
+
+  value[0]= camera->euid_64 & 0xffffffff;
+  value[1]= (camera->euid_64 >>32) & 0x000000ff;
+  value[2]= (camera->euid_64 >>40) & 0xfffff;
 
   // vendor:
   sprintf(temp," %s",camera->vendor);
@@ -202,10 +207,11 @@ UpdateCameraStatusFrame(void)
 				    ctxt.handle_ctxt, temp);
 
   // camera GUID:
+  sprintf(temp," 0x%06x-%02x%08x", value[2], value[1], value[0]);
   gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"camera_guid_status"),
 		       ctxt.guid_ctxt, ctxt.guid_id);
   ctxt.guid_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(commander_window,"camera_guid_status"),
-				  ctxt.guid_ctxt, " <Future Feature>");
+				  ctxt.guid_ctxt, temp);
 
   // camera maximal PHY speed:
   sprintf(temp," %s",phy_speed_list[selfid->packetZero.phySpeed]);

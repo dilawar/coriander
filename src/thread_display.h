@@ -54,6 +54,13 @@ typedef struct
   pthread_mutex_t         mutex_event;
   pthread_t               event_thread;
 
+  pthread_mutex_t         mutex_area;
+  int                     upper_left[2];
+  int                     lower_right[2];
+  int                     f7_step[2];
+  int                     draw;
+  int                     mouse_down;
+
 #endif
 
 } displaythread_info_t;
@@ -71,12 +78,17 @@ gint
 DisplayStopThread(unsigned int camera);
 
 #ifdef HAVE_SDLLIB
+
 int
 sdlInit(chain_t *display_service);
 
 void
 convert_to_yuv_for_SDL(unsigned char *src, unsigned char *dest, int mode,
 		       int width, int height, int f7_colormode);
+
+void
+SDLDisplayArea(chain_t *display_service);
+
 #endif
 
 #endif

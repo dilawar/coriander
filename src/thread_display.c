@@ -39,6 +39,7 @@
 #include "thread_iso.h"
 
 extern PrefsInfo preferences;
+extern Format7Info *format7_info;
 extern dc1394_miscinfo *misc_info;
 extern int current_camera;
 extern dc1394_camerainfo *camera;
@@ -164,6 +165,7 @@ DisplayThread(void* arg)
 					     info->SDL_overlay->pixels[0], display_service->mode,
 					     display_service->width, display_service->height,
 					     display_service->format7_color_mode);
+		      SDLDisplayArea(display_service);
 		      SDL_UnlockYUVOverlay(info->SDL_overlay);
 		      SDL_DisplayYUVOverlay(info->SDL_overlay, &info->SDL_videoRect);
 		      //fprintf(stderr,"Displayed\n");
@@ -300,6 +302,13 @@ sdlInit(chain_t *display_service)
   info->SDL_videoRect.w=display_service->width;
   info->SDL_videoRect.h=display_service->height;
 
+  // video cropping features:
+  pthread_mutex_init(&info->mutex_area, NULL);
+  info->draw=0;
+  info->mouse_down=0;
+  info->f7_step[0]=format7_info->mode[display_service->mode-MODE_FORMAT7_MIN].step_x;
+  info->f7_step[1]=format7_info->mode[display_service->mode-MODE_FORMAT7_MIN].step_y;
+
   SDLEventStartThread(display_service);
 
   return(1);
@@ -385,6 +394,53 @@ convert_to_yuv_for_SDL(unsigned char *src, unsigned char *dest, int mode,
 	}
       break;
     }
+}
+
+void
+SDLDisplayArea(chain_t *display_service)
+{
+  displaythread_info_t *info;
+  unsigned char *pimage;
+  int upper_left[2];
+  int lower_right[2];
+  int width;
+  int tmp;
+  register int i;
+  register int j;
+  info=(displaythread_info_t*)display_service->data;
+
+  pthread_mutex_lock(&info->mutex_area);
+  if (info->draw==1)
+    {
+      upper_left[0]=info->upper_left[0];
+      upper_left[1]=info->upper_left[1];
+      lower_right[0]=info->lower_right[0];
+      lower_right[1]=info->lower_right[1];
+      pimage=info->SDL_overlay->pixels[0];
+      width=display_service->width;
+      pthread_mutex_unlock(&info->mutex_area);
+      
+      if (lower_right[0]<upper_left[0])
+	{
+	  tmp=lower_right[0];
+	  lower_right[0]=upper_left[0];
+	  upper_left[0]=tmp;
+	}
+      if (lower_right[1]<upper_left[1])
+	{
+	  tmp=lower_right[1];
+	  lower_right[1]=upper_left[1];
+	  upper_left[1]=tmp;
+	}
+
+      for (i=upper_left[1];i<=lower_right[1];i++)
+	for (j=upper_left[0];j<=lower_right[0];j++)
+	  pimage[(i*width+j)*2]=(unsigned char)(255-pimage[(i*width+j)*2]);
+      
+    }
+  else
+    pthread_mutex_unlock(&info->mutex_area);
+    
 }
 
 #endif

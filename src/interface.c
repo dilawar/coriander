@@ -1966,7 +1966,7 @@ create_commander_window (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (vbox23);
   gtk_box_pack_start (GTK_BOX (hbox17), vbox23, FALSE, FALSE, 0);
-  gtk_widget_set_usize (vbox23, 70, -2);
+  gtk_widget_set_usize (vbox23, 100, -2);
 
   label1 = gtk_label_new (_("Vendor:"));
   gtk_widget_ref (label1);
@@ -2149,7 +2149,7 @@ create_commander_window (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (vbox42);
   gtk_box_pack_start (GTK_BOX (hbox39), vbox42, FALSE, FALSE, 0);
-  gtk_widget_set_usize (vbox42, 70, -2);
+  gtk_widget_set_usize (vbox42, 100, -2);
 
   label18 = gtk_label_new (_("Channel:"));
   gtk_widget_ref (label18);

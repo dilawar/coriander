@@ -2857,7 +2857,7 @@
 	      <widget>
 		<class>GtkVBox</class>
 		<name>vbox23</name>
-		<width>70</width>
+		<width>100</width>
 		<homogeneous>True</homogeneous>
 		<spacing>0</spacing>
 		<child>
@@ -3155,7 +3155,7 @@
 	      <widget>
 		<class>GtkVBox</class>
 		<name>vbox42</name>
-		<width>70</width>
+		<width>100</width>
 		<homogeneous>True</homogeneous>
 		<spacing>0</spacing>
 		<child>

@@ -54,6 +54,12 @@ OnMouseDown(chain_t *display_service, int button, int x, int y);
 void
 OnMouseUp(chain_t *display_service, int button, int x, int y);
 
+void
+OnMouseMotion(chain_t *display_service, int x, int y);
+
+void
+SDLCropImage(chain_t *display_service);
+
 #endif
 
 #endif
