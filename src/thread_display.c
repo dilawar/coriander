@@ -481,6 +481,8 @@ DisplayThreadCheckParams(chain_t *display_service)
   displaythread_info_t *info;
   int first_time=0;
   int size_change;
+  int prev_image_size[2];
+  int prev_overlay_size[2];
   info=(displaythread_info_t*)display_service->data;
   
   // copy harmless parameters anyway:
@@ -510,6 +512,9 @@ DisplayThreadCheckParams(chain_t *display_service)
     size_change=((display_service->current_buffer->width!=display_service->local_param_copy.width)||
 		 (display_service->current_buffer->height!=display_service->local_param_copy.height));
     
+    prev_image_size[0]=display_service->local_param_copy.width;
+    prev_image_size[1]=display_service->local_param_copy.height;
+
     // copy all new parameters:
     display_service->local_param_copy.width=display_service->current_buffer->width;
     display_service->local_param_copy.height=display_service->current_buffer->height;
@@ -533,18 +538,26 @@ DisplayThreadCheckParams(chain_t *display_service)
       if (first_time) {
 	SDLInit(display_service);
       } else {
-	SDL_FreeYUVOverlay(info->sdloverlay);
+	// note: in order to preserve the previous scaling and ratio, the previous parameters are used to
+	// determine the new size of the display area
+	prev_overlay_size[0]=info->sdlvideorect.w;
+	prev_overlay_size[1]=info->sdlvideorect.h;
+	watchthread_info.draw=0;
+	SDLResizeDisplay(display_service,
+			 display_service->current_buffer->width*prev_overlay_size[0]/prev_image_size[0],
+			 display_service->current_buffer->height*prev_overlay_size[1]/prev_image_size[1]);
+	/*SDL_FreeYUVOverlay(info->sdloverlay);
 	info->sdloverlay=
 	  SDL_CreateYUVOverlay(display_service->current_buffer->width,
 			       display_service->current_buffer->height,
 			       SDL_YUY2_OVERLAY,
 			       info->sdlvideo);
+	*/
       }
 #endif
     }
   }
 
 }
-
 
 #endif

@@ -1,6 +1,12 @@
 Coriander, (c) 2000-2004 Damien Douxchamps <ddouxchamps@users.sf.net>
 
-   Februari 2, 2004, by Johan Knol
+Changes towards version 1.0.0
+	
+   February 3, 2004, by Damien Douxchamps
+   - enhance the previous change by Johan: keep aspect ratio and avoid
+     async errors when an area is selected during F7 the change.
+	
+   February 2, 2004, by Johan Knol
    - now builds without sdllib (and thus without the display service ;( )
    - resizing from the format7 tab now redraws the live display in the bg
 	
