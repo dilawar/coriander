@@ -163,6 +163,7 @@ OnKeyPressed(chain_t *display_service, int key, int mod)
   displaythread_info_t *info;
   info=(displaythread_info_t*)display_service->data;
 
+  //printf ("%s: 0x%02x\n", __FUNCTION__, key);
   switch (key) {
   case SDLK_n:
     // set display to normal size
@@ -180,20 +181,36 @@ OnKeyPressed(chain_t *display_service, int key, int mod)
     // set F7 image to max size
     SDLSetMaxSize(display_service);
     break;
+  case SDLK_PAGEUP:
+    // image size +10%
+    SDLResizeDisplay(display_service, info->sdlvideorect.w*10/9, info->sdlvideorect.h*10/9);
+    break;
+  case SDLK_PAGEDOWN:
+    // image size -10%
+    SDLResizeDisplay(display_service, info->sdlvideorect.w*9/10, info->sdlvideorect.h*9/10);
+    break;
+#if 1
+    /* This should leave. SDL supplies the raw key with modifiers, so e.g.
+       'a' = SDLK_a,0 'A' = SDLK_a,KMOD_SHIFT, etc. On my keyboard, '<' is
+       SDLK_COMMA,KMOD_SHIFT and SDLK_GREATER will never arrive here.
+    */
   case SDLK_GREATER:
     // image size *2
-    if (mod&(SDLK_LSHIFT|SDLK_RSHIFT))
+    if (mod&(KMOD_SHIFT)) {
       SDLResizeDisplay(display_service, info->sdlvideorect.w/2, info->sdlvideorect.h/2);
-    else
+    } else {
       SDLResizeDisplay(display_service, info->sdlvideorect.w*2, info->sdlvideorect.h*2);
+    }
     break;
   case SDLK_LESS:
     // image size /2
-    if (mod&(SDLK_LSHIFT|SDLK_RSHIFT))
+    if (mod&(KMOD_SHIFT)) {
       SDLResizeDisplay(display_service, info->sdlvideorect.w*2, info->sdlvideorect.h*2);
-    else
+    } else {
       SDLResizeDisplay(display_service, info->sdlvideorect.w/2, info->sdlvideorect.h/2);
+    }
     break;
+#endif
   }
       
 }

@@ -1,7 +1,15 @@
+2004-03-04  Johan Knol  <johan@frija.iduna.nl>
+
+
 Coriander, (c) 2000-2004 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 1.0.0
 
+   March 4, 2004, by Johan Knol
+   - src/SDLEvent.c (OnKeyPressed): (partially) fixed the '<' and '>' 
+	key binding modifiers and added SDLK_PAGEUP/DOWN as an alternative 
+	for '<' and '>' on non-damien :) keyboards.
+	
    February 24, 2004, by Johan Knol
    - src/thread_display.c (SDLDisplayArea): another fix for odd width MONO8
 	when drawing the selection
