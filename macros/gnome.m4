@@ -92,9 +92,9 @@ AC_DEFUN([GNOME_INIT_HOOK],[
 	          AC_MSG_ERROR(Could not find gnomeConf.sh  
 **************************************************************************
 **   Please (re-)install the Gnome library development package. It is   **
-**   called libgnome-dev (Debian), gnome-libs-devel (RedHat),... If it  **
-**   still does not work, locate the gnomeConf.sh file on your system   **
-**   and symlink it in /usr/lib/                                        **
+**   called libgnome-dev (Debian) or gnome-libs-devel (RedHat)...  If   **
+**   it still does not work you have to locate the gnomeConf.sh file    **
+**   on your system and symlink it in /usr/lib/                         **
 **************************************************************************)
  	        fi
 	      fi
