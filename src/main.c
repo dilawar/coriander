@@ -92,9 +92,6 @@ main (int argc, char *argv[])
   if (businfo->card_found==0) {
     gtk_widget_show(create_no_handle_window());
     gtk_main ();
-    free(businfo->camera_nodes);
-    free(businfo->port_camera_num);
-    free(businfo->handles);
     exit(1);
   }
   else {
