@@ -211,7 +211,7 @@ BuildFormat7ModeMenu(void)
   mode_num_menu = gtk_menu_new ();
 
   for (f=MODE_FORMAT7_MIN,i=0;f<=MODE_FORMAT7_MAX;f++,i++) {
-    if (camera->format7_info.mode[f-MODE_FORMAT7_MIN].present) {
+    if (camera->format7_info.mode[f-MODE_FORMAT7_MIN].present>0) {
       index[i]=k;
       k++;
       glade_menuitem = gtk_menu_item_new_with_label (_(format7_mode_list[i]));

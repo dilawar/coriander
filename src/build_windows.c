@@ -40,6 +40,7 @@ void
 BuildFormat7Window(void)
 {
   int f;
+
   // this window is built only if the camera supports F7. If there is a support,
   // the default edit mode is either the currently selected mode (F7 active) or
   // the first available mode (F7 inactive)
@@ -52,10 +53,13 @@ BuildFormat7Window(void)
   else { 
     // get first supported F7 mode
     for (f=MODE_FORMAT7_MIN;f<=MODE_FORMAT7_MAX;f++) {
-      if (camera->format7_info.mode[f-MODE_FORMAT7_MIN].present>0)
+      if (camera->format7_info.mode[f-MODE_FORMAT7_MIN].present>0) {
+	f++;
 	break;
+      }
     }
-    
+    f--;
+
     if (camera->format7_info.mode[f-MODE_FORMAT7_MIN].present==0) {
       // F7 not supported. don't build anything
       camera->format7_info.edit_mode=-1;
@@ -65,11 +69,12 @@ BuildFormat7Window(void)
     }
   }
 
-  if (camera->format7_info.edit_mode>0) {
+  if (camera->format7_info.edit_mode>=0) {
     BuildFormat7ModeFrame();
     BuildFormat7Ranges();
     BuildFormat7BppRange();
   }
+
 }
 
 void

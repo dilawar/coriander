@@ -62,7 +62,7 @@ GetFormat7Capabilities(raw1394handle_t handle, nodeid_t node, Format7Info *info)
       else {
 	for (i=0,f=MODE_FORMAT7_MIN;f<=MODE_FORMAT7_MAX;f++,i++) {
 	  info->mode[i].present= (value & (0x1<<(31-i)) );
-	  if (info->mode[i].present) { // check for mode presence before query
+	  if (info->mode[i].present>0) { // check for mode presence before query
 	    if (dc1394_query_format7_max_image_size(handle,node,f,&info->mode[i].max_size_x,&info->mode[i].max_size_y)!=DC1394_SUCCESS)
 	      MainError("Got a problem querying format7 max image size");
 	    if (dc1394_query_format7_unit_size(handle,node,f,&info->mode[i].step_x,&info->mode[i].step_y)!=DC1394_SUCCESS)
@@ -101,9 +101,11 @@ GetFormat7Capabilities(raw1394handle_t handle, nodeid_t node, Format7Info *info)
       }
     }
     else { // format7 is not supported!!
+      //fprintf(stderr,"F7 not supported\n");
       for (i=0,f=MODE_FORMAT7_MIN;f<=MODE_FORMAT7_MAX;f++,i++) {
 	info->mode[i].present=0;
       }
+      info->edit_mode=-1;
     }
   }  
       

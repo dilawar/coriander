@@ -362,32 +362,33 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
 				       gpointer         user_data)
 {
   int sx, sy, px, py;
-
-  sx=camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].size_x;
-  sy=camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].size_y;
-  px=camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].pos_x;
-  py=camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].pos_y;
-
-  switch((int)user_data)
-    {
-      case FORMAT7_SIZE_X:
-	sx=adj->value;
-	break;
-      case FORMAT7_SIZE_Y:
-	sy=adj->value;
-	break;
-      case FORMAT7_POS_X:
-	px=adj->value;
-	break;
-      case FORMAT7_POS_Y:
-	py=adj->value;
-	break;
+  fprintf(stderr,"%d\n",camera->format7_info.edit_mode);
+  if (camera->format7_info.edit_mode>=0) { // check if F7 is supported
+    sx=camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].size_x;
+    sy=camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].size_y;
+    px=camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].pos_x;
+    py=camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].pos_y;
+    
+    switch((int)user_data) {
+    case FORMAT7_SIZE_X:
+      sx=adj->value;
+      break;
+    case FORMAT7_SIZE_Y:
+      sy=adj->value;
+      break;
+    case FORMAT7_POS_X:
+      px=adj->value;
+      break;
+    case FORMAT7_POS_Y:
+      py=adj->value;
+      break;
     }
-  SetFormat7Crop(sx,sy,px,py);
-
-  //fprintf(stderr,"Size: %d %d  Position: %d %d\n",info->size_x, info->size_y, info->pos_x, info->pos_y);
-  // update bpp range here.
-  UpdateFormat7BppRange();
+    SetFormat7Crop(sx,sy,px,py);
+    
+    //fprintf(stderr,"Size: %d %d  Position: %d %d\n",info->size_x, info->size_y, info->pos_x, info->pos_y);
+    // update bpp range here.
+    UpdateFormat7BppRange();
+  }
 }
 
 
