@@ -9,7 +9,7 @@
 ==========================================================================
 		
 
-(This README is for version 0.22.)
+(This README is for version 0.23.)
 
 Hello world!
 
@@ -26,7 +26,7 @@ switched off).
 IMPORTANT NOTE: Coriander will NOT work with consumer-grade DV
 cameras (e.g. cameras in which you can insert a tape). These cameras
 should be controlled with he AV/C protocol, please refer to [8]. Also,
-not all industrial cameras are DC specs-compliant. Check [7] to have a
+not all industrial cameras are IIDC specs-compliant. Check [7] to have a
 list of currently supported cameras.
 
 				**********

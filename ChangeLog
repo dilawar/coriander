@@ -1,5 +1,16 @@
 Coriander, (c) 2000-2002 Damien Douxchamps <douxchamps@ieee.org>
 
+Changes towards version 0.23:
+
+   Jan 27, 2002, by Damien Douxchamps
+   updated the conversion functions:
+     - optimized (in C, no MMX/SSE yet)
+     - structured a full set of functions to pass from any IIDC format
+       to UYVY and RGB (24bpp)
+     - 16bpp grayscale modes are now supported, but Format_7 is still
+       to be done. For 16bpp grayscale and 48bpp RGB, only the MSB is used
+       with REAL and DISPLAY services. A function to dump raw data for
+       saving to disk/ftp will be added.   
 	
 Changes in version 0.22:
 
@@ -10,29 +21,29 @@ Changes in version 0.22:
    Jan 2, 2002, by Damien Douxchamps
    - removed individual string size, replaced by STRING_SIZE.
 	
-   Dec 31, by Damien Douxchamps
+   Dec 31, 2001, by Damien Douxchamps
    - connected the trigger count widget.
    - changed the iso channel numbering policy: we now set
      iso_channel=node_id. This prevents serveral occurences of
      Coriander to mess with each other.
    - removed last GDK stuff in main.c
 	
-   Dec 29, by Damien Douxchamps
+   Dec 29, 2001, by Damien Douxchamps
    - updated the real_audience preference: it should be a set of
      flags, not a single value.
    - node number and vendor added in camera name within the camera menu.
 
-   Dec 28, by Damien Douxchamps
+   Dec 28, 2001, by Damien Douxchamps
    - Added "keep aspect ratio" option for SDL resize
    - Moved some code from UpdatePrefs*Frames to BuildPrefs*Frame to
      avoid lockups
 	
-   Dec 25, by Damien Douxchamps
+   Dec 25, 2001, by Damien Douxchamps
    - removed Xv and GDK display methods and associated controls
 
 Changes in version 0.21:
    
-   Dec 24, by Damien Douxchamps
+   Dec 24, 2001, by Damien Douxchamps
    - SDL #ifdef debugged by Mark Hessman
    - screen can be resized in SDL.
    - added some keybindings to the SDL display:
@@ -53,17 +64,17 @@ Changes in version 0.21:
 
 Changes in version 0.20:
 
-    Dec 21, by Damien Douxchamps
+    Dec 21, 2001, by Damien Douxchamps
     - A lot of debugging...
     - first implementation of an SDL display. No fullscreen or other
       fancy things: just a display. The rest will come later. 
     - added the name of the camera as porthole window title
 	
-    Dec 19, by Damien Douxchamps
+    Dec 19, 2001, by Damien Douxchamps
     - Some compilation problems with gcc 2.91 cleaned after some input
       from Rick Philbrick.
 	
-    Dec 16, by Damien Douxchamps
+    Dec 16, 2001, by Damien Douxchamps
     - changed all ranges look: replaced (radio-) buttons by a
       option_menu. A lot of code was updated.
     - moved the zoom, focus, tilt and pan functions to the main window
@@ -78,19 +89,19 @@ Changes in version 0.20:
     - removed immediate/periodic modes because immmediate is the same
       as a period of 1.
 	
-    Dec 14, by Damien Douxchamps
+    Dec 14, 2001, by Damien Douxchamps
     - make Real preference dialogs available only if Real is available
 	
-    Dec 14, by Damien Douxchamps
+    Dec 14, 2001, by Damien Douxchamps
     - added a Real streaming service. This is not yet tested.
 	
-    Nov 26, by Damien Douxchamps:
+    Nov 26, 2001, by Damien Douxchamps:
     - added handle release and thread cleanup at the end of main.c
 	
-    Nov 20, by Damien Douxchamps:
+    Nov 20, 2001, by Damien Douxchamps:
     - added some #ifdef HAVE_FTPLIB to avoid compilation problems.
 	
-    Nov 12, by Damien Douxchamps:
+    Nov 12, 2001, by Damien Douxchamps:
     - updated the thread mechanism to allow multi-camera. Yeah, that
       feature had disappeared...
     - new small procedure to allow cameras to use different channels.
@@ -102,12 +113,12 @@ Changes in version 0.20:
 
 Changes in version 0.19b:
 
-    Nov 26, by Damien Douxchamps:
+    Nov 26, 2001, by Damien Douxchamps:
     - new layout using "notebook" widget
 	
 Changes in version 0.19:
 
-    Nov 6, by Damien Douxchamps:
+    Nov 6, 2001, by Damien Douxchamps:
     - MASSIVE code update/cleanup for threads. A little bit beta, but
       probably worth a try... I have designed a new structure as image
       pipe: images walk along this pipe and are successively used by
@@ -123,7 +134,7 @@ Changes in version 0.19:
     - Due to the massive change in threads, some features have been moved
       to the preferences window. The capture window is now rather small...
 	
-    Oct 29, by Damien Douxchamps:
+    Oct 29, 2001, by Damien Douxchamps:
     - little cleanup/update of threads
     - first implementation of the preferences window. Use of a config
       file (~/.coriander).
@@ -131,7 +142,7 @@ Changes in version 0.19:
 	
 Changes in version 0.18:
 
-    Oct 26, by Damien Douxchamps:
+    Oct 26, 2001, by Damien Douxchamps:
     I did a large change concerning the capture and display: ISO receive
     and display threads have been changed from GTK threads to pthreads.
     This improves performances and avoid the locking bug of the external
@@ -149,12 +160,12 @@ Changes in version 0.18:
     - massive update of threads. The capture thread should be upgraded; it
       will come with the next version.
     
-    Sept 26, by Damien Douxchamps:
+    Sept 26, 2001, by Damien Douxchamps:
     - corrected a bug concerning the camera select frame: table 9 was missing.
     - cleaned the ISO button callbacks and added proper button activation.
     - 'About' pixmap update, added a menu icon
 	
-    Sept 25, by Damien Douxchamps:
+    Sept 25, 2001, by Damien Douxchamps:
     - I removed some unfinalized things that were not making Coriander look
       professional
     - removed the feature locking frame in commander window, as well as the
@@ -166,7 +177,7 @@ Changes in version 0.18:
 	
 Changes in version 0.17:
 
-    Sept 24, by Damien Douxchamps:
+    Sept 24, 2001, by Damien Douxchamps:
     - in an attempt to use radio buttons in the format selection menu, I
       changed the format/mode menu building procedure. Some parts have been
       left commented out, waiting for Glade to support menu-radio buttons
@@ -181,7 +192,7 @@ Changes in version 0.17:
     - some cosmetic UI changes in FTP frame
     - updated version info to 0.17, README and AUTHORS
 	
-    Sept 18, by Dan Dennedy:
+    Sept 18, 2001, by Dan Dennedy:
     - interface.c: bugfix the porthole window not scaling smoothly by adding
       a GtkAlignmentWidget
     - interface.c: remove the incomplete accelerator for video overlay 
@@ -191,7 +202,7 @@ Changes in version 0.17:
     - capture.c: bugfix some dc1394_setup_catpure calls using the wrong
       handle introduced 2 days ago.
 
-    Sept 17, by Dan Dennedy:
+    Sept 17, 2001, by Dan Dennedy:
     - capture.c: optimize re-use of porthole buffer when capturing.
     - capture.c: increased counter capacity to limit of unsigned long
       and changed file format to include 10-digit number.
@@ -203,7 +214,7 @@ Changes in version 0.17:
     - added menu accelerators (see src/interface.mods)
     - removed international support from build
 
-    Sept 16, by Dan Dennedy:
+    Sept 16, 2001, by Dan Dennedy:
     - capture.c: bugfix major memory leak in multi-capture
     - capture.c: bugfix capture failing with video1394 loaded 
       and porthole not open

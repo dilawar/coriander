@@ -310,7 +310,7 @@ GetSDLVideoMode(int mode)
     case MODE_FORMAT7_5:
     case MODE_FORMAT7_6:
     case MODE_FORMAT7_7:
-      return(SDL_YUY2_OVERLAY);
+      return(SDL_UYVY_OVERLAY);
       break;
     }
 
@@ -324,7 +324,7 @@ convert_to_yuv_for_SDL(unsigned char *src, unsigned char *dest, int mode, int wi
   switch(mode)
     {
     case MODE_160x120_YUV444:
-      iyu22yuy2(src,dest,width*height);
+      uyv2uyvy(src,dest,width*height);
       break;
     case MODE_320x240_YUV422:
     case MODE_640x480_YUV422:
@@ -332,24 +332,32 @@ convert_to_yuv_for_SDL(unsigned char *src, unsigned char *dest, int mode, int wi
     case MODE_1024x768_YUV422:
     case MODE_1280x960_YUV422:
     case MODE_1600x1200_YUV422:
-      uyvy2yuy2(src,dest,width*height);
-      //memcpy(dest,src,width*height*2);
+      memcpy(dest,src,2*width*height);
       break;
     case MODE_640x480_YUV411:
-      iyu12yuy2(src,dest,width*height);
+      uyyvyy2uyvy(src,dest,width*height);
       break;
     case MODE_640x480_RGB:
     case MODE_800x600_RGB:
     case MODE_1024x768_RGB:
     case MODE_1280x960_RGB:
     case MODE_1600x1200_RGB:
-      rgb2yuy2(src,dest,width*height);
+      rgb2uyvy(src,dest,width*height);
+      break;
+    case MODE_640x480_MONO16:
+    case MODE_800x600_MONO16:
+    case MODE_1024x768_MONO16:
+    case MODE_1280x960_MONO16:
+    case MODE_1600x1200_MONO16:
+      y162uyvy(src,dest,width*height);
       break;
     case MODE_640x480_MONO:
     case MODE_800x600_MONO:
     case MODE_1024x768_MONO:
     case MODE_1280x960_MONO:
     case MODE_1600x1200_MONO:
+      y2uyvy(src,dest,width*height);
+      break;
     case MODE_FORMAT7_0:
     case MODE_FORMAT7_1:
     case MODE_FORMAT7_2:
@@ -358,7 +366,6 @@ convert_to_yuv_for_SDL(unsigned char *src, unsigned char *dest, int mode, int wi
     case MODE_FORMAT7_5:
     case MODE_FORMAT7_6:
     case MODE_FORMAT7_7:
-      y2yuy2(src,dest,width*height);
       break;
     }
 }

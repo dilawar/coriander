@@ -25,122 +25,6 @@
 
 extern void swab();
 
-inline void
-uyvy2yuy2 (unsigned char *src, unsigned char *dest, int NumPixels) {
-	swab(src, dest, NumPixels << 1);
-}
-
-inline void
-yuv2yuy2 (unsigned char *src, unsigned char *dest, int NumPixels) {
-	swab(src, dest, NumPixels << 1);
-}
-
-inline void
-y41p2yuyv (unsigned char *src, unsigned char *dest, int NumPixels) {
-  register int i=0,j=0;
-  register int y0, y1, y2, y3, y4, y5, y6, y7, u0, u4, v0, v4;
-  while (i < (NumPixels << 1) )
-    {
-      u0 = src[i++];
-      y0 = src[i++];
-      v0 = src[i++];
-      y1 = src[i++];
-      
-      u4 = src[i++];
-      y2 = src[i++];
-      v4 = src[i++];
-      y3 = src[i++];
-
-      y4 = src[i++];
-      y5 = src[i++];
-      y6 = src[i++];
-      y7 = src[i++];
-
-      dest[j++] = y0;
-      dest[j++] = u0;
-      dest[j++] = y1;
-      dest[j++] = v0;
-
-      dest[j++] = y2;
-      dest[j++] = u0;
-      dest[j++] = y3;
-      dest[j++] = v0;
-
-      dest[j++] = y4;
-      dest[j++] = u4;
-      dest[j++] = y5;
-      dest[j++] = v4;
-
-      dest[j++] = y6;
-      dest[j++] = u4;
-      dest[j++] = y7;
-      dest[j++] = v4;
-
-    }
-}
-
-
-inline void
-iyu12yuy2 (unsigned char *src, unsigned char *dest, int NumPixels) {
-  register int i=0,j=0;
-  register int y0, y1, y2, y3, u, v;
-  while (i < (NumPixels + (NumPixels >> 1)))
-    {
-      u = src[i++];
-      y0 = src[i++];
-      y1 = src[i++];
-      v = src[i++];
-      y2 = src[i++];
-      y3 = src[i++];
-
-      dest[j++] = y0;
-      dest[j++] = u;
-      dest[j++] = y1;
-      dest[j++] = v;
-
-      dest[j++] = y2;
-      dest[j++] = u;
-      dest[j++] = y3;
-      dest[j++] = v;
-    }
-}
-
-inline void
-iyu22yuy2 (unsigned char *src, unsigned char *dest, int NumPixels) {
-  int i=0,j=0;
-  register int y0, y1, u0, u1, v0, v1;
-  while (i < (NumPixels + (NumPixels << 1)))
-    {
-      u0 = src[i++];
-      y0 = src[i++];
-      v0 = src[i++];
-      u1 = src[i++];
-      y1 = src[i++];
-      v1 = src[i++];
-
-      dest[j++] = y0;
-      dest[j++] = (u0+u1)/2;
-      dest[j++] = y1;
-      dest[j++] = (v0+v1)/2;
-    }
-}
-
-inline void
-y2yuy2 (unsigned char *src, unsigned char *dest, int NumPixels) {
-  int i=0,j=0;
-  register int y0, y1;
-  while (i < NumPixels)
-    {
-      y0 = src[i++];
-      y1 = src[i++];
-
-      dest[j++] = y0;
-      dest[j++] = 128;
-      dest[j++] = y1;
-      dest[j++] = 128;
-    }
-}
-
 /*macro used to convert a YUV pixel to RGB format
   from Bart Nabbe
 
@@ -174,149 +58,308 @@ y2yuy2 (unsigned char *src, unsigned char *dest, int NumPixels) {
   u = u > 255 ? 255 : u;\
   v = v > 255 ? 255 : v
 
+/**********************************************************************
+ *
+ *  CONVERSION FUNCTIONS BETWEEN       UYVY    AND    YUYV
+ *
+ **********************************************************************/
+
 inline void
-rgb2yuy2 (unsigned char *RGB, unsigned char *YUV, int NumPixels) {
-  int i, j;
+uyvy2yuyv (unsigned char *src, unsigned char *dest, int NumPixels) {
+	swab(src, dest, NumPixels << 1);
+}
+
+inline void
+yuyv2uyvy (unsigned char *src, unsigned char *dest, int NumPixels) {
+	swab(src, dest, NumPixels << 1);
+}
+
+/**********************************************************************
+ *
+ *  CONVERSION FUNCTIONS TO UYVY 
+ *
+ **********************************************************************/
+
+
+inline void
+uyyvyy2uyvy (unsigned char *src, unsigned char *dest, int NumPixels) {
+  register int i=NumPixels + (NumPixels >> 1);
+  register int j=NumPixels << 1;
+  register int y0, y1, y2, y3, u, v;
+
+  while (i > 0)
+    {
+      y3 = src[i--];
+      y2 = src[i--];
+      v  = src[i--];
+      y1 = src[i--];
+      y0 = src[i--];
+      u  = src[i--];
+
+      dest[j--] = y3;
+      dest[j--] = v;
+      dest[j--] = y2;
+      dest[j--] = u;
+
+      dest[j--] = y1;
+      dest[j--] = v;
+      dest[j--] = y0;
+      dest[j--] = u;
+
+    }
+}
+
+inline void
+uyv2uyvy (unsigned char *src, unsigned char *dest, int NumPixels) {
+  register int i = NumPixels + (NumPixels << 1);
+  register int j = NumPixels << 1;
+  register int y0, y1, u0, u1, v0, v1;
+
+  while (i > 0)
+    {
+      v1 = src[i--];
+      y1 = src[i--];
+      u1 = src[i--];
+      v0 = src[i--];
+      y0 = src[i--];
+      u0 = src[i--];
+
+      dest[j--] = y1;
+      dest[j--] = (v0+v1) >> 1;
+      dest[j--] = y0;
+      dest[j--] = (u0+u1) >> 1;
+    }
+}
+
+inline void
+y2uyvy (unsigned char *src, unsigned char *dest, int NumPixels) {
+  register int i= NumPixels;
+  register int j = NumPixels << 1;
+  register int y0, y1;
+
+  while (i > 0)
+    {
+      y1 = src[i--];
+      y0 = src[i--];
+
+      dest[j--] = y1;
+      dest[j--] = 128;
+      dest[j--] = y0;
+      dest[j--] = 128;
+    }
+}
+
+inline void
+y162uyvy (unsigned char *src, unsigned char *dest, int NumPixels) {
+  register int i = NumPixels << 1;
+  register int j = NumPixels << 1;
+  register int y0, y1;
+
+  while (i > 0)
+    {
+      i--;
+      y1   = src[i--];
+      i--;
+      y0   = src[i--];
+
+      dest[j--] = y1;
+      dest[j--] = 128;
+      dest[j--] = y0;
+      dest[j--] = 128;
+    }
+}
+
+inline void
+rgb2uyvy (unsigned char *src, unsigned char *dest, int NumPixels) {
+  register int i = NumPixels + ( NumPixels << 1 );
+  register int j = NumPixels << 1;
   register int y0, y1, u0, u1, v0, v1 ;
   register int r, g, b;
 
-  for (i = 0, j = 0; i < (NumPixels + (NumPixels << 1)); i += 6, j += 4)
+  while (i > 0)
     {
-      r = (unsigned char) RGB[i + 0];
-      g = (unsigned char) RGB[i + 1];
-      b = (unsigned char) RGB[i + 2];
+      b = (unsigned char) src[i--];
+      g = (unsigned char) src[i--];
+      r = (unsigned char) src[i--];
       RGB2YUV (r, g, b, y0, u0 , v0);
-      r = (unsigned char) RGB[i + 3];
-      g = (unsigned char) RGB[i + 4];
-      b = (unsigned char) RGB[i + 5];
+      b = (unsigned char) src[i--];
+      g = (unsigned char) src[i--];
+      r = (unsigned char) src[i--];
       RGB2YUV (r, g, b, y1, u1 , v1);
-      YUV[j + 0] = y0;
-      YUV[j + 1] = (u0+u1) >> 1;
-      YUV[j + 2] = y1;
-      YUV[j + 3] = (v0+v1) >> 1;
+
+      dest[j--] = y1;
+      dest[j--] = (v0+v1) >> 1;
+      dest[j--] = y0;
+      dest[j--] = (u0+u1) >> 1;
     }
 }
 
-/*routine to convert an array of YUV data to RGB format
-  from Bart Nabbe
-*/
 inline void
-uyvy2rgb (unsigned char *YUV, unsigned char *RGB, int NumPixels) {
-  int i, j;
+rgb482uyvy (unsigned char *src, unsigned char *dest, int NumPixels) {
+  register int i = (NumPixels + ( NumPixels << 1 )) << 1;
+  register int j = NumPixels << 1;
+  register int y0, y1, u0, u1, v0, v1 ;
+  register int r, g, b;
+
+  while (i > 0)
+    {
+      i--;
+      b = (unsigned char) src[i--];
+      i--;
+      g = (unsigned char) src[i--];
+      i--;
+      r = (unsigned char) src[i--];
+      i--;
+      RGB2YUV (r, g, b, y0, u0 , v0);
+      b = (unsigned char) src[i--];
+      i--;
+      g = (unsigned char) src[i--];
+      i--;
+      r = (unsigned char) src[i--];
+      RGB2YUV (r, g, b, y1, u1 , v1);
+
+      dest[j--] = y1;
+      dest[j--] = (v0+v1) >> 1;
+      dest[j--] = y0;
+      dest[j--] = (u0+u1) >> 1;
+    }
+}
+
+/**********************************************************************
+ *
+ *  CONVERSION FUNCTIONS TO RGB 24bpp 
+ *
+ **********************************************************************/
+
+inline void
+rgb482rgb (unsigned char *src, unsigned char *dest, int NumPixels) {
+  register int i = (NumPixels + ( NumPixels << 1 )) << 1;
+  register int j = NumPixels + ( NumPixels << 1 );
+
+  while (i > 0)
+    {
+      i--;
+      dest[j--]=src[i--];
+      i--;
+      dest[j--]=src[i--];
+      i--;
+      dest[j--]=src[i--];
+    }
+}
+
+
+inline void
+uyv2rgb (unsigned char *src, unsigned char *dest, int NumPixels)
+{
+  register int i = NumPixels << 1;
+  register int j = NumPixels + ( NumPixels << 1 );
+  register int y, u, v;
+  register int r, g, b;
+
+  while (i > 0)
+    {
+      v = (unsigned char) src[i--] - 128;
+      y = (unsigned char) src[i--];
+      u = (unsigned char) src[i--] - 128;
+      YUV2RGB (y, u, v, r, g, b);
+      dest[j--] = b;
+      dest[j--] = g;
+      dest[j--] = r;
+      
+    }
+}
+
+inline void
+uyvy2rgb (unsigned char *src, unsigned char *dest, int NumPixels) {
+  register int i = NumPixels << 1;
+  register int j = NumPixels + ( NumPixels << 1 );
   register int y0, y1, u, v;
   register int r, g, b;
 
-  for (i = 0, j = 0; i < (NumPixels << 1); i += 4, j += 6)
+  while (i > 0)
     {
-      u = (unsigned char) YUV[i + 0] - 128;
-      y0 = (unsigned char) YUV[i + 1];
-      v = (unsigned char) YUV[i + 2] - 128;
-      y1 = (unsigned char) YUV[i + 3];
-      YUV2RGB (y0, u, v, r, g, b);
-      RGB[j + 0] = r;
-      RGB[j + 1] = g;
-      RGB[j + 2] = b;
+      y1 = (unsigned char) src[i--];
+      v  = (unsigned char) src[i--] - 128;
+      y0 = (unsigned char) src[i--];
+      u  = (unsigned char) src[i--] - 128;
       YUV2RGB (y1, u, v, r, g, b);
-      RGB[j + 3] = r;
-      RGB[j + 4] = g;
-      RGB[j + 5] = b;
+      dest[j--] = b;
+      dest[j--] = g;
+      dest[j--] = r;
+      YUV2RGB (y0, u, v, r, g, b);
+      dest[j--] = b;
+      dest[j--] = g;
+      dest[j--] = r;
     }
 }
 
 
 inline void
-yuy22rgb (unsigned char *YUV, unsigned char *RGB, int NumPixels) {
-  int i, j;
-  register int y0, y1, u, v;
-  register int r, g, b;
-
-  for (i = 0, j = 0; i < (NumPixels << 1); i += 4, j += 6)
-    {
-      y0 = (unsigned char) YUV[i + 0];
-      u = (unsigned char) YUV[i + 1] - 128;
-      y1 = (unsigned char) YUV[i + 2];
-      v = (unsigned char) YUV[i + 3] - 128;
-      YUV2RGB (y0, u, v, r, g, b);
-      RGB[j + 0] = r;
-      RGB[j + 1] = g;
-      RGB[j + 2] = b;
-      YUV2RGB (y1, u, v, r, g, b);
-      RGB[j + 3] = r;
-      RGB[j + 4] = g;
-      RGB[j + 5] = b;
-    }
-}
-
-inline void
-iyu12rgb (unsigned char *YUV, unsigned char *RGB, int NumPixels) {
-  int i, j;
+uyyvyy2rgb (unsigned char *src, unsigned char *dest, int NumPixels) {
+  register int i = NumPixels + ( NumPixels >> 1 );
+  register int j = NumPixels + ( NumPixels << 1 );
   register int y0, y1, y2, y3, u, v;
   register int r, g, b;
-
-  for (i = 0, j = 0; i < (NumPixels + (NumPixels >> 1)); i += 6, j += 12)
+  
+  while (i > 0)
     {
-      u  = (unsigned char) YUV[i + 0] - 128;
-      y0 = (unsigned char) YUV[i + 1];
-      y1 = (unsigned char) YUV[i + 2];
-      v  = (unsigned char) YUV[i + 3] - 128;
-      y2 = (unsigned char) YUV[i + 4];
-      y3 = (unsigned char) YUV[i + 5];
-      YUV2RGB (y0, u, v, r, g, b);
-      RGB[j + 0] = r;
-      RGB[j + 1] = g;
-      RGB[j + 2] = b;
-      YUV2RGB (y1, u, v, r, g, b);
-      RGB[j + 3] = r;
-      RGB[j + 4] = g;
-      RGB[j + 5] = b;
-      YUV2RGB (y2, u, v, r, g, b);
-      RGB[j + 6] = r;
-      RGB[j + 7] = g;
-      RGB[j + 8] = b;
+      y3 = (unsigned char) src[i--];
+      y2 = (unsigned char) src[i--];
+      v  = (unsigned char) src[i--] - 128;
+      y1 = (unsigned char) src[i--];
+      y0 = (unsigned char) src[i--];
+      u  = (unsigned char) src[i--] - 128;
       YUV2RGB (y3, u, v, r, g, b);
-      RGB[j + 9] = r;
-      RGB[j + 10] = g;
-      RGB[j + 11] = b;
+      dest[j--] = b;
+      dest[j--] = g;
+      dest[j--] = r;
+      YUV2RGB (y2, u, v, r, g, b);
+      dest[j--] = b;
+      dest[j--] = g;
+      dest[j--] = r;
+      YUV2RGB (y1, u, v, r, g, b);
+      dest[j--] = b;
+      dest[j--] = g;
+      dest[j--] = r;
+      YUV2RGB (y0, u, v, r, g, b);
+      dest[j--] = b;
+      dest[j--] = g;
+      dest[j--] = r;
     }
 }
 
 inline void
-iyu22rgb (unsigned char *YUV, unsigned char *RGB, int NumPixels) {
-  int i, j;
-  register int y0, y1, u0, u1, v0, v1;
-  register int r, g, b;
-
-  for (i = 0, j = 0; i < (NumPixels + (NumPixels << 1)); i += 6, j += 6)
-    {
-      u0 = (unsigned char) YUV[i + 0] - 128;
-      y0 = (unsigned char) YUV[i + 1];
-      v0 = (unsigned char) YUV[i + 2] - 128;
-      u1 = (unsigned char) YUV[i + 3] - 128;
-      y1 = (unsigned char) YUV[i + 4];
-      v1 = (unsigned char) YUV[i + 5] - 128;
-      YUV2RGB (y0, u0, v0, r, g, b);
-      RGB[j + 0] = r;
-      RGB[j + 1] = g;
-      RGB[j + 2] = b;
-      YUV2RGB (y1, u1, v1, r, g, b);
-      RGB[j + 3] = r;
-      RGB[j + 4] = g;
-      RGB[j + 5] = b;
-    }
-}
-
-inline void
-y2rgb (unsigned char *YUV, unsigned char *RGB, int NumPixels) {
-  int i, j;
+y2rgb (unsigned char *src, unsigned char *dest, int NumPixels) {
+  register int i = NumPixels;
+  register int j = NumPixels + ( NumPixels << 1 );
   register int y;
   register int r, g, b;
 
-  for (i = 0, j = 0; i < NumPixels; i++, j += 3)
+  while (i > 0)
     {
-      y = (unsigned char) YUV[i];
-      YUV2RGB (y, 0, 0, r, g, b);
-      RGB[j + 0] = r;
-      RGB[j + 1] = g;
-      RGB[j + 2] = b;
+      y = (unsigned char) src[i--];
+      //YUV2RGB (y, 0, 0, r, g, b);
+      dest[j--] = y;
+      dest[j--] = y;
+      dest[j--] = y;
     }
 }
+
+inline void
+y162rgb (unsigned char *src, unsigned char *dest, int NumPixels) {
+  register int i = NumPixels << 1;
+  register int j = NumPixels + ( NumPixels << 1 );
+  register int y;
+  register int r, g, b;
+
+  while (i > 0)
+    {
+      i--;
+      y = (unsigned char)src[i--];
+      //YUV2RGB (y, 0, 0, r, g, b);
+      dest[j--] = y;
+      dest[j--] = y;
+      dest[j--] = y;
+    }
+}
+

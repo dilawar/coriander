@@ -257,7 +257,7 @@ convert_to_rgb(unsigned char *src, unsigned char *dest, int mode, int width, int
   switch(mode)
     {
     case MODE_160x120_YUV444:
-      iyu22rgb(src,dest,width*height);
+      uyv2rgb(src,dest,width*height);
       break;
     case MODE_320x240_YUV422:
     case MODE_640x480_YUV422:
@@ -268,7 +268,7 @@ convert_to_rgb(unsigned char *src, unsigned char *dest, int mode, int width, int
       uyvy2rgb(src,dest,width*height);
       break;
     case MODE_640x480_YUV411:
-      iyu12rgb(src,dest,width*height);
+      uyyvyy2rgb(src,dest,width*height);
       break;
     case MODE_640x480_RGB:
     case MODE_800x600_RGB:
@@ -282,6 +282,15 @@ convert_to_rgb(unsigned char *src, unsigned char *dest, int mode, int width, int
     case MODE_1024x768_MONO:
     case MODE_1280x960_MONO:
     case MODE_1600x1200_MONO:
+      y2rgb(src,dest,width*height);
+      break;
+    case MODE_640x480_MONO16:
+    case MODE_800x600_MONO16:
+    case MODE_1024x768_MONO16:
+    case MODE_1280x960_MONO16:
+    case MODE_1600x1200_MONO16:
+      y162rgb(src,dest,width*height);
+      break;
     case MODE_FORMAT7_0:
     case MODE_FORMAT7_1:
     case MODE_FORMAT7_2:
@@ -290,7 +299,6 @@ convert_to_rgb(unsigned char *src, unsigned char *dest, int mode, int width, int
     case MODE_FORMAT7_5:
     case MODE_FORMAT7_6:
     case MODE_FORMAT7_7:
-      y2rgb(src,dest,width*height);
       break;
     }
 }
