@@ -26,6 +26,7 @@
 
 #include <pthread.h>
 #include <libdc1394/dc1394_control.h>
+#include <math.h>
 #include "thread_base.h"
 #include "thread_ftp.h"
 #include "definitions.h"
@@ -50,6 +51,8 @@ FtpStartThread(void)
     {
       //fprintf(stderr,"No FTP service found, inserting new one\n");
       ftp_service=(chain_t*)malloc(sizeof(chain_t));
+      ftp_service->current_buffer=NULL;
+      ftp_service->next_buffer=NULL;
       ftp_service->data=(void*)malloc(sizeof(ftpthread_info_t));
       info=(ftpthread_info_t*)ftp_service->data;
       pthread_mutex_init(&ftp_service->mutex_data, NULL);
@@ -166,9 +169,9 @@ FtpShowFPS(gpointer *data)
 
   tmp=(float)(info->current_time-info->prev_time)/sysconf(_SC_CLK_TCK);
   if (tmp==0)
-    fps=0;
+    fps=fabs(0.0);
   else
-    fps=(float)info->frames/tmp;
+    fps=fabs((float)info->frames/tmp);
 
   sprintf(tmp_string," %.2f",fps);
 

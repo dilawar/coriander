@@ -139,7 +139,7 @@ void
 ChangeModeAndFormat         (GtkMenuItem     *menuitem,
 			     gpointer         user_data)
 {
-  int state[5];
+  int state;
   int format;
 
   int mode;
@@ -162,7 +162,7 @@ ChangeModeAndFormat         (GtkMenuItem     *menuitem,
 	else
 	  format=FORMAT_SCALABLE_IMAGE_SIZE;
 
-  IsoFlowCheck(state);
+  IsoFlowCheck(&state);
 
   if (dc1394_set_video_format(camera->handle,camera->id,format)!=DC1394_SUCCESS)
     MainError("Could not set video format");
@@ -174,6 +174,8 @@ ChangeModeAndFormat         (GtkMenuItem     *menuitem,
   else
     misc_info->mode=mode;
  
+  IsoFlowResume(&state);
+
   // REPROBE EVERYTHING
   if (dc1394_get_camera_info(camera->handle, camera->id, camera)!=DC1394_SUCCESS)
     MainError("Could not get camera basic information!");
@@ -181,16 +183,11 @@ ChangeModeAndFormat         (GtkMenuItem     *menuitem,
     MainError("Could not get camera misc information!");
   if (dc1394_get_camera_feature_set(camera->handle, camera->id, feature_set)!=DC1394_SUCCESS)
     MainError("Could not get camera feature information!");
+
   GetFormat7Capabilities(camera->handle, camera->id, format7_info);
   BuildAllWindows();
   UpdateAllWindows();
-  /*
-  BuildFpsMenu();
-  UpdateTriggerFrame();
-  UpdateOptionFrame();
-  BuildAbsoluteSettingsWindow();
-  */
-  IsoFlowResume(state);
+
 }
 
 
@@ -205,16 +202,12 @@ void IsoFlowCheck(int *state)
 	  // ... (if not done, restarting is no more possible)
 	  MainError("Could not stop ISO transmission");
       }
-
+  
   // memorize state:
-  state[0]=(GetService(SERVICE_ISO,current_camera)!=NULL);
-  state[1]=(GetService(SERVICE_DISPLAY,current_camera)!=NULL);
-  state[2]=(GetService(SERVICE_SAVE,current_camera)!=NULL);
-  state[3]=(GetService(SERVICE_FTP,current_camera)!=NULL);
-  state[4]=(GetService(SERVICE_REAL,current_camera)!=NULL);
-
-  CleanThreads(CLEAN_MODE_NO_UI_UPDATE);
-
+  *state=(GetService(SERVICE_ISO,current_camera)!=NULL);
+  if (*state!=0) {
+    gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(commander_window,"service_iso"),0);
+  }
 }
 
 void IsoFlowResume(int *state)
@@ -222,40 +215,37 @@ void IsoFlowResume(int *state)
   int was_on;
 
   was_on=misc_info->is_iso_on;
+  if (was_on>0) { // restart if it was 'on' before the changes
+    usleep(50000); // necessary to avoid desynchronized ISO flow.
+    if (dc1394_start_iso_transmission(camera->handle, camera->id)!=DC1394_SUCCESS)
+      MainError("Could not start ISO transmission");
+  }
 
-  if (was_on)// restart if it was 'on' before the changes
-    {
-      if (dc1394_start_iso_transmission(camera->handle, camera->id)!=DC1394_SUCCESS)
-	MainError("Could not start ISO transmission");
+  if (*state!=0) {
+    gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(commander_window,"service_iso"),1);
+  }
+  
+  if (was_on>0) {
+    if (dc1394_get_iso_status(camera->handle, camera->id,&misc_info->is_iso_on)!=DC1394_SUCCESS)
+      MainError("Could not get ISO status");
+    else {
+      if (!misc_info->is_iso_on) {
+	MainError("ISO not properly restarted. Trying again after 1 second");
+	usleep(1000000);
+	if (dc1394_start_iso_transmission(camera->handle, camera->id)!=DC1394_SUCCESS)
+	  // ... (if not done, restarting is no more possible)
+	  MainError("Could not start ISO transmission");
+	else {
+	  if (dc1394_get_iso_status(camera->handle, camera->id,&misc_info->is_iso_on)!=DC1394_SUCCESS)
+	    MainError("Could not get ISO status");
+	  else
+	    if (!misc_info->is_iso_on)
+	      MainError("Can't start ISO, giving up...");
+	}
+      }
     }
-
-  if (state[0]) IsoStartThread();
-  if (state[1]) DisplayStartThread();
-  if (state[2]) SaveStartThread();
-  if (state[3]) FtpStartThread();
-  if (state[4]) RealStartThread();
-
-  if (was_on)
-    {
-      if (dc1394_get_iso_status(camera->handle, camera->id,&misc_info->is_iso_on)!=DC1394_SUCCESS)
-	MainError("Could not get ISO status");
-      else
-	if (!misc_info->is_iso_on)
-	  {
-	    MainError("ISO not properly restarted. Trying again");
-	    if (dc1394_start_iso_transmission(camera->handle, camera->id)!=DC1394_SUCCESS)
-	      // ... (if not done, restarting is no more possible)
-	      MainError("Could not start ISO transmission");
-	    else
-	      if (dc1394_get_iso_status(camera->handle, camera->id,&misc_info->is_iso_on)!=DC1394_SUCCESS)
-		MainError("Could not get ISO status");
-	      else
-		if (!misc_info->is_iso_on)
-		  MainError("Can't start ISO, giving up...");
-	  }
-    }
-  UpdateIsoFrame();
-
+    UpdateIsoFrame();
+  }
 }
 
 void GetContextStatus()
@@ -273,8 +263,6 @@ void GetContextStatus()
   ctxt.iso_channel_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"iso_channel_status"),"");
   ctxt.iso_speed_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"iso_speed_status"),"");
 
-  ctxt.main_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"main_status"),"");
-
   // init message ids.
   ctxt.model_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"camera_model_status"), ctxt.model_ctxt, "");
   ctxt.vendor_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"camera_vendor_status"), ctxt.vendor_ctxt, "");
@@ -288,8 +276,6 @@ void GetContextStatus()
 
   ctxt.iso_channel_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"iso_channel_status"), ctxt.iso_channel_ctxt, "");
   ctxt.iso_speed_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"iso_speed_status"), ctxt.iso_speed_ctxt, "");
-
-  ctxt.main_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"main_status"), ctxt.main_ctxt, "");
 
   // note: these empty messages will be replaced after the execution of update_frame for status window
 
@@ -376,21 +362,19 @@ SetChannels(void)
 void MainError(const char *string)
 {
   char temp[STRING_SIZE];
-  sprintf(temp,"ERROR: %s",string);
-  if (commander_window !=NULL)
-    {
-      gtk_statusbar_remove( (GtkStatusbar*) lookup_widget(commander_window,"main_status"), ctxt.main_ctxt, ctxt.main_id);
-      ctxt.main_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"main_status"), ctxt.main_ctxt, temp);
-    }
+  sprintf(temp,"ERROR: %s\n",string);
+  if (commander_window !=NULL) {
+    gtk_text_insert((GtkText*)lookup_widget(commander_window,"main_status"), NULL,NULL,NULL,temp,-1);
+  }
 }
 
 void MainStatus(const char *string)
 {
-  if (commander_window !=NULL)
-    {
-      gtk_statusbar_remove( (GtkStatusbar*) lookup_widget(commander_window,"main_status"), ctxt.main_ctxt, ctxt.main_id);
-      ctxt.main_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"main_status"), ctxt.main_ctxt, string);
-    }
+  char temp[STRING_SIZE];
+  sprintf(temp,"%s\n",string);
+  if (commander_window !=NULL) {
+    gtk_text_insert((GtkText*)lookup_widget(commander_window,"main_status"), NULL,NULL,NULL,temp,-1);
+  }
 }
 
 static void MessageBox_clicked (GtkWidget *widget, gpointer data)

@@ -22,6 +22,7 @@
 
 #include <pthread.h>
 #include <libdc1394/dc1394_control.h>
+#include <math.h>
 #include "thread_base.h"
 #include "thread_save.h" 
 #include "definitions.h"
@@ -46,6 +47,8 @@ SaveStartThread(void)
     {
       //fprintf(stderr,"No SAVE service found, inserting new one\n");
       save_service=(chain_t*)malloc(sizeof(chain_t));
+      save_service->current_buffer=NULL;
+      save_service->next_buffer=NULL;
       save_service->data=(void*)malloc(sizeof(savethread_info_t));
       info=(savethread_info_t*)save_service->data;
       pthread_mutex_init(&save_service->mutex_data, NULL);
@@ -143,9 +146,9 @@ SaveShowFPS(gpointer *data)
 
   tmp=(float)(info->current_time-info->prev_time)/sysconf(_SC_CLK_TCK);
   if (tmp==0)
-    fps=0;
+    fps=fabs(0.0);
   else
-    fps=(float)info->frames/tmp;
+    fps=fabs((float)info->frames/tmp);
   
   sprintf(tmp_string," %.2f",fps);
 

@@ -106,16 +106,16 @@ void
 on_fps_activate                    (GtkMenuItem     *menuitem,
 				    gpointer         user_data)
 {
-  int state[5];
+  int state;
   
-  IsoFlowCheck(state);
+  IsoFlowCheck(&state);
     
   if(dc1394_set_video_framerate(camera->handle, camera->id, (int)user_data)!=DC1394_SUCCESS)
     MainError("Could not set framerate");
   else
     misc_info->framerate=(int)user_data;
 
-  IsoFlowResume(state);
+  IsoFlowResume(&state);
 }
 
 
@@ -298,9 +298,9 @@ on_format7_packet_size_changed               (GtkAdjustment    *adj,
 					      gpointer         user_data)
 {
   int bpp;
-  int state[5];
+  int state;
 
-  IsoFlowCheck(state);
+  IsoFlowCheck(&state);
   if (dc1394_set_format7_byte_per_packet(camera->handle, camera->id, 
 					 format7_info->edit_mode, (int)adj->value)!=DC1394_SUCCESS)
     MainError("Could not change Format7 bytes per packet");
@@ -309,7 +309,7 @@ on_format7_packet_size_changed               (GtkAdjustment    *adj,
 
   dc1394_query_format7_byte_per_packet(camera->handle,camera->id,format7_info->edit_mode,&bpp);
 
-  IsoFlowResume(state);
+  IsoFlowResume(&state);
   //fprintf(stderr,"bpp: %d (should set to %d)\n",bpp, (int)adj->value);
 }
 
@@ -326,11 +326,11 @@ void
 on_edit_format7_color_activate             (GtkMenuItem     *menuitem,
 					    gpointer         user_data)
 {
-  int state[5];
+  int state;
 
   // if the mode is the 'live' mode:
   if (format7_info->edit_mode==misc_info->mode)
-    IsoFlowCheck(state);
+    IsoFlowCheck(&state);
 
   if (dc1394_set_format7_color_coding_id(camera->handle, camera->id, format7_info->edit_mode, (int)user_data)!=DC1394_SUCCESS)
     MainError("Could not change Format7 color coding");
@@ -343,7 +343,7 @@ on_edit_format7_color_activate             (GtkMenuItem     *menuitem,
       UpdateOptionFrame();
       UpdateFormat7BppRange();
       UpdateFormat7Ranges();
-      IsoFlowResume(state);
+      IsoFlowResume(&state);
     }
 
 }
@@ -394,7 +394,7 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
 				       gpointer         user_data)
 {
   GtkAdjustment* adj2;
-  int state[5];
+  int state;
   int step;
   Format7ModeInfo *info;
 
@@ -403,7 +403,7 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
   switch((int)user_data)
     {
       case FORMAT7_SIZE_X:
-	if (format7_info->edit_mode==misc_info->mode) IsoFlowCheck(state);
+	if (format7_info->edit_mode==misc_info->mode) IsoFlowCheck(&state);
 	step=info->step_x;
 	adj->value=(((int)adj->value)/step)*step;
 	if (dc1394_set_format7_image_size(camera->handle,camera->id, format7_info->edit_mode, adj->value, info->size_y)!=DC1394_SUCCESS)
@@ -417,11 +417,11 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
 	    gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
 	    gtk_signal_emit_by_name(GTK_OBJECT (adj2), "changed");
 	  }
-	if (format7_info->edit_mode==misc_info->mode) IsoFlowResume(state);
+	if (format7_info->edit_mode==misc_info->mode) IsoFlowResume(&state);
 	break;
 
       case FORMAT7_SIZE_Y:
-	if (format7_info->edit_mode==misc_info->mode) IsoFlowCheck(state);
+	if (format7_info->edit_mode==misc_info->mode) IsoFlowCheck(&state);
 	step=info->step_y;
 	adj->value=(((int)adj->value)/step)*step;
 	if (dc1394_set_format7_image_size(camera->handle,camera->id, format7_info->edit_mode, info->size_x, adj->value)!=DC1394_SUCCESS)
@@ -435,11 +435,11 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
 	    gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
 	    gtk_signal_emit_by_name(GTK_OBJECT (adj2), "changed");
 	  }
-	if (format7_info->edit_mode==misc_info->mode) IsoFlowResume(state);
+	if (format7_info->edit_mode==misc_info->mode) IsoFlowResume(&state);
 	break;
 
       case FORMAT7_POS_X:
-	if (format7_info->edit_mode==misc_info->mode) IsoFlowCheck(state);
+	if (format7_info->edit_mode==misc_info->mode) IsoFlowCheck(&state);
 	if (info->use_unit_pos>0)
 	  step=info->step_pos_x;
 	else
@@ -456,11 +456,11 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
 	    gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
 	    gtk_signal_emit_by_name(GTK_OBJECT (adj2), "changed");
 	  }
-	if (format7_info->edit_mode==misc_info->mode) IsoFlowResume(state);
+	if (format7_info->edit_mode==misc_info->mode) IsoFlowResume(&state);
 	break;
 
       case FORMAT7_POS_Y:
-	if (format7_info->edit_mode==misc_info->mode) IsoFlowCheck(state);
+	if (format7_info->edit_mode==misc_info->mode) IsoFlowCheck(&state);
 	if (info->use_unit_pos>0)
 	  step=info->step_pos_y;
 	else
@@ -477,7 +477,7 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
 	    gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
 	    gtk_signal_emit_by_name(GTK_OBJECT (adj2), "changed");
 	  }
-	if (format7_info->edit_mode==misc_info->mode) IsoFlowResume(state);
+	if (format7_info->edit_mode==misc_info->mode) IsoFlowResume(&state);
 	break;
 
       default:
@@ -504,8 +504,10 @@ on_service_iso_toggled                 (GtkToggleButton *togglebutton,
 {
   if (!silent_ui_update)
     {
-      if (togglebutton->active)
-	IsoStartThread();
+      if (togglebutton->active) {
+	if (IsoStartThread()==-1)
+	  gtk_toggle_button_set_active(togglebutton,0);
+      }
       else
 	IsoStopThread();
         //CleanThreads(CLEAN_MODE_UI_UPDATE_NOT_ISO);
@@ -527,7 +529,8 @@ on_service_display_toggled             (GtkToggleButton *togglebutton,
 	  pthread_mutex_lock(&uiinfo->mutex);
 	  uiinfo->want_to_display=1;
 	  pthread_mutex_unlock(&uiinfo->mutex);
-	  DisplayStartThread();
+	  if (DisplayStartThread()==-1)
+	    gtk_toggle_button_set_active(togglebutton,0);
 	} 
       else
 	{
@@ -550,7 +553,8 @@ on_service_save_toggled                (GtkToggleButton *togglebutton,
 	{
 	  //if (GetService(SERVICE_ISO,current_camera)==NULL)
 	  //  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"service_iso")), TRUE);
-	  SaveStartThread();
+	  if (SaveStartThread()==-1)
+	    gtk_toggle_button_set_active(togglebutton,0);
 	}
       else
 	SaveStopThread();
@@ -568,7 +572,8 @@ on_service_ftp_toggled                 (GtkToggleButton *togglebutton,
 	{
 	  //if (GetService(SERVICE_ISO,current_camera)==NULL)
 	  //  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"service_iso")), TRUE);
-	  FtpStartThread();
+	  if (FtpStartThread()==-1)
+	    gtk_toggle_button_set_active(togglebutton,0);
 	}
       else
 	FtpStopThread();
@@ -586,7 +591,8 @@ on_service_real_toggled                (GtkToggleButton *togglebutton,
 	{
 	  //if (GetService(SERVICE_ISO,current_camera)==NULL)
 	  //  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"service_iso")), TRUE);
-	  RealStartThread();
+	  if (RealStartThread()==-1)
+	    gtk_toggle_button_set_active(togglebutton,0);
 	}
       else
 	RealStopThread();

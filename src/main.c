@@ -205,8 +205,13 @@ main (int argc, char *argv[])
 	  for (i=0;i<camera_num;i++)
 	    {
 	      SelectCamera(i);
-	      CleanThreads(CLEAN_MODE_NO_UI_UPDATE);
+	      RealStopThread();
+	      FtpStopThread();
+	      SaveStopThread();
+	      DisplayStopThread(current_camera);
+	      IsoStopThread();
 	    }
+
 #ifdef HAVE_SDLLIB
 	  WatchStopThread(&watchthread_info);
 #endif

@@ -23,6 +23,7 @@
 #include <pthread.h>
 #include <libdc1394/dc1394_control.h>
 #include <time.h>
+#include <math.h>
 #include <sys/timeb.h>
 #include "thread_base.h"
 #include "thread_iso.h"
@@ -50,154 +51,136 @@ gint IsoStartThread(void)
 
   iso_service=GetService(SERVICE_ISO,current_camera);
 
-  if (iso_service==NULL)// if no ISO service running...
-    {
-      //fprintf(stderr,"No ISO service found, inserting new one\n");
-      iso_service=(chain_t*)malloc(sizeof(chain_t));
-      iso_service->data=(void*)malloc(sizeof(isothread_info_t));
-      pthread_mutex_init(&iso_service->mutex_struct, NULL);
-      pthread_mutex_init(&iso_service->mutex_data, NULL);
-      pthread_mutex_lock(&iso_service->mutex_data);
-
-      info=(isothread_info_t*)iso_service->data;
-
-      /* currently FORMAT_STILL_IMAGE is not supported*/
-      if (misc_info->format == FORMAT_STILL_IMAGE)
-	{
-	  FreeChain(iso_service);
-	  pthread_mutex_unlock(&iso_service->mutex_data);
-	  return(-1);
-	}
-      
-      info->handle = NULL;
-      
-      // the iso receive handler gets its own raw1394 handle to free the controls
-      if ( (info->handle = dc1394_create_handle(0)) < 0)
-	{
-	  FreeChain(iso_service);
-	  pthread_mutex_unlock(&iso_service->mutex_data);
-	  return(-1);
-	}
-
-      switch (selfid->packetZero.phySpeed)
-	{
-	case 1: maxspeed=SPEED_200;break;
-	case 2: maxspeed=SPEED_400;break;
-	default: maxspeed=SPEED_100;break;
-	}
-
-      switch(preferences.receive_method)
-	{
-	case RECEIVE_METHOD_VIDEO1394:
-	  if (misc_info->format!=FORMAT_SCALABLE_IMAGE_SIZE)
-	    if (dc1394_dma_setup_capture(camera->handle, camera->id, misc_info->iso_channel, 
-					 misc_info->format, misc_info->mode, maxspeed,
-					 misc_info->framerate, DMA_BUFFERS,
-					 preferences.video1394_dropframes,
-					 preferences.video1394_device, &info->capture)
-		== DC1394_SUCCESS)
-	      {
-		info->receive_method=RECEIVE_METHOD_VIDEO1394;
-	      }
-	    else
-	      {
-		MainError("Can't use VIDEO1394. Try RAW1394 receive mode.");
-		dc1394_destroy_handle(info->handle);
-		pthread_mutex_unlock(&iso_service->mutex_data);
-		FreeChain(iso_service);
-		return(-1);
-	      }
-	  else {
-	    info->capture.dma_device_file = preferences.video1394_device;
-	    if (dc1394_dma_setup_format7_capture(camera->handle, camera->id, misc_info->iso_channel, 
-						 misc_info->mode, maxspeed, QUERY_FROM_CAMERA,
-						 QUERY_FROM_CAMERA, QUERY_FROM_CAMERA,
-						 QUERY_FROM_CAMERA, QUERY_FROM_CAMERA, 
-						 DMA_BUFFERS, &info->capture)
-		== DC1394_SUCCESS)
-	      {
-		info->receive_method=RECEIVE_METHOD_VIDEO1394;
-	      }
-	    else
-	      {
-		MainError("Can't use VIDEO1394. Try RAW1394 receive mode.");
-		dc1394_destroy_handle(info->handle);
-		pthread_mutex_unlock(&iso_service->mutex_data);
-		FreeChain(iso_service);
-		return(-1);
-	      }
-	  }
-	  break;
-	case RECEIVE_METHOD_RAW1394:
-	  if (misc_info->format!=FORMAT_SCALABLE_IMAGE_SIZE)
-	    if (dc1394_setup_capture(camera->handle, camera->id, misc_info->iso_channel, 
+  if (iso_service==NULL) { // if no ISO service running...
+    //fprintf(stderr,"*** No ISO service found, inserting new one\n");
+    iso_service=(chain_t*)malloc(sizeof(chain_t));
+    iso_service->current_buffer=NULL;
+    iso_service->next_buffer=NULL;
+    iso_service->data=(void*)malloc(sizeof(isothread_info_t));
+    pthread_mutex_init(&iso_service->mutex_struct, NULL);
+    pthread_mutex_init(&iso_service->mutex_data, NULL);
+    
+    info=(isothread_info_t*)iso_service->data;
+    
+    /* currently FORMAT_STILL_IMAGE is not supported*/
+    if (misc_info->format == FORMAT_STILL_IMAGE) {
+      FreeChain(iso_service);
+      return(-1);
+    }
+    
+    info->handle = NULL;
+    
+    // the iso receive handler gets its own raw1394 handle to free the controls
+    if ( (info->handle = dc1394_create_handle(0)) < 0) {
+      FreeChain(iso_service);
+      return(-1);
+    }
+    
+    switch (selfid->packetZero.phySpeed) {
+    case 1: maxspeed=SPEED_200;break;
+    case 2: maxspeed=SPEED_400;break;
+    default: maxspeed=SPEED_100;break;
+    }
+    //fprintf(stderr,"    Setting up capture\n");
+    switch(preferences.receive_method) {
+    case RECEIVE_METHOD_VIDEO1394:
+      if (misc_info->format!=FORMAT_SCALABLE_IMAGE_SIZE)
+	if (dc1394_dma_setup_capture(camera->handle, camera->id, misc_info->iso_channel, 
 				     misc_info->format, misc_info->mode, maxspeed,
-				     misc_info->framerate, &info->capture)
-		== DC1394_SUCCESS)
-	      {
-		info->receive_method=RECEIVE_METHOD_RAW1394;
-	      }
-	    else
-	      {
-		MainError("Can't use RAW1394. Try VIDEO1394 receive mode.");
-		dc1394_destroy_handle(info->handle);
-		pthread_mutex_unlock(&iso_service->mutex_data);
-		FreeChain(iso_service);
-		return(-1);
-	      }
-	  else
-	    if (dc1394_setup_format7_capture(camera->handle, camera->id, misc_info->iso_channel, 
+				     misc_info->framerate, DMA_BUFFERS,
+				     preferences.video1394_dropframes,
+				     preferences.video1394_device, &info->capture)
+	    == DC1394_SUCCESS) {
+	  info->receive_method=RECEIVE_METHOD_VIDEO1394;
+	}
+	else {
+	  MainError("Failed to setup DMA capture with VIDEO1394");
+	  dc1394_destroy_handle(info->handle);
+	  FreeChain(iso_service);
+	  return(-1);
+	}
+      else {
+	info->capture.dma_device_file = preferences.video1394_device;
+	if (dc1394_dma_setup_format7_capture(camera->handle, camera->id, misc_info->iso_channel, 
 					     misc_info->mode, maxspeed, QUERY_FROM_CAMERA,
 					     QUERY_FROM_CAMERA, QUERY_FROM_CAMERA,
-					     QUERY_FROM_CAMERA, QUERY_FROM_CAMERA,
-					     &info->capture)
-		== DC1394_SUCCESS)
-	      {
-		info->receive_method=RECEIVE_METHOD_RAW1394;
-	      }
-	    else
-	      {
-		MainError("Can't use RAW1394. Try VIDEO1394 receive mode.");
-		dc1394_destroy_handle(info->handle);
-		pthread_mutex_unlock(&iso_service->mutex_data);
-		FreeChain(iso_service);
-		return(-1);
-	      }
-	  break;
+					     QUERY_FROM_CAMERA, QUERY_FROM_CAMERA, 
+					     DMA_BUFFERS, &info->capture)
+	    == DC1394_SUCCESS) {
+	  info->receive_method=RECEIVE_METHOD_VIDEO1394;
 	}
-      //fprintf(stderr," 1394 setup OK\n");
-
-      CommonChainSetup(iso_service, SERVICE_ISO, current_camera);
-      // init image buffers structs
-      info->temp=NULL;
-      info->temp_size=0;
-      info->temp_allocated=0;
-
-      pthread_mutex_unlock(&iso_service->mutex_data);
-      
-      pthread_mutex_lock(&iso_service->mutex_struct);
-      InsertChain(iso_service,current_camera);
-      pthread_mutex_unlock(&iso_service->mutex_struct);
-
-      pthread_mutex_lock(&iso_service->mutex_data);
-      pthread_mutex_lock(&iso_service->mutex_struct);
-      if (pthread_create(&iso_service->thread, NULL, IsoThread,(void*) iso_service))
-	{
-	  RemoveChain(iso_service,current_camera);
-	  pthread_mutex_unlock(&iso_service->mutex_struct);
-	  pthread_mutex_unlock(&iso_service->mutex_data);
+	else {
+	  MainError("Failed to setup Format_7 DMA capture with VIDEO1394");
+	  dc1394_destroy_handle(info->handle);
 	  FreeChain(iso_service);
 	  return(-1);
 	}
-      else
-	{
-	  info->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)IsoShowFPS, (gpointer*) iso_service);
-
-	  pthread_mutex_unlock(&iso_service->mutex_struct);
-	  pthread_mutex_unlock(&iso_service->mutex_data);
+      }
+      break;
+    case RECEIVE_METHOD_RAW1394:
+      if (misc_info->format!=FORMAT_SCALABLE_IMAGE_SIZE)
+	if (dc1394_setup_capture(camera->handle, camera->id, misc_info->iso_channel, 
+				 misc_info->format, misc_info->mode, maxspeed,
+				 misc_info->framerate, &info->capture)
+	    == DC1394_SUCCESS) {
+	  info->receive_method=RECEIVE_METHOD_RAW1394;
 	}
-      //fprintf(stderr," ISO thread started\n");
+	else {
+	  MainError("Failed to setup capture with RAW1394");
+	  dc1394_destroy_handle(info->handle);
+	  FreeChain(iso_service);
+	  return(-1);
+	}
+      else {
+	if (dc1394_setup_format7_capture(camera->handle, camera->id, misc_info->iso_channel, 
+					 misc_info->mode, maxspeed, QUERY_FROM_CAMERA,
+					 QUERY_FROM_CAMERA, QUERY_FROM_CAMERA,
+					 QUERY_FROM_CAMERA, QUERY_FROM_CAMERA,
+					 &info->capture)
+	    == DC1394_SUCCESS) {
+	  info->receive_method=RECEIVE_METHOD_RAW1394;
+	}
+	else {
+	  MainError("Failed to setup Format_7 capture with RAW1394");
+	  dc1394_destroy_handle(info->handle);
+	  FreeChain(iso_service);
+		return(-1);
+	}
+      }
+      break;
     }
+    //fprintf(stderr,"   1394 setup OK\n");
+    
+    pthread_mutex_lock(&iso_service->mutex_data);
+    CommonChainSetup(iso_service, SERVICE_ISO, current_camera);
+    // init image buffers structs
+    info->temp=NULL;
+    info->temp_size=0;
+    info->temp_allocated=0;
+
+    pthread_mutex_unlock(&iso_service->mutex_data);
+    
+    pthread_mutex_lock(&iso_service->mutex_struct);
+    InsertChain(iso_service,current_camera);
+    pthread_mutex_unlock(&iso_service->mutex_struct);
+    
+    pthread_mutex_lock(&iso_service->mutex_data);
+    pthread_mutex_lock(&iso_service->mutex_struct);
+    if (pthread_create(&iso_service->thread, NULL, IsoThread,(void*) iso_service)) {
+      RemoveChain(iso_service,current_camera);
+      pthread_mutex_unlock(&iso_service->mutex_struct);
+      pthread_mutex_unlock(&iso_service->mutex_data);
+      FreeChain(iso_service);
+      return(-1);
+    }
+    else {
+      info->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)IsoShowFPS, (gpointer*) iso_service);
+      
+      pthread_mutex_unlock(&iso_service->mutex_struct);
+      pthread_mutex_unlock(&iso_service->mutex_data);
+    }
+    //fprintf(stderr,"   ISO thread started\n");
+  }
 
   return (1);
 }
@@ -239,9 +222,9 @@ IsoShowFPS(gpointer *data)
 
   tmp=(float)(info->current_time-info->prev_time)/sysconf(_SC_CLK_TCK);
   if (tmp==0)
-    fps=0;
+    fps=fabs(0.0);
   else
-    fps=(float)info->frames/tmp;
+    fps=fabs((float)info->frames/tmp);
   
   sprintf(tmp_string," %.2f",fps);
   

@@ -10,7 +10,7 @@
 +
    commander_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
    gtk_object_set_data (GTK_OBJECT (commander_window), "commander_window", commander_window);
-   gtk_window_set_title (GTK_WINDOW (commander_window), _("Coriander 0.30"));
+   gtk_window_set_title (GTK_WINDOW (commander_window), _("Coriander 0.31"));
 @@ -605,8 +609,15 @@
                              (GtkDestroyNotify) gtk_widget_unref);
    gtk_widget_show (menubar);

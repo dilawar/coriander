@@ -412,7 +412,7 @@ create_commander_window (void)
   GtkWidget *table52;
   GtkWidget *label104;
   GtkWidget *cursor_yuv;
-  GtkWidget *table49;
+  GtkWidget *scrolledwindow1;
   GtkWidget *main_status;
   GtkWidget *label110;
   GtkTooltips *tooltips;
@@ -421,7 +421,7 @@ create_commander_window (void)
 
   commander_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_object_set_data (GTK_OBJECT (commander_window), "commander_window", commander_window);
-  gtk_window_set_title (GTK_WINDOW (commander_window), _("Coriander 0.30"));
+  gtk_window_set_title (GTK_WINDOW (commander_window), _("Coriander 0.31"));
   gtk_window_set_policy (GTK_WINDOW (commander_window), FALSE, TRUE, TRUE);
 
   vbox26 = gtk_vbox_new (FALSE, 0);
@@ -3329,22 +3329,21 @@ create_commander_window (void)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  table49 = gtk_table_new (1, 1, TRUE);
-  gtk_widget_ref (table49);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "table49", table49,
+  scrolledwindow1 = gtk_scrolled_window_new (NULL, NULL);
+  gtk_widget_ref (scrolledwindow1);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "scrolledwindow1", scrolledwindow1,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (table49);
-  gtk_box_pack_start (GTK_BOX (vbox72), table49, FALSE, FALSE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (table49), 3);
+  gtk_widget_show (scrolledwindow1);
+  gtk_box_pack_start (GTK_BOX (vbox72), scrolledwindow1, TRUE, TRUE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (scrolledwindow1), 5);
+  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow1), GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
 
-  main_status = gtk_statusbar_new ();
+  main_status = gtk_text_new (NULL, NULL);
   gtk_widget_ref (main_status);
   gtk_object_set_data_full (GTK_OBJECT (commander_window), "main_status", main_status,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (main_status);
-  gtk_table_attach (GTK_TABLE (table49), main_status, 0, 1, 0, 1,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
+  gtk_container_add (GTK_CONTAINER (scrolledwindow1), main_status);
 
   label110 = gtk_label_new (_("Status"));
   gtk_widget_ref (label110);

@@ -1,5 +1,6 @@
-Known bugs for version 0.30:
+Known bugs for version 0.31:
 
 - The REAL service is untested and only runs with some distros. It does not
   work on RedHat version higher or equal to RH-7.2
 
+- Multi-camera grabbing can be a little bit erratic.

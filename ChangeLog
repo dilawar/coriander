@@ -1,5 +1,17 @@
 Coriander, (c) 2000-2003 Damien Douxchamps <ddouxchamps@users.sf.net>
 
+Changes in version 0.31
+
+   April 19, 2003, by Damien Douxchamps
+   - fixed the automatic iso restart when changing format,...
+   - fixed freeing of unallocated buffer structs in threads 
+   - changed status statusbar to textbox so it acts like a log.
+   - fixed '-0.00' display of FPS.
+   - fixed segfault when a service could not start. Failure is now logged.
+   - removed CleanThreads() function, it is now useless thanks to the new
+     buffer structure.
+   - changed the failure messages for iso service
+	
 Changes in version 0.30
 
    April 14, 2003, by Damien Douxchamps

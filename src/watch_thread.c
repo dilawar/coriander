@@ -74,7 +74,7 @@ WatchThread(void *arg)
   int lower_right[2];
   int pos[2];
   int size[2];
-  int state[5];
+  int state;
   GtkAdjustment* adj;
   watchthread_info_t *info;
  
@@ -133,7 +133,7 @@ WatchThread(void *arg)
 	      //      upper_left[0],upper_left[1],lower_right[0],lower_right[1],
 	      //      pos[0],pos[1],size[0],size[1]);
 	      
-	      IsoFlowCheck(state);
+	      IsoFlowCheck(&state);
 	      //fprintf(stderr,"ISO check completed\n");
 
 	      //     WARNING!!
@@ -175,7 +175,7 @@ WatchThread(void *arg)
 		  
 		}
 	      usleep(100e3);
-	      IsoFlowResume(state);
+	      IsoFlowResume(&state);
 	      //fprintf(stderr,"Services restarted\n");
 	      
 	      info->crop=0;

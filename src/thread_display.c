@@ -23,6 +23,7 @@
 #include <gdk/gdkprivate.h>
 #include <libdc1394/dc1394_control.h>
 #include <pthread.h>
+#include <math.h>
 
 #ifdef HAVE_SDLLIB
 #  include "SDL.h"
@@ -62,6 +63,8 @@ DisplayStartThread()
     {
       //fprintf(stderr,"No DISPLAY service found, inserting new one\n");
       display_service=(chain_t*)malloc(sizeof(chain_t));
+      display_service->current_buffer=NULL;
+      display_service->next_buffer=NULL;
       display_service->data=(void*)malloc(sizeof(displaythread_info_t));
       info=(displaythread_info_t*)display_service->data;
       pthread_mutex_init(&display_service->mutex_struct, NULL);
@@ -129,9 +132,9 @@ DisplayShowFPS(gpointer *data)
 
   tmp=(float)(info->current_time-info->prev_time)/sysconf(_SC_CLK_TCK);
   if (tmp==0)
-    fps=0;
+    fps=fabs(0.0);
   else
-    fps=(float)info->frames/tmp;
+    fps=fabs((float)info->frames/tmp);
 
   sprintf(tmp_string," %.2f",fps);
 

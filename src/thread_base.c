@@ -221,14 +221,17 @@ FreeChain(chain_t* chain)
     {
       if (chain->data!=NULL)
 	free(chain->data);
-      if (chain->current_buffer->image!=NULL)
-	free(chain->current_buffer->image);
-      if (chain->next_buffer->image!=NULL)
-	free(chain->next_buffer->image);
-      if (chain->current_buffer!=NULL)
+      if (chain->current_buffer!=NULL) {
+	if (chain->current_buffer->image!=NULL) {
+	  free(chain->current_buffer->image);
+	}
 	free(chain->current_buffer);
-      if (chain->next_buffer!=NULL)
+      }
+      if (chain->next_buffer!=NULL) {
+	if (chain->next_buffer->image!=NULL)
+	  free(chain->next_buffer->image);
 	free(chain->next_buffer);
+      }
       free(chain);
     }
 }
@@ -263,44 +266,6 @@ convert_to_rgb(buffer_t *buffer, unsigned char *dest)
     }
 }
 
-void
-CleanThreads(clean_mode_t mode)
-{
-  switch (mode)
-    {
-    case CLEAN_MODE_UI_UPDATE:
-      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,
-								   "service_real")),FALSE);
-      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,
-								   "service_ftp")),FALSE);
-      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,
-								   "service_save")),FALSE);
-      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,
-								   "service_display")),FALSE);
-      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,
-								   "service_iso")),FALSE);
-      break;
-    case CLEAN_MODE_NO_UI_UPDATE:
-      RealStopThread();
-      FtpStopThread();
-      SaveStopThread();
-      DisplayStopThread(current_camera);
-      IsoStopThread();
-      break;
-    case CLEAN_MODE_UI_UPDATE_NOT_ISO:
-      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,
-								   "service_real")),FALSE);
-      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,
-								   "service_ftp")),FALSE);
-      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,
-								   "service_save")),FALSE);
-      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,
-								   "service_display")),FALSE);
-      IsoStopThread();
-      break;
-      
-    }
-}
 
 void
 InitBuffer(buffer_t *buffer)

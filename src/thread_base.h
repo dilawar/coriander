@@ -113,9 +113,6 @@ void
 convert_to_rgb(buffer_t *buffer, unsigned char *dest);
 
 void
-CleanThreads(clean_mode_t mode);
-
-void
 InitBuffer(buffer_t *buffer);
 
 #endif

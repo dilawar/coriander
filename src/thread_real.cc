@@ -31,6 +31,7 @@ extern "C" {
 #include <pthread.h>
 #include <libdc1394/dc1394_control.h>
 #include <sys/times.h>
+#include <math.h>
 #include "thread_base.h"
 #include "thread_real.h"
 #include "definitions.h"
@@ -56,6 +57,8 @@ RealStartThread(void)
     {
       //fprintf(stderr,"No REAL service found, inserting new one\n");
       real_service=(chain_t*)malloc(sizeof(chain_t));
+      real_service->current_buffer=NULL;
+      real_service->next_buffer=NULL;
       real_service->data=(void*)malloc(sizeof(realthread_info_t));
       info=(realthread_info_t*)real_service->data;
       pthread_mutex_init(&real_service->mutex_data, NULL);
@@ -157,9 +160,9 @@ RealShowFPS(gpointer *data)
   
   tmp=(float)(info->current_time-info->prev_time)/sysconf(_SC_CLK_TCK);
   if (tmp==0)
-    fps=0;
+    fps=fabs(0.0);
   else
-    fps=(float)info->frames/tmp;
+    fps=fabs((float)info->frames/tmp);
 
   sprintf(tmp_string," %.2f",fps);
 
