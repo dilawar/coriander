@@ -197,6 +197,7 @@ FtpThread(void* arg)
 	      //fprintf(stderr,"making image\n");
 	      im=gdk_imlib_create_image_from_data(info->ftp_buffer, NULL, ftp_service->width, ftp_service->height);
 	      //fprintf(stderr,"checking connection\n");
+#ifdef HAVE_FTPLIB
 	      if (!CheckFtpConnection(info))
 		{
 		  //fprintf(stderr,"Connection lost\n");
@@ -211,6 +212,7 @@ FtpThread(void* arg)
 		  //fprintf(stderr,"putting frame\n");
 		  FtpPutFrame(filename_out, im, info);
 		}
+#endif
 	      if (im != NULL)
 		gdk_imlib_kill_image(im);
 	    }
@@ -245,8 +247,9 @@ FtpStopThread(void)
 
       /* Do custom cleanups here...*/
       free(info->ftp_buffer);
+#ifdef HAVE_FTPLIB
       CloseFtpConnection(info->ftp_handle);
-      
+#endif
       /* Mendatory cleanups: */
       pthread_mutex_unlock(&ftp_service->mutex_struct);
       pthread_mutex_unlock(&ftp_service->mutex_data);
