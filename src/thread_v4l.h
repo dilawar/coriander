@@ -29,7 +29,7 @@
 #include <sys/times.h>
 #include <fcntl.h>
 #include <math.h>
-#include <linux/videodev.h>
+#include "videodev.h"
 #include "definitions.h"
 #include "support.h"
 #include "thread_base.h"

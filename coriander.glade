@@ -1839,7 +1839,7 @@ St. Field
 			<handler>on_prefs_display_keep_ratio_toggled</handler>
 			<last_modification_time>Fri, 28 Dec 2001 18:53:00 GMT</last_modification_time>
 		      </signal>
-		      <label>Keep aspect ration when resizing</label>
+		      <label>Keep aspect ratio when resizing</label>
 		      <active>False</active>
 		      <draw_indicator>True</draw_indicator>
 		      <child>

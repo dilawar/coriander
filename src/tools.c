@@ -617,11 +617,11 @@ void
 SetAbsValue(int feature)
 {
   char *stemp, *string;
+  char *stringp;
+  float value;
   stemp=(char*)malloc(STRING_SIZE*sizeof(char));
   string=(char*)malloc(STRING_SIZE*sizeof(char));
 
-  char *stringp;
-  float value;
  
   sprintf(stemp,"feature_%d_abs_entry",feature);
   stringp=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,stemp)));
@@ -646,9 +646,9 @@ void
 GetAbsValue(int feature)
 {
   char *stemp, *string;
+  float value;
   stemp=(char*)malloc(STRING_SIZE*sizeof(char));
   string=(char*)malloc(STRING_SIZE*sizeof(char));
-  float value;
  
   
   if (dc1394_query_absolute_feature_value(camera->camera_info.handle, camera->camera_info.id, feature, &value)!=DC1394_SUCCESS) {

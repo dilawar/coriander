@@ -4,6 +4,10 @@ Changes towards version 1.0.0
 
    November 21, 2003, by Damien Douxchamps
    - fixed configure macros
+
+   December 8, 2003, by Damien Douxchamps
+   - fixed compilation problems with recent kernels (by Peter De Schrijver)
+   - fixed C/C++ compilation errors
 	
 Changes in version 0.99.5
 

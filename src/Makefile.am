@@ -19,7 +19,7 @@ coriander_SOURCES = \
 	thread_display.c thread_display.h \
 	thread_ftp.c thread_ftp.h \
 	thread_save.c thread_save.h \
-	thread_v4l.c thread_v4l.h \
+	thread_v4l.c thread_v4l.h videodev.h \
 	tools.c tools.h \
 	callbacks.c callbacks.h \
 	update_frames.c update_frames.h \

@@ -395,7 +395,7 @@ create_main_window (void)
                             menubar_uiinfo[1].widget,
                             (GtkDestroyNotify) gtk_widget_unref);
 
-  gtk_widget_ref (help_menu_uiinfo[0].widget); 
+  gtk_widget_ref (help_menu_uiinfo[0].widget);
   gtk_object_set_data_full (GTK_OBJECT (main_window), "key_bindings1",
                             help_menu_uiinfo[0].widget,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1235,7 +1235,7 @@ create_main_window (void)
   gtk_widget_show (vbox64);
   gtk_container_add (GTK_CONTAINER (frame1), vbox64);
 
-  prefs_display_keep_ratio = gtk_check_button_new_with_label (_("Keep aspect ration when resizing"));
+  prefs_display_keep_ratio = gtk_check_button_new_with_label (_("Keep aspect ratio when resizing"));
   gtk_widget_ref (prefs_display_keep_ratio);
   gtk_object_set_data_full (GTK_OBJECT (main_window), "prefs_display_keep_ratio", prefs_display_keep_ratio,
                             (GtkDestroyNotify) gtk_widget_unref);
