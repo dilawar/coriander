@@ -27,20 +27,23 @@
 #include "thread_display.h"
 #include "thread_iso.h"
 #include "thread_ftp.h"
-//#include "thread_real.h"
 #include "thread_save.h"
 #include "conversions.h"
 
 extern chain_t *image_pipe;
+extern chain_t **image_pipes;
 extern dc1394_miscinfo* misc_info;
 extern GtkWidget* commander_window;
+extern int current_camera;
 
 chain_t*
-GetService(service_t service)
+GetService(service_t service, unsigned int camera)
 {
   chain_t  *chain;
 
-  chain=image_pipe;
+  //fprintf(stderr,"Probing services for camera %d\n",camera);
+
+  chain=image_pipes[camera];
 
   if (chain==NULL)
     {
@@ -106,7 +109,7 @@ RollBuffers(chain_t* chain)
 
 
 void
-CommonChainSetup(chain_t* chain, service_t req_service)
+CommonChainSetup(chain_t* chain, service_t req_service, unsigned int camera)
 {
   chain_t* probe_chain;
   isothread_info_t* info_iso;
@@ -117,7 +120,7 @@ CommonChainSetup(chain_t* chain, service_t req_service)
   
   chain->service=req_service;
   
-  probe_chain=image_pipe; // set the begin point for search
+  probe_chain=image_pipes[camera]; // set the begin point for search
   if (probe_chain!=NULL)
     {
       pthread_mutex_lock(&probe_chain->mutex_struct);
@@ -175,7 +178,7 @@ CommonChainSetup(chain_t* chain, service_t req_service)
 
 
 void
-InsertChain(chain_t* chain)
+InsertChain(chain_t* chain, unsigned int camera)
 {
 
   // we should only use mutex_struct in this function
@@ -185,7 +188,7 @@ InsertChain(chain_t* chain)
     {
       //fprintf(stderr," Insert chain: empty pipe\n");
       // the pipe is empty
-      image_pipe=chain;
+      image_pipes[camera]=chain;
     }
   else
     { // we should now effectively make the break in the pipe:
@@ -205,14 +208,12 @@ InsertChain(chain_t* chain)
 	pthread_mutex_unlock(&chain->next_chain->mutex_struct);
   
       //fprintf(stderr," Chain inserted\n");
-    
     }
-
 }
 
 
 void
-RemoveChain(chain_t* chain)
+RemoveChain(chain_t* chain, unsigned int camera)
 {
 
   // we should only use mutex_struct in this function
@@ -236,7 +237,7 @@ RemoveChain(chain_t* chain)
   if ((chain->prev_chain==NULL)&&(chain->next_chain==NULL)) // we are the only element
     {
       //fprintf(stderr,"Only element removed, image_pipe=NULL\n");
-      image_pipe=NULL;
+      image_pipes[camera]=NULL;
     }
   
   // UNLOCK
@@ -329,10 +330,11 @@ CleanThreads(clean_mode_t mode)
     case CLEAN_MODE_NO_UI_UPDATE:
       RealStopThread();
       FtpStopThread();
-      SaveStopThread();
-      DisplayStopThread();
-      IsoStopThread();
       //fprintf(stderr,"CLEAN_MODE_NO_UI_UPDATE\n");
+      SaveStopThread();
+      //fprintf(stderr,"CLEAN_MODE_NO_UI_UPDATE\n");
+      DisplayStopThread(current_camera);
+      IsoStopThread();
       break;
     case CLEAN_MODE_UI_UPDATE_NOT_ISO:
       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,

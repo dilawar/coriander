@@ -76,6 +76,7 @@ typedef struct
   long int           videoQuality;
   int                realPlayerCompatibility;
   int                maxFrameRate;
+  long int           period;
 
 #ifdef HAVE_REALLIB
 

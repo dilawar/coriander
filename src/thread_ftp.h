@@ -23,21 +23,15 @@
 
 #ifdef HAVE_FTPLIB
 #include <ftplib.h>
-#endif 
+#endif
 
-#include <pthread.h>
+#include <pthread.h> 
+
 typedef enum
 {
   FTP_SCRATCH_SEQUENTIAL,
   FTP_SCRATCH_OVERWRITE
 } ftp_scratch_t;
-
-typedef enum
-{
-  FTP_MODE_IMMEDIATE,
-  FTP_MODE_PERIODIC
-} ftp_mode_t;
-
 
 typedef struct
 { 
@@ -52,6 +46,7 @@ typedef struct
   char               password[256];
   char               user[256];
   char               path[256];
+  long int           period;
   long int           counter;
   long int           imlib_buffer_size;
   unsigned char*     ftp_buffer;

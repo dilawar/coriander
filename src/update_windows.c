@@ -51,8 +51,8 @@ void
 UpdatePreferencesWindow(void)
 {
   UpdatePrefsDisplayFrame();
-  UpdatePrefsUpdateFrame();     
-  UpdatePrefsRanges();
+  UpdatePrefsReceiveFrame();
+  UpdatePrefsUpdateFrame();    
   UpdatePrefsSaveFrame();
   UpdatePrefsFtpFrame();
   UpdatePrefsRealFrame();
@@ -73,10 +73,10 @@ UpdateCommanderWindow(void)
 void
 UpdatePortholeWindow(void)
 {
-  UpdateRange(porthole_window, FEATURE_FOCUS);
-  UpdateRange(porthole_window, FEATURE_PAN);
-  UpdateRange(porthole_window, FEATURE_TILT);
-  UpdateRange(porthole_window, FEATURE_ZOOM);
+  UpdateRange(commander_window, FEATURE_FOCUS);
+  UpdateRange(commander_window, FEATURE_PAN);
+  UpdateRange(commander_window, FEATURE_TILT);
+  UpdateRange(commander_window, FEATURE_ZOOM);
 }
 
 void

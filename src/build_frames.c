@@ -151,18 +151,6 @@ BuildPrefsSaveFrame(void)
 {
   GtkAdjustment *adjustment;
 
-  switch(preferences.save_mode)
-    {
-    case SAVE_MODE_IMMEDIATE:
-      gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(preferences_window,
-								   "prefs_save_afap"), TRUE);
-      break;
-    case SAVE_MODE_PERIODIC:
-      gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(preferences_window,
-								   "prefs_save_every"), TRUE);
-      break;
-    }
-
   switch(preferences.save_scratch)
     {
     case SAVE_SCRATCH_OVERWRITE:
@@ -191,18 +179,6 @@ BuildPrefsFtpFrame(void)
 #ifdef HAVE_FTPLIB
 
   GtkAdjustment *adjustment;
-
-  switch(preferences.ftp_mode)
-    {
-    case FTP_MODE_IMMEDIATE:
-      gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(preferences_window,
-								   "prefs_ftp_afap"), TRUE);
-      break;
-    case FTP_MODE_PERIODIC:
-      gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(preferences_window,
-								   "prefs_ftp_every"), TRUE);
-      break;
-    }
 
   switch(preferences.ftp_scratch)
     {

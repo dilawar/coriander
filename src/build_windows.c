@@ -41,7 +41,6 @@ void
 BuildPreferencesWindow(void)
 {
   LoadConfigFile();
-  BuildPrefsRanges();
   BuildPrefsSaveFrame();
   BuildPrefsFtpFrame();
   BuildPrefsRealFrame();
@@ -67,10 +66,10 @@ BuildColorWindow(void)
 void
 BuildPortholeWindow(void)
 {
-  BuildRange(porthole_window, FEATURE_FOCUS);
-  BuildRange(porthole_window, FEATURE_PAN);
-  BuildRange(porthole_window, FEATURE_TILT);
-  BuildRange(porthole_window, FEATURE_ZOOM);
+  BuildRange(commander_window, FEATURE_FOCUS);
+  BuildRange(commander_window, FEATURE_PAN);
+  BuildRange(commander_window, FEATURE_TILT);
+  BuildRange(commander_window, FEATURE_ZOOM);
 }
 
 void

@@ -52,7 +52,7 @@ extern char* power_class_list[8];
 extern SelfIdPacket_t *selfid;
 extern PrefsInfo preferences; 
 extern int silent_ui_update;
-
+extern int current_camera;
 void
 UpdatePrefsUpdateFrame(void)
 {
@@ -62,10 +62,6 @@ UpdatePrefsUpdateFrame(void)
 void
 UpdatePrefsSaveFrame(void)
 {
-  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_save_period"),
-			   (preferences.save_mode==SAVE_MODE_PERIODIC));
-  gtk_widget_set_sensitive(lookup_widget(preferences_window,"label42"),
-			   (preferences.save_mode==SAVE_MODE_PERIODIC));
   gtk_entry_set_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_save_filename")),
 		     preferences.save_filename);
 }
@@ -76,11 +72,6 @@ UpdatePrefsFtpFrame(void)
 {
 #ifdef HAVE_FTPLIB
 
-  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_ftp_period"),
-			   (preferences.ftp_mode==FTP_MODE_PERIODIC));
-  gtk_widget_set_sensitive(lookup_widget(preferences_window,"label55"),
-			   (preferences.ftp_mode==FTP_MODE_PERIODIC));
-  
   gtk_entry_set_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_ftp_filename")),
 		     preferences.ftp_filename);
   gtk_entry_set_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_ftp_address")),
@@ -131,9 +122,6 @@ UpdatePrefsRealFrame(void)
 void
 UpdatePrefsDisplayFrame(void)
 {
-  struct stat statstruct;
-  int video_ok=0;
-
   // DISPLAY =====
 
   gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_display_gdk"),TRUE);// GDK always available  
@@ -160,8 +148,14 @@ UpdatePrefsDisplayFrame(void)
   gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_display_xv"),FALSE);
 #endif
 
+}
 
-  // CAPTURE =====
+
+void
+UpdatePrefsReceiveFrame(void)
+{
+  int video_ok=0;
+  struct stat statstruct;
 
   // blank sensitiveness
   gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_capture_raw1394"),TRUE);// RAW1394 always available
@@ -194,8 +188,6 @@ UpdatePrefsDisplayFrame(void)
       break;
     }
 
-  // REM: automatic changes done to the config should be saved to .coriander
-  WriteConfigFile();
 }
 
 void
@@ -399,15 +391,15 @@ UpdateServicesFrame(void)
   silent_ui_update=1;
 
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"service_iso")),
-			       GetService(SERVICE_ISO)!=NULL);
+			       GetService(SERVICE_ISO,current_camera)!=NULL);
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"service_display")),
-			       GetService(SERVICE_DISPLAY)!=NULL);
+			       GetService(SERVICE_DISPLAY,current_camera)!=NULL);
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"service_save")),
-			       GetService(SERVICE_SAVE)!=NULL);
+			       GetService(SERVICE_SAVE,current_camera)!=NULL);
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"service_ftp")),
-			       GetService(SERVICE_FTP)!=NULL);
+			       GetService(SERVICE_FTP,current_camera)!=NULL);
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"service_real")),
-			       GetService(SERVICE_FTP)!=NULL);
+			       GetService(SERVICE_FTP,current_camera)!=NULL);
   silent_ui_update=0;
 
 }

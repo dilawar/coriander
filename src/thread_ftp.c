@@ -33,6 +33,7 @@
 #include "tools.h"
 
 extern PrefsInfo preferences;
+extern int current_camera;
 
 gint
 FtpStartThread(void)
@@ -41,7 +42,7 @@ FtpStartThread(void)
   ftpthread_info_t *info=NULL;
   gchar *tmp;
 
-  ftp_service=GetService(SERVICE_FTP);
+  ftp_service=GetService(SERVICE_FTP,current_camera);
 
   if (ftp_service==NULL)// if no FTP service running...
     {
@@ -60,6 +61,8 @@ FtpStartThread(void)
 
       /* setup ftp_thread: handles, ...*/
       pthread_mutex_lock(&ftp_service->mutex_data);
+      info->period=preferences.ftp_period;
+      info->counter=0;
       strcpy(info->address, preferences.ftp_address);
       strcpy(info->user, preferences.ftp_user);
       strcpy(info->password, preferences.ftp_password);
@@ -78,11 +81,10 @@ FtpStartThread(void)
       tmp[0] = '\0';// cut filename before point
       strcpy(info->filename_ext, strrchr(preferences.ftp_filename, '.'));
 
-      CommonChainSetup(ftp_service,SERVICE_FTP);
+      CommonChainSetup(ftp_service,SERVICE_FTP,current_camera);
       info->imlib_buffer_size=ftp_service->width*ftp_service->height*3;
       info->ftp_buffer=(unsigned char*)malloc(info->imlib_buffer_size*sizeof(unsigned char));
 
-      info->counter=0;
       info->ftp_scratch=preferences.ftp_scratch;
 
 #ifdef HAVE_FTPLIB
@@ -103,7 +105,7 @@ FtpStartThread(void)
 
       /* Insert chain and start service*/
       pthread_mutex_lock(&ftp_service->mutex_struct);
-      InsertChain(ftp_service);
+      InsertChain(ftp_service,current_camera);
       pthread_mutex_unlock(&ftp_service->mutex_struct);
 
       pthread_mutex_lock(&ftp_service->mutex_data);
@@ -115,7 +117,7 @@ FtpStartThread(void)
 	       (free, unset global vars,...):*/
 
 	    /* Mendatory cleanups:*/
-	    RemoveChain(ftp_service);
+	    RemoveChain(ftp_service,current_camera);
 	    pthread_mutex_unlock(&ftp_service->mutex_struct);
 	    pthread_mutex_unlock(&ftp_service->mutex_data);
 	    free(info->ftp_buffer);
@@ -153,16 +155,19 @@ FtpThread(void* arg)
   chain_t* ftp_service=NULL;
   ftpthread_info_t *info=NULL;
   GdkImlibImage *im=NULL;
+  long int skip_counter;
 
   ftp_service=(chain_t*)arg;
   pthread_mutex_lock(&ftp_service->mutex_data);
   info=(ftpthread_info_t*)ftp_service->data;
-  //fprintf(stderr,"Entered FTP thread\n");
+  skip_counter=0;
+ //fprintf(stderr,"Entered FTP thread\n");
   /* These settings depend on the thread. For 100% safe deferred-cancel
    threads, I advise you use a custom thread cancel flag. See display thread.*/
   pthread_setcancelstate(PTHREAD_CANCEL_DISABLE,NULL);
   pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED,NULL);
   pthread_mutex_unlock(&ftp_service->mutex_data);
+ 
 
   while (1)
     { 
@@ -179,42 +184,48 @@ FtpThread(void* arg)
 	  pthread_mutex_lock(&ftp_service->mutex_data);
 	  if(RollBuffers(ftp_service)) // have buffers been rolled?
 	    {
-	      pthread_mutex_unlock(&ftp_service->mutex_data);
-	      convert_to_rgb(ftp_service->current_buffer, info->ftp_buffer,
-			     ftp_service->mode, ftp_service->width,
-			     ftp_service->height, ftp_service->bytes_per_frame);
-	      if (info->ftp_scratch == FTP_SCRATCH_OVERWRITE)
+	      if (skip_counter==(info->period-1))
 		{
-		    sprintf(filename_out, "%s%s", info->filename,info->filename_ext);
-		}
-	      else
-		if (info->ftp_scratch == FTP_SCRATCH_SEQUENTIAL)
-		  {
-		    sprintf(filename_out, "%s_%10.10li%s", info->filename,
-			    info->counter++, info->filename_ext);
-		  }
+		  skip_counter=0;
+		  convert_to_rgb(ftp_service->current_buffer, info->ftp_buffer,
+				 ftp_service->mode, ftp_service->width,
+				 ftp_service->height, ftp_service->bytes_per_frame);
+		  if (info->ftp_scratch == FTP_SCRATCH_OVERWRITE)
+		    {
+		      sprintf(filename_out, "%s%s", info->filename,info->filename_ext);
+		    }
+		  else
+		    if (info->ftp_scratch == FTP_SCRATCH_SEQUENTIAL)
+		      {
+			sprintf(filename_out, "%s_%10.10li%s", info->filename,
+				info->counter++, info->filename_ext);
+		      }
 
-	      //fprintf(stderr,"making image\n");
-	      im=gdk_imlib_create_image_from_data(info->ftp_buffer, NULL, ftp_service->width, ftp_service->height);
-	      //fprintf(stderr,"checking connection\n");
+		  //fprintf(stderr,"making image\n");
+		  im=gdk_imlib_create_image_from_data(info->ftp_buffer, NULL, ftp_service->width, ftp_service->height);
+		  //fprintf(stderr,"checking connection\n");
 #ifdef HAVE_FTPLIB
-	      if (!CheckFtpConnection(info))
-		{
-		  //fprintf(stderr,"Connection lost\n");
-		  MainError("Ftp connection lost for good");
-		  // AUTO CANCEL THREAD
-		  pthread_mutex_lock(&info->mutex_cancel_ftp);
-		  info->cancel_ftp_req=1;
-		  pthread_mutex_unlock(&info->mutex_cancel_ftp);
+		  if (!CheckFtpConnection(info))
+		    {
+		      //fprintf(stderr,"Connection lost\n");
+		      MainError("Ftp connection lost for good");
+		      // AUTO CANCEL THREAD
+		      pthread_mutex_lock(&info->mutex_cancel_ftp);
+		      info->cancel_ftp_req=1;
+		      pthread_mutex_unlock(&info->mutex_cancel_ftp);
+		    }
+		  else
+		    {
+		      //fprintf(stderr,"putting frame\n");
+		      FtpPutFrame(filename_out, im, info);
+		    }
+#endif
+		  if (im != NULL)
+		    gdk_imlib_kill_image(im);
 		}
 	      else
-		{
-		  //fprintf(stderr,"putting frame\n");
-		  FtpPutFrame(filename_out, im, info);
-		}
-#endif
-	      if (im != NULL)
-		gdk_imlib_kill_image(im);
+		skip_counter++;
+	      pthread_mutex_unlock(&ftp_service->mutex_data);
 	    }
 	  else
 	    {
@@ -231,7 +242,7 @@ FtpStopThread(void)
 {
   ftpthread_info_t *info;
   chain_t *ftp_service;
-  ftp_service=GetService(SERVICE_FTP);
+  ftp_service=GetService(SERVICE_FTP,current_camera);
 
   if (ftp_service!=NULL)// if FTP service running...
     {
@@ -246,7 +257,7 @@ FtpStopThread(void)
 
       pthread_mutex_lock(&ftp_service->mutex_data);
       pthread_mutex_lock(&ftp_service->mutex_struct);
-      RemoveChain(ftp_service);
+      RemoveChain(ftp_service,current_camera);
 
       /* Do custom cleanups here...*/
       free(info->ftp_buffer);

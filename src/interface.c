@@ -34,13 +34,6 @@ static GnomeUIInfo file_menu_uiinfo[] =
 static GnomeUIInfo window_menu_uiinfo[] =
 {
   {
-    GNOME_APP_UI_ITEM, N_("_Porthole"),
-    NULL,
-    (gpointer) on_porthole_activate, NULL, NULL,
-    GNOME_APP_PIXMAP_NONE, NULL,
-    GDK_P, (GdkModifierType) GDK_CONTROL_MASK, NULL
-  },
-  {
     GNOME_APP_UI_ITEM, N_("Format_7 Setup"),
     NULL,
     (gpointer) on_format7_window_activate, NULL, NULL,
@@ -445,153 +438,89 @@ create_commander_window (void)
   GtkWidget *trigger_mode;
   GtkWidget *trigger_mode_menu;
   GtkWidget *notebook2;
-  GtkWidget *hbox6;
-  GtkWidget *exposure_frame;
-  GtkWidget *vbox9;
-  GtkWidget *exposure_power;
-  GSList *exposure_group = NULL;
-  GtkWidget *exposure_man;
-  GtkWidget *exposure_auto;
-  GtkWidget *exposure_op;
-  GtkWidget *exposure_scale;
+  GtkWidget *vbox62;
+  GtkWidget *auto_exposure_frame;
+  GtkWidget *table33;
+  GtkWidget *auto_exposure_scale;
+  GtkWidget *auto_exposure_menu;
+  GtkWidget *auto_exposure_menu_menu;
   GtkWidget *iris_frame;
-  GtkWidget *vbox11;
-  GtkWidget *iris_power;
-  GSList *iris_group = NULL;
-  GtkWidget *iris_man;
-  GtkWidget *iris_auto;
-  GtkWidget *iris_op;
+  GtkWidget *table34;
   GtkWidget *iris_scale;
+  GtkWidget *iris_menu;
+  GtkWidget *iris_menu_menu;
   GtkWidget *shutter_frame;
-  GtkWidget *vbox12;
-  GtkWidget *shutter_power;
-  GSList *shutter_group = NULL;
-  GtkWidget *shutter_man;
-  GtkWidget *shutter_auto;
-  GtkWidget *shutter_op;
+  GtkWidget *table35;
   GtkWidget *shutter_scale;
+  GtkWidget *shutter_menu;
+  GtkWidget *shutter_menu_menu;
   GtkWidget *gain_frame;
-  GtkWidget *vbox13;
-  GtkWidget *gain_power;
-  GSList *gain_group = NULL;
-  GtkWidget *gain_man;
-  GtkWidget *gain_auto;
-  GtkWidget *gain_op;
+  GtkWidget *table36;
   GtkWidget *gain_scale;
+  GtkWidget *gain_menu;
+  GtkWidget *gain_menu_menu;
   GtkWidget *filter_frame;
-  GtkWidget *vbox10;
-  GtkWidget *filter_power;
-  GSList *filter_group = NULL;
-  GtkWidget *filter_man;
-  GtkWidget *filter_auto;
-  GtkWidget *filter_op;
+  GtkWidget *table37;
   GtkWidget *filter_scale;
+  GtkWidget *filter_menu;
+  GtkWidget *filter_menu_menu;
   GtkWidget *label56;
   GtkWidget *vbox58;
   GtkWidget *hue_frame;
-  GtkWidget *hbox8;
-  GtkWidget *table4;
-  GSList *hue_group = NULL;
-  GtkWidget *hue_man;
-  GtkWidget *hue_auto;
-  GtkWidget *hue_op;
-  GtkWidget *alignment3;
-  GtkWidget *hue_power;
+  GtkWidget *table26;
+  GtkWidget *hue_menu;
+  GtkWidget *hue_menu_menu;
   GtkWidget *hue_scale;
   GtkWidget *saturation_frame;
-  GtkWidget *hbox7;
-  GtkWidget *table3;
-  GSList *saturation_group = NULL;
-  GtkWidget *saturation_man;
-  GtkWidget *saturation_auto;
-  GtkWidget *saturation_op;
-  GtkWidget *alignment2;
-  GtkWidget *saturation_power;
+  GtkWidget *table27;
+  GtkWidget *saturation_menu;
+  GtkWidget *saturation_menu_menu;
   GtkWidget *saturation_scale;
-  GtkWidget *whitebal_frame;
-  GtkWidget *hbox10;
-  GtkWidget *vbox15;
-  GtkWidget *whitebal_power;
-  GSList *whitebal_group = NULL;
-  GtkWidget *whitebal_man;
-  GtkWidget *whitebal_auto;
-  GtkWidget *whitebal_op;
-  GtkWidget *hbox46;
-  GtkWidget *vseparator1;
-  GtkWidget *table22;
-  GtkWidget *whitebal_BU_scale;
-  GtkWidget *whitebal_RV_scale;
+  GtkWidget *white_balance_frame;
+  GtkWidget *table38;
+  GtkWidget *white_balance_BU_scale;
+  GtkWidget *white_balance_RV_scale;
+  GtkWidget *white_balance_menu;
+  GtkWidget *white_balance_menu_menu;
   GtkWidget *label44;
   GtkWidget *label45;
   GtkWidget *label57;
   GtkWidget *vbox59;
   GtkWidget *brightness_frame;
-  GtkWidget *hbox22;
-  GtkWidget *table11;
-  GSList *brightness_group = NULL;
-  GtkWidget *brightness_man;
-  GtkWidget *brightness_auto;
-  GtkWidget *brightness_op;
-  GtkWidget *alignment7;
-  GtkWidget *brightness_power;
+  GtkWidget *table28;
+  GtkWidget *brightness_menu;
+  GtkWidget *brightness_menu_menu;
   GtkWidget *brightness_scale;
   GtkWidget *gamma_frame;
-  GtkWidget *hbox23;
-  GtkWidget *table12;
-  GSList *gamma_group = NULL;
-  GtkWidget *gamma_man;
-  GtkWidget *gamma_auto;
-  GtkWidget *gamma_op;
-  GtkWidget *alignment8;
-  GtkWidget *gamma_power;
+  GtkWidget *table29;
+  GtkWidget *gamma_menu;
+  GtkWidget *gamma_menu_menu;
   GtkWidget *gamma_scale;
   GtkWidget *sharpness_frame;
-  GtkWidget *hbox21;
-  GtkWidget *table10;
-  GSList *sharpness_group = NULL;
-  GtkWidget *sharpness_man;
-  GtkWidget *sharpness_auto;
-  GtkWidget *sharpness_op;
-  GtkWidget *alignment6;
-  GtkWidget *sharpness_power;
+  GtkWidget *table30;
+  GtkWidget *sharpness_menu;
+  GtkWidget *sharpness_menu_menu;
   GtkWidget *sharpness_scale;
   GtkWidget *label58;
   GtkWidget *vbox60;
-  GtkWidget *temp_frame;
-  GtkWidget *hbox27;
-  GtkWidget *vbox30;
-  GtkWidget *temp_power;
-  GSList *temp_group = NULL;
-  GtkWidget *temp_man;
-  GtkWidget *temp_auto;
-  GtkWidget *temp_op;
-  GtkWidget *hbox47;
-  GtkWidget *vseparator2;
-  GtkWidget *table23;
-  GtkWidget *temp_current_scale;
-  GtkWidget *temp_goal_scale;
-  GtkWidget *label46;
-  GtkWidget *label47;
-  GtkWidget *capqual_frame;
-  GtkWidget *hbox24;
-  GtkWidget *table13;
-  GSList *capqual_group = NULL;
-  GtkWidget *capqual_man;
-  GtkWidget *capqual_auto;
-  GtkWidget *capqual_op;
-  GtkWidget *alignment9;
-  GtkWidget *capqual_power;
-  GtkWidget *capqual_scale;
-  GtkWidget *capsize;
-  GtkWidget *hbox25;
-  GtkWidget *table14;
-  GSList *capsize_group = NULL;
-  GtkWidget *capsize_man;
-  GtkWidget *capsize_auto;
-  GtkWidget *capsize_op;
-  GtkWidget *alignment10;
-  GtkWidget *capsize_power;
-  GtkWidget *capsize_scale;
+  GtkWidget *temperature_frame;
+  GtkWidget *table39;
+  GtkWidget *temperature_current_scale;
+  GtkWidget *temperature_target_scale;
+  GtkWidget *temperature_menu;
+  GtkWidget *temperature_menu_menu;
+  GtkWidget *label81;
+  GtkWidget *label82;
+  GtkWidget *capture_quality_frame;
+  GtkWidget *table31;
+  GtkWidget *capture_quality_menu;
+  GtkWidget *capture_quality_menu_menu;
+  GtkWidget *capture_quality_scale;
+  GtkWidget *capture_size_frame;
+  GtkWidget *table32;
+  GtkWidget *capture_size_menu;
+  GtkWidget *capture_size_menu_menu;
+  GtkWidget *capture_size_scale;
   GtkWidget *label59;
   GtkWidget *vbox28;
   GtkWidget *camera_status_frame;
@@ -627,12 +556,34 @@ create_commander_window (void)
   GtkWidget *iso_speed_status;
   GtkWidget *iso_status_status;
   GtkWidget *label60;
+  GtkWidget *vbox63;
+  GtkWidget *zoom_frame;
+  GtkWidget *table40;
+  GtkWidget *zoom_menu;
+  GtkWidget *zoom_menu_menu;
+  GtkWidget *zoom_scale;
+  GtkWidget *focus_frame;
+  GtkWidget *table41;
+  GtkWidget *focus_menu;
+  GtkWidget *focus_menu_menu;
+  GtkWidget *focus_scale;
+  GtkWidget *tilt_frame;
+  GtkWidget *table42;
+  GtkWidget *tilt_menu;
+  GtkWidget *tilt_menu_menu;
+  GtkWidget *tilt_scale;
+  GtkWidget *pan_frame;
+  GtkWidget *table43;
+  GtkWidget *pan_menu;
+  GtkWidget *pan_menu_menu;
+  GtkWidget *pan_scale;
+  GtkWidget *label83;
   GtkWidget *main_status;
 
   commander_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_object_set_data (GTK_OBJECT (commander_window), "commander_window", commander_window);
-  gtk_window_set_title (GTK_WINDOW (commander_window), _("Coriander 0.19b"));
-  gtk_window_set_policy (GTK_WINDOW (commander_window), FALSE, FALSE, TRUE);
+  gtk_window_set_title (GTK_WINDOW (commander_window), _("Coriander 0.20"));
+  gtk_window_set_policy (GTK_WINDOW (commander_window), FALSE, TRUE, TRUE);
 
   vbox26 = gtk_vbox_new (FALSE, 0);
   gtk_widget_ref (vbox26);
@@ -676,18 +627,13 @@ create_commander_window (void)
                             (GtkDestroyNotify) gtk_widget_unref);
 
   gtk_widget_ref (window_menu_uiinfo[0].widget);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "porthole",
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "format7_window",
                             window_menu_uiinfo[0].widget,
                             (GtkDestroyNotify) gtk_widget_unref);
 
   gtk_widget_ref (window_menu_uiinfo[1].widget);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "format7_window",
-                            window_menu_uiinfo[1].widget,
-                            (GtkDestroyNotify) gtk_widget_unref);
-
-  gtk_widget_ref (window_menu_uiinfo[2].widget);
   gtk_object_set_data_full (GTK_OBJECT (commander_window), "format6_window",
-                            window_menu_uiinfo[2].widget,
+                            window_menu_uiinfo[1].widget,
                             (GtkDestroyNotify) gtk_widget_unref);
 
   gtk_widget_ref (menubar_uiinfo[2].widget);
@@ -942,7 +888,7 @@ create_commander_window (void)
   gtk_object_set_data_full (GTK_OBJECT (commander_window), "vbox40", vbox40,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (vbox40);
-  gtk_box_pack_start (GTK_BOX (hbox53), vbox40, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (hbox53), vbox40, FALSE, TRUE, 0);
 
   camera_select_frame = gtk_frame_new (_("Camera Select"));
   gtk_widget_ref (camera_select_frame);
@@ -1299,327 +1245,262 @@ create_commander_window (void)
   gtk_widget_show (notebook2);
   gtk_box_pack_start (GTK_BOX (hbox53), notebook2, TRUE, TRUE, 0);
 
-  hbox6 = gtk_hbox_new (FALSE, 0);
-  gtk_widget_ref (hbox6);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "hbox6", hbox6,
+  vbox62 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_ref (vbox62);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "vbox62", vbox62,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (hbox6);
-  gtk_container_add (GTK_CONTAINER (notebook2), hbox6);
+  gtk_widget_show (vbox62);
+  gtk_container_add (GTK_CONTAINER (notebook2), vbox62);
 
-  exposure_frame = gtk_frame_new (_("AutoExp"));
-  gtk_widget_ref (exposure_frame);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "exposure_frame", exposure_frame,
+  auto_exposure_frame = gtk_frame_new (_("Auto exposure"));
+  gtk_widget_ref (auto_exposure_frame);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "auto_exposure_frame", auto_exposure_frame,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (exposure_frame);
-  gtk_box_pack_start (GTK_BOX (hbox6), exposure_frame, FALSE, FALSE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (exposure_frame), 5);
-  gtk_widget_set_sensitive (exposure_frame, FALSE);
+  gtk_widget_show (auto_exposure_frame);
+  gtk_box_pack_start (GTK_BOX (vbox62), auto_exposure_frame, FALSE, TRUE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (auto_exposure_frame), 5);
+  gtk_widget_set_sensitive (auto_exposure_frame, FALSE);
 
-  vbox9 = gtk_vbox_new (FALSE, 0);
-  gtk_widget_ref (vbox9);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "vbox9", vbox9,
+  table33 = gtk_table_new (1, 2, FALSE);
+  gtk_widget_ref (table33);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "table33", table33,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (vbox9);
-  gtk_container_add (GTK_CONTAINER (exposure_frame), vbox9);
+  gtk_widget_show (table33);
+  gtk_container_add (GTK_CONTAINER (auto_exposure_frame), table33);
 
-  exposure_power = gtk_toggle_button_new_with_label (_("ON"));
-  gtk_widget_ref (exposure_power);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "exposure_power", exposure_power,
+  auto_exposure_scale = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 255, 1, 10, 0)));
+  gtk_widget_ref (auto_exposure_scale);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "auto_exposure_scale", auto_exposure_scale,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (exposure_power);
-  gtk_box_pack_start (GTK_BOX (vbox9), exposure_power, FALSE, FALSE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (exposure_power), 2);
-  gtk_widget_set_sensitive (exposure_power, FALSE);
+  gtk_widget_show (auto_exposure_scale);
+  gtk_table_attach (GTK_TABLE (table33), auto_exposure_scale, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+  gtk_widget_set_sensitive (auto_exposure_scale, FALSE);
+  gtk_scale_set_digits (GTK_SCALE (auto_exposure_scale), 0);
 
-  exposure_man = gtk_radio_button_new_with_label (exposure_group, _("Man"));
-  exposure_group = gtk_radio_button_group (GTK_RADIO_BUTTON (exposure_man));
-  gtk_widget_ref (exposure_man);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "exposure_man", exposure_man,
+  auto_exposure_menu = gtk_option_menu_new ();
+  gtk_widget_ref (auto_exposure_menu);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "auto_exposure_menu", auto_exposure_menu,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (exposure_man);
-  gtk_box_pack_start (GTK_BOX (vbox9), exposure_man, FALSE, FALSE, 0);
-  gtk_widget_set_sensitive (exposure_man, FALSE);
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (exposure_man), TRUE);
-
-  exposure_auto = gtk_radio_button_new_with_label (exposure_group, _("Auto"));
-  exposure_group = gtk_radio_button_group (GTK_RADIO_BUTTON (exposure_auto));
-  gtk_widget_ref (exposure_auto);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "exposure_auto", exposure_auto,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (exposure_auto);
-  gtk_box_pack_start (GTK_BOX (vbox9), exposure_auto, FALSE, FALSE, 0);
-  gtk_widget_set_sensitive (exposure_auto, FALSE);
-
-  exposure_op = gtk_button_new_with_label (_("AUTO"));
-  gtk_widget_ref (exposure_op);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "exposure_op", exposure_op,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (exposure_op);
-  gtk_box_pack_start (GTK_BOX (vbox9), exposure_op, FALSE, FALSE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (exposure_op), 2);
-  gtk_widget_set_sensitive (exposure_op, FALSE);
-
-  exposure_scale = gtk_vscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 255, 1, 10, 0)));
-  gtk_widget_ref (exposure_scale);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "exposure_scale", exposure_scale,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (exposure_scale);
-  gtk_box_pack_start (GTK_BOX (vbox9), exposure_scale, TRUE, TRUE, 0);
-  gtk_widget_set_sensitive (exposure_scale, FALSE);
-  gtk_scale_set_value_pos (GTK_SCALE (exposure_scale), GTK_POS_LEFT);
-  gtk_scale_set_digits (GTK_SCALE (exposure_scale), 0);
+  gtk_widget_show (auto_exposure_menu);
+  gtk_table_attach (GTK_TABLE (table33), auto_exposure_menu, 0, 1, 0, 1,
+                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (0), 0, 0);
+  auto_exposure_menu_menu = gtk_menu_new ();
+  glade_menuitem = gtk_menu_item_new_with_label (_("Off"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (auto_exposure_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Man"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (auto_exposure_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Auto"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (auto_exposure_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Single"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (auto_exposure_menu_menu), glade_menuitem);
+  gtk_option_menu_set_menu (GTK_OPTION_MENU (auto_exposure_menu), auto_exposure_menu_menu);
 
   iris_frame = gtk_frame_new (_("Iris"));
   gtk_widget_ref (iris_frame);
   gtk_object_set_data_full (GTK_OBJECT (commander_window), "iris_frame", iris_frame,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (iris_frame);
-  gtk_box_pack_start (GTK_BOX (hbox6), iris_frame, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox62), iris_frame, FALSE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (iris_frame), 5);
   gtk_widget_set_sensitive (iris_frame, FALSE);
 
-  vbox11 = gtk_vbox_new (FALSE, 0);
-  gtk_widget_ref (vbox11);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "vbox11", vbox11,
+  table34 = gtk_table_new (1, 2, FALSE);
+  gtk_widget_ref (table34);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "table34", table34,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (vbox11);
-  gtk_container_add (GTK_CONTAINER (iris_frame), vbox11);
+  gtk_widget_show (table34);
+  gtk_container_add (GTK_CONTAINER (iris_frame), table34);
 
-  iris_power = gtk_toggle_button_new_with_label (_("ON"));
-  gtk_widget_ref (iris_power);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "iris_power", iris_power,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (iris_power);
-  gtk_box_pack_start (GTK_BOX (vbox11), iris_power, FALSE, FALSE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (iris_power), 2);
-  gtk_widget_set_sensitive (iris_power, FALSE);
-
-  iris_man = gtk_radio_button_new_with_label (iris_group, _("Man"));
-  iris_group = gtk_radio_button_group (GTK_RADIO_BUTTON (iris_man));
-  gtk_widget_ref (iris_man);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "iris_man", iris_man,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (iris_man);
-  gtk_box_pack_start (GTK_BOX (vbox11), iris_man, FALSE, FALSE, 0);
-  gtk_widget_set_sensitive (iris_man, FALSE);
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (iris_man), TRUE);
-
-  iris_auto = gtk_radio_button_new_with_label (iris_group, _("Auto"));
-  iris_group = gtk_radio_button_group (GTK_RADIO_BUTTON (iris_auto));
-  gtk_widget_ref (iris_auto);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "iris_auto", iris_auto,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (iris_auto);
-  gtk_box_pack_start (GTK_BOX (vbox11), iris_auto, FALSE, FALSE, 0);
-  gtk_widget_set_sensitive (iris_auto, FALSE);
-
-  iris_op = gtk_button_new_with_label (_("AUTO"));
-  gtk_widget_ref (iris_op);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "iris_op", iris_op,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (iris_op);
-  gtk_box_pack_start (GTK_BOX (vbox11), iris_op, FALSE, FALSE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (iris_op), 2);
-  gtk_widget_set_sensitive (iris_op, FALSE);
-
-  iris_scale = gtk_vscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 255, 1, 10, 0)));
+  iris_scale = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 255, 1, 10, 0)));
   gtk_widget_ref (iris_scale);
   gtk_object_set_data_full (GTK_OBJECT (commander_window), "iris_scale", iris_scale,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (iris_scale);
-  gtk_box_pack_start (GTK_BOX (vbox11), iris_scale, TRUE, TRUE, 0);
+  gtk_table_attach (GTK_TABLE (table34), iris_scale, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
   gtk_widget_set_sensitive (iris_scale, FALSE);
-  gtk_scale_set_value_pos (GTK_SCALE (iris_scale), GTK_POS_LEFT);
   gtk_scale_set_digits (GTK_SCALE (iris_scale), 0);
+
+  iris_menu = gtk_option_menu_new ();
+  gtk_widget_ref (iris_menu);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "iris_menu", iris_menu,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (iris_menu);
+  gtk_table_attach (GTK_TABLE (table34), iris_menu, 0, 1, 0, 1,
+                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (0), 0, 0);
+  iris_menu_menu = gtk_menu_new ();
+  glade_menuitem = gtk_menu_item_new_with_label (_("Off"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (iris_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Man"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (iris_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Auto"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (iris_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Single"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (iris_menu_menu), glade_menuitem);
+  gtk_option_menu_set_menu (GTK_OPTION_MENU (iris_menu), iris_menu_menu);
 
   shutter_frame = gtk_frame_new (_("Shutter"));
   gtk_widget_ref (shutter_frame);
   gtk_object_set_data_full (GTK_OBJECT (commander_window), "shutter_frame", shutter_frame,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (shutter_frame);
-  gtk_box_pack_start (GTK_BOX (hbox6), shutter_frame, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox62), shutter_frame, FALSE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (shutter_frame), 5);
   gtk_widget_set_sensitive (shutter_frame, FALSE);
 
-  vbox12 = gtk_vbox_new (FALSE, 0);
-  gtk_widget_ref (vbox12);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "vbox12", vbox12,
+  table35 = gtk_table_new (1, 2, FALSE);
+  gtk_widget_ref (table35);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "table35", table35,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (vbox12);
-  gtk_container_add (GTK_CONTAINER (shutter_frame), vbox12);
+  gtk_widget_show (table35);
+  gtk_container_add (GTK_CONTAINER (shutter_frame), table35);
 
-  shutter_power = gtk_toggle_button_new_with_label (_("ON"));
-  gtk_widget_ref (shutter_power);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "shutter_power", shutter_power,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (shutter_power);
-  gtk_box_pack_start (GTK_BOX (vbox12), shutter_power, FALSE, FALSE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (shutter_power), 2);
-  gtk_widget_set_sensitive (shutter_power, FALSE);
-
-  shutter_man = gtk_radio_button_new_with_label (shutter_group, _("Man"));
-  shutter_group = gtk_radio_button_group (GTK_RADIO_BUTTON (shutter_man));
-  gtk_widget_ref (shutter_man);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "shutter_man", shutter_man,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (shutter_man);
-  gtk_box_pack_start (GTK_BOX (vbox12), shutter_man, FALSE, FALSE, 0);
-  gtk_widget_set_sensitive (shutter_man, FALSE);
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (shutter_man), TRUE);
-
-  shutter_auto = gtk_radio_button_new_with_label (shutter_group, _("Auto"));
-  shutter_group = gtk_radio_button_group (GTK_RADIO_BUTTON (shutter_auto));
-  gtk_widget_ref (shutter_auto);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "shutter_auto", shutter_auto,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (shutter_auto);
-  gtk_box_pack_start (GTK_BOX (vbox12), shutter_auto, FALSE, FALSE, 0);
-  gtk_widget_set_sensitive (shutter_auto, FALSE);
-
-  shutter_op = gtk_button_new_with_label (_("AUTO"));
-  gtk_widget_ref (shutter_op);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "shutter_op", shutter_op,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (shutter_op);
-  gtk_box_pack_start (GTK_BOX (vbox12), shutter_op, FALSE, FALSE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (shutter_op), 2);
-  gtk_widget_set_sensitive (shutter_op, FALSE);
-
-  shutter_scale = gtk_vscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 255, 1, 10, 0)));
+  shutter_scale = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 255, 1, 10, 0)));
   gtk_widget_ref (shutter_scale);
   gtk_object_set_data_full (GTK_OBJECT (commander_window), "shutter_scale", shutter_scale,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (shutter_scale);
-  gtk_box_pack_start (GTK_BOX (vbox12), shutter_scale, TRUE, TRUE, 0);
+  gtk_table_attach (GTK_TABLE (table35), shutter_scale, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
   gtk_widget_set_sensitive (shutter_scale, FALSE);
-  gtk_scale_set_value_pos (GTK_SCALE (shutter_scale), GTK_POS_LEFT);
   gtk_scale_set_digits (GTK_SCALE (shutter_scale), 0);
+
+  shutter_menu = gtk_option_menu_new ();
+  gtk_widget_ref (shutter_menu);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "shutter_menu", shutter_menu,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (shutter_menu);
+  gtk_table_attach (GTK_TABLE (table35), shutter_menu, 0, 1, 0, 1,
+                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (0), 0, 0);
+  shutter_menu_menu = gtk_menu_new ();
+  glade_menuitem = gtk_menu_item_new_with_label (_("Off"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (shutter_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Man"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (shutter_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Auto"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (shutter_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Single"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (shutter_menu_menu), glade_menuitem);
+  gtk_option_menu_set_menu (GTK_OPTION_MENU (shutter_menu), shutter_menu_menu);
 
   gain_frame = gtk_frame_new (_("Gain"));
   gtk_widget_ref (gain_frame);
   gtk_object_set_data_full (GTK_OBJECT (commander_window), "gain_frame", gain_frame,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (gain_frame);
-  gtk_box_pack_start (GTK_BOX (hbox6), gain_frame, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox62), gain_frame, FALSE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (gain_frame), 5);
   gtk_widget_set_sensitive (gain_frame, FALSE);
 
-  vbox13 = gtk_vbox_new (FALSE, 0);
-  gtk_widget_ref (vbox13);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "vbox13", vbox13,
+  table36 = gtk_table_new (1, 2, FALSE);
+  gtk_widget_ref (table36);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "table36", table36,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (vbox13);
-  gtk_container_add (GTK_CONTAINER (gain_frame), vbox13);
+  gtk_widget_show (table36);
+  gtk_container_add (GTK_CONTAINER (gain_frame), table36);
 
-  gain_power = gtk_toggle_button_new_with_label (_("ON"));
-  gtk_widget_ref (gain_power);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "gain_power", gain_power,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (gain_power);
-  gtk_box_pack_start (GTK_BOX (vbox13), gain_power, FALSE, FALSE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (gain_power), 2);
-  gtk_widget_set_sensitive (gain_power, FALSE);
-
-  gain_man = gtk_radio_button_new_with_label (gain_group, _("Man"));
-  gain_group = gtk_radio_button_group (GTK_RADIO_BUTTON (gain_man));
-  gtk_widget_ref (gain_man);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "gain_man", gain_man,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (gain_man);
-  gtk_box_pack_start (GTK_BOX (vbox13), gain_man, FALSE, FALSE, 0);
-  gtk_widget_set_sensitive (gain_man, FALSE);
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gain_man), TRUE);
-
-  gain_auto = gtk_radio_button_new_with_label (gain_group, _("Auto"));
-  gain_group = gtk_radio_button_group (GTK_RADIO_BUTTON (gain_auto));
-  gtk_widget_ref (gain_auto);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "gain_auto", gain_auto,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (gain_auto);
-  gtk_box_pack_start (GTK_BOX (vbox13), gain_auto, FALSE, FALSE, 0);
-  gtk_widget_set_sensitive (gain_auto, FALSE);
-
-  gain_op = gtk_button_new_with_label (_("AUTO"));
-  gtk_widget_ref (gain_op);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "gain_op", gain_op,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (gain_op);
-  gtk_box_pack_start (GTK_BOX (vbox13), gain_op, FALSE, FALSE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (gain_op), 2);
-  gtk_widget_set_sensitive (gain_op, FALSE);
-
-  gain_scale = gtk_vscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 255, 1, 10, 0)));
+  gain_scale = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 255, 1, 10, 0)));
   gtk_widget_ref (gain_scale);
   gtk_object_set_data_full (GTK_OBJECT (commander_window), "gain_scale", gain_scale,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (gain_scale);
-  gtk_box_pack_start (GTK_BOX (vbox13), gain_scale, TRUE, TRUE, 0);
+  gtk_table_attach (GTK_TABLE (table36), gain_scale, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
   gtk_widget_set_sensitive (gain_scale, FALSE);
-  gtk_scale_set_value_pos (GTK_SCALE (gain_scale), GTK_POS_LEFT);
   gtk_scale_set_digits (GTK_SCALE (gain_scale), 0);
+
+  gain_menu = gtk_option_menu_new ();
+  gtk_widget_ref (gain_menu);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "gain_menu", gain_menu,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (gain_menu);
+  gtk_table_attach (GTK_TABLE (table36), gain_menu, 0, 1, 0, 1,
+                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (0), 0, 0);
+  gain_menu_menu = gtk_menu_new ();
+  glade_menuitem = gtk_menu_item_new_with_label (_("Off"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (gain_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Man"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (gain_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Auto"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (gain_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Single"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (gain_menu_menu), glade_menuitem);
+  gtk_option_menu_set_menu (GTK_OPTION_MENU (gain_menu), gain_menu_menu);
 
   filter_frame = gtk_frame_new (_("Filter"));
   gtk_widget_ref (filter_frame);
   gtk_object_set_data_full (GTK_OBJECT (commander_window), "filter_frame", filter_frame,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (filter_frame);
-  gtk_box_pack_start (GTK_BOX (hbox6), filter_frame, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox62), filter_frame, FALSE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (filter_frame), 5);
   gtk_widget_set_sensitive (filter_frame, FALSE);
 
-  vbox10 = gtk_vbox_new (FALSE, 0);
-  gtk_widget_ref (vbox10);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "vbox10", vbox10,
+  table37 = gtk_table_new (1, 2, FALSE);
+  gtk_widget_ref (table37);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "table37", table37,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (vbox10);
-  gtk_container_add (GTK_CONTAINER (filter_frame), vbox10);
+  gtk_widget_show (table37);
+  gtk_container_add (GTK_CONTAINER (filter_frame), table37);
 
-  filter_power = gtk_toggle_button_new_with_label (_("ON"));
-  gtk_widget_ref (filter_power);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "filter_power", filter_power,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (filter_power);
-  gtk_box_pack_start (GTK_BOX (vbox10), filter_power, FALSE, FALSE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (filter_power), 2);
-  gtk_widget_set_sensitive (filter_power, FALSE);
-
-  filter_man = gtk_radio_button_new_with_label (filter_group, _("Man"));
-  filter_group = gtk_radio_button_group (GTK_RADIO_BUTTON (filter_man));
-  gtk_widget_ref (filter_man);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "filter_man", filter_man,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (filter_man);
-  gtk_box_pack_start (GTK_BOX (vbox10), filter_man, FALSE, FALSE, 0);
-  gtk_widget_set_sensitive (filter_man, FALSE);
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (filter_man), TRUE);
-
-  filter_auto = gtk_radio_button_new_with_label (filter_group, _("Auto"));
-  filter_group = gtk_radio_button_group (GTK_RADIO_BUTTON (filter_auto));
-  gtk_widget_ref (filter_auto);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "filter_auto", filter_auto,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (filter_auto);
-  gtk_box_pack_start (GTK_BOX (vbox10), filter_auto, FALSE, FALSE, 0);
-  gtk_widget_set_sensitive (filter_auto, FALSE);
-
-  filter_op = gtk_button_new_with_label (_("AUTO"));
-  gtk_widget_ref (filter_op);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "filter_op", filter_op,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (filter_op);
-  gtk_box_pack_start (GTK_BOX (vbox10), filter_op, FALSE, FALSE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (filter_op), 2);
-  gtk_widget_set_sensitive (filter_op, FALSE);
-
-  filter_scale = gtk_vscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 255, 1, 10, 0)));
+  filter_scale = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 255, 1, 10, 0)));
   gtk_widget_ref (filter_scale);
   gtk_object_set_data_full (GTK_OBJECT (commander_window), "filter_scale", filter_scale,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (filter_scale);
-  gtk_box_pack_start (GTK_BOX (vbox10), filter_scale, TRUE, TRUE, 0);
+  gtk_table_attach (GTK_TABLE (table37), filter_scale, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
   gtk_widget_set_sensitive (filter_scale, FALSE);
-  gtk_scale_set_value_pos (GTK_SCALE (filter_scale), GTK_POS_LEFT);
   gtk_scale_set_digits (GTK_SCALE (filter_scale), 0);
+
+  filter_menu = gtk_option_menu_new ();
+  gtk_widget_ref (filter_menu);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "filter_menu", filter_menu,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (filter_menu);
+  gtk_table_attach (GTK_TABLE (table37), filter_menu, 0, 1, 0, 1,
+                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (0), 0, 0);
+  filter_menu_menu = gtk_menu_new ();
+  glade_menuitem = gtk_menu_item_new_with_label (_("Off"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (filter_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Man"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (filter_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Auto"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (filter_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Single"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (filter_menu_menu), glade_menuitem);
+  gtk_option_menu_set_menu (GTK_OPTION_MENU (filter_menu), filter_menu_menu);
 
   label56 = gtk_label_new (_("Aperture"));
   gtk_widget_ref (label56);
@@ -1640,82 +1521,48 @@ create_commander_window (void)
   gtk_object_set_data_full (GTK_OBJECT (commander_window), "hue_frame", hue_frame,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hue_frame);
-  gtk_box_pack_start (GTK_BOX (vbox58), hue_frame, FALSE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox58), hue_frame, FALSE, FALSE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (hue_frame), 5);
   gtk_widget_set_sensitive (hue_frame, FALSE);
 
-  hbox8 = gtk_hbox_new (FALSE, 0);
-  gtk_widget_ref (hbox8);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "hbox8", hbox8,
+  table26 = gtk_table_new (1, 2, FALSE);
+  gtk_widget_ref (table26);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "table26", table26,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (hbox8);
-  gtk_container_add (GTK_CONTAINER (hue_frame), hbox8);
+  gtk_widget_show (table26);
+  gtk_container_add (GTK_CONTAINER (hue_frame), table26);
 
-  table4 = gtk_table_new (2, 2, FALSE);
-  gtk_widget_ref (table4);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "table4", table4,
+  hue_menu = gtk_option_menu_new ();
+  gtk_widget_ref (hue_menu);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "hue_menu", hue_menu,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (table4);
-  gtk_box_pack_start (GTK_BOX (hbox8), table4, FALSE, TRUE, 0);
-
-  hue_man = gtk_radio_button_new_with_label (hue_group, _("Man"));
-  hue_group = gtk_radio_button_group (GTK_RADIO_BUTTON (hue_man));
-  gtk_widget_ref (hue_man);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "hue_man", hue_man,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (hue_man);
-  gtk_table_attach (GTK_TABLE (table4), hue_man, 1, 2, 0, 1,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_sensitive (hue_man, FALSE);
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (hue_man), TRUE);
-
-  hue_auto = gtk_radio_button_new_with_label (hue_group, _("Auto"));
-  hue_group = gtk_radio_button_group (GTK_RADIO_BUTTON (hue_auto));
-  gtk_widget_ref (hue_auto);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "hue_auto", hue_auto,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (hue_auto);
-  gtk_table_attach (GTK_TABLE (table4), hue_auto, 1, 2, 1, 2,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_sensitive (hue_auto, FALSE);
-
-  hue_op = gtk_button_new_with_label (_("AUTO"));
-  gtk_widget_ref (hue_op);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "hue_op", hue_op,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (hue_op);
-  gtk_table_attach (GTK_TABLE (table4), hue_op, 0, 1, 1, 2,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (hue_op), 2);
-  gtk_widget_set_sensitive (hue_op, FALSE);
-
-  alignment3 = gtk_alignment_new (0.5, 0.5, 1, 1);
-  gtk_widget_ref (alignment3);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "alignment3", alignment3,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (alignment3);
-  gtk_table_attach (GTK_TABLE (table4), alignment3, 0, 1, 0, 1,
+  gtk_widget_show (hue_menu);
+  gtk_table_attach (GTK_TABLE (table26), hue_menu, 0, 1, 0, 1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-
-  hue_power = gtk_toggle_button_new_with_label (_("ON"));
-  gtk_widget_ref (hue_power);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "hue_power", hue_power,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (hue_power);
-  gtk_container_add (GTK_CONTAINER (alignment3), hue_power);
-  gtk_container_set_border_width (GTK_CONTAINER (hue_power), 2);
-  gtk_widget_set_sensitive (hue_power, FALSE);
+  hue_menu_menu = gtk_menu_new ();
+  glade_menuitem = gtk_menu_item_new_with_label (_("Off"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (hue_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Man"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (hue_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Auto"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (hue_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Single"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (hue_menu_menu), glade_menuitem);
+  gtk_option_menu_set_menu (GTK_OPTION_MENU (hue_menu), hue_menu_menu);
 
   hue_scale = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 255, 1, 10, 0)));
   gtk_widget_ref (hue_scale);
   gtk_object_set_data_full (GTK_OBJECT (commander_window), "hue_scale", hue_scale,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hue_scale);
-  gtk_box_pack_start (GTK_BOX (hbox8), hue_scale, TRUE, TRUE, 0);
+  gtk_table_attach (GTK_TABLE (table26), hue_scale, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
   gtk_widget_set_sensitive (hue_scale, FALSE);
   gtk_scale_set_digits (GTK_SCALE (hue_scale), 0);
 
@@ -1728,203 +1575,128 @@ create_commander_window (void)
   gtk_container_set_border_width (GTK_CONTAINER (saturation_frame), 5);
   gtk_widget_set_sensitive (saturation_frame, FALSE);
 
-  hbox7 = gtk_hbox_new (FALSE, 0);
-  gtk_widget_ref (hbox7);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "hbox7", hbox7,
+  table27 = gtk_table_new (1, 2, FALSE);
+  gtk_widget_ref (table27);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "table27", table27,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (hbox7);
-  gtk_container_add (GTK_CONTAINER (saturation_frame), hbox7);
+  gtk_widget_show (table27);
+  gtk_container_add (GTK_CONTAINER (saturation_frame), table27);
 
-  table3 = gtk_table_new (2, 2, FALSE);
-  gtk_widget_ref (table3);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "table3", table3,
+  saturation_menu = gtk_option_menu_new ();
+  gtk_widget_ref (saturation_menu);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "saturation_menu", saturation_menu,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (table3);
-  gtk_box_pack_start (GTK_BOX (hbox7), table3, FALSE, TRUE, 0);
-
-  saturation_man = gtk_radio_button_new_with_label (saturation_group, _("Man"));
-  saturation_group = gtk_radio_button_group (GTK_RADIO_BUTTON (saturation_man));
-  gtk_widget_ref (saturation_man);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "saturation_man", saturation_man,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (saturation_man);
-  gtk_table_attach (GTK_TABLE (table3), saturation_man, 1, 2, 0, 1,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_sensitive (saturation_man, FALSE);
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (saturation_man), TRUE);
-
-  saturation_auto = gtk_radio_button_new_with_label (saturation_group, _("Auto"));
-  saturation_group = gtk_radio_button_group (GTK_RADIO_BUTTON (saturation_auto));
-  gtk_widget_ref (saturation_auto);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "saturation_auto", saturation_auto,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (saturation_auto);
-  gtk_table_attach (GTK_TABLE (table3), saturation_auto, 1, 2, 1, 2,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_sensitive (saturation_auto, FALSE);
-
-  saturation_op = gtk_button_new_with_label (_("AUTO"));
-  gtk_widget_ref (saturation_op);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "saturation_op", saturation_op,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (saturation_op);
-  gtk_table_attach (GTK_TABLE (table3), saturation_op, 0, 1, 1, 2,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (saturation_op), 2);
-  gtk_widget_set_sensitive (saturation_op, FALSE);
-
-  alignment2 = gtk_alignment_new (0.5, 0.5, 1, 1);
-  gtk_widget_ref (alignment2);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "alignment2", alignment2,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (alignment2);
-  gtk_table_attach (GTK_TABLE (table3), alignment2, 0, 1, 0, 1,
+  gtk_widget_show (saturation_menu);
+  gtk_table_attach (GTK_TABLE (table27), saturation_menu, 0, 1, 0, 1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-
-  saturation_power = gtk_toggle_button_new_with_label (_("ON"));
-  gtk_widget_ref (saturation_power);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "saturation_power", saturation_power,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (saturation_power);
-  gtk_container_add (GTK_CONTAINER (alignment2), saturation_power);
-  gtk_container_set_border_width (GTK_CONTAINER (saturation_power), 2);
-  gtk_widget_set_sensitive (saturation_power, FALSE);
+  saturation_menu_menu = gtk_menu_new ();
+  glade_menuitem = gtk_menu_item_new_with_label (_("Off"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (saturation_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Man"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (saturation_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Auto"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (saturation_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Single"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (saturation_menu_menu), glade_menuitem);
+  gtk_option_menu_set_menu (GTK_OPTION_MENU (saturation_menu), saturation_menu_menu);
 
   saturation_scale = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 255, 1, 10, 0)));
   gtk_widget_ref (saturation_scale);
   gtk_object_set_data_full (GTK_OBJECT (commander_window), "saturation_scale", saturation_scale,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (saturation_scale);
-  gtk_box_pack_start (GTK_BOX (hbox7), saturation_scale, TRUE, TRUE, 0);
+  gtk_table_attach (GTK_TABLE (table27), saturation_scale, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
   gtk_widget_set_sensitive (saturation_scale, FALSE);
   gtk_scale_set_digits (GTK_SCALE (saturation_scale), 0);
 
-  whitebal_frame = gtk_frame_new (_("White Balance"));
-  gtk_widget_ref (whitebal_frame);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "whitebal_frame", whitebal_frame,
+  white_balance_frame = gtk_frame_new (_("White Balance"));
+  gtk_widget_ref (white_balance_frame);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "white_balance_frame", white_balance_frame,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (whitebal_frame);
-  gtk_box_pack_start (GTK_BOX (vbox58), whitebal_frame, FALSE, TRUE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (whitebal_frame), 5);
-  gtk_widget_set_sensitive (whitebal_frame, FALSE);
+  gtk_widget_show (white_balance_frame);
+  gtk_box_pack_start (GTK_BOX (vbox58), white_balance_frame, FALSE, TRUE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (white_balance_frame), 5);
+  gtk_widget_set_sensitive (white_balance_frame, FALSE);
 
-  hbox10 = gtk_hbox_new (FALSE, 0);
-  gtk_widget_ref (hbox10);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "hbox10", hbox10,
+  table38 = gtk_table_new (3, 2, FALSE);
+  gtk_widget_ref (table38);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "table38", table38,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (hbox10);
-  gtk_container_add (GTK_CONTAINER (whitebal_frame), hbox10);
+  gtk_widget_show (table38);
+  gtk_container_add (GTK_CONTAINER (white_balance_frame), table38);
 
-  vbox15 = gtk_vbox_new (FALSE, 0);
-  gtk_widget_ref (vbox15);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "vbox15", vbox15,
+  white_balance_BU_scale = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 255, 1, 10, 0)));
+  gtk_widget_ref (white_balance_BU_scale);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "white_balance_BU_scale", white_balance_BU_scale,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (vbox15);
-  gtk_box_pack_start (GTK_BOX (hbox10), vbox15, FALSE, FALSE, 0);
-
-  whitebal_power = gtk_toggle_button_new_with_label (_("ON"));
-  gtk_widget_ref (whitebal_power);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "whitebal_power", whitebal_power,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (whitebal_power);
-  gtk_box_pack_start (GTK_BOX (vbox15), whitebal_power, FALSE, FALSE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (whitebal_power), 2);
-  gtk_widget_set_sensitive (whitebal_power, FALSE);
-
-  whitebal_man = gtk_radio_button_new_with_label (whitebal_group, _("Man"));
-  whitebal_group = gtk_radio_button_group (GTK_RADIO_BUTTON (whitebal_man));
-  gtk_widget_ref (whitebal_man);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "whitebal_man", whitebal_man,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (whitebal_man);
-  gtk_box_pack_start (GTK_BOX (vbox15), whitebal_man, FALSE, FALSE, 0);
-  gtk_widget_set_sensitive (whitebal_man, FALSE);
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (whitebal_man), TRUE);
-
-  whitebal_auto = gtk_radio_button_new_with_label (whitebal_group, _("Auto"));
-  whitebal_group = gtk_radio_button_group (GTK_RADIO_BUTTON (whitebal_auto));
-  gtk_widget_ref (whitebal_auto);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "whitebal_auto", whitebal_auto,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (whitebal_auto);
-  gtk_box_pack_start (GTK_BOX (vbox15), whitebal_auto, FALSE, FALSE, 0);
-  gtk_widget_set_sensitive (whitebal_auto, FALSE);
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (whitebal_auto), TRUE);
-
-  whitebal_op = gtk_button_new_with_label (_("AUTO"));
-  gtk_widget_ref (whitebal_op);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "whitebal_op", whitebal_op,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (whitebal_op);
-  gtk_box_pack_start (GTK_BOX (vbox15), whitebal_op, FALSE, FALSE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (whitebal_op), 2);
-  gtk_widget_set_sensitive (whitebal_op, FALSE);
-
-  hbox46 = gtk_hbox_new (FALSE, 0);
-  gtk_widget_ref (hbox46);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "hbox46", hbox46,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (hbox46);
-  gtk_box_pack_start (GTK_BOX (hbox10), hbox46, TRUE, TRUE, 0);
-
-  vseparator1 = gtk_vseparator_new ();
-  gtk_widget_ref (vseparator1);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "vseparator1", vseparator1,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (vseparator1);
-  gtk_box_pack_start (GTK_BOX (hbox46), vseparator1, FALSE, TRUE, 1);
-
-  table22 = gtk_table_new (2, 2, FALSE);
-  gtk_widget_ref (table22);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "table22", table22,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (table22);
-  gtk_box_pack_start (GTK_BOX (hbox46), table22, TRUE, TRUE, 0);
-
-  whitebal_BU_scale = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 255, 1, 10, 0)));
-  gtk_widget_ref (whitebal_BU_scale);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "whitebal_BU_scale", whitebal_BU_scale,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (whitebal_BU_scale);
-  gtk_table_attach (GTK_TABLE (table22), whitebal_BU_scale, 1, 2, 0, 1,
+  gtk_widget_show (white_balance_BU_scale);
+  gtk_table_attach (GTK_TABLE (table38), white_balance_BU_scale, 1, 2, 1, 2,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
-  gtk_widget_set_sensitive (whitebal_BU_scale, FALSE);
-  gtk_scale_set_digits (GTK_SCALE (whitebal_BU_scale), 0);
+  gtk_widget_set_sensitive (white_balance_BU_scale, FALSE);
+  gtk_scale_set_digits (GTK_SCALE (white_balance_BU_scale), 0);
 
-  whitebal_RV_scale = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 255, 1, 10, 0)));
-  gtk_widget_ref (whitebal_RV_scale);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "whitebal_RV_scale", whitebal_RV_scale,
+  white_balance_RV_scale = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 255, 1, 10, 0)));
+  gtk_widget_ref (white_balance_RV_scale);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "white_balance_RV_scale", white_balance_RV_scale,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (whitebal_RV_scale);
-  gtk_table_attach (GTK_TABLE (table22), whitebal_RV_scale, 1, 2, 1, 2,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+  gtk_widget_show (white_balance_RV_scale);
+  gtk_table_attach (GTK_TABLE (table38), white_balance_RV_scale, 1, 2, 2, 3,
+                    (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
-  gtk_widget_set_sensitive (whitebal_RV_scale, FALSE);
-  gtk_scale_set_digits (GTK_SCALE (whitebal_RV_scale), 0);
+  gtk_widget_set_sensitive (white_balance_RV_scale, FALSE);
+  gtk_scale_set_digits (GTK_SCALE (white_balance_RV_scale), 0);
 
-  label44 = gtk_label_new (_("Blue/\nU-field:"));
+  white_balance_menu = gtk_option_menu_new ();
+  gtk_widget_ref (white_balance_menu);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "white_balance_menu", white_balance_menu,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (white_balance_menu);
+  gtk_table_attach (GTK_TABLE (table38), white_balance_menu, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  white_balance_menu_menu = gtk_menu_new ();
+  glade_menuitem = gtk_menu_item_new_with_label (_("Off"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (white_balance_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Man"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (white_balance_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Auto"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (white_balance_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Single"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (white_balance_menu_menu), glade_menuitem);
+  gtk_option_menu_set_menu (GTK_OPTION_MENU (white_balance_menu), white_balance_menu_menu);
+
+  label44 = gtk_label_new (_("Blue/U-field:"));
   gtk_widget_ref (label44);
   gtk_object_set_data_full (GTK_OBJECT (commander_window), "label44", label44,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label44);
-  gtk_table_attach (GTK_TABLE (table22), label44, 0, 1, 0, 1,
+  gtk_table_attach (GTK_TABLE (table38), label44, 0, 1, 1, 2,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
+  gtk_label_set_justify (GTK_LABEL (label44), GTK_JUSTIFY_RIGHT);
   gtk_misc_set_alignment (GTK_MISC (label44), 0, 0.5);
 
-  label45 = gtk_label_new (_("Red/\nV-field:"));
+  label45 = gtk_label_new (_("Red/V-field:"));
   gtk_widget_ref (label45);
   gtk_object_set_data_full (GTK_OBJECT (commander_window), "label45", label45,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label45);
-  gtk_table_attach (GTK_TABLE (table22), label45, 0, 1, 1, 2,
+  gtk_table_attach (GTK_TABLE (table38), label45, 0, 1, 2, 3,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
+  gtk_label_set_justify (GTK_LABEL (label45), GTK_JUSTIFY_RIGHT);
   gtk_misc_set_alignment (GTK_MISC (label45), 0, 0.5);
 
   label57 = gtk_label_new (_("Color"));
@@ -1950,78 +1722,44 @@ create_commander_window (void)
   gtk_container_set_border_width (GTK_CONTAINER (brightness_frame), 5);
   gtk_widget_set_sensitive (brightness_frame, FALSE);
 
-  hbox22 = gtk_hbox_new (FALSE, 0);
-  gtk_widget_ref (hbox22);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "hbox22", hbox22,
+  table28 = gtk_table_new (1, 2, FALSE);
+  gtk_widget_ref (table28);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "table28", table28,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (hbox22);
-  gtk_container_add (GTK_CONTAINER (brightness_frame), hbox22);
+  gtk_widget_show (table28);
+  gtk_container_add (GTK_CONTAINER (brightness_frame), table28);
 
-  table11 = gtk_table_new (2, 2, FALSE);
-  gtk_widget_ref (table11);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "table11", table11,
+  brightness_menu = gtk_option_menu_new ();
+  gtk_widget_ref (brightness_menu);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "brightness_menu", brightness_menu,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (table11);
-  gtk_box_pack_start (GTK_BOX (hbox22), table11, FALSE, TRUE, 0);
-
-  brightness_man = gtk_radio_button_new_with_label (brightness_group, _("Man"));
-  brightness_group = gtk_radio_button_group (GTK_RADIO_BUTTON (brightness_man));
-  gtk_widget_ref (brightness_man);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "brightness_man", brightness_man,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (brightness_man);
-  gtk_table_attach (GTK_TABLE (table11), brightness_man, 1, 2, 0, 1,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_sensitive (brightness_man, FALSE);
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (brightness_man), TRUE);
-
-  brightness_auto = gtk_radio_button_new_with_label (brightness_group, _("Auto"));
-  brightness_group = gtk_radio_button_group (GTK_RADIO_BUTTON (brightness_auto));
-  gtk_widget_ref (brightness_auto);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "brightness_auto", brightness_auto,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (brightness_auto);
-  gtk_table_attach (GTK_TABLE (table11), brightness_auto, 1, 2, 1, 2,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_sensitive (brightness_auto, FALSE);
-
-  brightness_op = gtk_button_new_with_label (_("AUTO"));
-  gtk_widget_ref (brightness_op);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "brightness_op", brightness_op,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (brightness_op);
-  gtk_table_attach (GTK_TABLE (table11), brightness_op, 0, 1, 1, 2,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (brightness_op), 2);
-  gtk_widget_set_sensitive (brightness_op, FALSE);
-
-  alignment7 = gtk_alignment_new (0.5, 0.5, 1, 1);
-  gtk_widget_ref (alignment7);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "alignment7", alignment7,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (alignment7);
-  gtk_table_attach (GTK_TABLE (table11), alignment7, 0, 1, 0, 1,
+  gtk_widget_show (brightness_menu);
+  gtk_table_attach (GTK_TABLE (table28), brightness_menu, 0, 1, 0, 1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-
-  brightness_power = gtk_toggle_button_new_with_label (_("ON"));
-  gtk_widget_ref (brightness_power);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "brightness_power", brightness_power,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (brightness_power);
-  gtk_container_add (GTK_CONTAINER (alignment7), brightness_power);
-  gtk_container_set_border_width (GTK_CONTAINER (brightness_power), 2);
-  gtk_widget_set_sensitive (brightness_power, FALSE);
+  brightness_menu_menu = gtk_menu_new ();
+  glade_menuitem = gtk_menu_item_new_with_label (_("Off"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (brightness_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Man"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (brightness_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Auto"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (brightness_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Single"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (brightness_menu_menu), glade_menuitem);
+  gtk_option_menu_set_menu (GTK_OPTION_MENU (brightness_menu), brightness_menu_menu);
 
   brightness_scale = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 255, 1, 10, 0)));
   gtk_widget_ref (brightness_scale);
   gtk_object_set_data_full (GTK_OBJECT (commander_window), "brightness_scale", brightness_scale,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (brightness_scale);
-  gtk_box_pack_start (GTK_BOX (hbox22), brightness_scale, TRUE, TRUE, 0);
+  gtk_table_attach (GTK_TABLE (table28), brightness_scale, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
   gtk_widget_set_sensitive (brightness_scale, FALSE);
   gtk_scale_set_digits (GTK_SCALE (brightness_scale), 0);
 
@@ -2034,78 +1772,44 @@ create_commander_window (void)
   gtk_container_set_border_width (GTK_CONTAINER (gamma_frame), 5);
   gtk_widget_set_sensitive (gamma_frame, FALSE);
 
-  hbox23 = gtk_hbox_new (FALSE, 0);
-  gtk_widget_ref (hbox23);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "hbox23", hbox23,
+  table29 = gtk_table_new (1, 2, FALSE);
+  gtk_widget_ref (table29);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "table29", table29,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (hbox23);
-  gtk_container_add (GTK_CONTAINER (gamma_frame), hbox23);
+  gtk_widget_show (table29);
+  gtk_container_add (GTK_CONTAINER (gamma_frame), table29);
 
-  table12 = gtk_table_new (2, 2, FALSE);
-  gtk_widget_ref (table12);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "table12", table12,
+  gamma_menu = gtk_option_menu_new ();
+  gtk_widget_ref (gamma_menu);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "gamma_menu", gamma_menu,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (table12);
-  gtk_box_pack_start (GTK_BOX (hbox23), table12, FALSE, TRUE, 0);
-
-  gamma_man = gtk_radio_button_new_with_label (gamma_group, _("Man"));
-  gamma_group = gtk_radio_button_group (GTK_RADIO_BUTTON (gamma_man));
-  gtk_widget_ref (gamma_man);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "gamma_man", gamma_man,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (gamma_man);
-  gtk_table_attach (GTK_TABLE (table12), gamma_man, 1, 2, 0, 1,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_sensitive (gamma_man, FALSE);
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gamma_man), TRUE);
-
-  gamma_auto = gtk_radio_button_new_with_label (gamma_group, _("Auto"));
-  gamma_group = gtk_radio_button_group (GTK_RADIO_BUTTON (gamma_auto));
-  gtk_widget_ref (gamma_auto);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "gamma_auto", gamma_auto,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (gamma_auto);
-  gtk_table_attach (GTK_TABLE (table12), gamma_auto, 1, 2, 1, 2,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_sensitive (gamma_auto, FALSE);
-
-  gamma_op = gtk_button_new_with_label (_("AUTO"));
-  gtk_widget_ref (gamma_op);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "gamma_op", gamma_op,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (gamma_op);
-  gtk_table_attach (GTK_TABLE (table12), gamma_op, 0, 1, 1, 2,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (gamma_op), 2);
-  gtk_widget_set_sensitive (gamma_op, FALSE);
-
-  alignment8 = gtk_alignment_new (0.5, 0.5, 1, 1);
-  gtk_widget_ref (alignment8);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "alignment8", alignment8,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (alignment8);
-  gtk_table_attach (GTK_TABLE (table12), alignment8, 0, 1, 0, 1,
+  gtk_widget_show (gamma_menu);
+  gtk_table_attach (GTK_TABLE (table29), gamma_menu, 0, 1, 0, 1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-
-  gamma_power = gtk_toggle_button_new_with_label (_("ON"));
-  gtk_widget_ref (gamma_power);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "gamma_power", gamma_power,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (gamma_power);
-  gtk_container_add (GTK_CONTAINER (alignment8), gamma_power);
-  gtk_container_set_border_width (GTK_CONTAINER (gamma_power), 2);
-  gtk_widget_set_sensitive (gamma_power, FALSE);
+  gamma_menu_menu = gtk_menu_new ();
+  glade_menuitem = gtk_menu_item_new_with_label (_("Off"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (gamma_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Man"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (gamma_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Auto"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (gamma_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Single"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (gamma_menu_menu), glade_menuitem);
+  gtk_option_menu_set_menu (GTK_OPTION_MENU (gamma_menu), gamma_menu_menu);
 
   gamma_scale = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 255, 1, 10, 0)));
   gtk_widget_ref (gamma_scale);
   gtk_object_set_data_full (GTK_OBJECT (commander_window), "gamma_scale", gamma_scale,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (gamma_scale);
-  gtk_box_pack_start (GTK_BOX (hbox23), gamma_scale, TRUE, TRUE, 0);
+  gtk_table_attach (GTK_TABLE (table29), gamma_scale, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
   gtk_widget_set_sensitive (gamma_scale, FALSE);
   gtk_scale_set_digits (GTK_SCALE (gamma_scale), 0);
 
@@ -2118,78 +1822,44 @@ create_commander_window (void)
   gtk_container_set_border_width (GTK_CONTAINER (sharpness_frame), 5);
   gtk_widget_set_sensitive (sharpness_frame, FALSE);
 
-  hbox21 = gtk_hbox_new (FALSE, 0);
-  gtk_widget_ref (hbox21);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "hbox21", hbox21,
+  table30 = gtk_table_new (1, 2, FALSE);
+  gtk_widget_ref (table30);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "table30", table30,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (hbox21);
-  gtk_container_add (GTK_CONTAINER (sharpness_frame), hbox21);
+  gtk_widget_show (table30);
+  gtk_container_add (GTK_CONTAINER (sharpness_frame), table30);
 
-  table10 = gtk_table_new (2, 2, FALSE);
-  gtk_widget_ref (table10);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "table10", table10,
+  sharpness_menu = gtk_option_menu_new ();
+  gtk_widget_ref (sharpness_menu);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "sharpness_menu", sharpness_menu,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (table10);
-  gtk_box_pack_start (GTK_BOX (hbox21), table10, FALSE, TRUE, 0);
-
-  sharpness_man = gtk_radio_button_new_with_label (sharpness_group, _("Man"));
-  sharpness_group = gtk_radio_button_group (GTK_RADIO_BUTTON (sharpness_man));
-  gtk_widget_ref (sharpness_man);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "sharpness_man", sharpness_man,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (sharpness_man);
-  gtk_table_attach (GTK_TABLE (table10), sharpness_man, 1, 2, 0, 1,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_sensitive (sharpness_man, FALSE);
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (sharpness_man), TRUE);
-
-  sharpness_auto = gtk_radio_button_new_with_label (sharpness_group, _("Auto"));
-  sharpness_group = gtk_radio_button_group (GTK_RADIO_BUTTON (sharpness_auto));
-  gtk_widget_ref (sharpness_auto);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "sharpness_auto", sharpness_auto,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (sharpness_auto);
-  gtk_table_attach (GTK_TABLE (table10), sharpness_auto, 1, 2, 1, 2,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_sensitive (sharpness_auto, FALSE);
-
-  sharpness_op = gtk_button_new_with_label (_("AUTO"));
-  gtk_widget_ref (sharpness_op);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "sharpness_op", sharpness_op,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (sharpness_op);
-  gtk_table_attach (GTK_TABLE (table10), sharpness_op, 0, 1, 1, 2,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (sharpness_op), 2);
-  gtk_widget_set_sensitive (sharpness_op, FALSE);
-
-  alignment6 = gtk_alignment_new (0.5, 0.5, 1, 1);
-  gtk_widget_ref (alignment6);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "alignment6", alignment6,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (alignment6);
-  gtk_table_attach (GTK_TABLE (table10), alignment6, 0, 1, 0, 1,
+  gtk_widget_show (sharpness_menu);
+  gtk_table_attach (GTK_TABLE (table30), sharpness_menu, 0, 1, 0, 1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-
-  sharpness_power = gtk_toggle_button_new_with_label (_("ON"));
-  gtk_widget_ref (sharpness_power);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "sharpness_power", sharpness_power,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (sharpness_power);
-  gtk_container_add (GTK_CONTAINER (alignment6), sharpness_power);
-  gtk_container_set_border_width (GTK_CONTAINER (sharpness_power), 2);
-  gtk_widget_set_sensitive (sharpness_power, FALSE);
+  sharpness_menu_menu = gtk_menu_new ();
+  glade_menuitem = gtk_menu_item_new_with_label (_("Off"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (sharpness_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Man"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (sharpness_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Auto"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (sharpness_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Single"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (sharpness_menu_menu), glade_menuitem);
+  gtk_option_menu_set_menu (GTK_OPTION_MENU (sharpness_menu), sharpness_menu_menu);
 
   sharpness_scale = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 255, 1, 10, 0)));
   gtk_widget_ref (sharpness_scale);
   gtk_object_set_data_full (GTK_OBJECT (commander_window), "sharpness_scale", sharpness_scale,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (sharpness_scale);
-  gtk_box_pack_start (GTK_BOX (hbox21), sharpness_scale, TRUE, TRUE, 0);
+  gtk_table_attach (GTK_TABLE (table30), sharpness_scale, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
   gtk_widget_set_sensitive (sharpness_scale, FALSE);
   gtk_scale_set_digits (GTK_SCALE (sharpness_scale), 0);
 
@@ -2207,294 +1877,188 @@ create_commander_window (void)
   gtk_widget_show (vbox60);
   gtk_container_add (GTK_CONTAINER (notebook2), vbox60);
 
-  temp_frame = gtk_frame_new (_("Temperature"));
-  gtk_widget_ref (temp_frame);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "temp_frame", temp_frame,
+  temperature_frame = gtk_frame_new (_("Temperature"));
+  gtk_widget_ref (temperature_frame);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "temperature_frame", temperature_frame,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (temp_frame);
-  gtk_box_pack_start (GTK_BOX (vbox60), temp_frame, FALSE, TRUE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (temp_frame), 5);
-  gtk_widget_set_sensitive (temp_frame, FALSE);
+  gtk_widget_show (temperature_frame);
+  gtk_box_pack_start (GTK_BOX (vbox60), temperature_frame, FALSE, TRUE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (temperature_frame), 5);
+  gtk_widget_set_sensitive (temperature_frame, FALSE);
 
-  hbox27 = gtk_hbox_new (FALSE, 0);
-  gtk_widget_ref (hbox27);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "hbox27", hbox27,
+  table39 = gtk_table_new (3, 2, FALSE);
+  gtk_widget_ref (table39);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "table39", table39,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (hbox27);
-  gtk_container_add (GTK_CONTAINER (temp_frame), hbox27);
+  gtk_widget_show (table39);
+  gtk_container_add (GTK_CONTAINER (temperature_frame), table39);
 
-  vbox30 = gtk_vbox_new (FALSE, 0);
-  gtk_widget_ref (vbox30);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "vbox30", vbox30,
+  temperature_current_scale = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 255, 1, 10, 0)));
+  gtk_widget_ref (temperature_current_scale);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "temperature_current_scale", temperature_current_scale,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (vbox30);
-  gtk_box_pack_start (GTK_BOX (hbox27), vbox30, FALSE, FALSE, 0);
-
-  temp_power = gtk_toggle_button_new_with_label (_("ON"));
-  gtk_widget_ref (temp_power);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "temp_power", temp_power,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (temp_power);
-  gtk_box_pack_start (GTK_BOX (vbox30), temp_power, FALSE, FALSE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (temp_power), 2);
-  gtk_widget_set_sensitive (temp_power, FALSE);
-
-  temp_man = gtk_radio_button_new_with_label (temp_group, _("Man"));
-  temp_group = gtk_radio_button_group (GTK_RADIO_BUTTON (temp_man));
-  gtk_widget_ref (temp_man);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "temp_man", temp_man,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (temp_man);
-  gtk_box_pack_start (GTK_BOX (vbox30), temp_man, FALSE, FALSE, 0);
-  gtk_widget_set_sensitive (temp_man, FALSE);
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (temp_man), TRUE);
-
-  temp_auto = gtk_radio_button_new_with_label (temp_group, _("Auto"));
-  temp_group = gtk_radio_button_group (GTK_RADIO_BUTTON (temp_auto));
-  gtk_widget_ref (temp_auto);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "temp_auto", temp_auto,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (temp_auto);
-  gtk_box_pack_start (GTK_BOX (vbox30), temp_auto, FALSE, FALSE, 0);
-  gtk_widget_set_sensitive (temp_auto, FALSE);
-
-  temp_op = gtk_button_new_with_label (_("AUTO"));
-  gtk_widget_ref (temp_op);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "temp_op", temp_op,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (temp_op);
-  gtk_box_pack_start (GTK_BOX (vbox30), temp_op, FALSE, FALSE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (temp_op), 2);
-  gtk_widget_set_sensitive (temp_op, FALSE);
-
-  hbox47 = gtk_hbox_new (FALSE, 0);
-  gtk_widget_ref (hbox47);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "hbox47", hbox47,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (hbox47);
-  gtk_box_pack_start (GTK_BOX (hbox27), hbox47, TRUE, TRUE, 0);
-
-  vseparator2 = gtk_vseparator_new ();
-  gtk_widget_ref (vseparator2);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "vseparator2", vseparator2,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (vseparator2);
-  gtk_box_pack_start (GTK_BOX (hbox47), vseparator2, FALSE, TRUE, 2);
-
-  table23 = gtk_table_new (2, 2, FALSE);
-  gtk_widget_ref (table23);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "table23", table23,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (table23);
-  gtk_box_pack_start (GTK_BOX (hbox47), table23, TRUE, TRUE, 0);
-
-  temp_current_scale = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 255, 1, 10, 0)));
-  gtk_widget_ref (temp_current_scale);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "temp_current_scale", temp_current_scale,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (temp_current_scale);
-  gtk_table_attach (GTK_TABLE (table23), temp_current_scale, 1, 2, 0, 1,
+  gtk_widget_show (temperature_current_scale);
+  gtk_table_attach (GTK_TABLE (table39), temperature_current_scale, 1, 2, 1, 2,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
-  gtk_widget_set_sensitive (temp_current_scale, FALSE);
+  gtk_widget_set_sensitive (temperature_current_scale, FALSE);
+  gtk_scale_set_digits (GTK_SCALE (temperature_current_scale), 0);
 
-  temp_goal_scale = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 255, 1, 10, 0)));
-  gtk_widget_ref (temp_goal_scale);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "temp_goal_scale", temp_goal_scale,
+  temperature_target_scale = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 255, 1, 10, 0)));
+  gtk_widget_ref (temperature_target_scale);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "temperature_target_scale", temperature_target_scale,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (temp_goal_scale);
-  gtk_table_attach (GTK_TABLE (table23), temp_goal_scale, 1, 2, 1, 2,
+  gtk_widget_show (temperature_target_scale);
+  gtk_table_attach (GTK_TABLE (table39), temperature_target_scale, 1, 2, 2, 3,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
-  gtk_widget_set_sensitive (temp_goal_scale, FALSE);
+  gtk_widget_set_sensitive (temperature_target_scale, FALSE);
+  gtk_scale_set_digits (GTK_SCALE (temperature_target_scale), 0);
 
-  label46 = gtk_label_new (_("Current:"));
-  gtk_widget_ref (label46);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "label46", label46,
+  temperature_menu = gtk_option_menu_new ();
+  gtk_widget_ref (temperature_menu);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "temperature_menu", temperature_menu,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label46);
-  gtk_table_attach (GTK_TABLE (table23), label46, 0, 1, 0, 1,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 1, 0);
-  gtk_misc_set_alignment (GTK_MISC (label46), 0, 0.5);
-
-  label47 = gtk_label_new (_("Target:"));
-  gtk_widget_ref (label47);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "label47", label47,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label47);
-  gtk_table_attach (GTK_TABLE (table23), label47, 0, 1, 1, 2,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 1, 0);
-  gtk_misc_set_alignment (GTK_MISC (label47), 0, 0.5);
-
-  capqual_frame = gtk_frame_new (_("Capture Quality"));
-  gtk_widget_ref (capqual_frame);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "capqual_frame", capqual_frame,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (capqual_frame);
-  gtk_box_pack_start (GTK_BOX (vbox60), capqual_frame, FALSE, TRUE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (capqual_frame), 5);
-  gtk_widget_set_sensitive (capqual_frame, FALSE);
-
-  hbox24 = gtk_hbox_new (FALSE, 0);
-  gtk_widget_ref (hbox24);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "hbox24", hbox24,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (hbox24);
-  gtk_container_add (GTK_CONTAINER (capqual_frame), hbox24);
-
-  table13 = gtk_table_new (2, 2, FALSE);
-  gtk_widget_ref (table13);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "table13", table13,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (table13);
-  gtk_box_pack_start (GTK_BOX (hbox24), table13, FALSE, TRUE, 0);
-
-  capqual_man = gtk_radio_button_new_with_label (capqual_group, _("Man"));
-  capqual_group = gtk_radio_button_group (GTK_RADIO_BUTTON (capqual_man));
-  gtk_widget_ref (capqual_man);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "capqual_man", capqual_man,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (capqual_man);
-  gtk_table_attach (GTK_TABLE (table13), capqual_man, 1, 2, 0, 1,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_sensitive (capqual_man, FALSE);
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (capqual_man), TRUE);
-
-  capqual_auto = gtk_radio_button_new_with_label (capqual_group, _("Auto"));
-  capqual_group = gtk_radio_button_group (GTK_RADIO_BUTTON (capqual_auto));
-  gtk_widget_ref (capqual_auto);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "capqual_auto", capqual_auto,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (capqual_auto);
-  gtk_table_attach (GTK_TABLE (table13), capqual_auto, 1, 2, 1, 2,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_sensitive (capqual_auto, FALSE);
-
-  capqual_op = gtk_button_new_with_label (_("AUTO"));
-  gtk_widget_ref (capqual_op);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "capqual_op", capqual_op,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (capqual_op);
-  gtk_table_attach (GTK_TABLE (table13), capqual_op, 0, 1, 1, 2,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (capqual_op), 2);
-  gtk_widget_set_sensitive (capqual_op, FALSE);
-
-  alignment9 = gtk_alignment_new (0.5, 0.5, 1, 1);
-  gtk_widget_ref (alignment9);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "alignment9", alignment9,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (alignment9);
-  gtk_table_attach (GTK_TABLE (table13), alignment9, 0, 1, 0, 1,
+  gtk_widget_show (temperature_menu);
+  gtk_table_attach (GTK_TABLE (table39), temperature_menu, 0, 1, 0, 1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
+  temperature_menu_menu = gtk_menu_new ();
+  glade_menuitem = gtk_menu_item_new_with_label (_("Off"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (temperature_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Man"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (temperature_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Auto"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (temperature_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Single"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (temperature_menu_menu), glade_menuitem);
+  gtk_option_menu_set_menu (GTK_OPTION_MENU (temperature_menu), temperature_menu_menu);
 
-  capqual_power = gtk_toggle_button_new_with_label (_("ON"));
-  gtk_widget_ref (capqual_power);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "capqual_power", capqual_power,
+  label81 = gtk_label_new (_("Current:"));
+  gtk_widget_ref (label81);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "label81", label81,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (capqual_power);
-  gtk_container_add (GTK_CONTAINER (alignment9), capqual_power);
-  gtk_container_set_border_width (GTK_CONTAINER (capqual_power), 2);
-  gtk_widget_set_sensitive (capqual_power, FALSE);
-
-  capqual_scale = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 255, 1, 10, 0)));
-  gtk_widget_ref (capqual_scale);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "capqual_scale", capqual_scale,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (capqual_scale);
-  gtk_box_pack_start (GTK_BOX (hbox24), capqual_scale, TRUE, TRUE, 0);
-  gtk_widget_set_sensitive (capqual_scale, FALSE);
-  gtk_scale_set_digits (GTK_SCALE (capqual_scale), 0);
-
-  capsize = gtk_frame_new (_("Capture Size"));
-  gtk_widget_ref (capsize);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "capsize", capsize,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (capsize);
-  gtk_box_pack_start (GTK_BOX (vbox60), capsize, FALSE, TRUE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (capsize), 5);
-  gtk_widget_set_sensitive (capsize, FALSE);
-
-  hbox25 = gtk_hbox_new (FALSE, 0);
-  gtk_widget_ref (hbox25);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "hbox25", hbox25,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (hbox25);
-  gtk_container_add (GTK_CONTAINER (capsize), hbox25);
-
-  table14 = gtk_table_new (2, 2, FALSE);
-  gtk_widget_ref (table14);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "table14", table14,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (table14);
-  gtk_box_pack_start (GTK_BOX (hbox25), table14, FALSE, TRUE, 0);
-
-  capsize_man = gtk_radio_button_new_with_label (capsize_group, _("Man"));
-  capsize_group = gtk_radio_button_group (GTK_RADIO_BUTTON (capsize_man));
-  gtk_widget_ref (capsize_man);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "capsize_man", capsize_man,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (capsize_man);
-  gtk_table_attach (GTK_TABLE (table14), capsize_man, 1, 2, 0, 1,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_sensitive (capsize_man, FALSE);
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (capsize_man), TRUE);
-
-  capsize_auto = gtk_radio_button_new_with_label (capsize_group, _("Auto"));
-  capsize_group = gtk_radio_button_group (GTK_RADIO_BUTTON (capsize_auto));
-  gtk_widget_ref (capsize_auto);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "capsize_auto", capsize_auto,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (capsize_auto);
-  gtk_table_attach (GTK_TABLE (table14), capsize_auto, 1, 2, 1, 2,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_sensitive (capsize_auto, FALSE);
-
-  capsize_op = gtk_button_new_with_label (_("AUTO"));
-  gtk_widget_ref (capsize_op);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "capsize_op", capsize_op,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (capsize_op);
-  gtk_table_attach (GTK_TABLE (table14), capsize_op, 0, 1, 1, 2,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (capsize_op), 2);
-  gtk_widget_set_sensitive (capsize_op, FALSE);
-
-  alignment10 = gtk_alignment_new (0.5, 0.5, 1, 1);
-  gtk_widget_ref (alignment10);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "alignment10", alignment10,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (alignment10);
-  gtk_table_attach (GTK_TABLE (table14), alignment10, 0, 1, 0, 1,
+  gtk_widget_show (label81);
+  gtk_table_attach (GTK_TABLE (table39), label81, 0, 1, 1, 2,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
+  gtk_label_set_justify (GTK_LABEL (label81), GTK_JUSTIFY_RIGHT);
+  gtk_misc_set_alignment (GTK_MISC (label81), 0, 0.5);
 
-  capsize_power = gtk_toggle_button_new_with_label (_("ON"));
-  gtk_widget_ref (capsize_power);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "capsize_power", capsize_power,
+  label82 = gtk_label_new (_("Target:"));
+  gtk_widget_ref (label82);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "label82", label82,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (capsize_power);
-  gtk_container_add (GTK_CONTAINER (alignment10), capsize_power);
-  gtk_container_set_border_width (GTK_CONTAINER (capsize_power), 2);
-  gtk_widget_set_sensitive (capsize_power, FALSE);
+  gtk_widget_show (label82);
+  gtk_table_attach (GTK_TABLE (table39), label82, 0, 1, 2, 3,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_label_set_justify (GTK_LABEL (label82), GTK_JUSTIFY_RIGHT);
+  gtk_misc_set_alignment (GTK_MISC (label82), 0, 0.5);
 
-  capsize_scale = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 255, 1, 10, 0)));
-  gtk_widget_ref (capsize_scale);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "capsize_scale", capsize_scale,
+  capture_quality_frame = gtk_frame_new (_("Capture quality"));
+  gtk_widget_ref (capture_quality_frame);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "capture_quality_frame", capture_quality_frame,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (capsize_scale);
-  gtk_box_pack_start (GTK_BOX (hbox25), capsize_scale, TRUE, TRUE, 0);
-  gtk_widget_set_sensitive (capsize_scale, FALSE);
-  gtk_scale_set_digits (GTK_SCALE (capsize_scale), 0);
+  gtk_widget_show (capture_quality_frame);
+  gtk_box_pack_start (GTK_BOX (vbox60), capture_quality_frame, FALSE, TRUE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (capture_quality_frame), 5);
+  gtk_widget_set_sensitive (capture_quality_frame, FALSE);
+
+  table31 = gtk_table_new (1, 2, FALSE);
+  gtk_widget_ref (table31);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "table31", table31,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (table31);
+  gtk_container_add (GTK_CONTAINER (capture_quality_frame), table31);
+
+  capture_quality_menu = gtk_option_menu_new ();
+  gtk_widget_ref (capture_quality_menu);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "capture_quality_menu", capture_quality_menu,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (capture_quality_menu);
+  gtk_table_attach (GTK_TABLE (table31), capture_quality_menu, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  capture_quality_menu_menu = gtk_menu_new ();
+  glade_menuitem = gtk_menu_item_new_with_label (_("Off"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (capture_quality_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Man"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (capture_quality_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Auto"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (capture_quality_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Single"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (capture_quality_menu_menu), glade_menuitem);
+  gtk_option_menu_set_menu (GTK_OPTION_MENU (capture_quality_menu), capture_quality_menu_menu);
+
+  capture_quality_scale = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 255, 1, 10, 0)));
+  gtk_widget_ref (capture_quality_scale);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "capture_quality_scale", capture_quality_scale,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (capture_quality_scale);
+  gtk_table_attach (GTK_TABLE (table31), capture_quality_scale, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+  gtk_widget_set_sensitive (capture_quality_scale, FALSE);
+  gtk_scale_set_digits (GTK_SCALE (capture_quality_scale), 0);
+
+  capture_size_frame = gtk_frame_new (_("Capture size"));
+  gtk_widget_ref (capture_size_frame);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "capture_size_frame", capture_size_frame,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (capture_size_frame);
+  gtk_box_pack_start (GTK_BOX (vbox60), capture_size_frame, FALSE, TRUE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (capture_size_frame), 5);
+  gtk_widget_set_sensitive (capture_size_frame, FALSE);
+
+  table32 = gtk_table_new (1, 2, FALSE);
+  gtk_widget_ref (table32);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "table32", table32,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (table32);
+  gtk_container_add (GTK_CONTAINER (capture_size_frame), table32);
+
+  capture_size_menu = gtk_option_menu_new ();
+  gtk_widget_ref (capture_size_menu);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "capture_size_menu", capture_size_menu,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (capture_size_menu);
+  gtk_table_attach (GTK_TABLE (table32), capture_size_menu, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  capture_size_menu_menu = gtk_menu_new ();
+  glade_menuitem = gtk_menu_item_new_with_label (_("Off"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (capture_size_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Man"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (capture_size_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Auto"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (capture_size_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Single"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (capture_size_menu_menu), glade_menuitem);
+  gtk_option_menu_set_menu (GTK_OPTION_MENU (capture_size_menu), capture_size_menu_menu);
+
+  capture_size_scale = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 255, 1, 10, 0)));
+  gtk_widget_ref (capture_size_scale);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "capture_size_scale", capture_size_scale,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (capture_size_scale);
+  gtk_table_attach (GTK_TABLE (table32), capture_size_scale, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+  gtk_widget_set_sensitive (capture_size_scale, FALSE);
+  gtk_scale_set_digits (GTK_SCALE (capture_size_scale), 0);
 
   label59 = gtk_label_new (_("Misc"));
   gtk_widget_ref (label59);
@@ -2781,6 +2345,220 @@ create_commander_window (void)
   gtk_widget_show (label60);
   gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook2), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook2), 4), label60);
 
+  vbox63 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_ref (vbox63);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "vbox63", vbox63,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (vbox63);
+  gtk_container_add (GTK_CONTAINER (notebook2), vbox63);
+
+  zoom_frame = gtk_frame_new (_("Zoom"));
+  gtk_widget_ref (zoom_frame);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "zoom_frame", zoom_frame,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (zoom_frame);
+  gtk_box_pack_start (GTK_BOX (vbox63), zoom_frame, FALSE, TRUE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (zoom_frame), 5);
+  gtk_widget_set_sensitive (zoom_frame, FALSE);
+
+  table40 = gtk_table_new (1, 2, FALSE);
+  gtk_widget_ref (table40);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "table40", table40,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (table40);
+  gtk_container_add (GTK_CONTAINER (zoom_frame), table40);
+
+  zoom_menu = gtk_option_menu_new ();
+  gtk_widget_ref (zoom_menu);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "zoom_menu", zoom_menu,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (zoom_menu);
+  gtk_table_attach (GTK_TABLE (table40), zoom_menu, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  zoom_menu_menu = gtk_menu_new ();
+  glade_menuitem = gtk_menu_item_new_with_label (_("Off"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (zoom_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Man"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (zoom_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Auto"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (zoom_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Single"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (zoom_menu_menu), glade_menuitem);
+  gtk_option_menu_set_menu (GTK_OPTION_MENU (zoom_menu), zoom_menu_menu);
+
+  zoom_scale = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 255, 1, 10, 0)));
+  gtk_widget_ref (zoom_scale);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "zoom_scale", zoom_scale,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (zoom_scale);
+  gtk_table_attach (GTK_TABLE (table40), zoom_scale, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+  gtk_widget_set_sensitive (zoom_scale, FALSE);
+  gtk_scale_set_digits (GTK_SCALE (zoom_scale), 0);
+
+  focus_frame = gtk_frame_new (_("Focus"));
+  gtk_widget_ref (focus_frame);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "focus_frame", focus_frame,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (focus_frame);
+  gtk_box_pack_start (GTK_BOX (vbox63), focus_frame, FALSE, TRUE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (focus_frame), 5);
+  gtk_widget_set_sensitive (focus_frame, FALSE);
+
+  table41 = gtk_table_new (1, 2, FALSE);
+  gtk_widget_ref (table41);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "table41", table41,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (table41);
+  gtk_container_add (GTK_CONTAINER (focus_frame), table41);
+
+  focus_menu = gtk_option_menu_new ();
+  gtk_widget_ref (focus_menu);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "focus_menu", focus_menu,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (focus_menu);
+  gtk_table_attach (GTK_TABLE (table41), focus_menu, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  focus_menu_menu = gtk_menu_new ();
+  glade_menuitem = gtk_menu_item_new_with_label (_("Off"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (focus_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Man"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (focus_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Auto"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (focus_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Single"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (focus_menu_menu), glade_menuitem);
+  gtk_option_menu_set_menu (GTK_OPTION_MENU (focus_menu), focus_menu_menu);
+
+  focus_scale = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 255, 1, 10, 0)));
+  gtk_widget_ref (focus_scale);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "focus_scale", focus_scale,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (focus_scale);
+  gtk_table_attach (GTK_TABLE (table41), focus_scale, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+  gtk_widget_set_sensitive (focus_scale, FALSE);
+  gtk_scale_set_digits (GTK_SCALE (focus_scale), 0);
+
+  tilt_frame = gtk_frame_new (_("Tilt"));
+  gtk_widget_ref (tilt_frame);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "tilt_frame", tilt_frame,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (tilt_frame);
+  gtk_box_pack_start (GTK_BOX (vbox63), tilt_frame, FALSE, TRUE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (tilt_frame), 5);
+  gtk_widget_set_sensitive (tilt_frame, FALSE);
+
+  table42 = gtk_table_new (1, 2, FALSE);
+  gtk_widget_ref (table42);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "table42", table42,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (table42);
+  gtk_container_add (GTK_CONTAINER (tilt_frame), table42);
+
+  tilt_menu = gtk_option_menu_new ();
+  gtk_widget_ref (tilt_menu);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "tilt_menu", tilt_menu,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (tilt_menu);
+  gtk_table_attach (GTK_TABLE (table42), tilt_menu, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  tilt_menu_menu = gtk_menu_new ();
+  glade_menuitem = gtk_menu_item_new_with_label (_("Off"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (tilt_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Man"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (tilt_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Auto"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (tilt_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Single"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (tilt_menu_menu), glade_menuitem);
+  gtk_option_menu_set_menu (GTK_OPTION_MENU (tilt_menu), tilt_menu_menu);
+
+  tilt_scale = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 255, 1, 10, 0)));
+  gtk_widget_ref (tilt_scale);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "tilt_scale", tilt_scale,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (tilt_scale);
+  gtk_table_attach (GTK_TABLE (table42), tilt_scale, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+  gtk_widget_set_sensitive (tilt_scale, FALSE);
+  gtk_scale_set_digits (GTK_SCALE (tilt_scale), 0);
+
+  pan_frame = gtk_frame_new (_("Pan"));
+  gtk_widget_ref (pan_frame);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "pan_frame", pan_frame,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (pan_frame);
+  gtk_box_pack_start (GTK_BOX (vbox63), pan_frame, FALSE, TRUE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (pan_frame), 5);
+  gtk_widget_set_sensitive (pan_frame, FALSE);
+
+  table43 = gtk_table_new (1, 2, FALSE);
+  gtk_widget_ref (table43);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "table43", table43,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (table43);
+  gtk_container_add (GTK_CONTAINER (pan_frame), table43);
+
+  pan_menu = gtk_option_menu_new ();
+  gtk_widget_ref (pan_menu);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "pan_menu", pan_menu,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (pan_menu);
+  gtk_table_attach (GTK_TABLE (table43), pan_menu, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  pan_menu_menu = gtk_menu_new ();
+  glade_menuitem = gtk_menu_item_new_with_label (_("Off"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (pan_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Man"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (pan_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Auto"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (pan_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Single"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (pan_menu_menu), glade_menuitem);
+  gtk_option_menu_set_menu (GTK_OPTION_MENU (pan_menu), pan_menu_menu);
+
+  pan_scale = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 255, 1, 10, 0)));
+  gtk_widget_ref (pan_scale);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "pan_scale", pan_scale,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (pan_scale);
+  gtk_table_attach (GTK_TABLE (table43), pan_scale, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+  gtk_widget_set_sensitive (pan_scale, FALSE);
+  gtk_scale_set_digits (GTK_SCALE (pan_scale), 0);
+
+  label83 = gtk_label_new (_("Positioning"));
+  gtk_widget_ref (label83);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "label83", label83,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label83);
+  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook2), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook2), 5), label83);
+
   main_status = gtk_statusbar_new ();
   gtk_widget_ref (main_status);
   gtk_object_set_data_full (GTK_OBJECT (commander_window), "main_status", main_status,
@@ -2843,132 +2621,6 @@ create_commander_window (void)
   gtk_signal_connect (GTK_OBJECT (trigger_polarity), "toggled",
                       GTK_SIGNAL_FUNC (on_trigger_polarity_toggled),
                       NULL);
-  gtk_signal_connect (GTK_OBJECT (exposure_power), "toggled",
-                      GTK_SIGNAL_FUNC (on_exposure_power_toggled),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (exposure_man), "toggled",
-                      GTK_SIGNAL_FUNC (on_exposure_man_toggled),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (exposure_op), "clicked",
-                      GTK_SIGNAL_FUNC (on_exposure_op_clicked),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (iris_power), "toggled",
-                      GTK_SIGNAL_FUNC (on_iris_power_toggled),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (iris_man), "toggled",
-                      GTK_SIGNAL_FUNC (on_iris_man_toggled),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (iris_op), "clicked",
-                      GTK_SIGNAL_FUNC (on_iris_op_clicked),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (shutter_power), "toggled",
-                      GTK_SIGNAL_FUNC (on_shutter_power_toggled),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (shutter_man), "toggled",
-                      GTK_SIGNAL_FUNC (on_shutter_man_toggled),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (shutter_op), "clicked",
-                      GTK_SIGNAL_FUNC (on_shutter_op_clicked),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (gain_power), "toggled",
-                      GTK_SIGNAL_FUNC (on_gain_power_toggled),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (gain_man), "toggled",
-                      GTK_SIGNAL_FUNC (on_gain_man_toggled),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (gain_op), "clicked",
-                      GTK_SIGNAL_FUNC (on_gain_op_clicked),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (filter_power), "toggled",
-                      GTK_SIGNAL_FUNC (on_filter_power_toggled),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (filter_man), "toggled",
-                      GTK_SIGNAL_FUNC (on_filter_man_toggled),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (filter_op), "clicked",
-                      GTK_SIGNAL_FUNC (on_filter_op_clicked),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (hue_man), "toggled",
-                      GTK_SIGNAL_FUNC (on_hue_man_toggled),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (hue_op), "clicked",
-                      GTK_SIGNAL_FUNC (on_hue_op_clicked),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (hue_power), "toggled",
-                      GTK_SIGNAL_FUNC (on_hue_power_toggled),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (saturation_man), "toggled",
-                      GTK_SIGNAL_FUNC (on_saturation_man_toggled),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (saturation_op), "clicked",
-                      GTK_SIGNAL_FUNC (on_saturation_op_clicked),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (saturation_power), "toggled",
-                      GTK_SIGNAL_FUNC (on_saturation_power_toggled),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (whitebal_power), "toggled",
-                      GTK_SIGNAL_FUNC (on_whitebal_power_toggled),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (whitebal_man), "toggled",
-                      GTK_SIGNAL_FUNC (on_whitebal_man_toggled),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (whitebal_op), "clicked",
-                      GTK_SIGNAL_FUNC (on_whitebal_op_clicked),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (brightness_man), "toggled",
-                      GTK_SIGNAL_FUNC (on_brightness_man_toggled),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (brightness_op), "clicked",
-                      GTK_SIGNAL_FUNC (on_brightness_op_clicked),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (brightness_power), "toggled",
-                      GTK_SIGNAL_FUNC (on_brightness_power_toggled),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (gamma_man), "toggled",
-                      GTK_SIGNAL_FUNC (on_gamma_man_toggled),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (gamma_op), "clicked",
-                      GTK_SIGNAL_FUNC (on_gamma_op_clicked),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (gamma_power), "toggled",
-                      GTK_SIGNAL_FUNC (on_gamma_power_toggled),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (sharpness_man), "toggled",
-                      GTK_SIGNAL_FUNC (on_sharpness_man_toggled),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (sharpness_op), "clicked",
-                      GTK_SIGNAL_FUNC (on_sharpness_op_clicked),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (sharpness_power), "toggled",
-                      GTK_SIGNAL_FUNC (on_sharpness_power_toggled),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (temp_power), "toggled",
-                      GTK_SIGNAL_FUNC (on_temp_power_toggled),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (temp_man), "toggled",
-                      GTK_SIGNAL_FUNC (on_temp_man_toggled),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (temp_op), "clicked",
-                      GTK_SIGNAL_FUNC (on_temp_op_clicked),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (capqual_man), "toggled",
-                      GTK_SIGNAL_FUNC (on_capqual_man_toggled),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (capqual_op), "clicked",
-                      GTK_SIGNAL_FUNC (on_capqual_op_clicked),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (capqual_power), "toggled",
-                      GTK_SIGNAL_FUNC (on_capqual_power_toggled),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (capsize_man), "toggled",
-                      GTK_SIGNAL_FUNC (on_capsize_man_toggled),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (capsize_op), "clicked",
-                      GTK_SIGNAL_FUNC (on_capsize_op_clicked),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (capsize_power), "toggled",
-                      GTK_SIGNAL_FUNC (on_capsize_power_toggled),
-                      NULL);
 
   return commander_window;
 }
@@ -2977,172 +2629,21 @@ GtkWidget*
 create_porthole_window (void)
 {
   GtkWidget *porthole_window;
-  GtkWidget *table7;
-  GtkWidget *table18;
-  GtkWidget *pan_frame;
-  GtkWidget *hbox5;
-  GtkWidget *table2;
-  GSList *Pan_group = NULL;
-  GtkWidget *pan_man;
-  GtkWidget *pan_auto;
-  GtkWidget *pan_op;
-  GtkWidget *alignment1;
-  GtkWidget *pan_power;
-  GtkWidget *pan_scale;
-  GtkWidget *camera_scope_frame;
   GtkWidget *scrolledwindow1;
   GtkWidget *viewport1;
   GtkWidget *alignment11;
   GtkWidget *camera_scope;
-  GtkWidget *focus_frame;
-  GtkWidget *hbox11;
-  GtkWidget *table6;
-  GSList *focus_group = NULL;
-  GtkWidget *focus_man;
-  GtkWidget *focus_auto;
-  GtkWidget *focus_op;
-  GtkWidget *alignment5;
-  GtkWidget *focus_power;
-  GtkWidget *focus_scale;
-  GtkWidget *tilt_frame;
-  GtkWidget *vbox5;
-  GtkWidget *tilt_power;
-  GSList *tilt_group = NULL;
-  GtkWidget *tilt_man;
-  GtkWidget *tilt_auto;
-  GtkWidget *tilt_op;
-  GtkWidget *tilt_scale;
-  GtkWidget *zoom_frame;
-  GtkWidget *vbox6;
-  GtkWidget *zoom_power;
-  GSList *zoom_group = NULL;
-  GtkWidget *zoom_man;
-  GtkWidget *zoom_auto;
-  GtkWidget *zoom_op;
-  GtkWidget *zoom_scale;
 
   porthole_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_object_set_data (GTK_OBJECT (porthole_window), "porthole_window", porthole_window);
   gtk_window_set_title (GTK_WINDOW (porthole_window), _("Porthole"));
-
-  table7 = gtk_table_new (2, 3, FALSE);
-  gtk_widget_ref (table7);
-  gtk_object_set_data_full (GTK_OBJECT (porthole_window), "table7", table7,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (table7);
-  gtk_container_add (GTK_CONTAINER (porthole_window), table7);
-
-  table18 = gtk_table_new (2, 1, FALSE);
-  gtk_widget_ref (table18);
-  gtk_object_set_data_full (GTK_OBJECT (porthole_window), "table18", table18,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (table18);
-  gtk_table_attach (GTK_TABLE (table7), table18, 1, 2, 1, 2,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (GTK_FILL), 0, 0);
-
-  pan_frame = gtk_frame_new (_("Pan"));
-  gtk_widget_ref (pan_frame);
-  gtk_object_set_data_full (GTK_OBJECT (porthole_window), "pan_frame", pan_frame,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (pan_frame);
-  gtk_table_attach (GTK_TABLE (table18), pan_frame, 0, 1, 1, 2,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (GTK_FILL), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (pan_frame), 5);
-  gtk_widget_set_sensitive (pan_frame, FALSE);
-
-  hbox5 = gtk_hbox_new (FALSE, 0);
-  gtk_widget_ref (hbox5);
-  gtk_object_set_data_full (GTK_OBJECT (porthole_window), "hbox5", hbox5,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (hbox5);
-  gtk_container_add (GTK_CONTAINER (pan_frame), hbox5);
-
-  table2 = gtk_table_new (2, 2, FALSE);
-  gtk_widget_ref (table2);
-  gtk_object_set_data_full (GTK_OBJECT (porthole_window), "table2", table2,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (table2);
-  gtk_box_pack_start (GTK_BOX (hbox5), table2, FALSE, TRUE, 0);
-
-  pan_man = gtk_radio_button_new_with_label (Pan_group, _("Man"));
-  Pan_group = gtk_radio_button_group (GTK_RADIO_BUTTON (pan_man));
-  gtk_widget_ref (pan_man);
-  gtk_object_set_data_full (GTK_OBJECT (porthole_window), "pan_man", pan_man,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (pan_man);
-  gtk_table_attach (GTK_TABLE (table2), pan_man, 1, 2, 0, 1,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_sensitive (pan_man, FALSE);
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (pan_man), TRUE);
-
-  pan_auto = gtk_radio_button_new_with_label (Pan_group, _("Auto"));
-  Pan_group = gtk_radio_button_group (GTK_RADIO_BUTTON (pan_auto));
-  gtk_widget_ref (pan_auto);
-  gtk_object_set_data_full (GTK_OBJECT (porthole_window), "pan_auto", pan_auto,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (pan_auto);
-  gtk_table_attach (GTK_TABLE (table2), pan_auto, 1, 2, 1, 2,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_sensitive (pan_auto, FALSE);
-
-  pan_op = gtk_button_new_with_label (_("AUTO"));
-  gtk_widget_ref (pan_op);
-  gtk_object_set_data_full (GTK_OBJECT (porthole_window), "pan_op", pan_op,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (pan_op);
-  gtk_table_attach (GTK_TABLE (table2), pan_op, 0, 1, 1, 2,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (pan_op), 2);
-  gtk_widget_set_sensitive (pan_op, FALSE);
-
-  alignment1 = gtk_alignment_new (0.5, 0.5, 1, 1);
-  gtk_widget_ref (alignment1);
-  gtk_object_set_data_full (GTK_OBJECT (porthole_window), "alignment1", alignment1,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (alignment1);
-  gtk_table_attach (GTK_TABLE (table2), alignment1, 0, 1, 0, 1,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-
-  pan_power = gtk_toggle_button_new_with_label (_("ON"));
-  gtk_widget_ref (pan_power);
-  gtk_object_set_data_full (GTK_OBJECT (porthole_window), "pan_power", pan_power,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (pan_power);
-  gtk_container_add (GTK_CONTAINER (alignment1), pan_power);
-  gtk_container_set_border_width (GTK_CONTAINER (pan_power), 2);
-  gtk_widget_set_sensitive (pan_power, FALSE);
-
-  pan_scale = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 255, 1, 10, 0)));
-  gtk_widget_ref (pan_scale);
-  gtk_object_set_data_full (GTK_OBJECT (porthole_window), "pan_scale", pan_scale,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (pan_scale);
-  gtk_box_pack_start (GTK_BOX (hbox5), pan_scale, TRUE, TRUE, 0);
-  gtk_widget_set_sensitive (pan_scale, FALSE);
-  gtk_scale_set_digits (GTK_SCALE (pan_scale), 0);
-
-  camera_scope_frame = gtk_frame_new (_("Camera Scope"));
-  gtk_widget_ref (camera_scope_frame);
-  gtk_object_set_data_full (GTK_OBJECT (porthole_window), "camera_scope_frame", camera_scope_frame,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (camera_scope_frame);
-  gtk_table_attach (GTK_TABLE (table18), camera_scope_frame, 0, 1, 0, 1,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_SHRINK | GTK_FILL),
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_SHRINK | GTK_FILL), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (camera_scope_frame), 5);
 
   scrolledwindow1 = gtk_scrolled_window_new (NULL, NULL);
   gtk_widget_ref (scrolledwindow1);
   gtk_object_set_data_full (GTK_OBJECT (porthole_window), "scrolledwindow1", scrolledwindow1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (scrolledwindow1);
-  gtk_container_add (GTK_CONTAINER (camera_scope_frame), scrolledwindow1);
+  gtk_container_add (GTK_CONTAINER (porthole_window), scrolledwindow1);
   gtk_widget_set_usize (scrolledwindow1, 334, 254);
   gtk_container_set_border_width (GTK_CONTAINER (scrolledwindow1), 5);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow1), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
@@ -3167,267 +2668,6 @@ create_porthole_window (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (camera_scope);
   gtk_container_add (GTK_CONTAINER (alignment11), camera_scope);
-
-  focus_frame = gtk_frame_new (_("Focus"));
-  gtk_widget_ref (focus_frame);
-  gtk_object_set_data_full (GTK_OBJECT (porthole_window), "focus_frame", focus_frame,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (focus_frame);
-  gtk_table_attach (GTK_TABLE (table7), focus_frame, 1, 2, 0, 1,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (GTK_FILL), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (focus_frame), 5);
-
-  hbox11 = gtk_hbox_new (FALSE, 0);
-  gtk_widget_ref (hbox11);
-  gtk_object_set_data_full (GTK_OBJECT (porthole_window), "hbox11", hbox11,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (hbox11);
-  gtk_container_add (GTK_CONTAINER (focus_frame), hbox11);
-
-  table6 = gtk_table_new (2, 2, FALSE);
-  gtk_widget_ref (table6);
-  gtk_object_set_data_full (GTK_OBJECT (porthole_window), "table6", table6,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (table6);
-  gtk_box_pack_start (GTK_BOX (hbox11), table6, FALSE, TRUE, 0);
-
-  focus_man = gtk_radio_button_new_with_label (focus_group, _("Man"));
-  focus_group = gtk_radio_button_group (GTK_RADIO_BUTTON (focus_man));
-  gtk_widget_ref (focus_man);
-  gtk_object_set_data_full (GTK_OBJECT (porthole_window), "focus_man", focus_man,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (focus_man);
-  gtk_table_attach (GTK_TABLE (table6), focus_man, 1, 2, 0, 1,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_sensitive (focus_man, FALSE);
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (focus_man), TRUE);
-
-  focus_auto = gtk_radio_button_new_with_label (focus_group, _("Auto"));
-  focus_group = gtk_radio_button_group (GTK_RADIO_BUTTON (focus_auto));
-  gtk_widget_ref (focus_auto);
-  gtk_object_set_data_full (GTK_OBJECT (porthole_window), "focus_auto", focus_auto,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (focus_auto);
-  gtk_table_attach (GTK_TABLE (table6), focus_auto, 1, 2, 1, 2,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_sensitive (focus_auto, FALSE);
-
-  focus_op = gtk_button_new_with_label (_("AUTO"));
-  gtk_widget_ref (focus_op);
-  gtk_object_set_data_full (GTK_OBJECT (porthole_window), "focus_op", focus_op,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (focus_op);
-  gtk_table_attach (GTK_TABLE (table6), focus_op, 0, 1, 1, 2,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (focus_op), 2);
-  gtk_widget_set_sensitive (focus_op, FALSE);
-
-  alignment5 = gtk_alignment_new (0.5, 0.5, 1, 1);
-  gtk_widget_ref (alignment5);
-  gtk_object_set_data_full (GTK_OBJECT (porthole_window), "alignment5", alignment5,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (alignment5);
-  gtk_table_attach (GTK_TABLE (table6), alignment5, 0, 1, 0, 1,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-
-  focus_power = gtk_toggle_button_new_with_label (_("ON"));
-  gtk_widget_ref (focus_power);
-  gtk_object_set_data_full (GTK_OBJECT (porthole_window), "focus_power", focus_power,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (focus_power);
-  gtk_container_add (GTK_CONTAINER (alignment5), focus_power);
-  gtk_container_set_border_width (GTK_CONTAINER (focus_power), 2);
-  gtk_widget_set_sensitive (focus_power, FALSE);
-
-  focus_scale = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 255, 1, 10, 0)));
-  gtk_widget_ref (focus_scale);
-  gtk_object_set_data_full (GTK_OBJECT (porthole_window), "focus_scale", focus_scale,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (focus_scale);
-  gtk_box_pack_start (GTK_BOX (hbox11), focus_scale, TRUE, TRUE, 0);
-  gtk_widget_set_sensitive (focus_scale, FALSE);
-  gtk_scale_set_digits (GTK_SCALE (focus_scale), 0);
-
-  tilt_frame = gtk_frame_new (_("Tilt"));
-  gtk_widget_ref (tilt_frame);
-  gtk_object_set_data_full (GTK_OBJECT (porthole_window), "tilt_frame", tilt_frame,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (tilt_frame);
-  gtk_table_attach (GTK_TABLE (table7), tilt_frame, 0, 1, 1, 2,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (tilt_frame), 5);
-  gtk_widget_set_sensitive (tilt_frame, FALSE);
-
-  vbox5 = gtk_vbox_new (FALSE, 0);
-  gtk_widget_ref (vbox5);
-  gtk_object_set_data_full (GTK_OBJECT (porthole_window), "vbox5", vbox5,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (vbox5);
-  gtk_container_add (GTK_CONTAINER (tilt_frame), vbox5);
-
-  tilt_power = gtk_toggle_button_new_with_label (_("ON"));
-  gtk_widget_ref (tilt_power);
-  gtk_object_set_data_full (GTK_OBJECT (porthole_window), "tilt_power", tilt_power,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (tilt_power);
-  gtk_box_pack_start (GTK_BOX (vbox5), tilt_power, FALSE, FALSE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (tilt_power), 2);
-  gtk_widget_set_sensitive (tilt_power, FALSE);
-
-  tilt_man = gtk_radio_button_new_with_label (tilt_group, _("Man"));
-  tilt_group = gtk_radio_button_group (GTK_RADIO_BUTTON (tilt_man));
-  gtk_widget_ref (tilt_man);
-  gtk_object_set_data_full (GTK_OBJECT (porthole_window), "tilt_man", tilt_man,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (tilt_man);
-  gtk_box_pack_start (GTK_BOX (vbox5), tilt_man, FALSE, FALSE, 0);
-  gtk_widget_set_sensitive (tilt_man, FALSE);
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (tilt_man), TRUE);
-
-  tilt_auto = gtk_radio_button_new_with_label (tilt_group, _("Auto"));
-  tilt_group = gtk_radio_button_group (GTK_RADIO_BUTTON (tilt_auto));
-  gtk_widget_ref (tilt_auto);
-  gtk_object_set_data_full (GTK_OBJECT (porthole_window), "tilt_auto", tilt_auto,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (tilt_auto);
-  gtk_box_pack_start (GTK_BOX (vbox5), tilt_auto, FALSE, FALSE, 0);
-  gtk_widget_set_sensitive (tilt_auto, FALSE);
-
-  tilt_op = gtk_button_new_with_label (_("AUTO"));
-  gtk_widget_ref (tilt_op);
-  gtk_object_set_data_full (GTK_OBJECT (porthole_window), "tilt_op", tilt_op,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (tilt_op);
-  gtk_box_pack_start (GTK_BOX (vbox5), tilt_op, FALSE, FALSE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (tilt_op), 2);
-  gtk_widget_set_sensitive (tilt_op, FALSE);
-
-  tilt_scale = gtk_vscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 255, 1, 10, 0)));
-  gtk_widget_ref (tilt_scale);
-  gtk_object_set_data_full (GTK_OBJECT (porthole_window), "tilt_scale", tilt_scale,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (tilt_scale);
-  gtk_box_pack_start (GTK_BOX (vbox5), tilt_scale, TRUE, TRUE, 0);
-  gtk_widget_set_sensitive (tilt_scale, FALSE);
-  gtk_scale_set_value_pos (GTK_SCALE (tilt_scale), GTK_POS_LEFT);
-  gtk_scale_set_digits (GTK_SCALE (tilt_scale), 0);
-
-  zoom_frame = gtk_frame_new (_("Zoom"));
-  gtk_widget_ref (zoom_frame);
-  gtk_object_set_data_full (GTK_OBJECT (porthole_window), "zoom_frame", zoom_frame,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (zoom_frame);
-  gtk_table_attach (GTK_TABLE (table7), zoom_frame, 2, 3, 1, 2,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (zoom_frame), 5);
-  gtk_widget_set_sensitive (zoom_frame, FALSE);
-
-  vbox6 = gtk_vbox_new (FALSE, 0);
-  gtk_widget_ref (vbox6);
-  gtk_object_set_data_full (GTK_OBJECT (porthole_window), "vbox6", vbox6,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (vbox6);
-  gtk_container_add (GTK_CONTAINER (zoom_frame), vbox6);
-
-  zoom_power = gtk_toggle_button_new_with_label (_("ON"));
-  gtk_widget_ref (zoom_power);
-  gtk_object_set_data_full (GTK_OBJECT (porthole_window), "zoom_power", zoom_power,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (zoom_power);
-  gtk_box_pack_start (GTK_BOX (vbox6), zoom_power, FALSE, FALSE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (zoom_power), 2);
-  gtk_widget_set_sensitive (zoom_power, FALSE);
-
-  zoom_man = gtk_radio_button_new_with_label (zoom_group, _("Man"));
-  zoom_group = gtk_radio_button_group (GTK_RADIO_BUTTON (zoom_man));
-  gtk_widget_ref (zoom_man);
-  gtk_object_set_data_full (GTK_OBJECT (porthole_window), "zoom_man", zoom_man,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (zoom_man);
-  gtk_box_pack_start (GTK_BOX (vbox6), zoom_man, FALSE, FALSE, 0);
-  gtk_widget_set_sensitive (zoom_man, FALSE);
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (zoom_man), TRUE);
-
-  zoom_auto = gtk_radio_button_new_with_label (zoom_group, _("Auto"));
-  zoom_group = gtk_radio_button_group (GTK_RADIO_BUTTON (zoom_auto));
-  gtk_widget_ref (zoom_auto);
-  gtk_object_set_data_full (GTK_OBJECT (porthole_window), "zoom_auto", zoom_auto,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (zoom_auto);
-  gtk_box_pack_start (GTK_BOX (vbox6), zoom_auto, FALSE, FALSE, 0);
-  gtk_widget_set_sensitive (zoom_auto, FALSE);
-
-  zoom_op = gtk_button_new_with_label (_("AUTO"));
-  gtk_widget_ref (zoom_op);
-  gtk_object_set_data_full (GTK_OBJECT (porthole_window), "zoom_op", zoom_op,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (zoom_op);
-  gtk_box_pack_start (GTK_BOX (vbox6), zoom_op, FALSE, FALSE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (zoom_op), 2);
-  gtk_widget_set_sensitive (zoom_op, FALSE);
-
-  zoom_scale = gtk_vscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 255, 1, 10, 0)));
-  gtk_widget_ref (zoom_scale);
-  gtk_object_set_data_full (GTK_OBJECT (porthole_window), "zoom_scale", zoom_scale,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (zoom_scale);
-  gtk_box_pack_start (GTK_BOX (vbox6), zoom_scale, TRUE, TRUE, 0);
-  gtk_widget_set_sensitive (zoom_scale, FALSE);
-  gtk_scale_set_value_pos (GTK_SCALE (zoom_scale), GTK_POS_LEFT);
-  gtk_scale_set_digits (GTK_SCALE (zoom_scale), 0);
-
-  gtk_signal_connect (GTK_OBJECT (porthole_window), "destroy_event",
-                      GTK_SIGNAL_FUNC (gtk_widget_hide),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (porthole_window), "delete_event",
-                      GTK_SIGNAL_FUNC (on_porthole_window_delete_event),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (porthole_window), "destroy",
-                      GTK_SIGNAL_FUNC (gtk_widget_hide),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (pan_man), "toggled",
-                      GTK_SIGNAL_FUNC (on_pan_man_toggled),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (pan_op), "clicked",
-                      GTK_SIGNAL_FUNC (on_pan_op_clicked),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (pan_power), "toggled",
-                      GTK_SIGNAL_FUNC (on_pan_power_toggled),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (focus_man), "toggled",
-                      GTK_SIGNAL_FUNC (on_focus_man_toggled),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (focus_op), "clicked",
-                      GTK_SIGNAL_FUNC (on_focus_op_clicked),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (focus_power), "toggled",
-                      GTK_SIGNAL_FUNC (on_focus_power_toggled),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (tilt_power), "toggled",
-                      GTK_SIGNAL_FUNC (on_tilt_power_toggled),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (tilt_man), "toggled",
-                      GTK_SIGNAL_FUNC (on_tilt_man_toggled),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (tilt_op), "clicked",
-                      GTK_SIGNAL_FUNC (on_tilt_op_clicked),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (zoom_power), "toggled",
-                      GTK_SIGNAL_FUNC (on_zoom_power_toggled),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (zoom_man), "toggled",
-                      GTK_SIGNAL_FUNC (on_zoom_man_toggled),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (zoom_op), "clicked",
-                      GTK_SIGNAL_FUNC (on_zoom_op_clicked),
-                      NULL);
 
   return porthole_window;
 }
@@ -3473,6 +2713,7 @@ create_format7_window (void)
   GtkWidget *format7_color_menu;
   GtkWidget *vbox36;
   GtkWidget *format7_packet_frame;
+  GtkWidget *hbox57;
   GtkObject *format7_packet_size_adj;
   GtkWidget *format7_packet_size;
   GtkWidget *format7_frame_info_frame;
@@ -3580,13 +2821,21 @@ create_format7_window (void)
   gtk_box_pack_start (GTK_BOX (vbox36), format7_packet_frame, TRUE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (format7_packet_frame), 5);
 
+  hbox57 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_ref (hbox57);
+  gtk_object_set_data_full (GTK_OBJECT (format7_window), "hbox57", hbox57,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (hbox57);
+  gtk_container_add (GTK_CONTAINER (format7_packet_frame), hbox57);
+  gtk_container_set_border_width (GTK_CONTAINER (hbox57), 3);
+
   format7_packet_size_adj = gtk_adjustment_new (0, 0, 100, 1, 10, 10);
   format7_packet_size = gtk_spin_button_new (GTK_ADJUSTMENT (format7_packet_size_adj), 1, 0);
   gtk_widget_ref (format7_packet_size);
   gtk_object_set_data_full (GTK_OBJECT (format7_window), "format7_packet_size", format7_packet_size,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (format7_packet_size);
-  gtk_container_add (GTK_CONTAINER (format7_packet_frame), format7_packet_size);
+  gtk_box_pack_start (GTK_BOX (hbox57), format7_packet_size, TRUE, TRUE, 2);
   gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (format7_packet_size), TRUE);
   gtk_spin_button_set_update_policy (GTK_SPIN_BUTTON (format7_packet_size), GTK_UPDATE_IF_VALID);
 
@@ -4042,12 +3291,17 @@ create_preferences_window (void)
   GtkWidget *prefs_notebook;
   GtkWidget *vbox46;
   GtkWidget *timeout_frame;
-  GtkWidget *hbox45;
-  GtkWidget *prefs_timeout_scale;
+  GtkWidget *hbox56;
+  GtkObject *prefs_op_timeout_scale_adj;
+  GtkWidget *prefs_op_timeout_scale;
+  GtkWidget *label78;
   GtkWidget *update_rate_frame;
   GtkWidget *hbox44;
   GtkWidget *prefs_update_power;
+  GtkWidget *label79;
+  GtkObject *prefs_update_scale_adj;
   GtkWidget *prefs_update_scale;
+  GtkWidget *label80;
   GtkWidget *label49;
   GtkWidget *vbox52;
   GtkWidget *capture_method_frame;
@@ -4058,6 +3312,12 @@ create_preferences_window (void)
   GtkWidget *prefs_capture_auto;
   GtkWidget *label50;
   GtkWidget *vbox53;
+  GtkWidget *prefs_display_framedrop;
+  GtkWidget *hbox55;
+  GtkWidget *label77;
+  GtkObject *prefs_display_period_adj;
+  GtkWidget *prefs_display_period;
+  GtkWidget *label74;
   GtkWidget *display_method_frame;
   GtkWidget *vbox49;
   GSList *disp_method_group = NULL;
@@ -4067,11 +3327,8 @@ create_preferences_window (void)
   GtkWidget *label51;
   GtkWidget *vbox54;
   GtkWidget *prefs_save_framedrop;
-  GtkWidget *vbox_capture_freq;
-  GSList *save_freq_group = NULL;
-  GtkWidget *prefs_save_afap;
   GtkWidget *hbox_capture_freq_periodic;
-  GtkWidget *prefs_save_every;
+  GtkWidget *label76;
   GtkObject *prefs_save_period_adj;
   GtkWidget *prefs_save_period;
   GtkWidget *label42;
@@ -4087,11 +3344,8 @@ create_preferences_window (void)
   GtkWidget *label52;
   GtkWidget *vbox55;
   GtkWidget *prefs_ftp_framedrop_frame;
-  GtkWidget *vbox56;
-  GSList *ftp_freq_group = NULL;
-  GtkWidget *prefs_ftp_afap;
   GtkWidget *hbox52;
-  GtkWidget *prefs_ftp_every;
+  GtkWidget *label75;
   GtkObject *prefs_ftp_period_adj;
   GtkWidget *prefs_ftp_period;
   GtkWidget *label55;
@@ -4186,7 +3440,7 @@ create_preferences_window (void)
   gtk_widget_show (vbox46);
   gtk_container_add (GTK_CONTAINER (prefs_notebook), vbox46);
 
-  timeout_frame = gtk_frame_new (_("Timeout for One-Push Auto [s]"));
+  timeout_frame = gtk_frame_new (_("Timeout for One-Push Auto"));
   gtk_widget_ref (timeout_frame);
   gtk_object_set_data_full (GTK_OBJECT (preferences_window), "timeout_frame", timeout_frame,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -4194,23 +3448,32 @@ create_preferences_window (void)
   gtk_box_pack_start (GTK_BOX (vbox46), timeout_frame, FALSE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (timeout_frame), 5);
 
-  hbox45 = gtk_hbox_new (FALSE, 0);
-  gtk_widget_ref (hbox45);
-  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "hbox45", hbox45,
+  hbox56 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_ref (hbox56);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "hbox56", hbox56,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (hbox45);
-  gtk_container_add (GTK_CONTAINER (timeout_frame), hbox45);
-  gtk_container_set_border_width (GTK_CONTAINER (hbox45), 2);
+  gtk_widget_show (hbox56);
+  gtk_container_add (GTK_CONTAINER (timeout_frame), hbox56);
 
-  prefs_timeout_scale = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 100, 0.1, 5, 0)));
-  gtk_widget_ref (prefs_timeout_scale);
-  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "prefs_timeout_scale", prefs_timeout_scale,
+  prefs_op_timeout_scale_adj = gtk_adjustment_new (10, 0, 100, 1, 10, 10);
+  prefs_op_timeout_scale = gtk_spin_button_new (GTK_ADJUSTMENT (prefs_op_timeout_scale_adj), 1, 1);
+  gtk_widget_ref (prefs_op_timeout_scale);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "prefs_op_timeout_scale", prefs_op_timeout_scale,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (prefs_timeout_scale);
-  gtk_box_pack_start (GTK_BOX (hbox45), prefs_timeout_scale, TRUE, TRUE, 0);
-  gtk_range_set_update_policy (GTK_RANGE (prefs_timeout_scale), GTK_UPDATE_DELAYED);
+  gtk_widget_show (prefs_op_timeout_scale);
+  gtk_box_pack_start (GTK_BOX (hbox56), prefs_op_timeout_scale, TRUE, TRUE, 5);
+  gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (prefs_op_timeout_scale), TRUE);
+  gtk_spin_button_set_update_policy (GTK_SPIN_BUTTON (prefs_op_timeout_scale), GTK_UPDATE_IF_VALID);
 
-  update_rate_frame = gtk_frame_new (_("Update rate [Hz]"));
+  label78 = gtk_label_new (_("seconds"));
+  gtk_widget_ref (label78);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "label78", label78,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label78);
+  gtk_box_pack_start (GTK_BOX (hbox56), label78, FALSE, FALSE, 0);
+  gtk_misc_set_padding (GTK_MISC (label78), 5, 8);
+
+  update_rate_frame = gtk_frame_new (_("Update rate"));
   gtk_widget_ref (update_rate_frame);
   gtk_object_set_data_full (GTK_OBJECT (preferences_window), "update_rate_frame", update_rate_frame,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -4233,13 +3496,32 @@ create_preferences_window (void)
   gtk_widget_show (prefs_update_power);
   gtk_box_pack_start (GTK_BOX (hbox44), prefs_update_power, FALSE, FALSE, 0);
 
-  prefs_update_scale = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (1, 0, 10, 0.1, 1, 0)));
+  label79 = gtk_label_new (_("@"));
+  gtk_widget_ref (label79);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "label79", label79,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label79);
+  gtk_box_pack_start (GTK_BOX (hbox44), label79, FALSE, FALSE, 0);
+  gtk_misc_set_padding (GTK_MISC (label79), 5, 0);
+
+  prefs_update_scale_adj = gtk_adjustment_new (5, 0.1, 100, 1, 10, 5);
+  prefs_update_scale = gtk_spin_button_new (GTK_ADJUSTMENT (prefs_update_scale_adj), 1, 1);
   gtk_widget_ref (prefs_update_scale);
   gtk_object_set_data_full (GTK_OBJECT (preferences_window), "prefs_update_scale", prefs_update_scale,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (prefs_update_scale);
-  gtk_box_pack_start (GTK_BOX (hbox44), prefs_update_scale, TRUE, TRUE, 0);
-  gtk_range_set_update_policy (GTK_RANGE (prefs_update_scale), GTK_UPDATE_DELAYED);
+  gtk_box_pack_start (GTK_BOX (hbox44), prefs_update_scale, FALSE, TRUE, 0);
+  gtk_widget_set_usize (prefs_update_scale, 100, -2);
+  gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (prefs_update_scale), TRUE);
+  gtk_spin_button_set_update_policy (GTK_SPIN_BUTTON (prefs_update_scale), GTK_UPDATE_IF_VALID);
+
+  label80 = gtk_label_new (_("Hertz"));
+  gtk_widget_ref (label80);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "label80", label80,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label80);
+  gtk_box_pack_start (GTK_BOX (hbox44), label80, FALSE, FALSE, 0);
+  gtk_misc_set_padding (GTK_MISC (label80), 5, 8);
 
   label49 = gtk_label_new (_("General"));
   gtk_widget_ref (label49);
@@ -4308,6 +3590,48 @@ create_preferences_window (void)
   gtk_widget_show (vbox53);
   gtk_container_add (GTK_CONTAINER (prefs_notebook), vbox53);
 
+  prefs_display_framedrop = gtk_frame_new (_("Frame drop"));
+  gtk_widget_ref (prefs_display_framedrop);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "prefs_display_framedrop", prefs_display_framedrop,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (prefs_display_framedrop);
+  gtk_box_pack_start (GTK_BOX (vbox53), prefs_display_framedrop, FALSE, TRUE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (prefs_display_framedrop), 5);
+
+  hbox55 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_ref (hbox55);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "hbox55", hbox55,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (hbox55);
+  gtk_container_add (GTK_CONTAINER (prefs_display_framedrop), hbox55);
+
+  label77 = gtk_label_new (_("Every"));
+  gtk_widget_ref (label77);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "label77", label77,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label77);
+  gtk_box_pack_start (GTK_BOX (hbox55), label77, FALSE, FALSE, 0);
+  gtk_misc_set_padding (GTK_MISC (label77), 5, 0);
+
+  prefs_display_period_adj = gtk_adjustment_new (1, 1, 9999, 1, 10, 10);
+  prefs_display_period = gtk_spin_button_new (GTK_ADJUSTMENT (prefs_display_period_adj), 1, 0);
+  gtk_widget_ref (prefs_display_period);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "prefs_display_period", prefs_display_period,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (prefs_display_period);
+  gtk_box_pack_start (GTK_BOX (hbox55), prefs_display_period, FALSE, FALSE, 0);
+  gtk_widget_set_usize (prefs_display_period, 100, -2);
+  gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (prefs_display_period), TRUE);
+  gtk_spin_button_set_update_policy (GTK_SPIN_BUTTON (prefs_display_period), GTK_UPDATE_IF_VALID);
+
+  label74 = gtk_label_new (_("frames"));
+  gtk_widget_ref (label74);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "label74", label74,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label74);
+  gtk_box_pack_start (GTK_BOX (hbox55), label74, FALSE, FALSE, 2);
+  gtk_misc_set_padding (GTK_MISC (label74), 5, 8);
+
   display_method_frame = gtk_frame_new (_("Method"));
   gtk_widget_ref (display_method_frame);
   gtk_object_set_data_full (GTK_OBJECT (preferences_window), "display_method_frame", display_method_frame,
@@ -4369,36 +3693,20 @@ create_preferences_window (void)
   gtk_box_pack_start (GTK_BOX (vbox54), prefs_save_framedrop, FALSE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (prefs_save_framedrop), 5);
 
-  vbox_capture_freq = gtk_vbox_new (FALSE, 0);
-  gtk_widget_ref (vbox_capture_freq);
-  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "vbox_capture_freq", vbox_capture_freq,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (vbox_capture_freq);
-  gtk_container_add (GTK_CONTAINER (prefs_save_framedrop), vbox_capture_freq);
-
-  prefs_save_afap = gtk_radio_button_new_with_label (save_freq_group, _("As fast as possible"));
-  save_freq_group = gtk_radio_button_group (GTK_RADIO_BUTTON (prefs_save_afap));
-  gtk_widget_ref (prefs_save_afap);
-  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "prefs_save_afap", prefs_save_afap,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (prefs_save_afap);
-  gtk_box_pack_start (GTK_BOX (vbox_capture_freq), prefs_save_afap, FALSE, FALSE, 0);
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (prefs_save_afap), TRUE);
-
   hbox_capture_freq_periodic = gtk_hbox_new (FALSE, 0);
   gtk_widget_ref (hbox_capture_freq_periodic);
   gtk_object_set_data_full (GTK_OBJECT (preferences_window), "hbox_capture_freq_periodic", hbox_capture_freq_periodic,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hbox_capture_freq_periodic);
-  gtk_box_pack_start (GTK_BOX (vbox_capture_freq), hbox_capture_freq_periodic, TRUE, TRUE, 0);
+  gtk_container_add (GTK_CONTAINER (prefs_save_framedrop), hbox_capture_freq_periodic);
 
-  prefs_save_every = gtk_radio_button_new_with_label (save_freq_group, _("Every"));
-  save_freq_group = gtk_radio_button_group (GTK_RADIO_BUTTON (prefs_save_every));
-  gtk_widget_ref (prefs_save_every);
-  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "prefs_save_every", prefs_save_every,
+  label76 = gtk_label_new (_("Every"));
+  gtk_widget_ref (label76);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "label76", label76,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (prefs_save_every);
-  gtk_box_pack_start (GTK_BOX (hbox_capture_freq_periodic), prefs_save_every, FALSE, FALSE, 0);
+  gtk_widget_show (label76);
+  gtk_box_pack_start (GTK_BOX (hbox_capture_freq_periodic), label76, FALSE, FALSE, 0);
+  gtk_misc_set_padding (GTK_MISC (label76), 5, 0);
 
   prefs_save_period_adj = gtk_adjustment_new (1, 1, 9999, 1, 10, 10);
   prefs_save_period = gtk_spin_button_new (GTK_ADJUSTMENT (prefs_save_period_adj), 1, 0);
@@ -4411,7 +3719,7 @@ create_preferences_window (void)
   gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (prefs_save_period), TRUE);
   gtk_spin_button_set_update_policy (GTK_SPIN_BUTTON (prefs_save_period), GTK_UPDATE_IF_VALID);
 
-  label42 = gtk_label_new (_("seconds"));
+  label42 = gtk_label_new (_("frames"));
   gtk_widget_ref (label42);
   gtk_object_set_data_full (GTK_OBJECT (preferences_window), "label42", label42,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -4503,36 +3811,20 @@ create_preferences_window (void)
   gtk_box_pack_start (GTK_BOX (vbox55), prefs_ftp_framedrop_frame, FALSE, FALSE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (prefs_ftp_framedrop_frame), 5);
 
-  vbox56 = gtk_vbox_new (FALSE, 0);
-  gtk_widget_ref (vbox56);
-  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "vbox56", vbox56,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (vbox56);
-  gtk_container_add (GTK_CONTAINER (prefs_ftp_framedrop_frame), vbox56);
-
-  prefs_ftp_afap = gtk_radio_button_new_with_label (ftp_freq_group, _("As fast as possible"));
-  ftp_freq_group = gtk_radio_button_group (GTK_RADIO_BUTTON (prefs_ftp_afap));
-  gtk_widget_ref (prefs_ftp_afap);
-  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "prefs_ftp_afap", prefs_ftp_afap,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (prefs_ftp_afap);
-  gtk_box_pack_start (GTK_BOX (vbox56), prefs_ftp_afap, FALSE, FALSE, 0);
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (prefs_ftp_afap), TRUE);
-
   hbox52 = gtk_hbox_new (FALSE, 0);
   gtk_widget_ref (hbox52);
   gtk_object_set_data_full (GTK_OBJECT (preferences_window), "hbox52", hbox52,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hbox52);
-  gtk_box_pack_start (GTK_BOX (vbox56), hbox52, TRUE, TRUE, 0);
+  gtk_container_add (GTK_CONTAINER (prefs_ftp_framedrop_frame), hbox52);
 
-  prefs_ftp_every = gtk_radio_button_new_with_label (ftp_freq_group, _("Every"));
-  ftp_freq_group = gtk_radio_button_group (GTK_RADIO_BUTTON (prefs_ftp_every));
-  gtk_widget_ref (prefs_ftp_every);
-  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "prefs_ftp_every", prefs_ftp_every,
+  label75 = gtk_label_new (_("Every"));
+  gtk_widget_ref (label75);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "label75", label75,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (prefs_ftp_every);
-  gtk_box_pack_start (GTK_BOX (hbox52), prefs_ftp_every, FALSE, FALSE, 0);
+  gtk_widget_show (label75);
+  gtk_box_pack_start (GTK_BOX (hbox52), label75, FALSE, FALSE, 0);
+  gtk_misc_set_padding (GTK_MISC (label75), 5, 0);
 
   prefs_ftp_period_adj = gtk_adjustment_new (1, 1, 9999, 1, 10, 10);
   prefs_ftp_period = gtk_spin_button_new (GTK_ADJUSTMENT (prefs_ftp_period_adj), 1, 0);
@@ -4545,7 +3837,7 @@ create_preferences_window (void)
   gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (prefs_ftp_period), TRUE);
   gtk_spin_button_set_update_policy (GTK_SPIN_BUTTON (prefs_ftp_period), GTK_UPDATE_IF_VALID);
 
-  label55 = gtk_label_new (_("seconds"));
+  label55 = gtk_label_new (_("frames"));
   gtk_widget_ref (label55);
   gtk_object_set_data_full (GTK_OBJECT (preferences_window), "label55", label55,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -5168,12 +4460,6 @@ create_preferences_window (void)
   gtk_signal_connect (GTK_OBJECT (prefs_display_auto), "toggled",
                       GTK_SIGNAL_FUNC (on_prefs_display_auto_toggled),
                       NULL);
-  gtk_signal_connect (GTK_OBJECT (prefs_save_afap), "toggled",
-                      GTK_SIGNAL_FUNC (on_prefs_save_afap_toggled),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (prefs_save_every), "toggled",
-                      GTK_SIGNAL_FUNC (on_prefs_save_every_toggled),
-                      NULL);
   gtk_signal_connect (GTK_OBJECT (prefs_save_seq), "toggled",
                       GTK_SIGNAL_FUNC (on_prefs_save_seq_toggled),
                       NULL);
@@ -5182,12 +4468,6 @@ create_preferences_window (void)
                       NULL);
   gtk_signal_connect (GTK_OBJECT (prefs_save_choose), "clicked",
                       GTK_SIGNAL_FUNC (on_prefs_save_choose_clicked),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (prefs_ftp_afap), "toggled",
-                      GTK_SIGNAL_FUNC (on_prefs_ftp_afap_toggled),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (prefs_ftp_every), "toggled",
-                      GTK_SIGNAL_FUNC (on_prefs_ftp_every_toggled),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (prefs_ftp_seq), "toggled",
                       GTK_SIGNAL_FUNC (on_prefs_ftp_seq_toggled),

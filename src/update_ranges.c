@@ -29,9 +29,10 @@
 #include <libdc1394/dc1394_control.h>
 
 extern char* feature_scale_list[NUM_FEATURES];
-extern char* feature_man_list[NUM_FEATURES];
-extern char* feature_auto_list[NUM_FEATURES];
-extern char* feature_power_list[NUM_FEATURES];
+extern char* feature_frame_list[NUM_FEATURES];
+extern char* feature_menu_list[NUM_FEATURES];
+extern char* feature_menu_table_list[NUM_FEATURES];
+extern char* feature_menu_items_list[NUM_FEATURES];
 extern GtkWidget *preferences_window;
 extern dc1394_camerainfo *camera;
 extern dc1394_feature_set *feature_set;
@@ -41,39 +42,64 @@ extern PrefsInfo preferences;
 void
 UpdateRange(GtkWidget* current_window, int feature)
 {
-  dc1394bool_t power_on, auto_mode;
+  int index;
 
-  power_on=feature_set->feature[feature-FEATURE_MIN].is_on;
-  // the power is on if:
-  // 1.- the power is on (obvious!) or...
-  // 2.- the feature cannot be powered on/off but is available (in which case it is supposed to be on)
-  power_on=power_on || (!feature_set->feature[feature-FEATURE_MIN].on_off_capable && feature_set->feature[feature-FEATURE_MIN].available);
-  auto_mode=feature_set->feature[feature-FEATURE_MIN].auto_active;
-
-  // grab&set power status:
-  gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(current_window, feature_power_list[feature-FEATURE_MIN]),
-			       power_on );
-
-  // grab&set auto/man status, plus sensitive range in man mode:
-  gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(current_window, feature_auto_list[feature-FEATURE_MIN]),
-			       power_on && auto_mode);
-  gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(current_window, feature_man_list[feature-FEATURE_MIN]),
-			       power_on && !auto_mode);
-
-  switch(feature)
-    {
-      case FEATURE_WHITE_BALANCE:
-	gtk_widget_set_sensitive(lookup_widget(current_window, "whitebal_BU_scale"),(!auto_mode) && power_on);
-	gtk_widget_set_sensitive(lookup_widget(current_window, "whitebal_RV_scale"),(!auto_mode) && power_on);break;
-      case FEATURE_TEMPERATURE:
-	// the only changeable range is the target one, the other is just an indicator.
-	gtk_widget_set_sensitive(lookup_widget(current_window, "temp_goal_scale"),(!auto_mode) && power_on);break;
-      default:
-	gtk_widget_set_sensitive(lookup_widget(current_window, feature_scale_list[feature-FEATURE_MIN]), (!auto_mode) && power_on);
+  // is feature available?
+  if (feature_set->feature[feature-FEATURE_MIN].available==0)
+    { // feature not available: unsensitive the frame
+      gtk_widget_set_sensitive(lookup_widget(current_window, feature_frame_list[feature-FEATURE_MIN]),FALSE);
     }
+  else
+    { // sensitive the current frame:
+      gtk_widget_set_sensitive(lookup_widget(current_window, feature_frame_list[feature-FEATURE_MIN]),TRUE);
 
-  // grab&set range value if readable:
-  UpdateRangeValue(current_window,feature);
+      // select the current menuitem:
+      if ((!feature_set->feature[feature-FEATURE_MIN].is_on)&& // off
+	  (feature_set->feature[feature-FEATURE_MIN].on_off_capable))
+	index=0;
+      else
+	if ((!feature_set->feature[feature-FEATURE_MIN].auto_active)&& // man
+	    (feature_set->feature[feature-FEATURE_MIN].manual_capable))
+	  index=1*(feature_set->feature[feature-FEATURE_MIN].on_off_capable>0);
+        else
+	  if ((feature_set->feature[feature-FEATURE_MIN].auto_active)&& // auto
+	      (feature_set->feature[feature-FEATURE_MIN].auto_capable))
+	    index=1*(feature_set->feature[feature-FEATURE_MIN].on_off_capable)+
+	          1*(feature_set->feature[feature-FEATURE_MIN].manual_capable);
+	  else
+	    index=1*(feature_set->feature[feature-FEATURE_MIN].on_off_capable)+// single
+ 	          1*(feature_set->feature[feature-FEATURE_MIN].manual_capable)+
+	          1*(feature_set->feature[feature-FEATURE_MIN].auto_capable);
+	
+      
+      // sets the active menu item:
+      gtk_option_menu_set_history (GTK_OPTION_MENU (lookup_widget(current_window,feature_menu_list[feature-FEATURE_MIN])), index);
+    
+
+      switch(feature)
+	{
+	case FEATURE_WHITE_BALANCE:
+	  gtk_widget_set_sensitive(lookup_widget(current_window, "white_balance_BU_scale"),
+				   (!feature_set->feature[feature-FEATURE_MIN].auto_active)&&
+				   (!feature_set->feature[feature-FEATURE_MIN].one_push_active));
+	  gtk_widget_set_sensitive(lookup_widget(current_window, "white_balance_RV_scale"),
+				   (!feature_set->feature[feature-FEATURE_MIN].auto_active)&&
+				   (!feature_set->feature[feature-FEATURE_MIN].one_push_active));break;
+	case FEATURE_TEMPERATURE:
+	  // the only changeable range is the target one, the other is just an indicator.
+	  gtk_widget_set_sensitive(lookup_widget(current_window, "temperature_target_scale"),
+				   (!feature_set->feature[feature-FEATURE_MIN].auto_active)&&
+				   (!feature_set->feature[feature-FEATURE_MIN].one_push_active));
+	  gtk_widget_set_sensitive(lookup_widget(current_window, "temperature_current_scale"),FALSE);break;
+	default:
+	  gtk_widget_set_sensitive(lookup_widget(current_window, feature_scale_list[feature-FEATURE_MIN]),
+				   (!feature_set->feature[feature-FEATURE_MIN].auto_active)&&
+				   (!feature_set->feature[feature-FEATURE_MIN].one_push_active));break;
+	}
+
+      // grab&set range value if readable:
+      UpdateRangeValue(current_window,feature);
+    }
 }
 
 void
@@ -96,11 +122,11 @@ UpdateRangeValue(GtkWidget* widget, int feature)
 	  if (!err) MainError("Could not get white balance value");
 	  else
 	    {
-	      adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(widget, "whitebal_BU_scale")));
+	      adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(widget, "white_balance_BU_scale")));
 	      gtk_adjustment_set_value(adj, valueBU);
 	      feature_set->feature[feature-FEATURE_MIN].BU_value=valueBU;
 	      //printf("valueBU: %d\n",valueBU);
-	      adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(widget, "whitebal_RV_scale")));
+	      adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(widget, "white_balance_RV_scale")));
 	      gtk_adjustment_set_value(adj, valueRV);
 	      //printf("valueRV: %d\n",valueRV);
 	      feature_set->feature[feature-FEATURE_MIN].RV_value=valueRV;
@@ -111,10 +137,10 @@ UpdateRangeValue(GtkWidget* widget, int feature)
 	  if (!err) MainError("Could not get temperature value");
 	  else
 	    {
-	      adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(widget, "temp_goal_scale")));
+	      adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(widget, "temperature_target_scale")));
 	      gtk_adjustment_set_value(adj, valuegoal);
 	      feature_set->feature[feature-FEATURE_MIN].target_value=valuegoal;
-	      adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(widget, "temp_current_scale")));
+	      adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(widget, "temperature_current_scale")));
 	      gtk_adjustment_set_value(adj, value);
 	      feature_set->feature[feature-FEATURE_MIN].value=value;
 	    }
@@ -131,20 +157,5 @@ UpdateRangeValue(GtkWidget* widget, int feature)
 	    }
       }
     }
-
-}
-
-
-void
-UpdatePrefsRanges(void)
-{
-  GtkAdjustment* adj;
-  adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(preferences_window, "prefs_timeout_scale")));
-  gtk_adjustment_set_value(adj, preferences.op_timeout);
-
-  adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(preferences_window, "prefs_update_scale")));
-  gtk_adjustment_set_value(adj, preferences.auto_update_frequency);
-
-  gtk_widget_set_sensitive(lookup_widget(preferences_window, "prefs_update_scale"),preferences.auto_update);
 
 }

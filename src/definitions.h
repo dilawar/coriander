@@ -28,6 +28,14 @@
 #define  NO                 FALSE
 #define  YES                 TRUE
 
+enum 
+{
+    RANGE_MENU_OFF = 0,
+    RANGE_MENU_MAN,
+    RANGE_MENU_AUTO,
+    RANGE_MENU_SINGLE,
+    RANGE_MENU_NA
+};
 
 enum 
 {
@@ -75,8 +83,9 @@ typedef struct _Format7Info
 
 typedef struct _UIInfo
 {
-  int want_display;
+  //int want_display;
   int test_pattern;
+  //  int porthole_is_open;
   int all_auto;
   int all_man;
   int all_lock;

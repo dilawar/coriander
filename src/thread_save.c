@@ -29,6 +29,7 @@
 #include "tools.h"
 
 extern PrefsInfo preferences;
+extern int current_camera;
 
 gint
 SaveStartThread(void)
@@ -37,7 +38,7 @@ SaveStartThread(void)
   savethread_info_t *info=NULL;
   gchar *tmp;
 
-  save_service=GetService(SERVICE_SAVE);
+  save_service=GetService(SERVICE_SAVE,current_camera);
 
   if (save_service==NULL)// if no SAVE service running...
     {
@@ -70,7 +71,8 @@ SaveStartThread(void)
       tmp[0] = '\0';// cut filename before point
       strcpy(info->filename_ext, strrchr(preferences.save_filename, '.'));
 
-      CommonChainSetup(save_service,SERVICE_SAVE);
+      info->period=preferences.save_period;
+      CommonChainSetup(save_service,SERVICE_SAVE,current_camera);
   
       info->save_buffer=(unsigned char*)malloc(save_service->width*save_service->height*3
 						*sizeof(unsigned char));
@@ -82,7 +84,7 @@ SaveStartThread(void)
 
       /* Insert chain and start service*/
       pthread_mutex_lock(&save_service->mutex_struct);
-      InsertChain(save_service);
+      InsertChain(save_service,current_camera);
       pthread_mutex_unlock(&save_service->mutex_struct);
 
       pthread_mutex_lock(&save_service->mutex_data);
@@ -94,7 +96,7 @@ SaveStartThread(void)
 	       (free, unset global vars,...):*/
 
 	    /* Mendatory cleanups:*/
-	    RemoveChain(save_service);
+	    RemoveChain(save_service,current_camera);
 	    pthread_mutex_unlock(&save_service->mutex_struct);
 	    pthread_mutex_unlock(&save_service->mutex_data);
 	    free(info->save_buffer);
@@ -132,10 +134,12 @@ SaveThread(void* arg)
   chain_t* save_service=NULL;
   savethread_info_t *info=NULL;
   GdkImlibImage *im=NULL;
+  long int skip_counter;
 
   save_service=(chain_t*)arg;
   pthread_mutex_lock(&save_service->mutex_data);
   info=(savethread_info_t*)save_service->data;
+  skip_counter=0;
 
   /* These settings depend on the thread. For 100% safe deferred-cancel
    threads, I advise you use a custom thread cancel flag. See display thread.*/
@@ -159,25 +163,31 @@ SaveThread(void* arg)
 	  //fprintf(stderr,"Rolling buffers\n");
 	  if(RollBuffers(save_service)) // have buffers been rolled?
 	    {
-	      pthread_mutex_unlock(&save_service->mutex_data);
-	      convert_to_rgb(save_service->current_buffer, info->save_buffer,
-			     save_service->mode, save_service->width,
-			     save_service->height, save_service->bytes_per_frame);
-	      if (info->save_scratch == SAVE_SCRATCH_OVERWRITE)
+	      if (skip_counter==(info->period-1))
 		{
-		    sprintf(filename_out, "%s%s", info->filename,info->filename_ext);
+		  skip_counter=0;
+		  convert_to_rgb(save_service->current_buffer, info->save_buffer,
+				 save_service->mode, save_service->width,
+				 save_service->height, save_service->bytes_per_frame);
+		  if (info->save_scratch == SAVE_SCRATCH_OVERWRITE)
+		    {
+		      sprintf(filename_out, "%s%s", info->filename,info->filename_ext);
+		    }
+		  else
+		    if (info->save_scratch == SAVE_SCRATCH_SEQUENTIAL)
+		      {
+			sprintf(filename_out, "%s_%10.10li%s", info->filename,
+				info->counter++, info->filename_ext);
+		      }
+		  
+		  im=gdk_imlib_create_image_from_data(info->save_buffer,NULL,
+						      save_service->width, save_service->height);
+		  gdk_imlib_save_image(im, filename_out, NULL);
+		  if (im != NULL) gdk_imlib_kill_image(im);
 		}
 	      else
-		if (info->save_scratch == SAVE_SCRATCH_SEQUENTIAL)
-		  {
-		    sprintf(filename_out, "%s_%10.10li%s", info->filename,
-			    info->counter++, info->filename_ext);
-		  }
-
-	      im=gdk_imlib_create_image_from_data(info->save_buffer,NULL,
-						  save_service->width, save_service->height);
-	      gdk_imlib_save_image(im, filename_out, NULL);
-	      if (im != NULL) gdk_imlib_kill_image(im);
+		skip_counter++;
+	      pthread_mutex_unlock(&save_service->mutex_data);
 	    }
 	  else
 	    {
@@ -194,7 +204,7 @@ SaveStopThread(void)
 {
   savethread_info_t *info;
   chain_t *save_service;
-  save_service=GetService(SERVICE_SAVE);
+  save_service=GetService(SERVICE_SAVE,current_camera);
 
   if (save_service!=NULL)// if SAVE service running...
     {
@@ -204,13 +214,14 @@ SaveStopThread(void)
       pthread_mutex_lock(&info->mutex_cancel_save);
       info->cancel_save_req=1;
       pthread_mutex_unlock(&info->mutex_cancel_save);
+      //fprintf(stderr,"cancel req. ack\n");
 
       /* common handlers...*/
       pthread_join(save_service->thread, NULL);
 
       pthread_mutex_lock(&save_service->mutex_data);
       pthread_mutex_lock(&save_service->mutex_struct);
-      RemoveChain(save_service);
+      RemoveChain(save_service,current_camera);
 
       /* Do custom cleanups here...*/
       free(info->save_buffer);

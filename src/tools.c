@@ -39,6 +39,7 @@
 
 extern GtkWidget *commander_window;
 extern GtkWidget *porthole_window;
+extern GtkWidget **porthole_windows;
 extern dc1394_camerainfo *camera;
 extern dc1394_camerainfo *cameras;
 extern dc1394_miscinfo *misc_info;
@@ -53,13 +54,9 @@ extern chain_t **image_pipes;
 extern chain_t *image_pipe;
 extern SelfIdPacket_t *selfid;
 extern SelfIdPacket_t *selfids;
-extern char* feature_op_list[NUM_FEATURES];
 extern char* feature_list[NUM_FEATURES];
 extern char* feature_frame_list[NUM_FEATURES];
 extern char* feature_scale_list[NUM_FEATURES];
-extern char* feature_man_list[NUM_FEATURES];
-extern char* feature_auto_list[NUM_FEATURES];
-extern char* feature_power_list[NUM_FEATURES];
 extern char* trigger_mode_list[4];
 extern char* channel_num_list[16];
 extern char* phy_speed_list[4];
@@ -68,7 +65,6 @@ extern char* power_class_list[8];
 extern int camera_num;
 extern int current_camera;
 extern CtxtInfo ctxt;
-
 
 
 void
@@ -110,7 +106,7 @@ GetFormat7Capabilities(raw1394handle_t handle, nodeid_t node, Format7Info *info)
 void
 ChangeModeAndFormat(int mode, int format)
 {
-  int state[4];
+  int state[5];
 
   IsoFlowCheck(state);
 
@@ -143,13 +139,17 @@ void IsoFlowCheck(int *state)
 	  MainError("Could not stop ISO transmission");
       }
 
-  state[0]=(GetService(SERVICE_ISO)!=NULL);
-  state[1]=(GetService(SERVICE_DISPLAY)!=NULL);
-  state[2]=(GetService(SERVICE_SAVE)!=NULL);
-  state[3]=(GetService(SERVICE_FTP)!=NULL);
-  state[4]=(GetService(SERVICE_REAL)!=NULL);
+  // memorize state:
+  state[0]=(GetService(SERVICE_ISO,current_camera)!=NULL);
+  state[1]=(GetService(SERVICE_DISPLAY,current_camera)!=NULL);
+  state[2]=(GetService(SERVICE_SAVE,current_camera)!=NULL);
+  state[3]=(GetService(SERVICE_FTP,current_camera)!=NULL);
+  state[4]=(GetService(SERVICE_REAL,current_camera)!=NULL);
+
+  //fprintf(stderr,"state: %d %d %d %d %d\n",state[0],state[1],state[2],state[3],state[4]);
 
   CleanThreads(CLEAN_MODE_NO_UI_UPDATE);
+
 }
 
 void IsoFlowResume(int *state)
@@ -263,9 +263,8 @@ void SelectCamera(int i)
   format7_info=&format7_infos[i];
   uiinfo=&uiinfos[i];
   selfid=&selfids[i];
-  //fprintf(stderr,"Image pipe: before: %ld, ",(long int)image_pipe);
   image_pipe=image_pipes[i];
-  //fprintf(stderr,"after: %ld\n",(long int)image_pipe);
+  porthole_window=porthole_windows[i];
 }
 
 void
@@ -359,3 +358,20 @@ void MessageBox( gchar *message)
   gtk_grab_add (dialog_window);
 }
 
+void
+SetScaleSensitivity(GtkWidget* widget, int feature, dc1394bool_t sense)
+{ 
+  switch (feature)
+    {
+    case FEATURE_WHITE_BALANCE:
+      gtk_widget_set_sensitive(GTK_WIDGET (lookup_widget(GTK_WIDGET (widget), "white_balance_RV_scale")),sense);
+      gtk_widget_set_sensitive(GTK_WIDGET (lookup_widget(GTK_WIDGET (widget), "white_balance_BU_scale")),sense);
+      break;
+    case FEATURE_TEMPERATURE:
+      gtk_widget_set_sensitive(GTK_WIDGET (lookup_widget(GTK_WIDGET (widget), "temperature_target_scale")),sense);
+      break;
+    default:
+      gtk_widget_set_sensitive(GTK_WIDGET (lookup_widget(GTK_WIDGET (widget), feature_scale_list[feature-FEATURE_MIN])),sense);
+      break;
+    }
+}

@@ -67,19 +67,19 @@ typedef enum _Clean_Mode_T
 
 
 chain_t*
-GetService(service_t service);
+GetService(service_t service, unsigned int camera);
 
 void
-CommonChainSetup(chain_t* chain, service_t req_service);
+CommonChainSetup(chain_t* chain, service_t req_service, unsigned int camera);
 
 int
 RollBuffers(chain_t* chain);
 
 void
-InsertChain(chain_t* chain);
+InsertChain(chain_t* chain, unsigned int camera);
 
 void
-RemoveChain(chain_t* chain);
+RemoveChain(chain_t* chain, unsigned int camera);
 
 void
 InitChain(chain_t *chain, service_t service);

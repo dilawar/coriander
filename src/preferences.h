@@ -26,9 +26,9 @@ enum {
   AUTO_UPDATE,
   AUTO_UPDATE_FREQUENCY,
   DISPLAY_METHOD,
+  DISPLAY_PERIOD,
   RECEIVE_METHOD,
   SAVE_FILENAME,
-  SAVE_MODE,
   SAVE_SCRATCH,
   SAVE_PERIOD,
   FTP_ADDRESS,
@@ -36,7 +36,6 @@ enum {
   FTP_PASSWORD,
   FTP_FILENAME,
   FTP_PATH,
-  FTP_MODE,
   FTP_SCRATCH,
   FTP_PERIOD,
   REAL_ADDRESS,
@@ -50,7 +49,8 @@ enum {
   REAL_RECORDABLE,
   REAL_AUDIENCE,
   REAL_QUALITY,
-  REAL_COMPATIBILITY
+  REAL_COMPATIBILITY,
+  REAL_PERIOD
 };
 
 typedef struct _PrefsInfo
@@ -59,9 +59,9 @@ typedef struct _PrefsInfo
   int auto_update;
   float auto_update_frequency;
   int display_method;
+  int display_period;
   int receive_method;
   char save_filename[256];
-  int save_mode;
   int save_scratch;
   int save_period;
   char ftp_address[256];
@@ -69,7 +69,6 @@ typedef struct _PrefsInfo
   char ftp_password[256];
   char ftp_filename[256];
   char ftp_path[256];
-  int ftp_mode;
   int ftp_scratch;
   int ftp_period;
   char real_address[256];
@@ -84,6 +83,7 @@ typedef struct _PrefsInfo
   int real_audience;
   int real_quality;
   int real_compatibility;
+  int real_period;
 
 } PrefsInfo;
 

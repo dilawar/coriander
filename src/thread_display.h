@@ -55,6 +55,7 @@ typedef struct
   XShmSegmentInfo         xv_shm_info;
   GC                      xv_gc;
 #endif
+  long int                period;
   char                   *gdk_buffer;
   pthread_mutex_t         mutex_cancel_display;
   int                     cancel_display_req;
@@ -70,7 +71,7 @@ void*
 DisplayThread(void* arg);
 
 gint
-DisplayStopThread(void);
+DisplayStopThread(unsigned int camera);
 
 #ifdef HAVE_X11_EXTENSIONS_XVLIB_H
 

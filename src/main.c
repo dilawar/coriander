@@ -28,6 +28,7 @@
 #include <gnome.h>
 #include "interface.h"
 #include "support.h"
+#include "callbacks.h"
 #include "build_windows.h"
 #include "update_windows.h"
 #include "definitions.h"
@@ -39,6 +40,7 @@
 #include <libraw1394/raw1394.h>
 
 GtkWidget *commander_window;
+GtkWidget **porthole_windows;
 GtkWidget *porthole_window;
 GtkWidget *about_window;
 GtkWidget *format7_window;
@@ -62,7 +64,7 @@ CtxtInfo ctxt;
 SelfIdPacket_t *selfid;
 SelfIdPacket_t *selfids;
 PrefsInfo preferences;
-int porthole_is_open;
+//int porthole_is_open;
 int silent_ui_update;
 
 int camera_num;
@@ -74,7 +76,7 @@ main (int argc, char *argv[])
   int err, i;
   nodeid_t *camera_nodes; 
   raw1394handle_t handle;
-
+  char tmp[256];
   int port=0; // port 0 is the first IEEE1394 card. We ONLY probe this one.
 
 #ifdef ENABLE_NLS
@@ -112,6 +114,7 @@ main (int argc, char *argv[])
   format7_infos=(Format7Info*)calloc(camera_num,sizeof(Format7Info));
   uiinfos=(UIInfo*)calloc(camera_num,sizeof(UIInfo));
   selfids=(SelfIdPacket_t*)calloc(camera_num,sizeof(SelfIdPacket_t));
+  porthole_windows=(GtkWidget**)calloc(camera_num,sizeof(GtkWidget*));
 
   err=1;
   for (i=0;i<camera_num;i++)
@@ -123,10 +126,18 @@ main (int argc, char *argv[])
       GetFormat7Capabilities(handle, cameras[i].id, &format7_infos[i]);
       image_pipes[i]=NULL;
       uiinfos[i].test_pattern=0;
-      uiinfos[i].want_display=0;
+      // multiple porthole windows:
+      porthole_windows[i] = create_porthole_window();
+      sprintf(tmp,"Node %d: %s",cameras[i].id,cameras[i].model);
+      gtk_window_set_title(GTK_WINDOW(porthole_windows[i]),tmp);
+      gtk_signal_connect (GTK_OBJECT (porthole_windows[i]), "destroy_event",
+			  GTK_SIGNAL_FUNC (on_porthole_window_close), (int*)i);
+      gtk_signal_connect (GTK_OBJECT (porthole_windows[i]), "destroy",
+			  GTK_SIGNAL_FUNC (on_porthole_window_close), (int*)i);
+      gtk_signal_connect (GTK_OBJECT (porthole_windows[i]), "delete_event",
+			  GTK_SIGNAL_FUNC (on_porthole_window_close), (int*)i);
     }
   GrabSelfIds(handle);
-
   silent_ui_update=0;
 
   for (i=0;i<camera_num;i++)
@@ -140,10 +151,7 @@ main (int argc, char *argv[])
   //  and destroyed on purpose while the following windows always exist.)
   preferences_window= create_preferences_window();
   commander_window = create_commander_window();
-  porthole_window = create_porthole_window();
   format7_window = create_format7_window();
-
-  gtk_widget_show (commander_window); // this is the only window shown at boot-time
 
   // Setup the GUI in accordance with the camera capabilities
   GetContextStatus();
@@ -151,6 +159,8 @@ main (int argc, char *argv[])
   UpdateAllWindows();
 
   MainStatus("Welcome to Coriander...");
+
+  gtk_widget_show (commander_window); // this is the only window shown at boot-time
 
   gdk_threads_enter();
   gtk_main();
@@ -170,6 +180,7 @@ main (int argc, char *argv[])
   free(format7_infos);
   free(uiinfos);
   free(selfids);
+  free(porthole_windows);
 
     } // end of if no handle check
   raw1394_destroy_handle(handle);

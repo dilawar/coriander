@@ -56,4 +56,7 @@ MainStatus(const char *string);
 void
 MessageBox( gchar *message);
 
+void
+SetScaleSensitivity(GtkWidget* widget, int feature, dc1394bool_t sense);
+
 #endif

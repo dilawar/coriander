@@ -22,18 +22,13 @@
 #define __THREAD_SAVE_H__
 
 
-#include <pthread.h>
+#include <pthread.h> 
+
 typedef enum
 {
   SAVE_SCRATCH_SEQUENTIAL,
   SAVE_SCRATCH_OVERWRITE
 } save_scratch_t;
-
-typedef enum
-{
-  SAVE_MODE_IMMEDIATE,
-  SAVE_MODE_PERIODIC
-} save_mode_t;
 
 
 typedef struct
@@ -48,6 +43,7 @@ typedef struct
   long int           counter;
   unsigned char*     save_buffer;
   int                save_scratch;
+  long int           period;
 
 } savethread_info_t;
 

@@ -27,7 +27,6 @@
 #include "callbacks.h"
 #include "tools.h"
 #include "build_menus.h"
-#include "callback_proc.h"
 #include <libdc1394/dc1394_control.h>
 
 extern dc1394_feature_set *feature_set;

@@ -44,6 +44,7 @@ extern "C" {
 #include "tools.h"
 
 extern PrefsInfo preferences;
+extern int current_camera;
 
 gint
 RealStartThread(void)
@@ -52,7 +53,7 @@ RealStartThread(void)
   realthread_info_t *info=NULL;
   gchar *tmp;
 
-  real_service=GetService(SERVICE_REAL);
+  real_service=GetService(SERVICE_REAL,current_camera);
 
   if (real_service==NULL)// if no REAL service running...
     {
@@ -86,8 +87,9 @@ RealStartThread(void)
       info->audienceFlags=preferences.real_audience;
       info->videoQuality=preferences.real_quality;
       info->realPlayerCompatibility=6;//preferences.real_compatibility;//////////////////////////////////////////////////////////
+      info->period=preferences.real_period;
 
-      CommonChainSetup(real_service,SERVICE_REAL);
+      CommonChainSetup(real_service,SERVICE_REAL,current_camera);
       RealSetup(info, real_service);
 
       info->real_buffer=(unsigned char *)malloc(real_service->width*real_service->height*3*sizeof(unsigned char)); //RGB
@@ -97,7 +99,7 @@ RealStartThread(void)
 
       /* Insert chain and start service*/
       pthread_mutex_lock(&real_service->mutex_struct);
-      InsertChain(real_service);
+      InsertChain(real_service,current_camera);
       pthread_mutex_unlock(&real_service->mutex_struct);
 
       pthread_mutex_lock(&real_service->mutex_data);
@@ -109,7 +111,7 @@ RealStartThread(void)
 	       (free, unset global vars,...):*/
 
 	    /* Mendatory cleanups:*/
-	    RemoveChain(real_service);
+	    RemoveChain(real_service,current_camera);
 	    pthread_mutex_unlock(&real_service->mutex_struct);
 	    pthread_mutex_unlock(&real_service->mutex_data);
 	    free(info->real_buffer);
@@ -148,11 +150,12 @@ RealThread(void* arg)
   static gchar filename_out[256];
   chain_t* real_service=NULL;
   realthread_info_t *info=NULL;
-  GdkImlibImage *im=NULL;
+  long int skip_counter;
 
   real_service=(chain_t*)arg;
   pthread_mutex_lock(&real_service->mutex_data);
   info=(realthread_info_t*)real_service->data;
+  skip_counter=0;
 
   /* These settings depend on the thread. For 100% safe deferred-cancel
    threads, I advise you use a custom thread cancel flag. See display thread.*/
@@ -180,46 +183,48 @@ RealThread(void* arg)
 	  fprintf(stderr,"Rolling buffers\n");
 	  if(RollBuffers(real_service)) // have buffers been rolled?
 	    {
-	      pthread_mutex_unlock(&real_service->mutex_data);
-
-	      // note that Real supports different video modes (RGB, YUVxxx)
-	      // so that it would be smarter to convert from IIDC mode to a
-	      // similar Real mode in order to avoid unecessary CPU load.
-	      convert_to_rgb(real_service->current_buffer,
-			     info->real_buffer, real_service->mode,
-			     real_service->width, real_service->height,
-			     real_service->bytes_per_frame);// RGB
-
-	      fprintf(stderr,"Setting pointer to sample\n");
-	      pthread_mutex_lock(&real_service->mutex_data);
-	      info->res = info->pSample->SetBuffer(info->real_buffer,
-                          real_service->width*real_service->height*3, 0 ,0); // RGB
-	      pthread_mutex_unlock(&real_service->mutex_data);
-
-	      
-	      if(SUCCEEDED(info->res))
+	      if (skip_counter==(info->period-1))
 		{
-		  fprintf(stderr,"Encoding\n");
-		  info->res = info->pVideoPin->Encode(info->pSample);
-		  fprintf(stderr,"Encoded!\n");
+		  skip_counter=0;
+		  // note that Real supports different video modes (RGB, YUVxxx)
+		  // so that it would be smarter to convert from IIDC mode to a
+		  // similar Real mode in order to avoid unecessary CPU load.
+		  convert_to_rgb(real_service->current_buffer,
+				 info->real_buffer, real_service->mode,
+				 real_service->width, real_service->height,
+				 real_service->bytes_per_frame);// RGB
+
+		  fprintf(stderr,"Setting pointer to sample\n");
+		  info->res = info->pSample->SetBuffer(info->real_buffer,
+						       real_service->width*real_service->height*3, 0 ,0); // RGB
+		  
+	      
+		  if(SUCCEEDED(info->res))
+		    {
+		      fprintf(stderr,"Encoding\n");
+		      info->res = info->pVideoPin->Encode(info->pSample);
+		      fprintf(stderr,"Encoded!\n");
+		    }
+		  
+		  if(SUCCEEDED(info->res) && info->pErrorSinkObject->g_bErrorOccurred)
+		    info->res = info->pErrorSinkObject->g_nError;
+		  
+		  info->res = info->pBuildEngine->CancelEncoding();
+		  
+		  if (SUCCEEDED(info->res))
+		    info->res = info->pBuildEngine->PrepareToEncode();
+		  else
+		    MainError("Error in CancelEncoding()");
+		  
+		  info->pErrorSinkObject->g_bErrorOccurred = false;
+		  if (SUCCEEDED(info->res))
+		    continue;
+		  else 
+		    MainError("Error in CancelEncoding()");
 		}
-
-	      if(SUCCEEDED(info->res) && info->pErrorSinkObject->g_bErrorOccurred)
-		info->res = info->pErrorSinkObject->g_nError;
-	      
-	      info->res = info->pBuildEngine->CancelEncoding();
-
-	      if (SUCCEEDED(info->res))
-		info->res = info->pBuildEngine->PrepareToEncode();
 	      else
-		MainError("Error in CancelEncoding()");
-	      
-	      info->pErrorSinkObject->g_bErrorOccurred = false;
-	      if (SUCCEEDED(info->res))
-		continue;
-	      else 
-		MainError("Error in CancelEncoding()");
-
+		skip_counter++;
+	      pthread_mutex_unlock(&real_service->mutex_data);
 	    }
 	  else
 	    {
@@ -239,7 +244,7 @@ RealStopThread(void)
 {
   realthread_info_t *info;
   chain_t *real_service;
-  real_service=GetService(SERVICE_REAL);
+  real_service=GetService(SERVICE_REAL,current_camera);
 
   if (real_service!=NULL)// if REAL service running...
     {
@@ -255,7 +260,7 @@ RealStopThread(void)
 
       pthread_mutex_lock(&real_service->mutex_data);
       pthread_mutex_lock(&real_service->mutex_struct);
-      RemoveChain(real_service);
+      RemoveChain(real_service,current_camera);
 
       /* Do custom cleanups here...*/
 

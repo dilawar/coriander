@@ -35,6 +35,7 @@
 extern PrefsInfo preferences;
 extern dc1394_miscinfo *misc_info;
 extern GtkWidget *porthole_window;
+extern int current_camera;
 
 gint
 DisplayStartThread()
@@ -42,7 +43,7 @@ DisplayStartThread()
   chain_t *display_service=NULL;
   displaythread_info_t *info=NULL;
 
-  display_service=GetService(SERVICE_DISPLAY);
+  display_service=GetService(SERVICE_DISPLAY,current_camera);
 
   if (display_service==NULL)// if no display service running...
     {
@@ -62,7 +63,8 @@ DisplayStartThread()
       info->gdk_buffer = NULL;
       info->drawable = (GtkWidget*)lookup_widget(porthole_window, "camera_scope");
 
-      CommonChainSetup(display_service,SERVICE_DISPLAY);
+      info->period=preferences.display_period;
+      CommonChainSetup(display_service,SERVICE_DISPLAY,current_camera);
 
       switch(preferences.display_method)
 	{
@@ -101,7 +103,7 @@ DisplayStartThread()
       pthread_mutex_unlock(&display_service->mutex_data);
 
       pthread_mutex_lock(&display_service->mutex_struct);
-      InsertChain(display_service);
+      InsertChain(display_service,current_camera);
       pthread_mutex_unlock(&display_service->mutex_struct);
       
       pthread_mutex_lock(&display_service->mutex_data);
@@ -109,7 +111,7 @@ DisplayStartThread()
       if (pthread_create(&display_service->thread, NULL,
 			 DisplayThread, (void*)display_service))
 	{
-	  RemoveChain(display_service);
+	  RemoveChain(display_service,current_camera);
 	  pthread_mutex_unlock(&display_service->mutex_struct);
 	  pthread_mutex_unlock(&display_service->mutex_data);
 	  FreeChain(display_service);
@@ -143,6 +145,7 @@ DisplayThread(void* arg)
 {
   chain_t* display_service=NULL;
   displaythread_info_t *info=NULL;
+  long int skip_counter;
 
   // we should only use mutex_data in this function
 
@@ -154,6 +157,7 @@ DisplayThread(void* arg)
   pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED,NULL);
   pthread_mutex_unlock(&display_service->mutex_data);
   //fprintf(stderr,"Outside loop, mutex unlocked\n");
+  skip_counter=0;
 
 
   while (1)
@@ -174,26 +178,32 @@ DisplayThread(void* arg)
 	  pthread_mutex_lock(&display_service->mutex_data);
 	  if(RollBuffers(display_service)) // have buffers been rolled?
 	    {
-	      //fprintf(stderr," data mutex unlocked\n");
-	      pthread_mutex_unlock(&display_service->mutex_data);
-#ifdef HAVE_X11_EXTENSIONS_XVLIB_H
-	      if (info->display_method == DISPLAY_METHOD_XV)
+	      if (skip_counter==(info->period-1))
 		{
-		  convert_to_yuv_for_xv(display_service->current_buffer,
-					info->xv_image->data, display_service->mode,
-					display_service->width, display_service->height,
-					display_service->bytes_per_frame,info->xv_format);
-		  xvPut(display_service);
+		  skip_counter=0;
+		  //frintf(stderr," --- display frame\n");
+#ifdef HAVE_X11_EXTENSIONS_XVLIB_H
+		  if (info->display_method == DISPLAY_METHOD_XV)
+		    {
+		      convert_to_yuv_for_xv(display_service->current_buffer,
+					    info->xv_image->data, display_service->mode,
+					    display_service->width, display_service->height,
+					    display_service->bytes_per_frame,info->xv_format);
+		      xvPut(display_service);
+		    }
+		  else
+#endif
+		    { //DISPLAY_METHOD_GDK
+		      convert_to_rgb(display_service->current_buffer,
+				     info->gdk_buffer, display_service->mode,
+				     display_service->width, display_service->height,
+				     display_service->bytes_per_frame);
+		      gdkPut(display_service);
+		    }
 		}
 	      else
-#endif
-		{ //DISPLAY_METHOD_GDK
-		  convert_to_rgb(display_service->current_buffer,
-				 info->gdk_buffer, display_service->mode,
-				 display_service->width, display_service->height,
-				 display_service->bytes_per_frame);
-		  gdkPut(display_service);
-		}
+		skip_counter++;
+	      pthread_mutex_unlock(&display_service->mutex_data);
 	    }
 	  else
 	    {
@@ -206,11 +216,11 @@ DisplayThread(void* arg)
 
 
 gint
-DisplayStopThread(void)
+DisplayStopThread(unsigned int camera)
 {
   displaythread_info_t *info;
   chain_t *display_service;
-  display_service=GetService(SERVICE_DISPLAY);
+  display_service=GetService(SERVICE_DISPLAY, camera);
   
   if (display_service!=NULL)// if display service running...
     { 
@@ -227,7 +237,7 @@ DisplayStopThread(void)
 
       pthread_mutex_lock(&display_service->mutex_data);
       pthread_mutex_lock(&display_service->mutex_struct);
-      RemoveChain(display_service);
+      RemoveChain(display_service, camera);
 #ifdef HAVE_X11_EXTENSIONS_XVLIB_H
       if ((info->display_method==DISPLAY_METHOD_XV)&&(info->xv_image != NULL))
 	{ 

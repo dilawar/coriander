@@ -33,6 +33,7 @@ extern dc1394_miscinfo *misc_info;
 extern dc1394_camerainfo *camera;
 extern SelfIdPacket_t *selfid;
 extern PrefsInfo preferences; 
+extern int current_camera;
 
 gint IsoStartThread(void)
 {
@@ -40,7 +41,7 @@ gint IsoStartThread(void)
   chain_t* iso_service=NULL;
   isothread_info_t *info=NULL;
 
-  iso_service=GetService(SERVICE_ISO);
+  iso_service=GetService(SERVICE_ISO,current_camera);
 
   if (iso_service==NULL)// if no ISO service running...
     {
@@ -152,18 +153,18 @@ gint IsoStartThread(void)
 
       //info->cleanup_status=RECEIVE_CLEANUP_NONE;
 
-      CommonChainSetup(iso_service, SERVICE_ISO);
+      CommonChainSetup(iso_service, SERVICE_ISO, current_camera);
       pthread_mutex_unlock(&iso_service->mutex_data);
       
       pthread_mutex_lock(&iso_service->mutex_struct);
-      InsertChain(iso_service);
+      InsertChain(iso_service,current_camera);
       pthread_mutex_unlock(&iso_service->mutex_struct);
 
       pthread_mutex_lock(&iso_service->mutex_data);
       pthread_mutex_lock(&iso_service->mutex_struct);
       if (pthread_create(&iso_service->thread, NULL, IsoThread,(void*) iso_service))
 	{
-	  RemoveChain(iso_service);
+	  RemoveChain(iso_service,current_camera);
 	  pthread_mutex_unlock(&iso_service->mutex_struct);
 	  pthread_mutex_unlock(&iso_service->mutex_data);
 	  FreeChain(iso_service);
@@ -252,7 +253,7 @@ gint IsoStopThread(void)
 {
   isothread_info_t *info;
   chain_t *iso_service;
-  iso_service=GetService(SERVICE_ISO);  
+  iso_service=GetService(SERVICE_ISO,current_camera);  
 
   if (iso_service!=NULL)// if ISO service running...
     {
@@ -262,7 +263,7 @@ gint IsoStopThread(void)
       pthread_join(iso_service->thread, NULL);
       pthread_mutex_lock(&iso_service->mutex_data);
       pthread_mutex_lock(&iso_service->mutex_struct);
-      RemoveChain(iso_service);
+      RemoveChain(iso_service,current_camera);
 
       if (info->receive_method == RECEIVE_METHOD_VIDEO1394)
 	{

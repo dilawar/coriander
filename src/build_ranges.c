@@ -34,34 +34,81 @@ extern dc1394_feature_set *feature_set;
 extern GtkWidget *format7_window;
 extern GtkWidget *preferences_window;
 extern Format7Info *format7_info;
-extern char* feature_op_list[NUM_FEATURES];
 extern char* feature_frame_list[NUM_FEATURES];
 extern char* feature_scale_list[NUM_FEATURES];
-extern char* feature_man_list[NUM_FEATURES];
-extern char* feature_auto_list[NUM_FEATURES];
-extern char* feature_power_list[NUM_FEATURES];
+extern char* feature_menu_list[NUM_FEATURES];
+extern char* feature_menu_table_list[NUM_FEATURES];
+extern char* feature_menu_items_list[NUM_FEATURES];
 
 void BuildRange(GtkWidget* current_window, int feature)
 {
   GtkAdjustment *adjustment, *adjustment2;
+  GtkWidget* new_option_menu;
+  GtkWidget* new_menu;
+  GtkWidget* glade_menuitem;
+  // BUILD A NEW  OPTION_MENU:
+  gtk_widget_destroy(GTK_WIDGET(lookup_widget(current_window,feature_menu_list[feature-FEATURE_MIN]))); // remove previous menu
+  
+  new_option_menu = gtk_option_menu_new ();
+  gtk_widget_ref (new_option_menu);
+  gtk_object_set_data_full (GTK_OBJECT (current_window), feature_menu_list[feature-FEATURE_MIN], new_option_menu,
+			    (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (new_option_menu);
+  gtk_table_attach (GTK_TABLE (lookup_widget(current_window, feature_menu_table_list[feature-FEATURE_MIN])),
+		    new_option_menu, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (new_option_menu), 1);
+  
+  new_menu = gtk_menu_new ();
 
   if (feature_set->feature[feature-FEATURE_MIN].available)
     {
-      gtk_widget_set_sensitive(lookup_widget(current_window, feature_frame_list[feature-FEATURE_MIN]),TRUE);
-      // one push auto:
-      gtk_widget_set_sensitive(lookup_widget(current_window, feature_op_list[feature-FEATURE_MIN]),
-			       feature_set->feature[feature-FEATURE_MIN].one_push);
-      // on/off switching:
-      gtk_widget_set_sensitive(lookup_widget(current_window, feature_power_list[feature-FEATURE_MIN]),
-			       feature_set->feature[feature-FEATURE_MIN].on_off_capable);
-      // manual mode:
-      gtk_widget_set_sensitive(lookup_widget(current_window, feature_man_list[feature-FEATURE_MIN]),
-			       feature_set->feature[feature-FEATURE_MIN].manual_capable);
-      // auto mode:
-      gtk_widget_set_sensitive(lookup_widget(current_window, feature_auto_list[feature-FEATURE_MIN]),
-			       feature_set->feature[feature-FEATURE_MIN].auto_capable);
+      // BUILD MENU ITEMS ====================================================================================
+      // 'off' menuitem optional addition:
+      if (feature_set->feature[feature-FEATURE_MIN].on_off_capable>0)
+	{
+	  glade_menuitem = gtk_menu_item_new_with_label (_(feature_menu_items_list[RANGE_MENU_OFF]));
+	  gtk_widget_show (glade_menuitem);
+	  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+	  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
+			      GTK_SIGNAL_FUNC (on_range_menu_activate),
+			      (int*)(feature*1000+RANGE_MENU_OFF)); // i is an int passed in a pointer variable. This is 'normal'.
+	}
+      // 'man' menuitem optional addition:
+      if (feature_set->feature[feature-FEATURE_MIN].manual_capable>0)
+	{
+	  glade_menuitem = gtk_menu_item_new_with_label (_(feature_menu_items_list[RANGE_MENU_MAN]));
+	  gtk_widget_show (glade_menuitem);
+	  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+	  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
+			      GTK_SIGNAL_FUNC (on_range_menu_activate),
+			      (int*)(feature*1000+RANGE_MENU_MAN));
+	}
+      // 'auto' menuitem optional addition:
+      if (feature_set->feature[feature-FEATURE_MIN].auto_capable>0)
+	{
+	  glade_menuitem = gtk_menu_item_new_with_label (_(feature_menu_items_list[RANGE_MENU_AUTO]));
+	  gtk_widget_show (glade_menuitem);
+	  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+	  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
+			      GTK_SIGNAL_FUNC (on_range_menu_activate),
+			      (int*)(feature*1000+RANGE_MENU_AUTO));
+	}
+      // 'single' menuitem optional addition:
+      if (feature_set->feature[feature-FEATURE_MIN].one_push>0)
+	{
+	  glade_menuitem = gtk_menu_item_new_with_label (_(feature_menu_items_list[RANGE_MENU_SINGLE]));
+	  gtk_widget_show (glade_menuitem);
+	  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+	  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
+			      GTK_SIGNAL_FUNC (on_range_menu_activate),
+			      (int*)(feature*1000+RANGE_MENU_SINGLE));
+	}
 
-      // values:
+      gtk_option_menu_set_menu (GTK_OPTION_MENU (new_option_menu), new_menu);
+
+      // BUILD SCALE: ====================================================================================
       adjustment=(GtkAdjustment*)gtk_adjustment_new(feature_set->feature[feature-FEATURE_MIN].min,
 						    feature_set->feature[feature-FEATURE_MIN].min,
 						    feature_set->feature[feature-FEATURE_MIN].max,1,10,0);
@@ -71,18 +118,20 @@ void BuildRange(GtkWidget* current_window, int feature)
 	    adjustment2=(GtkAdjustment*)gtk_adjustment_new(feature_set->feature[feature-FEATURE_MIN].min,
 							   feature_set->feature[feature-FEATURE_MIN].min,
 							   feature_set->feature[feature-FEATURE_MIN].max,1,10,0);
-	    gtk_range_set_adjustment((GtkRange*)lookup_widget(current_window, "whitebal_BU_scale"),adjustment);
-	    gtk_range_set_adjustment((GtkRange*)lookup_widget(current_window, "whitebal_RV_scale"),adjustment2);
+	    gtk_range_set_adjustment((GtkRange*)lookup_widget(current_window, "white_balance_BU_scale"),adjustment);
+	    gtk_range_set_adjustment((GtkRange*)lookup_widget(current_window, "white_balance_RV_scale"),adjustment2);
 	    // connect:
-	    gtk_signal_connect (GTK_OBJECT (adjustment), "value_changed", GTK_SIGNAL_FUNC (on_scale_value_changed), (int*) FEATURE_WHITE_BALANCE+BU);
-	    gtk_signal_connect (GTK_OBJECT (adjustment2), "value_changed", GTK_SIGNAL_FUNC (on_scale_value_changed), (int*) FEATURE_WHITE_BALANCE+RV);
+	    gtk_signal_connect (GTK_OBJECT (adjustment), "value_changed", GTK_SIGNAL_FUNC (on_scale_value_changed),
+				(int*) FEATURE_WHITE_BALANCE+BU);
+	    gtk_signal_connect (GTK_OBJECT (adjustment2), "value_changed", GTK_SIGNAL_FUNC (on_scale_value_changed),
+				(int*) FEATURE_WHITE_BALANCE+RV);
 	    break;
 	  case FEATURE_TEMPERATURE:
 	    adjustment2=(GtkAdjustment*)gtk_adjustment_new(feature_set->feature[feature-FEATURE_MIN].min,
 							   feature_set->feature[feature-FEATURE_MIN].min,
 							   feature_set->feature[feature-FEATURE_MIN].max,1,10,0);
-	    gtk_range_set_adjustment((GtkRange*)lookup_widget(current_window, "temp_goal_scale"),adjustment);
-	    gtk_range_set_adjustment((GtkRange*)lookup_widget(current_window, "temp_current_scale"),adjustment2);
+	    gtk_range_set_adjustment((GtkRange*)lookup_widget(current_window, "temperature_target_scale"),adjustment);
+	    gtk_range_set_adjustment((GtkRange*)lookup_widget(current_window, "temperature_current_scale"),adjustment2);
 	    // connect:
 	    gtk_signal_connect (GTK_OBJECT (adjustment), "value_changed", GTK_SIGNAL_FUNC (on_scale_value_changed), (int*) FEATURE_TEMPERATURE);
 	    break;
@@ -92,6 +141,16 @@ void BuildRange(GtkWidget* current_window, int feature)
 	    gtk_signal_connect (GTK_OBJECT (adjustment), "value_changed", GTK_SIGNAL_FUNC (on_scale_value_changed), (int*) feature);
 
 	}
+    }
+  else // feature not available
+    {
+      // BUILD DUMMY MENUTIEM:
+      glade_menuitem = gtk_menu_item_new_with_label (_(feature_menu_items_list[RANGE_MENU_NA]));
+      gtk_widget_show (glade_menuitem);
+      gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+      // note: no signal connected.
+
+      gtk_option_menu_set_menu (GTK_OPTION_MENU (new_option_menu), new_menu);
     }
     
 }
@@ -104,7 +163,6 @@ BuildFormat7Ranges(void)
   Format7ModeInfo *info;
   
   info=&format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN];
-  //printf( "BuildFormat7Ranges()\n");
 
   // define the adjustments for the 4 format7 controls. Note that (pos_x+size_x)<=max_size_x which yields some inter-dependencies
 
@@ -127,21 +185,5 @@ BuildFormat7Ranges(void)
   adjustment_sy=(GtkAdjustment*)gtk_adjustment_new(info->size_y,1,info->max_size_y-info->pos_y,1,info->step_y,0);
   gtk_range_set_adjustment((GtkRange*)lookup_widget(format7_window, "format7_vsize_scale"),adjustment_sy);
   gtk_signal_connect(GTK_OBJECT (adjustment_sy), "value_changed", GTK_SIGNAL_FUNC (on_format7_value_changed), (int*) FORMAT7_SIZE_Y);
-
-}
-
-
-void
-BuildPrefsRanges(void)
-{
-  GtkAdjustment  *adj_update, *adj_timeout;
-
-  adj_update=(GtkAdjustment*)gtk_adjustment_new(.1,.1,20,.1,2,0);
-  gtk_range_set_adjustment((GtkRange*)lookup_widget(preferences_window, "prefs_update_scale"),adj_update);
-  gtk_signal_connect(GTK_OBJECT (adj_update), "value_changed", GTK_SIGNAL_FUNC (on_prefs_update_value_changed), NULL);
-
-  adj_timeout=(GtkAdjustment*)gtk_adjustment_new(.1,.1,100,.1,5,0);
-  gtk_range_set_adjustment((GtkRange*)lookup_widget(preferences_window, "prefs_timeout_scale"),adj_timeout);
-  gtk_signal_connect(GTK_OBJECT (adj_timeout), "value_changed", GTK_SIGNAL_FUNC (on_prefs_timeout_value_changed), NULL);
 
 }
