@@ -194,7 +194,7 @@ BuildFormat7Ranges(void)
   gtk_range_set_update_policy ((GtkRange*)lookup_widget(format7_window, "format7_hsize_scale"), GTK_UPDATE_DELAYED);
 
   // define adjustement for X-size
-  adjustment_sy=(GtkAdjustment*)gtk_adjustment_new(info->size_y,info->step_x,info->max_size_y-info->pos_y,info->step_y,info->step_y*4,0);
+  adjustment_sy=(GtkAdjustment*)gtk_adjustment_new(info->size_y,info->step_y,info->max_size_y-info->pos_y,info->step_y,info->step_y*4,0);
   gtk_range_set_adjustment((GtkRange*)lookup_widget(format7_window, "format7_vsize_scale"),adjustment_sy);
   gtk_signal_connect(GTK_OBJECT (adjustment_sy), "value_changed", GTK_SIGNAL_FUNC (on_format7_value_changed), (int*) FORMAT7_SIZE_Y);
   gtk_range_set_update_policy ((GtkRange*)lookup_widget(format7_window, "format7_vsize_scale"), GTK_UPDATE_DELAYED);
