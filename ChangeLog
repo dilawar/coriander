@@ -2,6 +2,9 @@ Coriander, (c) 2000-2002 Damien Douxchamps <douxchamps@ieee.org>
 
 Changes towards version 0.25
 
+   Mar 28, 2002, by Damien Douxchamps
+   - updated version check macro for libdc1394.
+	
    Mar 26, 2002, by Dan Dennedy
    - change calls to raw1394_destroy_handle to dc1394_destroy_handle
      requires updated libdc1394 from CVS.
