@@ -228,6 +228,7 @@ SaveThread(void* arg)
 	    switch (info->scratch) {
 	    case SAVE_SCRATCH_OVERWRITE:
 	      sprintf(filename_out, "%s%s", info->filename,info->filename_ext);
+	      break;
 	    case SAVE_SCRATCH_SEQUENTIAL:
 	      switch (info->datenum) {
 	      case SAVE_TAG_DATE:
