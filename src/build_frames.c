@@ -61,6 +61,8 @@ BuildTriggerFrame(void)
   
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window,"trigger_external")),
 			       camera->feature_set.feature[FEATURE_TRIGGER-FEATURE_MIN].is_on);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window,"trigger_polarity")),
+			       camera->feature_set.feature[FEATURE_TRIGGER-FEATURE_MIN].trigger_polarity);
 }
 
 

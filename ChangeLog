@@ -2,6 +2,12 @@ Coriander, (c) 2000-2004 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 1.0.0
 	
+   February 5, 2004, by Damien Douxchamps
+   - updated the linux1394 URL
+
+   February 4, 2004, by Damien Douxchamps
+   - fixed trigger polarity bug
+	
    February 3, 2004, by Damien Douxchamps
    - enhance the previous change by Johan: keep aspect ratio and avoid
      async errors when an area is selected during F7 the change.

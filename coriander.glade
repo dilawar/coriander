@@ -5594,7 +5594,7 @@ Please check that:
 NOTICE:
 All consumer grade cameras in which you can insert a video tape are NOT compliant with the above-
 mentionned specifications and therefor cannot be controlled with Coriander. These cameras can be
-controlled with the AV/C protocol, please refer to http://linux1394.sourceforge.net</message>
+controlled with the AV/C protocol, please refer to http://www.linux1394.org</message>
   <title>Coriander Warning</title>
   <position>GTK_WIN_POS_NONE</position>
   <modal>False</modal>

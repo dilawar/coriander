@@ -3184,7 +3184,7 @@ create_no_camera_window (void)
 
   /* We create it with an OK button, and then remove the button, to work
      around a bug in gnome-libs. */
-  no_camera_window = gnome_message_box_new (_("Warning: could not find a Digital Camera on the bus.\n\nPlease check that:\n- the cables are properly set\n- the devices on the bus are properly powered\n- your camera is compliant with the Digital Camera specs (see http://www.1394ta.org).\n\nNOTICE:\nAll consumer grade cameras in which you can insert a video tape are NOT compliant with the above-\nmentionned specifications and therefor cannot be controlled with Coriander. These cameras can be\ncontrolled with the AV/C protocol, please refer to http://linux1394.sourceforge.net"),
+  no_camera_window = gnome_message_box_new (_("Warning: could not find a Digital Camera on the bus.\n\nPlease check that:\n- the cables are properly set\n- the devices on the bus are properly powered\n- your camera is compliant with the Digital Camera specs (see http://www.1394ta.org).\n\nNOTICE:\nAll consumer grade cameras in which you can insert a video tape are NOT compliant with the above-\nmentionned specifications and therefor cannot be controlled with Coriander. These cameras can be\ncontrolled with the AV/C protocol, please refer to http://www.linux1394.org"),
                               GNOME_MESSAGE_BOX_WARNING,
                               GNOME_STOCK_BUTTON_OK, NULL);
   gtk_container_remove (GTK_CONTAINER (GNOME_DIALOG (no_camera_window)->action_area), GNOME_DIALOG (no_camera_window)->buttons->data);
