@@ -271,9 +271,11 @@ on_camera_select_activate              (GtkMenuItem     *menuitem,
   // set current camera pointers:
   SetCurrentCamera(camera_ptr->camera_info.euid_64);
 
+#ifdef HAVE_SDLLIB
   watchthread_info.draw=0;
   watchthread_info.mouse_down=0;
   watchthread_info.crop=0;
+#endif
 
   if (camera->want_to_display>0)
     DisplayStartThread(camera);

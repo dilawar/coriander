@@ -160,8 +160,10 @@ DisplayThread(void* arg)
       pthread_mutex_unlock(&info->mutex_cancel);
       pthread_mutex_lock(&display_service->mutex_data);
       if(RollBuffers(display_service)) { // have buffers been rolled?
+#ifdef HAVE_SDLLIB
 	// check params
 	DisplayThreadCheckParams(display_service);
+#endif
 	if (display_service->current_buffer->width!=-1) {
 	  if (skip_counter>=(info->period-1)) {
 	    skip_counter=0;
@@ -259,7 +261,9 @@ DisplayStopThread(camera_t* cam)
       display_service->timeout_func_id=-1;
     }
     RemoveChain(cam,display_service);
+#ifdef HAVE_SDLLIB
     SDLQuit(display_service);
+#endif
     
     pthread_mutex_unlock(&display_service->mutex_struct);
     pthread_mutex_unlock(&display_service->mutex_data);

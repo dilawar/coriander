@@ -44,11 +44,11 @@ extern CtxtInfo_t ctxt;
 extern raw1394handle_t* handles;
 extern unsigned int main_timeout_ticker;
 extern int WM_cancel_display;
-extern cursor_info_t cursor_info;
 extern BusInfo_t* businfo;
 extern GtkWidget *waiting_camera_window;
 
 #ifdef HAVE_SDLLIB
+extern cursor_info_t cursor_info;
 extern watchthread_info_t watchthread_info;
 #endif
 
@@ -859,9 +859,11 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation) {
       //fprintf(stderr," destroyed win\n");
     }
 
+#ifdef HAVE_SDLLIB
     watchthread_info.draw=0;
     watchthread_info.mouse_down=0;
     watchthread_info.crop=0;
+#endif
 
     //fprintf(stderr,"Want to display: %d\n",camera->want_to_display);
     if (camera->want_to_display>0)
@@ -946,6 +948,7 @@ main_timeout_handler(gpointer* port_num) {
   if (!(main_timeout_ticker%1000)) { // every second
     UpdateBandwidthFrame();
   }
+#ifdef HAVE_SDLLIB
   // --------------------------------------------------------------------------------------
   // update cursor information
   if (!(main_timeout_ticker%100)) { // every 100ms
@@ -954,6 +957,7 @@ main_timeout_handler(gpointer* port_num) {
       cursor_info.update_req=0;
     }
   }
+#endif
   return(1);
 }
 

@@ -62,10 +62,10 @@ BusInfo_t* businfo;
 unsigned int format7_tab_presence;
 unsigned int main_timeout_ticker;
 unsigned int WM_cancel_display;
-cursor_info_t cursor_info;
 
 #ifdef HAVE_SDLLIB
-  watchthread_info_t watchthread_info;
+cursor_info_t cursor_info;
+watchthread_info_t watchthread_info;
 #endif
 
 int

@@ -27,8 +27,11 @@ extern char* power_class_list[8];
 extern PrefsInfo preferences; 
 extern camera_t* camera;
 extern camera_t* cameras;
-extern cursor_info_t cursor_info;
 extern BusInfo_t* businfo;
+
+#ifdef HAVE_SDLLIB
+extern cursor_info_t cursor_info;
+#endif
 
 void
 UpdatePrefsGeneralFrame(void)
@@ -317,6 +320,7 @@ UpdateTransferStatusFrame(void)
 void
 UpdateCursorFrame(void)
 {
+#ifdef HAVE_SDLLIB
   char *temp;
   temp=(char*)malloc(STRING_SIZE*sizeof(char));
 
@@ -339,6 +343,7 @@ UpdateCursorFrame(void)
   }
 
   free(temp);
+#endif
 }
 
 void
