@@ -147,7 +147,7 @@ UpdateRangeValue(GtkWidget* widget, int feature)
 	  while(!stable)
 	    {
 	      err=dc1394_get_white_balance(camera->handle,camera->id,&valueBU,&valueRV);
-	      if (((valueBU==prec_valueBU)&&(valueRV==prec_valueRV))||(!err))
+	      if (((valueBU==prec_valueBU)&&(valueRV==prec_valueRV))||(err<0))
 		stable=1;
 	      else
 		{
@@ -156,7 +156,7 @@ UpdateRangeValue(GtkWidget* widget, int feature)
 		  usleep(100000);// wait 1/10 sec
 		}
 	    }
-	  if (!err) MainError("Could not get white balance value");
+	  if (err<0) MainError("Could not get white balance value");
 	  else
 	    {
 	      adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(widget, "white_balance_BU_scale")));
@@ -171,7 +171,7 @@ UpdateRangeValue(GtkWidget* widget, int feature)
 	  while(!stable)
 	    {
 	      err=dc1394_get_temperature(camera->handle,camera->id,&valuegoal,&valuecurrent);
-	      if (((valuegoal==prec_valuegoal)&&(valuecurrent==prec_valuecurrent))||(!err))
+	      if (((valuegoal==prec_valuegoal)&&(valuecurrent==prec_valuecurrent))||(err<0))
 		stable=1;
 	      else
 		{
@@ -180,7 +180,7 @@ UpdateRangeValue(GtkWidget* widget, int feature)
 		  usleep(100000);// wait 1/10 sec
 		}
 	    }
-	  if (!err) MainError("Could not get temperature value");
+	  if (err<0) MainError("Could not get temperature value");
 	  else
 	    {
 	      adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(widget, "temperature_target_scale")));
@@ -195,7 +195,7 @@ UpdateRangeValue(GtkWidget* widget, int feature)
 	  while(!stable)
 	    {
 	      err=dc1394_get_feature_value(camera->handle,camera->id,feature,&value);
-	      if ((value==prec_value)||(!err))
+	      if ((value==prec_value)||(err<0))
 		stable=1;
 	      else
 		{
@@ -203,7 +203,7 @@ UpdateRangeValue(GtkWidget* widget, int feature)
 		  usleep(100000);// wait 1/10 sec
 		}
 	    }
-	  if (!err) MainError("Could not get feature value");
+	  if (err<0) MainError("Could not get feature value");
 	  else
 	    {
 	      adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(widget, feature_scale_list[feature-FEATURE_MIN])));

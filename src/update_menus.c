@@ -45,7 +45,7 @@ void UpdateFormatMenu(void)
   quadlet_t modes, formats;
 
   err= dc1394_query_supported_formats(camera->handle, camera->id, &formats);
-  if (!err)
+  if (err<0)
     {
       MainError("Could not query supported formats");
       formats=0x0;
@@ -68,7 +68,7 @@ void UpdateFormatMenu(void)
   if (formats & (0x1<<31))
     {
       err= dc1394_query_supported_modes(camera->handle, camera->id, FORMAT_VGA_NONCOMPRESSED, &modes);
-      if (!err)
+      if (err<0)
 	{
 	  MainError("Could not query Format0 modes");
 	  modes=0;
@@ -85,7 +85,7 @@ void UpdateFormatMenu(void)
   if (formats & (0x1<<30))
     {
       err= dc1394_query_supported_modes(camera->handle, camera->id, FORMAT_SVGA_NONCOMPRESSED_1, &modes);
-      if (!err)
+      if (err<0)
 	{
 	  MainError("Could not query Format1 modes");
 	  modes=0;
@@ -102,7 +102,7 @@ void UpdateFormatMenu(void)
   if (formats & (0x1<<29))
     {
       err= dc1394_query_supported_modes(camera->handle, camera->id, FORMAT_SVGA_NONCOMPRESSED_2, &modes);
-      if (!err)
+      if (err<0)
 	{
 	  MainError("Could not query Format2 modes");
 	  modes=0;
@@ -119,7 +119,7 @@ void UpdateFormatMenu(void)
   if (formats & (0x1<<25))
     {
       err= dc1394_query_supported_modes(camera->handle, camera->id, FORMAT_STILL_IMAGE, &modes);
-      if (!err)
+      if (err<0)
 	{
 	  MainError("Could not query Format6 modes");
 	  modes=0;
@@ -136,7 +136,7 @@ void UpdateFormatMenu(void)
   if (formats & (0x1<<24))
     {
       err= dc1394_query_supported_modes(camera->handle, camera->id, FORMAT_SCALABLE_IMAGE_SIZE, &modes);
-      if (!err)
+      if (err<0)
 	{
 	  MainError("Could not query Format7 modes");
 	  modes=0;

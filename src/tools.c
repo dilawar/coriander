@@ -72,7 +72,7 @@ GetFormat7Capabilities(raw1394handle_t handle, nodeid_t node, Format7Info *info)
   quadlet_t value;
   
   err=dc1394_query_supported_modes(handle, node, FORMAT_SCALABLE_IMAGE_SIZE, &value);
-  if (!err) MainError("Could not query Format7 supported modes");
+  if (err<0) MainError("Could not query Format7 supported modes");
   else
     {
       for (i=0,f=MODE_FORMAT7_MIN;f<MODE_FORMAT7_MAX;f++,i++)
@@ -80,9 +80,10 @@ GetFormat7Capabilities(raw1394handle_t handle, nodeid_t node, Format7Info *info)
 	  info->mode[i].present= (value & (0x1<<(31-i)) );
 	  if (info->mode[i].present) // check for mode presence before query
 	    {
-	      err=1;
-	      err*=dc1394_query_format7_max_image_size(handle,node,f,&info->mode[i].max_size_x,&info->mode[i].max_size_y);
-	      err*=dc1394_query_format7_unit_size(handle,node,f,&info->mode[i].step_x,&info->mode[i].step_y);
+	      err=dc1394_query_format7_max_image_size(handle,node,f,&info->mode[i].max_size_x,&info->mode[i].max_size_y);
+	      if (err<0) MainError("Got a problem querying format7 max image size");
+	      err=dc1394_query_format7_unit_size(handle,node,f,&info->mode[i].step_x,&info->mode[i].step_y);
+	      if (err<0) MainError("Got a problem querying format7 unit size");
 	      // quick hack to keep size/position even. If pos/size is ODD, strange color/distorsions occur on some cams
 	      // (e.g. Basler cams). This will have to really fixed later.
 	      //fprintf(stderr,"mode %d, step: [%d %d]\n",i,info->mode[i].step_x,info->mode[i].step_y);
@@ -91,20 +92,27 @@ GetFormat7Capabilities(raw1394handle_t handle, nodeid_t node, Format7Info *info)
 	      if (info->mode[i].step_y<2)
 	      info->mode[i].step_y=2;*/
 
-	      err*=dc1394_query_format7_image_position(handle,node,f,&info->mode[i].pos_x,&info->mode[i].pos_y);
-	      err*=dc1394_query_format7_image_size(handle,node,f,&info->mode[i].size_x,&info->mode[i].size_y);
+	      err=dc1394_query_format7_image_position(handle,node,f,&info->mode[i].pos_x,&info->mode[i].pos_y);
+	      if (err<0) MainError("Got a problem querying format7 image position");
+	      err=dc1394_query_format7_image_size(handle,node,f,&info->mode[i].size_x,&info->mode[i].size_y);
+	      if (err<0) MainError("Got a problem querying format7 image size");
 	      
-	      err*=dc1394_query_format7_pixel_number(handle,node,f,&info->mode[i].pixnum);
-	      err*=dc1394_query_format7_byte_per_packet(handle,node,f,&info->mode[i].bpp);
-	      err*=dc1394_query_format7_packet_para(handle,node,f,&info->mode[i].min_bpp,&info->mode[i].max_bpp);
-	      err*=dc1394_query_format7_total_bytes(handle,node,f,&info->mode[i].total_bytes);
+	      err=dc1394_query_format7_pixel_number(handle,node,f,&info->mode[i].pixnum);
+	      if (err<0) MainError("Got a problem querying format7 pixel number");
+	      err=dc1394_query_format7_byte_per_packet(handle,node,f,&info->mode[i].bpp);
+	      if (err<0) MainError("Got a problem querying format7 bytes per packet");
+	      err=dc1394_query_format7_packet_para(handle,node,f,&info->mode[i].min_bpp,&info->mode[i].max_bpp);
+	      if (err<0) MainError("Got a problem querying format7 packet parameters");
+	      err=dc1394_query_format7_total_bytes(handle,node,f,&info->mode[i].total_bytes);
+	      if (err<0) MainError("Got a problem querying format7 total bytes per frame");
 
-	      err*=dc1394_query_format7_color_coding_id(handle,node,f,&info->mode[i].color_coding_id);
-	      err*=dc1394_query_format7_color_coding(handle,node,f,&info->mode[i].color_coding);
+	      err=dc1394_query_format7_color_coding_id(handle,node,f,&info->mode[i].color_coding_id);
+	      if (err<0) MainError("Got a problem querying format7 color coding ID");
+	      err=dc1394_query_format7_color_coding(handle,node,f,&info->mode[i].color_coding);
+	      if (err<0) MainError("Got a problem querying format7 color coding");
 	      //fprintf(stderr,"color coding for mode %d: 0x%x, current: %d\n", i,
 	      //	      info->mode[i].color_coding, info->mode[i].color_coding_id);
 
-	      if (!err) MainError("Got a problem querying format7 capabilitie");
 	    }
 	}
     }
@@ -234,6 +242,25 @@ void GetContextStatus()
   ctxt.main_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"main_status"), ctxt.main_ctxt, "");
 
   // note: these empty messages will be replaced after the execution of update_frame for status window
+
+  ctxt.cursor_x_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"cursor_x"),"");
+  ctxt.cursor_y_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"cursor_y"),"");
+  ctxt.cursor_color_r_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"cursor_color_r"),"");
+  ctxt.cursor_color_g_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"cursor_color_g"),"");
+  ctxt.cursor_color_b_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"cursor_color_b"),"");
+  ctxt.cursor_color_y_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"cursor_color_y"),"");
+  ctxt.cursor_color_u_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"cursor_color_u"),"");
+  ctxt.cursor_color_v_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"cursor_color_v"),"");
+
+  ctxt.cursor_x_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"cursor_x"), ctxt.cursor_x_ctxt, "");
+  ctxt.cursor_y_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"cursor_y"), ctxt.cursor_y_ctxt, "");
+  ctxt.cursor_color_r_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"cursor_color_r"), ctxt.cursor_color_r_ctxt, "");
+  ctxt.cursor_color_g_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"cursor_color_g"), ctxt.cursor_color_g_ctxt, "");
+  ctxt.cursor_color_b_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"cursor_color_b"), ctxt.cursor_color_b_ctxt, "");
+  ctxt.cursor_color_y_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"cursor_color_y"), ctxt.cursor_color_y_ctxt, "");
+  ctxt.cursor_color_u_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"cursor_color_u"), ctxt.cursor_color_u_ctxt, "");
+  ctxt.cursor_color_v_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"cursor_color_v"), ctxt.cursor_color_v_ctxt, "");
+  
 }
 
 void GrabSelfIds(raw1394handle_t* handles, int portmax)

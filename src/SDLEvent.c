@@ -35,6 +35,7 @@
 #include "preferences.h"
 #include "tools.h"
 #include "watch_thread.h"
+#include "update_frames.h"
 
 extern PrefsInfo preferences;
 extern Format7Info *format7_info;
@@ -43,6 +44,17 @@ extern dc1394_camerainfo *camera;
 extern dc1394_miscinfo *misc_info;
 extern watchthread_info_t watchthread_info;
 
+#define YUV2RGB(y, u, v, r, g, b)\
+  r = y + ((v*1436) >>10);\
+  g = y - ((u*352 + v*731) >> 10);\
+  b = y + ((u*1814) >> 10);\
+  r = r < 0 ? 0 : r;\
+  g = g < 0 ? 0 : g;\
+  b = b < 0 ? 0 : b;\
+  r = r > 255 ? 255 : r;\
+  g = g > 255 ? 255 : g;\
+  b = b > 255 ? 255 : b
+  
 int
 SDLEventStartThread(chain_t *display_service)
 {
@@ -206,6 +218,7 @@ void
 OnMouseDown(chain_t *display_service, int button, int x, int y)
 {
   
+  int col_r,col_g,col_b,col_y,col_u,col_v;
   displaythread_info_t *info;
   info=(displaythread_info_t*)display_service->data;
 
@@ -224,6 +237,13 @@ OnMouseDown(chain_t *display_service, int button, int x, int y)
       pthread_mutex_unlock(&watchthread_info.mutex_area);
       break;
     case SDL_BUTTON_MIDDLE:
+      x=x*display_service->width/info->SDL_videoRect.w; //rescaling
+      y=y*display_service->height/info->SDL_videoRect.h;
+      col_y=info->SDL_overlay->pixels[0][(y*display_service->width+x)*2];
+      col_u=info->SDL_overlay->pixels[0][(((y*display_service->width+x)>>1)<<2)+1]-127;
+      col_v=info->SDL_overlay->pixels[0][(((y*display_service->width+x)>>1)<<2)+3]-127;
+      YUV2RGB(col_y, col_u, col_v, col_r, col_g, col_b);
+      UpdateCursorFrame(x, y, col_r, col_g, col_b, col_y, col_u, col_v);
       break;
     case SDL_BUTTON_RIGHT:
       break;
@@ -266,6 +286,7 @@ void
 OnMouseMotion(chain_t *display_service, int x, int y)
 {
   displaythread_info_t *info;
+  //int col_r,col_g,col_b,col_y,col_u,col_v;
   info=(displaythread_info_t*)display_service->data;
   pthread_mutex_lock(&watchthread_info.mutex_area);
   if (watchthread_info.mouse_down==1)
@@ -276,6 +297,7 @@ OnMouseMotion(chain_t *display_service, int x, int y)
       watchthread_info.lower_right[1]=y*display_service->height/info->SDL_videoRect.h;
     }
   pthread_mutex_unlock(&watchthread_info.mutex_area);
+
 }
 
 void

@@ -2,6 +2,19 @@ Coriander, (c) 2000-2002 Damien Douxchamps <douxchamps@ieee.org>
 
 Changes towards version 0.26
 
+   July 29, 2002, by Damien Douxchamps
+   - added a cursor information in the main window. Needs some
+     improvements for some things behave in a strange way (a
+     'void' fprintf is required in UpdateCursorFrame to make it
+     work...) 
+   - corrected an error detection bug: was checking for err==0
+     while it should be err<0. This implied some other changes
+     to functions that used error detection combinations. Thanks
+     to L.C.Bruzenak and Dan for pointing it out.
+	
+   July 28, 2002, by Damien Douxchamps
+   - removed some problematic g_free that hanged coriander.
+	
    July 27, 2002, by Dan Dennedy
    - added video1394 drop frames preferences option to sync with 
      new option in libdc1394.

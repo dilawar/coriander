@@ -25,7 +25,7 @@
 #define  NO                 FALSE
 #define  YES                 TRUE
 #define  STRING_SIZE         1024
-#define  KEY_BINDINGS_NUM       6
+#define  KEY_BINDINGS_NUM       7
  
 typedef enum {
   REAL_AUDIENCE_28_MODEM=1,    // 20 kbps
@@ -118,11 +118,9 @@ typedef struct _CtxtInfo
   int delay_ctxt;
   int dc_ctxt;
   int pwclass_ctxt;
-
   int iso_speed_ctxt;
   int iso_channel_ctxt;
   int iso_status_ctxt;
-
   int main_ctxt;
 
   int max_iso_id;
@@ -134,12 +132,28 @@ typedef struct _CtxtInfo
   int delay_id;
   int dc_id;
   int pwclass_id;
-
   int iso_speed_id;
   int iso_channel_id;
   int iso_status_id;
-
   int main_id;
+
+  int cursor_x_ctxt;
+  int cursor_y_ctxt;
+  int cursor_color_r_ctxt;
+  int cursor_color_g_ctxt;
+  int cursor_color_b_ctxt;
+  int cursor_color_y_ctxt;
+  int cursor_color_u_ctxt;
+  int cursor_color_v_ctxt;
+
+  int cursor_x_id;
+  int cursor_y_id;
+  int cursor_color_r_id;
+  int cursor_color_g_id;
+  int cursor_color_b_id;
+  int cursor_color_y_id;
+  int cursor_color_u_id;
+  int cursor_color_v_id;
 
 } CtxtInfo;
 

@@ -106,7 +106,7 @@ BuildPowerFrame(void)
 
   // activate if camera capable of power on/off:
   err=dc1394_query_basic_functionality(camera->handle,camera->id,&basic_funcs);
-  if (!err) MainError("Could not query basic functionalities");
+  if (err<0) MainError("Could not query basic functionalities");
 
   gtk_widget_set_sensitive(lookup_widget(commander_window,"power_on"),(basic_funcs & 0x1<<16));
   gtk_widget_set_sensitive(lookup_widget(commander_window,"power_off"),(basic_funcs & 0x1<<16));

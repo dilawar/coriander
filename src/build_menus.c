@@ -59,7 +59,7 @@ BuildTriggerModeMenu(void)
   GtkWidget* glade_menuitem;
 
   err=dc1394_query_feature_characteristics(camera->handle,camera->id,FEATURE_TRIGGER,&value);
-  if (!err) MainError("Could not query trigger feature characteristics");
+  if (err<0) MainError("Could not query trigger feature characteristics");
   modes=( (value & (0xF << 12))>>12 );
   gtk_widget_destroy(GTK_WIDGET (lookup_widget(commander_window,"trigger_mode"))); // remove previous menu
 
@@ -297,7 +297,7 @@ BuildFpsMenu(void)
   {
     gtk_widget_set_sensitive(lookup_widget(commander_window,"fps_menu"),TRUE);
     err=dc1394_query_supported_framerates(camera->handle, camera->id, misc_info->format, misc_info->mode, &value);
-    if (!err) MainError("Could not query supported framerates");
+    if (err<0) MainError("Could not query supported framerates");
   
  
   gtk_widget_destroy(GTK_WIDGET (lookup_widget(commander_window,"fps_menu"))); // remove previous menu
@@ -360,7 +360,7 @@ BuildFpsMenu(void)
       sprintf(temp,"Invalid framerate. Updating to nearest: %s",fps_label_list[new_framerate-FRAMERATE_MIN]);
       MainStatus(temp);
       err=dc1394_set_video_framerate(camera->handle,camera->id,new_framerate);
-      if (!err) MainError("Cannot set video framerate");
+      if (err<0) MainError("Cannot set video framerate");
       misc_info->framerate=new_framerate;
     }
   gtk_option_menu_set_history (GTK_OPTION_MENU (fps), index[misc_info->framerate-FRAMERATE_MIN]);

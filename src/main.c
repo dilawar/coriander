@@ -85,21 +85,21 @@ main (int argc, char *argv[])
   int portmax;
   int card_found;
 
+  
 #ifdef ENABLE_NLS
   bindtextdomain (PACKAGE, PACKAGE_LOCALE_DIR);
   textdomain (PACKAGE);
 #endif
   gnome_init ("coriander", VERSION, argc, argv);
 
-  tmp_handle=raw1394_new_handle();
+    tmp_handle=raw1394_new_handle();
   portmax=raw1394_get_port_info(tmp_handle, NULL, 0);
   raw1394_destroy_handle(tmp_handle);
 
   camera_nodes=(nodeid_t**)malloc(portmax*sizeof(nodeid_t*));
   port_camera_num=(int*)malloc(portmax*sizeof(int));
   handles=(raw1394handle_t *)malloc(portmax*sizeof(raw1394handle_t));
-  //fprintf(stderr,"Coriander found %d interface card(s)\n",portmax);
-
+  
   card_found=0;
   for (port=0;port<portmax;port++)
     {
@@ -146,11 +146,12 @@ main (int argc, char *argv[])
 	      if (handles[port]!=0)
 		for (cam=0;cam<port_camera_num[port];cam++)
 		  {
-		    err=1;
-		    err*=dc1394_get_camera_info(handles[port], camera_nodes[port][cam], &cameras[index]);
-		    err*=dc1394_get_camera_misc_info(cameras[index].handle, cameras[index].id, &misc_infos[index]);
-		    err*=dc1394_get_camera_feature_set(cameras[index].handle, cameras[index].id, &feature_sets[index]);
-		    if (!err) MainError("Could not get camera basic informations!");
+		    err=dc1394_get_camera_info(handles[port], camera_nodes[port][cam], &cameras[index]);
+		    if (err<0) MainError("Could not get camera basic information!");
+		    err=dc1394_get_camera_misc_info(cameras[index].handle, cameras[index].id, &misc_infos[index]);
+		    if (err<0) MainError("Could not get camera misc information!");
+		    err=dc1394_get_camera_feature_set(cameras[index].handle, cameras[index].id, &feature_sets[index]);
+		    if (err<0) MainError("Could not get camera feature information!");
 		    GetFormat7Capabilities(cameras[index].handle, cameras[index].id, &format7_infos[index]);
 		    image_pipes[index]=NULL;
 		    uiinfos[index].test_pattern=0;
