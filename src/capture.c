@@ -29,10 +29,12 @@
 #include "definitions.h"
 #include "conversions.h"
 #include "capture.h"
+#include "tools.h"
 #include <gdk/gdkprivate.h>
 #include "raw1394support.h"
 #include <libdc1394/dc1394_control.h>
 #include <string.h>
+#include <ftplib.h>
 
 /* globals required by capture */
 unsigned char g_rgb_buffer[1600*1200*3];
@@ -41,6 +43,17 @@ gchar g_filename[256];
 gchar g_ext[256];
 guint gIdleID;
 porthole_info pi;
+capture_info ci = 
+  {
+      CAPTURE_FREQ_IMMEDIATE,
+      1,
+      CAPTURE_MODE_SEQUENTIAL,
+      FALSE,
+      "",
+      "",
+      "",
+      ""
+  };
 SelfIdPacket_t *selfid;
 guint gCaptureIdleID;
 
@@ -379,10 +392,16 @@ gboolean capture_multi_start(gchar *filename)
     return FALSE;
   
   strcpy( g_filename, filename);
+
+  /* make sure a file extension is supplied */
   tmp = strrchr( g_filename, '.');
   if (tmp == NULL) return FALSE;
-  tmp[0] = '\0';
-  strcpy( g_ext, strrchr( filename, '.'));
+
+  if (ci.mode == CAPTURE_MODE_SEQUENTIAL)
+  {
+    tmp[0] = '\0';
+    strcpy( g_ext, strrchr( filename, '.'));
+  }
 
   switch (selfid->packetZero.phySpeed)
     {
@@ -411,7 +430,7 @@ gint capture_idler(gpointer p)
   static gchar filename_out[256];
 
   /* maximum of 10000 frames */
-  if (counter < MAX_FRAMES) {
+  if (ci.mode == CAPTURE_MODE_OVERWRITE || counter < MAX_FRAMES) {
     if (pi.receive_method == RECEIVE_METHOD_VIDEO1394) {
        /* if porthole open, then use its buffer */
        if (pi.handle != NULL) {
@@ -424,9 +443,21 @@ gint capture_idler(gpointer p)
       dc1394_single_capture( camera->handle, &g_single_capture);
       convert_to_rgb( &g_single_capture, (unsigned char *) g_single_capture.capture_buffer, g_rgb_buffer);
     }
-     
-    sprintf( filename_out, "%s_%4.4d%s", g_filename, counter++, g_ext);
-    save_single_frame( filename_out);
+
+    if (ci.mode == CAPTURE_MODE_SEQUENTIAL)     
+    {
+      sprintf( filename_out, "%s_%4.4d%s", g_filename, counter++, g_ext);
+      save_single_frame( filename_out);
+      if (ci.ftp_enable)
+        ftp_single_frame( filename_out, ci.ftp_address, ci.ftp_path, filename_out, ci.ftp_user, ci.ftp_passwd);
+    } 
+    else
+    {
+      save_single_frame( g_filename);
+      if (ci.ftp_enable)
+        ftp_single_frame( g_filename, ci.ftp_address, ci.ftp_path, g_filename, ci.ftp_user, ci.ftp_passwd);
+    }
+
     return 1;
     
   } else return 0;
@@ -485,4 +516,52 @@ void save_single_frame(gchar *filename)
        break;
   }
   if (im != NULL) gdk_imlib_kill_image(im);
+}
+
+gboolean ftp_single_frame(gchar *filename, gchar *host, gchar *path, gchar *dest_filename, gchar *user, gchar *passwd) {
+#ifdef HAVE_FTPLIB
+    netbuf *ftp_handle;
+    char  tmp[256];
+    
+    FtpInit();
+    
+    MainStatus("ftp: starting...\n");
+    if (!FtpConnect(host, &ftp_handle)) {
+        MainError("failed to connect to ftp server.");
+        return FALSE;
+    }
+    sprintf(tmp, "ftp: connected to %s", host);
+    MainStatus(tmp);
+    
+    if (FtpLogin(user, passwd, ftp_handle) != 1) {
+        MainError("ftp: login failed.");
+        return FALSE;
+    }
+    sprintf(tmp, "ftp: logged in as %s", user);
+    MainStatus(tmp);
+    
+    if (path != "") {
+      if (!FtpChdir(path, ftp_handle))
+      {
+        MainError("ftp chdir failed");
+        return FALSE;
+      }
+      sprintf(tmp, "ftp: chdir %s", path);
+      MainStatus(tmp);
+    }
+    
+    strcpy( tmp, strrchr( dest_filename, '/'));
+
+    if (FtpPut(filename, tmp, FTPLIB_IMAGE, ftp_handle) < 0) {
+        MainError("ftp failed to put file.");
+        return FALSE;
+    }
+    sprintf(tmp, "ftp: put %s", tmp);
+    MainStatus(tmp);
+    
+    MainStatus("ftp: done.");
+    
+    FtpQuit(ftp_handle);
+#endif
+    return TRUE;
 }

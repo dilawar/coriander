@@ -47,6 +47,9 @@ void
 MainError(const char *string);
 
 void
+MainStatus(const char *string);
+
+void
 UpdateIdler(void);
 
 #endif

@@ -5,7 +5,13 @@ Changes in version 0.17-pre2, Sept 16, 2001, by Dan Dennedy:
     - capture.c: bugfix capture failing with video1394 loaded 
       and porthole not open
     - capture.c: factor out some code to a convert_to_yuv()
-      function to achieve symmetry with convert_to_rgb() 
+      function to achieve symmetry with convert_to_rgb()
+    - added different capture frequencies: immediate (as fast
+      as possible) and periodic (every X secs)
+    - added different capture mode: sequentially nubmer file or
+      continually overwrite same file
+    - added ftp client option to capture based upon FtpLib, which
+      is detected with autoconf and handled appropriately.
 
 Changes in version 0.17-pre1, July 25, 2001:
 

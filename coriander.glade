@@ -1006,6 +1006,7 @@ Sony DFW-VL500
 		<last_modification_time>Wed, 27 Dec 2000 23:21:36 GMT</last_modification_time>
 	      </signal>
 	      <label>ON</label>
+	      <relief>GTK_RELIEF_NORMAL</relief>
 	      <child>
 		<padding>0</padding>
 		<expand>True</expand>
@@ -1025,6 +1026,7 @@ Sony DFW-VL500
 		<last_modification_time>Wed, 27 Dec 2000 23:21:40 GMT</last_modification_time>
 	      </signal>
 	      <label>OFF</label>
+	      <relief>GTK_RELIEF_NORMAL</relief>
 	      <child>
 		<padding>0</padding>
 		<expand>True</expand>
@@ -1044,6 +1046,7 @@ Sony DFW-VL500
 		<last_modification_time>Wed, 27 Dec 2000 23:21:29 GMT</last_modification_time>
 	      </signal>
 	      <label>RESET</label>
+	      <relief>GTK_RELIEF_NORMAL</relief>
 	      <child>
 		<padding>0</padding>
 		<expand>True</expand>
@@ -1085,6 +1088,7 @@ Sony DFW-VL500
 		<last_modification_time>Sun, 31 Dec 2000 11:49:08 GMT</last_modification_time>
 	      </signal>
 	      <label>ALL AUTO</label>
+	      <relief>GTK_RELIEF_NORMAL</relief>
 	      <child>
 		<padding>0</padding>
 		<expand>True</expand>
@@ -1104,6 +1108,7 @@ Sony DFW-VL500
 		<last_modification_time>Sun, 31 Dec 2000 11:49:35 GMT</last_modification_time>
 	      </signal>
 	      <label>ALL MAN</label>
+	      <relief>GTK_RELIEF_NORMAL</relief>
 	      <child>
 		<padding>0</padding>
 		<expand>True</expand>
@@ -1123,6 +1128,7 @@ Sony DFW-VL500
 		<last_modification_time>Sun, 31 Dec 2000 11:51:09 GMT</last_modification_time>
 	      </signal>
 	      <label>LOCK SETUP</label>
+	      <relief>GTK_RELIEF_NORMAL</relief>
 	      <active>False</active>
 	      <child>
 		<padding>0</padding>
@@ -1216,6 +1222,7 @@ Sony DFW-VL500
 		  <last_modification_time>Sun, 31 Dec 2000 12:22:56 GMT</last_modification_time>
 		</signal>
 		<label>LOAD</label>
+		<relief>GTK_RELIEF_NORMAL</relief>
 		<child>
 		  <left_attach>0</left_attach>
 		  <right_attach>1</right_attach>
@@ -1244,6 +1251,7 @@ Sony DFW-VL500
 		  <last_modification_time>Sun, 31 Dec 2000 12:23:01 GMT</last_modification_time>
 		</signal>
 		<label>SAVE</label>
+		<relief>GTK_RELIEF_NORMAL</relief>
 		<child>
 		  <left_attach>0</left_attach>
 		  <right_attach>1</right_attach>
@@ -1398,6 +1406,7 @@ Sony DFW-VL500
 		<last_modification_time>Tue, 02 Jan 2001 15:32:48 GMT</last_modification_time>
 	      </signal>
 	      <label>External</label>
+	      <relief>GTK_RELIEF_NORMAL</relief>
 	      <active>False</active>
 	      <child>
 		<left_attach>0</left_attach>
@@ -1427,6 +1436,7 @@ Sony DFW-VL500
 		<last_modification_time>Wed, 27 Dec 2000 23:22:00 GMT</last_modification_time>
 	      </signal>
 	      <label>Polarity</label>
+	      <relief>GTK_RELIEF_NORMAL</relief>
 	      <active>False</active>
 	      <child>
 		<left_attach>1</left_attach>
@@ -1663,6 +1673,7 @@ Sony DFW-VL500
 		<last_modification_time>Wed, 27 Dec 2000 23:23:12 GMT</last_modification_time>
 	      </signal>
 	      <label>AUTO</label>
+	      <relief>GTK_RELIEF_NORMAL</relief>
 	      <child>
 		<left_attach>0</left_attach>
 		<right_attach>1</right_attach>
@@ -1713,6 +1724,7 @@ Sony DFW-VL500
 		  <last_modification_time>Wed, 27 Dec 2000 23:23:08 GMT</last_modification_time>
 		</signal>
 		<label>ON</label>
+		<relief>GTK_RELIEF_NORMAL</relief>
 		<active>False</active>
 	      </widget>
 	    </widget>
@@ -1900,6 +1912,7 @@ Sony DFW-VL500
 	      <last_modification_time>Wed, 27 Dec 2000 23:22:29 GMT</last_modification_time>
 	    </signal>
 	    <label>AUTO</label>
+	    <relief>GTK_RELIEF_NORMAL</relief>
 	    <child>
 	      <left_attach>0</left_attach>
 	      <right_attach>1</right_attach>
@@ -1950,6 +1963,7 @@ Sony DFW-VL500
 		<last_modification_time>Wed, 27 Dec 2000 23:22:25 GMT</last_modification_time>
 	      </signal>
 	      <label>ON</label>
+	      <relief>GTK_RELIEF_NORMAL</relief>
 	      <active>False</active>
 	    </widget>
 	  </widget>
@@ -2020,6 +2034,7 @@ Sony DFW-VL500
 	    <last_modification_time>Wed, 27 Dec 2000 23:22:33 GMT</last_modification_time>
 	  </signal>
 	  <label>ON</label>
+	  <relief>GTK_RELIEF_NORMAL</relief>
 	  <active>False</active>
 	  <child>
 	    <padding>0</padding>
@@ -2077,6 +2092,7 @@ Sony DFW-VL500
 	    <last_modification_time>Wed, 27 Dec 2000 23:22:53 GMT</last_modification_time>
 	  </signal>
 	  <label>AUTO</label>
+	  <relief>GTK_RELIEF_NORMAL</relief>
 	  <child>
 	    <padding>0</padding>
 	    <expand>False</expand>
@@ -2149,6 +2165,7 @@ Sony DFW-VL500
 	    <last_modification_time>Wed, 27 Dec 2000 23:22:58 GMT</last_modification_time>
 	  </signal>
 	  <label>ON</label>
+	  <relief>GTK_RELIEF_NORMAL</relief>
 	  <active>False</active>
 	  <child>
 	    <padding>0</padding>
@@ -2206,6 +2223,7 @@ Sony DFW-VL500
 	    <last_modification_time>Wed, 27 Dec 2000 23:23:02 GMT</last_modification_time>
 	  </signal>
 	  <label>AUTO</label>
+	  <relief>GTK_RELIEF_NORMAL</relief>
 	  <child>
 	    <padding>0</padding>
 	    <expand>False</expand>
@@ -2249,6 +2267,7 @@ Sony DFW-VL500
       </signal>
       <label>Video
 Overlay</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
       <active>False</active>
       <child>
 	<left_attach>0</left_attach>
@@ -2403,6 +2422,7 @@ Overlay</label>
 	      <last_modification_time>Wed, 27 Dec 2000 23:19:40 GMT</last_modification_time>
 	    </signal>
 	    <label>AUTO</label>
+	    <relief>GTK_RELIEF_NORMAL</relief>
 	    <child>
 	      <left_attach>0</left_attach>
 	      <right_attach>1</right_attach>
@@ -2453,6 +2473,7 @@ Overlay</label>
 		<last_modification_time>Wed, 27 Dec 2000 23:19:31 GMT</last_modification_time>
 	      </signal>
 	      <label>ON</label>
+	      <relief>GTK_RELIEF_NORMAL</relief>
 	      <active>False</active>
 	    </widget>
 	  </widget>
@@ -2583,6 +2604,7 @@ Overlay</label>
 	      <last_modification_time>Wed, 27 Dec 2000 23:19:53 GMT</last_modification_time>
 	    </signal>
 	    <label>AUTO</label>
+	    <relief>GTK_RELIEF_NORMAL</relief>
 	    <child>
 	      <left_attach>0</left_attach>
 	      <right_attach>1</right_attach>
@@ -2633,6 +2655,7 @@ Overlay</label>
 		<last_modification_time>Wed, 27 Dec 2000 23:19:49 GMT</last_modification_time>
 	      </signal>
 	      <label>ON</label>
+	      <relief>GTK_RELIEF_NORMAL</relief>
 	      <active>False</active>
 	    </widget>
 	  </widget>
@@ -2763,6 +2786,7 @@ Overlay</label>
 	      <last_modification_time>Wed, 27 Dec 2000 23:20:02 GMT</last_modification_time>
 	    </signal>
 	    <label>AUTO</label>
+	    <relief>GTK_RELIEF_NORMAL</relief>
 	    <child>
 	      <left_attach>0</left_attach>
 	      <right_attach>1</right_attach>
@@ -2813,6 +2837,7 @@ Overlay</label>
 		<last_modification_time>Wed, 27 Dec 2000 23:19:58 GMT</last_modification_time>
 	      </signal>
 	      <label>ON</label>
+	      <relief>GTK_RELIEF_NORMAL</relief>
 	      <active>False</active>
 	    </widget>
 	  </widget>
@@ -2943,6 +2968,7 @@ Overlay</label>
 	      <last_modification_time>Wed, 27 Dec 2000 23:20:11 GMT</last_modification_time>
 	    </signal>
 	    <label>AUTO</label>
+	    <relief>GTK_RELIEF_NORMAL</relief>
 	    <child>
 	      <left_attach>0</left_attach>
 	      <right_attach>1</right_attach>
@@ -2993,6 +3019,7 @@ Overlay</label>
 		<last_modification_time>Wed, 27 Dec 2000 23:20:06 GMT</last_modification_time>
 	      </signal>
 	      <label>ON</label>
+	      <relief>GTK_RELIEF_NORMAL</relief>
 	      <active>False</active>
 	    </widget>
 	  </widget>
@@ -3065,6 +3092,7 @@ Overlay</label>
 	      <last_modification_time>Wed, 27 Dec 2000 23:20:16 GMT</last_modification_time>
 	    </signal>
 	    <label>ON</label>
+	    <relief>GTK_RELIEF_NORMAL</relief>
 	    <active>False</active>
 	    <child>
 	      <padding>0</padding>
@@ -3122,6 +3150,7 @@ Overlay</label>
 	      <last_modification_time>Wed, 27 Dec 2000 23:20:20 GMT</last_modification_time>
 	    </signal>
 	    <label>AUTO</label>
+	    <relief>GTK_RELIEF_NORMAL</relief>
 	    <child>
 	      <padding>0</padding>
 	      <expand>False</expand>
@@ -3289,6 +3318,7 @@ Overlay</label>
 	      <last_modification_time>Wed, 27 Dec 2000 23:20:32 GMT</last_modification_time>
 	    </signal>
 	    <label>AUTO</label>
+	    <relief>GTK_RELIEF_NORMAL</relief>
 	    <child>
 	      <left_attach>0</left_attach>
 	      <right_attach>1</right_attach>
@@ -3339,6 +3369,7 @@ Overlay</label>
 		<last_modification_time>Wed, 27 Dec 2000 23:20:27 GMT</last_modification_time>
 	      </signal>
 	      <label>ON</label>
+	      <relief>GTK_RELIEF_NORMAL</relief>
 	      <active>False</active>
 	    </widget>
 	  </widget>
@@ -3436,6 +3467,7 @@ Overlay</label>
 	    <last_modification_time>Wed, 27 Dec 2000 23:23:49 GMT</last_modification_time>
 	  </signal>
 	  <label>ON</label>
+	  <relief>GTK_RELIEF_NORMAL</relief>
 	  <active>False</active>
 	  <child>
 	    <padding>0</padding>
@@ -3493,6 +3525,7 @@ Overlay</label>
 	    <last_modification_time>Wed, 27 Dec 2000 23:24:10 GMT</last_modification_time>
 	  </signal>
 	  <label>AUTO</label>
+	  <relief>GTK_RELIEF_NORMAL</relief>
 	  <child>
 	    <padding>0</padding>
 	    <expand>False</expand>
@@ -3556,6 +3589,7 @@ Overlay</label>
 	    <last_modification_time>Wed, 27 Dec 2000 23:23:52 GMT</last_modification_time>
 	  </signal>
 	  <label>ON</label>
+	  <relief>GTK_RELIEF_NORMAL</relief>
 	  <active>False</active>
 	  <child>
 	    <padding>0</padding>
@@ -3613,6 +3647,7 @@ Overlay</label>
 	    <last_modification_time>Wed, 27 Dec 2000 23:24:14 GMT</last_modification_time>
 	  </signal>
 	  <label>AUTO</label>
+	  <relief>GTK_RELIEF_NORMAL</relief>
 	  <child>
 	    <padding>0</padding>
 	    <expand>False</expand>
@@ -3676,6 +3711,7 @@ Overlay</label>
 	    <last_modification_time>Wed, 27 Dec 2000 23:23:57 GMT</last_modification_time>
 	  </signal>
 	  <label>ON</label>
+	  <relief>GTK_RELIEF_NORMAL</relief>
 	  <active>False</active>
 	  <child>
 	    <padding>0</padding>
@@ -3733,6 +3769,7 @@ Overlay</label>
 	    <last_modification_time>Wed, 27 Dec 2000 23:24:18 GMT</last_modification_time>
 	  </signal>
 	  <label>AUTO</label>
+	  <relief>GTK_RELIEF_NORMAL</relief>
 	  <child>
 	    <padding>0</padding>
 	    <expand>False</expand>
@@ -3796,6 +3833,7 @@ Overlay</label>
 	    <last_modification_time>Wed, 27 Dec 2000 23:24:01 GMT</last_modification_time>
 	  </signal>
 	  <label>ON</label>
+	  <relief>GTK_RELIEF_NORMAL</relief>
 	  <active>False</active>
 	  <child>
 	    <padding>0</padding>
@@ -3853,6 +3891,7 @@ Overlay</label>
 	    <last_modification_time>Wed, 27 Dec 2000 23:24:22 GMT</last_modification_time>
 	  </signal>
 	  <label>AUTO</label>
+	  <relief>GTK_RELIEF_NORMAL</relief>
 	  <child>
 	    <padding>0</padding>
 	    <expand>False</expand>
@@ -3916,6 +3955,7 @@ Overlay</label>
 	    <last_modification_time>Wed, 27 Dec 2000 23:24:05 GMT</last_modification_time>
 	  </signal>
 	  <label>ON</label>
+	  <relief>GTK_RELIEF_NORMAL</relief>
 	  <active>False</active>
 	  <child>
 	    <padding>0</padding>
@@ -3973,6 +4013,7 @@ Overlay</label>
 	    <last_modification_time>Wed, 27 Dec 2000 23:24:27 GMT</last_modification_time>
 	  </signal>
 	  <label>AUTO</label>
+	  <relief>GTK_RELIEF_NORMAL</relief>
 	  <child>
 	    <padding>0</padding>
 	    <expand>False</expand>
@@ -4041,6 +4082,7 @@ Overlay</label>
     <can_default>True</can_default>
     <can_focus>True</can_focus>
     <label>OK</label>
+    <relief>GTK_RELIEF_NORMAL</relief>
   </widget>
 
   <widget>
@@ -4050,6 +4092,7 @@ Overlay</label>
     <can_default>True</can_default>
     <can_focus>True</can_focus>
     <label>Cancel</label>
+    <relief>GTK_RELIEF_NORMAL</relief>
   </widget>
 </widget>
 
@@ -4703,6 +4746,7 @@ Overlay</label>
 	      <last_modification_time>Sat, 30 Dec 2000 15:44:27 GMT</last_modification_time>
 	    </signal>
 	    <label>AUTO</label>
+	    <relief>GTK_RELIEF_NORMAL</relief>
 	    <child>
 	      <left_attach>0</left_attach>
 	      <right_attach>1</right_attach>
@@ -4753,6 +4797,7 @@ Overlay</label>
 		<last_modification_time>Sat, 30 Dec 2000 15:44:22 GMT</last_modification_time>
 	      </signal>
 	      <label>ON</label>
+	      <relief>GTK_RELIEF_NORMAL</relief>
 	      <active>False</active>
 	    </widget>
 	  </widget>
@@ -4883,6 +4928,7 @@ Overlay</label>
 	      <last_modification_time>Sat, 30 Dec 2000 15:44:37 GMT</last_modification_time>
 	    </signal>
 	    <label>AUTO</label>
+	    <relief>GTK_RELIEF_NORMAL</relief>
 	    <child>
 	      <left_attach>0</left_attach>
 	      <right_attach>1</right_attach>
@@ -4933,6 +4979,7 @@ Overlay</label>
 		<last_modification_time>Sat, 30 Dec 2000 15:44:32 GMT</last_modification_time>
 	      </signal>
 	      <label>ON</label>
+	      <relief>GTK_RELIEF_NORMAL</relief>
 	      <active>False</active>
 	    </widget>
 	  </widget>
@@ -4977,66 +5024,517 @@ Overlay</label>
       </child>
 
       <widget>
-	<class>GtkHBox</class>
-	<name>hbox26</name>
-	<homogeneous>True</homogeneous>
+	<class>GtkVBox</class>
+	<name>vbox_capture</name>
+	<homogeneous>False</homogeneous>
 	<spacing>0</spacing>
 
 	<widget>
-	  <class>GtkButton</class>
-	  <name>capture_start</name>
-	  <border_width>2</border_width>
-	  <sensitive>False</sensitive>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>clicked</name>
-	    <handler>on_capture_start_clicked</handler>
-	    <last_modification_time>Wed, 27 Dec 2000 23:21:45 GMT</last_modification_time>
-	  </signal>
-	  <label>START</label>
+	  <class>GtkFrame</class>
+	  <name>frame_capture_freq</name>
+	  <border_width>5</border_width>
+	  <label_xalign>0</label_xalign>
+	  <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
 	  <child>
 	    <padding>0</padding>
 	    <expand>False</expand>
-	    <fill>True</fill>
+	    <fill>False</fill>
 	  </child>
+
+	  <widget>
+	    <class>GtkVBox</class>
+	    <name>vbox_capture_freq</name>
+	    <homogeneous>False</homogeneous>
+	    <spacing>0</spacing>
+
+	    <widget>
+	      <class>GtkRadioButton</class>
+	      <name>radiobutton_capture_freq_immediate</name>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>clicked</name>
+		<handler>on_radiobutton_capture_freq_immediate_clicked</handler>
+		<last_modification_time>Mon, 17 Sep 2001 02:43:31 GMT</last_modification_time>
+	      </signal>
+	      <label>As fast as possible</label>
+	      <active>True</active>
+	      <draw_indicator>True</draw_indicator>
+	      <group>capfrequency</group>
+	      <child>
+		<padding>0</padding>
+		<expand>False</expand>
+		<fill>False</fill>
+	      </child>
+	    </widget>
+
+	    <widget>
+	      <class>GtkHBox</class>
+	      <name>hbox_capture_freq_periodic</name>
+	      <homogeneous>False</homogeneous>
+	      <spacing>0</spacing>
+	      <child>
+		<padding>0</padding>
+		<expand>True</expand>
+		<fill>True</fill>
+	      </child>
+
+	      <widget>
+		<class>GtkRadioButton</class>
+		<name>radiobutton_capture_freq_periodioc</name>
+		<can_focus>True</can_focus>
+		<signal>
+		  <name>clicked</name>
+		  <handler>on_radiobutton_capture_freq_periodioc_clicked</handler>
+		  <last_modification_time>Mon, 17 Sep 2001 02:43:23 GMT</last_modification_time>
+		</signal>
+		<label>Every</label>
+		<active>False</active>
+		<draw_indicator>True</draw_indicator>
+		<group>capfrequency</group>
+		<child>
+		  <padding>0</padding>
+		  <expand>False</expand>
+		  <fill>False</fill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkSpinButton</class>
+		<name>spinbutton_capture_freq_periodic</name>
+		<width>100</width>
+		<can_focus>True</can_focus>
+		<climb_rate>1</climb_rate>
+		<digits>0</digits>
+		<numeric>False</numeric>
+		<update_policy>GTK_UPDATE_ALWAYS</update_policy>
+		<snap>False</snap>
+		<wrap>False</wrap>
+		<value>1</value>
+		<lower>0</lower>
+		<upper>9999</upper>
+		<step>1</step>
+		<page>10</page>
+		<page_size>10</page_size>
+		<child>
+		  <padding>0</padding>
+		  <expand>False</expand>
+		  <fill>False</fill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkLabel</class>
+		<name>label42</name>
+		<label>seconds</label>
+		<justify>GTK_JUSTIFY_CENTER</justify>
+		<wrap>False</wrap>
+		<xalign>0.5</xalign>
+		<yalign>0.5</yalign>
+		<xpad>5</xpad>
+		<ypad>0</ypad>
+		<child>
+		  <padding>2</padding>
+		  <expand>False</expand>
+		  <fill>False</fill>
+		</child>
+	      </widget>
+	    </widget>
+	  </widget>
 	</widget>
 
 	<widget>
-	  <class>GtkButton</class>
-	  <name>capture_stop</name>
-	  <border_width>2</border_width>
-	  <sensitive>False</sensitive>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>clicked</name>
-	    <handler>on_capture_stop_clicked</handler>
-	    <last_modification_time>Wed, 27 Dec 2000 23:21:50 GMT</last_modification_time>
-	  </signal>
-	  <label>STOP</label>
+	  <class>GtkFrame</class>
+	  <name>frame_capture_mode</name>
+	  <border_width>5</border_width>
+	  <label_xalign>0</label_xalign>
+	  <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
 	  <child>
 	    <padding>0</padding>
-	    <expand>False</expand>
+	    <expand>True</expand>
 	    <fill>True</fill>
 	  </child>
+
+	  <widget>
+	    <class>GtkVBox</class>
+	    <name>vbox_capture_mode</name>
+	    <homogeneous>False</homogeneous>
+	    <spacing>0</spacing>
+
+	    <widget>
+	      <class>GtkRadioButton</class>
+	      <name>radiobutton_capture_mode_seq</name>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>clicked</name>
+		<handler>on_radiobutton_capture_mode_seq_clicked</handler>
+		<last_modification_time>Mon, 17 Sep 2001 02:43:13 GMT</last_modification_time>
+	      </signal>
+	      <label>Sequentially number files</label>
+	      <active>True</active>
+	      <draw_indicator>True</draw_indicator>
+	      <group>capmode</group>
+	      <child>
+		<padding>0</padding>
+		<expand>False</expand>
+		<fill>False</fill>
+	      </child>
+	    </widget>
+
+	    <widget>
+	      <class>GtkRadioButton</class>
+	      <name>radiobutton_capture_mode_over</name>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>clicked</name>
+		<handler>on_radiobutton_capture_mode_over_clicked</handler>
+		<last_modification_time>Mon, 17 Sep 2001 02:43:03 GMT</last_modification_time>
+	      </signal>
+	      <label>Continually overwrite file</label>
+	      <active>False</active>
+	      <draw_indicator>True</draw_indicator>
+	      <group>capmode</group>
+	      <child>
+		<padding>0</padding>
+		<expand>False</expand>
+		<fill>False</fill>
+	      </child>
+	    </widget>
+	  </widget>
 	</widget>
 
 	<widget>
-	  <class>GtkButton</class>
-	  <name>capture_single</name>
-	  <border_width>2</border_width>
-	  <sensitive>False</sensitive>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>clicked</name>
-	    <handler>on_capture_single_clicked</handler>
-	    <last_modification_time>Wed, 27 Dec 2000 23:21:23 GMT</last_modification_time>
-	  </signal>
-	  <label>SINGLE</label>
+	  <class>GtkFrame</class>
+	  <name>frame_capture_ftp</name>
+	  <border_width>5</border_width>
+	  <label_xalign>0</label_xalign>
+	  <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
 	  <child>
 	    <padding>0</padding>
 	    <expand>False</expand>
+	    <fill>False</fill>
+	  </child>
+
+	  <widget>
+	    <class>GtkVBox</class>
+	    <name>vbox_capture_ftp</name>
+	    <homogeneous>False</homogeneous>
+	    <spacing>0</spacing>
+
+	    <widget>
+	      <class>GtkCheckButton</class>
+	      <name>checkbutton_capture_ftp</name>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>toggled</name>
+		<handler>on_checkbutton_capture_ftp_toggled</handler>
+		<last_modification_time>Mon, 17 Sep 2001 03:07:26 GMT</last_modification_time>
+	      </signal>
+	      <label>Enable FTP:</label>
+	      <active>False</active>
+	      <draw_indicator>True</draw_indicator>
+	      <child>
+		<padding>0</padding>
+		<expand>False</expand>
+		<fill>False</fill>
+	      </child>
+	    </widget>
+
+	    <widget>
+	      <class>GtkTable</class>
+	      <name>table_capture_ftp</name>
+	      <border_width>4</border_width>
+	      <rows>4</rows>
+	      <columns>2</columns>
+	      <homogeneous>False</homogeneous>
+	      <row_spacing>0</row_spacing>
+	      <column_spacing>0</column_spacing>
+	      <child>
+		<padding>0</padding>
+		<expand>True</expand>
+		<fill>True</fill>
+	      </child>
+
+	      <widget>
+		<class>GtkLabel</class>
+		<name>label_capture_ftp_address</name>
+		<label>Address</label>
+		<justify>GTK_JUSTIFY_RIGHT</justify>
+		<wrap>False</wrap>
+		<xalign>1</xalign>
+		<yalign>0.5</yalign>
+		<xpad>2</xpad>
+		<ypad>0</ypad>
+		<child>
+		  <left_attach>0</left_attach>
+		  <right_attach>1</right_attach>
+		  <top_attach>0</top_attach>
+		  <bottom_attach>1</bottom_attach>
+		  <xpad>0</xpad>
+		  <ypad>0</ypad>
+		  <xexpand>False</xexpand>
+		  <yexpand>False</yexpand>
+		  <xshrink>False</xshrink>
+		  <yshrink>False</yshrink>
+		  <xfill>True</xfill>
+		  <yfill>False</yfill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkEntry</class>
+		<name>entry_capture_ftp_address</name>
+		<height>26</height>
+		<sensitive>False</sensitive>
+		<can_focus>True</can_focus>
+		<editable>True</editable>
+		<text_visible>True</text_visible>
+		<text_max_length>0</text_max_length>
+		<text></text>
+		<child>
+		  <left_attach>1</left_attach>
+		  <right_attach>2</right_attach>
+		  <top_attach>0</top_attach>
+		  <bottom_attach>1</bottom_attach>
+		  <xpad>0</xpad>
+		  <ypad>0</ypad>
+		  <xexpand>True</xexpand>
+		  <yexpand>False</yexpand>
+		  <xshrink>False</xshrink>
+		  <yshrink>False</yshrink>
+		  <xfill>True</xfill>
+		  <yfill>False</yfill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkLabel</class>
+		<name>label_capture_ftp_path</name>
+		<label>Path</label>
+		<justify>GTK_JUSTIFY_RIGHT</justify>
+		<wrap>False</wrap>
+		<xalign>1</xalign>
+		<yalign>0.5</yalign>
+		<xpad>2</xpad>
+		<ypad>0</ypad>
+		<child>
+		  <left_attach>0</left_attach>
+		  <right_attach>1</right_attach>
+		  <top_attach>1</top_attach>
+		  <bottom_attach>2</bottom_attach>
+		  <xpad>0</xpad>
+		  <ypad>0</ypad>
+		  <xexpand>False</xexpand>
+		  <yexpand>False</yexpand>
+		  <xshrink>False</xshrink>
+		  <yshrink>False</yshrink>
+		  <xfill>True</xfill>
+		  <yfill>False</yfill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkLabel</class>
+		<name>label_capture_ftp_user</name>
+		<label>Username</label>
+		<justify>GTK_JUSTIFY_RIGHT</justify>
+		<wrap>False</wrap>
+		<xalign>1</xalign>
+		<yalign>0.5</yalign>
+		<xpad>2</xpad>
+		<ypad>0</ypad>
+		<child>
+		  <left_attach>0</left_attach>
+		  <right_attach>1</right_attach>
+		  <top_attach>2</top_attach>
+		  <bottom_attach>3</bottom_attach>
+		  <xpad>0</xpad>
+		  <ypad>0</ypad>
+		  <xexpand>False</xexpand>
+		  <yexpand>False</yexpand>
+		  <xshrink>False</xshrink>
+		  <yshrink>False</yshrink>
+		  <xfill>True</xfill>
+		  <yfill>False</yfill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkLabel</class>
+		<name>label_capture_ftp_passwd</name>
+		<label>Password</label>
+		<justify>GTK_JUSTIFY_RIGHT</justify>
+		<wrap>False</wrap>
+		<xalign>1</xalign>
+		<yalign>0.5</yalign>
+		<xpad>2</xpad>
+		<ypad>0</ypad>
+		<child>
+		  <left_attach>0</left_attach>
+		  <right_attach>1</right_attach>
+		  <top_attach>3</top_attach>
+		  <bottom_attach>4</bottom_attach>
+		  <xpad>0</xpad>
+		  <ypad>0</ypad>
+		  <xexpand>False</xexpand>
+		  <yexpand>False</yexpand>
+		  <xshrink>False</xshrink>
+		  <yshrink>False</yshrink>
+		  <xfill>True</xfill>
+		  <yfill>False</yfill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkEntry</class>
+		<name>entry_capture_ftp_path</name>
+		<height>26</height>
+		<sensitive>False</sensitive>
+		<can_focus>True</can_focus>
+		<editable>True</editable>
+		<text_visible>True</text_visible>
+		<text_max_length>0</text_max_length>
+		<text></text>
+		<child>
+		  <left_attach>1</left_attach>
+		  <right_attach>2</right_attach>
+		  <top_attach>1</top_attach>
+		  <bottom_attach>2</bottom_attach>
+		  <xpad>0</xpad>
+		  <ypad>0</ypad>
+		  <xexpand>True</xexpand>
+		  <yexpand>False</yexpand>
+		  <xshrink>False</xshrink>
+		  <yshrink>False</yshrink>
+		  <xfill>True</xfill>
+		  <yfill>False</yfill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkEntry</class>
+		<name>entry_capture_ftp_user</name>
+		<height>26</height>
+		<sensitive>False</sensitive>
+		<can_focus>True</can_focus>
+		<editable>True</editable>
+		<text_visible>True</text_visible>
+		<text_max_length>0</text_max_length>
+		<text></text>
+		<child>
+		  <left_attach>1</left_attach>
+		  <right_attach>2</right_attach>
+		  <top_attach>2</top_attach>
+		  <bottom_attach>3</bottom_attach>
+		  <xpad>0</xpad>
+		  <ypad>0</ypad>
+		  <xexpand>True</xexpand>
+		  <yexpand>False</yexpand>
+		  <xshrink>False</xshrink>
+		  <yshrink>False</yshrink>
+		  <xfill>True</xfill>
+		  <yfill>False</yfill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkEntry</class>
+		<name>entry_capture_ftp_passwd</name>
+		<height>26</height>
+		<sensitive>False</sensitive>
+		<can_focus>True</can_focus>
+		<editable>True</editable>
+		<text_visible>True</text_visible>
+		<text_max_length>0</text_max_length>
+		<text></text>
+		<child>
+		  <left_attach>1</left_attach>
+		  <right_attach>2</right_attach>
+		  <top_attach>3</top_attach>
+		  <bottom_attach>4</bottom_attach>
+		  <xpad>0</xpad>
+		  <ypad>0</ypad>
+		  <xexpand>True</xexpand>
+		  <yexpand>False</yexpand>
+		  <xshrink>False</xshrink>
+		  <yshrink>False</yshrink>
+		  <xfill>True</xfill>
+		  <yfill>False</yfill>
+		</child>
+	      </widget>
+	    </widget>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkHBox</class>
+	  <name>hbox_capture</name>
+	  <homogeneous>True</homogeneous>
+	  <spacing>0</spacing>
+	  <child>
+	    <padding>0</padding>
+	    <expand>True</expand>
 	    <fill>True</fill>
 	  </child>
+
+	  <widget>
+	    <class>GtkButton</class>
+	    <name>capture_start</name>
+	    <border_width>2</border_width>
+	    <sensitive>False</sensitive>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>clicked</name>
+	      <handler>on_capture_start_clicked</handler>
+	      <last_modification_time>Wed, 27 Dec 2000 23:21:45 GMT</last_modification_time>
+	    </signal>
+	    <label>START</label>
+	    <relief>GTK_RELIEF_NORMAL</relief>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>True</fill>
+	    </child>
+	  </widget>
+
+	  <widget>
+	    <class>GtkButton</class>
+	    <name>capture_stop</name>
+	    <border_width>2</border_width>
+	    <sensitive>False</sensitive>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>clicked</name>
+	      <handler>on_capture_stop_clicked</handler>
+	      <last_modification_time>Wed, 27 Dec 2000 23:21:50 GMT</last_modification_time>
+	    </signal>
+	    <label>STOP</label>
+	    <relief>GTK_RELIEF_NORMAL</relief>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>True</fill>
+	    </child>
+	  </widget>
+
+	  <widget>
+	    <class>GtkButton</class>
+	    <name>capture_single</name>
+	    <border_width>2</border_width>
+	    <sensitive>False</sensitive>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>clicked</name>
+	      <handler>on_capture_single_clicked</handler>
+	      <last_modification_time>Wed, 27 Dec 2000 23:21:23 GMT</last_modification_time>
+	    </signal>
+	    <label>SINGLE</label>
+	    <relief>GTK_RELIEF_NORMAL</relief>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>True</fill>
+	    </child>
+	  </widget>
 	</widget>
       </widget>
     </widget>
@@ -5073,6 +5571,7 @@ Overlay</label>
 	    <last_modification_time>Mon, 08 Jan 2001 13:26:20 GMT</last_modification_time>
 	  </signal>
 	  <label>START</label>
+	  <relief>GTK_RELIEF_NORMAL</relief>
 	  <child>
 	    <padding>0</padding>
 	    <expand>False</expand>
@@ -5092,6 +5591,7 @@ Overlay</label>
 	    <last_modification_time>Mon, 08 Jan 2001 13:26:27 GMT</last_modification_time>
 	  </signal>
 	  <label>STOP</label>
+	  <relief>GTK_RELIEF_NORMAL</relief>
 	  <child>
 	    <padding>0</padding>
 	    <expand>False</expand>
@@ -5111,6 +5611,7 @@ Overlay</label>
 	    <last_modification_time>Mon, 08 Jan 2001 13:26:34 GMT</last_modification_time>
 	  </signal>
 	  <label>RESTART</label>
+	  <relief>GTK_RELIEF_NORMAL</relief>
 	  <child>
 	    <padding>0</padding>
 	    <expand>False</expand>
@@ -5188,6 +5689,7 @@ Overlay</label>
 	    <last_modification_time>Sat, 30 Dec 2000 20:25:46 GMT</last_modification_time>
 	  </signal>
 	  <label>ON</label>
+	  <relief>GTK_RELIEF_NORMAL</relief>
 	  <active>False</active>
 	  <child>
 	    <padding>0</padding>
@@ -5245,6 +5747,7 @@ Overlay</label>
 	    <last_modification_time>Sat, 30 Dec 2000 20:25:59 GMT</last_modification_time>
 	  </signal>
 	  <label>AUTO</label>
+	  <relief>GTK_RELIEF_NORMAL</relief>
 	  <child>
 	    <padding>0</padding>
 	    <expand>False</expand>
@@ -6156,6 +6659,7 @@ controlled with the AV/C protocol, please refer to http://linux1394.sourceforge.
 	    <name>togglebutton1</name>
 	    <can_focus>True</can_focus>
 	    <label>Thru:</label>
+	    <relief>GTK_RELIEF_NORMAL</relief>
 	    <active>False</active>
 	    <child>
 	      <left_attach>0</left_attach>
@@ -6200,6 +6704,7 @@ controlled with the AV/C protocol, please refer to http://linux1394.sourceforge.
 	    <border_width>2</border_width>
 	    <can_focus>True</can_focus>
 	    <label>Load</label>
+	    <relief>GTK_RELIEF_NORMAL</relief>
 	    <child>
 	      <padding>0</padding>
 	      <expand>False</expand>
@@ -6213,6 +6718,7 @@ controlled with the AV/C protocol, please refer to http://linux1394.sourceforge.
 	    <border_width>2</border_width>
 	    <can_focus>True</can_focus>
 	    <label>Save</label>
+	    <relief>GTK_RELIEF_NORMAL</relief>
 	    <child>
 	      <padding>0</padding>
 	      <expand>False</expand>
@@ -6226,6 +6732,7 @@ controlled with the AV/C protocol, please refer to http://linux1394.sourceforge.
 	    <border_width>2</border_width>
 	    <can_focus>True</can_focus>
 	    <label>Delete</label>
+	    <relief>GTK_RELIEF_NORMAL</relief>
 	    <child>
 	      <padding>0</padding>
 	      <expand>False</expand>
@@ -6611,6 +7118,7 @@ controlled with the AV/C protocol, please refer to http://linux1394.sourceforge.
       <last_modification_time>Tue, 27 Mar 2001 14:06:11 GMT</last_modification_time>
     </signal>
     <label>OK</label>
+    <relief>GTK_RELIEF_NORMAL</relief>
   </widget>
 
   <widget>
@@ -6625,6 +7133,7 @@ controlled with the AV/C protocol, please refer to http://linux1394.sourceforge.
       <last_modification_time>Tue, 27 Mar 2001 14:06:22 GMT</last_modification_time>
     </signal>
     <label>Cancel</label>
+    <relief>GTK_RELIEF_NORMAL</relief>
   </widget>
 </widget>
 
@@ -6658,6 +7167,7 @@ controlled with the AV/C protocol, please refer to http://linux1394.sourceforge.
       <last_modification_time>Tue, 27 Mar 2001 14:06:39 GMT</last_modification_time>
     </signal>
     <label>OK</label>
+    <relief>GTK_RELIEF_NORMAL</relief>
   </widget>
 
   <widget>
@@ -6672,6 +7182,7 @@ controlled with the AV/C protocol, please refer to http://linux1394.sourceforge.
       <last_modification_time>Tue, 27 Mar 2001 14:06:49 GMT</last_modification_time>
     </signal>
     <label>Cancel</label>
+    <relief>GTK_RELIEF_NORMAL</relief>
   </widget>
 </widget>
 

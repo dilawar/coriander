@@ -74,6 +74,33 @@ typedef struct
   char                   *gdk_buffer;
 } porthole_info;
 
+typedef enum
+{
+  CAPTURE_FREQ_IMMEDIATE,
+  CAPTURE_FREQ_PERIODIC
+} capture_frequency;
+
+typedef enum
+{
+  CAPTURE_MODE_SEQUENTIAL,
+  CAPTURE_MODE_OVERWRITE
+} capture_mode;
+
+typedef struct
+{
+
+  capture_frequency frequency;  
+  guint32 period;
+  capture_mode mode;
+    
+  gboolean ftp_enable;
+  gchar   *ftp_address;
+  gchar   *ftp_path;
+  gchar   *ftp_user;
+  gchar   *ftp_passwd;
+  
+} capture_info;
+
 gint
 IsoStartThread(gpointer p);
 
@@ -110,5 +137,8 @@ capture_idler(gpointer p);
 
 void
 save_single_frame(gchar *filename);
+
+gboolean
+ftp_single_frame(gchar *filename, gchar *host, gchar *path, gchar *dest_filename, gchar *user, gchar *passwd);
 
 #endif

@@ -673,3 +673,27 @@ on_test_pattern_activate               (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
 #endif
+
+void
+on_radiobutton_capture_freq_immediate_clicked
+                                        (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_radiobutton_capture_freq_periodioc_clicked
+                                        (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_radiobutton_capture_mode_seq_clicked
+                                        (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_radiobutton_capture_mode_over_clicked
+                                        (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_checkbutton_capture_ftp_toggled     (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);

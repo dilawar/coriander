@@ -22,23 +22,23 @@ static GnomeUIInfo file_menu_uiinfo[] =
   {
     GNOME_APP_UI_ITEM, N_("_Load Setup"),
     NULL,
-    on_load_setup_activate, NULL, NULL,
+    (gpointer) on_load_setup_activate, NULL, NULL,
     GNOME_APP_PIXMAP_STOCK, GNOME_STOCK_MENU_OPEN,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("_Save Setup"),
     NULL,
-    on_save_setup_activate, NULL, NULL,
+    (gpointer) on_save_setup_activate, NULL, NULL,
     GNOME_APP_PIXMAP_STOCK, GNOME_STOCK_MENU_SAVE,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("Save Setup _As"),
     NULL,
-    on_save_setup_as_activate, NULL, NULL,
+    (gpointer) on_save_setup_as_activate, NULL, NULL,
     GNOME_APP_PIXMAP_STOCK, GNOME_STOCK_MENU_SAVE_AS,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   GNOMEUIINFO_SEPARATOR,
   GNOMEUIINFO_MENU_PREFERENCES_ITEM (on_preferences_activate, NULL),
@@ -46,9 +46,9 @@ static GnomeUIInfo file_menu_uiinfo[] =
   {
     GNOME_APP_UI_ITEM, N_("E_xit"),
     NULL,
-    on_exit_activate, NULL, NULL,
+    (gpointer) on_exit_activate, NULL, NULL,
     GNOME_APP_PIXMAP_STOCK, GNOME_STOCK_MENU_EXIT,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   GNOMEUIINFO_END
 };
@@ -58,58 +58,58 @@ static GnomeUIInfo window_menu_uiinfo[] =
   {
     GNOME_APP_UI_ITEM, N_("_Porthole"),
     NULL,
-    on_porthole_activate, NULL, NULL,
+    (gpointer) on_porthole_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("_Aperture"),
     NULL,
-    on_aperture_activate, NULL, NULL,
+    (gpointer) on_aperture_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("C_olor"),
     NULL,
-    on_color_activate, NULL, NULL,
+    (gpointer) on_color_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("_Capture"),
     NULL,
-    on_capture_activate, NULL, NULL,
+    (gpointer) on_capture_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("_Status"),
     NULL,
-    on_status_activate, NULL, NULL,
+    (gpointer) on_status_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("_Temperature"),
     NULL,
-    on_temp_window_activate, NULL, NULL,
+    (gpointer) on_temp_window_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("Format_7 Setup"),
     NULL,
-    on_format7_window_activate, NULL, NULL,
+    (gpointer) on_format7_window_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("Format_6 Setup"),
     NULL,
-    on_format6_window_activate, NULL, NULL,
+    (gpointer) on_format6_window_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   GNOMEUIINFO_END
 };
@@ -119,53 +119,53 @@ static GnomeUIInfo format_0_menu_uiinfo[] =
   {
     GNOME_APP_UI_ITEM, N_("160x120 YUV (4:4:4)"),
     NULL,
-    on_f0_mode0_activate, NULL, NULL,
+    (gpointer) on_f0_mode0_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   GNOMEUIINFO_SEPARATOR,
   {
     GNOME_APP_UI_ITEM, N_("320x240 YUV (4:2:2)"),
     NULL,
-    on_f0_mode1_activate, NULL, NULL,
+    (gpointer) on_f0_mode1_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   GNOMEUIINFO_SEPARATOR,
   {
     GNOME_APP_UI_ITEM, N_("640x480 YUV (4:1:1)"),
     NULL,
-    on_f0_mode2_activate, NULL, NULL,
+    (gpointer) on_f0_mode2_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("640x480 YUV (4:2:2)"),
     NULL,
-    on_f0_mode3_activate, NULL, NULL,
+    (gpointer) on_f0_mode3_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("640x480 RGB 24bpp"),
     NULL,
-    on_f0_mode4_activate, NULL, NULL,
+    (gpointer) on_f0_mode4_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("640x480 Mono 8bpp"),
     NULL,
-    on_f0_mode5_ativate, NULL, NULL,
+    (gpointer) on_f0_mode5_ativate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("640x480 Mono 16bpp"),
     NULL,
-    on_f0_mode6_activate, NULL, NULL,
+    (gpointer) on_f0_mode6_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   GNOMEUIINFO_END
 };
@@ -175,59 +175,59 @@ static GnomeUIInfo format_1_menu_uiinfo[] =
   {
     GNOME_APP_UI_ITEM, N_("800x600 YUV (4:2:2)"),
     NULL,
-    on_f1_mode0_activate, NULL, NULL,
+    (gpointer) on_f1_mode0_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("800x600 RGB 24bpp"),
     NULL,
-    on_f1_mode1_activate, NULL, NULL,
+    (gpointer) on_f1_mode1_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("800x600 Mono 8bpp"),
     NULL,
-    on_f1_mode2_activate, NULL, NULL,
+    (gpointer) on_f1_mode2_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("800x600 Mono 16bpp"),
     NULL,
-    on_f1_mode6_activate, NULL, NULL,
+    (gpointer) on_f1_mode6_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   GNOMEUIINFO_SEPARATOR,
   {
     GNOME_APP_UI_ITEM, N_("1024x768 YUV (4:2:2)"),
     NULL,
-    on_f1_mode3_activate, NULL, NULL,
+    (gpointer) on_f1_mode3_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("1024x768 RGB 24bpp"),
     NULL,
-    on_f1_mode4_activate, NULL, NULL,
+    (gpointer) on_f1_mode4_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("1024x768 Mono 8bpp"),
     NULL,
-    on_f1_mode5_activate, NULL, NULL,
+    (gpointer) on_f1_mode5_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("1024x768 Mono 16bpp"),
     NULL,
-    on_f1_mode7_activate, NULL, NULL,
+    (gpointer) on_f1_mode7_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   GNOMEUIINFO_END
 };
@@ -237,59 +237,59 @@ static GnomeUIInfo format_2_menu_uiinfo[] =
   {
     GNOME_APP_UI_ITEM, N_("1280x960 YUV (4:2:2)"),
     NULL,
-    on_f2_mode0_activate, NULL, NULL,
+    (gpointer) on_f2_mode0_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("1280x960 RGB 24bpp"),
     NULL,
-    on_f2_mode1_activate, NULL, NULL,
+    (gpointer) on_f2_mode1_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("1280x960 Mono 8bpp"),
     NULL,
-    on_f2_mode2_activate, NULL, NULL,
+    (gpointer) on_f2_mode2_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("1280x960 Mono 16bpp"),
     NULL,
-    on_f2_mode6_activate, NULL, NULL,
+    (gpointer) on_f2_mode6_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   GNOMEUIINFO_SEPARATOR,
   {
     GNOME_APP_UI_ITEM, N_("1600x1200 YUV (4:2:2)"),
     NULL,
-    on_f2_mode3_activate, NULL, NULL,
+    (gpointer) on_f2_mode3_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("1600x1200 RGB 24bpp"),
     NULL,
-    on_f2_mode4_activate, NULL, NULL,
+    (gpointer) on_f2_mode4_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("1600x1200 Mono 8bpp"),
     NULL,
-    on_f2_mode5_activate, NULL, NULL,
+    (gpointer) on_f2_mode5_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("1600x1200 Mono 16bpp"),
     NULL,
-    on_f2_mode7_activate, NULL, NULL,
+    (gpointer) on_f2_mode7_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   GNOMEUIINFO_END
 };
@@ -299,9 +299,9 @@ static GnomeUIInfo format_6_menu_uiinfo[] =
   {
     GNOME_APP_UI_ITEM, N_("Exif"),
     NULL,
-    on_f6_mode0_activate, NULL, NULL,
+    (gpointer) on_f6_mode0_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   GNOMEUIINFO_END
 };
@@ -311,58 +311,58 @@ static GnomeUIInfo format_7_menu_uiinfo[] =
   {
     GNOME_APP_UI_ITEM, N_("Mode 0"),
     NULL,
-    on_f7_mode0_activate, NULL, NULL,
+    (gpointer) on_f7_mode0_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("Mode 1"),
     NULL,
-    on_f7_mode1_activate, NULL, NULL,
+    (gpointer) on_f7_mode1_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("Mode 2"),
     NULL,
-    on_f7_mode2_activate, NULL, NULL,
+    (gpointer) on_f7_mode2_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("Mode 3"),
     NULL,
-    on_f7_mode3_activate, NULL, NULL,
+    (gpointer) on_f7_mode3_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("Mode 4"),
     NULL,
-    on_f7_mode4_activate, NULL, NULL,
+    (gpointer) on_f7_mode4_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("Mode 5"),
     NULL,
-    on_f7_mode5_activate, NULL, NULL,
+    (gpointer) on_f7_mode5_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("Mode 6"),
     NULL,
-    on_f7_mode6_activate, NULL, NULL,
+    (gpointer) on_f7_mode6_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("Mode 7"),
     NULL,
-    on_f7_mode7_activate, NULL, NULL,
+    (gpointer) on_f7_mode7_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   GNOMEUIINFO_END
 };
@@ -374,21 +374,21 @@ static GnomeUIInfo format_menu_uiinfo[] =
     NULL,
     format_0_menu_uiinfo, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   {
     GNOME_APP_UI_SUBTREE, N_("Format 1"),
     NULL,
     format_1_menu_uiinfo, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   {
     GNOME_APP_UI_SUBTREE, N_("Format 2"),
     NULL,
     format_2_menu_uiinfo, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   GNOMEUIINFO_SEPARATOR,
   {
@@ -396,7 +396,7 @@ static GnomeUIInfo format_menu_uiinfo[] =
     NULL,
     format_6_menu_uiinfo, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   GNOMEUIINFO_SEPARATOR,
   {
@@ -404,15 +404,15 @@ static GnomeUIInfo format_menu_uiinfo[] =
     NULL,
     format_7_menu_uiinfo, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   GNOMEUIINFO_SEPARATOR,
   {
     GNOME_APP_UI_TOGGLEITEM, N_("Test Pattern"),
     NULL,
-    on_test_pattern_activate, NULL, NULL,
+    (gpointer) on_test_pattern_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   GNOMEUIINFO_END
 };
@@ -430,21 +430,21 @@ static GnomeUIInfo menubar_uiinfo[] =
     NULL,
     file_menu_uiinfo, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   {
     GNOME_APP_UI_SUBTREE, N_("_Window"),
     NULL,
     window_menu_uiinfo, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   {
     GNOME_APP_UI_SUBTREE, N_("Forma_t"),
     NULL,
     format_menu_uiinfo, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, 0, NULL
+    0, (GdkModifierType) 0, NULL
   },
   GNOMEUIINFO_MENU_HELP_TREE (help_menu_uiinfo),
   GNOMEUIINFO_END
@@ -3231,7 +3231,34 @@ create_capture_window (void)
   GtkWidget *capsize_power;
   GtkWidget *capsize_scale;
   GtkWidget *capture_frame;
-  GtkWidget *hbox26;
+  GtkWidget *vbox_capture;
+  GtkWidget *frame_capture_freq;
+  GtkWidget *vbox_capture_freq;
+  GSList *capfrequency_group = NULL;
+  GtkWidget *radiobutton_capture_freq_immediate;
+  GtkWidget *hbox_capture_freq_periodic;
+  GtkWidget *radiobutton_capture_freq_periodioc;
+  GtkObject *spinbutton_capture_freq_periodic_adj;
+  GtkWidget *spinbutton_capture_freq_periodic;
+  GtkWidget *label42;
+  GtkWidget *frame_capture_mode;
+  GtkWidget *vbox_capture_mode;
+  GSList *capmode_group = NULL;
+  GtkWidget *radiobutton_capture_mode_seq;
+  GtkWidget *radiobutton_capture_mode_over;
+  GtkWidget *frame_capture_ftp;
+  GtkWidget *vbox_capture_ftp;
+  GtkWidget *checkbutton_capture_ftp;
+  GtkWidget *table_capture_ftp;
+  GtkWidget *label_capture_ftp_address;
+  GtkWidget *entry_capture_ftp_address;
+  GtkWidget *label_capture_ftp_path;
+  GtkWidget *label_capture_ftp_user;
+  GtkWidget *label_capture_ftp_passwd;
+  GtkWidget *entry_capture_ftp_path;
+  GtkWidget *entry_capture_ftp_user;
+  GtkWidget *entry_capture_ftp_passwd;
+  GtkWidget *hbox_capture;
   GtkWidget *capture_start;
   GtkWidget *capture_stop;
   GtkWidget *capture_single;
@@ -3432,19 +3459,236 @@ create_capture_window (void)
   gtk_container_set_border_width (GTK_CONTAINER (capture_frame), 5);
   gtk_widget_set_sensitive (capture_frame, FALSE);
 
-  hbox26 = gtk_hbox_new (TRUE, 0);
-  gtk_widget_ref (hbox26);
-  gtk_object_set_data_full (GTK_OBJECT (capture_window), "hbox26", hbox26,
+  vbox_capture = gtk_vbox_new (FALSE, 0);
+  gtk_widget_ref (vbox_capture);
+  gtk_object_set_data_full (GTK_OBJECT (capture_window), "vbox_capture", vbox_capture,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (hbox26);
-  gtk_container_add (GTK_CONTAINER (capture_frame), hbox26);
+  gtk_widget_show (vbox_capture);
+  gtk_container_add (GTK_CONTAINER (capture_frame), vbox_capture);
+
+  frame_capture_freq = gtk_frame_new (NULL);
+  gtk_widget_ref (frame_capture_freq);
+  gtk_object_set_data_full (GTK_OBJECT (capture_window), "frame_capture_freq", frame_capture_freq,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (frame_capture_freq);
+  gtk_box_pack_start (GTK_BOX (vbox_capture), frame_capture_freq, FALSE, FALSE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (frame_capture_freq), 5);
+
+  vbox_capture_freq = gtk_vbox_new (FALSE, 0);
+  gtk_widget_ref (vbox_capture_freq);
+  gtk_object_set_data_full (GTK_OBJECT (capture_window), "vbox_capture_freq", vbox_capture_freq,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (vbox_capture_freq);
+  gtk_container_add (GTK_CONTAINER (frame_capture_freq), vbox_capture_freq);
+
+  radiobutton_capture_freq_immediate = gtk_radio_button_new_with_label (capfrequency_group, _("As fast as possible"));
+  capfrequency_group = gtk_radio_button_group (GTK_RADIO_BUTTON (radiobutton_capture_freq_immediate));
+  gtk_widget_ref (radiobutton_capture_freq_immediate);
+  gtk_object_set_data_full (GTK_OBJECT (capture_window), "radiobutton_capture_freq_immediate", radiobutton_capture_freq_immediate,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (radiobutton_capture_freq_immediate);
+  gtk_box_pack_start (GTK_BOX (vbox_capture_freq), radiobutton_capture_freq_immediate, FALSE, FALSE, 0);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radiobutton_capture_freq_immediate), TRUE);
+
+  hbox_capture_freq_periodic = gtk_hbox_new (FALSE, 0);
+  gtk_widget_ref (hbox_capture_freq_periodic);
+  gtk_object_set_data_full (GTK_OBJECT (capture_window), "hbox_capture_freq_periodic", hbox_capture_freq_periodic,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (hbox_capture_freq_periodic);
+  gtk_box_pack_start (GTK_BOX (vbox_capture_freq), hbox_capture_freq_periodic, TRUE, TRUE, 0);
+
+  radiobutton_capture_freq_periodioc = gtk_radio_button_new_with_label (capfrequency_group, _("Every"));
+  capfrequency_group = gtk_radio_button_group (GTK_RADIO_BUTTON (radiobutton_capture_freq_periodioc));
+  gtk_widget_ref (radiobutton_capture_freq_periodioc);
+  gtk_object_set_data_full (GTK_OBJECT (capture_window), "radiobutton_capture_freq_periodioc", radiobutton_capture_freq_periodioc,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (radiobutton_capture_freq_periodioc);
+  gtk_box_pack_start (GTK_BOX (hbox_capture_freq_periodic), radiobutton_capture_freq_periodioc, FALSE, FALSE, 0);
+
+  spinbutton_capture_freq_periodic_adj = gtk_adjustment_new (1, 0, 9999, 1, 10, 10);
+  spinbutton_capture_freq_periodic = gtk_spin_button_new (GTK_ADJUSTMENT (spinbutton_capture_freq_periodic_adj), 1, 0);
+  gtk_widget_ref (spinbutton_capture_freq_periodic);
+  gtk_object_set_data_full (GTK_OBJECT (capture_window), "spinbutton_capture_freq_periodic", spinbutton_capture_freq_periodic,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (spinbutton_capture_freq_periodic);
+  gtk_box_pack_start (GTK_BOX (hbox_capture_freq_periodic), spinbutton_capture_freq_periodic, FALSE, FALSE, 0);
+  gtk_widget_set_usize (spinbutton_capture_freq_periodic, 100, -2);
+
+  label42 = gtk_label_new (_("seconds"));
+  gtk_widget_ref (label42);
+  gtk_object_set_data_full (GTK_OBJECT (capture_window), "label42", label42,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label42);
+  gtk_box_pack_start (GTK_BOX (hbox_capture_freq_periodic), label42, FALSE, FALSE, 2);
+  gtk_misc_set_padding (GTK_MISC (label42), 5, 0);
+
+  frame_capture_mode = gtk_frame_new (NULL);
+  gtk_widget_ref (frame_capture_mode);
+  gtk_object_set_data_full (GTK_OBJECT (capture_window), "frame_capture_mode", frame_capture_mode,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (frame_capture_mode);
+  gtk_box_pack_start (GTK_BOX (vbox_capture), frame_capture_mode, TRUE, TRUE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (frame_capture_mode), 5);
+
+  vbox_capture_mode = gtk_vbox_new (FALSE, 0);
+  gtk_widget_ref (vbox_capture_mode);
+  gtk_object_set_data_full (GTK_OBJECT (capture_window), "vbox_capture_mode", vbox_capture_mode,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (vbox_capture_mode);
+  gtk_container_add (GTK_CONTAINER (frame_capture_mode), vbox_capture_mode);
+
+  radiobutton_capture_mode_seq = gtk_radio_button_new_with_label (capmode_group, _("Sequentially number files"));
+  capmode_group = gtk_radio_button_group (GTK_RADIO_BUTTON (radiobutton_capture_mode_seq));
+  gtk_widget_ref (radiobutton_capture_mode_seq);
+  gtk_object_set_data_full (GTK_OBJECT (capture_window), "radiobutton_capture_mode_seq", radiobutton_capture_mode_seq,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (radiobutton_capture_mode_seq);
+  gtk_box_pack_start (GTK_BOX (vbox_capture_mode), radiobutton_capture_mode_seq, FALSE, FALSE, 0);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radiobutton_capture_mode_seq), TRUE);
+
+  radiobutton_capture_mode_over = gtk_radio_button_new_with_label (capmode_group, _("Continually overwrite file"));
+  capmode_group = gtk_radio_button_group (GTK_RADIO_BUTTON (radiobutton_capture_mode_over));
+  gtk_widget_ref (radiobutton_capture_mode_over);
+  gtk_object_set_data_full (GTK_OBJECT (capture_window), "radiobutton_capture_mode_over", radiobutton_capture_mode_over,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (radiobutton_capture_mode_over);
+  gtk_box_pack_start (GTK_BOX (vbox_capture_mode), radiobutton_capture_mode_over, FALSE, FALSE, 0);
+
+  frame_capture_ftp = gtk_frame_new (NULL);
+  gtk_widget_ref (frame_capture_ftp);
+  gtk_object_set_data_full (GTK_OBJECT (capture_window), "frame_capture_ftp", frame_capture_ftp,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (frame_capture_ftp);
+  gtk_box_pack_start (GTK_BOX (vbox_capture), frame_capture_ftp, FALSE, FALSE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (frame_capture_ftp), 5);
+
+  vbox_capture_ftp = gtk_vbox_new (FALSE, 0);
+  gtk_widget_ref (vbox_capture_ftp);
+  gtk_object_set_data_full (GTK_OBJECT (capture_window), "vbox_capture_ftp", vbox_capture_ftp,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (vbox_capture_ftp);
+  gtk_container_add (GTK_CONTAINER (frame_capture_ftp), vbox_capture_ftp);
+
+  checkbutton_capture_ftp = gtk_check_button_new_with_label (_("Enable FTP:"));
+  gtk_widget_ref (checkbutton_capture_ftp);
+  gtk_object_set_data_full (GTK_OBJECT (capture_window), "checkbutton_capture_ftp", checkbutton_capture_ftp,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (checkbutton_capture_ftp);
+  gtk_box_pack_start (GTK_BOX (vbox_capture_ftp), checkbutton_capture_ftp, FALSE, FALSE, 0);
+
+  table_capture_ftp = gtk_table_new (4, 2, FALSE);
+  gtk_widget_ref (table_capture_ftp);
+  gtk_object_set_data_full (GTK_OBJECT (capture_window), "table_capture_ftp", table_capture_ftp,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (table_capture_ftp);
+  gtk_box_pack_start (GTK_BOX (vbox_capture_ftp), table_capture_ftp, TRUE, TRUE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (table_capture_ftp), 4);
+
+  label_capture_ftp_address = gtk_label_new (_("Address"));
+  gtk_widget_ref (label_capture_ftp_address);
+  gtk_object_set_data_full (GTK_OBJECT (capture_window), "label_capture_ftp_address", label_capture_ftp_address,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label_capture_ftp_address);
+  gtk_table_attach (GTK_TABLE (table_capture_ftp), label_capture_ftp_address, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_label_set_justify (GTK_LABEL (label_capture_ftp_address), GTK_JUSTIFY_RIGHT);
+  gtk_misc_set_alignment (GTK_MISC (label_capture_ftp_address), 1, 0.5);
+  gtk_misc_set_padding (GTK_MISC (label_capture_ftp_address), 2, 0);
+
+  entry_capture_ftp_address = gtk_entry_new ();
+  gtk_widget_ref (entry_capture_ftp_address);
+  gtk_object_set_data_full (GTK_OBJECT (capture_window), "entry_capture_ftp_address", entry_capture_ftp_address,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (entry_capture_ftp_address);
+  gtk_table_attach (GTK_TABLE (table_capture_ftp), entry_capture_ftp_address, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_widget_set_usize (entry_capture_ftp_address, -2, 26);
+  gtk_widget_set_sensitive (entry_capture_ftp_address, FALSE);
+
+  label_capture_ftp_path = gtk_label_new (_("Path"));
+  gtk_widget_ref (label_capture_ftp_path);
+  gtk_object_set_data_full (GTK_OBJECT (capture_window), "label_capture_ftp_path", label_capture_ftp_path,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label_capture_ftp_path);
+  gtk_table_attach (GTK_TABLE (table_capture_ftp), label_capture_ftp_path, 0, 1, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_label_set_justify (GTK_LABEL (label_capture_ftp_path), GTK_JUSTIFY_RIGHT);
+  gtk_misc_set_alignment (GTK_MISC (label_capture_ftp_path), 1, 0.5);
+  gtk_misc_set_padding (GTK_MISC (label_capture_ftp_path), 2, 0);
+
+  label_capture_ftp_user = gtk_label_new (_("Username"));
+  gtk_widget_ref (label_capture_ftp_user);
+  gtk_object_set_data_full (GTK_OBJECT (capture_window), "label_capture_ftp_user", label_capture_ftp_user,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label_capture_ftp_user);
+  gtk_table_attach (GTK_TABLE (table_capture_ftp), label_capture_ftp_user, 0, 1, 2, 3,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_label_set_justify (GTK_LABEL (label_capture_ftp_user), GTK_JUSTIFY_RIGHT);
+  gtk_misc_set_alignment (GTK_MISC (label_capture_ftp_user), 1, 0.5);
+  gtk_misc_set_padding (GTK_MISC (label_capture_ftp_user), 2, 0);
+
+  label_capture_ftp_passwd = gtk_label_new (_("Password"));
+  gtk_widget_ref (label_capture_ftp_passwd);
+  gtk_object_set_data_full (GTK_OBJECT (capture_window), "label_capture_ftp_passwd", label_capture_ftp_passwd,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label_capture_ftp_passwd);
+  gtk_table_attach (GTK_TABLE (table_capture_ftp), label_capture_ftp_passwd, 0, 1, 3, 4,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_label_set_justify (GTK_LABEL (label_capture_ftp_passwd), GTK_JUSTIFY_RIGHT);
+  gtk_misc_set_alignment (GTK_MISC (label_capture_ftp_passwd), 1, 0.5);
+  gtk_misc_set_padding (GTK_MISC (label_capture_ftp_passwd), 2, 0);
+
+  entry_capture_ftp_path = gtk_entry_new ();
+  gtk_widget_ref (entry_capture_ftp_path);
+  gtk_object_set_data_full (GTK_OBJECT (capture_window), "entry_capture_ftp_path", entry_capture_ftp_path,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (entry_capture_ftp_path);
+  gtk_table_attach (GTK_TABLE (table_capture_ftp), entry_capture_ftp_path, 1, 2, 1, 2,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_widget_set_usize (entry_capture_ftp_path, -2, 26);
+  gtk_widget_set_sensitive (entry_capture_ftp_path, FALSE);
+
+  entry_capture_ftp_user = gtk_entry_new ();
+  gtk_widget_ref (entry_capture_ftp_user);
+  gtk_object_set_data_full (GTK_OBJECT (capture_window), "entry_capture_ftp_user", entry_capture_ftp_user,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (entry_capture_ftp_user);
+  gtk_table_attach (GTK_TABLE (table_capture_ftp), entry_capture_ftp_user, 1, 2, 2, 3,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_widget_set_usize (entry_capture_ftp_user, -2, 26);
+  gtk_widget_set_sensitive (entry_capture_ftp_user, FALSE);
+
+  entry_capture_ftp_passwd = gtk_entry_new ();
+  gtk_widget_ref (entry_capture_ftp_passwd);
+  gtk_object_set_data_full (GTK_OBJECT (capture_window), "entry_capture_ftp_passwd", entry_capture_ftp_passwd,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (entry_capture_ftp_passwd);
+  gtk_table_attach (GTK_TABLE (table_capture_ftp), entry_capture_ftp_passwd, 1, 2, 3, 4,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_widget_set_usize (entry_capture_ftp_passwd, -2, 26);
+  gtk_widget_set_sensitive (entry_capture_ftp_passwd, FALSE);
+
+  hbox_capture = gtk_hbox_new (TRUE, 0);
+  gtk_widget_ref (hbox_capture);
+  gtk_object_set_data_full (GTK_OBJECT (capture_window), "hbox_capture", hbox_capture,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (hbox_capture);
+  gtk_box_pack_start (GTK_BOX (vbox_capture), hbox_capture, TRUE, TRUE, 0);
 
   capture_start = gtk_button_new_with_label (_("START"));
   gtk_widget_ref (capture_start);
   gtk_object_set_data_full (GTK_OBJECT (capture_window), "capture_start", capture_start,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (capture_start);
-  gtk_box_pack_start (GTK_BOX (hbox26), capture_start, FALSE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (hbox_capture), capture_start, FALSE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (capture_start), 2);
   gtk_widget_set_sensitive (capture_start, FALSE);
 
@@ -3453,7 +3697,7 @@ create_capture_window (void)
   gtk_object_set_data_full (GTK_OBJECT (capture_window), "capture_stop", capture_stop,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (capture_stop);
-  gtk_box_pack_start (GTK_BOX (hbox26), capture_stop, FALSE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (hbox_capture), capture_stop, FALSE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (capture_stop), 2);
   gtk_widget_set_sensitive (capture_stop, FALSE);
 
@@ -3462,7 +3706,7 @@ create_capture_window (void)
   gtk_object_set_data_full (GTK_OBJECT (capture_window), "capture_single", capture_single,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (capture_single);
-  gtk_box_pack_start (GTK_BOX (hbox26), capture_single, FALSE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (hbox_capture), capture_single, FALSE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (capture_single), 2);
   gtk_widget_set_sensitive (capture_single, FALSE);
 
@@ -3535,6 +3779,21 @@ create_capture_window (void)
                       NULL);
   gtk_signal_connect (GTK_OBJECT (capsize_power), "toggled",
                       GTK_SIGNAL_FUNC (on_capsize_power_toggled),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (radiobutton_capture_freq_immediate), "clicked",
+                      GTK_SIGNAL_FUNC (on_radiobutton_capture_freq_immediate_clicked),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (radiobutton_capture_freq_periodioc), "clicked",
+                      GTK_SIGNAL_FUNC (on_radiobutton_capture_freq_periodioc_clicked),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (radiobutton_capture_mode_seq), "clicked",
+                      GTK_SIGNAL_FUNC (on_radiobutton_capture_mode_seq_clicked),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (radiobutton_capture_mode_over), "clicked",
+                      GTK_SIGNAL_FUNC (on_radiobutton_capture_mode_over_clicked),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (checkbutton_capture_ftp), "toggled",
+                      GTK_SIGNAL_FUNC (on_checkbutton_capture_ftp_toggled),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (capture_start), "clicked",
                       GTK_SIGNAL_FUNC (on_capture_start_clicked),
@@ -3971,8 +4230,13 @@ create_no_handle_window (void)
   GtkWidget *button1;
   GtkWidget *dialog_action_area2;
 
+  /* We create it with an OK button, and then remove the button, to work
+     around a bug in gnome-libs. */
   no_handle_window = gnome_message_box_new (_("Warning: could not get a handle to your IEEE1394 card.\n\nPlease check that:\n- the card is present\n- the IEEE1394 modules are loaded\n- you have read/write permissions on the raw1394 and video1394 devices."),
-                              GNOME_MESSAGE_BOX_WARNING, NULL);
+                              GNOME_MESSAGE_BOX_WARNING,
+                              GNOME_STOCK_BUTTON_OK, NULL);
+  gtk_container_remove (GTK_CONTAINER (GNOME_DIALOG (no_handle_window)->action_area), GNOME_DIALOG (no_handle_window)->buttons->data);
+  GNOME_DIALOG (no_handle_window)->buttons = NULL;
   gtk_object_set_data (GTK_OBJECT (no_handle_window), "no_handle_window", no_handle_window);
   gtk_window_set_title (GTK_WINDOW (no_handle_window), _("Coriander Warning"));
   gtk_window_set_policy (GTK_WINDOW (no_handle_window), FALSE, FALSE, FALSE);
@@ -3983,7 +4247,7 @@ create_no_handle_window (void)
 
   gnome_dialog_append_button_with_pixmap (GNOME_DIALOG (no_handle_window),
                                           _("QUIT"), GNOME_STOCK_PIXMAP_EXIT);
-  button1 = g_list_last (GNOME_DIALOG (no_handle_window)->buttons)->data;
+  button1 = GTK_WIDGET (g_list_last (GNOME_DIALOG (no_handle_window)->buttons)->data);
   gtk_widget_ref (button1);
   gtk_object_set_data_full (GTK_OBJECT (no_handle_window), "button1", button1,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -4010,8 +4274,13 @@ create_no_camera_window (void)
   GtkWidget *button3;
   GtkWidget *dialog_action_area3;
 
+  /* We create it with an OK button, and then remove the button, to work
+     around a bug in gnome-libs. */
   no_camera_window = gnome_message_box_new (_("Warning: could not find a Digital Camera on the bus.\n\nPlease check that:\n- the cables are properly set\n- the bus and/or camera are powered\n- the repeaters/hubs are powered\n- your camera is compliant with the Digital Camera specs v1.20 or later (see http://www.1394ta.org).\n\nNOTICE:\nAll consumer grade cameras in which you can insert a video tape are NOT compliant with the above-\nmentionned specifications and therefor cannot be controlled with Coriander. (These cameras can be\ncontrolled with the AV/C protocol, please refer to http://linux1394.sourceforge.net)"),
-                              GNOME_MESSAGE_BOX_WARNING, NULL);
+                              GNOME_MESSAGE_BOX_WARNING,
+                              GNOME_STOCK_BUTTON_OK, NULL);
+  gtk_container_remove (GTK_CONTAINER (GNOME_DIALOG (no_camera_window)->action_area), GNOME_DIALOG (no_camera_window)->buttons->data);
+  GNOME_DIALOG (no_camera_window)->buttons = NULL;
   gtk_object_set_data (GTK_OBJECT (no_camera_window), "no_camera_window", no_camera_window);
   gtk_window_set_title (GTK_WINDOW (no_camera_window), _("Coriander Warning"));
   gtk_window_set_policy (GTK_WINDOW (no_camera_window), FALSE, FALSE, FALSE);
@@ -4022,7 +4291,7 @@ create_no_camera_window (void)
 
   gnome_dialog_append_button_with_pixmap (GNOME_DIALOG (no_camera_window),
                                           _("QUIT"), GNOME_STOCK_PIXMAP_EXIT);
-  button3 = g_list_last (GNOME_DIALOG (no_camera_window)->buttons)->data;
+  button3 = GTK_WIDGET (g_list_last (GNOME_DIALOG (no_camera_window)->buttons)->data);
   gtk_widget_ref (button3);
   gtk_object_set_data_full (GTK_OBJECT (no_camera_window), "button3", button3,
                             (GtkDestroyNotify) gtk_widget_unref);

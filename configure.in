@@ -52,6 +52,13 @@ AC_MSG_CHECKING(for XFree86 XvImage support)
 
 AC_SUBST(XV_LIB)
 
+# Check for ftplib
+AC_CHECK_LIB(ftp, FtpInit,
+             AC_DEFINE(HAVE_FTPLIB)
+             FTP_LIB="-lftp",
+               AC_MSG_RESULT(ftplib is required for ftp support, disabled))
+AC_SUBST(FTP_LIB)
+
 AC_OUTPUT([
 Makefile
 macros/Makefile

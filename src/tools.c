@@ -258,6 +258,13 @@ MainError(const char *string)
 }
 
 void
+MainStatus(const char *string)
+{
+  gtk_statusbar_remove( (GtkStatusbar*) lookup_widget(commander_window,"main_status"), ctxt.main_ctxt, ctxt.main_id);
+  ctxt.main_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"main_status"), ctxt.main_ctxt, string);
+}
+
+void
 UpdateIdler(void)
 {
   // grab latest camera info

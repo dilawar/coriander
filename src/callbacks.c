@@ -62,6 +62,7 @@ extern UIInfo *uiinfos;
 extern int current_camera;
 extern guint gIdleID;
 extern porthole_info pi;
+extern capture_info ci;
 extern guint gCaptureIdleID;
 
 gboolean
@@ -1410,9 +1411,19 @@ on_save_single_dialog_ok_clicked       (GtkButton       *button,
                                         gpointer         user_data)
 {
     GtkWidget *dialog = gtk_widget_get_toplevel(GTK_WIDGET(button));
+    GtkWidget *window = lookup_widget(capture_window, "capture_window");
     gchar *filename = gtk_file_selection_get_filename(GTK_FILE_SELECTION(dialog));
     gtk_widget_hide(dialog);
     save_single_frame(filename);
+    
+    if (ci.ftp_enable) 
+    {
+      ci.ftp_address = gtk_entry_get_text( GTK_ENTRY(lookup_widget(window, "entry_capture_ftp_address")));
+      ci.ftp_path = gtk_entry_get_text( GTK_ENTRY(lookup_widget(window, "entry_capture_ftp_path")));
+      ci.ftp_user = gtk_entry_get_text( GTK_ENTRY(lookup_widget(window, "entry_capture_ftp_user")));
+      ci.ftp_passwd = gtk_entry_get_text( GTK_ENTRY(lookup_widget(window, "entry_capture_ftp_passwd")));
+      ftp_single_frame(filename, ci.ftp_address, ci.ftp_path, filename, ci.ftp_user, ci.ftp_passwd);
+    }
     gtk_widget_destroy(dialog);
 }
 
@@ -1451,7 +1462,22 @@ on_capture_multi_dialog_ok_clicked     (GtkButton       *button,
       gtk_widget_set_sensitive( GTK_WIDGET(lookup_widget( GTK_WIDGET(window), "capture_start")), FALSE);
       gtk_widget_set_sensitive( GTK_WIDGET(lookup_widget( GTK_WIDGET(window), "capture_stop")), TRUE);
       gtk_widget_set_sensitive( GTK_WIDGET(lookup_widget( GTK_WIDGET(window), "capture_single")), FALSE);
-      gCaptureIdleID = gtk_idle_add(capture_idler, NULL);
+
+      if (ci.ftp_enable) 
+      {
+        ci.ftp_address = gtk_entry_get_text( GTK_ENTRY(lookup_widget(window, "entry_capture_ftp_address")));
+        ci.ftp_path = gtk_entry_get_text( GTK_ENTRY(lookup_widget(window, "entry_capture_ftp_path")));
+        ci.ftp_user = gtk_entry_get_text( GTK_ENTRY(lookup_widget(window, "entry_capture_ftp_user")));
+        ci.ftp_passwd = gtk_entry_get_text( GTK_ENTRY(lookup_widget(window, "entry_capture_ftp_passwd")));
+      }
+
+      if (ci.frequency == CAPTURE_FREQ_IMMEDIATE)
+        gCaptureIdleID = gtk_idle_add( capture_idler, NULL);
+      else
+        {
+          ci.period = gtk_spin_button_get_value_as_int( GTK_SPIN_BUTTON(lookup_widget( GTK_WIDGET(window), "spinbutton_capture_freq_periodic")));
+          gCaptureIdleID = gtk_timeout_add( ci.period * 1000, capture_idler, NULL);
+        }
     }
     gtk_widget_destroy(dialog);
 }
@@ -1522,5 +1548,58 @@ on_test_pattern_activate               (GtkMenuItem     *menuitem,
     BuildFpsMenu();
     UpdateTriggerFrame();
     IsoFlowResume();  
+}
+
+
+void
+on_radiobutton_capture_freq_immediate_clicked
+                                        (GtkButton       *button,
+                                        gpointer         user_data)
+{
+  ci.frequency = CAPTURE_FREQ_IMMEDIATE;
+}
+
+
+void
+on_radiobutton_capture_freq_periodioc_clicked
+                                        (GtkButton       *button,
+                                        gpointer         user_data)
+{
+  ci.frequency = CAPTURE_FREQ_PERIODIC;
+}
+
+
+void
+on_radiobutton_capture_mode_seq_clicked
+                                        (GtkButton       *button,
+                                        gpointer         user_data)
+{
+  ci.mode = CAPTURE_MODE_SEQUENTIAL;
+}
+
+
+void
+on_radiobutton_capture_mode_over_clicked
+                                        (GtkButton       *button,
+                                        gpointer         user_data)
+{
+  ci.mode = CAPTURE_MODE_OVERWRITE;
+}
+
+
+void
+on_checkbutton_capture_ftp_toggled     (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  GtkWidget *window = gtk_widget_get_toplevel(GTK_WIDGET(togglebutton));
+#ifdef HAVE_FTPLIB
+  ci.ftp_enable = gtk_toggle_button_get_active(togglebutton);
+  gtk_widget_set_sensitive( lookup_widget(window, "entry_capture_ftp_address"), ci.ftp_enable);
+  gtk_widget_set_sensitive( lookup_widget(window, "entry_capture_ftp_path"), ci.ftp_enable);
+  gtk_widget_set_sensitive( lookup_widget(window, "entry_capture_ftp_user"), ci.ftp_enable);
+  gtk_widget_set_sensitive( lookup_widget(window, "entry_capture_ftp_passwd"), ci.ftp_enable);
+#else
+  MainError("You must install FtpLib and rebuild.");
+#endif
 }
 

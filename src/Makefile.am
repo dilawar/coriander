@@ -28,5 +28,5 @@ coriander_SOURCES = \
 	topology.c topology.h
 
 coriander_LDADD = $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(INTLLIBS) $(PTHREAD_LIB) \
-	$(XV_LIB) -ldc1394_control -lraw1394 -lgthread 
+	$(XV_LIB) $(FTP_LIB) -ldc1394_control -lraw1394 -lgthread 
 
