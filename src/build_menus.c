@@ -45,9 +45,6 @@ BuildTriggerModeMenu(void)
   GtkWidget* trigger_mode_menu;
   GtkWidget* glade_menuitem;
 
-  if (dc1394_query_feature_characteristics(camera->camera_info.handle,camera->camera_info.id,FEATURE_TRIGGER,&value)!=DC1394_SUCCESS)
-    MainError("Could not query trigger feature characteristics");
-  modes=( (value & (0xF << 12)) >>12 );
   gtk_widget_destroy(GTK_WIDGET (lookup_widget(main_window,"trigger_mode"))); // remove previous menu
 
   trigger_mode = gtk_option_menu_new ();
@@ -59,8 +56,15 @@ BuildTriggerModeMenu(void)
   gtk_container_set_border_width (GTK_CONTAINER (trigger_mode), 1);
 
   trigger_mode_menu = gtk_menu_new ();
-  //modes=0xa;
-  //fprintf(stderr,"Trigger modes: 0x%x\n",modes);
+
+  // the following 'if' was added because the iSight from Apple does not even implement the registers over
+  // offset 0x530h. Thus we can't probe anything there without producing an error
+  if (camera->feature_set.feature[FEATURE_TRIGGER-FEATURE_MIN].available!=0) {
+
+  if (dc1394_query_feature_characteristics(camera->camera_info.handle,camera->camera_info.id,FEATURE_TRIGGER,&value)!=DC1394_SUCCESS)
+    MainError("Could not query trigger feature characteristics");
+  modes=( (value & (0xF << 12)) >>12 );
+
   if (modes!=0) { // at least one mode present
     // external trigger available:
     for (f=TRIGGER_MODE_MIN,i=0;f<=TRIGGER_MODE_MAX;i++,f++) {
@@ -96,6 +100,17 @@ BuildTriggerModeMenu(void)
     gtk_option_menu_set_menu (GTK_OPTION_MENU (trigger_mode), trigger_mode_menu);
     gtk_option_menu_set_history (GTK_OPTION_MENU (trigger_mode), 0);
   }
+
+  }
+  else{
+    // add dummy menu item
+    glade_menuitem = gtk_menu_item_new_with_label (_("N/A"));
+    gtk_widget_show (glade_menuitem);
+    gtk_menu_append (GTK_MENU (trigger_mode_menu), glade_menuitem);
+    gtk_option_menu_set_menu (GTK_OPTION_MENU (trigger_mode), trigger_mode_menu);
+    gtk_option_menu_set_history (GTK_OPTION_MENU (trigger_mode), 0);
+  }
+ 
 }
 
 
