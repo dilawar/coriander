@@ -89,19 +89,24 @@ main (int argc, char *argv[])
 
   GetCameraNodes(businfo);
 
+
+  // it seems that freeing some vars before a return() or an exit() prevent the program from exiting.
+  // this only happens on some platforms, but I cleared the free() anyway.
   if (businfo->card_found==0) {
     gtk_widget_show(create_no_handle_window());
-    gtk_main ();
-    exit(1);
+    gtk_main();
+    //free(businfo);
+    return(1);
   }
   else {
     if (businfo->camera_num<1) {
       gtk_widget_show(create_no_camera_window());
-      gtk_main ();
-      free(businfo->camera_nodes);
-      free(businfo->port_camera_num);
-      free(businfo->handles);
-      exit(1);
+      gtk_main();
+      //free(businfo->camera_nodes);
+      //free(businfo->port_camera_num);
+      //free(businfo->handles);
+      //free(businfo);
+      return(1);
     }
   }
 

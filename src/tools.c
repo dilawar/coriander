@@ -699,7 +699,6 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation) {
 
   // get camera nodes:
   GetCameraNodes(&bi);
-  //fprintf(stderr,"We have %d cameras now.\n",bi.camera_num);
 
   // ADD NEW CAMERAS AND UPDATE PREVIOUS ONES ---------------------------------
 
@@ -751,7 +750,6 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation) {
       }
     }
   }
-  //fprintf(stderr,"got all new guids\n");
   // look if there is a camera that disappeared from the camera_t struct
   camera_ptr=cameras;
   while (camera_ptr!=NULL) {
@@ -769,9 +767,7 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation) {
 	  gtk_widget_show(waiting_camera_window);
 
 	  // delete structs:
-	  //fprintf(stderr,"deleting struct\n");
 	  RemoveCamera(camera_ptr->camera_info.euid_64);
-	  //fprintf(stderr,"camera removed\n");  
 
 	}
 	else {
@@ -785,9 +781,7 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation) {
 	    SetCurrentCamera(cameras->camera_info.euid_64);
 	  }
 	  // close and remove dead camera
-	  //fprintf(stderr,"deleting struct\n");
 	  RemoveCamera(camera_ptr->camera_info.euid_64);
-	  //fprintf(stderr,"camera removed\n");
 	}
       } // end if we are deleting the current camera
       else { // we delete another camera. This is easy.
@@ -820,9 +814,9 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation) {
     gtk_widget_set_sensitive(main_window,TRUE);
   }
 
-  // re-set ISO channels
+  // re-set ISO channels. This might be necessary before restarting the iso threads
   SetChannels();
-  //fprintf(stderr,"finished handling bus-reset\n");
+
   return(1);
 }
 
