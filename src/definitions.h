@@ -97,7 +97,7 @@ typedef struct _Format7ModeInfo
   unsigned int min_bpp;
   unsigned int max_bpp;
 
-  unsigned int total_bytes;
+  unsigned long long int total_bytes;
 
 } Format7ModeInfo;
 
