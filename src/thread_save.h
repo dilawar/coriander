@@ -1,6 +1,8 @@
 /*
  * Copyright (C) 2000-2003 Damien Douxchamps  <ddouxchamps@users.sf.net>
  *
+ * PVN saving capability by Jacob (Jack) Gryn
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -43,7 +45,7 @@ typedef enum
 typedef struct
 { 
   /* Define thread variables here.
-     This data will only de available to the thread.*/
+     This data will only de available to the thread. */
 
   pthread_mutex_t    mutex_cancel;
   int                cancel_req;
@@ -76,5 +78,27 @@ SaveStopThread(camera_t* cam);
 
 void
 SaveThreadCheckParams(chain_t *save_service);
+
+int
+isColor(int buffer_color_mode);
+
+int
+needsConversionForPVN(int buffer_color_mode);
+
+int
+getConvertedBytesPerChannel(int buffer_color_mode);
+
+int
+getBytesPerChannel(int buffer_color_mode);
+
+int
+getBytesPerPixel(int buffer_color_mode);
+
+unsigned int
+getDepth(unsigned long bufsize, int mode, unsigned int height, unsigned int width);
+
+void
+convert_for_pvn(unsigned char *buffer, unsigned int width, unsigned int height,
+		unsigned int page, int buffer_color_mode, unsigned char *dest);
 
 #endif // __THREAD_SAVE_H__

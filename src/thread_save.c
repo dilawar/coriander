@@ -219,7 +219,8 @@ getConvertedBytesPerChannel(int buffer_color_mode)
 
 
 // return Bytes in each channel
-int getBytesPerChannel(int buffer_color_mode)
+int
+getBytesPerChannel(int buffer_color_mode)
 {
   switch(buffer_color_mode) 
   {
