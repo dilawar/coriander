@@ -41,12 +41,12 @@ SaveStartThread(camera_t* cam)
     info=(savethread_info_t*)save_service->data;
     pthread_mutex_init(&save_service->mutex_data, NULL);
     pthread_mutex_init(&save_service->mutex_struct, NULL);
-    pthread_mutex_init(&info->mutex_cancel_save, NULL);
+    pthread_mutex_init(&info->mutex_cancel, NULL);
     
     /* if you want a clean-interrupt thread:*/
-    pthread_mutex_lock(&info->mutex_cancel_save);
-    info->cancel_save_req=0;
-    pthread_mutex_unlock(&info->mutex_cancel_save);
+    pthread_mutex_lock(&info->mutex_cancel);
+    info->cancel_req=0;
+    pthread_mutex_unlock(&info->mutex_cancel);
     
     /* setup save_thread: handles, ...*/
     pthread_mutex_lock(&save_service->mutex_data);
@@ -66,9 +66,10 @@ SaveStartThread(camera_t* cam)
     info->period=preferences.save_period;
     CommonChainSetup(cam, save_service,SERVICE_SAVE);
     
-    info->save_buffer=NULL;
+    info->buffer=NULL;
     info->counter=0;
-    info->save_scratch=preferences.save_scratch;
+    info->scratch=preferences.save_scratch;
+    info->datenum=preferences.save_datenum;
     // if format extension is ".raw", we dump raw data on the file and perform no conversion
     info->rawdump=preferences.save_convert;
     
@@ -89,7 +90,7 @@ SaveStartThread(camera_t* cam)
       RemoveChain(cam,save_service);
       pthread_mutex_unlock(&save_service->mutex_struct);
       pthread_mutex_unlock(&save_service->mutex_data);
-      free(info->save_buffer);
+      free(info->buffer);
       FreeChain(save_service);
       return(-1);
     }
@@ -174,7 +175,7 @@ SaveThread(void* arg)
   pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED,NULL);
   pthread_mutex_unlock(&save_service->mutex_data);
 
-  if (info->save_scratch==SAVE_SCRATCH_SEQUENCE) {
+  if (info->scratch==SAVE_SCRATCH_SEQUENCE) {
     sprintf(filename_out, "%s%s", info->filename,info->filename_ext);
     fd=fopen(filename_out,"w");
     if (fd==NULL)
@@ -187,16 +188,16 @@ SaveThread(void* arg)
 
   while (1) { 
     /* Clean cancel handlers */
-    pthread_mutex_lock(&info->mutex_cancel_save);
-    if (info->cancel_save_req>0) {
-      if ((info->save_scratch==SAVE_SCRATCH_SEQUENCE)&&(fd!=NULL)) {
+    pthread_mutex_lock(&info->mutex_cancel);
+    if (info->cancel_req>0) {
+      if ((info->scratch==SAVE_SCRATCH_SEQUENCE)&&(fd!=NULL)) {
 	fclose(fd);
       }
-      pthread_mutex_unlock(&info->mutex_cancel_save);
+      pthread_mutex_unlock(&info->mutex_cancel);
       return ((void*)1);
     }
     else {
-      pthread_mutex_unlock(&info->mutex_cancel_save);
+      pthread_mutex_unlock(&info->mutex_cancel);
       pthread_mutex_lock(&save_service->mutex_data);
       if(RollBuffers(save_service)) { // have buffers been rolled?
 	// check params
@@ -205,7 +206,7 @@ SaveThread(void* arg)
 	  if (skip_counter==(info->period-1)) {
 	    skip_counter=0;
 	    // get filename
-	    switch (info->save_scratch) {
+	    switch (info->scratch) {
 	    case SAVE_SCRATCH_OVERWRITE:
 	      sprintf(filename_out, "%s%s", info->filename,info->filename_ext);
 	      fd=fopen(filename_out,"w");
@@ -213,8 +214,14 @@ SaveThread(void* arg)
 		MainError("Can't open file for saving");
 	      break;
 	    case SAVE_SCRATCH_SEQUENTIAL:
-	      sprintf(filename_out, "%s-%s%s", info->filename,
-		      save_service->current_buffer->captime_string, info->filename_ext);
+	      switch (info->datenum) {
+	      case SAVE_TAG_DATE:
+		sprintf(filename_out, "%s-%s%s", info->filename, save_service->current_buffer->captime_string, info->filename_ext);
+		break;
+	      case SAVE_TAG_NUMBER:
+		sprintf(filename_out,"%s-%10.10li%s", info->filename, info->counter++, info->filename_ext);
+		break;
+	      }
 	      fd=fopen(filename_out,"w");
 	      if (fd==NULL)
 		MainError("Can't open file for saving");
@@ -224,7 +231,7 @@ SaveThread(void* arg)
 	    }
 	    
 	    if (info->rawdump) {
-	      if (info->save_scratch==SAVE_SCRATCH_SEQUENCE) {
+	      if (info->scratch==SAVE_SCRATCH_SEQUENCE) {
 		fwrite(save_service->current_buffer->image, 1, save_service->current_buffer->bytes_per_frame, fd);
 	      }
 	      else {
@@ -232,8 +239,8 @@ SaveThread(void* arg)
 	      }
 	    }
 	    else {
-	      convert_to_rgb(save_service->current_buffer, info->save_buffer);
-	      im=gdk_imlib_create_image_from_data(info->save_buffer,NULL, save_service->current_buffer->width, save_service->current_buffer->height);
+	      convert_to_rgb(save_service->current_buffer, info->buffer);
+	      im=gdk_imlib_create_image_from_data(info->buffer,NULL, save_service->current_buffer->width, save_service->current_buffer->height);
 	      if (im != NULL) {
 		if (gdk_imlib_save_image(im, filename_out, NULL)==0) {
 		  MainError("Can't save image with Imlib!");
@@ -262,7 +269,7 @@ SaveThread(void* arg)
       }
     }
   }
-  if (info->save_scratch==SAVE_SCRATCH_SEQUENCE)
+  if (info->scratch==SAVE_SCRATCH_SEQUENCE)
     fclose(fd);
 }
 
@@ -278,9 +285,9 @@ SaveStopThread(camera_t* cam)
     //fprintf(stderr,"SAVE service found, stopping\n");
     info=(savethread_info_t*)save_service->data;
     /* Clean cancel handler: */
-    pthread_mutex_lock(&info->mutex_cancel_save);
-    info->cancel_save_req=1;
-    pthread_mutex_unlock(&info->mutex_cancel_save);
+    pthread_mutex_lock(&info->mutex_cancel);
+    info->cancel_req=1;
+    pthread_mutex_unlock(&info->mutex_cancel);
     
     /* common handlers...*/
     pthread_join(save_service->thread, NULL);
@@ -295,9 +302,9 @@ SaveStopThread(camera_t* cam)
     RemoveChain(cam,save_service);
     
     /* Do custom cleanups here...*/
-    if (info->save_buffer!=NULL) {
-      free(info->save_buffer);
-      info->save_buffer=NULL;
+    if (info->buffer!=NULL) {
+      free(info->buffer);
+      info->buffer=NULL;
     }
     
     /* Mendatory cleanups: */
@@ -371,13 +378,13 @@ SaveThreadCheckParams(chain_t *save_service)
     // DO SOMETHING
     if (buffer_size_change!=0) {
       
-      if (info->save_buffer!=NULL) {
-	free(info->save_buffer);
-	info->save_buffer=NULL;
+      if (info->buffer!=NULL) {
+	free(info->buffer);
+	info->buffer=NULL;
       }
-      info->save_buffer=(unsigned char*)malloc(save_service->current_buffer->width*save_service->current_buffer->height*3
+      info->buffer=(unsigned char*)malloc(save_service->current_buffer->width*save_service->current_buffer->height*3
 					       *sizeof(unsigned char));
-      if (info->save_buffer==NULL)
+      if (info->buffer==NULL)
 	fprintf(stderr,"Can't allocate buffer! Aiiieee!\n");
     }
   }

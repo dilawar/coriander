@@ -55,8 +55,8 @@ typedef struct
   /* Define thread variables here.
      This data will only de available to the thread.*/
 
-  pthread_mutex_t    mutex_cancel_ftp;
-  int                cancel_ftp_req;
+  pthread_mutex_t    mutex_cancel;
+  int                cancel_req;
   char               filename[STRING_SIZE];
   char               filename_ext[STRING_SIZE];
   char               address[STRING_SIZE];
@@ -66,8 +66,9 @@ typedef struct
   long int           period;
   long int           counter;
   long int           imlib_buffer_size;
-  unsigned char*     ftp_buffer;
-  int                ftp_scratch;
+  unsigned char*     buffer;
+  int                scratch;
+  int                datenum;
 #ifdef HAVE_FTPLIB
   netbuf             *ftp_handle;
 #endif

@@ -54,13 +54,14 @@ typedef struct
   /* Define thread variables here.
      This data will only de available to the thread.*/
 
-  pthread_mutex_t    mutex_cancel_save;
-  int                cancel_save_req;
+  pthread_mutex_t    mutex_cancel;
+  int                cancel_req;
   char               filename[STRING_SIZE];
   char               filename_ext[STRING_SIZE];
   long int           counter;
-  unsigned char*     save_buffer;
-  int                save_scratch;
+  unsigned char*     buffer;
+  int                scratch;
+  int                datenum;
   long int           period;
   int                rawdump;
 

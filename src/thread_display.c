@@ -44,11 +44,11 @@ DisplayStartThread(camera_t* cam)
     info=(displaythread_info_t*)display_service->data;
     pthread_mutex_init(&display_service->mutex_struct, NULL);
     pthread_mutex_init(&display_service->mutex_data, NULL);
-    pthread_mutex_init(&info->mutex_cancel_display, NULL);
+    pthread_mutex_init(&info->mutex_cancel, NULL);
     
-    pthread_mutex_lock(&info->mutex_cancel_display);
-    info->cancel_display_req=0;
-    pthread_mutex_unlock(&info->mutex_cancel_display);
+    pthread_mutex_lock(&info->mutex_cancel);
+    info->cancel_req=0;
+    pthread_mutex_unlock(&info->mutex_cancel);
     
     pthread_mutex_lock(&display_service->mutex_data);
     info->period=preferences.display_period;
@@ -149,14 +149,14 @@ DisplayThread(void* arg)
   info->frames=0;
 
   while (1) {
-    pthread_mutex_lock(&info->mutex_cancel_display);
+    pthread_mutex_lock(&info->mutex_cancel);
     
-    if (info->cancel_display_req>0) {
-      pthread_mutex_unlock(&info->mutex_cancel_display);
+    if (info->cancel_req>0) {
+      pthread_mutex_unlock(&info->mutex_cancel);
       return ((void*)1);
     }
     else {
-      pthread_mutex_unlock(&info->mutex_cancel_display);
+      pthread_mutex_unlock(&info->mutex_cancel);
       pthread_mutex_lock(&display_service->mutex_data);
       if(RollBuffers(display_service)) { // have buffers been rolled?
 	// check params
@@ -207,9 +207,9 @@ DisplayStopThread(camera_t* cam)
     info=(displaythread_info_t*)display_service->data;
     
     // send request for cancellation:
-    pthread_mutex_lock(&info->mutex_cancel_display);
-    info->cancel_display_req=1;
-    pthread_mutex_unlock(&info->mutex_cancel_display);
+    pthread_mutex_lock(&info->mutex_cancel);
+    info->cancel_req=1;
+    pthread_mutex_unlock(&info->mutex_cancel);
     
     // when cancellation occured, join:
     pthread_join(display_service->thread, NULL);

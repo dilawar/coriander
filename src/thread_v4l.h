@@ -38,16 +38,16 @@
 
 typedef struct
 {
-  long int                period;
-  pthread_mutex_t         mutex_cancel_v4l;
-  int                     cancel_v4l_req;
+  //long int                period;
+  pthread_mutex_t         mutex_cancel;
+  int                     cancel_req;
 
   int v4l_dev;
   unsigned char *v4l_buffer;
   char v4l_dev_name[STRING_SIZE];
 
-  int v4l_period;
-  int v4l_counter;
+  int period;
+  //int counter;
 
   struct video_capability vid_caps;
   struct video_window vid_win;

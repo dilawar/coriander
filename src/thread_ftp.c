@@ -41,16 +41,17 @@ FtpStartThread(camera_t* cam)
     info=(ftpthread_info_t*)ftp_service->data;
     pthread_mutex_init(&ftp_service->mutex_data, NULL);
     pthread_mutex_init(&ftp_service->mutex_struct, NULL);
-    pthread_mutex_init(&info->mutex_cancel_ftp, NULL);
+    pthread_mutex_init(&info->mutex_cancel, NULL);
     
     /* if you want a clean-interrupt thread:*/
-    pthread_mutex_lock(&info->mutex_cancel_ftp);
-    info->cancel_ftp_req=0;
-    pthread_mutex_unlock(&info->mutex_cancel_ftp);
+    pthread_mutex_lock(&info->mutex_cancel);
+    info->cancel_req=0;
+    pthread_mutex_unlock(&info->mutex_cancel);
     
     /* setup ftp_thread: handles, ...*/
     pthread_mutex_lock(&ftp_service->mutex_data);
     info->period=preferences.ftp_period;
+    info->datenum=preferences.ftp_datenum;
     info->counter=0;
     strcpy(info->address, preferences.ftp_address);
     strcpy(info->user, preferences.ftp_user);
@@ -71,10 +72,10 @@ FtpStartThread(camera_t* cam)
     
     CommonChainSetup(cam,ftp_service,SERVICE_FTP);
     
-    info->ftp_buffer=NULL;
+    info->buffer=NULL;
     info->imlib_buffer_size=0;
     
-    info->ftp_scratch=preferences.ftp_scratch;
+    info->scratch=preferences.ftp_scratch;
     
 #ifdef HAVE_FTPLIB
     if (!OpenFtpConnection(info)) {
@@ -106,7 +107,7 @@ FtpStartThread(camera_t* cam)
       RemoveChain(cam, ftp_service);
       pthread_mutex_unlock(&ftp_service->mutex_struct);
       pthread_mutex_unlock(&ftp_service->mutex_data);
-      free(info->ftp_buffer);
+      free(info->buffer);
       FreeChain(ftp_service);
       return(-1);
     }
@@ -197,40 +198,46 @@ FtpThread(void* arg)
 
   while (1) { 
     /* Clean cancel handlers */
-    pthread_mutex_lock(&info->mutex_cancel_ftp);
-    if (info->cancel_ftp_req>0) {
-      pthread_mutex_unlock(&info->mutex_cancel_ftp);
+    pthread_mutex_lock(&info->mutex_cancel);
+    if (info->cancel_req>0) {
+      pthread_mutex_unlock(&info->mutex_cancel);
       return ((void*)1);
     }
     else {
-      pthread_mutex_unlock(&info->mutex_cancel_ftp);
+      pthread_mutex_unlock(&info->mutex_cancel);
       pthread_mutex_lock(&ftp_service->mutex_data);
       if(RollBuffers(ftp_service)) { // have buffers been rolled?
 	FtpThreadCheckParams(ftp_service);
 	if (ftp_service->current_buffer->width!=-1) {
 	  if (skip_counter==(info->period-1)) {
 	    skip_counter=0;
-	    convert_to_rgb(ftp_service->current_buffer, info->ftp_buffer);
-	    switch (info->ftp_scratch) {
+	    convert_to_rgb(ftp_service->current_buffer, info->buffer);
+	    switch (info->scratch) {
 	    case FTP_SCRATCH_OVERWRITE:
 	      sprintf(filename_out, "%s%s", info->filename,info->filename_ext);
 	      break;
 	    case FTP_SCRATCH_SEQUENTIAL:
-	      sprintf(filename_out, "%s-%s%s", info->filename,
-		      ftp_service->current_buffer->captime_string, info->filename_ext);
+	      switch (info->datenum) {
+	      case FTP_TAG_DATE:
+		sprintf(filename_out, "%s-%s%s", info->filename, ftp_service->current_buffer->captime_string, info->filename_ext);
+		break;
+	      case FTP_TAG_NUMBER:
+		sprintf(filename_out,"%s-%10.10li%s", info->filename, info->counter++, info->filename_ext);
+		break;
+	      }
 	      break;
 	    default:
 	      break;
 	    }
 		    
-	    im=gdk_imlib_create_image_from_data(info->ftp_buffer, NULL, ftp_service->current_buffer->width, ftp_service->current_buffer->height);
+	    im=gdk_imlib_create_image_from_data(info->buffer, NULL, ftp_service->current_buffer->width, ftp_service->current_buffer->height);
 #ifdef HAVE_FTPLIB
 	    if (!CheckFtpConnection(info)) {
 	      MainError("Ftp connection lost for good");
 	      // AUTO CANCEL THREAD
-	      pthread_mutex_lock(&info->mutex_cancel_ftp);
-	      info->cancel_ftp_req=1;
-	      pthread_mutex_unlock(&info->mutex_cancel_ftp);
+	      pthread_mutex_lock(&info->mutex_cancel);
+	      info->cancel_req=1;
+	      pthread_mutex_unlock(&info->mutex_cancel);
 	    }
 	    else {
 	      FtpPutFrame(filename_out, im, info);
@@ -268,9 +275,9 @@ FtpStopThread(camera_t* cam)
   if (ftp_service!=NULL) { // if FTP service running...
     info=(ftpthread_info_t*)ftp_service->data;
     /* Clean cancel handler: */
-    pthread_mutex_lock(&info->mutex_cancel_ftp);
-    info->cancel_ftp_req=1;
-    pthread_mutex_unlock(&info->mutex_cancel_ftp);
+    pthread_mutex_lock(&info->mutex_cancel);
+    info->cancel_req=1;
+    pthread_mutex_unlock(&info->mutex_cancel);
     
     /* common handlers...*/
     pthread_join(ftp_service->thread, NULL);
@@ -287,9 +294,9 @@ FtpStopThread(camera_t* cam)
     RemoveChain(cam,ftp_service);
     
     /* Do custom cleanups here...*/
-    if (info->ftp_buffer!=NULL) {
-      free(info->ftp_buffer);
-      info->ftp_buffer=NULL;
+    if (info->buffer!=NULL) {
+      free(info->buffer);
+      info->buffer=NULL;
     }
 #ifdef HAVE_FTPLIB
     CloseFtpConnection(info->ftp_handle);
@@ -351,12 +358,12 @@ FtpThreadCheckParams(chain_t *ftp_service)
     // DO SOMETHING
     if (buffer_size_change!=0) {
       
-      if (info->ftp_buffer!=NULL) {
-	free(info->ftp_buffer);
-	info->ftp_buffer=NULL;
+      if (info->buffer!=NULL) {
+	free(info->buffer);
+	info->buffer=NULL;
       }
       info->imlib_buffer_size=ftp_service->current_buffer->width*ftp_service->current_buffer->height*3;
-      info->ftp_buffer=(unsigned char*)malloc(info->imlib_buffer_size*sizeof(unsigned char));
+      info->buffer=(unsigned char*)malloc(info->imlib_buffer_size*sizeof(unsigned char));
     }
   }
 }

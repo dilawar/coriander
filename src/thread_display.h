@@ -38,8 +38,8 @@
 typedef struct
 {
   long int                period;
-  pthread_mutex_t         mutex_cancel_display;
-  int                     cancel_display_req;
+  pthread_mutex_t         mutex_cancel;
+  int                     cancel_req;
 
   // timing data:
   struct tms tms_buf;

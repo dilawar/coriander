@@ -42,12 +42,12 @@ V4lStartThread(camera_t* cam)
     info=(v4lthread_info_t*)v4l_service->data;
     pthread_mutex_init(&v4l_service->mutex_data, NULL);
     pthread_mutex_init(&v4l_service->mutex_struct, NULL);
-    pthread_mutex_init(&info->mutex_cancel_v4l, NULL);
+    pthread_mutex_init(&info->mutex_cancel, NULL);
     
     /* if you want a clean-interrupt thread:*/
-    pthread_mutex_lock(&info->mutex_cancel_v4l);
-    info->cancel_v4l_req=0;
-    pthread_mutex_unlock(&info->mutex_cancel_v4l);
+    pthread_mutex_lock(&info->mutex_cancel);
+    info->cancel_req=0;
+    pthread_mutex_unlock(&info->mutex_cancel);
     
     /* setup v4l_thread: handles, ...*/
     pthread_mutex_lock(&v4l_service->mutex_data);
@@ -178,13 +178,13 @@ V4lThread(void* arg)
 
   while (1) { 
     /* Clean cancel handlers */
-    pthread_mutex_lock(&info->mutex_cancel_v4l);
-    if (info->cancel_v4l_req>0) {
-      pthread_mutex_unlock(&info->mutex_cancel_v4l);
+    pthread_mutex_lock(&info->mutex_cancel);
+    if (info->cancel_req>0) {
+      pthread_mutex_unlock(&info->mutex_cancel);
       return ((void*)1);
     }
     else {
-      pthread_mutex_unlock(&info->mutex_cancel_v4l);
+      pthread_mutex_unlock(&info->mutex_cancel);
       pthread_mutex_lock(&v4l_service->mutex_data);
       if(RollBuffers(v4l_service)) { // have buffers been rolled?
 	// check params
@@ -228,9 +228,9 @@ V4lStopThread(camera_t* cam)
     //fprintf(stderr,"V4L service found, stopping\n");
     info=(v4lthread_info_t*)v4l_service->data;
     /* Clean cancel handler: */
-    pthread_mutex_lock(&info->mutex_cancel_v4l);
-    info->cancel_v4l_req=1;
-    pthread_mutex_unlock(&info->mutex_cancel_v4l);
+    pthread_mutex_lock(&info->mutex_cancel);
+    info->cancel_req=1;
+    pthread_mutex_unlock(&info->mutex_cancel);
     
     /* common handlers...*/
     pthread_join(v4l_service->thread, NULL);
