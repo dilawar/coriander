@@ -83,7 +83,7 @@ SDLEventThread(void *arg)
       if (!SDLHandleEvent(display_service)) {
 	pthread_mutex_unlock(&info->mutex_event);
 	// SDL_QUIT called, close display thread
-	DisplayStopThread();
+	DisplayStopThread(camera);
 	// the following is only for the display_service button to be updated.
 	WM_cancel_display=1;
 	break;

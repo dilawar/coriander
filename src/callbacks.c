@@ -237,7 +237,7 @@ on_camera_select_activate              (GtkMenuItem     *menuitem,
   camera_ptr=(camera_t*)user_data;
 
   // close current display (we don't want display to be used by 2 threads at the same time 'cause SDL forbids it)
-  DisplayStopThread();
+  DisplayStopThread(camera);
 
   // stop all FPS displays:
   StopFPSDisplay();
@@ -246,7 +246,7 @@ on_camera_select_activate              (GtkMenuItem     *menuitem,
   SetCurrentCamera(camera_ptr->camera_info.euid_64);
 
   if (camera->want_to_display>0)
-    DisplayStartThread();
+    DisplayStartThread(camera);
 
   // redraw all:
   BuildAllWindows();
@@ -405,11 +405,11 @@ on_service_iso_toggled                 (GtkToggleButton *togglebutton,
 {
   if (!silent_ui_update) {
     if (togglebutton->active) {
-      if (IsoStartThread()==-1)
+      if (IsoStartThread(camera)==-1)
 	gtk_toggle_button_set_active(togglebutton,0);
     }
     else
-      IsoStopThread();
+      IsoStopThread(camera);
   }
 
 }
@@ -424,11 +424,11 @@ on_service_display_toggled             (GtkToggleButton *togglebutton,
       pthread_mutex_lock(&camera->uimutex);
       camera->want_to_display=1;
       pthread_mutex_unlock(&camera->uimutex);
-      if (DisplayStartThread()==-1)
+      if (DisplayStartThread(camera)==-1)
 	gtk_toggle_button_set_active(togglebutton,0);
     } 
     else {
-      DisplayStopThread();
+      DisplayStopThread(camera);
       pthread_mutex_lock(&camera->uimutex);
       camera->want_to_display=0;
       pthread_mutex_unlock(&camera->uimutex);
@@ -443,11 +443,11 @@ on_service_save_toggled                (GtkToggleButton *togglebutton,
 {
   if (!silent_ui_update) {
     if (togglebutton->active) {
-      if (SaveStartThread()==-1)
+      if (SaveStartThread(camera)==-1)
 	gtk_toggle_button_set_active(togglebutton,0);
     }
     else
-      SaveStopThread();
+      SaveStopThread(camera);
   }
 }
 
@@ -458,11 +458,11 @@ on_service_ftp_toggled                 (GtkToggleButton *togglebutton,
 {
   if (!silent_ui_update) {
     if (togglebutton->active) {
-      if (FtpStartThread()==-1)
+      if (FtpStartThread(camera)==-1)
 	gtk_toggle_button_set_active(togglebutton,0);
     }
     else
-      FtpStopThread();
+      FtpStopThread(camera);
   }
 }
 
@@ -473,13 +473,13 @@ on_service_v4l_toggled                 (GtkToggleButton *togglebutton,
 {
   if (!silent_ui_update) {
     if (togglebutton->active) {
-      if (V4lStartThread()==-1) {
+      if (V4lStartThread(camera)==-1) {
 	gtk_toggle_button_set_active(togglebutton,0);
 	gtk_widget_show(create_v4l_failure_window());
       }
     }
     else
-      V4lStopThread();
+      V4lStopThread(camera);
   }
 }
 

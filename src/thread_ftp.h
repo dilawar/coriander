@@ -76,7 +76,7 @@ typedef struct
 } ftpthread_info_t;
 
 gint
-FtpStartThread(void);
+FtpStartThread(camera_t* cam);
 
 void*
 FtpCleanupThread(void* arg);
@@ -85,7 +85,7 @@ void*
 FtpThread(void* arg);
 
 gint
-FtpStopThread(void);
+FtpStopThread(camera_t* cam);
 
 int
 FtpShowFPS(gpointer *data);

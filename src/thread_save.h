@@ -71,7 +71,7 @@ int
 SaveShowFPS(gpointer *data);
 
 gint
-SaveStartThread(void);
+SaveStartThread(camera_t* cam);
 
 void*
 SaveCleanupThread(void* arg);
@@ -80,7 +80,7 @@ void*
 SaveThread(void* arg);
 
 gint
-SaveStopThread(void);
+SaveStopThread(camera_t* cam);
 
 void
 Dump2File(char *name, chain_t *service);

@@ -20,18 +20,18 @@
 #include "thread_v4l.h"
 
 extern PrefsInfo preferences;
-extern camera_t* camera;
 extern GtkWidget *main_window;
 extern CtxtInfo ctxt;
+extern camera_t* camera;
 
 gint
-V4lStartThread(void)
+V4lStartThread(camera_t* cam)
 {
   chain_t* v4l_service=NULL;
   v4lthread_info_t *info=NULL;
   char stemp[STRING_SIZE];
 
-  v4l_service=GetService(SERVICE_V4L);
+  v4l_service=GetService(camera, SERVICE_V4L);
 
   if (v4l_service==NULL) { // if no V4L service running...
     //fprintf(stderr,"No V4L service found, inserting new one\n");
@@ -53,7 +53,7 @@ V4lStartThread(void)
     pthread_mutex_lock(&v4l_service->mutex_data);
     
     info->period=preferences.v4l_period;
-    CommonChainSetup(v4l_service,SERVICE_V4L);
+    CommonChainSetup(cam, v4l_service,SERVICE_V4L);
     
     info->v4l_buffer=NULL;
     //info->counter=0;
@@ -77,7 +77,7 @@ V4lStartThread(void)
     
     /* Insert chain and start service*/
     pthread_mutex_lock(&v4l_service->mutex_struct);
-    InsertChain(v4l_service);
+    InsertChain(cam, v4l_service);
     pthread_mutex_unlock(&v4l_service->mutex_struct);
     
     pthread_mutex_lock(&v4l_service->mutex_data);
@@ -87,7 +87,7 @@ V4lStartThread(void)
 	 (free, unset global vars,...):*/
       
       /* Mendatory cleanups:*/
-      RemoveChain(v4l_service);
+      RemoveChain(cam, v4l_service);
       pthread_mutex_unlock(&v4l_service->mutex_struct);
       pthread_mutex_unlock(&v4l_service->mutex_data);
       free(info->v4l_buffer);
@@ -218,11 +218,11 @@ V4lThread(void* arg)
 
 
 gint
-V4lStopThread(void)
+V4lStopThread(camera_t* cam)
 {
   v4lthread_info_t *info;
   chain_t *v4l_service;
-  v4l_service=GetService(SERVICE_V4L);
+  v4l_service=GetService(cam,SERVICE_V4L);
 
   if (v4l_service!=NULL) { // if V4L service running...
     //fprintf(stderr,"V4L service found, stopping\n");
@@ -242,7 +242,7 @@ V4lStopThread(void)
     gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_v4l"), ctxt.fps_v4l_ctxt, ctxt.fps_v4l_id);
     ctxt.fps_v4l_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_v4l"), ctxt.fps_v4l_ctxt, "");
     
-    RemoveChain(v4l_service);
+    RemoveChain(cam,v4l_service);
     
     /* Do custom cleanups here...*/
     if (info->v4l_buffer!=NULL) {

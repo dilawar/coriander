@@ -33,22 +33,22 @@
 #define THREAD_LOOP_SLEEP_TIME_US 1
 
 chain_t*
-GetService(service_t service);
+GetService(camera_t* cam, service_t service);
 
 void
-CommonChainSetup(chain_t* chain, service_t req_service);
+CommonChainSetup(camera_t* cam, chain_t* chain, service_t req_service);
 
 int
 RollBuffers(chain_t* chain);
 
 void
-InsertChain(chain_t* chain);
+InsertChain(camera_t* cam, chain_t* chain);
 
 void
-RemoveChain(chain_t* chain);
+RemoveChain(camera_t* cam, chain_t* chain);
 
 void
-InitChain(chain_t *chain, service_t service);
+InitChain(camera_t* cam, chain_t *chain, service_t service);
 
 void
 FreeChain(chain_t* chain);

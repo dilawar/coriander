@@ -55,8 +55,6 @@ WatchThread(void *arg)
   int lower_right[2];
   int pos[2];
   int size[2];
-  int state;
-  GtkAdjustment* adj;
   watchthread_info_t *info;
  
   info=(watchthread_info_t*)arg;

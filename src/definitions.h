@@ -58,6 +58,17 @@ typedef enum _Service_T
   SERVICE_FTP
 } service_t;
 
+typedef struct _BusInfo
+{
+  raw1394handle_t *handles;
+  nodeid_t **camera_nodes;
+  int camera_num;
+  int *port_camera_num;
+  int port_num;
+  int card_found;
+
+} BusInfo_t;
+
 typedef struct _Format7ModeInfo
 {
 

@@ -309,14 +309,14 @@ void
 UpdateServiceFrame(void)
 {
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (lookup_widget(main_window,"service_iso")),
-			       GetService(SERVICE_ISO)!=NULL);
+			       GetService(camera,SERVICE_ISO)!=NULL);
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (lookup_widget(main_window,"service_display")),
-			       GetService(SERVICE_DISPLAY)!=NULL);
+			       GetService(camera,SERVICE_DISPLAY)!=NULL);
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (lookup_widget(main_window,"service_save")),
-			       GetService(SERVICE_SAVE)!=NULL);
+			       GetService(camera,SERVICE_SAVE)!=NULL);
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (lookup_widget(main_window,"service_ftp")),
-			       GetService(SERVICE_FTP)!=NULL);
+			       GetService(camera,SERVICE_FTP)!=NULL);
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (lookup_widget(main_window,"service_v4l")),
-			       GetService(SERVICE_V4L)!=NULL);
+			       GetService(camera,SERVICE_V4L)!=NULL);
 
 }

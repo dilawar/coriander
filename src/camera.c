@@ -21,6 +21,53 @@
 extern camera_t* camera;
 extern camera_t* cameras;
 
+void
+GetCameraNodes(BusInfo_t* bi) {
+
+  raw1394handle_t tmp_handle;
+  int port;
+
+  tmp_handle=raw1394_new_handle();
+  bi->card_found=0;
+  bi->camera_num=0;
+
+  if (tmp_handle!=NULL) {
+    bi->port_num=raw1394_get_port_info(tmp_handle, NULL, 0);
+    raw1394_destroy_handle(tmp_handle);
+    bi->camera_nodes=(nodeid_t**)malloc(bi->port_num*sizeof(nodeid_t*));
+    bi->port_camera_num=(int*)malloc(bi->port_num*sizeof(int));
+    bi->handles=(raw1394handle_t *)malloc(bi->port_num*sizeof(raw1394handle_t));
+    
+    for (port=0;port<bi->port_num;port++) {
+      // get a handle to the current interface card
+      bi->handles[port]=dc1394_create_handle(port);
+      if (bi->handles[port]!=0) { // if the card is present
+	bi->card_found=1;
+	// probe the IEEE1394 bus for DC camera:
+	bi->camera_nodes[port]=dc1394_get_camera_nodes(bi->handles[port], &(bi->port_camera_num[port]), 0); // 0 not to show the cams.
+	bi->camera_num+=bi->port_camera_num[port];
+      }
+    }
+  }
+}
+
+void
+GetCamerasInfo(BusInfo_t* bi) {
+
+  int i;
+  int port;
+  camera_t* camera_ptr;
+  for (port=0;port<bi->port_num;port++) {
+    if (bi->handles[port]!=0) {
+      for (i=0;i<bi->port_camera_num[port];i++) {
+	camera_ptr=NewCamera();
+	GetCameraData(bi->handles[port], bi->camera_nodes[port][i], camera_ptr);
+	AppendCamera(camera_ptr);
+      }
+    }
+  }
+}
+
 camera_t*
 NewCamera(void) {
 
@@ -86,16 +133,40 @@ void
 RemoveCamera(u_int64_t guid) {
 
   camera_t* ptr;
+  //fprintf(stderr,"removing camera # 0x%llx\n",guid);
   ptr=cameras;
-
-  while(ptr->camera_info.euid_64!=guid) {
+  while (ptr->camera_info.euid_64!=guid) {
     ptr=ptr->next;
   }
-  
-  ptr->prev->next=ptr->next;
-  ptr->next->prev=ptr->prev;
+  //fprintf(stderr,"\tcamera ptr: 0x%x\n",ptr);
+
+  V4lStopThread(ptr);
+  FtpStopThread(ptr);
+  SaveStopThread(ptr);
+  DisplayStopThread(ptr);
+  IsoStopThread(ptr);
+  //fprintf(stderr,"\tthreads cleared\n");
+
+  if (ptr->prev!=NULL) // not first camera?
+    ptr->prev->next=ptr->next;
+  else {
+    cameras=ptr->next;
+    if (ptr->next!=NULL)
+      ptr->next->prev=NULL;
+  }
+
+  if (ptr->next!=NULL) // not last camera?
+    ptr->next->prev=ptr->prev;
+  else {
+    if (ptr->prev!=NULL)
+      ptr->prev->next=NULL;
+  }
+
+  //fprintf(stderr,"\tstruct bypassed\n");
 
   FreeCamera(ptr);
+  //fprintf(stderr,"\tcamera freed\n");
+
 }
 
 void

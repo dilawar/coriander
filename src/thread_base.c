@@ -22,11 +22,11 @@ extern camera_t* camera;
 extern camera_t* cameras;
 
 chain_t*
-GetService(service_t service)
+GetService(camera_t* cam, service_t service)
 {
   chain_t *chain;
 
-  chain=camera->image_pipe;
+  chain=cam->image_pipe;
 
   if (chain==NULL) {
     return(NULL);
@@ -94,7 +94,7 @@ RollBuffers(chain_t* chain)
 
 
 void
-CommonChainSetup(chain_t* chain, service_t req_service)
+CommonChainSetup(camera_t* cam, chain_t* chain, service_t req_service)
 {
   chain_t* probe_chain;
 
@@ -103,7 +103,7 @@ CommonChainSetup(chain_t* chain, service_t req_service)
   
   chain->service=req_service;
   
-  probe_chain=camera->image_pipe; // set the begin point for search
+  probe_chain=cam->image_pipe; // set the begin point for search
   if (req_service==SERVICE_ISO) {
     chain->next_chain=probe_chain;// the chain is inserted BEFORE probe_chain
     chain->prev_chain=NULL;
@@ -130,7 +130,7 @@ CommonChainSetup(chain_t* chain, service_t req_service)
   chain->current_buffer=(buffer_t*)malloc(sizeof(buffer_t));
   chain->next_buffer=(buffer_t*)malloc(sizeof(buffer_t));
 
-  chain->camera=camera;
+  chain->camera=cam;
 
   InitBuffer(chain->current_buffer);
   InitBuffer(chain->next_buffer);
@@ -139,7 +139,7 @@ CommonChainSetup(chain_t* chain, service_t req_service)
 
 
 void
-InsertChain(chain_t* chain)
+InsertChain(camera_t* cam, chain_t* chain)
 {
 
   // we should only use mutex_struct in this function
@@ -153,7 +153,7 @@ InsertChain(chain_t* chain)
   if (chain->prev_chain!=NULL)
     chain->prev_chain->next_chain=chain;
   else // we have a new first chain
-    camera->image_pipe=chain;
+    cam->image_pipe=chain;
 
   if (chain->next_chain!=NULL)
     chain->next_chain->prev_chain=chain;
@@ -167,7 +167,7 @@ InsertChain(chain_t* chain)
 
 
 void
-RemoveChain(chain_t* chain)
+RemoveChain(camera_t* cam, chain_t* chain)
 {
 
   // we should only use mutex_struct in this function
@@ -184,7 +184,7 @@ RemoveChain(chain_t* chain)
   if (chain->prev_chain!=NULL)// lock prev_mutex if we are not the first in the line
     chain->prev_chain->next_chain=chain->next_chain;
   else // it was the first chain
-    camera->image_pipe=chain->next_chain;
+    cam->image_pipe=chain->next_chain;
 
   if (chain->next_chain!=NULL)// lock next_mutex if we are not the last in the line
     chain->next_chain->prev_chain=chain->prev_chain;

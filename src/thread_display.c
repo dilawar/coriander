@@ -28,12 +28,12 @@ extern watchthread_info_t watchthread_info;
 #endif
 
 gint
-DisplayStartThread()
+DisplayStartThread(camera_t* cam)
 {
   chain_t *display_service=NULL;
   displaythread_info_t *info=NULL;
 
-  display_service=GetService(SERVICE_DISPLAY);
+  display_service=GetService(camera,SERVICE_DISPLAY);
 
   if (display_service==NULL) {// if no display service running...
     //fprintf(stderr,"No DISPLAY service found, inserting new one\n");
@@ -52,18 +52,18 @@ DisplayStartThread()
     
     pthread_mutex_lock(&display_service->mutex_data);
     info->period=preferences.display_period;
-    CommonChainSetup(display_service,SERVICE_DISPLAY);
+    CommonChainSetup(cam, display_service,SERVICE_DISPLAY);
     
     pthread_mutex_unlock(&display_service->mutex_data);
     
     pthread_mutex_lock(&display_service->mutex_struct);
-    InsertChain(display_service);
+    InsertChain(cam, display_service);
     pthread_mutex_unlock(&display_service->mutex_struct);
     
     pthread_mutex_lock(&display_service->mutex_data);
     pthread_mutex_lock(&display_service->mutex_struct);
     if (pthread_create(&display_service->thread, NULL, DisplayThread, (void*)display_service)) {
-      RemoveChain(display_service);
+      RemoveChain(cam, display_service);
       pthread_mutex_unlock(&display_service->mutex_struct);
       pthread_mutex_unlock(&display_service->mutex_data);
       FreeChain(display_service);
@@ -196,11 +196,11 @@ DisplayThread(void* arg)
 
 
 gint
-DisplayStopThread(void)
+DisplayStopThread(camera_t* cam)
 {
   displaythread_info_t *info;
   chain_t *display_service;
-  display_service=GetService(SERVICE_DISPLAY);
+  display_service=GetService(cam,SERVICE_DISPLAY);
   
   if (display_service!=NULL) { // if display service running... 
     //fprintf(stderr,"DISPLAY service found, stopping\n");
@@ -223,7 +223,7 @@ DisplayStopThread(void)
     ctxt.fps_display_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_display"),
 					   ctxt.fps_display_ctxt, "");
     
-    RemoveChain(display_service);
+    RemoveChain(cam,display_service);
     SDLQuit(display_service);
     
     pthread_mutex_unlock(&display_service->mutex_struct);

@@ -43,6 +43,8 @@ extern raw1394handle_t* handles;
 extern unsigned int main_timeout_ticker;
 extern int WM_cancel_display;
 extern cursor_info_t cursor_info;
+extern BusInfo_t* businfo;
+extern GtkWidget *waiting_camera_window;
 
 void
 GetFormat7Capabilities(raw1394handle_t handle, nodeid_t node, Format7Info *info)
@@ -168,7 +170,7 @@ void IsoFlowCheck(int *state)
     }
   }
   // memorize state:
-  *state=(GetService(SERVICE_ISO)!=NULL);
+  *state=(GetService(camera, SERVICE_ISO)!=NULL);
   if (*state!=0) {
     gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(main_window,"service_iso"),FALSE);
   }
@@ -596,7 +598,7 @@ StopFPSDisplay(void)
   ftpthread_info_t* infoftp;
   v4lthread_info_t* infov4l;
 
-  service=GetService(SERVICE_ISO);
+  service=GetService(camera, SERVICE_ISO);
   if (service!=NULL) {
     infoiso=(isothread_info_t*)service->data;
     //fprintf(stderr,"Stopping iso fps, id %d...",infoiso->timeout_func_id);
@@ -610,7 +612,7 @@ StopFPSDisplay(void)
   } 
   // we don't need to stop display FPS: the thread is completely disabled if necessary.
   
-  service=GetService(SERVICE_SAVE);
+  service=GetService(camera, SERVICE_SAVE);
   if (service!=NULL) {
     infosave=(savethread_info_t*)service->data;
     //fprintf(stderr,"Stopping save fps, id %d...",infosave->timeout_func_id);
@@ -621,7 +623,7 @@ StopFPSDisplay(void)
 					   ctxt.fps_save_ctxt, "");
     //fprintf(stderr,"done\n");
   }
-  service=GetService(SERVICE_FTP);
+  service=GetService(camera, SERVICE_FTP);
   if (service!=NULL) {
     infoftp=(ftpthread_info_t*)service->data;
     //fprintf(stderr,"Stopping ftp fps, id %d...",infoftp->timeout_func_id);
@@ -632,7 +634,7 @@ StopFPSDisplay(void)
 					   ctxt.fps_ftp_ctxt, "");
     //fprintf(stderr,"done\n");
   }
-  service=GetService(SERVICE_V4L);
+  service=GetService(camera, SERVICE_V4L);
   if (service!=NULL) {
     infov4l=(v4lthread_info_t*)service->data;
     //fprintf(stderr,"Stopping v4l fps, id %d...",infov4l->timeout_func_id);
@@ -655,7 +657,7 @@ ResumeFPSDisplay(void)
   ftpthread_info_t* infoftp;
   v4lthread_info_t* infov4l;
 
-  service=GetService(SERVICE_ISO);
+  service=GetService(camera, SERVICE_ISO);
   if (service!=NULL) {
     infoiso=(isothread_info_t*)service->data;
     //fprintf(stderr,"Starting iso fps...");
@@ -664,21 +666,21 @@ ResumeFPSDisplay(void)
   } 
   // we don't restart display FPS because if necessary the thread will be restarted anyway.
   
-  service=GetService(SERVICE_SAVE);
+  service=GetService(camera, SERVICE_SAVE);
   if (service!=NULL) {
     infosave=(savethread_info_t*)service->data;
     //fprintf(stderr,"Starting save fps...");
     infosave->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)SaveShowFPS, (gpointer*) service);
     //fprintf(stderr,"done: id= %d\n",infosave->timeout_func_id);
   }
-  service=GetService(SERVICE_FTP);
+  service=GetService(camera, SERVICE_FTP);
   if (service!=NULL) {
     infoftp=(ftpthread_info_t*)service->data;
     //fprintf(stderr,"Starting ftp fps...");
     infoftp->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)FtpShowFPS, (gpointer*) service);
     //fprintf(stderr,"done: id= %d\n",infoftp->timeout_func_id);
   }
-  service=GetService(SERVICE_V4L);
+  service=GetService(camera, SERVICE_V4L);
   if (service!=NULL) {
     infov4l=(v4lthread_info_t*)service->data;
     //fprintf(stderr,"Starting v4l fps...");
@@ -695,30 +697,161 @@ ResumeFPSDisplay(void)
 int
 bus_reset_handler(raw1394handle_t handle, unsigned int generation) {
 
-  fprintf(stderr,"Bus reset detected by gtk timeout. Generation: %d\n",generation);
+  BusInfo_t bi;
+  int i;
+  int port;
+  camera_t* camera_ptr;
+  camera_t* new_camera;
+  int index;
+  dc1394_camerainfo camera_info;
+  unsigned long long int new_guids[128];
+
+  //fprintf(stderr,"Bus reset detected by gtk timeout. Generation: %d\n",generation);
+
+  gtk_widget_hide(main_window);
+  usleep(1000000); // sleep some time to allow the cam to warm-up
+
   raw1394_update_generation(handle, generation);
   // Now we have to deal with this bus reset...
-  fprintf(stderr,"Coriander does not support hotplugging yet and has therefore entered\n");
-  fprintf(stderr,"a very unstable state. This program will self-terminate in 5 seconds.\n");
-  usleep(5000000);
-  fprintf(stderr,"Bye...\n");
-  exit(0);
 
-  return(0);
+  // get camera nodes:
+  GetCameraNodes(&bi);
+  //fprintf(stderr,"We have %d cameras now.\n",bi.camera_num);
+
+  // ADD NEW CAMERAS AND UPDATE PREVIOUS ONES ---------------------------------
+
+  // try to match the GUID with previous cameras
+  for (port=0;port<bi.port_num;port++) {
+    if (bi.handles[port]!=0) {
+      for (i=0;i<bi.port_camera_num[port];i++) {
+	if (dc1394_get_camera_info(bi.handles[port], bi.camera_nodes[port][i], &camera_info)!=DC1394_SUCCESS)
+	  MainError("Can't get camera basic information in bus-reset handler");
+	//fprintf(stderr, "current GUID: 0x%llx\n", camera_info.euid_64);
+
+	// was the current GUID already there?
+	camera_ptr=cameras;
+	while(camera_ptr!=NULL) {
+	  if (camera_ptr->camera_info.euid_64==camera_info.euid_64) { // yes, the camera was there
+	    //fprintf(stderr,"camera was already there, updating...\n");
+	    if (dc1394_get_camera_info(bi.handles[port], bi.camera_nodes[port][i], &camera_ptr->camera_info)!=DC1394_SUCCESS)
+	      MainError("Could not update camera basic information in bus reset handler");
+	    // If ISO is on, stop it and restart it.
+	    if (GetService(camera_ptr,SERVICE_ISO)!=NULL) {
+	      IsoStopThread(camera_ptr);
+	      IsoStartThread(camera_ptr);
+	    }
+	    break;
+	  }
+	  camera_ptr=camera_ptr->next;
+	}
+	if (camera_ptr==NULL) { // the camera is new
+	  //fprintf(stderr,"A new camera was added\n");
+	  new_camera=NewCamera();
+	  GetCameraData(bi.handles[port], bi.camera_nodes[port][i], new_camera);
+	  AppendCamera(new_camera);
+	}	
+      }
+    }
+  }
+
+  // CLEAR REMOVED CAMERAS -----------------------------
+
+  index=0;
+  // get all new guids
+  for (port=0;port<bi.port_num;port++) {
+    if (bi.handles[port]!=0) {
+      for (i=0;i<bi.port_camera_num[port];i++) {
+	if (dc1394_get_camera_info(bi.handles[port], bi.camera_nodes[port][i], &camera_info)!=DC1394_SUCCESS)
+	  MainError("Can't get camera basic information in bus-reset handler");
+	new_guids[index]=camera_info.euid_64;
+	index++;
+      }
+    }
+  }
+  //fprintf(stderr,"got all new guids\n");
+  // look if there is a camera that disappeared from the camera_t struct
+  camera_ptr=cameras;
+  while (camera_ptr!=NULL) {
+    for (i=0;i<index;i++) {
+      if (camera_ptr->camera_info.euid_64==new_guids[i])
+	break;
+    }
+    if (camera_ptr->camera_info.euid_64!=new_guids[i]) { // the camera "camera_ptr" was unplugged
+      //fprintf(stderr,"found a camera to remove\n");
+      if (camera->camera_info.euid_64==camera_ptr->camera_info.euid_64) {
+	//fprintf(stderr,"The current camera was unplugged\n");
+	if (bi.camera_num==0) { // the only camera was removed. Close GUI and revert to camera wait prompt
+	  //fprintf(stderr,"... and it was the only camera!\n");
+	  waiting_camera_window=create_waiting_camera_window();
+	  gtk_widget_show(waiting_camera_window);
+
+	  // delete structs:
+	  //fprintf(stderr,"deleting struct\n");
+	  RemoveCamera(camera_ptr->camera_info.euid_64);
+	  //fprintf(stderr,"camera removed\n");  
+
+	}
+	else {
+	  //fprintf(stderr,"Selecting the first non-removed camera as current camera\n");
+	  if (cameras->camera_info.euid_64==camera_ptr->camera_info.euid_64) { // is the first camera the one to be removed?
+	    // use second cam as current cam
+	    SetCurrentCamera(cameras->next->camera_info.euid_64);
+	  }
+	  else {
+	    // use first cam as current cam
+	    SetCurrentCamera(cameras->camera_info.euid_64);
+	  }
+	  // close and remove dead camera
+	  //fprintf(stderr,"deleting struct\n");
+	  RemoveCamera(camera_ptr->camera_info.euid_64);
+	  //fprintf(stderr,"camera removed\n");
+	}
+      } // end if we are deleting the current camera
+      else { // we delete another camera. This is easy.
+	RemoveCamera(camera_ptr->camera_info.euid_64);
+      }
+      // rescan from the beginning.
+      camera_ptr=cameras;
+    }
+    else {
+      camera_ptr=camera_ptr->next;
+    }
+  }
+  //fprintf(stderr,"Removed all dead camera structs\n");
+
+  if (bi.camera_num>0) {
+    //fprintf(stderr,"build/refresh GUI\n");
+    gtk_widget_destroy(waiting_camera_window);
+
+    gtk_widget_show(main_window);
+
+    // Build/refresh GUI
+    if (camera->want_to_display>0)
+      DisplayStartThread(camera);
+    
+    BuildAllWindows();
+    UpdateAllWindows();
+    
+    // resume all FPS displays:
+    ResumeFPSDisplay();
+  }
+
+  //fprintf(stderr,"finished handling bus-reset\n");
+  return(1);
 }
 
 int
 main_timeout_handler(gpointer* port_num) {
 
   int i;
-  int ports=(int)port_num;
+  //int ports=(int)port_num;
   quadlet_t quadlet;
 
   // the main timeout performs tasks every ms. In order to have less repeated tasks
   // the main_timeout_ticker can be consulted.
   main_timeout_ticker=(main_timeout_ticker+10)%1000;
 
-  // -------------------------------------------------------
+  // --------------------------------------------------------------------------------------
   // cancel display thread if asked by the SDL/WM
   // We must do this here because it is not allowed to call a GTK function from a thread. At least if we do
   // so the program progressively breaks with strange GUI behavior/look.
@@ -730,17 +863,18 @@ main_timeout_handler(gpointer* port_num) {
     //fprintf(stderr,"check display cancel\n");
   }
 
-  // -------------------------------------------------------
-  // performs a dummy read on all handles
+  // --------------------------------------------------------------------------------------
+  // performs a dummy read on all handles to detect bus resets
   if (!(main_timeout_ticker%1000)) { // every second
-    for (i=0;i<ports;i++) {
-      cooked1394_read(handles[i], 0xffc0 | raw1394_get_local_id(handles[i]),
+    for (i=0;i<businfo->port_num;i++) {
+      cooked1394_read(businfo->handles[i], 0xffc0 | raw1394_get_local_id(businfo->handles[i]),
 		      CSR_REGISTER_BASE + CSR_CYCLE_TIME, 4,
 		      (quadlet_t *) &quadlet);
     }
     //fprintf(stderr,"dummy read\n");
   }
-  // -------------------------------------------------------
+  // --------------------------------------------------------------------------------------
+  // update cursor information
   if (!(main_timeout_ticker%100)) { // every 100ms
     if (cursor_info.update_req>0) {
       UpdateCursorFrame();

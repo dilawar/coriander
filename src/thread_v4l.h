@@ -67,7 +67,7 @@ int
 V4lShowFPS(gpointer *data);
 
 gint
-V4lStartThread(void);
+V4lStartThread(camera_t* cam);
 
 void*
 V4lCleanupThread(void* arg);
@@ -76,7 +76,7 @@ void*
 V4lThread(void* arg);
 
 gint
-V4lStopThread(void);
+V4lStopThread(camera_t* cam);
 
 void
 V4lThreadCheckParams(chain_t *v4l_service);

@@ -24,6 +24,12 @@
 #include "raw1394support.h"
 #include "tools.h"
 
+void
+GetCameraNodes(BusInfo_t* businfo);
+
+void
+GetCamerasInfo(BusInfo_t* businfo);
+
 camera_t*
 NewCamera(void);
 

@@ -30,7 +30,7 @@ void
 BuildPreferencesWindow(void);
 
 void
-BuildCommanderWindow(void);
+BuildMainWindow(void);
 
 void
 BuildFeatureWindow(void);

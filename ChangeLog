@@ -2,6 +2,9 @@ Coriander, (c) 2000-2003 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 0.33
 
+   June 1, 2003, by Damien Douxchamps
+   - first implementation of a bus-reset handling process
+	
    May 30, 2003, by Damien Douxchamps
    - removed absolute control window. Absolute controls are now in placed
      in their respective range frame.

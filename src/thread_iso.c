@@ -23,13 +23,13 @@ extern GtkWidget *main_window;
 extern CtxtInfo ctxt;
 extern camera_t* camera;
 
-gint IsoStartThread(void)
+gint IsoStartThread(camera_t* cam)
 {
   int maxspeed;
   chain_t* iso_service=NULL;
   isothread_info_t *info=NULL;
 
-  iso_service=GetService(SERVICE_ISO);
+  iso_service=GetService(cam, SERVICE_ISO);
 
   if (iso_service==NULL) { // if no ISO service running...
     //fprintf(stderr,"*** No ISO service found, inserting new one\n");
@@ -43,7 +43,7 @@ gint IsoStartThread(void)
     info=(isothread_info_t*)iso_service->data;
     
     /* currently FORMAT_STILL_IMAGE is not supported*/
-    if (camera->misc_info.format == FORMAT_STILL_IMAGE) {
+    if (cam->misc_info.format == FORMAT_STILL_IMAGE) {
       FreeChain(iso_service);
       return(-1);
     }
@@ -56,7 +56,7 @@ gint IsoStartThread(void)
       return(-1);
     }
     
-    switch (camera->selfid.packetZero.phySpeed) {
+    switch (cam->selfid.packetZero.phySpeed) {
     case 1: maxspeed=SPEED_200;break;
     case 2: maxspeed=SPEED_400;break;
     default: maxspeed=SPEED_100;break;
@@ -64,10 +64,10 @@ gint IsoStartThread(void)
     //fprintf(stderr,"    Setting up capture\n");
     switch(preferences.receive_method) {
     case RECEIVE_METHOD_VIDEO1394:
-      if (camera->misc_info.format!=FORMAT_SCALABLE_IMAGE_SIZE)
-	if (dc1394_dma_setup_capture(camera->camera_info.handle, camera->camera_info.id, camera->misc_info.iso_channel, 
-				     camera->misc_info.format, camera->misc_info.mode, maxspeed,
-				     camera->misc_info.framerate, DMA_BUFFERS,
+      if (cam->misc_info.format!=FORMAT_SCALABLE_IMAGE_SIZE)
+	if (dc1394_dma_setup_capture(cam->camera_info.handle, cam->camera_info.id, cam->misc_info.iso_channel, 
+				     cam->misc_info.format, cam->misc_info.mode, maxspeed,
+				     cam->misc_info.framerate, DMA_BUFFERS,
 				     preferences.video1394_dropframes,
 				     preferences.video1394_device, &info->capture)
 	    == DC1394_SUCCESS) {
@@ -81,8 +81,8 @@ gint IsoStartThread(void)
 	}
       else {
 	info->capture.dma_device_file = preferences.video1394_device;
-	if (dc1394_dma_setup_format7_capture(camera->camera_info.handle, camera->camera_info.id, camera->misc_info.iso_channel, 
-					     camera->misc_info.mode, maxspeed, QUERY_FROM_CAMERA,
+	if (dc1394_dma_setup_format7_capture(cam->camera_info.handle, cam->camera_info.id, cam->misc_info.iso_channel, 
+					     cam->misc_info.mode, maxspeed, QUERY_FROM_CAMERA,
 					     QUERY_FROM_CAMERA, QUERY_FROM_CAMERA,
 					     QUERY_FROM_CAMERA, QUERY_FROM_CAMERA, 
 					     DMA_BUFFERS, &info->capture)
@@ -98,10 +98,10 @@ gint IsoStartThread(void)
       }
       break;
     case RECEIVE_METHOD_RAW1394:
-      if (camera->misc_info.format!=FORMAT_SCALABLE_IMAGE_SIZE)
-	if (dc1394_setup_capture(camera->camera_info.handle, camera->camera_info.id, camera->misc_info.iso_channel, 
-				 camera->misc_info.format, camera->misc_info.mode, maxspeed,
-				 camera->misc_info.framerate, &info->capture)
+      if (cam->misc_info.format!=FORMAT_SCALABLE_IMAGE_SIZE)
+	if (dc1394_setup_capture(cam->camera_info.handle, cam->camera_info.id, cam->misc_info.iso_channel, 
+				 cam->misc_info.format, cam->misc_info.mode, maxspeed,
+				 cam->misc_info.framerate, &info->capture)
 	    == DC1394_SUCCESS) {
 	  info->receive_method=RECEIVE_METHOD_RAW1394;
 	}
@@ -112,8 +112,8 @@ gint IsoStartThread(void)
 	  return(-1);
 	}
       else {
-	if (dc1394_setup_format7_capture(camera->camera_info.handle, camera->camera_info.id, camera->misc_info.iso_channel, 
-					 camera->misc_info.mode, maxspeed, QUERY_FROM_CAMERA,
+	if (dc1394_setup_format7_capture(cam->camera_info.handle, cam->camera_info.id, cam->misc_info.iso_channel, 
+					 cam->misc_info.mode, maxspeed, QUERY_FROM_CAMERA,
 					 QUERY_FROM_CAMERA, QUERY_FROM_CAMERA,
 					 QUERY_FROM_CAMERA, QUERY_FROM_CAMERA,
 					 &info->capture)
@@ -132,7 +132,7 @@ gint IsoStartThread(void)
     //fprintf(stderr,"   1394 setup OK\n");
     
     pthread_mutex_lock(&iso_service->mutex_data);
-    CommonChainSetup(iso_service, SERVICE_ISO);
+    CommonChainSetup(cam, iso_service, SERVICE_ISO);
     // init image buffers structs
     info->temp=NULL;
     info->temp_size=0;
@@ -141,13 +141,13 @@ gint IsoStartThread(void)
     pthread_mutex_unlock(&iso_service->mutex_data);
     
     pthread_mutex_lock(&iso_service->mutex_struct);
-    InsertChain(iso_service);
+    InsertChain(cam,iso_service);
     pthread_mutex_unlock(&iso_service->mutex_struct);
     
     pthread_mutex_lock(&iso_service->mutex_data);
     pthread_mutex_lock(&iso_service->mutex_struct);
     if (pthread_create(&iso_service->thread, NULL, IsoThread,(void*) iso_service)) {
-      RemoveChain(iso_service);
+      RemoveChain(cam, iso_service);
       pthread_mutex_unlock(&iso_service->mutex_struct);
       pthread_mutex_unlock(&iso_service->mutex_data);
       FreeChain(iso_service);
@@ -325,11 +325,11 @@ IsoThread(void* arg)
 }
 
 
-gint IsoStopThread(void)
+gint IsoStopThread(camera_t* cam)
 {
   isothread_info_t *info;
   chain_t *iso_service;
-  iso_service=GetService(SERVICE_ISO);  
+  iso_service=GetService(cam,SERVICE_ISO);  
 
   if (iso_service!=NULL) { // if ISO service running...
     //fprintf(stderr,"ISO service found, stopping\n");
@@ -343,7 +343,7 @@ gint IsoStopThread(void)
     gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_receive"), ctxt.fps_receive_ctxt, ctxt.fps_receive_id);
     ctxt.fps_receive_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_receive"), ctxt.fps_receive_ctxt, "");
     
-    RemoveChain(iso_service);
+    RemoveChain(cam,iso_service);
     
     if ((info->temp!=NULL)&&(info->temp_allocated>0)) {
       free(info->temp);
@@ -354,11 +354,11 @@ gint IsoStopThread(void)
     }
     
     if (info->receive_method == RECEIVE_METHOD_VIDEO1394) {
-      dc1394_dma_unlisten(camera->camera_info.handle, &info->capture);
+      dc1394_dma_unlisten(cam->camera_info.handle, &info->capture);
       dc1394_dma_release_camera(info->handle, &info->capture);
     }
     else 
-      dc1394_release_camera(camera->camera_info.handle, &info->capture);
+      dc1394_release_camera(cam->camera_info.handle, &info->capture);
     
     dc1394_destroy_handle(info->handle);
     info->handle = NULL;

@@ -73,7 +73,7 @@ int
 IsoShowFPS(gpointer *data);
 
 gint
-IsoStartThread(void);
+IsoStartThread(camera_t* cam);
 
 void*
 IsoCleanupThread(void* arg);
@@ -82,7 +82,7 @@ void*
 IsoThread(void* arg);
 
 gint
-IsoStopThread(void);
+IsoStopThread(camera_t* camera);
 
 void
 IsoThreadCheckParams(chain_t *iso_service);

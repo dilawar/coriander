@@ -18,6 +18,8 @@
 
 #include "build_ranges.h"
 
+#define RANGE_TABLE_WIDTH 5
+
 extern GtkWidget *preferences_window;
 extern GtkWidget *main_window;
 extern camera_t* camera;
@@ -44,7 +46,7 @@ BuildEmptyRange(int feature)
 
   switch (feature) {
   case FEATURE_TEMPERATURE:
-    table = gtk_table_new (3, 6, FALSE);
+    table = gtk_table_new (3, RANGE_TABLE_WIDTH, FALSE);
     gtk_table_set_homogeneous (GTK_TABLE(table),TRUE);
     gtk_widget_ref (table);
     sprintf(stemp,"feature_%d_table",feature);
@@ -77,7 +79,7 @@ BuildEmptyRange(int feature)
 
     break;
   case FEATURE_WHITE_BALANCE:
-    table = gtk_table_new (3, 6, FALSE);
+    table = gtk_table_new (3, RANGE_TABLE_WIDTH, FALSE);
     gtk_table_set_homogeneous (GTK_TABLE(table),TRUE);
     gtk_widget_ref (table);
     sprintf(stemp,"feature_%d_table",feature);
@@ -112,10 +114,10 @@ BuildEmptyRange(int feature)
 
   default:
     if (camera->feature_set.feature[feature-FEATURE_MIN].absolute_capable!=0) {
-      table = gtk_table_new (2, 6, FALSE);
+      table = gtk_table_new (2, RANGE_TABLE_WIDTH, FALSE);
     }
     else {
-      table = gtk_table_new (1, 6, FALSE);
+      table = gtk_table_new (1, RANGE_TABLE_WIDTH, FALSE);
     }
     gtk_table_set_homogeneous (GTK_TABLE(table),TRUE);
     gtk_widget_ref (table);
@@ -239,7 +241,7 @@ void BuildRange(int feature)
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (scale);
     sprintf(stemp,"feature_%d_table",feature);
-    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale, 1, 6, 1, 2,
+    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale, 1, RANGE_TABLE_WIDTH, 1, 2,
 		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 		      (GtkAttachOptions) (GTK_FILL), 0, 0);
     gtk_widget_set_sensitive (scale, TRUE);
@@ -252,7 +254,7 @@ void BuildRange(int feature)
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (scale2);
     sprintf(stemp,"feature_%d_table",feature);
-    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale2, 1, 6, 2, 3,
+    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale2, 1, RANGE_TABLE_WIDTH, 2, 3,
 		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 		      (GtkAttachOptions) (GTK_FILL), 0, 0);
     gtk_widget_set_sensitive (scale2, TRUE);
@@ -279,7 +281,7 @@ void BuildRange(int feature)
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (scale);
     sprintf(stemp,"feature_%d_table",feature);
-    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale, 1, 6, 1, 2,
+    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale, 1, RANGE_TABLE_WIDTH, 1, 2,
 		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 		      (GtkAttachOptions) (GTK_FILL), 0, 0);
     gtk_widget_set_sensitive (scale, TRUE);
@@ -292,7 +294,7 @@ void BuildRange(int feature)
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (scale2);
     sprintf(stemp,"feature_%d_table",feature);
-    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale2, 1, 6, 2, 3,
+    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale2, 1, RANGE_TABLE_WIDTH, 2, 3,
 		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 		      (GtkAttachOptions) (GTK_FILL), 0, 0);
     gtk_widget_set_sensitive (scale2, TRUE);
@@ -315,12 +317,12 @@ void BuildRange(int feature)
     gtk_widget_show (scale);
     sprintf(stemp,"feature_%d_table",feature);
     if (camera->feature_set.feature[feature-FEATURE_MIN].absolute_capable!=0) {
-    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale, 0, 6, 1, 2,
+    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale, 0, RANGE_TABLE_WIDTH, 1, 2,
 		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 		      (GtkAttachOptions) (GTK_FILL), 0, 0);
     }
     else {
-    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale, 1, 6, 0, 1,
+    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale, 1, RANGE_TABLE_WIDTH, 0, 1,
 		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 		      (GtkAttachOptions) (GTK_FILL), 0, 0);
     }
@@ -342,7 +344,7 @@ void BuildRange(int feature)
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (abs_entry);
     sprintf(stemp,"feature_%d_table",feature);
-    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), abs_entry, 2, 5, 0, 1,
+    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), abs_entry, 2, RANGE_TABLE_WIDTH-1, 0, 1,
 		      (GtkAttachOptions) (GTK_EXPAND|GTK_FILL),
 		      (GtkAttachOptions) (0), 0, 0);
     gtk_signal_connect (GTK_OBJECT (abs_entry), "activate",
@@ -357,7 +359,7 @@ void BuildRange(int feature)
     gtk_label_set_justify(GTK_LABEL(label),GTK_JUSTIFY_LEFT);
     gtk_widget_show (label);
     sprintf(stemp,"feature_%d_table",feature);
-    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), label, 5, 6, 0, 1,
+    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), label, RANGE_TABLE_WIDTH-1, RANGE_TABLE_WIDTH, 0, 1,
 		      (GtkAttachOptions) (GTK_FILL|GTK_FILL),
 		      (GtkAttachOptions) (0), 10, 0);
     gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);

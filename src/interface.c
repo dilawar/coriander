@@ -2728,7 +2728,7 @@ create_no_handle_window (void)
   gtk_widget_show (dialog_vbox2);
 
   gnome_dialog_append_button_with_pixmap (GNOME_DIALOG (no_handle_window),
-                                          _("QUIT"), GNOME_STOCK_PIXMAP_EXIT);
+                                          _("Exit"), GNOME_STOCK_PIXMAP_EXIT);
   button1 = GTK_WIDGET (g_list_last (GNOME_DIALOG (no_handle_window)->buttons)->data);
   gtk_widget_ref (button1);
   gtk_object_set_data_full (GTK_OBJECT (no_handle_window), "button1", button1,
@@ -2772,7 +2772,7 @@ create_no_camera_window (void)
   gtk_widget_show (dialog_vbox3);
 
   gnome_dialog_append_button_with_pixmap (GNOME_DIALOG (no_camera_window),
-                                          _("QUIT"), GNOME_STOCK_PIXMAP_EXIT);
+                                          _("Exit"), GNOME_STOCK_PIXMAP_EXIT);
   button3 = GTK_WIDGET (g_list_last (GNOME_DIALOG (no_camera_window)->buttons)->data);
   gtk_widget_ref (button3);
   gtk_object_set_data_full (GTK_OBJECT (no_camera_window), "button3", button3,
@@ -3054,7 +3054,7 @@ create_v4l_failure_window (void)
   gtk_object_set_data (GTK_OBJECT (v4l_failure_window), "dialog_vbox4", dialog_vbox4);
   gtk_widget_show (dialog_vbox4);
 
-  gnome_dialog_append_button (GNOME_DIALOG (v4l_failure_window), GNOME_STOCK_BUTTON_OK);
+  gnome_dialog_append_button (GNOME_DIALOG (v4l_failure_window), GNOME_STOCK_BUTTON_CLOSE);
   button6 = GTK_WIDGET (g_list_last (GNOME_DIALOG (v4l_failure_window)->buttons)->data);
   gtk_widget_ref (button6);
   gtk_object_set_data_full (GTK_OBJECT (v4l_failure_window), "button6", button6,
@@ -3068,5 +3068,49 @@ create_v4l_failure_window (void)
                             (GtkDestroyNotify) gtk_widget_unref);
 
   return v4l_failure_window;
+}
+
+GtkWidget*
+create_waiting_camera_window (void)
+{
+  GtkWidget *waiting_camera_window;
+  GtkWidget *dialog_vbox5;
+  GtkWidget *button7;
+  GtkWidget *dialog_action_area5;
+
+  /* We create it with an OK button, and then remove the button, to work
+     around a bug in gnome-libs. */
+  waiting_camera_window = gnome_message_box_new (_("There is no IIDC camera attached to your IEEE1394 bus(ses).\nCoriander will wait until a new camera is plugged. Alternatively\nyou can click 'exit' to leave Coriander."),
+                              GNOME_MESSAGE_BOX_WARNING,
+                              GNOME_STOCK_BUTTON_OK, NULL);
+  gtk_container_remove (GTK_CONTAINER (GNOME_DIALOG (waiting_camera_window)->action_area), GNOME_DIALOG (waiting_camera_window)->buttons->data);
+  GNOME_DIALOG (waiting_camera_window)->buttons = NULL;
+  gtk_object_set_data (GTK_OBJECT (waiting_camera_window), "waiting_camera_window", waiting_camera_window);
+  gtk_window_set_title (GTK_WINDOW (waiting_camera_window), _("No more cameras..."));
+  gtk_window_set_policy (GTK_WINDOW (waiting_camera_window), FALSE, FALSE, FALSE);
+
+  dialog_vbox5 = GNOME_DIALOG (waiting_camera_window)->vbox;
+  gtk_object_set_data (GTK_OBJECT (waiting_camera_window), "dialog_vbox5", dialog_vbox5);
+  gtk_widget_show (dialog_vbox5);
+
+  gnome_dialog_append_button_with_pixmap (GNOME_DIALOG (waiting_camera_window),
+                                          _("Exit"), GNOME_STOCK_PIXMAP_EXIT);
+  button7 = GTK_WIDGET (g_list_last (GNOME_DIALOG (waiting_camera_window)->buttons)->data);
+  gtk_widget_ref (button7);
+  gtk_object_set_data_full (GTK_OBJECT (waiting_camera_window), "button7", button7,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (button7);
+  GTK_WIDGET_SET_FLAGS (button7, GTK_CAN_DEFAULT);
+
+  dialog_action_area5 = GNOME_DIALOG (waiting_camera_window)->action_area;
+  gtk_widget_ref (dialog_action_area5);
+  gtk_object_set_data_full (GTK_OBJECT (waiting_camera_window), "dialog_action_area5", dialog_action_area5,
+                            (GtkDestroyNotify) gtk_widget_unref);
+
+  gtk_signal_connect (GTK_OBJECT (button7), "clicked",
+                      GTK_SIGNAL_FUNC (gtk_main_quit),
+                      NULL);
+
+  return waiting_camera_window;
 }
 

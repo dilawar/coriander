@@ -96,7 +96,7 @@ BuildFeatureWindow(void)
 }
 
 void
-BuildCommanderWindow(void)
+BuildMainWindow(void)
 {
   BuildPowerFrame();
   BuildServiceFrame();
@@ -120,7 +120,7 @@ void
 BuildAllWindows(void)
 {
   BuildPreferencesWindow();
-  BuildCommanderWindow();
+  BuildMainWindow();
   BuildFeatureWindow();
   BuildFormat7Window();
   BuildStatusWindow();
