@@ -708,7 +708,7 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation) {
 
   //fprintf(stderr,"Bus reset detected by gtk timeout. Generation: %d\n",generation);
 
-  gtk_widget_hide(main_window);
+  gtk_widget_set_sensitive(main_window,FALSE);
   usleep(1000000); // sleep some time to allow the cam to warm-up
 
   raw1394_update_generation(handle, generation);
@@ -823,7 +823,7 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation) {
     //fprintf(stderr,"build/refresh GUI\n");
     gtk_widget_destroy(waiting_camera_window);
 
-    gtk_widget_show(main_window);
+    gtk_widget_set_sensitive(main_window,TRUE);
 
     // Build/refresh GUI
     if (camera->want_to_display>0)

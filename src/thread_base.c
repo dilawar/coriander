@@ -204,6 +204,8 @@ RemoveChain(camera_t* cam, chain_t* chain)
 void
 FreeChain(chain_t* chain)
 {
+
+  //fprintf(stderr,"FreeChain...\n");
   if (chain!=NULL) {
     if (chain->data!=NULL)
       free(chain->data);
@@ -220,6 +222,7 @@ FreeChain(chain_t* chain)
     }
     free(chain);
   }
+  //fprintf(stderr,"done\n");
 }
 
 
