@@ -39,7 +39,6 @@
 #include "thread_iso.h"
 #include "thread_save.h"
 #include "thread_ftp.h"
-#include "thread_real.h"
 #include "thread_display.h"
 #include "raw1394support.h"
 #include <libdc1394/dc1394_control.h>
@@ -210,7 +209,6 @@ main (int argc, char *argv[])
 	  for (i=0;i<camera_num;i++)
 	    {
 	      SelectCamera(i);
-	      RealStopThread();
 	      FtpStopThread();
 	      SaveStopThread();
 	      DisplayStopThread(current_camera);

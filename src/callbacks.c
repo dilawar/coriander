@@ -582,27 +582,6 @@ on_service_ftp_toggled                 (GtkToggleButton *togglebutton,
 
 
 void
-on_service_real_toggled                (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-  if (!silent_ui_update)
-    {
-      if (togglebutton->active)
-	{
-	  //if (GetService(SERVICE_ISO,current_camera)==NULL)
-	  //  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"service_iso")), TRUE);
-	  if (RealStartThread()==-1)
-	    gtk_toggle_button_set_active(togglebutton,0);
-	}
-      else
-	RealStopThread();
-    }
-
-}
-
-
-
-void
 on_range_menu_activate             (GtkMenuItem     *menuitem,
 				    gpointer         user_data)
 
@@ -834,15 +813,6 @@ on_prefs_ftp_filename_changed          (GtkEditable     *editable,
 
 
 void
-on_prefs_real_address_changed          (GtkEditable     *editable,
-                                        gpointer         user_data)
-{
-  preferences.real_address=gtk_entry_get_text(GTK_ENTRY(lookup_widget(commander_window,"prefs_real_address")));
-  gnome_config_set_string("coriander/real/address",preferences.real_address);
-  gnome_config_sync();
-}
-
-void
 on_prefs_save_filename_changed         (GtkEditable     *editable,
                                         gpointer         user_data)
 {
@@ -851,80 +821,6 @@ on_prefs_save_filename_changed         (GtkEditable     *editable,
   gnome_config_sync();
 }
 
-
-
-void
-on_prefs_real_filename_changed         (GtkEditable     *editable,
-                                        gpointer         user_data)
-{
-  preferences.real_filename=gtk_entry_get_text(GTK_ENTRY(lookup_widget(commander_window,"prefs_real_filename")));
-  gnome_config_set_string("coriander/real/filename",preferences.real_filename);
-  gnome_config_sync();
-}
-
-
-void
-on_prefs_real_user_changed             (GtkEditable     *editable,
-                                        gpointer         user_data)
-{
-  preferences.real_user=gtk_entry_get_text(GTK_ENTRY(lookup_widget(commander_window,"prefs_real_user")));
-  gnome_config_set_string("coriander/real/user",preferences.real_user);
-  gnome_config_sync();
-}
-
-
-void
-on_prefs_real_password_changed         (GtkEditable     *editable,
-                                        gpointer         user_data)
-{
-  preferences.real_password=gtk_entry_get_text(GTK_ENTRY(lookup_widget(commander_window,"prefs_real_password")));
-  gnome_config_set_string("coriander/real/password",preferences.real_password);
-  gnome_config_sync();
-}
-
-
-void
-on_prefs_real_port_changed             (GtkEditable     *editable,
-                                        gpointer         user_data)
-{
-  preferences.real_port=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(commander_window,"prefs_real_port")));
-  gnome_config_set_int("coriander/real/port",preferences.real_port);
-  gnome_config_sync();
-
-}
-
-
-void
-on_prefs_real_title_changed            (GtkEditable     *editable,
-                                        gpointer         user_data)
-{
-  preferences.real_title=gtk_entry_get_text(GTK_ENTRY(lookup_widget(commander_window,"prefs_real_title")));
-  gnome_config_set_string("coriander/real/title",preferences.real_title);
-  gnome_config_sync();
-
-}
-
-
-void
-on_prefs_real_author_changed           (GtkEditable     *editable,
-                                        gpointer         user_data)
-{
-  preferences.real_author=gtk_entry_get_text(GTK_ENTRY(lookup_widget(commander_window,"prefs_real_author")));
-  gnome_config_set_string("coriander/real/author",preferences.real_author);
-  gnome_config_sync();
-
-}
-
-
-void
-on_prefs_real_copyright_changed        (GtkEditable     *editable,
-                                        gpointer         user_data)
-{
-  preferences.real_copyright=gtk_entry_get_text(GTK_ENTRY(lookup_widget(commander_window,"prefs_real_copyright")));
-  gnome_config_set_string("coriander/real/copyright",preferences.real_copyright);
-  gnome_config_sync();
-
-}
 
 void
 on_prefs_update_power_toggled          (GtkToggleButton *togglebutton,
@@ -1043,23 +939,6 @@ on_prefs_ftp_scratch_toggled           (GtkToggleButton *togglebutton,
   gnome_config_sync();
 }
 
-void 
-on_prefs_real_quality_activate         (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-  preferences.real_quality=(int)user_data;
-  gnome_config_set_int("coriander/real/quality",preferences.real_quality);
-  gnome_config_sync();
-}
-
-void
-on_prefs_real_compatibility_activate   (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-  preferences.real_compatibility=(int)user_data;
-  gnome_config_set_int("coriander/real/compatibility",preferences.real_compatibility);
-  gnome_config_sync();
-}
 
 void
 on_prefs_receive_method_activate      (GtkToggleButton *togglebutton,
@@ -1071,6 +950,7 @@ on_prefs_receive_method_activate      (GtkToggleButton *togglebutton,
   UpdatePrefsReceiveFrame();
 }
 
+
 void
 on_prefs_display_keep_ratio_toggled    (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
@@ -1080,130 +960,6 @@ on_prefs_display_keep_ratio_toggled    (GtkToggleButton *togglebutton,
   gnome_config_sync();
 }
 
-
-void
-on_prefs_real_recordable_toggled       (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-  if (togglebutton->active)
-    preferences.real_recordable=1;
-  else
-    preferences.real_recordable=0;
-  gnome_config_set_int("coriander/real/recordable",preferences.real_recordable);
-  gnome_config_sync();
-}
-
-
-void
-on_prefs_real_audience_28k_toggled     (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-  if (togglebutton->active)
-    preferences.real_audience=(preferences.real_audience | REAL_AUDIENCE_28_MODEM);
-  else
-    preferences.real_audience=(preferences.real_audience & (~REAL_AUDIENCE_28_MODEM));
-  gnome_config_set_int("coriander/real/audience",preferences.real_audience);
-  gnome_config_sync();
-  //fprintf(stderr,"audience flags: 0x%x\n",preferences.real_audience);
-}
-
-
-void
-on_prefs_real_audience_56k_toggled     (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-  if (togglebutton->active)
-    preferences.real_audience=(preferences.real_audience | REAL_AUDIENCE_56_MODEM);
-  else
-    preferences.real_audience=(preferences.real_audience & (~REAL_AUDIENCE_56_MODEM));
-  gnome_config_set_int("coriander/real/audience",preferences.real_audience);
-  gnome_config_sync();
-  //fprintf(stderr,"audience flags: 0x%x\n",preferences.real_audience);
-}
-
-
-void
-on_prefs_real_audience_sisdn_toggled   (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-  if (togglebutton->active)
-    preferences.real_audience=(preferences.real_audience | REAL_AUDIENCE_SINGLE_ISDN);
-  else
-    preferences.real_audience=(preferences.real_audience & (~REAL_AUDIENCE_SINGLE_ISDN));
-  gnome_config_set_int("coriander/real/audience",preferences.real_audience);
-  gnome_config_sync();
-  //fprintf(stderr,"audience flags: 0x%x\n",preferences.real_audience);
-}
-
-
-void
-on_prefs_real_audience_disdn_toggled   (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-  if (togglebutton->active)
-    preferences.real_audience=(preferences.real_audience | REAL_AUDIENCE_DUAL_ISDN);
-  else
-    preferences.real_audience=(preferences.real_audience & (~REAL_AUDIENCE_DUAL_ISDN));
-  gnome_config_set_int("coriander/real/audience",preferences.real_audience);
-  gnome_config_sync();
-  //fprintf(stderr,"audience flags: 0x%x\n",preferences.real_audience);
-}
-
-
-void
-on_prefs_real_audience_lan_toggled     (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-  if (togglebutton->active)
-    preferences.real_audience=(preferences.real_audience | REAL_AUDIENCE_LAN_HIGH);
-  else
-    preferences.real_audience=(preferences.real_audience & (~REAL_AUDIENCE_LAN_HIGH));
-  gnome_config_set_int("coriander/real/audience",preferences.real_audience);
-  gnome_config_sync();
-  //fprintf(stderr,"audience flags: 0x%x\n",preferences.real_audience);
-}
-
-
-void
-on_prefs_real_audience_dsl256_toggled  (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-  if (togglebutton->active)
-    preferences.real_audience=(preferences.real_audience | REAL_AUDIENCE_256_DSL_CABLE);
-  else
-    preferences.real_audience=(preferences.real_audience & (~REAL_AUDIENCE_256_DSL_CABLE));
-  gnome_config_set_int("coriander/real/audience",preferences.real_audience);
-  gnome_config_sync();
-  //fprintf(stderr,"audience flags: 0x%x\n",preferences.real_audience);
-}
-
-
-void
-on_prefs_real_audience_dsl384_toggled  (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-  if (togglebutton->active)
-    preferences.real_audience=(preferences.real_audience | REAL_AUDIENCE_384_DSL_CABLE);
-  else
-    preferences.real_audience=(preferences.real_audience & (~REAL_AUDIENCE_384_DSL_CABLE));
-  gnome_config_set_int("coriander/real/audience",preferences.real_audience);
-  gnome_config_sync();
-  //fprintf(stderr,"audience flags: 0x%x\n",preferences.real_audience);
-}
-
-
-void
-on_prefs_real_audience_dsl512_toggled  (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-  if (togglebutton->active)
-    preferences.real_audience=(preferences.real_audience | REAL_AUDIENCE_512_DSL_CABLE);
-  else
-    preferences.real_audience=(preferences.real_audience & (~REAL_AUDIENCE_512_DSL_CABLE));
-  gnome_config_set_int("coriander/real/audience",preferences.real_audience);
-  gnome_config_sync();
-  //fprintf(stderr,"audience flags: 0x%x\n",preferences.real_audience);
-}
 
 void
 on_prefs_video1394_device_changed      (GtkEditable     *editable,

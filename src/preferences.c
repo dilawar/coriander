@@ -22,10 +22,6 @@
 
 #include <gnome.h>
 #include <libdc1394/dc1394_control.h>
-#include "thread_real.h"
-
-extern "C" {
-
 #include "callbacks.h"
 #include "support.h" 
 #include "definitions.h"
@@ -68,19 +64,6 @@ LoadConfigFile(void)
   preferences.ftp_path = gnome_config_get_string("coriander/ftp/path=/pub/");
   preferences.ftp_scratch = gnome_config_get_int("coriander/ftp/scratch=0");
   preferences.ftp_period = gnome_config_get_int("coriander/ftp/period=1");
-  preferences.real_address = gnome_config_get_string("coriander/real/address=your.server.address");
-  preferences.real_user = gnome_config_get_string("coriander/real/user=username");
-  preferences.real_password = gnome_config_get_string("coriander/real/password=don'tyouwish");
-  preferences.real_filename = gnome_config_get_string("coriander/real/filename=helloworld.rm");
-  preferences.real_port = gnome_config_get_int("coriander/real/port=4040");
-  preferences.real_title = gnome_config_get_string("coriander/real/title=my stream");
-  preferences.real_author = gnome_config_get_string("coriander/real/author=Myself");
-  preferences.real_copyright = gnome_config_get_string("coriander/real/copyright=(c)2002");
-  preferences.real_recordable = gnome_config_get_int("coriander/real/recordable=1");
-  preferences.real_audience = gnome_config_get_int("coriander/real/audience=0");
-  preferences.real_quality = gnome_config_get_int("coriander/real/quality=0");
-  preferences.real_compatibility = gnome_config_get_int("coriander/real/compatibility=0");
-  preferences.real_period = gnome_config_get_int("coriander/real/period=1");
 
   for (i=0;i<camera_num;i++)
     {
@@ -149,37 +132,37 @@ LoadSetup(char *filename)
     MainError("Can't open file for loading");
   else
     {
-      fscanf(fd,"%d\n",misc_info->format);
-      fscanf(fd,"%d\n",misc_info->mode);
-      fscanf(fd,"%d\n",misc_info->framerate);
-      fscanf(fd,"%d\n",misc_info->is_iso_on);
-      fscanf(fd,"%d\n",misc_info->iso_channel);
-      fscanf(fd,"%d\n",misc_info->mem_channel_number);
-      fscanf(fd,"%d\n",misc_info->save_channel);
-      fscanf(fd,"%d\n",misc_info->load_channel);
+      fscanf(fd,"%d\n",&misc_info->format);
+      fscanf(fd,"%d\n",&misc_info->mode);
+      fscanf(fd,"%d\n",&misc_info->framerate);
+      fscanf(fd,"%d\n",(int*)&misc_info->is_iso_on);
+      fscanf(fd,"%d\n",&misc_info->iso_channel);
+      fscanf(fd,"%d\n",&misc_info->mem_channel_number);
+      fscanf(fd,"%d\n",&misc_info->save_channel);
+      fscanf(fd,"%d\n",&misc_info->load_channel);
       for (i=0;i<NUM_FEATURES;i++)
 	{
 	  switch (i+FEATURE_MIN)
 	    { 
 	    case FEATURE_TRIGGER:
-	      fscanf(fd,"%d\n",feature_set->feature[i].auto_active);
-	      fscanf(fd,"%d\n",feature_set->feature[i].trigger_mode);
-	      fscanf(fd,"%d\n",feature_set->feature[i].trigger_polarity);
-	      fscanf(fd,"%d\n",feature_set->feature[i].value);
+	      fscanf(fd,"%d\n",(int*)&feature_set->feature[i].auto_active);
+	      fscanf(fd,"%d\n",&feature_set->feature[i].trigger_mode);
+	      fscanf(fd,"%d\n",(int*)&feature_set->feature[i].trigger_polarity);
+	      fscanf(fd,"%d\n",&feature_set->feature[i].value);
 	      break;
 	    case FEATURE_WHITE_BALANCE:
-	      fscanf(fd,"%d\n",feature_set->feature[i].auto_active);
-	      fscanf(fd,"%d\n",feature_set->feature[i].BU_value);
-	      fscanf(fd,"%d\n",feature_set->feature[i].RV_value);
+	      fscanf(fd,"%d\n",(int*)&feature_set->feature[i].auto_active);
+	      fscanf(fd,"%d\n",&feature_set->feature[i].BU_value);
+	      fscanf(fd,"%d\n",&feature_set->feature[i].RV_value);
 	      break;
 	    case FEATURE_TEMPERATURE:
-	      fscanf(fd,"%d\n",feature_set->feature[i].auto_active);
-	      fscanf(fd,"%d\n",feature_set->feature[i].target_value);
-	      fscanf(fd,"%d\n",feature_set->feature[i].value);
+	      fscanf(fd,"%d\n",(int*)&feature_set->feature[i].auto_active);
+	      fscanf(fd,"%d\n",&feature_set->feature[i].target_value);
+	      fscanf(fd,"%d\n",&feature_set->feature[i].value);
 	      break;
 	    default:
-	      fscanf(fd,"%d\n",feature_set->feature[i].auto_active);
-	      fscanf(fd,"%d\n",feature_set->feature[i].value);
+	      fscanf(fd,"%d\n",(int*)&feature_set->feature[i].auto_active);
+	      fscanf(fd,"%d\n",&feature_set->feature[i].value);
 	      break;
 	    }
 	}
@@ -190,5 +173,4 @@ LoadSetup(char *filename)
     }
 }
 
-}
 

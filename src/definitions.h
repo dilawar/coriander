@@ -29,17 +29,6 @@
 #define  STRING_SIZE         1024
 #define  KEY_BINDINGS_NUM       7
  
-typedef enum {
-  REAL_AUDIENCE_28_MODEM=1,        // 20 kbps
-  REAL_AUDIENCE_56_MODEM=2,        // 34 kbps
-  REAL_AUDIENCE_SINGLE_ISDN=4,     // 45 kbps
-  REAL_AUDIENCE_DUAL_ISDN=8,       // 80 kbps
-  REAL_AUDIENCE_LAN_HIGH=16,       // 150 kbps
-  REAL_AUDIENCE_256_DSL_CABLE=32,  // 225 kbps
-  REAL_AUDIENCE_384_DSL_CABLE=64,  // 350 kbps
-  REAL_AUDIENCE_512_DSL_CABLE=128  // 450 kbps
-} RealAudience;
-
 enum 
 {
     RANGE_MENU_OFF = 0,
@@ -160,8 +149,6 @@ typedef struct _CtxtInfo
   int fps_save_id;
   int fps_ftp_ctxt;
   int fps_ftp_id;
-  int fps_real_ctxt;
-  int fps_real_id;
 
 } CtxtInfo;
 

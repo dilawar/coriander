@@ -54,7 +54,6 @@ UpdatePreferencesWindow(void)
   UpdatePrefsGeneralFrame();    
   UpdatePrefsSaveFrame();
   UpdatePrefsFtpFrame();
-  UpdatePrefsRealFrame();
 }
 
 void
@@ -66,7 +65,6 @@ UpdateCommanderWindow(void)
   UpdateMemoryFrame();
   UpdateFormatMenu();
   UpdateIsoFrame();
-  UpdateServicesFrame();
   UpdateOptionFrame();
 }
 

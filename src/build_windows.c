@@ -48,7 +48,6 @@ BuildPreferencesWindow(void)
   BuildPrefsReceiveFrame();
   BuildPrefsSaveFrame();
   BuildPrefsFtpFrame();
-  BuildPrefsRealFrame();
 }
 
 void

@@ -35,8 +35,7 @@ typedef enum _Service_T
   SERVICE_ISO=0,
   SERVICE_DISPLAY,
   SERVICE_SAVE,
-  SERVICE_FTP,
-  SERVICE_REAL
+  SERVICE_FTP
 } service_t;
 
 //typedef struct tm tm_t;

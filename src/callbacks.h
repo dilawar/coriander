@@ -213,20 +213,8 @@ on_prefs_ftp_scratch_toggled           (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
 
 void
-on_service_real_toggled                (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
-
-void
 on_range_menu_activate                 (GtkMenuItem     *menuitem,
 				        gpointer         user_data);
-
-void
-on_prefs_real_quality_activate         (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
-
-void
-on_prefs_real_compatibility_activate   (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
 
 void
 on_prefs_receive_method_activate       (GtkToggleButton *togglebutton,
@@ -237,45 +225,8 @@ on_prefs_display_keep_ratio_toggled    (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
 
 void
-on_prefs_real_recordable_toggled       (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
-
-void
-on_prefs_real_audience_28k_toggled     (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
-
-void
-on_prefs_real_audience_56k_toggled     (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
-
-void
-on_prefs_real_audience_sisdn_toggled   (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
-
-void
-on_prefs_real_audience_disdn_toggled   (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
-
-void
-on_prefs_real_audience_lan_toggled     (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
-
-void
-on_prefs_real_audience_dsl256_toggled  (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
-
-void
-on_prefs_real_audience_dsl384_toggled  (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
-
-void
-on_prefs_real_audience_dsl512_toggled  (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
-
-void
 on_format7_packet_size_changed               (GtkAdjustment    *adj,
 					      gpointer         user_data);
-#endif
 
 void
 on_key_bindings_activate               (GtkMenuItem     *menuitem,
@@ -347,38 +298,6 @@ on_prefs_ftp_password_changed          (GtkEditable     *editable,
 
 void
 on_prefs_ftp_filename_changed          (GtkEditable     *editable,
-                                        gpointer         user_data);
-
-void
-on_prefs_real_address_changed          (GtkEditable     *editable,
-                                        gpointer         user_data);
-
-void
-on_prefs_real_filename_changed         (GtkEditable     *editable,
-                                        gpointer         user_data);
-
-void
-on_prefs_real_user_changed             (GtkEditable     *editable,
-                                        gpointer         user_data);
-
-void
-on_prefs_real_password_changed         (GtkEditable     *editable,
-                                        gpointer         user_data);
-
-void
-on_prefs_real_port_changed             (GtkEditable     *editable,
-                                        gpointer         user_data);
-
-void
-on_prefs_real_title_changed            (GtkEditable     *editable,
-                                        gpointer         user_data);
-
-void
-on_prefs_real_author_changed           (GtkEditable     *editable,
-                                        gpointer         user_data);
-
-void
-on_prefs_real_copyright_changed        (GtkEditable     *editable,
                                         gpointer         user_data);
 
 void
@@ -512,3 +431,4 @@ on_abs_tilt_entry_activate              (GtkEditable     *editable,
 void
 on_abs_pan_entry_activate               (GtkEditable     *editable,
                                         gpointer         user_data);
+#endif

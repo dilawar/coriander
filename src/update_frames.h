@@ -29,9 +29,6 @@ void
 UpdatePrefsReceiveFrame(void);
 
 void
-UpdatePrefsRealFrame(void); 
-
-void
 UpdateCameraFrame(void);
 
 void
@@ -63,9 +60,6 @@ UpdatePrefsSaveFrame(void);
 
 void
 UpdatePrefsFtpFrame(void);
-
-void
-UpdateServicesFrame(void);
 
 void
 UpdateCursorFrame(int posx, int posy, int r, int g, int b, int y, int u, int v);

@@ -94,11 +94,6 @@ UpdatePrefsFtpFrame(void)
 {
 }
 
-void
-UpdatePrefsRealFrame(void)
-{
-}
-
 
 void
 UpdateCameraFrame(void)
@@ -283,26 +278,6 @@ UpdateTransferStatusFrame(void)
   sprintf(temp," %d",misc_info->iso_channel);
   gtk_statusbar_remove( (GtkStatusbar*) lookup_widget(commander_window,"iso_channel_status"), ctxt.iso_channel_ctxt, ctxt.iso_channel_id);
   ctxt.iso_channel_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"iso_channel_status"), ctxt.iso_channel_ctxt, temp);
-
-}
-
-
-void
-UpdateServicesFrame(void)
-{
-  silent_ui_update=1;
-
-  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"service_iso")),
-			       GetService(SERVICE_ISO,current_camera)!=NULL);
-  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"service_display")),
-			       GetService(SERVICE_DISPLAY,current_camera)!=NULL);
-  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"service_save")),
-			       GetService(SERVICE_SAVE,current_camera)!=NULL);
-  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"service_ftp")),
-			       GetService(SERVICE_FTP,current_camera)!=NULL);
-  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"service_real")),
-			       GetService(SERVICE_FTP,current_camera)!=NULL);
-  silent_ui_update=0;
 
 }
 

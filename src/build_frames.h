@@ -63,9 +63,6 @@ void
 BuildPrefsFtpFrame(void);
 
 void
-BuildPrefsRealFrame(void);
-
-void
 BuildPrefsDisplayFrame(void);
 
 void

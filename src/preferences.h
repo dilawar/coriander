@@ -42,19 +42,6 @@ typedef struct _PrefsInfo
   char *ftp_path;
   int ftp_scratch;
   int ftp_period;
-  char *real_address;
-  char *real_user;
-  char *real_password;
-  char *real_filename;
-  int real_port;
-  char *real_author;
-  char *real_title;
-  char *real_copyright;
-  int real_recordable;
-  unsigned long int real_audience;
-  int real_quality;
-  int real_compatibility;
-  int real_period;
 
   char **camera_names;
 

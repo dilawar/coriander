@@ -293,13 +293,11 @@ void GetContextStatus()
   ctxt.fps_display_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"fps_display"),"");
   ctxt.fps_save_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"fps_save"),"");
   ctxt.fps_ftp_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"fps_ftp"),"");
-  ctxt.fps_real_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"fps_real"),"");
 
   ctxt.fps_receive_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"fps_receive"), ctxt.fps_receive_ctxt, "");
   ctxt.fps_display_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"fps_display"), ctxt.fps_display_ctxt, "");
   ctxt.fps_save_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"fps_save"), ctxt.fps_save_ctxt, "");
   ctxt.fps_ftp_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"fps_ftp"), ctxt.fps_ftp_ctxt, "");
-  ctxt.fps_real_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"fps_real"), ctxt.fps_real_ctxt, "");
   
 }
 
@@ -444,8 +442,6 @@ DisplayActiveServices(void)
 	fprintf(stderr, "FTP ");
       if (GetService(SERVICE_SAVE,i)!=NULL)
 	fprintf(stderr, "SAVE ");
-      if (GetService(SERVICE_REAL,i)!=NULL)
-	fprintf(stderr, "REAL ");
       fprintf(stderr,"\n");
     }
   fprintf(stderr,"\n");
