@@ -108,7 +108,7 @@ void
 CommonChainSetup(chain_t* chain, service_t req_service)
 {
   chain_t* probe_chain;
-  isothread_info* info_iso;
+  isothread_info_t* info_iso;
   long int buffer_size=0;
 
   // no thread tries to acess this data before it is connected.
@@ -139,7 +139,7 @@ CommonChainSetup(chain_t* chain, service_t req_service)
 
   if (chain->service==SERVICE_ISO)
     {
-      info_iso=(isothread_info*)chain->data;
+      info_iso=(isothread_info_t*)chain->data;
       buffer_size=info_iso->capture.quadlets_per_frame*4;
       chain->width=info_iso->capture.frame_width;
       chain->height=info_iso->capture.frame_height;

@@ -48,7 +48,7 @@ typedef struct
   unsigned char*     save_buffer;
   int                save_scratch;
 
-} savethread_info;
+} savethread_info_t;
 
 gint
 SaveStartThread(void);

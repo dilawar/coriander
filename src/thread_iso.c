@@ -38,7 +38,7 @@ gint IsoStartThread(void)
 {
   int maxspeed;
   chain_t* iso_service=NULL;
-  isothread_info *info=NULL;
+  isothread_info_t *info=NULL;
 
   iso_service=GetService(SERVICE_ISO);
 
@@ -46,12 +46,12 @@ gint IsoStartThread(void)
     {
       //fprintf(stderr,"No ISO service found, inserting new one\n");
       iso_service=(chain_t*)malloc(sizeof(chain_t));
-      iso_service->data=(void*)malloc(sizeof(isothread_info));
+      iso_service->data=(void*)malloc(sizeof(isothread_info_t));
       pthread_mutex_init(&iso_service->mutex_struct, NULL);
       pthread_mutex_init(&iso_service->mutex_data, NULL);
       pthread_mutex_lock(&iso_service->mutex_data);
 
-      info=(isothread_info*)iso_service->data;
+      info=(isothread_info_t*)iso_service->data;
 
       /* currently FORMAT_STILL_IMAGE is not supported*/
       if (misc_info->format == FORMAT_STILL_IMAGE)
@@ -184,12 +184,12 @@ void*
 IsoCleanupThread(void* arg) 
 {
   chain_t* iso_service;
-  isothread_info *info;
+  isothread_info_t *info;
 
   //fprintf(stderr,"ISO auto Cleanup\n");
 
   iso_service=(chain_t*)arg;
-  info=(isothread_info*)iso_service->data;
+  info=(isothread_info_t*)iso_service->data;
 
   if ((info->receive_method == RECEIVE_METHOD_VIDEO1394))
     {
@@ -211,14 +211,14 @@ IsoCleanupThread(void* arg)
 void*
 IsoThread(void* arg)
 {
-  chain_t* iso_service;
-  isothread_info *info;
+  chain_t *iso_service;
+  isothread_info_t *info;
 
   // we should only use mutex_data in this function
 
   iso_service=(chain_t*)arg;
   pthread_mutex_lock(&iso_service->mutex_data);
-  info=(isothread_info*)iso_service->data;
+  info=(isothread_info_t*)iso_service->data;
   pthread_setcancelstate(PTHREAD_CANCEL_ENABLE,NULL);
   pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS,NULL);
   pthread_mutex_unlock(&iso_service->mutex_data);
@@ -250,14 +250,14 @@ IsoThread(void* arg)
 
 gint IsoStopThread(void)
 {
-  isothread_info *info;
+  isothread_info_t *info;
   chain_t *iso_service;
   iso_service=GetService(SERVICE_ISO);  
 
   if (iso_service!=NULL)// if ISO service running...
     {
       //fprintf(stderr,"ISO service found, stopping\n");
-      info=(isothread_info*)iso_service->data;
+      info=(isothread_info_t*)iso_service->data;
       pthread_cancel(iso_service->thread);
       pthread_join(iso_service->thread, NULL);
       pthread_mutex_lock(&iso_service->mutex_data);

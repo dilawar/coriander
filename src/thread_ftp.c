@@ -38,7 +38,7 @@ gint
 FtpStartThread(void)
 {
   chain_t* ftp_service=NULL;
-  ftpthread_info *info=NULL;
+  ftpthread_info_t *info=NULL;
   gchar *tmp;
 
   ftp_service=GetService(SERVICE_FTP);
@@ -47,8 +47,8 @@ FtpStartThread(void)
     {
       //fprintf(stderr,"No FTP service found, inserting new one\n");
       ftp_service=(chain_t*)malloc(sizeof(chain_t));
-      ftp_service->data=(void*)malloc(sizeof(ftpthread_info));
-      info=(ftpthread_info*)ftp_service->data;
+      ftp_service->data=(void*)malloc(sizeof(ftpthread_info_t));
+      info=(ftpthread_info_t*)ftp_service->data;
       pthread_mutex_init(&ftp_service->mutex_data, NULL);
       pthread_mutex_init(&ftp_service->mutex_struct, NULL);
       pthread_mutex_init(&info->mutex_cancel_ftp, NULL);
@@ -135,10 +135,10 @@ void*
 FtpCleanupThread(void* arg) 
 {
   chain_t* ftp_service;
-  ftpthread_info *info;
+  ftpthread_info_t *info;
 
   ftp_service=(chain_t*)arg;
-  info=(ftpthread_info*)ftp_service->data;
+  info=(ftpthread_info_t*)ftp_service->data;
   /* Specific cleanups: */
 
   /* Mendatory cleanups: */
@@ -151,12 +151,12 @@ FtpThread(void* arg)
 {
   static gchar filename_out[256];
   chain_t* ftp_service=NULL;
-  ftpthread_info *info=NULL;
+  ftpthread_info_t *info=NULL;
   GdkImlibImage *im=NULL;
 
   ftp_service=(chain_t*)arg;
   pthread_mutex_lock(&ftp_service->mutex_data);
-  info=(ftpthread_info*)ftp_service->data;
+  info=(ftpthread_info_t*)ftp_service->data;
   //fprintf(stderr,"Entered FTP thread\n");
   /* These settings depend on the thread. For 100% safe deferred-cancel
    threads, I advise you use a custom thread cancel flag. See display thread.*/
@@ -226,13 +226,13 @@ FtpThread(void* arg)
 gint
 FtpStopThread(void)
 {
-  ftpthread_info *info;
+  ftpthread_info_t *info;
   chain_t *ftp_service;
   ftp_service=GetService(SERVICE_FTP);
 
   if (ftp_service!=NULL)// if FTP service running...
     {
-      info=(ftpthread_info*)ftp_service->data;
+      info=(ftpthread_info_t*)ftp_service->data;
       /* Clean cancel handler: */
       pthread_mutex_lock(&info->mutex_cancel_ftp);
       info->cancel_ftp_req=1;
@@ -261,7 +261,7 @@ FtpStopThread(void)
 }
 
 #ifdef HAVE_FTPLIB
-gboolean OpenFtpConnection(ftpthread_info* info)
+gboolean OpenFtpConnection(ftpthread_info_t* info)
 {
   char  tmp[256];
 
@@ -305,7 +305,7 @@ CloseFtpConnection(netbuf *ftp_handle)
 }
 
 gboolean
-CheckFtpConnection(ftpthread_info* info)
+CheckFtpConnection(ftpthread_info_t* info)
 {
  
   if (!FtpChdir(".", info->ftp_handle))
@@ -319,7 +319,7 @@ CheckFtpConnection(ftpthread_info* info)
 }
 
 gboolean
-FtpPutFrame(char *filename, GdkImlibImage *im, ftpthread_info* info)
+FtpPutFrame(char *filename, GdkImlibImage *im, ftpthread_info_t* info)
 {
   //netbuf **file_handle=NULL;
   char tmp[256];

@@ -40,7 +40,7 @@ gint
 DisplayStartThread()
 {
   chain_t *display_service=NULL;
-  displaythread_info *info=NULL;
+  displaythread_info_t *info=NULL;
 
   display_service=GetService(SERVICE_DISPLAY);
 
@@ -48,8 +48,8 @@ DisplayStartThread()
     {
       //fprintf(stderr,"No DISPLAY service found, inserting new one\n");
       display_service=(chain_t*)malloc(sizeof(chain_t));
-      display_service->data=(void*)malloc(sizeof(displaythread_info));
-      info=(displaythread_info*)display_service->data;
+      display_service->data=(void*)malloc(sizeof(displaythread_info_t));
+      info=(displaythread_info_t*)display_service->data;
       pthread_mutex_init(&display_service->mutex_struct, NULL);
       pthread_mutex_init(&display_service->mutex_data, NULL);
       pthread_mutex_init(&info->mutex_cancel_display, NULL);
@@ -129,10 +129,10 @@ void*
 DisplayCleanupThread(void* arg)
 {
   chain_t* display_service;
-  displaythread_info *info;
+  displaythread_info_t *info;
 
   display_service=(chain_t*)arg;
-  info=(displaythread_info*)display_service->data;
+  info=(displaythread_info_t*)display_service->data;
 
   pthread_mutex_unlock(&display_service->mutex_data);
 }
@@ -142,14 +142,14 @@ void*
 DisplayThread(void* arg)
 {
   chain_t* display_service=NULL;
-  displaythread_info *info=NULL;
+  displaythread_info_t *info=NULL;
 
   // we should only use mutex_data in this function
 
   display_service=(chain_t*)arg;
   //fprintf(stderr,"Outside loop, locking mutex\n");
   pthread_mutex_lock(&display_service->mutex_data);
-  info=(displaythread_info*)display_service->data;
+  info=(displaythread_info_t*)display_service->data;
   pthread_setcancelstate(PTHREAD_CANCEL_DISABLE,NULL);
   pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED,NULL);
   pthread_mutex_unlock(&display_service->mutex_data);
@@ -208,14 +208,14 @@ DisplayThread(void* arg)
 gint
 DisplayStopThread(void)
 {
-  displaythread_info *info;
+  displaythread_info_t *info;
   chain_t *display_service;
   display_service=GetService(SERVICE_DISPLAY);
   
   if (display_service!=NULL)// if display service running...
     { 
       //fprintf(stderr,"DISPLAY service found, stopping\n");
-      info=(displaythread_info*)display_service->data;
+      info=(displaythread_info_t*)display_service->data;
 
       // send request for cancellation:
       pthread_mutex_lock(&info->mutex_cancel_display);
@@ -239,9 +239,9 @@ DisplayStopThread(void)
 	}
       else
 #endif
-      if ((info->display_method==DISPLAY_METHOD_GDK)
-	  &&(info->gdk_buffer != NULL))
-	free(info->gdk_buffer);
+	if ((info->display_method==DISPLAY_METHOD_GDK)
+	    &&(info->gdk_buffer != NULL))
+	  free(info->gdk_buffer);
 
       pthread_mutex_unlock(&display_service->mutex_struct);
       pthread_mutex_unlock(&display_service->mutex_data);
@@ -264,10 +264,10 @@ gint xvInit(chain_t *display_service)
   XvAdaptorInfo	*adaptor_info;
   XGCValues xgcv;
 
-  displaythread_info *info;
+  displaythread_info_t *info;
   GdkWindowPrivate *priv;
 
-  info=(displaythread_info*)display_service->data;
+  info=(displaythread_info_t*)display_service->data;
 
   priv=(GdkWindowPrivate*)info->drawable->window;
 
@@ -328,8 +328,8 @@ gint xvInit(chain_t *display_service)
 
 void xvPut(chain_t *display_service)
 {
-  displaythread_info *info;
-  info=(displaythread_info*)display_service->data;
+  displaythread_info_t *info;
+  info=(displaythread_info_t*)display_service->data;
 
   XvShmPutImage(info->display, info->xv_port, info->window, info->xv_gc, info->xv_image,
 		0,0, display_service->width, display_service->height,
@@ -389,13 +389,13 @@ convert_to_yuv_for_xv(unsigned char *src, unsigned char *dest, int mode, int wid
 
 void gdkPut(chain_t *display_service)
 {
-  fprintf(stderr,"putting GDK frame...");
-  displaythread_info *info;
-  info=(displaythread_info*)display_service->data;
+  //fprintf(stderr,"putting GDK frame...");
+  displaythread_info_t *info;
+  info=(displaythread_info_t*)display_service->data;
 
   gdk_draw_rgb_image(info->drawable->window, info->drawable->style->fg_gc[info->drawable->state],
 		     0, 0, display_service->width, display_service->height, GDK_RGB_DITHER_MAX, 
 		     info->gdk_buffer, display_service->width*3);
-  fprintf(stderr," done.\n");
+  //fprintf(stderr," done.\n");
 }
 

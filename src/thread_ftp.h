@@ -59,7 +59,7 @@ typedef struct
   netbuf             *ftp_handle;
 #endif
 
-} ftpthread_info;
+} ftpthread_info_t;
 
 gint
 FtpStartThread(void);
@@ -76,16 +76,16 @@ FtpStopThread(void);
 #ifdef HAVE_FTPLIB
 
 gboolean
-OpenFtpConnection(ftpthread_info* info);
+OpenFtpConnection(ftpthread_info_t* info);
 
 gboolean
-FtpPutFrame(char *filename, GdkImlibImage *im, ftpthread_info* info);
+FtpPutFrame(char *filename, GdkImlibImage *im, ftpthread_info_t* info);
 
 void
 CloseFtpConnection(netbuf *ftp_handle);
 
 gboolean
-CheckFtpConnection(ftpthread_info* info);
+CheckFtpConnection(ftpthread_info_t* info);
 
 #endif
 

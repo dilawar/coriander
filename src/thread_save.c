@@ -34,7 +34,7 @@ gint
 SaveStartThread(void)
 {
   chain_t* save_service=NULL;
-  savethread_info *info=NULL;
+  savethread_info_t *info=NULL;
   gchar *tmp;
 
   save_service=GetService(SERVICE_SAVE);
@@ -43,8 +43,8 @@ SaveStartThread(void)
     {
       //fprintf(stderr,"No SAVE service found, inserting new one\n");
       save_service=(chain_t*)malloc(sizeof(chain_t));
-      save_service->data=(void*)malloc(sizeof(savethread_info));
-      info=(savethread_info*)save_service->data;
+      save_service->data=(void*)malloc(sizeof(savethread_info_t));
+      info=(savethread_info_t*)save_service->data;
       pthread_mutex_init(&save_service->mutex_data, NULL);
       pthread_mutex_init(&save_service->mutex_struct, NULL);
       pthread_mutex_init(&info->mutex_cancel_save, NULL);
@@ -115,10 +115,10 @@ void*
 SaveCleanupThread(void* arg) 
 {
   chain_t* save_service;
-  savethread_info *info;
+  savethread_info_t *info;
 
   save_service=(chain_t*)arg;
-  info=(savethread_info*)save_service->data;
+  info=(savethread_info_t*)save_service->data;
   /* Specific cleanups: */
 
   /* Mendatory cleanups: */
@@ -130,12 +130,12 @@ SaveThread(void* arg)
 {
   static gchar filename_out[256];
   chain_t* save_service=NULL;
-  savethread_info *info=NULL;
+  savethread_info_t *info=NULL;
   GdkImlibImage *im=NULL;
 
   save_service=(chain_t*)arg;
   pthread_mutex_lock(&save_service->mutex_data);
-  info=(savethread_info*)save_service->data;
+  info=(savethread_info_t*)save_service->data;
 
   /* These settings depend on the thread. For 100% safe deferred-cancel
    threads, I advise you use a custom thread cancel flag. See display thread.*/
@@ -189,14 +189,14 @@ SaveThread(void* arg)
 gint
 SaveStopThread(void)
 {
-  savethread_info *info;
+  savethread_info_t *info;
   chain_t *save_service;
   save_service=GetService(SERVICE_SAVE);
 
   if (save_service!=NULL)// if SAVE service running...
     {
       //fprintf(stderr,"SAVE service found, stopping\n");
-      info=(savethread_info*)save_service->data;
+      info=(savethread_info_t*)save_service->data;
       /* Clean cancel handler: */
       pthread_mutex_lock(&info->mutex_cancel_save);
       info->cancel_save_req=1;

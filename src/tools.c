@@ -39,12 +39,6 @@
 
 extern GtkWidget *commander_window;
 extern GtkWidget *porthole_window;
-extern GtkWidget *color_window;
-extern GtkWidget *status_window;
-extern GtkWidget *aperture_window;
-extern GtkWidget *configure_window;
-extern GtkWidget *capture_window;
-extern GtkWidget *temperature_window;
 extern dc1394_camerainfo *camera;
 extern dc1394_camerainfo *cameras;
 extern dc1394_miscinfo *misc_info;
@@ -199,36 +193,36 @@ void IsoFlowResume(int *state)
 
 void GetContextStatus()
 {
-  ctxt.model_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(status_window,"camera_model_status"),"");
-  ctxt.vendor_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(status_window,"camera_vendor_status"),"");
-  ctxt.handle_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(status_window,"camera_handle_status"),"");
-  ctxt.node_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(status_window,"camera_node_status"),"");
-  ctxt.guid_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(status_window,"camera_guid_status"),"");
-  ctxt.max_iso_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(status_window,"camera_maxiso_status"),"");
-  ctxt.delay_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(status_window,"camera_delay_status"),"");
-  ctxt.dc_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(status_window,"camera_dc_status"),"");
-  ctxt.pwclass_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(status_window,"camera_pwclass_status"),"");
+  ctxt.model_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"camera_model_status"),"");
+  ctxt.vendor_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"camera_vendor_status"),"");
+  ctxt.handle_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"camera_handle_status"),"");
+  ctxt.node_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"camera_node_status"),"");
+  ctxt.guid_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"camera_guid_status"),"");
+  ctxt.max_iso_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"camera_maxiso_status"),"");
+  ctxt.delay_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"camera_delay_status"),"");
+  ctxt.dc_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"camera_dc_status"),"");
+  ctxt.pwclass_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"camera_pwclass_status"),"");
 
-  ctxt.iso_channel_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(status_window,"iso_channel_status"),"");
-  ctxt.iso_speed_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(status_window,"iso_speed_status"),"");
-  ctxt.iso_status_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(status_window,"iso_status_status"),"");
+  ctxt.iso_channel_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"iso_channel_status"),"");
+  ctxt.iso_speed_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"iso_speed_status"),"");
+  ctxt.iso_status_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"iso_status_status"),"");
 
   ctxt.main_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"main_status"),"");
 
   // init message ids.
-  ctxt.model_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(status_window,"camera_model_status"), ctxt.model_ctxt, "");
-  ctxt.vendor_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(status_window,"camera_vendor_status"), ctxt.vendor_ctxt, "");
-  ctxt.handle_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(status_window,"camera_handle_status"), ctxt.handle_ctxt, "");
-  ctxt.node_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(status_window,"camera_node_status"), ctxt.node_ctxt, "");
-  ctxt.guid_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(status_window,"camera_guid_status"), ctxt.guid_ctxt, "");
-  ctxt.max_iso_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(status_window,"camera_maxiso_status"), ctxt.max_iso_ctxt, "");
-  ctxt.delay_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(status_window,"camera_delay_status"), ctxt.delay_ctxt, "");
-  ctxt.dc_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(status_window,"camera_dc_status"), ctxt.dc_ctxt, "");
-  ctxt.pwclass_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(status_window,"camera_pwclass_status"), ctxt.pwclass_ctxt, "");
+  ctxt.model_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"camera_model_status"), ctxt.model_ctxt, "");
+  ctxt.vendor_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"camera_vendor_status"), ctxt.vendor_ctxt, "");
+  ctxt.handle_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"camera_handle_status"), ctxt.handle_ctxt, "");
+  ctxt.node_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"camera_node_status"), ctxt.node_ctxt, "");
+  ctxt.guid_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"camera_guid_status"), ctxt.guid_ctxt, "");
+  ctxt.max_iso_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"camera_maxiso_status"), ctxt.max_iso_ctxt, "");
+  ctxt.delay_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"camera_delay_status"), ctxt.delay_ctxt, "");
+  ctxt.dc_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"camera_dc_status"), ctxt.dc_ctxt, "");
+  ctxt.pwclass_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"camera_pwclass_status"), ctxt.pwclass_ctxt, "");
 
-  ctxt.iso_channel_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(status_window,"iso_channel_status"), ctxt.iso_channel_ctxt, "");
-  ctxt.iso_speed_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(status_window,"iso_speed_status"), ctxt.iso_speed_ctxt, "");
-  ctxt.iso_status_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(status_window,"iso_status_status"), ctxt.iso_status_ctxt, "");
+  ctxt.iso_channel_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"iso_channel_status"), ctxt.iso_channel_ctxt, "");
+  ctxt.iso_speed_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"iso_speed_status"), ctxt.iso_speed_ctxt, "");
+  ctxt.iso_status_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"iso_status_status"), ctxt.iso_status_ctxt, "");
 
   ctxt.main_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"main_status"), ctxt.main_ctxt, "");
 

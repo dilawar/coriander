@@ -58,7 +58,7 @@ typedef struct
   char                   *gdk_buffer;
   pthread_mutex_t         mutex_cancel_display;
   int                     cancel_display_req;
-} displaythread_info;
+} displaythread_info_t;
 
 gint
 DisplayStartThread(void);

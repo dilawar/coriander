@@ -37,7 +37,7 @@ typedef struct
   receive_method_t        receive_method;
   dc1394_cameracapture    capture;
 
-} isothread_info;
+} isothread_info_t;
 
 gint
 IsoStartThread(void);
