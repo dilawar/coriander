@@ -9,11 +9,7 @@
 ==========================================================================
 		
 
-<<<<<<< README
 (This README is for version 0.22.)
-=======
-(This README is for version 0.21.)
->>>>>>> 1.10
 
 Hello world!
 
@@ -107,8 +103,8 @@ _______________________
 - RealServer and RealProducerSDK for REAL support (please read the README.REAL
   file)
 
-In order to have Xv support within SDL, you will maybe need some custom drivers,
-e.g. for Nvidia chipsets [10] or for ATI Rage chipsets [6].
+In order to have Xv support within SDL, you will maybe need some custom
+drivers, e.g. for Nvidia chipsets [10] or for ATI Rage chipsets [6].
 
 
 References:

@@ -1,12 +1,7 @@
 _______________________________________________________________________________
 
-<<<<<<< TODO
 	                    Open issues for Coriander 0.22 ...
-	   Damien Douxchamps <douxchamps@ieee.org> , January 3, 2002
-=======
-	                    Open issues for Coriander 0.22 ...
-	   Damien Douxchamps <douxchamps@ieee.org> , December 29, 2001
->>>>>>> 1.13
+	   Damien Douxchamps <douxchamps@ieee.org> , January 23, 2002
 _______________________________________________________________________________
 
 - video:
@@ -19,7 +14,7 @@ _______________________________________________________________________________
 	- when GUID will be there, a custom name could be
 	  attached to each cam.
 - features:
-	- add FORMAT_6 capabilities
+	- add FORMAT_6 capabilities, check FORMAT_7
 	- add auto-lock, man-lock and current-setup-lock functions
 	- hot plug capability (detect and handle bus reset)
 	- some status window features missing

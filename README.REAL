@@ -57,5 +57,3 @@ of the realproducer SDK. Just don't forget to run the server before executing
 the sample program. You can view the real content by running a RealPlayer
 with the location:
  my.server.machine.xxx:8080/ramgen/encoder/my_filename.rm
-
-
