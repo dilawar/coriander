@@ -1,6 +1,6 @@
 Coriander, (c) 2000-2003 Damien Douxchamps <ddouxchamps@users.sf.net>
 
-Changes towards version 1.00
+Changes in version 0.99.1
 
    June 30, 3003, by Damien Douxchamps
    - additional condition for dc1394_dma_done_with_buffer: capture must
