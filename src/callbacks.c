@@ -412,8 +412,13 @@ on_scale_value_changed             ( GtkAdjustment    *adj,
 	if (camera->feature_set.feature[(int)user_data-FEATURE_MIN].absolute_capable!=0) {
 	  GetAbsValue((int)user_data);
 	}
-      } 
+      }
     }
+    // optical filter sometimes changes white balance (sony cameras) so we update the WB.
+    if ((int)user_data==FEATURE_OPTICAL_FILTER) {
+      UpdateRange(FEATURE_WHITE_BALANCE);
+    }
+    break;
   }
 }
 

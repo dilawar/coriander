@@ -2,6 +2,10 @@ Coriander, (c) 2000-2004 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 1.0.0
 
+   March 30, 2004, by Damien Douxchamps
+   - update white balance control after changing the filter control. This
+     is necessary for some Sony cameras.
+	
    March 25, 2004, by Damien Douxchamps
    - default filename extension is .jpg, so we force conversion by default
 	
