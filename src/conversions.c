@@ -614,21 +614,29 @@ BayerNearestNeighbor(unsigned char *src, unsigned char *dest, int sx, int sy, ba
 {
   unsigned char *outR, *outG, *outB;
   register int i,j;
+  unsigned char *tmp;
 
   // sx and sy should be even
-  // first pixel should be Green, second red:
-
-  // G R
-  // B G
-
-  // or
-
-  // B G
-  // G R
-
   outR=&dest[0];
   outG=&dest[1];
   outB=&dest[2];
+
+  // swap R/B fields for some modes
+  if (type==BAYER_PATTERN_GBRG)
+    {
+      tmp=outR;
+      outR=outB;
+      outB=tmp;
+      type=BAYER_PATTERN_GRBG;
+    }
+  if (type==BAYER_PATTERN_RGGB)
+    {
+      tmp=outR;
+      outR=outB;
+      outB=tmp;
+      type=BAYER_PATTERN_BGGR;
+    }
+
   switch (type)
     {
     case BAYER_PATTERN_GRBG: //-------------------------------------------
@@ -736,21 +744,29 @@ BayerEdgeSense(unsigned char *src, unsigned char *dest, int sx, int sy, bayer_pa
   register int i,j;
   int dh, dv;
   int tmp;
-
+  unsigned char *outT;
   // sx and sy should be even
-  // first pixel should be Green, second red:
- 
-  // G R 
-  // B G
-
-  // or 
-  
-  // B G
-  // G R
 
   outR=&dest[0];
   outG=&dest[1];
   outB=&dest[2];
+
+  // swap R/B fields for some modes
+  if (type==BAYER_PATTERN_GBRG)
+    {
+      outT=outR;
+      outR=outB;
+      outB=outT;
+      type=BAYER_PATTERN_GRBG;
+    }
+  if (type==BAYER_PATTERN_RGGB)
+    {
+      outT=outR;
+      outR=outB;
+      outB=outT;
+      type=BAYER_PATTERN_BGGR;
+    }
+
   switch (type)
     {
     case BAYER_PATTERN_GRBG://---------------------------------------------------------
@@ -955,22 +971,30 @@ BayerDownsample(unsigned char *src, unsigned char *dest, int sx, int sy, bayer_p
 {
   unsigned char *outR, *outG, *outB;
   int tmp;
+  unsigned char *outT;
   register int i,j;
 
   // sx and sy should be even
-  // first pixel should be Green, second red:
  
-  // G R 
-  // B G
-
-  // or 
-  
-  // B G
-  // G R
-
   outR=&dest[0];
   outG=&dest[1];
   outB=&dest[2];
+
+  // swap R/B fields for some modes
+  if (type==BAYER_PATTERN_GBRG)
+    {
+      outT=outR;
+      outR=outB;
+      outB=outT;
+      type=BAYER_PATTERN_GRBG;
+    }
+  if (type==BAYER_PATTERN_RGGB)
+    {
+      outT=outR;
+      outR=outB;
+      outB=outT;
+      type=BAYER_PATTERN_BGGR;
+    }
 
   switch (type)
     {

@@ -2,6 +2,10 @@ Coriander, (c) 2000-2002 Damien Douxchamps <douxchamps@ieee.org>
 
 Changes towards version 0.26
 
+   August 23, 2002, by Damien Douxchamps
+   - added RGGB and GBRG bayer patterns. The pattern list is now
+     exhaustive.
+	
    August 22, 2002, by Damien Douxchamps
    - added sensitiveness check for bayer menus. These are now only
      accessible when the mode is greyscale (8 or 16bpp)

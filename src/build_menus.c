@@ -643,20 +643,34 @@ BuildBayerPatternMenu(void)
   
   new_menu = gtk_menu_new ();
 
-  // add no bayer option
+  // add no BGGR option
   glade_menuitem = gtk_menu_item_new_with_label (_("BGGR"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
   gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
 		      GTK_SIGNAL_FUNC (on_bayer_pattern_menu_activate),
 		      (int*)BAYER_PATTERN_BGGR); 
-  // add nearest_neighbor option
+  // add GRBG option
   glade_menuitem = gtk_menu_item_new_with_label (_("GRBG"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
   gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
 		      GTK_SIGNAL_FUNC (on_bayer_pattern_menu_activate),
 		      (int*)BAYER_PATTERN_GRBG); 
+  // add no RGGB option
+  glade_menuitem = gtk_menu_item_new_with_label (_("BGGR"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
+		      GTK_SIGNAL_FUNC (on_bayer_pattern_menu_activate),
+		      (int*)BAYER_PATTERN_RGGB); 
+  // add GBRG option
+  glade_menuitem = gtk_menu_item_new_with_label (_("GRBG"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
+		      GTK_SIGNAL_FUNC (on_bayer_pattern_menu_activate),
+		      (int*)BAYER_PATTERN_GBRG); 
 
   gtk_option_menu_set_menu (GTK_OPTION_MENU (new_option_menu), new_menu);
 

@@ -36,7 +36,9 @@ typedef enum
 typedef enum
 {
   BAYER_PATTERN_BGGR,
-  BAYER_PATTERN_GRBG
+  BAYER_PATTERN_GRBG,
+  BAYER_PATTERN_RGGB,
+  BAYER_PATTERN_GBRG
 } bayer_pattern_t;
 
 // UYVY <-> YUYV
