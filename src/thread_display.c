@@ -269,6 +269,11 @@ sdlInit(chain_t *display_service)
       fprintf(stderr,"Error while getting video surface\n");
       return(0);
     }
+  
+  if ( (SDL_SetColorKey( info->SDL_video, SDL_SRCCOLORKEY, 0x0) < 0 ) )
+    {
+      fprintf(stderr, "Failed to set SDL surface key color.\n");
+    }
 
   // Show cursor
   SDL_ShowCursor(1);

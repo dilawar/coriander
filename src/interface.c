@@ -3138,6 +3138,7 @@ create_preferences_window (void)
   GtkWidget *hbox58;
   GtkWidget *label84;
   GtkWidget *prefs_video1394_device;
+  GtkWidget *prefs_receive_dropframes;
   GtkWidget *label50;
   GtkWidget *vbox53;
   GtkWidget *prefs_display_framedrop;
@@ -3249,6 +3250,9 @@ create_preferences_window (void)
   GtkWidget *prefs_real_audience_dsl512;
   GtkWidget *label88;
   GtkWidget *label61;
+  GtkTooltips *tooltips;
+
+  tooltips = gtk_tooltips_new ();
 
   preferences_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_object_set_data (GTK_OBJECT (preferences_window), "preferences_window", preferences_window);
@@ -3377,7 +3381,7 @@ create_preferences_window (void)
   gtk_box_pack_start (GTK_BOX (vbox52), prefs_receive_frame, FALSE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (prefs_receive_frame), 5);
 
-  table45 = gtk_table_new (2, 1, FALSE);
+  table45 = gtk_table_new (3, 1, FALSE);
   gtk_widget_ref (table45);
   gtk_object_set_data_full (GTK_OBJECT (preferences_window), "table45", table45,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -3424,6 +3428,16 @@ create_preferences_window (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (prefs_video1394_device);
   gtk_box_pack_start (GTK_BOX (hbox58), prefs_video1394_device, TRUE, TRUE, 0);
+
+  prefs_receive_dropframes = gtk_check_button_new_with_label (_("Enable video1394 frame dropping"));
+  gtk_widget_ref (prefs_receive_dropframes);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "prefs_receive_dropframes", prefs_receive_dropframes,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (prefs_receive_dropframes);
+  gtk_table_attach (GTK_TABLE (table45), prefs_receive_dropframes, 0, 1, 2, 3,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_tooltips_set_tip (tooltips, prefs_receive_dropframes, _("Enable this to reduce delay"), NULL);
 
   label50 = gtk_label_new (_("Receive"));
   gtk_widget_ref (label50);
@@ -4363,6 +4377,9 @@ create_preferences_window (void)
   gtk_signal_connect (GTK_OBJECT (prefs_video1394_device), "changed",
                       GTK_SIGNAL_FUNC (on_prefs_video1394_device_changed),
                       NULL);
+  gtk_signal_connect (GTK_OBJECT (prefs_receive_dropframes), "toggled",
+                      GTK_SIGNAL_FUNC (on_prefs_receive_drop_frames_toggled),
+                      NULL);
   gtk_signal_connect (GTK_OBJECT (prefs_display_period), "changed",
                       GTK_SIGNAL_FUNC (on_prefs_display_period_changed),
                       NULL);
@@ -4468,6 +4485,8 @@ create_preferences_window (void)
   gtk_signal_connect (GTK_OBJECT (prefs_real_audience_dsl512), "toggled",
                       GTK_SIGNAL_FUNC (on_prefs_real_audience_dsl512_toggled),
                       NULL);
+
+  gtk_object_set_data (GTK_OBJECT (preferences_window), "tooltips", tooltips);
 
   return preferences_window;
 }

@@ -1548,3 +1548,13 @@ on_prefs_video1394_device_changed      (GtkEditable     *editable,
 
 }
 
+
+void
+on_prefs_receive_drop_frames_toggled   (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  preferences.video1394_dropframes=togglebutton->active;
+  gnome_config_set_int("coriander/receive/video1394_dropframes",preferences.video1394_dropframes);
+  gnome_config_sync();
+}
+

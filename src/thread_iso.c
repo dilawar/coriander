@@ -86,7 +86,9 @@ gint IsoStartThread(void)
 	  if (misc_info->format!=FORMAT_SCALABLE_IMAGE_SIZE)
 	    if (dc1394_dma_setup_capture(camera->handle, camera->id, misc_info->iso_channel, 
 					 misc_info->format, misc_info->mode, maxspeed,
-					 misc_info->framerate, DMA_BUFFERS, preferences.video1394_device, &info->capture)
+					 misc_info->framerate, DMA_BUFFERS,
+					 preferences.video1394_dropframes,
+					 preferences.video1394_device, &info->capture)
 		== DC1394_SUCCESS)
 	      {
 		info->receive_method=RECEIVE_METHOD_VIDEO1394;

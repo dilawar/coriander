@@ -30,6 +30,7 @@ typedef struct _PrefsInfo
   int display_period;
   int receive_method;
   char *video1394_device;
+  int video1394_dropframes;
   char *save_filename;
   int save_scratch;
   int save_period;

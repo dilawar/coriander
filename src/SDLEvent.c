@@ -324,7 +324,7 @@ SDLResizeDisplay(chain_t *display_service, int width, int height)
 
   // Create YUV Overlay
   info->SDL_overlay = SDL_CreateYUVOverlay(display_service->width, display_service->height,
-					   SDL_UYVY_OVERLAY,info->SDL_video);
+					   SDL_YUY2_OVERLAY,info->SDL_video);
   if (info->SDL_overlay == NULL)
     {
       SDL_Quit();

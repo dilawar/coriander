@@ -2,6 +2,10 @@ Coriander, (c) 2000-2002 Damien Douxchamps <douxchamps@ieee.org>
 
 Changes towards version 0.26
 
+   July 27, 2002, by Dan Dennedy
+   - added video1394 drop frames preferences option to sync with 
+     new option in libdc1394.
+
    July 15, 2002, by Damien Douxchamps
    - added #ifdef HAVE_SDLLIB for watchthread related code
 	

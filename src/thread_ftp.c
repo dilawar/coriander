@@ -160,7 +160,7 @@ FtpThread(void* arg)
   ftp_service=(chain_t*)arg;
   pthread_mutex_lock(&ftp_service->mutex_data);
   info=(ftpthread_info_t*)ftp_service->data;
-  skip_counter=0;
+  skip_counter=(info->period-1); /* send immediately, then start skipping */
   /* These settings depend on the thread. For 100% safe deferred-cancel
    threads, I advise you use a custom thread cancel flag. See display thread.*/
   pthread_setcancelstate(PTHREAD_CANCEL_DISABLE,NULL);

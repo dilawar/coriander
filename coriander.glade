@@ -5089,7 +5089,7 @@ controlled with the AV/C protocol, please refer to http://linux1394.sourceforge.
 	<widget>
 	  <class>GtkTable</class>
 	  <name>table45</name>
-	  <rows>2</rows>
+	  <rows>3</rows>
 	  <columns>1</columns>
 	  <homogeneous>False</homogeneous>
 	  <row_spacing>0</row_spacing>
@@ -5176,6 +5176,35 @@ controlled with the AV/C protocol, please refer to http://linux1394.sourceforge.
 		<fill>True</fill>
 	      </child>
 	    </widget>
+	  </widget>
+
+	  <widget>
+	    <class>GtkCheckButton</class>
+	    <name>prefs_receive_dropframes</name>
+	    <tooltip>Enable this to reduce delay</tooltip>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>toggled</name>
+	      <handler>on_prefs_receive_drop_frames_toggled</handler>
+	      <last_modification_time>Sat, 27 Jul 2002 04:04:17 GMT</last_modification_time>
+	    </signal>
+	    <label>Enable video1394 frame dropping</label>
+	    <active>False</active>
+	    <draw_indicator>True</draw_indicator>
+	    <child>
+	      <left_attach>0</left_attach>
+	      <right_attach>1</right_attach>
+	      <top_attach>2</top_attach>
+	      <bottom_attach>3</bottom_attach>
+	      <xpad>0</xpad>
+	      <ypad>0</ypad>
+	      <xexpand>False</xexpand>
+	      <yexpand>False</yexpand>
+	      <xshrink>False</xshrink>
+	      <yshrink>False</yshrink>
+	      <xfill>True</xfill>
+	      <yfill>False</yfill>
+	    </child>
 	  </widget>
 	</widget>
       </widget>

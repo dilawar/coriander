@@ -73,6 +73,8 @@ UpdatePrefsReceiveFrame(void)
 			   preferences.receive_method==RECEIVE_METHOD_VIDEO1394);
   gtk_widget_set_sensitive(lookup_widget(preferences_window,"label84"),
 			   preferences.receive_method==RECEIVE_METHOD_VIDEO1394);
+  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_receive_dropframes"),
+			   preferences.receive_method==RECEIVE_METHOD_VIDEO1394);
 }
 
 void

@@ -396,5 +396,7 @@ BuildPrefsReceiveFrame(void)
 
   gtk_entry_set_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_video1394_device")),
 		     preferences.video1394_device);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(preferences_window, "prefs_receive_dropframes")),
+		     preferences.video1394_dropframes);
 }
 
