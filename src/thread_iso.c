@@ -282,7 +282,6 @@ IsoThread(void* arg)
       else
 	{
 	  dc1394_dma_single_capture(&info->capture);
-	  dc1394_dma_done_with_buffer(&info->capture);
 	}
       pthread_mutex_lock(&iso_service->mutex_data);
       
@@ -338,6 +337,9 @@ IsoThread(void* arg)
 	  info->frames=0;
 	}
 
+      if (info->receive_method == RECEIVE_METHOD_VIDEO1394) {
+        dc1394_dma_done_with_buffer(&info->capture);
+      }
       pthread_mutex_unlock(&iso_service->mutex_data);
 	  
       pthread_mutex_lock(&iso_service->mutex_data);

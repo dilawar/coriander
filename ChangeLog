@@ -2,7 +2,10 @@ Coriander, (c) 2000-2002 Damien Douxchamps <douxchamps@ieee.org>
 
 Changes towards version 0.26
 
-   September 27, 2002, by Damien Douxchamps
+   September 30, 2002, by David Ergo
+   - move dma_done_with_buffer at the end of IsoThread.
+	
+   September 27, 2002, by David Ergo
    - swapped dma_release and dma_unlisten functions in thread_iso.c
 	
    September 24, 2002, by Damien Douxchamps
