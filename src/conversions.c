@@ -949,3 +949,58 @@ BayerEdgeSense(unsigned char *src, unsigned char *dest, int sx, int sy, bayer_pa
       break;
     }
 }
+
+void
+BayerDownsample(unsigned char *src, unsigned char *dest, int sx, int sy, bayer_pattern_t type)
+{
+  unsigned char *outR, *outG, *outB;
+  int tmp;
+  register int i,j;
+
+  // sx and sy should be even
+  // first pixel should be Green, second red:
+ 
+  // G R 
+  // B G
+
+  // or 
+  
+  // B G
+  // G R
+
+  outR=&dest[0];
+  outG=&dest[1];
+  outB=&dest[2];
+
+  switch (type)
+    {
+    case BAYER_PATTERN_GRBG://---------------------------------------------------------
+      for (i=0;i<sy;i+=2)
+	for (j=0;j<sx;j+=2)
+	  {
+	    tmp=((src[i*sx+j]+src[(i+1)*sx+(j+1)])>>1);
+	    CLIP(tmp,outG[(((i*sx)>>2)+(j>>1))*3]);
+	    tmp=src[i*sx+j+1];
+	    CLIP(tmp,outR[(((i*sx)>>2)+(j>>1))*3]);
+	    tmp=src[(i+1)*sx+j];
+	    CLIP(tmp,outB[(((i*sx)>>2)+(j>>1))*3]);
+	  }
+      break;
+    case BAYER_PATTERN_BGGR://---------------------------------------------------------
+      for (i=0;i<sy;i+=2)
+	for (j=0;j<sx;j+=2)
+	  {
+	    tmp=((src[(i+1)*sx+j]+src[i*sx+(j+1)])>>1);
+	    CLIP(tmp,outG[(((i*sx)>>2)+(j>>1))*3]);
+	    tmp=src[(i+1)*sx+j+1];
+	    CLIP(tmp,outR[(((i*sx)>>2)+(j>>1))*3]);
+	    tmp=src[i*sx+j];
+	    CLIP(tmp,outB[(((i*sx)>>2)+(j>>1))*3]);
+	  }
+      break;
+    default: //---------------------------------------------------------
+      fprintf(stderr,"Bad bayer pattern ID\n");
+      break;
+    }
+
+}

@@ -221,6 +221,7 @@ IsoThread(void* arg)
   isothread_info_t *info;
   unsigned char *temp;
   int cond16bit;
+  int factor;
   // we should only use mutex_data in this function
 
   iso_service=(chain_t*)arg;
@@ -230,6 +231,11 @@ IsoThread(void* arg)
   pthread_setcancelstate(PTHREAD_CANCEL_ENABLE,NULL);
   pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS,NULL);
   pthread_mutex_unlock(&iso_service->mutex_data);
+
+  if (iso_service->bayer==BAYER_DECODING_DOWNSAMPLE)
+    factor=2;
+  else
+    factor=1;
 
   if (iso_service->format!=FORMAT_SCALABLE_IMAGE_SIZE)
     cond16bit=((iso_service->mode==MODE_640x480_MONO16)||
@@ -241,7 +247,7 @@ IsoThread(void* arg)
     cond16bit=(format7_info->mode[iso_service->mode].color_coding_id==COLOR_FORMAT7_MONO16);
 
   if (cond16bit>0)
-    temp=(unsigned char*)malloc(iso_service->width*iso_service->height*sizeof(unsigned char));
+    temp=(unsigned char*)malloc(iso_service->width*factor*iso_service->height*factor*sizeof(unsigned char));
   else
     temp=(unsigned char *)info->capture.capture_buffer;
 
@@ -257,26 +263,29 @@ IsoThread(void* arg)
 	  dc1394_dma_done_with_buffer(&info->capture);
 	}
       pthread_mutex_lock(&iso_service->mutex_data);
+      if (iso_service->bayer!=NO_BAYER_DECODING)
+	if (cond16bit>0)
+	  y162y((unsigned char *)info->capture.capture_buffer,temp,
+		iso_service->width*factor*iso_service->height*factor);
+
       switch (iso_service->bayer)
 	{
 	case BAYER_DECODING_NEAREST:
-	  if (cond16bit>0)
-	    y162y((unsigned char *)info->capture.capture_buffer,temp,
-		  iso_service->width*iso_service->height);
 	  BayerNearestNeighbor(temp, iso_service->current_buffer,
 			       iso_service->width, iso_service->height, iso_service->bayer_pattern);
 	  break;
 	case BAYER_DECODING_EDGE_SENSE:
-	  if (cond16bit>0)
-	    y162y((unsigned char *)info->capture.capture_buffer,temp,
-		  iso_service->width*iso_service->height);
 	  BayerEdgeSense(temp, iso_service->current_buffer,
 			 iso_service->width, iso_service->height, iso_service->bayer_pattern);
+	  break;
+	case BAYER_DECODING_DOWNSAMPLE:
+	  BayerDownsample(temp, iso_service->current_buffer,
+			 iso_service->width*factor, iso_service->height*factor, iso_service->bayer_pattern);
 	  break;
 	default:
 	  memcpy(iso_service->current_buffer,
 		 info->capture.capture_buffer,
-		 iso_service->bytes_per_frame);
+		 iso_service->bytes_per_frame*factor*factor);
 	  break;
 	}
       pthread_mutex_unlock(&iso_service->mutex_data);

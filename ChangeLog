@@ -8,6 +8,8 @@ Changes towards version 0.26
    - added alternative bayer decoding. Two patterns are now supported:
        BGGR: B G    and    GRBG: G R
 	     G R                 B G
+   - added another bayer decoding method that simply downsamples
+     the image by a factor 2, using 4 bayer pixels to get 1 RGB pixel.
 	
    August 20, 2002, by Damien Douxchamps
    - support Y16 in bayer decoding

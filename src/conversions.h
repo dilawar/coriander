@@ -29,7 +29,8 @@ typedef enum
 {
   NO_BAYER_DECODING,
   BAYER_DECODING_NEAREST,
-  BAYER_DECODING_EDGE_SENSE
+  BAYER_DECODING_EDGE_SENSE,
+  BAYER_DECODING_DOWNSAMPLE
 } bayer_decoding_t;
 
 typedef enum
@@ -98,5 +99,8 @@ BayerNearestNeighborPlanar(unsigned char *src, unsigned char *dest, int sx, int 
 
 void
 BayerEdgeSensePlanar(unsigned char *src, unsigned char *dest, int sx, int sy);
+
+void
+BayerDownsample(unsigned char *src, unsigned char *dest, int sx, int sy, bayer_pattern_t type);
 
 #endif

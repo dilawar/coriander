@@ -163,6 +163,14 @@ CommonChainSetup(chain_t* chain, service_t req_service, unsigned int camera)
 	chain->format7_color_mode=-1;
       //fprintf(stderr,"color coding (master): %d\n",format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].color_coding_id);
       //fprintf(stderr,"color coding (copy): %d\n",chain->format7_color_mode);
+      if (uiinfo->bayer==BAYER_DECODING_DOWNSAMPLE)
+	{
+	  chain->bytes_per_frame/=4;
+	  chain->width/=2;
+	  chain->height/=2;
+	  buffer_size/=4;
+	}
+
     }
   else
     { // other type. First check for 'firstness'
