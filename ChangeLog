@@ -2,6 +2,10 @@ Coriander, (c) 2000-2004 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 1.0.0
 	
+   Jul 24, 2004, by Damien Douxchamps
+   - applied a patch from Frederic Devernay to use gettimeofday instead of
+     ftime
+	
    Jul 7, 2004, by Damien Douxchamps
    - minimum DMA buffer size set to 4. 2 obviously leads to problems.
 	

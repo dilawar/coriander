@@ -59,7 +59,7 @@ typedef struct
 
   int dma_buffer_size;
 
-  struct timeb rawtime;
+  struct timeval rawtime;
 
 } isothread_info_t;
 

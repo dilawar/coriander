@@ -205,7 +205,7 @@ typedef struct _Buffer_T
   unsigned long long int buffer_size; // this is the allocated memory space size of the image field
   // information about the time the frame was captured by the ISO thread.
   struct tm captime;
-  int captime_millisec;
+  int captime_usec;
   char captime_string[19];
 
 } buffer_t;

@@ -261,19 +261,17 @@ IsoThread(void* arg)
     else
       dma_ok=dc1394_dma_single_capture(&info->capture);
     
-    ftime(&info->rawtime);
-    localtime_r(&info->rawtime.time, &(iso_service->current_buffer->captime));
-    iso_service->current_buffer->captime.tm_year+=1900;
-    iso_service->current_buffer->captime.tm_mon+=1;
-    iso_service->current_buffer->captime_millisec=info->rawtime.millitm;
+    gettimeofday(&info->rawtime, NULL);
+    localtime_r(&info->rawtime.tv_sec, &(iso_service->current_buffer->captime));
+    iso_service->current_buffer->captime_usec=info->rawtime.tv_usec;
     sprintf(iso_service->current_buffer->captime_string,"%04d%02d%02d-%02d%02d%02d-%03d",
-	    iso_service->current_buffer->captime.tm_year,
-	    iso_service->current_buffer->captime.tm_mon,
+	    iso_service->current_buffer->captime.tm_year+1900,
+	    iso_service->current_buffer->captime.tm_mon+1,
 	    iso_service->current_buffer->captime.tm_mday,
 	    iso_service->current_buffer->captime.tm_hour,
 	    iso_service->current_buffer->captime.tm_min,
 	    iso_service->current_buffer->captime.tm_sec,
-	    iso_service->current_buffer->captime_millisec);
+	    iso_service->current_buffer->captime_usec/1000);
 
     pthread_mutex_lock(&iso_service->mutex_data);
     
