@@ -981,11 +981,13 @@ main_timeout_handler(gpointer* port_num) {
     }
     //fprintf(stderr,"dummy read\n");
   }
+  //fprintf(stderr,".");
   // --------------------------------------------------------------------------------------
   // update the bandwidth estimtation
   if (!(main_timeout_ticker%1000)) { // every second
     UpdateBandwidthFrame();
   }
+  //fprintf(stderr,".\n");
 #ifdef HAVE_SDLLIB
   // --------------------------------------------------------------------------------------
   // update cursor information

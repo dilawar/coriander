@@ -514,6 +514,7 @@ UpdateBandwidthFrame(void)
   int nports, i, truebps, theobps;
   chain_t* iso_service;
   GtkProgressBar *bar;
+  //fprintf(stderr,"test 1\n");
   
   temp=(char*)malloc(STRING_SIZE*sizeof(char));
 
@@ -554,13 +555,16 @@ UpdateBandwidthFrame(void)
     if (ports[i]>1.0)
       ports[i]=1;
     //fprintf(stderr,"Cam bandwidth usage: %.1f%%\n",100*ports[i]);
+    //fprintf(stderr,"test 2\n");
     bar=GTK_PROGRESS_BAR(lookup_widget(main_window,temp));
     gtk_progress_set_percentage(GTK_PROGRESS(bar),ports[i] );
   }
   free(ports);
   free(temp);
+  //fprintf(stderr,"test 3\n");
  
   UpdateServiceTree();
+  //fprintf(stderr,"ee\n");
 
 }
 
@@ -573,6 +577,7 @@ UpdateServiceTree(void)
   camera_t* cam;
   chain_t* service;
   char tmp_string[20];
+  //fprintf(stderr,"test-----------------------\n");
 
   list=(GtkCList*)(lookup_widget(main_window,"service_clist"));
 
@@ -589,6 +594,7 @@ UpdateServiceTree(void)
 
   cam=cameras;
   while(cam!=NULL) {
+    //fprintf(stderr,"test1\n");
     sprintf(temp[0],"%s",cam->prefs.name);
     sprintf(temp[1]," ");
     sprintf(temp[2]," ");
@@ -608,6 +614,7 @@ UpdateServiceTree(void)
 
 	switch(i) {
 	case SERVICE_ISO:
+	  //fprintf(stderr,"rec\n");
 	  sprintf(temp[0],"     Receive");
 	  if (cam==camera) {
 	    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_receive"),
@@ -617,6 +624,7 @@ UpdateServiceTree(void)
 	  }
 	  break;
 	case SERVICE_DISPLAY:
+	  //fprintf(stderr,"dis\n");
 	  sprintf(temp[0],"     Display");
 	  if (cam==camera) {
 	    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_display"),
@@ -626,6 +634,7 @@ UpdateServiceTree(void)
 	    }
 	  break;
 	case SERVICE_SAVE:
+	  //fprintf(stderr,"sav\n");
 	  sprintf(temp[0],"     Save   ");
 	  if (cam==camera) {
 	    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_save"),
@@ -669,6 +678,7 @@ UpdateServiceTree(void)
 	switch(i) {
 	case SERVICE_ISO:
 	  if (cam==camera) {
+	    //fprintf(stderr,"rec1\n");
 	    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_receive"),
 				 ctxt.fps_receive_ctxt, ctxt.fps_receive_id);
 	    ctxt.fps_receive_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_receive"),
@@ -677,6 +687,7 @@ UpdateServiceTree(void)
 	  break;
 	case SERVICE_DISPLAY:
 	  if (cam==camera) {
+	    //fprintf(stderr,"dis1\n");
 	    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_display"),
 				 ctxt.fps_display_ctxt, ctxt.fps_display_id);
 	    ctxt.fps_receive_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_display"),
@@ -685,6 +696,7 @@ UpdateServiceTree(void)
 	  break;
 	case SERVICE_SAVE:
 	  if (cam==camera) {
+	    //fprintf(stderr,"sav1\n");
 	    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_save"),
 				 ctxt.fps_save_ctxt, ctxt.fps_save_id);
 	    ctxt.fps_receive_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_save"),
@@ -720,6 +732,7 @@ UpdateServiceTree(void)
   //gtk_clist_set_column_width (list, 0, 200);
   //gtk_clist_set_column_width (list, 1, 100);
 
+  //fprintf(stderr,"test3\n");
   // unfreeze the clist
   gtk_clist_thaw(list);
 
@@ -727,6 +740,7 @@ UpdateServiceTree(void)
     free(temp[i]);
   }
   free(temp);
+  //fprintf(stderr,"test4\n");
 }
 
 void

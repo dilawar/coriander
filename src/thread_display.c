@@ -465,7 +465,7 @@ SDLDisplayPattern(chain_t *display_service)
       block[3]=y;
       break;
     default:
-      fprintf(stderr,"Invalid overlay coding\n");
+      fprintf(stderr,"Invalid overlay byte order coding: %d\n",preferences.overlay_byte_order);
       break;
     }
     break;
@@ -478,7 +478,7 @@ SDLDisplayPattern(chain_t *display_service)
   case OVERLAY_TYPE_INVERT:
     break;
   default:
-    fprintf(stderr,"Invalid overlay coding\n");
+    fprintf(stderr,"Invalid display overlay type: %d\n",display_service->camera->prefs.overlay_type);
     break;
   }
 

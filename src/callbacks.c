@@ -517,10 +517,15 @@ on_service_save_toggled                (GtkToggleButton *togglebutton,
       if (SaveStartThread(camera)==-1)
 	gtk_toggle_button_set_active(togglebutton,0);
     }
-    else
+    else {
+      //fprintf(stderr,"stopping service...\n");
       SaveStopThread(camera);
+      //fprintf(stderr,"Stopped\n");
+    }
   }
+  //fprintf(stderr,"updating...\n");
   UpdatePrefsSaveFrame();
+  //fprintf(stderr,"done\n");
 }
 
 
