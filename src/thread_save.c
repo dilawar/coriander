@@ -237,21 +237,22 @@ SaveThread(void* arg)
 			break;
 		      }
 		    
-		    if (info->rawdump)
-		    {
-		      if (info->save_scratch==SAVE_SCRATCH_SEQUENCE)
+		    if (info->rawdump) {
+		      if (info->save_scratch==SAVE_SCRATCH_SEQUENCE) {
 			fwrite(save_service->current_buffer->image, 1, save_service->current_buffer->bytes_per_frame, fd);
-		      else
-			Dump2File(filename_out,save_service);
-		    }
-		    else
-		      {
-			convert_to_rgb(save_service->current_buffer, info->save_buffer);
-			im=gdk_imlib_create_image_from_data(info->save_buffer,NULL,
-							    save_service->current_buffer->width, save_service->current_buffer->height);
-			gdk_imlib_save_image(im, filename_out, NULL);
-			if (im != NULL) gdk_imlib_kill_image(im);
+			fclose(fd);
 		      }
+		      else {
+			Dump2File(filename_out,save_service);
+		      }
+		    }
+		    else {
+		      convert_to_rgb(save_service->current_buffer, info->save_buffer);
+		      im=gdk_imlib_create_image_from_data(info->save_buffer,NULL,
+							  save_service->current_buffer->width, save_service->current_buffer->height);
+		      gdk_imlib_save_image(im, filename_out, NULL);
+		      if (im != NULL) gdk_imlib_kill_image(im);
+		    }
 		  }
 		else
 		  skip_counter++;

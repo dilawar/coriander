@@ -1,5 +1,10 @@
 Coriander, (c) 2000-2002 Damien Douxchamps <ddouxchamps@users.sf.net>
 
+Changes towards version 0.29
+	
+   March 10, 2003, by Damien Douxchamps
+   - added missing 'fclose' in thread_save.c 
+	
 Changes in version 0.28
 
    March 6, 2003, by Damien Douxchamps
