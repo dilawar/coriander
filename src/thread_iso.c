@@ -615,6 +615,6 @@ SetColorMode(buffer_t *buffer)
   if (bpp==-1)
     fprintf(stderr,"ERROR: BPP is -1!!\n");
 
-  buffer->buffer_image_bytes=(int)(buffer->width*buffer->height*bpp);
+  buffer->buffer_image_bytes=(int)((float)(buffer->width*buffer->height)*bpp);
 
 }
