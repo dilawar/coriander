@@ -89,15 +89,15 @@ uyyvyy2uyvy (unsigned char *src, unsigned char *dest, int NumPixels) {
       y0 = src[i--];
       u  = src[i--];
 
-      dest[j--] = v;
       dest[j--] = y3;
-      dest[j--] = u;
-      dest[j--] = y2;
-
       dest[j--] = v;
-      dest[j--] = y1;
+      dest[j--] = y2;
       dest[j--] = u;
+
+      dest[j--] = y1;
+      dest[j--] = v;
       dest[j--] = y0;
+      dest[j--] = u;
 
     }
 }
@@ -117,10 +117,10 @@ uyv2uyvy (unsigned char *src, unsigned char *dest, int NumPixels) {
       y0 = src[i--];
       u0 = src[i--];
 
-      dest[j--] = (v0+v1) >> 1;
       dest[j--] = y1;
-      dest[j--] = (u0+u1) >> 1;
+      dest[j--] = (v0+v1) >> 1;
       dest[j--] = y0;
+      dest[j--] = (u0+u1) >> 1;
     }
 }
 
@@ -136,10 +136,10 @@ y2uyvy (unsigned char *src, unsigned char *dest, int NumPixels) {
       y1 = src[i--];
       y0 = src[i--];
 
-      dest[j--] = 128;
       dest[j--] = y1;
       dest[j--] = 128;
       dest[j--] = y0;
+      dest[j--] = 128;
     }
 }
 
@@ -156,10 +156,10 @@ y162uyvy (unsigned char *src, unsigned char *dest, int NumPixels) {
       i--;
       y0   = src[i--];
 
-      dest[j--] = 128;
       dest[j--] = y1;
       dest[j--] = 128;
       dest[j--] = y0;
+      dest[j--] = 128;
     }
 }
 
@@ -181,10 +181,10 @@ rgb2uyvy (unsigned char *src, unsigned char *dest, int NumPixels) {
       r = (unsigned char) src[i--];
       RGB2YUV (r, g, b, y1, u1 , v1);
 
-      dest[j--] = (v0+v1) >> 1;
       dest[j--] = y1;
-      dest[j--] = (u0+u1) >> 1;
+      dest[j--] = (v0+v1) >> 1;
       dest[j--] = y0;
+      dest[j--] = (u0+u1) >> 1;
     }
 }
 
@@ -212,10 +212,10 @@ rgb482uyvy (unsigned char *src, unsigned char *dest, int NumPixels) {
       r = (unsigned char) src[i--];
       RGB2YUV (r, g, b, y1, u1 , v1);
 
-      dest[j--] = (v0+v1) >> 1;
       dest[j--] = y1;
-      dest[j--] = (u0+u1) >> 1;
+      dest[j--] = (v0+v1) >> 1;
       dest[j--] = y0;
+      dest[j--] = (u0+u1) >> 1;
     }
 }
 

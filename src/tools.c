@@ -280,7 +280,7 @@ SetChannels(void)
 void MainError(const char *string)
 {
   char temp[STRING_SIZE];
-  sprintf(temp," ERROR: %s",string);
+  sprintf(temp,"ERROR: %s",string);
   gtk_statusbar_remove( (GtkStatusbar*) lookup_widget(commander_window,"main_status"), ctxt.main_ctxt, ctxt.main_id);
   ctxt.main_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"main_status"), ctxt.main_ctxt, temp);
 

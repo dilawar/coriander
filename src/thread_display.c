@@ -260,6 +260,7 @@ sdlInit(chain_t *display_service)
   // Create YUV Overlay
   info->SDL_overlay = SDL_CreateYUVOverlay(display_service->width, display_service->height, 
 					   SDL_UYVY_OVERLAY,info->SDL_video);
+
   if (info->SDL_overlay == NULL)
     {
       SDL_Quit();
@@ -292,7 +293,7 @@ convert_to_yuv_for_SDL(unsigned char *src, unsigned char *dest, int mode, int wi
     case MODE_1024x768_YUV422:
     case MODE_1280x960_YUV422:
     case MODE_1600x1200_YUV422:
-      yuyv2uyvy(src,dest,width*height);
+      memcpy(dest,src,width*height*2);
       break;
     case MODE_640x480_YUV411:
       uyyvyy2uyvy(src,dest,width*height);

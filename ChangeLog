@@ -1,5 +1,11 @@
 Coriander, (c) 2000-2002 Damien Douxchamps <douxchamps@ieee.org>
 
+Changes towards version 0.24:
+
+   Feb 14, 2002, by Damien Douxchamps
+   - more color conversion bugs corrected. Will this ever end?
+   - removed a "/n" in build_menus.c
+	
 Changes in version 0.23:
 
    Feb 11, 2002, by Damien Douxchamps

@@ -355,8 +355,8 @@ BuildFpsMenu(void)
 		}
 	    }
 	}
-      sprintf(temp,"Invalid framerate. Updating to nearest: %s\n",fps_label_list[new_framerate-FRAMERATE_MIN]);
-      MainError(temp);
+      sprintf(temp,"Invalid framerate. Updating to nearest: %s",fps_label_list[new_framerate-FRAMERATE_MIN]);
+      MainStatus(temp);
       err=dc1394_set_video_framerate(camera->handle,camera->id,new_framerate);
       if (!err) MainError("Cannot set video framerate");
       misc_info->framerate=new_framerate;
