@@ -7,6 +7,7 @@ Changes towards version 0.99.5
    - check ISO status after changing it
    - update bpp range when changing WOI with 'n' or area drawing.
    - update code about F7 bpp and WOI size/pos changes
+   - display IIDC version hex code when it is not standard
 	
    November 17, 2003, by Damien Douxchamps
    - update to match latest libdc1394 CVS.
