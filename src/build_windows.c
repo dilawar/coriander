@@ -146,6 +146,7 @@ BuildHelpWindow(void)
   }
   gtk_clist_set_column_auto_resize(clist,0,1);
   gtk_clist_set_column_auto_resize(clist,1,1);
+
   free(text[0]);
   free(text[1]);
 }

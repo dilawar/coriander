@@ -332,20 +332,25 @@ SetChannels(void)
 
 void MainError(const char *string)
 {
-  char temp[STRING_SIZE];
+  char *temp;
+  temp=(char*)malloc(STRING_SIZE*sizeof(char));
+
   sprintf(temp,"ERROR: %s\n",string);
   if (main_window !=NULL) {
     gtk_text_insert((GtkText*)lookup_widget(main_window,"main_status"), NULL,NULL,NULL,temp,-1);
   }
+  free(temp);
 }
 
 void MainStatus(const char *string)
 {
-  char temp[STRING_SIZE];
+  char *temp;
+  temp=(char*)malloc(STRING_SIZE*sizeof(char));
   sprintf(temp,"%s\n",string);
   if (main_window !=NULL) {
     gtk_text_insert((GtkText*)lookup_widget(main_window,"main_status"), NULL,NULL,NULL,temp,-1);
   }
+  free(temp);
 }
 
 static void MessageBox_clicked (GtkWidget *widget, gpointer data)
@@ -385,7 +390,8 @@ void MessageBox( gchar *message)
 void
 SetScaleSensitivity(GtkWidget* widget, int feature, dc1394bool_t sense)
 { 
-  char stemp[256];
+  char *stemp;
+  stemp=(char*)malloc(STRING_SIZE*sizeof(char));
 
   switch (feature) {
   case FEATURE_WHITE_BALANCE:
@@ -403,6 +409,7 @@ SetScaleSensitivity(GtkWidget* widget, int feature, dc1394bool_t sense)
     gtk_widget_set_sensitive(GTK_WIDGET (lookup_widget(GTK_WIDGET (widget), stemp)),sense);
     break;
   }
+  free(stemp);
 }
 
 /*
@@ -560,8 +567,10 @@ SetAbsoluteControl(int feature, int power)
 void
 SetAbsValue(int feature)
 {
-  char string[256];
-  char stemp[256];
+  char *stemp, *string;
+  stemp=(char*)malloc(STRING_SIZE*sizeof(char));
+  string=(char*)malloc(STRING_SIZE*sizeof(char));
+
   char *stringp;
   float value;
  
@@ -580,13 +589,16 @@ SetAbsValue(int feature)
       gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window,stemp)),string);
     }
   }
+  free(stemp);
+  free(string);
 }
 
 void
 GetAbsValue(int feature)
 {
-  char string[256];
-  char stemp[256];
+  char *stemp, *string;
+  stemp=(char*)malloc(STRING_SIZE*sizeof(char));
+  string=(char*)malloc(STRING_SIZE*sizeof(char));
   float value;
  
   
@@ -598,6 +610,8 @@ GetAbsValue(int feature)
     sprintf(stemp,"feature_%d_abs_entry",feature);
     gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window,stemp)),string);
   }
+  free(stemp);
+  free(string);
 }
 
 

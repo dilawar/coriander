@@ -32,7 +32,9 @@ void
 BuildEmptyRange(int feature)
 {
   GtkWidget *table, *frame, *label1, *label2;
-  char stemp[256];
+  char *stemp;
+
+  stemp=(char*)malloc(STRING_SIZE*sizeof(char));
 
   frame = gtk_frame_new (_(feature_name_list[feature-FEATURE_MIN]));
   gtk_widget_ref (frame);
@@ -128,6 +130,7 @@ BuildEmptyRange(int feature)
     gtk_container_add (GTK_CONTAINER (frame), table);
     break;
   }
+  free(stemp);
 }
 
 void BuildRange(int feature)
@@ -140,8 +143,8 @@ void BuildRange(int feature)
   GtkWidget* abs_entry;
   GtkWidget* label;
   
-
-  char stemp[256];
+  char *stemp;
+  stemp=(char*)malloc(STRING_SIZE*sizeof(char));
 
   BuildEmptyRange(feature);
 
@@ -364,6 +367,8 @@ void BuildRange(int feature)
 		      (GtkAttachOptions) (0), 10, 0);
     gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
   }
+
+  free(stemp);
 }
 
 void

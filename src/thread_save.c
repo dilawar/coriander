@@ -124,8 +124,10 @@ SaveShowFPS(gpointer *data)
 {
   chain_t* save_service;
   savethread_info_t *info;
-  char tmp_string[20];
   float tmp, fps;
+  char *tmp_string;
+
+  tmp_string=(char*)malloc(20*sizeof(char));
 
   save_service=(chain_t*)data;
   info=(savethread_info_t*)save_service->data;
@@ -147,6 +149,8 @@ SaveShowFPS(gpointer *data)
   info->prev_time=info->current_time;
   info->frames=0;
   pthread_mutex_unlock(&save_service->mutex_data);
+
+  free(tmp_string);
 
   return 1;
 }
@@ -175,12 +179,14 @@ SaveCleanupThread(void* arg)
 void*
 SaveThread(void* arg)
 {
-  static gchar filename_out[STRING_SIZE];
+  char *filename_out;
   chain_t* save_service=NULL;
   savethread_info_t *info=NULL;
   GdkImlibImage *im=NULL;
   long int skip_counter;
   FILE *fd=NULL;
+
+  filename_out=(char*)malloc(STRING_SIZE*sizeof(char));
 
   save_service=(chain_t*)arg;
   pthread_mutex_lock(&save_service->mutex_data);
@@ -310,6 +316,8 @@ SaveThread(void* arg)
     free(info->bigbuffer);
   }
   pthread_mutex_unlock(&info->mutex_cancel);
+
+  free(filename_out);
   return ((void*)1);
 }
 

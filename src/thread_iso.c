@@ -202,8 +202,10 @@ IsoShowFPS(gpointer *data)
 {
   chain_t* iso_service;
   isothread_info_t *info;
-  char tmp_string[20];
   float tmp, fps;
+  char *tmp_string;
+
+  tmp_string=(char*)malloc(20*sizeof(char));
 
   iso_service=(chain_t*)data;
   info=(isothread_info_t*)iso_service->data;
@@ -225,6 +227,8 @@ IsoShowFPS(gpointer *data)
   info->prev_time=info->current_time;
   info->frames=0;
   pthread_mutex_unlock(&iso_service->mutex_data);
+
+  free(tmp_string);
 
   return 1;
 }

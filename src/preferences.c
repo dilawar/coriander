@@ -27,7 +27,9 @@ void
 LoadConfigFile(void)
 {
   camera_t* camera_ptr;
-  char tmp[1024];
+  char *tmp;
+  
+  tmp=(char*)malloc(STRING_SIZE*sizeof(char));
 
   preferences.op_timeout = gnome_config_get_float("coriander/global/one_push_timeout=10.0");
   preferences.auto_update = gnome_config_get_int("coriander/global/auto_update=1");
@@ -64,5 +66,7 @@ LoadConfigFile(void)
     camera_ptr->name = gnome_config_get_string(tmp);
     camera_ptr=camera_ptr->next;
   }
+
+  free(tmp);
 
 }

@@ -30,8 +30,10 @@ void
 UpdateRange(int feature)
 {
   int index;
-  char stemp[256];
+  char *stemp;
   dc1394bool_t range_is_active, abs_is_on;
+
+  stemp=(char*)malloc(STRING_SIZE*sizeof(char));
 
   // select the current menuitem:
   if ((!camera->feature_set.feature[feature-FEATURE_MIN].is_on)&& // off
@@ -113,6 +115,8 @@ UpdateRange(int feature)
   }
   // grab&set range value if readable:
   UpdateRangeValue(main_window,feature);
+
+  free(stemp);
 }
 
 void
@@ -125,7 +129,8 @@ UpdateRangeValue(GtkWidget* widget, int feature)
 
   int  err, value, valueBU, valueRV, valuegoal, valuecurrent;
   int stable, prec_value, prec_valuegoal, prec_valueBU, prec_valuecurrent, prec_valueRV;
-  char stemp[256];
+  char *stemp;
+  stemp=(char*)malloc(STRING_SIZE*sizeof(char));
 
   GtkAdjustment* adj;
   stable=0;
@@ -213,6 +218,7 @@ UpdateRangeValue(GtkWidget* widget, int feature)
     }
   }
   
+  free(stemp);
 }
 
 void

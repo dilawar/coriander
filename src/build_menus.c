@@ -301,7 +301,9 @@ BuildFpsMenu(void)
   int k=0;
   int new_framerate=0;
   dc1394bool_t cont=DC1394_TRUE;
-  char temp[STRING_SIZE];
+  char *temp;
+
+  temp=(char*)malloc(STRING_SIZE*sizeof(char));
 
   if (camera->misc_info.format == FORMAT_SCALABLE_IMAGE_SIZE) {
     value = 0; /* format 7 has no fixed framerates */
@@ -371,6 +373,8 @@ BuildFpsMenu(void)
     }
     gtk_option_menu_set_history (GTK_OPTION_MENU (fps), index[camera->misc_info.framerate-FRAMERATE_MIN]);
   }
+
+  free(temp);
 }
 
 

@@ -99,8 +99,10 @@ DisplayShowFPS(gpointer *data)
 {
   chain_t* display_service;
   displaythread_info_t *info;
-  char tmp_string[20];
   float tmp, fps;
+  char *tmp_string;
+
+  tmp_string=(char*)malloc(20*sizeof(char));
 
   display_service=(chain_t*)data;
   info=(displaythread_info_t*)display_service->data;
@@ -122,6 +124,8 @@ DisplayShowFPS(gpointer *data)
   info->prev_time=info->current_time;
   info->frames=0;
   pthread_mutex_unlock(&display_service->mutex_data);
+
+  free(tmp_string);
 
   return 1;
 }

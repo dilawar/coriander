@@ -144,8 +144,10 @@ FtpShowFPS(gpointer *data)
 {
   chain_t* ftp_service;
   ftpthread_info_t *info;
-  char tmp_string[20];
   float tmp, fps;
+  char *tmp_string;
+
+  tmp_string=(char*)malloc(20*sizeof(char));
 
   ftp_service=(chain_t*)data;
   info=(ftpthread_info_t*)ftp_service->data;
@@ -167,6 +169,8 @@ FtpShowFPS(gpointer *data)
   info->prev_time=info->current_time;
   info->frames=0;
   pthread_mutex_unlock(&ftp_service->mutex_data);
+
+  free(tmp_string);
 
   return 1;
 }
@@ -429,9 +433,9 @@ gboolean
 FtpPutFrame(char *filename, GdkImlibImage *im, ftpthread_info_t* info)
 {
   //netbuf **file_handle=NULL;
-  char tmp[STRING_SIZE];
+  char *tmp;
 
-
+  tmp=(char*)malloc(STRING_SIZE*sizeof(char));
   // we have to write to a local tmp file to convert...
   
   sprintf(tmp,"/tmp/coriander_ftp_image%s",info->filename_ext);
@@ -439,10 +443,11 @@ FtpPutFrame(char *filename, GdkImlibImage *im, ftpthread_info_t* info)
   gdk_imlib_save_image(im, tmp, NULL);
 
   if (!FtpPut(tmp, filename, FTPLIB_IMAGE, info->ftp_handle)) {
+    free(tmp);
     MainError("Ftp failed to put file.");
     return FALSE;
   }
-  
+  free(tmp);
   return TRUE;
 }
 

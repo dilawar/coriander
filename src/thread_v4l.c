@@ -29,7 +29,9 @@ V4lStartThread(camera_t* cam)
 {
   chain_t* v4l_service=NULL;
   v4lthread_info_t *info=NULL;
-  char stemp[STRING_SIZE];
+  char *stemp;
+
+  stemp=(char*)malloc(STRING_SIZE*sizeof(char));
 
   v4l_service=GetService(camera, SERVICE_V4L);
 
@@ -67,6 +69,7 @@ V4lStartThread(camera_t* cam)
     if (info->v4l_dev < 0) {
       sprintf(stemp,"Failed to open V4L device %s",info->v4l_dev_name);
       MainError(stemp);
+      free(stemp);
       FreeChain(v4l_service);
       return(-1);
     }
@@ -89,6 +92,7 @@ V4lStartThread(camera_t* cam)
       pthread_mutex_unlock(&v4l_service->mutex_struct);
       pthread_mutex_unlock(&v4l_service->mutex_data);
       free(info->v4l_buffer);
+      free(stemp);
       FreeChain(v4l_service);
       return(-1);
     }
@@ -98,7 +102,7 @@ V4lStartThread(camera_t* cam)
     
   }
   //fprintf(stderr," V4L service started\n");
-  
+  free(stemp);
   return (1);
 }
 
@@ -124,8 +128,10 @@ V4lShowFPS(gpointer *data)
 {
   chain_t* v4l_service;
   v4lthread_info_t *info;
-  char tmp_string[20];
   float tmp, fps;
+  char *tmp_string;
+
+  tmp_string=(char*)malloc(20*sizeof(char));
 
   v4l_service=(chain_t*)data;
   info=(v4lthread_info_t*)v4l_service->data;
@@ -147,6 +153,8 @@ V4lShowFPS(gpointer *data)
   info->prev_time=info->current_time;
   info->frames=0;
   pthread_mutex_unlock(&v4l_service->mutex_data);
+
+  free(tmp_string);
 
   return 1;
 }

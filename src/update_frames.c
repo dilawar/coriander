@@ -219,9 +219,11 @@ UpdateFormat7ModeFrame(void)
 void
 UpdateCameraStatusFrame(void)
 {
-  char temp[STRING_SIZE];
+  char *temp;
   quadlet_t sw_version;
   quadlet_t value[3];
+
+  temp=(char*)malloc(STRING_SIZE*sizeof(char));
 
   value[0]= camera->camera_info.euid_64 & 0xffffffff;
   value[1]= (camera->camera_info.euid_64 >>32) & 0x000000ff;
@@ -286,13 +288,17 @@ UpdateCameraStatusFrame(void)
   //fprintf(stderr,"name: %s\n",camera->name);
   gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window,"camera_name_text")), camera->name);
 
+  free(temp);
+
 }
 
 
 void
 UpdateTransferStatusFrame(void)
 {
-  char temp[STRING_SIZE];
+  char *temp;
+  temp=(char*)malloc(STRING_SIZE*sizeof(char));
+
   sprintf(temp," %d",camera->misc_info.iso_channel);
   gtk_statusbar_remove( (GtkStatusbar*) lookup_widget(main_window,"iso_channel_status"), ctxt.iso_channel_ctxt, ctxt.iso_channel_id);
   ctxt.iso_channel_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(main_window,"iso_channel_status"), ctxt.iso_channel_ctxt, temp);
@@ -303,12 +309,14 @@ UpdateTransferStatusFrame(void)
   gtk_statusbar_remove( (GtkStatusbar*) lookup_widget(main_window,"iso_channel_status"), ctxt.iso_channel_ctxt, ctxt.iso_channel_id);
   ctxt.iso_channel_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(main_window,"iso_channel_status"), ctxt.iso_channel_ctxt, temp);
 
+  free(temp);
 }
 
 void
 UpdateCursorFrame(void)
 {
-  char temp[50];
+  char *temp;
+  temp=(char*)malloc(STRING_SIZE*sizeof(char));
 
   // position: 
   sprintf(temp," %d,%d",cursor_info.x,cursor_info.y);
@@ -327,6 +335,8 @@ UpdateCursorFrame(void)
     gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"cursor_yuv"), ctxt.cursor_yuv_ctxt, ctxt.cursor_yuv_id);
       ctxt.cursor_yuv_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"cursor_yuv"), ctxt.cursor_yuv_ctxt, temp);
   }
+
+  free(temp);
 }
 
 void

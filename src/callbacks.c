@@ -614,15 +614,18 @@ void
 on_camera_name_text_changed            (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  char tmp[STRING_SIZE];
+  char *tmp;
   const char *camera_name_str =  "coriander/camera_names/";
-
+  
+  tmp=(char*)malloc(STRING_SIZE*sizeof(char));
   camera->name=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window, "camera_name_text")));
   sprintf(tmp,"%s%llx",camera_name_str, camera->camera_info.euid_64);
   
   gnome_config_set_string(tmp,camera->name);
   gnome_config_sync();
   BuildCameraMenu();
+
+  free(tmp);
 }
 
 void
@@ -1248,7 +1251,8 @@ on_malloc_test_clicked                 (GtkButton       *button,
                                         gpointer         user_data)
 {
   unsigned char *temp;
-  char stemp[STRING_SIZE];
+  char *stemp;
+  stemp=(char*)malloc(STRING_SIZE*sizeof(char));
 
   // test if we can allocate enough memory
   sprintf(stemp,"Trying to allocate %d MB...", preferences.ram_buffer_size);
@@ -1261,6 +1265,8 @@ on_malloc_test_clicked                 (GtkButton       *button,
     MainStatus("\tAllocation succeeded");
     free(temp);
   }
+
+  free(stemp);
 }
 
 

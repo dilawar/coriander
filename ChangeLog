@@ -2,6 +2,10 @@ Coriander, (c) 2000-2003 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 0.99.5
 
+   October 30, 2003, by Damien Douxchamps
+   - changed all strings allocation to dynamic to limit the use of static
+     memory.
+	
    October 22, 2003, by Damien Douxchamps
    - change bpp type to float in SetColorMode (thread_iso.c) Thanks to
      Frederic Devernay.
