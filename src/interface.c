@@ -117,8 +117,13 @@ create_main_window (void)
   GtkWidget *label84;
   GtkWidget *prefs_receive_method_menu;
   GtkWidget *prefs_receive_method_menu_menu;
-  GtkWidget *prefs_receive_dropframes;
   GtkWidget *prefs_video1394_device;
+  GtkWidget *hbox68;
+  GtkWidget *label153;
+  GtkObject *dma_buffer_size_adj;
+  GtkWidget *dma_buffer_size;
+  GtkWidget *label154;
+  GtkWidget *prefs_receive_dropframes;
   GtkWidget *hbox59;
   GtkWidget *iso_frame;
   GtkWidget *table62;
@@ -843,16 +848,6 @@ create_main_window (void)
   gtk_menu_append (GTK_MENU (prefs_receive_method_menu_menu), glade_menuitem);
   gtk_option_menu_set_menu (GTK_OPTION_MENU (prefs_receive_method_menu), prefs_receive_method_menu_menu);
 
-  prefs_receive_dropframes = gtk_check_button_new_with_label (_("Enable video1394 frame dropping"));
-  gtk_widget_ref (prefs_receive_dropframes);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "prefs_receive_dropframes", prefs_receive_dropframes,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (prefs_receive_dropframes);
-  gtk_table_attach (GTK_TABLE (table45), prefs_receive_dropframes, 0, 3, 1, 2,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_tooltips_set_tip (tooltips, prefs_receive_dropframes, _("Enable this to reduce delay"), NULL);
-
   prefs_video1394_device = gtk_entry_new ();
   gtk_widget_ref (prefs_video1394_device);
   gtk_object_set_data_full (GTK_OBJECT (main_window), "prefs_video1394_device", prefs_video1394_device,
@@ -861,6 +856,50 @@ create_main_window (void)
   gtk_table_attach (GTK_TABLE (table45), prefs_video1394_device, 2, 3, 0, 1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
+
+  hbox68 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_ref (hbox68);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "hbox68", hbox68,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (hbox68);
+  gtk_table_attach (GTK_TABLE (table45), hbox68, 2, 3, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+
+  label153 = gtk_label_new (_("DMA buffer size: "));
+  gtk_widget_ref (label153);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "label153", label153,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label153);
+  gtk_box_pack_start (GTK_BOX (hbox68), label153, FALSE, FALSE, 0);
+  gtk_misc_set_padding (GTK_MISC (label153), 5, 0);
+
+  dma_buffer_size_adj = gtk_adjustment_new (10, 2, 999999, 1, 10, 10);
+  dma_buffer_size = gtk_spin_button_new (GTK_ADJUSTMENT (dma_buffer_size_adj), 1, 0);
+  gtk_widget_ref (dma_buffer_size);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "dma_buffer_size", dma_buffer_size,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (dma_buffer_size);
+  gtk_box_pack_start (GTK_BOX (hbox68), dma_buffer_size, TRUE, TRUE, 0);
+
+  label154 = gtk_label_new (_("frames"));
+  gtk_widget_ref (label154);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "label154", label154,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label154);
+  gtk_box_pack_start (GTK_BOX (hbox68), label154, FALSE, FALSE, 0);
+  gtk_label_set_justify (GTK_LABEL (label154), GTK_JUSTIFY_LEFT);
+  gtk_misc_set_padding (GTK_MISC (label154), 5, 0);
+
+  prefs_receive_dropframes = gtk_check_button_new_with_label (_("Frame dropping"));
+  gtk_widget_ref (prefs_receive_dropframes);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "prefs_receive_dropframes", prefs_receive_dropframes,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (prefs_receive_dropframes);
+  gtk_table_attach (GTK_TABLE (table45), prefs_receive_dropframes, 0, 1, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_tooltips_set_tip (tooltips, prefs_receive_dropframes, _("Enable this to reduce delay"), NULL);
 
   hbox59 = gtk_hbox_new (TRUE, 0);
   gtk_widget_ref (hbox59);
@@ -1437,6 +1476,7 @@ create_main_window (void)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 2, 2);
   gtk_misc_set_alignment (GTK_MISC (label152), 0, 0.5);
+  gtk_misc_set_padding (GTK_MISC (label152), 5, 0);
 
   malloc_test = gtk_button_new_with_label (_("Test Memory Allocation"));
   gtk_widget_ref (malloc_test);
@@ -2719,11 +2759,14 @@ create_main_window (void)
   gtk_signal_connect (GTK_OBJECT (service_v4l), "toggled",
                       GTK_SIGNAL_FUNC (on_service_v4l_toggled),
                       NULL);
-  gtk_signal_connect (GTK_OBJECT (prefs_receive_dropframes), "toggled",
-                      GTK_SIGNAL_FUNC (on_prefs_receive_drop_frames_toggled),
-                      NULL);
   gtk_signal_connect (GTK_OBJECT (prefs_video1394_device), "changed",
                       GTK_SIGNAL_FUNC (on_prefs_video1394_device_changed),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (dma_buffer_size), "changed",
+                      GTK_SIGNAL_FUNC (on_dma_buffer_size_changed),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (prefs_receive_dropframes), "toggled",
+                      GTK_SIGNAL_FUNC (on_prefs_receive_drop_frames_toggled),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (iso_stop), "clicked",
                       GTK_SIGNAL_FUNC (on_iso_stop_clicked),

@@ -139,13 +139,15 @@ BuildPrefsSaveFrame(void)
   // frame drop
   gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(main_window, "prefs_save_period"), preferences.save_period);
   // scratch
+  //fprintf(stderr,"building save scratch options. current: %d\n",preferences.save_scratch);
   switch(preferences.save_scratch) {
   case SAVE_SCRATCH_OVERWRITE:
     gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(main_window, "prefs_save_scratch"),TRUE);
     break;
   case SAVE_SCRATCH_SEQUENTIAL:
     gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(main_window, "prefs_save_seq"),TRUE);
-  case SAVE_SCRATCH_SEQUENCE:
+    break;
+  case SAVE_SCRATCH_VIDEO:
     gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(main_window, "prefs_save_video"),TRUE);
     break;
   }
@@ -286,6 +288,8 @@ BuildPrefsReceiveFrame(void)
 
   gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window, "prefs_video1394_device")), preferences.video1394_device);
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window, "prefs_receive_dropframes")), preferences.video1394_dropframes);
+
+  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(main_window, "dma_buffer_size"), preferences.dma_buffer_size);
 }
 
 void

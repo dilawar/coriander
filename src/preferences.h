@@ -33,6 +33,7 @@ typedef struct _PrefsInfo
   int receive_method;
   char *video1394_device;
   int video1394_dropframes;
+  int dma_buffer_size;
   char *save_filename;
   int save_scratch;
   int save_period;

@@ -32,7 +32,7 @@ typedef enum
 {
   SAVE_SCRATCH_SEQUENTIAL,
   SAVE_SCRATCH_OVERWRITE,
-  SAVE_SCRATCH_SEQUENCE
+  SAVE_SCRATCH_VIDEO
 } save_scratch_t;
 
 typedef enum

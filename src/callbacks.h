@@ -406,4 +406,8 @@ void
 on_malloc_test_clicked                 (GtkButton       *button,
                                         gpointer         user_data);
 
+void
+on_dma_buffer_size_changed             (GtkEditable     *editable,
+                                        gpointer         user_data);
+
 #endif

@@ -790,14 +790,15 @@ on_prefs_save_seq_toggled              (GtkToggleButton *togglebutton,
   if (togglebutton->active) {
     preferences.save_scratch=SAVE_SCRATCH_SEQUENTIAL;
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window,"use_ram_buffer")),0);
-  }
-  gnome_config_set_int("coriander/save/scratch",preferences.save_scratch);
-  gnome_config_sync();
-  UpdatePrefsSaveFrame();
-  service=GetService(camera,SERVICE_SAVE);
-  if (service!=NULL) {
-    info=service->data;
-    info->scratch=preferences.save_scratch;
+    //fprintf(stderr,"setting save mode to sequential: %d\n",preferences.save_scratch);
+    gnome_config_set_int("coriander/save/scratch",preferences.save_scratch);
+    gnome_config_sync();
+    UpdatePrefsSaveFrame();
+    service=GetService(camera,SERVICE_SAVE);
+    if (service!=NULL) {
+      info=service->data;
+      info->scratch=preferences.save_scratch;
+    }
   }
 }
 
@@ -811,14 +812,15 @@ on_prefs_save_scratch_toggled          (GtkToggleButton *togglebutton,
   if (togglebutton->active) {
     preferences.save_scratch=SAVE_SCRATCH_OVERWRITE;
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window,"use_ram_buffer")),0);
-  }
-  gnome_config_set_int("coriander/save/scratch",preferences.save_scratch);
-  gnome_config_sync();
-  UpdatePrefsSaveFrame();
-  service=GetService(camera,SERVICE_SAVE);
-  if (service!=NULL) {
-    info=service->data;
-    info->scratch=preferences.save_scratch;
+    //fprintf(stderr,"setting save mode to overwrite: %d\n",preferences.save_scratch);
+    gnome_config_set_int("coriander/save/scratch",preferences.save_scratch);
+    gnome_config_sync();
+    UpdatePrefsSaveFrame();
+    service=GetService(camera,SERVICE_SAVE);
+    if (service!=NULL) {
+      info=service->data;
+      info->scratch=preferences.save_scratch;
+    }
   }
 }
 
@@ -830,15 +832,16 @@ on_prefs_save_video_toggled            (GtkToggleButton *togglebutton,
   savethread_info_t* info;
   chain_t* service;
   if (togglebutton->active) {
-    preferences.save_scratch=SAVE_SCRATCH_SEQUENCE;
-  }
-  gnome_config_set_int("coriander/save/scratch",preferences.save_scratch);
-  gnome_config_sync();
-  UpdatePrefsSaveFrame();
-  service=GetService(camera,SERVICE_SAVE);
-  if (service!=NULL) {
-    info=service->data;
-    info->scratch=preferences.save_scratch;
+    preferences.save_scratch=SAVE_SCRATCH_VIDEO;
+    //fprintf(stderr,"setting save mode to video: %d\n",preferences.save_scratch);
+    gnome_config_set_int("coriander/save/scratch",preferences.save_scratch);
+    gnome_config_sync();
+    UpdatePrefsSaveFrame();
+    service=GetService(camera,SERVICE_SAVE);
+    if (service!=NULL) {
+      info=service->data;
+      info->scratch=preferences.save_scratch;
+    }
   }
 }
 
@@ -914,15 +917,16 @@ on_prefs_ftp_seq_toggled               (GtkToggleButton *togglebutton,
 {
   ftpthread_info_t* info;
   chain_t* service;
-  if (togglebutton->active)
+  if (togglebutton->active) {
     preferences.ftp_scratch=FTP_SCRATCH_SEQUENTIAL;
-  gnome_config_set_int("coriander/ftp/scratch",preferences.ftp_scratch);
-  gnome_config_sync();
-  UpdatePrefsFtpFrame();
-  service=GetService(camera,SERVICE_FTP);
-  if (service!=NULL) {
-    info=service->data;
-    info->scratch=preferences.ftp_scratch;
+    gnome_config_set_int("coriander/ftp/scratch",preferences.ftp_scratch);
+    gnome_config_sync();
+    UpdatePrefsFtpFrame();
+    service=GetService(camera,SERVICE_FTP);
+    if (service!=NULL) {
+      info=service->data;
+      info->scratch=preferences.ftp_scratch;
+    }
   }
 }
 
@@ -933,15 +937,16 @@ on_prefs_ftp_scratch_toggled           (GtkToggleButton *togglebutton,
 {
   ftpthread_info_t* info;
   chain_t* service;
-  if (togglebutton->active)
+  if (togglebutton->active) {
     preferences.ftp_scratch=FTP_SCRATCH_OVERWRITE;
-  gnome_config_set_int("coriander/ftp/scratch",preferences.ftp_scratch);
-  gnome_config_sync();
-  UpdatePrefsFtpFrame();
-  service=GetService(camera,SERVICE_FTP);
-  if (service!=NULL) {
-    info=service->data;
-    info->scratch=preferences.ftp_scratch;
+    gnome_config_set_int("coriander/ftp/scratch",preferences.ftp_scratch);
+    gnome_config_sync();
+    UpdatePrefsFtpFrame();
+    service=GetService(camera,SERVICE_FTP);
+    if (service!=NULL) {
+      info=service->data;
+      info->scratch=preferences.ftp_scratch;
+    }
   }
 }
 
@@ -1256,5 +1261,16 @@ on_malloc_test_clicked                 (GtkButton       *button,
     MainStatus("\tAllocation succeeded");
     free(temp);
   }
+}
+
+
+void
+on_dma_buffer_size_changed             (GtkEditable     *editable,
+                                        gpointer         user_data)
+{
+  preferences.dma_buffer_size=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(main_window,"dma_buffer_size")));
+  gnome_config_set_int("coriander/receive/dma_buffer_size",preferences.dma_buffer_size);
+  gnome_config_sync();
+  //UpdatePrefsReceiveFrame();
 }
 

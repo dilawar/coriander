@@ -69,6 +69,7 @@ gint IsoStartThread(camera_t* cam)
       strcpy(info->video1394_device, preferences.video1394_device);
       info->capture.dma_device_file=info->video1394_device;
       info->video1394_dropframes=preferences.video1394_dropframes;
+      info->dma_buffer_size=preferences.dma_buffer_size;
     }
 
     switch(info->receive_method) {
@@ -76,7 +77,7 @@ gint IsoStartThread(camera_t* cam)
       if (cam->misc_info.format!=FORMAT_SCALABLE_IMAGE_SIZE)
 	if (dc1394_dma_setup_capture(cam->camera_info.handle, cam->camera_info.id, cam->misc_info.iso_channel, 
 				     cam->misc_info.format, cam->misc_info.mode, maxspeed,
-				     cam->misc_info.framerate, DMA_BUFFERS,
+				     cam->misc_info.framerate, info->dma_buffer_size,
 				     info->video1394_dropframes,
 				     info->capture.dma_device_file, &info->capture)
 	    == DC1394_SUCCESS) {
@@ -93,7 +94,7 @@ gint IsoStartThread(camera_t* cam)
 					     cam->misc_info.mode, maxspeed, QUERY_FROM_CAMERA,
 					     QUERY_FROM_CAMERA, QUERY_FROM_CAMERA,
 					     QUERY_FROM_CAMERA, QUERY_FROM_CAMERA, 
-					     DMA_BUFFERS, &info->capture)
+					     info->dma_buffer_size, &info->capture)
 	    == DC1394_SUCCESS) {
 	  info->receive_method=RECEIVE_METHOD_VIDEO1394;
 	}

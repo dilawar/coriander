@@ -65,6 +65,8 @@ typedef struct
   int orig_sizey;
   int cond16bit;
 
+  int dma_buffer_size;
+
   struct timeb rawtime;
 
 } isothread_info_t;

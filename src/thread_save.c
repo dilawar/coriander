@@ -77,7 +77,7 @@ SaveStartThread(camera_t* cam)
 
     info->bigbuffer=NULL;
 
-    if ((info->use_ram_buffer==TRUE)&&(info->scratch==SAVE_SCRATCH_SEQUENCE)) {
+    if ((info->use_ram_buffer==TRUE)&&(info->scratch==SAVE_SCRATCH_VIDEO)) {
       info->bigbuffer_position=0;
       info->bigbuffer=(unsigned char*)malloc(info->ram_buffer_size*sizeof(unsigned char));
       if (info->bigbuffer==NULL) {
@@ -193,7 +193,7 @@ SaveThread(void* arg)
   pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED,NULL);
   pthread_mutex_unlock(&save_service->mutex_data);
 
-  if (info->scratch==SAVE_SCRATCH_SEQUENCE) {
+  if (info->scratch==SAVE_SCRATCH_VIDEO) {
     sprintf(filename_out, "%s%s", info->filename,info->filename_ext);
     fd=fopen(filename_out,"w");
     if (fd==NULL)
@@ -250,7 +250,7 @@ SaveThread(void* arg)
 	    }
 	    
 	    // rambuffer operation
-	    if ((info->use_ram_buffer==TRUE)&&(info->scratch==SAVE_SCRATCH_SEQUENCE)) {
+	    if ((info->use_ram_buffer==TRUE)&&(info->scratch==SAVE_SCRATCH_VIDEO)) {
 	      if (info->ram_buffer_size-info->bigbuffer_position>=save_service->current_buffer->buffer_image_bytes) {
 		memcpy(&info->bigbuffer[info->bigbuffer_position], save_service->current_buffer->image, save_service->current_buffer->buffer_image_bytes);
 		info->bigbuffer_position+=save_service->current_buffer->buffer_image_bytes;
@@ -264,7 +264,7 @@ SaveThread(void* arg)
 	    // normal operation
 	    else {
 	      if (info->rawdump>0) {
-		if (info->scratch==SAVE_SCRATCH_SEQUENCE) {
+		if (info->scratch==SAVE_SCRATCH_VIDEO) {
 		  fwrite(save_service->current_buffer->image, 1, save_service->current_buffer->buffer_image_bytes, fd);
 		}
 		else {
@@ -302,11 +302,11 @@ SaveThread(void* arg)
       }
     }
   }
-  if ((info->use_ram_buffer==TRUE)&&(info->scratch==SAVE_SCRATCH_SEQUENCE)) {
+  if ((info->use_ram_buffer==TRUE)&&(info->scratch==SAVE_SCRATCH_VIDEO)) {
     fwrite(info->bigbuffer, 1, info->bigbuffer_position, fd);
   }
 
-  if ((info->scratch==SAVE_SCRATCH_SEQUENCE)&&(fd!=NULL)) {
+  if ((info->scratch==SAVE_SCRATCH_VIDEO)&&(fd!=NULL)) {
     fclose(fd);
   }
 
