@@ -554,70 +554,60 @@ void
 StopFPSDisplay(void)
 {
   chain_t *service;
-  isothread_info_t* infoiso;
-  savethread_info_t* infosave;
-  displaythread_info_t* infodisplay;
-  ftpthread_info_t* infoftp;
-  v4lthread_info_t* infov4l;
 
   service=GetService(camera, SERVICE_ISO);
   if (service!=NULL) {
-    infoiso=(isothread_info_t*)service->data;
-    if (infoiso->timeout_func_id!=-1) {
-      gtk_timeout_remove(infoiso->timeout_func_id);
+    if (service->timeout_func_id!=-1) {
+      gtk_timeout_remove(service->timeout_func_id);
       gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_receive"),
 			   ctxt.fps_receive_ctxt, ctxt.fps_receive_id);
       ctxt.fps_receive_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_receive"),
 					     ctxt.fps_receive_ctxt, "");
-      infoiso->timeout_func_id=-1;
+      service->timeout_func_id=-1;
     }  
   }
   service=GetService(camera, SERVICE_DISPLAY);
   if (service!=NULL) {
-    infodisplay=(displaythread_info_t*)service->data;
-    if (infodisplay->timeout_func_id!=-1) {
-      gtk_timeout_remove(infodisplay->timeout_func_id);
+    if (service->timeout_func_id!=-1) {
+      gtk_timeout_remove(service->timeout_func_id);
       gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_display"),
 			   ctxt.fps_display_ctxt, ctxt.fps_display_id);
       ctxt.fps_display_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_display"),
 					     ctxt.fps_display_ctxt, "");
-      infodisplay->timeout_func_id=-1;
+      service->timeout_func_id=-1;
     }
   }
   service=GetService(camera, SERVICE_SAVE);
   if (service!=NULL) {
-    infosave=(savethread_info_t*)service->data;
-    if (infosave->timeout_func_id!=-1) {
-      gtk_timeout_remove(infosave->timeout_func_id);
+    if (service->timeout_func_id!=-1) {
+      gtk_timeout_remove(service->timeout_func_id);
       gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_save"),
 			   ctxt.fps_save_ctxt, ctxt.fps_save_id);
       ctxt.fps_save_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_save"),
 					  ctxt.fps_save_ctxt, "");
-      infosave->timeout_func_id=-1;
+      service->timeout_func_id=-1;
     }
   }
   service=GetService(camera, SERVICE_FTP);
   if (service!=NULL) {
-    infoftp=(ftpthread_info_t*)service->data;
-    if (infoftp->timeout_func_id!=-1) {
-      gtk_timeout_remove(infoftp->timeout_func_id);
+    if (service->timeout_func_id!=-1) {
+      gtk_timeout_remove(service->timeout_func_id);
       gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_ftp"),
 			   ctxt.fps_ftp_ctxt, ctxt.fps_ftp_id);
       ctxt.fps_ftp_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_ftp"),
 					 ctxt.fps_ftp_ctxt, "");
-      infoftp->timeout_func_id=-1;
+      service->timeout_func_id=-1;
     }
   }
   service=GetService(camera, SERVICE_V4L);
   if (service!=NULL) {
-    infov4l=(v4lthread_info_t*)service->data;
-    if (infov4l->timeout_func_id!=-1) {
-      gtk_timeout_remove(infov4l->timeout_func_id);
+    if (service->timeout_func_id!=-1) {
+      gtk_timeout_remove(service->timeout_func_id);
       gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_v4l"),
 			   ctxt.fps_v4l_ctxt, ctxt.fps_v4l_id);
       ctxt.fps_v4l_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_v4l"),
 					 ctxt.fps_v4l_ctxt, "");
-      infov4l->timeout_func_id=-1;
+      service->timeout_func_id=-1;
     }
   }
 }
@@ -626,51 +616,41 @@ void
 ResumeFPSDisplay(void)
 {
   chain_t *service;
-  isothread_info_t* infoiso;
-  savethread_info_t* infosave;
-  displaythread_info_t* infodisplay;
-  ftpthread_info_t* infoftp;
-  v4lthread_info_t* infov4l;
 
   service=GetService(camera, SERVICE_ISO);
   if (service!=NULL) {
-    infoiso=(isothread_info_t*)service->data;
-    if (infoiso->timeout_func_id!=-1) {
-      gtk_timeout_remove(infoiso->timeout_func_id);
+    if (service->timeout_func_id!=-1) {
+      gtk_timeout_remove(service->timeout_func_id);
     }
-    infoiso->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)IsoShowFPS, (gpointer*) service);
+    service->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)IsoShowFPS, (gpointer*) service);
   }
   service=GetService(camera, SERVICE_DISPLAY);
   if (service!=NULL) {
-    infodisplay=(displaythread_info_t*)service->data;
-    if (infodisplay->timeout_func_id!=-1) {
-      gtk_timeout_remove(infodisplay->timeout_func_id);
+    if (service->timeout_func_id!=-1) {
+      gtk_timeout_remove(service->timeout_func_id);
     }
-    infodisplay->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)DisplayShowFPS, (gpointer*) service); 
+    service->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)DisplayShowFPS, (gpointer*) service); 
   }
   service=GetService(camera, SERVICE_SAVE);
   if (service!=NULL) {
-    infosave=(savethread_info_t*)service->data;
-    if (infosave->timeout_func_id!=-1) {
-      gtk_timeout_remove(infosave->timeout_func_id);
+    if (service->timeout_func_id!=-1) {
+      gtk_timeout_remove(service->timeout_func_id);
     }
-    infosave->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)SaveShowFPS, (gpointer*) service);
+    service->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)SaveShowFPS, (gpointer*) service);
   }
   service=GetService(camera, SERVICE_FTP);
   if (service!=NULL) {
-    infoftp=(ftpthread_info_t*)service->data;
-    if (infoftp->timeout_func_id!=-1) {
-      gtk_timeout_remove(infoftp->timeout_func_id);
+    if (service->timeout_func_id!=-1) {
+      gtk_timeout_remove(service->timeout_func_id);
     }
-    infoftp->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)FtpShowFPS, (gpointer*) service);
+    service->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)FtpShowFPS, (gpointer*) service);
   }
   service=GetService(camera, SERVICE_V4L);
   if (service!=NULL) {
-    infov4l=(v4lthread_info_t*)service->data;
-    if (infov4l->timeout_func_id!=-1) {
-      gtk_timeout_remove(infov4l->timeout_func_id);
+    if (service->timeout_func_id!=-1) {
+      gtk_timeout_remove(service->timeout_func_id);
     }
-    infov4l->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)V4lShowFPS, (gpointer*) service);
+    service->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)V4lShowFPS, (gpointer*) service);
   }
 }
 

@@ -498,8 +498,10 @@ UpdateBandwidthFrame(void)
   camera_t* cam;
   unsigned int bandwidth;
   float *ports;
+  float ratio;
   char* temp;
-  int nports, i;
+  int nports, i, truebps, theobps;
+  chain_t* iso_service;
   GtkProgressBar *bar;
   
   temp=(char*)malloc(STRING_SIZE*sizeof(char));
@@ -516,6 +518,19 @@ UpdateBandwidthFrame(void)
   while(cam!=NULL) {
     if (dc1394_get_bandwidth_usage(cam->camera_info.handle, cam->camera_info.id, &bandwidth)!=DC1394_SUCCESS) {
       MainError("Could not get a camera bandwidth usage. Bus usage might be inaccurate.");
+    }
+    iso_service=GetService(cam,SERVICE_ISO);
+    // if we are using format7 and there is a running ISO service, we can get a better estimate:
+    if ((cam->misc_info.format==FORMAT_SCALABLE_IMAGE_SIZE)&&(iso_service!=NULL)){
+      //fprintf(stderr,"better estimate can be found\n");
+      // use the fractions of packets needed:
+      theobps=8000*cam->format7_info.mode[cam->format7_info.edit_mode-MODE_FORMAT7_MIN].bpp;
+      truebps=iso_service->fps*cam->format7_info.mode[cam->format7_info.edit_mode-MODE_FORMAT7_MIN].total_bytes;
+      ratio=(float)truebps/(float)theobps;
+      //fprintf(stderr,"truebps: %d, theobps: %d, ratio: %.2f\n",truebps, theobps, ratio);
+      // apply only if the ratio is less than 0.95 and greater than 0
+      if ((ratio<.95)&&(ratio>0))
+	bandwidth=(int)((float)bandwidth*ratio);
     }
     // sum the values of the bandwidths
     ports[dc1394_get_camera_port(cam->camera_info.handle)]+=bandwidth;

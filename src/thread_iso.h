@@ -48,12 +48,6 @@ typedef struct
   dc1394_cameracapture    capture;
   int video1394_dropframes;
   char video1394_device[STRING_SIZE];
-  // timing data:
-  struct tms tms_buf;
-  clock_t prev_time;
-  clock_t current_time;
-  int frames;
-  int timeout_func_id;
 
   unsigned char *temp;
   long long unsigned int temp_size;

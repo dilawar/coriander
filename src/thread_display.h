@@ -47,13 +47,6 @@ typedef struct
   pthread_mutex_t         mutex_cancel;
   int                     cancel_req;
 
-  // timing data:
-  struct tms tms_buf;
-  clock_t prev_time;
-  clock_t current_time;
-  int frames;
-  int timeout_func_id;
-
   struct tms redraw_tms_buf;
   clock_t redraw_prev_time;
   clock_t redraw_current_time;

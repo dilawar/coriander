@@ -69,13 +69,6 @@ typedef struct
   unsigned long int  ram_buffer_size;
   int                use_ram_buffer;
 
-  // timing data:
-  struct tms tms_buf;
-  clock_t prev_time;
-  clock_t current_time;
-  int frames;
-  int timeout_func_id;
-
 } savethread_info_t;
 
 int

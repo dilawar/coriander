@@ -4,6 +4,7 @@ Changes towards version 1.0.0
 	
    December 25, 2003, by Damien Douxchamps
    - fixed configure scripts, at last.
+   - more accurate way to get the bandwidth usage in case of format7
 	
 Changes in version 0.99.9
 

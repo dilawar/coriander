@@ -73,13 +73,6 @@ typedef struct
   netbuf             *ftp_handle;
 #endif
 
-  // timing data:
-  struct tms tms_buf;
-  clock_t prev_time;
-  clock_t current_time;
-  int frames;
-  int timeout_func_id;
-
 } ftpthread_info_t;
 
 gint

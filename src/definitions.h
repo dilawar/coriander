@@ -181,6 +181,14 @@ typedef struct _Chain_T
   void*           data;
   buffer_t        local_param_copy; // not pointer: it remains in the chain.
 
+  // timing data:
+  struct tms tms_buf;
+  clock_t prev_time;
+  clock_t current_time;
+  int timeout_func_id;
+  int frames;
+  float fps;
+
   camera_t*       camera; // the camera that uses this thread    
 } chain_t;
 

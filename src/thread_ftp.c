@@ -111,9 +111,9 @@ FtpStartThread(camera_t* cam)
       FreeChain(ftp_service);
       return(-1);
     }
-    info->timeout_func_id=-1;
-    if ((cam==camera)&&(info->timeout_func_id==-1)) {
-      info->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)FtpShowFPS, (gpointer*) ftp_service);
+    ftp_service->timeout_func_id=-1;
+    if ((cam==camera)&&(ftp_service->timeout_func_id==-1)) {
+      ftp_service->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)FtpShowFPS, (gpointer*) ftp_service);
     }
     pthread_mutex_unlock(&ftp_service->mutex_struct);
     pthread_mutex_unlock(&ftp_service->mutex_data);
@@ -147,7 +147,7 @@ FtpShowFPS(gpointer *data)
 {
   chain_t* ftp_service;
   ftpthread_info_t *info;
-  float tmp, fps;
+  float tmp;
   char *tmp_string;
 
   tmp_string=(char*)malloc(20*sizeof(char));
@@ -155,13 +155,13 @@ FtpShowFPS(gpointer *data)
   ftp_service=(chain_t*)data;
   info=(ftpthread_info_t*)ftp_service->data;
 
-  tmp=(float)(info->current_time-info->prev_time)/sysconf(_SC_CLK_TCK);
+  tmp=(float)(ftp_service->current_time-ftp_service->prev_time)/sysconf(_SC_CLK_TCK);
   if (tmp==0)
-    fps=fabs(0.0);
+    ftp_service->fps=fabs(0.0);
   else
-    fps=fabs((float)info->frames/tmp);
+    ftp_service->fps=fabs((float)ftp_service->frames/tmp);
 
-  sprintf(tmp_string," %.2f",fps);
+  sprintf(tmp_string," %.3f",ftp_service->fps);
 
   gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_ftp"),
 		       ctxt.fps_ftp_ctxt, ctxt.fps_ftp_id);
@@ -169,8 +169,8 @@ FtpShowFPS(gpointer *data)
 					 ctxt.fps_ftp_ctxt, tmp_string);
   
   pthread_mutex_lock(&ftp_service->mutex_data);
-  info->prev_time=info->current_time;
-  info->frames=0;
+  ftp_service->prev_time=ftp_service->current_time;
+  ftp_service->frames=0;
   pthread_mutex_unlock(&ftp_service->mutex_data);
 
   free(tmp_string);
@@ -200,8 +200,8 @@ FtpThread(void* arg)
  
 
   // time inits:
-  info->prev_time = times(&info->tms_buf);
-  info->frames=0;
+  ftp_service->prev_time = times(&ftp_service->tms_buf);
+  ftp_service->frames=0;
 
   while (1) { 
     /* Clean cancel handlers */
@@ -249,7 +249,7 @@ FtpThread(void* arg)
 	      FtpPutFrame(filename_out, im, info);
 	    }
 #endif
-	    info->frames++;
+	    ftp_service->frames++;
 
 	    if (im != NULL)
 	      gdk_imlib_kill_image(im);
@@ -258,7 +258,7 @@ FtpThread(void* arg)
 	    skip_counter++;
 	  
 	  // FPS display:
-	  info->current_time=times(&info->tms_buf);
+	  ftp_service->current_time=times(&ftp_service->tms_buf);
 	}
 	pthread_mutex_unlock(&ftp_service->mutex_data);
       }
@@ -293,11 +293,11 @@ FtpStopThread(camera_t* cam)
     
     pthread_mutex_lock(&ftp_service->mutex_data);
     pthread_mutex_lock(&ftp_service->mutex_struct);
-    if ((cam==camera)&&(info->timeout_func_id!=-1)) {
-      gtk_timeout_remove(info->timeout_func_id);
+    if ((cam==camera)&&(ftp_service->timeout_func_id!=-1)) {
+      gtk_timeout_remove(ftp_service->timeout_func_id);
       gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_ftp"), ctxt.fps_ftp_ctxt, ctxt.fps_ftp_id);
       ctxt.fps_ftp_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_ftp"), ctxt.fps_ftp_ctxt, "");
-      info->timeout_func_id=-1;
+      ftp_service->timeout_func_id=-1;
     }
     RemoveChain(cam,ftp_service);
     

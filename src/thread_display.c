@@ -69,9 +69,9 @@ DisplayStartThread(camera_t* cam)
       FreeChain(display_service);
       return(-1);
     }
-    info->timeout_func_id=-1;
-    if ((cam==camera)&&(info->timeout_func_id==-1)) {
-      info->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)DisplayShowFPS, (gpointer*) display_service);
+    display_service->timeout_func_id=-1;
+    if ((cam==camera)&&(display_service->timeout_func_id==-1)) {
+      display_service->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)DisplayShowFPS, (gpointer*) display_service);
     }
     pthread_mutex_unlock(&display_service->mutex_struct);
     pthread_mutex_unlock(&display_service->mutex_data);
@@ -102,7 +102,7 @@ DisplayShowFPS(gpointer *data)
 {
   chain_t* display_service;
   displaythread_info_t *info;
-  float tmp, fps;
+  float tmp;
   char *tmp_string;
 
   tmp_string=(char*)malloc(20*sizeof(char));
@@ -110,13 +110,13 @@ DisplayShowFPS(gpointer *data)
   display_service=(chain_t*)data;
   info=(displaythread_info_t*)display_service->data;
 
-  tmp=(float)(info->current_time-info->prev_time)/sysconf(_SC_CLK_TCK);
+  tmp=(float)(display_service->current_time-display_service->prev_time)/sysconf(_SC_CLK_TCK);
   if (tmp==0)
-    fps=fabs(0.0);
+    display_service->fps=fabs(0.0);
   else
-    fps=fabs((float)info->frames/tmp);
+    display_service->fps=fabs((float)display_service->frames/tmp);
 
-  sprintf(tmp_string," %.2f",fps);
+  sprintf(tmp_string," %.3f",display_service->fps);
 
   gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_display"),
 		       ctxt.fps_display_ctxt, ctxt.fps_display_id);
@@ -124,8 +124,8 @@ DisplayShowFPS(gpointer *data)
 					 ctxt.fps_display_ctxt, tmp_string);
   
   pthread_mutex_lock(&display_service->mutex_data);
-  info->prev_time=info->current_time;
-  info->frames=0;
+  display_service->prev_time=display_service->current_time;
+  display_service->frames=0;
   pthread_mutex_unlock(&display_service->mutex_data);
 
   free(tmp_string);
@@ -152,8 +152,8 @@ DisplayThread(void* arg)
   skip_counter=0;
 
   // time inits:
-  info->prev_time = times(&info->tms_buf);
-  info->frames=0;
+  display_service->prev_time = times(&display_service->tms_buf);
+  display_service->frames=0;
 
   while (1) {
     pthread_mutex_lock(&info->mutex_cancel);
@@ -182,7 +182,7 @@ DisplayThread(void* arg)
 	      info->redraw_prev_time=times(&info->redraw_tms_buf);
 	    }
 #endif
-	  info->frames++;
+	  display_service->frames++;
 	  }
 	  else { //
 	    if (preferences.display_redraw==DISPLAY_REDRAW_ON) {
@@ -191,7 +191,7 @@ DisplayThread(void* arg)
 	    skip_counter++;
 	  }
 	  // FPS display:
-	  info->current_time=times(&info->tms_buf);
+	  display_service->current_time=times(&display_service->tms_buf);
 	}
 	
 	pthread_mutex_unlock(&display_service->mutex_data);
@@ -258,12 +258,12 @@ DisplayStopThread(camera_t* cam)
     
     pthread_mutex_lock(&display_service->mutex_data);
     pthread_mutex_lock(&display_service->mutex_struct);
-    if ((cam==camera)&&(info->timeout_func_id!=-1)) {
+    if ((cam==camera)&&(display_service->timeout_func_id!=-1)) {
       //fprintf(stderr,"remove fps display\n");
-      gtk_timeout_remove(info->timeout_func_id);
+      gtk_timeout_remove(display_service->timeout_func_id);
       gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_display"), ctxt.fps_display_ctxt, ctxt.fps_display_id);
       ctxt.fps_display_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_display"), ctxt.fps_display_ctxt, "");
-      info->timeout_func_id=-1;
+      display_service->timeout_func_id=-1;
     }
     RemoveChain(cam,display_service);
     //fprintf(stderr,"chain removed\n");

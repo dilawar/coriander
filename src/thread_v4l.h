@@ -53,13 +53,6 @@ typedef struct
   struct video_window vid_win;
   struct video_picture vid_pic;
 
-  // timing data:
-  struct tms tms_buf;
-  clock_t prev_time;
-  clock_t current_time;
-  int frames;
-  int timeout_func_id;
-
 } v4lthread_info_t;
 
 
