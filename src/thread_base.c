@@ -148,7 +148,9 @@ CommonChainSetup(chain_t* chain, service_t req_service, unsigned int camera)
   chain->current_buffer=(buffer_t*)malloc(sizeof(buffer_t));
   chain->next_buffer=(buffer_t*)malloc(sizeof(buffer_t));
 
-  InitLocalParamCopy(chain);
+  InitBuffer(chain->current_buffer);
+  InitBuffer(chain->next_buffer);
+  InitBuffer(&chain->local_param_copy);
 }
 
 
@@ -356,23 +358,6 @@ CleanThreads(clean_mode_t mode)
       
     }
 }
-
-void
-InitLocalParamCopy(chain_t* chain)
-{
-  chain->local_param_copy.height=0;
-  chain->local_param_copy.width=0;
-  chain->local_param_copy.mode=0;
-  chain->local_param_copy.format=0;
-  chain->local_param_copy.bytes_per_frame=0;
-  chain->local_param_copy.bpp=0;
-  chain->local_param_copy.bayer=0;
-  chain->local_param_copy.bayer_pattern=0;
-  chain->local_param_copy.stereo_decoding=0;
-  chain->local_param_copy.format7_color_mode=0;
-  
-}
-
 
 void
 InitBuffer(buffer_t *buffer)

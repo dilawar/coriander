@@ -114,9 +114,6 @@ void
 CleanThreads(clean_mode_t mode);
 
 void
-InitLocalParamCopy(chain_t* chain);
-
-void
 InitBuffer(buffer_t *buffer);
 
 #endif

@@ -169,8 +169,6 @@ gint IsoStartThread(void)
 
       CommonChainSetup(iso_service, SERVICE_ISO, current_camera);
       // init image buffers structs
-      InitBuffer(iso_service->current_buffer);
-      InitBuffer(iso_service->next_buffer);
       info->temp=NULL;
       info->temp_size=0;
       info->temp_allocated=0;
@@ -434,6 +432,10 @@ IsoThreadCheckParams(chain_t *iso_service)
   iso_service->current_buffer->bpp=uiinfo->bpp;
   iso_service->current_buffer->bayer_pattern=uiinfo->bayer_pattern;
 
+  if (iso_service->current_buffer->width==-1) {
+    // we have to allocate something and get the parameters: it's the first pass:
+    change_detected+=1;
+  }
   // check sizes. This depends on Bayer decoding
   if (iso_service->current_buffer->bayer==BAYER_DECODING_DOWNSAMPLE) {
     

@@ -85,10 +85,6 @@ FtpStartThread(void)
 
       CommonChainSetup(ftp_service,SERVICE_FTP,current_camera);
 
-      InitBuffer(ftp_service->current_buffer);
-      InitBuffer(ftp_service->next_buffer);
-      InitBuffer(&ftp_service->local_param_copy);
-  
       info->ftp_buffer=NULL;
       info->imlib_buffer_size=0;
 
@@ -230,49 +226,49 @@ FtpThread(void* arg)
 	  if(RollBuffers(ftp_service)) // have buffers been rolled?
 	    {
 	      FtpThreadCheckParams(ftp_service);
-
-	      if (skip_counter==(info->period-1))
-		{
-		  skip_counter=0;
-		  convert_to_rgb(ftp_service->current_buffer, info->ftp_buffer);
-		  switch (info->ftp_scratch)
-		    {
-		    case FTP_SCRATCH_OVERWRITE:
-		      sprintf(filename_out, "%s%s", info->filename,info->filename_ext);
-		      break;
-		    case FTP_SCRATCH_SEQUENTIAL:
-		      sprintf(filename_out, "%s-%s%s", info->filename,
-			      ftp_service->current_buffer->captime_string, info->filename_ext);
-		      break;
-		    default:
-		      break;
-		    }
-
-		  im=gdk_imlib_create_image_from_data(info->ftp_buffer, NULL, ftp_service->current_buffer->width, ftp_service->current_buffer->height);
+	      if (ftp_service->current_buffer->width!=-1) {
+		if (skip_counter==(info->period-1))
+		  {
+		    skip_counter=0;
+		    convert_to_rgb(ftp_service->current_buffer, info->ftp_buffer);
+		    switch (info->ftp_scratch)
+		      {
+		      case FTP_SCRATCH_OVERWRITE:
+			sprintf(filename_out, "%s%s", info->filename,info->filename_ext);
+			break;
+		      case FTP_SCRATCH_SEQUENTIAL:
+			sprintf(filename_out, "%s-%s%s", info->filename,
+				ftp_service->current_buffer->captime_string, info->filename_ext);
+			break;
+		      default:
+			break;
+		      }
+		    
+		    im=gdk_imlib_create_image_from_data(info->ftp_buffer, NULL, ftp_service->current_buffer->width, ftp_service->current_buffer->height);
 #ifdef HAVE_FTPLIB
-		  if (!CheckFtpConnection(info))
-		    {
-		      MainError("Ftp connection lost for good");
-		      // AUTO CANCEL THREAD
-		      pthread_mutex_lock(&info->mutex_cancel_ftp);
-		      info->cancel_ftp_req=1;
-		      pthread_mutex_unlock(&info->mutex_cancel_ftp);
-		    }
-		  else
-		    {
-		      FtpPutFrame(filename_out, im, info);
-		    }
+		    if (!CheckFtpConnection(info))
+		      {
+			MainError("Ftp connection lost for good");
+			// AUTO CANCEL THREAD
+			pthread_mutex_lock(&info->mutex_cancel_ftp);
+			info->cancel_ftp_req=1;
+			pthread_mutex_unlock(&info->mutex_cancel_ftp);
+		      }
+		    else
+		      {
+			FtpPutFrame(filename_out, im, info);
+		      }
 #endif
-		  if (im != NULL)
-		    gdk_imlib_kill_image(im);
-		}
-	      else
-		skip_counter++;
-
-	      // FPS display:
-	      info->current_time=times(&info->tms_buf);
-	      info->frames++;
-
+		    if (im != NULL)
+		      gdk_imlib_kill_image(im);
+		  }
+		else
+		  skip_counter++;
+	      
+		// FPS display:
+		info->current_time=times(&info->tms_buf);
+		info->frames++;
+	      }
 	      pthread_mutex_unlock(&ftp_service->mutex_data);
 	    }
 	  else

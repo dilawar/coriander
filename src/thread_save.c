@@ -76,10 +76,6 @@ SaveStartThread(void)
       info->period=preferences.save_period;
       CommonChainSetup(save_service,SERVICE_SAVE,current_camera);
 
-      InitBuffer(save_service->current_buffer);
-      InitBuffer(save_service->next_buffer);
-      InitBuffer(&save_service->local_param_copy);
-  
       info->save_buffer=NULL;
       info->counter=0;
       info->save_scratch=preferences.save_scratch;
@@ -217,47 +213,47 @@ SaveThread(void* arg)
 	    {
 	      // check params
 	      SaveThreadCheckParams(save_service);
-
-	      if (skip_counter==(info->period-1))
-		{
-		  skip_counter=0;
-		  // get filename
-		  switch (info->save_scratch)
-		    {
-		    case SAVE_SCRATCH_OVERWRITE:
-		      sprintf(filename_out, "%s%s", info->filename,info->filename_ext);
-		      break;
-		    case SAVE_SCRATCH_SEQUENTIAL:
-		      sprintf(filename_out, "%s-%s%s", info->filename,
-			      save_service->current_buffer->captime_string, info->filename_ext);
-		      break;
-		    default:
-		      break;
-		    }
-
-		  if (info->rawdump)
+	      if (save_service->current_buffer->width!=-1) {
+		if (skip_counter==(info->period-1))
+		  {
+		    skip_counter=0;
+		    // get filename
+		    switch (info->save_scratch)
+		      {
+		      case SAVE_SCRATCH_OVERWRITE:
+			sprintf(filename_out, "%s%s", info->filename,info->filename_ext);
+			break;
+		      case SAVE_SCRATCH_SEQUENTIAL:
+			sprintf(filename_out, "%s-%s%s", info->filename,
+				save_service->current_buffer->captime_string, info->filename_ext);
+			break;
+		      default:
+			break;
+		      }
+		    
+		    if (info->rawdump)
 		    {
 		      if (info->save_scratch==SAVE_SCRATCH_SEQUENCE)
 			fwrite(save_service->current_buffer->image, 1, save_service->current_buffer->bytes_per_frame, fd);
 		      else
 			Dump2File(filename_out,save_service);
 		    }
-		  else
-		    {
-		      convert_to_rgb(save_service->current_buffer, info->save_buffer);
-		      im=gdk_imlib_create_image_from_data(info->save_buffer,NULL,
-							  save_service->current_buffer->width, save_service->current_buffer->height);
-		      gdk_imlib_save_image(im, filename_out, NULL);
-		      if (im != NULL) gdk_imlib_kill_image(im);
-		    }
-		}
-	      else
-		skip_counter++;
+		    else
+		      {
+			convert_to_rgb(save_service->current_buffer, info->save_buffer);
+			im=gdk_imlib_create_image_from_data(info->save_buffer,NULL,
+							    save_service->current_buffer->width, save_service->current_buffer->height);
+			gdk_imlib_save_image(im, filename_out, NULL);
+			if (im != NULL) gdk_imlib_kill_image(im);
+		      }
+		  }
+		else
+		  skip_counter++;
 
-	      // FPS display
-	      info->current_time=times(&info->tms_buf);
-	      info->frames++;
-
+		// FPS display
+		info->current_time=times(&info->tms_buf);
+		info->frames++;
+	      }
 	      pthread_mutex_unlock(&save_service->mutex_data);
 	    }
 	  else

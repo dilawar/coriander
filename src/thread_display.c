@@ -76,10 +76,6 @@ DisplayStartThread()
       info->period=preferences.display_period;
       CommonChainSetup(display_service,SERVICE_DISPLAY,current_camera);
 
-      InitBuffer(display_service->current_buffer);
-      InitBuffer(display_service->next_buffer);
-      InitBuffer(&display_service->local_param_copy);
-
       pthread_mutex_unlock(&display_service->mutex_data);
 
       pthread_mutex_lock(&display_service->mutex_struct);
@@ -191,27 +187,26 @@ DisplayThread(void* arg)
 	    {
 	      // check params
 	      DisplayThreadCheckParams(display_service);
-
-	      if (skip_counter==(info->period-1))
-		{
+	      if (display_service->current_buffer->width!=-1) {
+		if (skip_counter==(info->period-1)) {
 		  skip_counter=0;
 #ifdef HAVE_SDLLIB
-		  if (SDL_LockYUVOverlay(info->SDL_overlay) == 0)
-		    {
-		      convert_to_yuv_for_SDL(display_service->current_buffer, info->SDL_overlay->pixels[0]);
-		      SDLDisplayArea(display_service);
-		      SDL_UnlockYUVOverlay(info->SDL_overlay);
-		      SDL_DisplayYUVOverlay(info->SDL_overlay, &info->SDL_videoRect);
-		      //fprintf(stderr,"Displayed\n");
-		    }
+		  if (SDL_LockYUVOverlay(info->SDL_overlay) == 0) {
+		    convert_to_yuv_for_SDL(display_service->current_buffer, info->SDL_overlay->pixels[0]);
+		    SDLDisplayArea(display_service);
+		    SDL_UnlockYUVOverlay(info->SDL_overlay);
+		    SDL_DisplayYUVOverlay(info->SDL_overlay, &info->SDL_videoRect);
+		    //fprintf(stderr,"Displayed\n");
+		  }
 #endif
 		}
-	      else
-		skip_counter++;
-
-	      // FPS display:
-	      info->current_time=times(&info->tms_buf);
-	      info->frames++;
+		else
+		  skip_counter++;
+		
+		// FPS display:
+		info->current_time=times(&info->tms_buf);
+		info->frames++;
+	      }
 
 	      pthread_mutex_unlock(&display_service->mutex_data);
 	    }

@@ -248,7 +248,7 @@ UpdateCameraStatusFrame(void)
     case 0x000101: sprintf(temp," 1.20");break;
     case 0x000102: sprintf(temp," 1.30");break;
     case 0x000114: sprintf(temp," Point Grey 114");break;
-    default: sprintf(temp," Unknown IIDC Specs");
+    default: sprintf(temp," Unknown");
     }
   gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"camera_dc_status"),
 		       ctxt.dc_ctxt, ctxt.dc_id);

@@ -88,10 +88,6 @@ RealStartThread(void)
 
       CommonChainSetup(real_service,SERVICE_REAL,current_camera);
 
-      InitBuffer(real_service->current_buffer);
-      InitBuffer(real_service->next_buffer);
-      InitBuffer(&real_service->local_param_copy);
-  
       info->real_buffer=NULL;
 
       RealSetup(info, real_service); // THIS SHOULD BE MOVED
@@ -229,8 +225,8 @@ RealThread(void* arg)
 
 	      RealThreadCheckParams(real_service);
 
-	      if (skip_counter==(info->period-1))
-		{
+	      if (real_service->current_buffer->width!=-1) {
+		if (skip_counter==(info->period-1)) {
 		  skip_counter=0;
 		  // note that Real supports different video modes (RGB, YUVxxx)
 		  // so that it would be smarter to convert from IIDC mode to a
@@ -268,13 +264,13 @@ RealThread(void* arg)
 		  else 
 		    MainError("Error in CancelEncoding()");
 		}
-	      else
-		skip_counter++;
+		else
+		  skip_counter++;
 
-	      // FPS display
-	      info->current_time=times(&info->tms_buf);
-	      info->frames++;
-
+		// FPS display
+		info->current_time=times(&info->tms_buf);
+		info->frames++;
+	      }
 	      pthread_mutex_unlock(&real_service->mutex_data);
 	    }
 	  else
