@@ -21,7 +21,6 @@ _______________________________________________________________________________
 	  timed commands)
 	- record and recall camera setup files
 	- command line capability
-	- invert the two size args of function fwrite
 	- avoid buttons that have the same name (save setup/power)
 	- update phy speed detection with raw1394 (currently it does not work
 	  with 1394b)
@@ -36,13 +35,20 @@ _______________________________________________________________________________
 	  hanged); or should prompt user to supply a new file name to continue
 	  saving (or some combination of above?).
 	- save to stdout
-	- patch for ffmpeg (jpeg and video)
 	- add 16bit bayer pattern demosaicing
 	- add service/ISO autostart in the preferences. Warn in status window if
 	  services not started in the 'normal' order.
 	- handle the case where no extension is provided
 	- thread_save button should self-reset after finishing to write the
 	  RAM buffer to disk
+	- filename preview should be updated
+	- for video, check previously written files to set the number to append
+	- confirm overwrite files
+	- use dummy menu items in the save format menu (stills/video)
+	- option to propagate the display pattern in the rest of the pipe
+	- integrate MPEG patch
+	- verify the compilation flags originally used for mpeg (-mmx,...)
+	- add options to MPEG service (codec, basic params?)
 
 - long term:
 	- add advanced features capability. This would probably require a

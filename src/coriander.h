@@ -81,6 +81,11 @@
 #include <ctype.h>
 #endif
 
+#include <jpeglib.h>
+#include <avformat.h>
+
+#include "video_encode.h"
+
 #include "build_frames.h"
 #include "build_menus.h"
 #include "build_ranges.h"
@@ -90,6 +95,8 @@
 #include "interface.h"
 #include "preferences.h"
 #include "support.h"
+#include "video_encode.h"
+#include "subtitles.h"
 #include "thread_base.h"
 #include "thread_display.h"
 #include "thread_iso.h"

@@ -2,6 +2,12 @@ Coriander, (c) 2000-2005 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 1.0.2
 
+   Feb 3, 2005, by Damien Douxchamps
+   - MPEG integration. Not working yet, but compile. Note that there is NO autodetection
+     of the necessary libraries so that you may not be able to compile. In that case you
+     have to install ffmpeg from the sources.
+   - update the text of 'frame drop' frames
+	
    Feb 2, 2005, by Damien Douxchamps
    - fixed missing 'void' in thread_save.h (Jacob Gryn)
    - changed arg order for fwrite
@@ -31,7 +37,7 @@ Changes towards version 1.0.2
    - phatt bayer pattern update by Frederic Devernay.
 	
    Jan 27, 2005, by Damien Douxchamps
-   - updated the TODO and BUGS files after receving inputs from Jagob Gryn.
+   - updated the TODO and BUGS files after receving inputs from Jacob Gryn.
 	
    Jan 26, 2005, by Damien Douxchamps
    - more efficient V4l thread for black and white mode

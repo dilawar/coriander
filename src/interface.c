@@ -1471,7 +1471,7 @@ create_main_window (void)
   gtk_widget_show (hbox55);
   gtk_container_add (GTK_CONTAINER (prefs_display_framedrop), hbox55);
 
-  label77 = gtk_label_new (_("Every"));
+  label77 = gtk_label_new (_("Display every"));
   gtk_widget_ref (label77);
   gtk_object_set_data_full (GTK_OBJECT (main_window), "label77", label77,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1490,7 +1490,7 @@ create_main_window (void)
   gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (prefs_display_period), TRUE);
   gtk_spin_button_set_update_policy (GTK_SPIN_BUTTON (prefs_display_period), GTK_UPDATE_IF_VALID);
 
-  label74 = gtk_label_new (_("frames"));
+  label74 = gtk_label_new (_("frame(s)"));
   gtk_widget_ref (label74);
   gtk_object_set_data_full (GTK_OBJECT (main_window), "label74", label74,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1825,7 +1825,7 @@ create_main_window (void)
   gtk_menu_append (GTK_MENU (save_format_menu_menu), glade_menuitem);
   gtk_option_menu_set_menu (GTK_OPTION_MENU (save_format_menu), save_format_menu_menu);
 
-  hbox71 = gtk_hbox_new (TRUE, 0);
+  hbox71 = gtk_hbox_new (FALSE, 0);
   gtk_widget_ref (hbox71);
   gtk_object_set_data_full (GTK_OBJECT (main_window), "hbox71", hbox71,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1837,7 +1837,7 @@ create_main_window (void)
   gtk_object_set_data_full (GTK_OBJECT (main_window), "prefs_save_framedrop", prefs_save_framedrop,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (prefs_save_framedrop);
-  gtk_box_pack_start (GTK_BOX (hbox71), prefs_save_framedrop, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (hbox71), prefs_save_framedrop, FALSE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (prefs_save_framedrop), 5);
 
   hbox_capture_freq_periodic = gtk_hbox_new (FALSE, 0);
@@ -1847,7 +1847,7 @@ create_main_window (void)
   gtk_widget_show (hbox_capture_freq_periodic);
   gtk_container_add (GTK_CONTAINER (prefs_save_framedrop), hbox_capture_freq_periodic);
 
-  label76 = gtk_label_new (_("Every"));
+  label76 = gtk_label_new (_("Save every"));
   gtk_widget_ref (label76);
   gtk_object_set_data_full (GTK_OBJECT (main_window), "label76", label76,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1866,7 +1866,7 @@ create_main_window (void)
   gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (prefs_save_period), TRUE);
   gtk_spin_button_set_update_policy (GTK_SPIN_BUTTON (prefs_save_period), GTK_UPDATE_IF_VALID);
 
-  label42 = gtk_label_new (_("frames"));
+  label42 = gtk_label_new (_("frame(s)"));
   gtk_widget_ref (label42);
   gtk_object_set_data_full (GTK_OBJECT (main_window), "label42", label42,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1974,7 +1974,7 @@ create_main_window (void)
   gtk_widget_show (hbox63);
   gtk_container_add (GTK_CONTAINER (frame9), hbox63);
 
-  label149 = gtk_label_new (_("Every"));
+  label149 = gtk_label_new (_("Export every"));
   gtk_widget_ref (label149);
   gtk_object_set_data_full (GTK_OBJECT (main_window), "label149", label149,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1993,7 +1993,7 @@ create_main_window (void)
   gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (prefs_v4l_period), TRUE);
   gtk_spin_button_set_update_policy (GTK_SPIN_BUTTON (prefs_v4l_period), GTK_UPDATE_IF_VALID);
 
-  label150 = gtk_label_new (_("frames"));
+  label150 = gtk_label_new (_("frame(s)"));
   gtk_widget_ref (label150);
   gtk_object_set_data_full (GTK_OBJECT (main_window), "label150", label150,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -2178,7 +2178,7 @@ create_main_window (void)
   gtk_widget_show (hbox52);
   gtk_container_add (GTK_CONTAINER (prefs_ftp_framedrop_frame), hbox52);
 
-  label75 = gtk_label_new (_("Every"));
+  label75 = gtk_label_new (_("Post every"));
   gtk_widget_ref (label75);
   gtk_object_set_data_full (GTK_OBJECT (main_window), "label75", label75,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -2197,7 +2197,7 @@ create_main_window (void)
   gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (prefs_ftp_period), TRUE);
   gtk_spin_button_set_update_policy (GTK_SPIN_BUTTON (prefs_ftp_period), GTK_UPDATE_IF_VALID);
 
-  label55 = gtk_label_new (_("frames"));
+  label55 = gtk_label_new (_("frame(s)"));
   gtk_widget_ref (label55);
   gtk_object_set_data_full (GTK_OBJECT (main_window), "label55", label55,
                             (GtkDestroyNotify) gtk_widget_unref);

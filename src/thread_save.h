@@ -63,6 +63,17 @@ typedef struct
   unsigned long int  ram_buffer_size;
   int                use_ram_buffer;
 
+  //MPEG encoding data
+  AVOutputFormat *fmt;
+  AVFormatContext *oc;
+  AVStream *video_st;
+  AVFrame *picture;
+  AVFrame *tmp_picture_yuv411;
+  AVFrame *tmp_picture_yuv422;
+  
+  char subtitle[256];
+  int fdts;
+
 } savethread_info_t;
 
 gint
@@ -106,7 +117,7 @@ convert_for_pvn(unsigned char *buffer, unsigned int width, unsigned int height,
 		unsigned int page, int buffer_color_mode, unsigned char *dest);
 
 void
-InitVideoFile(chain_t *save_service, FILE *fd);
+InitVideoFile(chain_t *save_service, FILE *fd, char *filename_out);
 
 void
 writePVNHeader(FILE *fd, unsigned int mode, unsigned int height, unsigned int width,

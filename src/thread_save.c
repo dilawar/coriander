@@ -505,22 +505,103 @@ GetSaveFD(chain_t *save_service, FILE **fd, char *filename_out)
 
 
 void
-InitVideoFile(chain_t *save_service, FILE *fd)
+InitVideoFile(chain_t *save_service, FILE *fd, char *filename_out)
 {
   savethread_info_t *info;
+
+  info->fmt = NULL;///////////////////////////
+  info->oc = NULL;
+  info->video_st = NULL;
+  info->picture = NULL;
+  info->tmp_picture_yuv411 = NULL;
+  info->tmp_picture_yuv422 = NULL;
+  
+  info->fdts = 0;///////////////////////////
 
   info=(savethread_info_t*)save_service->data;
 
   // (JG) if extension is PVN, write PVN header here
   if ((info->format==SAVE_FORMAT_PVN) && (info->use_ram_buffer==FALSE)) {
-    fprintf(stderr,"pvn header write\n");
+    //fprintf(stderr,"pvn header write\n");
     writePVNHeader(fd, save_service->current_buffer->buffer_color_mode,
 		   save_service->current_buffer->height,
 		   save_service->current_buffer->width,
 		   0, getConvertedBytesPerChannel(save_service->current_buffer->buffer_color_mode)*8,
 		   framerateAsDouble(camera->misc_info.framerate));
   }
+
+  if ((info->format==SAVE_FORMAT_MPEG) && (info->use_ram_buffer==FALSE)) {
+    // MPEG
+    //video_encode_init(save_service->current_buffer->width,
+    //		      save_service->current_buffer->height, CODEC_ID_MPEG1VIDEO);
+    /* allocate the output media context */
+    info->oc = av_alloc_format_context();
+    if (!info->oc) {
+      fprintf(stderr, "Memory error\n");
+    }
+    info->oc->oformat = info->fmt;
+    snprintf(info->oc->filename, sizeof(info->oc->filename), "%s", filename_out);
+    
+    /* add the audio and video streams using the default format codecs
+       and initialize the codecs */
+    info->video_st = NULL;
+    if (info->fmt->video_codec != CODEC_ID_NONE) {
+      //video_st = add_video_stream(oc, fmt->video_codec);
+      info->video_st = add_video_stream(info->oc, CODEC_ID_MJPEG, 
+					save_service->current_buffer->width,
+					save_service->current_buffer->height);
+      //fprintf(stderr, "Using MJPEG...");
+    }
+    
+    /* set the output parameters (must be done even if no
+       parameters). */
+    if (av_set_parameters(info->oc, NULL) < 0) {
+      fprintf(stderr, "Invalid output format parameters\n");
+    }
+    
+    dump_format(info->oc, 0, filename_out, 1);
+    
+    /* now that all the parameters are set, we can open the audio and
+       video codecs and allocate the necessary encode buffers */
+    
+    if (info->video_st)
+      open_video(info->oc, info->video_st);
+    
+    /* open the output file, if needed */
+    if (!(info->fmt->flags & AVFMT_NOFILE)) {
+      if (url_fopen(&info->oc->pb, filename_out, URL_WRONLY) < 0) {
+	fprintf(stderr, "Could not open '%s'\n", filename_out);
+      }
+    }
   
+    /* write the stream header, if any */
+    av_write_header(info->oc); 
+    
+    info->picture = alloc_picture(info->video_st->codec.pix_fmt, info->video_st->codec.width, info->video_st->codec.height);
+    if (!info->picture) {
+      fprintf(stderr, "Could not allocate picture\n");
+    }
+    
+    info->tmp_picture_yuv411 = alloc_picture(PIX_FMT_YUV411P, info->video_st->codec.width, info->video_st->codec.height);
+    if (!info->tmp_picture_yuv411) {
+      fprintf(stderr, "Could not allocate temporary picture\n");
+    }
+    
+    info->tmp_picture_yuv422 = alloc_picture(PIX_FMT_YUV422P, info->video_st->codec.width, info->video_st->codec.height);
+    if (!info->tmp_picture_yuv422) {
+      fprintf(stderr, "Could not allocate temporary picture\n");
+    }
+    
+    strcpy(info->subtitle, filename_out);
+    strcpy(strrchr(info->subtitle,'.'), ".sub");
+    fprintf(stderr, "Recording frame timestamps to: %s\n", info->subtitle);
+    info->fdts = open(info->subtitle, O_CREAT | O_WRONLY | O_SYNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
+    
+    fprintf(stderr, "Video encode: Video encode initiated...\n");
+    
+    // END MPEG
+  }
+
   // other inits for other video formats come here...
   // ...
   
@@ -574,6 +655,8 @@ SaveThread(void* arg)
   pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED,NULL);
   pthread_mutex_unlock(&save_service->mutex_data);
 
+  av_register_all();////////////////////////////////////////////
+
   // time inits:
   save_service->prev_time = times(&save_service->tms_buf);
   save_service->fps_frames=0;
@@ -603,7 +686,7 @@ SaveThread(void* arg)
 		((info->format==SAVE_FORMAT_RAW_VIDEO)||
 		 (info->format==SAVE_FORMAT_MPEG)||
 		 (info->format==SAVE_FORMAT_PVN))) {
-	      InitVideoFile(save_service, fd);
+	      InitVideoFile(save_service, fd, filename_out);
 	    }
 
 	    // rambuffer operation
@@ -637,11 +720,109 @@ SaveThread(void* arg)
 		}
 		break;
 	      case SAVE_FORMAT_MPEG:
-		MainError("MPEG not supported yet");
-		info->cancel_req=1;
+		// video saving mode
+		switch(save_service->current_buffer->buffer_color_mode) {
+		case COLOR_FORMAT7_YUV411:
+		  uyvy411_yuv411p(save_service->current_buffer->image, 
+				  info->tmp_picture_yuv411, 
+				  save_service->current_buffer->width, 
+				  save_service->current_buffer->height);
+		  img_convert((AVPicture *)info->picture, info->video_st->codec.pix_fmt, 
+			      (AVPicture *)info->tmp_picture_yuv411, PIX_FMT_YUV411P,
+			      save_service->current_buffer->width, 
+			      save_service->current_buffer->height);
+		  write_video_frame(info->oc, info->video_st, info->picture);
+		  break;
+		case COLOR_FORMAT7_YUV422:
+		  uyvy422_yuv422p(save_service->current_buffer->image, 
+				  info->tmp_picture_yuv422, 
+				  save_service->current_buffer->width, 
+				  save_service->current_buffer->height);
+		  img_convert((AVPicture *)info->picture, info->video_st->codec.pix_fmt, 
+			      (AVPicture *)info->tmp_picture_yuv422, PIX_FMT_YUV422P,
+			      save_service->current_buffer->width, 
+			      save_service->current_buffer->height);
+		  write_video_frame(info->oc, info->video_st, info->picture);
+		  break;
+		default:
+		  break;
+		}
+		
+		/* Save time stamp */
+		new_subtitle(save_service->processed_frames, save_service->fps, save_service->current_buffer->captime_string, info->subtitle);
+		printf("%s", info->subtitle);
+		write(info->fdts, info->subtitle, strlen(info->subtitle));
+		
+		break;
+	      case SAVE_FORMAT_JPEG: // <<<<<<<<<<<<< to be updated by jpeg/ffmpeg patch
+		/* Save JPEG file using LibJPEG-MMX */
+		/*
+		convert_to_rgb(save_service->current_buffer, info->buffer);
+		ImageToFile_JPEG(info->buffer, 
+				 save_service->current_buffer->width, 
+				 save_service->current_buffer->height, 
+				 filename_out, 
+				 "Created using LibJPEG-MMX");
+		*/
+		/* Save JPEG file using FFMPEG... Much, much faster... There is no need for YUV->RGB color space conversions */
+		info->picture = alloc_picture(PIX_FMT_YUV420P, 
+					save_service->current_buffer->width, 
+					save_service->current_buffer->height);
+		if (!info->picture) {
+		  fprintf(stderr, "Could not allocate picture\n");
+		}
+		switch(save_service->current_buffer->buffer_color_mode) {
+		case COLOR_FORMAT7_YUV411:
+		  info->tmp_picture_yuv411 = alloc_picture(PIX_FMT_YUV411P, 
+						     save_service->current_buffer->width, 
+						     save_service->current_buffer->height);
+		  uyvy411_yuv411p(save_service->current_buffer->image, 
+				  info->tmp_picture_yuv411, 
+				  save_service->current_buffer->width, 
+				  save_service->current_buffer->height);
+		  img_convert((AVPicture *)info->picture, PIX_FMT_YUV420P, 
+			      (AVPicture *)info->tmp_picture_yuv411, PIX_FMT_YUV411P,
+			      save_service->current_buffer->width, 
+			      save_service->current_buffer->height);
+		  
+		  break;
+		case COLOR_FORMAT7_YUV422: 
+		  info->tmp_picture_yuv422 = alloc_picture(PIX_FMT_YUV422P, 
+						     save_service->current_buffer->width, 
+						     save_service->current_buffer->height);
+		  uyvy422_yuv422p(save_service->current_buffer->image, 
+				  info->tmp_picture_yuv422, 
+				  save_service->current_buffer->width, 
+				  save_service->current_buffer->height);
+		  img_convert((AVPicture *)info->picture, PIX_FMT_YUV420P, 
+			      (AVPicture *)info->tmp_picture_yuv422, PIX_FMT_YUV422P,
+			      save_service->current_buffer->width, 
+			      save_service->current_buffer->height);
+		  break;
+		default:
+		  break;
+		}	 
+		jpeg_write(info->picture, 
+			   save_service->current_buffer->width,
+			   save_service->current_buffer->height,
+			   PIX_FMT_YUV420P,
+			   filename_out, 
+			   90.0,
+			   "Created using FFMPEG-JPEG");
+		if (info->picture) {
+		  av_free(info->picture->data[0]);
+		  av_free(info->picture);
+		}
+		if (info->tmp_picture_yuv411) {
+		  av_free(info->tmp_picture_yuv411->data[0]);
+		  av_free(info->tmp_picture_yuv411);
+		}
+		if (info->tmp_picture_yuv422) {
+		  av_free(info->tmp_picture_yuv422->data[0]);
+		  av_free(info->tmp_picture_yuv422);
+		}
 		break;
 	      case SAVE_FORMAT_PNG:
-	      case SAVE_FORMAT_JPEG: // <<<<<<<<<<<<< to be updated by jpeg/ffmpeg patch
 	      case SAVE_FORMAT_TIFF:
 	      case SAVE_FORMAT_PPMPGM:
 	      case SAVE_FORMAT_XPM:
@@ -726,9 +907,41 @@ SaveThread(void* arg)
   
   if ((fd!=NULL) &&
       ((info->format==SAVE_FORMAT_RAW_VIDEO)||
-       (info->format==SAVE_FORMAT_MPEG)||
        (info->format==SAVE_FORMAT_PVN))) {
     fclose(fd);
+    //video_encode_close(fd); //////////////////////////////////////////
+  }
+
+  if (info->format==SAVE_FORMAT_MPEG) {
+    av_free(info->picture->data[0]);
+    av_free(info->picture);
+    
+    av_free(info->tmp_picture_yuv411->data[0]);
+    av_free(info->tmp_picture_yuv411);
+
+    av_free(info->tmp_picture_yuv422->data[0]);
+    av_free(info->tmp_picture_yuv422);
+
+    //video_encode_finish();
+    /* close each codec */
+    if (info->video_st)
+      close_video(info->oc, info->video_st);
+    /* write the trailer, if any */
+    av_write_trailer(info->oc);
+    /* free the streams */
+    for(i = 0; i < info->oc->nb_streams; i++) {
+      av_freep(&info->oc->streams[i]);
+    }
+    if (!(info->fmt->flags & AVFMT_NOFILE)) {
+      /* close the output file */
+      url_fclose(&info->oc->pb);
+    }
+    /* free the stream */
+    av_free(info->oc);  
+  
+    close(info->fdts);
+    
+    fprintf(stderr, "Video encode: Finnished and closed video file...\n");
   }
 
   if (info->bigbuffer!=NULL) {

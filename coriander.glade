@@ -2315,7 +2315,7 @@ St. Field
 		    <widget>
 		      <class>GtkLabel</class>
 		      <name>label77</name>
-		      <label>Every</label>
+		      <label>Display every</label>
 		      <justify>GTK_JUSTIFY_CENTER</justify>
 		      <wrap>False</wrap>
 		      <xalign>0.5</xalign>
@@ -2361,7 +2361,7 @@ St. Field
 		    <widget>
 		      <class>GtkLabel</class>
 		      <name>label74</name>
-		      <label>frames</label>
+		      <label>frame(s)</label>
 		      <justify>GTK_JUSTIFY_CENTER</justify>
 		      <wrap>False</wrap>
 		      <xalign>0.5</xalign>
@@ -2960,7 +2960,7 @@ raw (video)
 		<widget>
 		  <class>GtkHBox</class>
 		  <name>hbox71</name>
-		  <homogeneous>True</homogeneous>
+		  <homogeneous>False</homogeneous>
 		  <spacing>0</spacing>
 		  <child>
 		    <padding>0</padding>
@@ -2977,7 +2977,7 @@ raw (video)
 		    <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
 		    <child>
 		      <padding>0</padding>
-		      <expand>True</expand>
+		      <expand>False</expand>
 		      <fill>True</fill>
 		    </child>
 
@@ -2990,7 +2990,7 @@ raw (video)
 		      <widget>
 			<class>GtkLabel</class>
 			<name>label76</name>
-			<label>Every</label>
+			<label>Save every</label>
 			<justify>GTK_JUSTIFY_CENTER</justify>
 			<wrap>False</wrap>
 			<xalign>0.5</xalign>
@@ -3036,7 +3036,7 @@ raw (video)
 		      <widget>
 			<class>GtkLabel</class>
 			<name>label42</name>
-			<label>frames</label>
+			<label>frame(s)</label>
 			<justify>GTK_JUSTIFY_CENTER</justify>
 			<wrap>False</wrap>
 			<xalign>0.5</xalign>
@@ -3266,7 +3266,7 @@ raw (video)
 		    <widget>
 		      <class>GtkLabel</class>
 		      <name>label149</name>
-		      <label>Every</label>
+		      <label>Export every</label>
 		      <justify>GTK_JUSTIFY_CENTER</justify>
 		      <wrap>False</wrap>
 		      <xalign>0.5</xalign>
@@ -3312,7 +3312,7 @@ raw (video)
 		    <widget>
 		      <class>GtkLabel</class>
 		      <name>label150</name>
-		      <label>frames</label>
+		      <label>frame(s)</label>
 		      <justify>GTK_JUSTIFY_CENTER</justify>
 		      <wrap>False</wrap>
 		      <xalign>0.5</xalign>
@@ -3721,7 +3721,7 @@ raw (video)
 		    <widget>
 		      <class>GtkLabel</class>
 		      <name>label75</name>
-		      <label>Every</label>
+		      <label>Post every</label>
 		      <justify>GTK_JUSTIFY_CENTER</justify>
 		      <wrap>False</wrap>
 		      <xalign>0.5</xalign>
@@ -3767,7 +3767,7 @@ raw (video)
 		    <widget>
 		      <class>GtkLabel</class>
 		      <name>label55</name>
-		      <label>frames</label>
+		      <label>frame(s)</label>
 		      <justify>GTK_JUSTIFY_CENTER</justify>
 		      <wrap>False</wrap>
 		      <xalign>0.5</xalign>
