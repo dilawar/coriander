@@ -121,6 +121,7 @@ BuildStatusWindow(void)
 {
   BuildCameraStatusFrame();
   BuildTransferStatusFrame();
+  BuildBandwidthFrame();
 }
 
 void

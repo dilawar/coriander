@@ -2,7 +2,10 @@ Coriander, (c) 2000-2003 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 1.0.0
 
-   December 22, 2003, by Damien Douxchamps
+   December 24, 2003, by Damien Douxchamps
+   - added bandwidth estimation graph
+	
+   December 23, 2003, by Damien Douxchamps
    - fixed issues with non-format7 cameras
 
    December 21, 2003, by Damien Douxchamps

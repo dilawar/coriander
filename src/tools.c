@@ -1049,6 +1049,11 @@ main_timeout_handler(gpointer* port_num) {
     //fprintf(stderr,"dummy read\n");
   }
   // --------------------------------------------------------------------------------------
+  // update the bandwidth estimtation
+  if (!(main_timeout_ticker%1000)) { // every second
+    UpdateBandwidthFrame();
+  }
+  // --------------------------------------------------------------------------------------
   // update cursor information
   if (!(main_timeout_ticker%100)) { // every 100ms
     if (cursor_info.update_req>0) {

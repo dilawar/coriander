@@ -26,7 +26,9 @@ extern char* phy_delay_list[4];
 extern char* power_class_list[8];
 extern PrefsInfo preferences; 
 extern camera_t* camera;
+extern camera_t* cameras;
 extern cursor_info_t cursor_info;
+extern BusInfo_t* businfo;
 
 void
 UpdatePrefsGeneralFrame(void)
@@ -481,4 +483,51 @@ UpdateFormat7InfoFrame(void)
   }
   free(temp);
 }
+
+void
+UpdateBandwidthFrame(void)
+{
+  camera_t* cam;
+  unsigned int bandwidth;
+  float *ports;
+  char* temp;
+  int nports, i;
+  GtkProgressBar *bar;
+  
+  temp=(char*)malloc(STRING_SIZE*sizeof(char));
+
+  // get the number of ports
+  nports=businfo->port_num;
+  
+  ports=(float*)malloc(nports*sizeof(float));
+
+  for (i=0;i<nports;i++)
+    ports[i]=0;
+
+  cam=cameras;
+  while(cam!=NULL) {
+    if (dc1394_get_bandwidth_usage(cam->camera_info.handle, cam->camera_info.id, &bandwidth)!=DC1394_SUCCESS) {
+      MainError("Could not get a camera bandwidth usage. Bus usage might be inaccurate.");
+    }
+    // sum the values of the bandwidths
+    ports[dc1394_get_camera_port(cam->camera_info.handle)]+=bandwidth;
+    cam=cam->next;
+  }
+
+  for (i=0;i<nports;i++) {
+    sprintf(temp,"bandwidth_bar%d",i);
+    ports[i]=ports[i]/4915;
+    if (ports[i]>1.0)
+      ports[i]=1;
+    //fprintf(stderr,"Cam bandwidth usage: %.1f%%\n",100*ports[i]);
+    bar=GTK_PROGRESS_BAR(lookup_widget(main_window,temp));
+    gtk_progress_set_percentage(GTK_PROGRESS(bar),ports[i] );
+  }
+  free(ports);
+  free(temp);
+  
+}
+
+
+
 

@@ -89,4 +89,7 @@ UpdateServiceFrame(void);
 void
 UpdateFormat7InfoFrame(void);
 
+void
+UpdateBandwidthFrame(void);
+
 #endif

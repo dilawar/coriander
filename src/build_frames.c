@@ -24,6 +24,7 @@ extern GtkWidget *preferences_window;
 extern GtkWidget *absolute_settings_window;
 extern PrefsInfo preferences;
 extern camera_t* camera;
+extern BusInfo_t* businfo;
 
 void
 BuildCameraFrame(void)
@@ -307,3 +308,65 @@ BuildOptionFrame(void)
   BuildBayerPatternMenu();
   BuildStereoMenu();
 }
+
+void
+BuildBandwidthFrame(void)
+{
+  GtkWidget *bandwidth_table;
+  GtkWidget *label;
+  GtkWidget *bandwidth_bar;
+  //GtkAdjustment *adj;
+  char* temp;
+  int nports, i;
+
+  temp=(char*)malloc(STRING_SIZE*sizeof(char));
+
+  // get the number of ports
+  nports=businfo->port_num;
+
+  //destroy table first.
+  gtk_widget_destroy(GTK_WIDGET (lookup_widget(main_window, "bandwidth_table")));
+
+  // build new table
+  bandwidth_table = gtk_table_new (nports, 5, TRUE);
+  gtk_widget_ref (bandwidth_table);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "bandwidth_table", bandwidth_table,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (bandwidth_table);
+  gtk_container_add (GTK_CONTAINER (lookup_widget(main_window,"bandwidth_frame")), bandwidth_table);
+  gtk_table_set_col_spacings (GTK_TABLE (bandwidth_table), 2);
+
+  // build each bandwidth bar:
+  for (i=0;i<nports;i++) {
+    sprintf(temp,"Bus %d: ",i);
+    label = gtk_label_new (_(temp));
+    gtk_widget_ref (label);
+    sprintf(temp,"label_bandwidth%d",i);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), temp, label,
+			      (GtkDestroyNotify) gtk_widget_unref);
+    gtk_widget_show (label);
+    gtk_table_attach (GTK_TABLE (bandwidth_table), label, 0, 1, i, i+1,
+		      (GtkAttachOptions) (GTK_FILL),
+		      (GtkAttachOptions) (0), 0, 0);
+    gtk_misc_set_padding (GTK_MISC (label), 2, 2);
+
+    //adj=(GtkAdjustment*)gtk_adjustment_new(50,0,100,.1,.1,.1);
+    //bandwidth_bar = gtk_progress_bar_new_with_adjustment(adj);
+    bandwidth_bar = gtk_progress_bar_new();
+    gtk_widget_ref (bandwidth_bar);
+    sprintf(temp,"bandwidth_bar%d",i);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), temp, bandwidth_bar,
+			      (GtkDestroyNotify) gtk_widget_unref);
+    gtk_widget_show (bandwidth_bar);
+    gtk_table_attach (GTK_TABLE (bandwidth_table), bandwidth_bar, 1, 5, i, i+1,
+		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+		      (GtkAttachOptions) (0), 0, 0);
+    gtk_progress_set_show_text(GTK_PROGRESS (bandwidth_bar), 1);
+    gtk_progress_set_text_alignment(GTK_PROGRESS (bandwidth_bar), .5, .5);
+    gtk_progress_set_format_string(GTK_PROGRESS (bandwidth_bar),"%p %%");
+    }
+
+  free(temp);
+}
+
+

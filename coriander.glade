@@ -4875,27 +4875,71 @@ anything in the GUI at all...</label>
 	<snap_edge>GTK_POS_TOP</snap_edge>
 
 	<widget>
-	  <class>GtkVBox</class>
-	  <name>vbox72</name>
+	  <class>GtkTable</class>
+	  <name>table77</name>
+	  <rows>3</rows>
+	  <columns>1</columns>
 	  <homogeneous>False</homogeneous>
-	  <spacing>0</spacing>
+	  <row_spacing>0</row_spacing>
+	  <column_spacing>0</column_spacing>
+
+	  <widget>
+	    <class>GtkScrolledWindow</class>
+	    <name>scrolledwindow1</name>
+	    <border_width>5</border_width>
+	    <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
+	    <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
+	    <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
+	    <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
+	    <child>
+	      <left_attach>0</left_attach>
+	      <right_attach>1</right_attach>
+	      <top_attach>2</top_attach>
+	      <bottom_attach>3</bottom_attach>
+	      <xpad>0</xpad>
+	      <ypad>0</ypad>
+	      <xexpand>True</xexpand>
+	      <yexpand>True</yexpand>
+	      <xshrink>False</xshrink>
+	      <yshrink>False</yshrink>
+	      <xfill>True</xfill>
+	      <yfill>True</yfill>
+	    </child>
+
+	    <widget>
+	      <class>GtkText</class>
+	      <name>main_status</name>
+	      <can_focus>True</can_focus>
+	      <editable>False</editable>
+	      <text></text>
+	    </widget>
+	  </widget>
 
 	  <widget>
 	    <class>GtkFrame</class>
-	    <name>frame10</name>
+	    <name>bandwidth_frame</name>
 	    <border_width>5</border_width>
 	    <label>Camera bandwidth usage</label>
 	    <label_xalign>0</label_xalign>
 	    <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
 	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
+	      <left_attach>0</left_attach>
+	      <right_attach>1</right_attach>
+	      <top_attach>0</top_attach>
+	      <bottom_attach>1</bottom_attach>
+	      <xpad>0</xpad>
+	      <ypad>0</ypad>
+	      <xexpand>True</xexpand>
+	      <yexpand>False</yexpand>
+	      <xshrink>False</xshrink>
+	      <yshrink>False</yshrink>
+	      <xfill>True</xfill>
+	      <yfill>True</yfill>
 	    </child>
 
 	    <widget>
 	      <class>GtkTable</class>
-	      <name>table77</name>
+	      <name>bandwidth_table</name>
 	      <rows>3</rows>
 	      <columns>5</columns>
 	      <homogeneous>True</homogeneous>
@@ -4982,7 +5026,7 @@ anything in the GUI at all...</label>
 
 	      <widget>
 		<class>GtkProgressBar</class>
-		<name>ProgressBus1</name>
+		<name>bandwidth1</name>
 		<value>0</value>
 		<lower>0</lower>
 		<upper>100</upper>
@@ -5011,7 +5055,7 @@ anything in the GUI at all...</label>
 
 	      <widget>
 		<class>GtkProgressBar</class>
-		<name>ProgressBus2</name>
+		<name>bandwidth2</name>
 		<value>0</value>
 		<lower>0</lower>
 		<upper>100</upper>
@@ -5040,7 +5084,7 @@ anything in the GUI at all...</label>
 
 	      <widget>
 		<class>GtkProgressBar</class>
-		<name>ProgressBus3</name>
+		<name>bandwidth3</name>
 		<value>0</value>
 		<lower>0</lower>
 		<upper>100</upper>
@@ -5077,9 +5121,18 @@ anything in the GUI at all...</label>
 	    <label_xalign>0</label_xalign>
 	    <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
 	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>True</fill>
+	      <left_attach>0</left_attach>
+	      <right_attach>1</right_attach>
+	      <top_attach>1</top_attach>
+	      <bottom_attach>2</bottom_attach>
+	      <xpad>0</xpad>
+	      <ypad>0</ypad>
+	      <xexpand>True</xexpand>
+	      <yexpand>False</yexpand>
+	      <xshrink>False</xshrink>
+	      <yshrink>False</yshrink>
+	      <xfill>True</xfill>
+	      <yfill>True</yfill>
 	    </child>
 
 	    <widget>
@@ -5310,29 +5363,6 @@ anything in the GUI at all...</label>
 		  </widget>
 		</widget>
 	      </widget>
-	    </widget>
-	  </widget>
-
-	  <widget>
-	    <class>GtkScrolledWindow</class>
-	    <name>scrolledwindow1</name>
-	    <border_width>5</border_width>
-	    <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
-	    <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
-	    <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
-	    <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
-	    <child>
-	      <padding>0</padding>
-	      <expand>True</expand>
-	      <fill>True</fill>
-	    </child>
-
-	    <widget>
-	      <class>GtkText</class>
-	      <name>main_status</name>
-	      <can_focus>True</can_focus>
-	      <editable>False</editable>
-	      <text></text>
 	    </widget>
 	  </widget>
 	</widget>

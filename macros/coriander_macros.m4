@@ -52,6 +52,7 @@ AC_DEFUN([AC_CHECK_LIBDC_VERSION],[
 	dc1394_query_absolute_feature_value(info.handle, info.id, 1,&value);
 	features.feature[0].abs_control=0;
 	features.feature[0].abs_value=0.0;
+	dc1394_get_bandwidth_usage(info.handle, info.id, &value);
  	],[
  	libdc1394=ok
  	],[
@@ -64,7 +65,7 @@ AC_DEFUN([AC_CHECK_LIBDC_VERSION],[
 	else
           AC_ERROR(libdc1394 is too old. 
 **************************************************************************
-**   Please update to the current CVS or to a version > 0.9.1           **
+**   Please update to the current CVS or to a version > 0.9.2           **
 **   Source tarball and CVS at:  http://www.sf.net/projects/libdc1394   **
 **************************************************************************)
  	fi

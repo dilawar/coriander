@@ -93,4 +93,6 @@ BuildPrefsReceiveFrame(void);
 void
 BuildOptionFrame(void);
 
+void
+BuildBandwidthFrame(void);
 #endif

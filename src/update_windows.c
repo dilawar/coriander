@@ -23,14 +23,9 @@ extern camera_t* camera;
 void
 UpdateFormat7Window(void)
 {
-  // update ranges
-  //fprintf(stderr,"  update ranges\n");
   UpdateFormat7Ranges();
-  //fprintf(stderr,"  update bpp\n");
   UpdateFormat7BppRange();
-  //fprintf(stderr,"  update color menu\n");
   BuildFormat7ColorMenu();
-  //fprintf(stderr,"  update info\n");
   UpdateFormat7InfoFrame();
 }
 
@@ -76,7 +71,9 @@ UpdateStatusWindow(void)
 {
   UpdateCameraStatusFrame();
   UpdateTransferStatusFrame();
+  UpdateBandwidthFrame();
 }
+
 
 void
 UpdateAllWindows(void)
