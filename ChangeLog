@@ -2,6 +2,9 @@ Coriander, (c) 2000-2004 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 1.0.0
 	
+   January 7, 2004, by Damien Douxchamps
+   - update error message for gnomeConf.sh
+	
    January 6, 2004, by Damien Douxchamps
    - misc cleanup
 	
