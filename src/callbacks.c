@@ -872,7 +872,7 @@ on_prefs_update_power_toggled          (GtkToggleButton *togglebutton,
   gnome_config_set_int("coriander/global/auto_update",preferences.auto_update);
   gnome_config_sync();
 }
-
+/*
 void
 on_prefs_save_seq_toggled              (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
@@ -970,7 +970,7 @@ on_prefs_save_noconvert_toggled        (GtkToggleButton *togglebutton,
     info->rawdump=camera->prefs.save_convert;
   }
 }
-
+*/
 
 void
 on_prefs_ftp_seq_toggled               (GtkToggleButton *togglebutton,
@@ -1260,7 +1260,7 @@ on_global_iso_start_clicked            (GtkButton       *button,
   }
 }
 
-
+/*
 void
 on_prefs_save_date_tag_toggled         (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
@@ -1297,7 +1297,7 @@ on_prefs_save_num_tag_toggled          (GtkToggleButton *togglebutton,
     info->datenum=camera->prefs.save_datenum;
   }
 }
-
+*/
 
 void
 on_prefs_ftp_date_tag_toggled          (GtkToggleButton *togglebutton,
@@ -1519,31 +1519,30 @@ on_save_filename_subentry_changed      (GtkEditable     *editable,
   gnome_config_set_string("coriander/save/filename",camera->prefs.save_filename);
   gnome_config_sync();
 
-  // strip extension
+  // extract extension and basename
   tmp = strrchr(camera->prefs.save_filename_base, '.');
   if(tmp != NULL) {
-    // PROBLEM HERE: 
     tmp[0] = '\0';// cut filename before point
     strcpy(camera->prefs.save_filename_ext, strrchr(camera->prefs.save_filename, '.'));
   }
   else {
     // error: no extension provided
-    MainError("You should provide an extension for the save filename");
+    MainError("You should provide an extension for the save filename. Default extension is RAW");
   }
 
   //fprintf(stderr,"%s\n",camera->prefs.save_filename);
   //fprintf(stderr,"%s\n",camera->prefs.save_filename_ext);
   //fprintf(stderr,"%s\n",camera->prefs.save_filename_base);
 
+  /*
+
   // detect file format
   if (strncasecmp(camera->prefs.save_filename_ext, ".pvn",4)==0) {
     camera->prefs.save_format=SAVE_FORMAT_PVN;
-    camera->prefs.save_mode=SAVE_MODE_VIDEO;
   }
-  else if ((strncasecmp(camera->prefs.save_filename_ext, ".jpg",4)==0)||(strncasecmp(camera->prefs.save_filename_ext, ".jpeg",5)==0)) {
+  else if ((strncasecmp(camera->prefs.save_filename_ext, ".jpg",4)==0)||
+	   (strncasecmp(camera->prefs.save_filename_ext, ".jpeg",5)==0)) {
     camera->prefs.save_format=SAVE_FORMAT_JPEG;
-    if (camera->prefs.save_mode==SAVE_MODE_VIDEO)
-      camera->prefs.save_mode=SAVE_MODE_SEQUENTIAL;
   }
   else if (strncasecmp(camera->prefs.save_filename_ext, ".raw",4)==0) {
     camera->prefs.save_format=SAVE_FORMAT_RAW;
@@ -1554,7 +1553,9 @@ on_save_filename_subentry_changed      (GtkEditable     *editable,
       camera->prefs.save_mode=SAVE_MODE_SEQUENTIAL;
   }
 
-  BuildSaveModeMenu();
+  */
+
+  //BuildSaveModeMenu();
   UpdatePrefsSaveFrame();
 }
 
@@ -1568,11 +1569,21 @@ on_grab_now_clicked                    (GtkButton       *button,
 
 
 void
-on_save_mode_menu_activate             (GtkEditable     *editable,
+on_save_format_menu_activate             (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  camera->prefs.save_mode=(int)user_data;
-  gnome_config_set_int("coriander/save/mode",camera->prefs.save_mode);
+  camera->prefs.save_format=(int)user_data;
+  gnome_config_set_int("coriander/save/format",camera->prefs.save_format);
+  gnome_config_sync();
+  UpdatePrefsSaveFrame();
+}
+
+void
+on_save_append_menu_activate             (GtkEditable     *editable,
+                                        gpointer         user_data)
+{
+  camera->prefs.save_append=(int)user_data;
+  gnome_config_set_int("coriander/save/append",camera->prefs.save_append);
   gnome_config_sync();
   UpdatePrefsSaveFrame();
 }

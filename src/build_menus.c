@@ -877,55 +877,168 @@ BuildOverlayTypeMenu(void)
 }
 
 void
-BuildSaveModeMenu(void)
+BuildSaveFormatMenu(void)
 {
   GtkWidget* new_option_menu;
   GtkWidget* new_menu;
   GtkWidget* glade_menuitem;
 
   // build bayer option menu:
-  gtk_widget_destroy(GTK_WIDGET(lookup_widget(main_window,"prefs_save_mode_menu"))); // remove previous menu
+  gtk_widget_destroy(GTK_WIDGET(lookup_widget(main_window,"save_format_menu"))); // remove previous menu
   
   new_option_menu = gtk_option_menu_new ();
   gtk_widget_ref (new_option_menu);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "prefs_save_mode_menu", new_option_menu,
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "save_format_menu", new_option_menu,
 			    (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (new_option_menu);
-  gtk_table_attach (GTK_TABLE (lookup_widget(main_window,"table74")),
-		    new_option_menu, 0, 1, 0, 1,
+  gtk_table_attach (GTK_TABLE (lookup_widget(main_window,"table81")),
+		    new_option_menu, 1, 2, 2, 3,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (new_option_menu), 1);
   
   new_menu = gtk_menu_new ();
 
-  // add no stereo option
-  glade_menuitem = gtk_menu_item_new_with_label (_("Save files sequentially"));
+  // 
+  glade_menuitem = gtk_menu_item_new_with_label (_("png"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
   gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-		      GTK_SIGNAL_FUNC (on_save_mode_menu_activate),
-		      (int*)SAVE_MODE_SEQUENTIAL); 
-  // add interlaced option
-  glade_menuitem = gtk_menu_item_new_with_label (_("Overwrite the same file"));
+		      GTK_SIGNAL_FUNC (on_save_format_menu_activate),
+		      (int*)SAVE_FORMAT_PNG);
+  
+  // 
+  glade_menuitem = gtk_menu_item_new_with_label (_("jpeg"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
   gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-		      GTK_SIGNAL_FUNC (on_save_mode_menu_activate),
-		      (int*)SAVE_MODE_OVERWRITE); 
-  // add field option
-  glade_menuitem = gtk_menu_item_new_with_label (_("Write a video sequence"));
+		      GTK_SIGNAL_FUNC (on_save_format_menu_activate),
+		      (int*)SAVE_FORMAT_JPEG);
+  
+  // 
+  glade_menuitem = gtk_menu_item_new_with_label (_("tiff"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
   gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-		      GTK_SIGNAL_FUNC (on_save_mode_menu_activate),
-		      (int*)SAVE_MODE_VIDEO); 
+		      GTK_SIGNAL_FUNC (on_save_format_menu_activate),
+		      (int*)SAVE_FORMAT_TIFF);
+  
+  // 
+  glade_menuitem = gtk_menu_item_new_with_label (_("ppm/pgm"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
+		      GTK_SIGNAL_FUNC (on_save_format_menu_activate),
+		      (int*)SAVE_FORMAT_PPMPGM);
+  
+  // 
+  glade_menuitem = gtk_menu_item_new_with_label (_("xpm"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
+		      GTK_SIGNAL_FUNC (on_save_format_menu_activate),
+		      (int*)SAVE_FORMAT_XPM);
+  
+  // 
+  glade_menuitem = gtk_menu_item_new_with_label (_("eim"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
+		      GTK_SIGNAL_FUNC (on_save_format_menu_activate),
+		      (int*)SAVE_FORMAT_EIM);
+  
+  // 
+  glade_menuitem = gtk_menu_item_new_with_label (_("raw"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
+		      GTK_SIGNAL_FUNC (on_save_format_menu_activate),
+		      (int*)SAVE_FORMAT_RAW);
+  
+  // 
+  glade_menuitem = gtk_menu_item_new_with_label (_("mpeg (video)"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
+		      GTK_SIGNAL_FUNC (on_save_format_menu_activate),
+		      (int*)SAVE_FORMAT_MPEG);
+
+  // 
+  glade_menuitem = gtk_menu_item_new_with_label (_("pvn (video)"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
+		      GTK_SIGNAL_FUNC (on_save_format_menu_activate),
+		      (int*)SAVE_FORMAT_PVN);
+  // 
+  glade_menuitem = gtk_menu_item_new_with_label (_("raw (video)"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
+		      GTK_SIGNAL_FUNC (on_save_format_menu_activate),
+		      (int*)SAVE_FORMAT_RAW_VIDEO);
   
   gtk_option_menu_set_menu (GTK_OPTION_MENU (new_option_menu), new_menu);
 
   // menu history
   pthread_mutex_lock(&camera->uimutex);
-  gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(main_window, "prefs_save_mode_menu")),camera->prefs.save_mode);
+  gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(main_window, "save_format_menu")),camera->prefs.save_format);
+  pthread_mutex_unlock(&camera->uimutex);
+      
+}
+
+void
+BuildSaveAppendMenu(void)
+{
+  GtkWidget* new_option_menu;
+  GtkWidget* new_menu;
+  GtkWidget* glade_menuitem;
+
+  // build bayer option menu:
+  gtk_widget_destroy(GTK_WIDGET(lookup_widget(main_window,"save_append_menu"))); // remove previous menu
+  
+  new_option_menu = gtk_option_menu_new ();
+  gtk_widget_ref (new_option_menu);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "save_append_menu", new_option_menu,
+			    (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (new_option_menu);
+  gtk_table_attach (GTK_TABLE (lookup_widget(main_window,"table81")),
+		    new_option_menu, 1, 2, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (new_option_menu), 1);
+  
+  new_menu = gtk_menu_new ();
+
+  // 
+  glade_menuitem = gtk_menu_item_new_with_label (_("none (overwrite)"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
+		      GTK_SIGNAL_FUNC (on_save_append_menu_activate),
+		      (int*)SAVE_APPEND_NONE);
+  
+  // 
+  glade_menuitem = gtk_menu_item_new_with_label (_("date and time"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
+		      GTK_SIGNAL_FUNC (on_save_append_menu_activate),
+		      (int*)SAVE_APPEND_DATE_TIME);
+  
+  // 
+  glade_menuitem = gtk_menu_item_new_with_label (_("number"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
+		      GTK_SIGNAL_FUNC (on_save_append_menu_activate),
+		      (int*)SAVE_APPEND_NUMBER);
+  
+  gtk_option_menu_set_menu (GTK_OPTION_MENU (new_option_menu), new_menu);
+
+  // menu history
+  pthread_mutex_lock(&camera->uimutex);
+  gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(main_window, "save_append_menu")),camera->prefs.save_append);
   pthread_mutex_unlock(&camera->uimutex);
       
 }

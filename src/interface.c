@@ -129,6 +129,7 @@ create_main_window (void)
   GtkWidget *fps_ftp;
   GtkWidget *fps_v4l;
   GtkWidget *service_v4l;
+  GtkWidget *frame1111;
   GtkWidget *notebook5;
   GtkWidget *table59;
   GtkWidget *format_frame;
@@ -204,8 +205,20 @@ create_main_window (void)
   GtkWidget *label144;
   GtkWidget *vbox54;
   GtkWidget *prefs_save_filename_frame;
+  GtkWidget *table81;
+  GtkWidget *label175;
+  GtkWidget *label174;
+  GtkWidget *save_filename_status;
+  GtkWidget *label176;
   GtkWidget *save_filename_entry;
   GtkWidget *save_filename_subentry;
+  GtkWidget *label177;
+  GtkWidget *vseparator1;
+  GtkWidget *save_append_menu;
+  GtkWidget *save_append_menu_menu;
+  GtkWidget *save_to_dir;
+  GtkWidget *save_format_menu;
+  GtkWidget *save_format_menu_menu;
   GtkWidget *hbox71;
   GtkWidget *prefs_save_framedrop;
   GtkWidget *hbox_capture_freq_periodic;
@@ -215,21 +228,13 @@ create_main_window (void)
   GtkWidget *label42;
   GtkWidget *grab_now_frame;
   GtkWidget *grab_now;
-  GtkWidget *prefs_save_mode_frame;
-  GtkWidget *table74;
-  GSList *save_datenum_group = NULL;
-  GtkWidget *prefs_save_date_tag;
-  GtkWidget *prefs_save_num_tag;
-  GtkWidget *prefs_save_mode_menu;
-  GtkWidget *prefs_save_mode_menu_menu;
-  GtkWidget *save_to_dir;
   GtkWidget *ram_buffer_frame;
   GtkWidget *table75;
-  GtkWidget *malloc_test;
   GtkObject *ram_buffer_size_adj;
   GtkWidget *ram_buffer_size;
   GtkWidget *label152;
   GtkWidget *use_ram_buffer;
+  GtkWidget *malloc_test;
   GtkWidget *label145;
   GtkWidget *vbox79;
   GtkWidget *frame9;
@@ -1027,12 +1032,20 @@ create_main_window (void)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
+  frame1111 = gtk_frame_new (_("Setup"));
+  gtk_widget_ref (frame1111);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "frame1111", frame1111,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (frame1111);
+  gtk_box_pack_start (GTK_BOX (vbox78), frame1111, TRUE, TRUE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (frame1111), 5);
+
   notebook5 = gtk_notebook_new ();
   gtk_widget_ref (notebook5);
   gtk_object_set_data_full (GTK_OBJECT (main_window), "notebook5", notebook5,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (notebook5);
-  gtk_box_pack_start (GTK_BOX (vbox78), notebook5, TRUE, TRUE, 0);
+  gtk_container_add (GTK_CONTAINER (frame1111), notebook5);
   gtk_container_set_border_width (GTK_CONTAINER (notebook5), 5);
 
   table59 = gtk_table_new (3, 3, FALSE);
@@ -1648,7 +1661,7 @@ create_main_window (void)
   gtk_widget_show (vbox54);
   gtk_container_add (GTK_CONTAINER (notebook5), vbox54);
 
-  prefs_save_filename_frame = gtk_frame_new (_("Base directory or filename"));
+  prefs_save_filename_frame = gtk_frame_new (_("Filename"));
   gtk_widget_ref (prefs_save_filename_frame);
   gtk_object_set_data_full (GTK_OBJECT (main_window), "prefs_save_filename_frame", prefs_save_filename_frame,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1656,12 +1669,62 @@ create_main_window (void)
   gtk_box_pack_start (GTK_BOX (vbox54), prefs_save_filename_frame, FALSE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (prefs_save_filename_frame), 5);
 
+  table81 = gtk_table_new (4, 4, FALSE);
+  gtk_widget_ref (table81);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "table81", table81,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (table81);
+  gtk_container_add (GTK_CONTAINER (prefs_save_filename_frame), table81);
+
+  label175 = gtk_label_new (_("Append:"));
+  gtk_widget_ref (label175);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "label175", label175,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label175);
+  gtk_table_attach (GTK_TABLE (table81), label175, 0, 1, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_padding (GTK_MISC (label175), 5, 2);
+
+  label174 = gtk_label_new (_("Filename:"));
+  gtk_widget_ref (label174);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "label174", label174,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label174);
+  gtk_table_attach (GTK_TABLE (table81), label174, 0, 1, 3, 4,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_label_set_justify (GTK_LABEL (label174), GTK_JUSTIFY_LEFT);
+  gtk_misc_set_padding (GTK_MISC (label174), 5, 2);
+
+  save_filename_status = gtk_statusbar_new ();
+  gtk_widget_ref (save_filename_status);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "save_filename_status", save_filename_status,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (save_filename_status);
+  gtk_table_attach (GTK_TABLE (table81), save_filename_status, 1, 4, 3, 4,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (save_filename_status), 2);
+
+  label176 = gtk_label_new (_("Format:"));
+  gtk_widget_ref (label176);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "label176", label176,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label176);
+  gtk_table_attach (GTK_TABLE (table81), label176, 0, 1, 2, 3,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_padding (GTK_MISC (label176), 5, 2);
+
   save_filename_entry = gnome_file_entry_new (NULL, _("Choose a base directory"));
   gtk_widget_ref (save_filename_entry);
   gtk_object_set_data_full (GTK_OBJECT (main_window), "save_filename_entry", save_filename_entry,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (save_filename_entry);
-  gtk_container_add (GTK_CONTAINER (prefs_save_filename_frame), save_filename_entry);
+  gtk_table_attach (GTK_TABLE (table81), save_filename_entry, 1, 4, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (save_filename_entry), 3);
   gnome_entry_set_max_saved (GNOME_ENTRY (GNOME_FILE_ENTRY (save_filename_entry)->gentry), 30);
 
@@ -1670,6 +1733,101 @@ create_main_window (void)
   gtk_object_set_data_full (GTK_OBJECT (main_window), "save_filename_subentry", save_filename_subentry,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (save_filename_subentry);
+
+  label177 = gtk_label_new (_("Base:"));
+  gtk_widget_ref (label177);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "label177", label177,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label177);
+  gtk_table_attach (GTK_TABLE (table81), label177, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_padding (GTK_MISC (label177), 5, 2);
+
+  vseparator1 = gtk_vseparator_new ();
+  gtk_widget_ref (vseparator1);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "vseparator1", vseparator1,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (vseparator1);
+  gtk_table_attach (GTK_TABLE (table81), vseparator1, 2, 3, 1, 3,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+
+  save_append_menu = gtk_option_menu_new ();
+  gtk_widget_ref (save_append_menu);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "save_append_menu", save_append_menu,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (save_append_menu);
+  gtk_table_attach (GTK_TABLE (table81), save_append_menu, 1, 2, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (save_append_menu), 1);
+  save_append_menu_menu = gtk_menu_new ();
+  glade_menuitem = gtk_menu_item_new_with_label (_("none (overwrite)"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (save_append_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("date and time"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (save_append_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("number"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (save_append_menu_menu), glade_menuitem);
+  gtk_option_menu_set_menu (GTK_OPTION_MENU (save_append_menu), save_append_menu_menu);
+
+  save_to_dir = gtk_check_button_new_with_label (_("Save to a directory"));
+  gtk_widget_ref (save_to_dir);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "save_to_dir", save_to_dir,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (save_to_dir);
+  gtk_table_attach (GTK_TABLE (table81), save_to_dir, 3, 4, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  save_format_menu = gtk_option_menu_new ();
+  gtk_widget_ref (save_format_menu);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "save_format_menu", save_format_menu,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (save_format_menu);
+  gtk_table_attach (GTK_TABLE (table81), save_format_menu, 1, 2, 2, 3,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (save_format_menu), 1);
+  save_format_menu_menu = gtk_menu_new ();
+  glade_menuitem = gtk_menu_item_new_with_label (_("png"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (save_format_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("jpeg"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (save_format_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("tiff"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (save_format_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("ppm"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (save_format_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("pgm"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (save_format_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("xpm"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (save_format_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("eim"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (save_format_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("raw"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (save_format_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("mpeg (video)"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (save_format_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("pvn (video)"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (save_format_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("raw (video)"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (save_format_menu_menu), glade_menuitem);
+  gtk_option_menu_set_menu (GTK_OPTION_MENU (save_format_menu), save_format_menu_menu);
+  gtk_option_menu_set_history (GTK_OPTION_MENU (save_format_menu), 10);
 
   hbox71 = gtk_hbox_new (TRUE, 0);
   gtk_widget_ref (hbox71);
@@ -1736,72 +1894,6 @@ create_main_window (void)
   gtk_container_add (GTK_CONTAINER (grab_now_frame), grab_now);
   gtk_container_set_border_width (GTK_CONTAINER (grab_now), 2);
 
-  prefs_save_mode_frame = gtk_frame_new (_("Mode"));
-  gtk_widget_ref (prefs_save_mode_frame);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "prefs_save_mode_frame", prefs_save_mode_frame,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (prefs_save_mode_frame);
-  gtk_box_pack_start (GTK_BOX (vbox54), prefs_save_mode_frame, FALSE, FALSE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (prefs_save_mode_frame), 5);
-
-  table74 = gtk_table_new (2, 3, FALSE);
-  gtk_widget_ref (table74);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "table74", table74,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (table74);
-  gtk_container_add (GTK_CONTAINER (prefs_save_mode_frame), table74);
-  gtk_table_set_col_spacings (GTK_TABLE (table74), 5);
-
-  prefs_save_date_tag = gtk_radio_button_new_with_label (save_datenum_group, _("with date"));
-  save_datenum_group = gtk_radio_button_group (GTK_RADIO_BUTTON (prefs_save_date_tag));
-  gtk_widget_ref (prefs_save_date_tag);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "prefs_save_date_tag", prefs_save_date_tag,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (prefs_save_date_tag);
-  gtk_table_attach (GTK_TABLE (table74), prefs_save_date_tag, 1, 2, 0, 1,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-
-  prefs_save_num_tag = gtk_radio_button_new_with_label (save_datenum_group, _("with numbers"));
-  save_datenum_group = gtk_radio_button_group (GTK_RADIO_BUTTON (prefs_save_num_tag));
-  gtk_widget_ref (prefs_save_num_tag);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "prefs_save_num_tag", prefs_save_num_tag,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (prefs_save_num_tag);
-  gtk_table_attach (GTK_TABLE (table74), prefs_save_num_tag, 2, 3, 0, 1,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-
-  prefs_save_mode_menu = gtk_option_menu_new ();
-  gtk_widget_ref (prefs_save_mode_menu);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "prefs_save_mode_menu", prefs_save_mode_menu,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (prefs_save_mode_menu);
-  gtk_table_attach (GTK_TABLE (table74), prefs_save_mode_menu, 0, 1, 0, 1,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (prefs_save_mode_menu), 1);
-  prefs_save_mode_menu_menu = gtk_menu_new ();
-  glade_menuitem = gtk_menu_item_new_with_label (_("Save files sequentially"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (prefs_save_mode_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Overwrite the same file"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (prefs_save_mode_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Write a video sequence"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (prefs_save_mode_menu_menu), glade_menuitem);
-  gtk_option_menu_set_menu (GTK_OPTION_MENU (prefs_save_mode_menu), prefs_save_mode_menu_menu);
-
-  save_to_dir = gtk_check_button_new_with_label (_("Save to a directory"));
-  gtk_widget_ref (save_to_dir);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "save_to_dir", save_to_dir,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (save_to_dir);
-  gtk_table_attach (GTK_TABLE (table74), save_to_dir, 1, 3, 1, 2,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-
   ram_buffer_frame = gtk_frame_new (_("RAM buffering"));
   gtk_widget_ref (ram_buffer_frame);
   gtk_object_set_data_full (GTK_OBJECT (main_window), "ram_buffer_frame", ram_buffer_frame,
@@ -1816,16 +1908,6 @@ create_main_window (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (table75);
   gtk_container_add (GTK_CONTAINER (ram_buffer_frame), table75);
-
-  malloc_test = gtk_button_new_with_label (_("malloc test"));
-  gtk_widget_ref (malloc_test);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "malloc_test", malloc_test,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (malloc_test);
-  gtk_table_attach (GTK_TABLE (table75), malloc_test, 3, 4, 0, 1,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (malloc_test), 2);
 
   ram_buffer_size_adj = gtk_adjustment_new (1, 1, 1e+08, 1, 10, 10);
   ram_buffer_size = gtk_spin_button_new (GTK_ADJUSTMENT (ram_buffer_size_adj), 1, 0);
@@ -1856,6 +1938,16 @@ create_main_window (void)
   gtk_table_attach (GTK_TABLE (table75), use_ram_buffer, 0, 1, 0, 1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
+
+  malloc_test = gtk_button_new_with_label (_("malloc test"));
+  gtk_widget_ref (malloc_test);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "malloc_test", malloc_test,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (malloc_test);
+  gtk_table_attach (GTK_TABLE (table75), malloc_test, 3, 4, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (malloc_test), 2);
 
   label145 = gtk_label_new (_("Save"));
   gtk_widget_ref (label145);
@@ -3118,29 +3210,23 @@ create_main_window (void)
   gtk_signal_connect (GTK_OBJECT (save_filename_subentry), "changed",
                       GTK_SIGNAL_FUNC (on_save_filename_subentry_changed),
                       NULL);
+  gtk_signal_connect (GTK_OBJECT (save_to_dir), "toggled",
+                      GTK_SIGNAL_FUNC (on_save_to_dir_toggled),
+                      NULL);
   gtk_signal_connect (GTK_OBJECT (prefs_save_period), "changed",
                       GTK_SIGNAL_FUNC (on_prefs_save_period_changed),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (grab_now), "clicked",
                       GTK_SIGNAL_FUNC (on_grab_now_clicked),
                       NULL);
-  gtk_signal_connect (GTK_OBJECT (prefs_save_date_tag), "toggled",
-                      GTK_SIGNAL_FUNC (on_prefs_save_date_tag_toggled),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (prefs_save_num_tag), "toggled",
-                      GTK_SIGNAL_FUNC (on_prefs_save_num_tag_toggled),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (save_to_dir), "toggled",
-                      GTK_SIGNAL_FUNC (on_save_to_dir_toggled),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (malloc_test), "clicked",
-                      GTK_SIGNAL_FUNC (on_malloc_test_clicked),
-                      NULL);
   gtk_signal_connect (GTK_OBJECT (ram_buffer_size), "changed",
                       GTK_SIGNAL_FUNC (on_ram_buffer_size_changed),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (use_ram_buffer), "toggled",
                       GTK_SIGNAL_FUNC (on_ram_buffer_toggled),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (malloc_test), "clicked",
+                      GTK_SIGNAL_FUNC (on_malloc_test_clicked),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (prefs_v4l_period), "changed",
                       GTK_SIGNAL_FUNC (on_prefs_v4l_period_changed),
@@ -3196,7 +3282,7 @@ create_about_window (void)
   GtkWidget *about_window;
 
   about_window = gnome_about_new ("Coriander", VERSION,
-                        _("Copyright 2000-2004 Damien Douxchamps"),
+                        _("Copyright 2000-2005 Damien Douxchamps"),
                         authors,
                         _("Coriander home page is http://coriander.sourceforge.net\n \n \nSpecial thanks to Hamamatsu Corporation and Allied Vision Technologies for helping the development of Coriander through the gracious lease and/or donation of vision hardware."),
                         "coriander/coriander-logo.png");

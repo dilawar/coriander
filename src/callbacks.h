@@ -169,7 +169,7 @@ on_service_save_toggled                (GtkToggleButton *togglebutton,
 void
 on_service_ftp_toggled                 (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
-
+/*
 void
 on_prefs_save_seq_toggled              (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
@@ -177,7 +177,7 @@ on_prefs_save_seq_toggled              (GtkToggleButton *togglebutton,
 void
 on_prefs_save_mode_toggled          (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
-
+*/
 void
 on_prefs_ftp_seq_toggled               (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
@@ -205,7 +205,7 @@ on_format7_packet_size_changed               (GtkAdjustment    *adj,
 void
 on_key_bindings_activate               (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
-
+/*
 void
 on_prefs_save_video_toggled            (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
@@ -217,7 +217,7 @@ on_prefs_save_convert_toggled          (GtkToggleButton *togglebutton,
 void
 on_prefs_save_noconvert_toggled        (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
-
+*/
 void
 on_name_camera_clicked                 (GtkButton       *button,
                                         gpointer         user_data);
@@ -423,5 +423,13 @@ on_save_mode_menu_activate             (GtkEditable     *editable,
 void
 on_save_to_dir_toggled                 (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
+
+void
+on_save_format_menu_activate             (GtkEditable     *editable,
+					  gpointer         user_data);
+
+void
+on_save_append_menu_activate             (GtkEditable     *editable,
+					  gpointer         user_data);
 
 #endif // __CALLBACKS_H__

@@ -23,32 +23,24 @@
 
 typedef enum
 {
-  SAVE_MODE_SEQUENTIAL=0,
-  SAVE_MODE_OVERWRITE,
-  SAVE_MODE_VIDEO
-} save_mode_t;
-
-typedef enum
-{
-  SAVE_FORMAT_RAW=0,
-  SAVE_FORMAT_PVN,
+  SAVE_FORMAT_PNG=0,
   SAVE_FORMAT_JPEG,
-  SAVE_FORMAT_OTHER
+  SAVE_FORMAT_TIFF,
+  SAVE_FORMAT_PPMPGM,
+  SAVE_FORMAT_XPM,
+  SAVE_FORMAT_EIM,
+  SAVE_FORMAT_RAW,
+  SAVE_FORMAT_MPEG,
+  SAVE_FORMAT_PVN,
+  SAVE_FORMAT_RAW_VIDEO
 } save_format_t;
 
 typedef enum
 {
-  SAVE_TAG_DATE=0,
-  SAVE_TAG_NUMBER
-} save_tag_t;
- 
-
-typedef enum
-{
-  SAVE_CONVERT_ON=0,
-  SAVE_CONVERT_OFF
-} save_convert_t;
-
+  SAVE_APPEND_NONE=0,
+  SAVE_APPEND_DATE_TIME,
+  SAVE_APPEND_NUMBER
+} save_append_t;
 
 typedef struct
 { 
@@ -61,9 +53,8 @@ typedef struct
   char               filename_ext[STRING_SIZE];
   char               destdir[STRING_SIZE];
   unsigned char*     buffer;
-  save_mode_t        mode;
   save_format_t      format;
-  int                datenum;
+  save_append_t      append;
   long int           period;
   int                rawdump;
   int                save_to_dir;

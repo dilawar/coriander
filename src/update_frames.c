@@ -73,38 +73,27 @@ UpdatePrefsReceiveFrame(void)
 void
 UpdatePrefsSaveFrame(void)
 {
+  int is_video;
+
+  is_video=((camera->prefs.save_format==SAVE_FORMAT_PVN)||
+	    (camera->prefs.save_format==SAVE_FORMAT_MPEG)||
+	    (camera->prefs.save_format==SAVE_FORMAT_RAW_VIDEO));
+
   // thread presence blanking: default some to ON
   gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_save_filename_frame"), TRUE);
   gtk_widget_set_sensitive(lookup_widget(main_window,"ram_buffer_frame"), TRUE);
-  gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_save_mode_menu"), TRUE);
   gtk_widget_set_sensitive(lookup_widget(main_window,"grab_now_frame"), TRUE);
 
   // normal:
-  gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_save_date_tag"),
-			   camera->prefs.save_mode==SAVE_MODE_SEQUENTIAL);
-  gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_save_num_tag"),
-			   camera->prefs.save_mode==SAVE_MODE_SEQUENTIAL);
-  gtk_widget_set_sensitive(lookup_widget(main_window,"save_to_dir"),
-			   camera->prefs.save_mode==SAVE_MODE_SEQUENTIAL);
-  gtk_widget_set_sensitive(lookup_widget(main_window,"ram_buffer_frame"),
-			   camera->prefs.save_mode==SAVE_MODE_VIDEO);
-  gtk_widget_set_sensitive(lookup_widget(main_window,"use_ram_buffer"),
-			   camera->prefs.save_mode==SAVE_MODE_VIDEO);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"save_to_dir"), !is_video);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"ram_buffer_frame"), is_video);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"use_ram_buffer"), is_video);
 
   // thread presence blanking:
   if (GetService(camera,SERVICE_SAVE)!=NULL) {
     gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_save_filename_frame"), FALSE);
     gtk_widget_set_sensitive(lookup_widget(main_window,"ram_buffer_frame"), FALSE);
-    gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_save_mode_menu"), FALSE);
     gtk_widget_set_sensitive(lookup_widget(main_window,"grab_now_frame"), FALSE);
-    /*
-    if (camera->prefs.save_mode==SAVE_MODE_VIDEO) {
-      gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_save_mode"), FALSE);
-      gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_save_seq"), FALSE);
-    }
-    else
-      gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_save_video"), FALSE);
-    */
   }
 }
 

@@ -4,6 +4,8 @@ Changes towards version 1.0.2
 
    Feb 2, 2005, by Damien Douxchamps
    - fixed missing 'void' in thread_save.h
+   - changed arg order for fwrite
+   - new save filename entry
 	
    Feb 1, 2005, by Damien Douxchamps
    - fixed save-to-PVN

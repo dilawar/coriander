@@ -70,18 +70,21 @@ SaveStartThread(camera_t* cam)
     //////// THIS SHOULD BE DONE FOR EVERY SERVICE ///////////////////////
 
     info->buffer=NULL;
-    info->mode=cam->prefs.save_mode;
+    //info->mode=cam->prefs.save_mode;
     info->format=cam->prefs.save_format;
-    info->datenum=cam->prefs.save_datenum;
+    info->append=cam->prefs.save_append;
     info->save_to_dir=cam->prefs.save_to_dir;
     // if format extension is ".raw", we dump raw data on the file and perform no conversion
-    info->rawdump=cam->prefs.save_convert;
+    //info->rawdump=cam->prefs.save_convert;
     info->use_ram_buffer=cam->prefs.use_ram_buffer;
     info->ram_buffer_size=cam->prefs.ram_buffer_size*1024*1024; // ram buffer size in MB
 
     info->bigbuffer=NULL;
 
-    if ((info->use_ram_buffer==TRUE)&&(info->mode==SAVE_MODE_VIDEO)) {
+    if ((info->use_ram_buffer==TRUE)&&
+	((info->format==SAVE_FORMAT_RAW_VIDEO)||
+	 (info->format==SAVE_FORMAT_MPEG)||
+	 (info->format==SAVE_FORMAT_PVN))) {
       info->bigbuffer_position=0;
       info->bigbuffer=(unsigned char*)malloc(info->ram_buffer_size*sizeof(unsigned char));
       if (info->bigbuffer==NULL) {
@@ -388,21 +391,27 @@ void
 GetSaveFD(chain_t *save_service, FILE **fd, char *filename_out)
 {
   savethread_info_t *info=save_service->data;
+  // NOTE: the jpeg format is now joined with other imlib formats, but will have to be handled separately by ffmpeg (patch pending)
 
   // get filename
-  switch (info->mode) {
-  case SAVE_MODE_VIDEO:
-  case SAVE_MODE_OVERWRITE:
-    sprintf(filename_out, "%s%s", info->filename_base,info->filename_ext);
-    break;
-  case SAVE_MODE_SEQUENTIAL:
+  switch (info->format) {
+  case SAVE_FORMAT_PNG:
+  case SAVE_FORMAT_JPEG:
+  case SAVE_FORMAT_TIFF:
+  case SAVE_FORMAT_PPMPGM:
+  case SAVE_FORMAT_XPM:
+  case SAVE_FORMAT_EIM:
+  case SAVE_FORMAT_RAW:
     // first handle the case of save-to-dir
     if (info->save_to_dir==0) {
-      switch (info->datenum) {
-      case SAVE_TAG_DATE:
+      switch (info->append) {
+      case SAVE_APPEND_NONE:
+	sprintf(filename_out, "%s%s", info->filename_base,info->filename_ext);
+	break;
+      case SAVE_APPEND_DATE_TIME:
 	sprintf(filename_out, "%s-%s%s", info->filename_base, save_service->current_buffer->captime_string, info->filename_ext);
 	break;
-      case SAVE_TAG_NUMBER:
+      case SAVE_APPEND_NUMBER:
 	sprintf(filename_out,"%s-%10.10lli%s", info->filename_base, save_service->processed_frames, info->filename_ext);
 	break;
       }
@@ -428,40 +437,70 @@ GetSaveFD(chain_t *save_service, FILE **fd, char *filename_out)
       }
 
       // 2. build the filename
-      switch (info->datenum) {
-      case SAVE_TAG_DATE:
+      switch (info->append) {
+      case SAVE_APPEND_NONE: 
+	fprintf(stderr,"time or number should have been selected\n");
+	info->cancel_req = 1;
+	return;
+	break;
+      case SAVE_APPEND_DATE_TIME:
 	sprintf(filename_out, "%s/%s%s", info->destdir, save_service->current_buffer->captime_string, info->filename_ext);
 	break;
-      case SAVE_TAG_NUMBER:
+      case SAVE_APPEND_NUMBER:
 	sprintf(filename_out,"%s/%10.10lli%s", info->destdir, save_service->processed_frames, info->filename_ext);
 	break;
       }
       // 3. done!
     }
     break;
-  default:
+  case SAVE_FORMAT_RAW_VIDEO:
+  case SAVE_FORMAT_MPEG:
+  case SAVE_FORMAT_PVN:
+    switch (info->append) {
+    case SAVE_APPEND_NONE:
+      sprintf(filename_out, "%s%s", info->filename_base,info->filename_ext);
+      break;
+    case SAVE_APPEND_DATE_TIME:
+      sprintf(filename_out, "%s-%s%s", info->filename_base, save_service->current_buffer->captime_string, info->filename_ext);
+      break;
+    case SAVE_APPEND_NUMBER:
+      sprintf(filename_out,"%s-%10.10lli%s", info->filename_base, save_service->processed_frames, info->filename_ext);
+      break;
+    }
     break;
   }
 
-  // open FD if
-  // - it's the first frame of a video
-  // - it's in picture saving mode AND it's not using imlib (which creates the fd from the filename itself)
-  // NOTE: the jpeg format is now joined with OTHER, but will have to be handled separately by ffmpeg (patch pending)
-
-  if ( ((info->mode==SAVE_MODE_VIDEO)&&(save_service->processed_frames==0)) ||
-       ((info->mode!=SAVE_MODE_VIDEO)&&(info->format!=SAVE_FORMAT_OTHER)&&(info->format!=SAVE_FORMAT_JPEG) ) ) { // <<<<<<< FFMPEG PATCH
+  // open FD if it's the first frame of a video
+  // OR it's in picture saving mode AND it's not using imlib (which creates the fd from the filename itself)
+  switch (info->format) {
+  case SAVE_FORMAT_RAW_VIDEO:
+  case SAVE_FORMAT_MPEG:
+  case SAVE_FORMAT_PVN:
+    if (save_service->processed_frames==0) {
+      *fd=fopen(filename_out,"w");
+      if (*fd==NULL) {
+	MainError("Can't create sequence file for saving");
+	info->cancel_req = 1;
+	return;
+      }
+    }
+    break;
+  case SAVE_FORMAT_RAW:
     *fd=fopen(filename_out,"w");
     if (*fd==NULL) {
       MainError("Can't create sequence file for saving");
       info->cancel_req = 1;
       return;
     }
+  case SAVE_FORMAT_PNG:
+  case SAVE_FORMAT_JPEG:
+  case SAVE_FORMAT_TIFF:
+  case SAVE_FORMAT_PPMPGM:
+  case SAVE_FORMAT_XPM:
+  case SAVE_FORMAT_EIM:
+    // do nothing
+    break;
   }
-  else {
-    // don't touch FD...
-    // fprintf(stderr,"mode: %d, proc frames: %d\n",info->mode,(int)save_service->processed_frames);
-  }
-  
 }
 
 
@@ -494,7 +533,10 @@ FillRamBuffer(chain_t *save_service)
 
   info=(savethread_info_t*)save_service->data;
 
-  if ((info->use_ram_buffer==TRUE)&&(info->mode==SAVE_MODE_VIDEO)) {
+  if ((info->use_ram_buffer==TRUE)&&
+      ((info->format==SAVE_FORMAT_RAW_VIDEO)||
+       (info->format==SAVE_FORMAT_MPEG)||
+       (info->format==SAVE_FORMAT_PVN))) {
     if (info->ram_buffer_size-info->bigbuffer_position>=save_service->current_buffer->buffer_image_bytes) {
       memcpy(&info->bigbuffer[info->bigbuffer_position], save_service->current_buffer->image, save_service->current_buffer->buffer_image_bytes);
       info->bigbuffer_position+=save_service->current_buffer->buffer_image_bytes;
@@ -557,27 +599,28 @@ SaveThread(void* arg)
 	    GetSaveFD(save_service, &fd, filename_out);
 
 	    // write initial data for video (header,...)
-	    if ((info->mode==SAVE_MODE_VIDEO)&&(save_service->processed_frames==0)) {
+	    if ((save_service->processed_frames==0)&&
+		((info->format==SAVE_FORMAT_RAW_VIDEO)||
+		 (info->format==SAVE_FORMAT_MPEG)||
+		 (info->format==SAVE_FORMAT_PVN))) {
 	      InitVideoFile(save_service, fd);
 	    }
 
 	    // rambuffer operation
-	    if ((info->use_ram_buffer==TRUE)&&(info->mode==SAVE_MODE_VIDEO)) {
+	    if ((info->use_ram_buffer==TRUE)&&
+		((info->format==SAVE_FORMAT_RAW_VIDEO)||
+		 (info->format==SAVE_FORMAT_MPEG)||
+		 (info->format==SAVE_FORMAT_PVN))) {
 	      FillRamBuffer(save_service);
 	    }
 	    else { // normal operation (no RAM buffer)
 	      switch (info->format) {
 	      case SAVE_FORMAT_RAW:
-		switch (info->mode) {
-		case SAVE_MODE_SEQUENTIAL:
-		case SAVE_MODE_OVERWRITE:
-		  fwrite(save_service->current_buffer->image, 1, save_service->current_buffer->buffer_image_bytes, fd);
-		  fclose(fd);
-		  break;
-		case SAVE_MODE_VIDEO:
-		  fwrite(save_service->current_buffer->image, 1, save_service->current_buffer->buffer_image_bytes, fd);
-		  break;
-		}
+		fwrite(save_service->current_buffer->image, save_service->current_buffer->buffer_image_bytes, 1, fd);
+		fclose(fd);
+		break;
+	      case SAVE_FORMAT_RAW_VIDEO:
+		fwrite(save_service->current_buffer->image, save_service->current_buffer->buffer_image_bytes, 1, fd);
 		break;
 	      case SAVE_FORMAT_PVN:
 		if (needsConversionForPVN(save_service->current_buffer->buffer_color_mode)>0) {
@@ -586,15 +629,23 @@ SaveThread(void* arg)
 		    dest = (unsigned char*)malloc(3*save_service->current_buffer->width*save_service->current_buffer->height*sizeof(unsigned char));
 		  convert_for_pvn(save_service->current_buffer->image, save_service->current_buffer->width,
 				  save_service->current_buffer->height, 0, save_service->current_buffer->buffer_color_mode, dest);
-		  fwrite(dest, 1, 3*save_service->current_buffer->width*save_service->current_buffer->height, fd);
+		  fwrite(dest, 3*save_service->current_buffer->width*save_service->current_buffer->height, 1, fd);
 		}
 		else {
 		  // no conversion, we can dump the data
-		  fwrite(save_service->current_buffer->image, 1, save_service->current_buffer->buffer_image_bytes, fd);
+		  fwrite(save_service->current_buffer->image, save_service->current_buffer->buffer_image_bytes, 1, fd);
 		}
 		break;
+	      case SAVE_FORMAT_MPEG:
+		MainError("MPEG not supported yet");
+		info->cancel_req=1;
+		break;
+	      case SAVE_FORMAT_PNG:
 	      case SAVE_FORMAT_JPEG: // <<<<<<<<<<<<< to be updated by jpeg/ffmpeg patch
-	      case SAVE_FORMAT_OTHER:
+	      case SAVE_FORMAT_TIFF:
+	      case SAVE_FORMAT_PPMPGM:
+	      case SAVE_FORMAT_XPM:
+	      case SAVE_FORMAT_EIM:
 		convert_to_rgb(save_service->current_buffer, info->buffer);
 		im=gdk_imlib_create_image_from_data(info->buffer,NULL, save_service->current_buffer->width, save_service->current_buffer->height);
 		if (im != NULL) {
@@ -636,11 +687,14 @@ SaveThread(void* arg)
 
   // we now have to close the video file properly and handle ram buffer operation
 
-  if ((info->use_ram_buffer==TRUE)&&(info->mode==SAVE_MODE_VIDEO)) {
+  if ((info->use_ram_buffer==TRUE)&&
+      ((info->format==SAVE_FORMAT_RAW_VIDEO)||
+       (info->format==SAVE_FORMAT_MPEG)||
+       (info->format==SAVE_FORMAT_PVN))) {
     fwrite(info->bigbuffer, 1, info->bigbuffer_position, fd);
   }
 
-  if ((info->use_ram_buffer==TRUE)&&(info->mode==SAVE_MODE_VIDEO)&&(info->format==SAVE_FORMAT_PVN)) {
+  if ((info->use_ram_buffer==TRUE)&&(info->format==SAVE_FORMAT_PVN)) {
     writePVNHeader(fd, save_service->current_buffer->buffer_color_mode,
 		   save_service->current_buffer->height,
 		   save_service->current_buffer->width,
@@ -666,7 +720,10 @@ SaveThread(void* arg)
     }
   }
   
-  if ((info->mode==SAVE_MODE_VIDEO)&&(fd!=NULL)) {
+  if ((fd!=NULL) &&
+      ((info->format==SAVE_FORMAT_RAW_VIDEO)||
+       (info->format==SAVE_FORMAT_MPEG)||
+       (info->format==SAVE_FORMAT_PVN))) {
     fclose(fd);
   }
 

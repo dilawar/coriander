@@ -139,14 +139,9 @@ BuildPrefsSaveFrame(void)
   //filename
   gtk_entry_set_text(GTK_ENTRY(gnome_file_entry_gtk_entry(GNOME_FILE_ENTRY(lookup_widget(main_window, "save_filename_entry")))), camera->prefs.save_filename);
 
-  // mode
-  BuildSaveModeMenu();
-
-  // file sequence tags
-  if (camera->prefs.save_datenum==SAVE_TAG_DATE)
-    gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(main_window, "prefs_save_date_tag"),TRUE);
-  else
-    gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(main_window, "prefs_save_num_tag"),TRUE);
+  // menus
+  BuildSaveFormatMenu();
+  BuildSaveAppendMenu();
 
   // save to dir mode:
   gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(main_window, "save_to_dir"),camera->prefs.save_to_dir>0);

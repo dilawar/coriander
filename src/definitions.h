@@ -59,10 +59,11 @@ typedef struct _CamPrefs
   char *save_filename_ext;
   char *save_filename_base;
   int save_format;
-  int save_mode;
+  int save_append;
+  //int save_mode;
   int save_period;
-  int save_convert;
-  int save_datenum;
+  //int save_convert;
+  //int save_datenum;
   int save_to_dir;
   int use_ram_buffer;
   unsigned int ram_buffer_size;
