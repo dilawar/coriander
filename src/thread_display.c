@@ -217,9 +217,10 @@ ConditionalTimeoutRedraw(chain_t* service)
   if (service->current_buffer->width!=-1) {
     info->redraw_current_time=times(&info->redraw_tms_buf);
     interval=fabs((float)(info->redraw_current_time-info->redraw_prev_time)/sysconf(_SC_CLK_TCK));
-    if (interval>(1.0/preferences.display_redraw_rate)) { // redraw a minimal 4 times per second
+    if (interval>(1.0/preferences.display_redraw_rate)) { // redraw e.g. 4 times per second
 #ifdef HAVE_SDLLIB
       if (SDL_LockYUVOverlay(info->sdloverlay) == 0) {
+	MainStatus("Conditional display redraw");
 	convert_to_yuv_for_SDL(service->current_buffer, info->sdloverlay->pixels[0]);
 	SDLDisplayArea(service);
 	SDL_UnlockYUVOverlay(info->sdloverlay);

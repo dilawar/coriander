@@ -152,7 +152,7 @@ UpdateRangeValue(GtkWidget* widget, int feature)
 	else {
 	  prec_valueBU=valueBU;
 	  prec_valueRV=valueRV;
-	  usleep(100000);// wait 1/10 sec
+	  usleep(DELAY);// wait 1/20 sec
 	  //fprintf(stderr,"values: %d %d\n",valueBU,valueRV);
 	  }
 	  }*/
@@ -178,7 +178,7 @@ UpdateRangeValue(GtkWidget* widget, int feature)
 	else {
 	  prec_valuegoal=valuegoal;
 	  prec_valuecurrent=valuecurrent;
-	  usleep(100000);// wait 1/10 sec
+	  usleep(DELAY);// wait 1/20 sec
 	}
 	}*/
       if (err<0)
@@ -201,7 +201,7 @@ UpdateRangeValue(GtkWidget* widget, int feature)
 	  stable=1;
 	else {
 	  prec_value=value;
-	  usleep(100000);// wait 1/10 sec
+	  usleep(DELAY);// wait 1/20 sec
 	}
 	}*/
       if (err<0) MainError("Could not get feature value");

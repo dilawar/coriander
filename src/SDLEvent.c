@@ -28,6 +28,11 @@ extern int WM_cancel_display;
 extern cursor_info_t cursor_info;
 //extern whitebal_data_t* whitebal_data;
 
+// This should be probed automatically.
+// This limitation might come from the video RAM.
+#define MAX_DISPLAY_WIDTH  8192
+#define MAX_DISPLAY_HEIGHT 8192
+
 #define YUV2RGB(y, u, v, r, g, b)\
   r = y + ((v*1436) >>10);\
   g = y - ((u*352 + v*731) >> 10);\
@@ -90,7 +95,7 @@ SDLEventThread(void *arg)
       }
       else {
 	pthread_mutex_unlock(&info->mutex_event);
-	usleep(EVENTS_SLEEP_MS * 1000);
+	usleep(DELAY);
       }
     }
   }
@@ -329,7 +334,11 @@ SDLResizeDisplay(chain_t *display_service, int width, int height)
 {    
   displaythread_info_t *info;
   info=(displaythread_info_t*)display_service->data;
-  
+
+  // check that the size is not too small or too large.
+  if ((width<1)||(height<1)||(width>MAX_DISPLAY_WIDTH)||(height>MAX_DISPLAY_HEIGHT))
+    return;
+
   if (preferences.display_keep_ratio>0) {
     // keep aspect ratio and resize following which dimension we change
     if (abs(width-info->sdlvideorect.w) >= (abs(height-info->sdlvideorect.h))) {

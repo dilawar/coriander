@@ -23,7 +23,6 @@
 #include "topology.h"
 
 #define MAXTRIES 20
-#define DELAY 10000
 
 void decode_selfid_zero(SelfIdPacket_t *p, unsigned int i)
 {

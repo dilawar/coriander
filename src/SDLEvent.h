@@ -34,8 +34,6 @@
 #include "tools.h"
 #include "update_frames.h"
 
-#define EVENTS_SLEEP_MS 50
-
 typedef struct _cursor_info_t {
 
   int update_req;

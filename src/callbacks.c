@@ -206,6 +206,7 @@ on_iso_start_clicked                   (GtkButton       *button,
   if (dc1394_start_iso_transmission(camera->camera_info.handle, camera->camera_info.id)!=DC1394_SUCCESS)
     MainError("Could not start ISO transmission");
   else {
+    usleep(DELAY);
     if (dc1394_get_iso_status(camera->camera_info.handle, camera->camera_info.id, &status)!=DC1394_SUCCESS)
       MainError("Could get ISO status");
     else {
@@ -229,6 +230,7 @@ on_iso_stop_clicked                    (GtkButton       *button,
   if (dc1394_stop_iso_transmission(camera->camera_info.handle, camera->camera_info.id)!=DC1394_SUCCESS)
     MainError("Could not stop ISO transmission");
   else {
+    usleep(DELAY);
     if (dc1394_get_iso_status(camera->camera_info.handle, camera->camera_info.id, &status)!=DC1394_SUCCESS)
       MainError("Could get ISO status");
     else {
@@ -319,7 +321,7 @@ on_format7_packet_size_changed               (GtkAdjustment    *adj,
       adj->value=bpp;
       gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
       
-      usleep(50e3);
+      usleep(DELAY);
     }
 
     GetFormat7ModeInfo(camera, camera->format7_info.edit_mode);
@@ -1168,7 +1170,7 @@ on_global_iso_stop_clicked             (GtkButton       *button,
 	UpdateIsoFrame();
 	UpdateTransferStatusFrame();
       } 
-      usleep(50000);
+      usleep(DELAY);
     }
     camera_ptr=camera_ptr->next;
   } 
@@ -1203,7 +1205,7 @@ on_global_iso_start_clicked            (GtkButton       *button,
 	UpdateIsoFrame();
 	UpdateTransferStatusFrame();
       } 
-      usleep(50000);
+      usleep(DELAY);
     }
     camera_ptr=camera_ptr->next;
   }

@@ -262,7 +262,7 @@ void IsoFlowResume(int *state)
 
   was_on=camera->misc_info.is_iso_on;
   if (was_on>0) { // restart if it was 'on' before the changes
-    usleep(50000); // necessary to avoid desynchronized ISO flow.
+    usleep(DELAY); // necessary to avoid desynchronized ISO flow.
     if (dc1394_start_iso_transmission(camera->camera_info.handle, camera->camera_info.id)!=DC1394_SUCCESS)
       MainError("Could not start ISO transmission");
   }
@@ -278,9 +278,9 @@ void IsoFlowResume(int *state)
       if (!camera->misc_info.is_iso_on) {
 	MainError("ISO could not be restarted. Trying again for 5 seconds");
 	timeout=0;
-	while ((!camera->misc_info.is_iso_on)&&(timeout<50)) {
-	  usleep(5000);
-	  timeout+=5;
+	while ((!camera->misc_info.is_iso_on)&&(timeout<5000)) {
+	  usleep(DELAY);
+	  timeout+=DELAY/1000;
 	  if (dc1394_start_iso_transmission(camera->camera_info.handle, camera->camera_info.id)!=DC1394_SUCCESS)
 	    // ... (if not done, restarting is no more possible)
 	    MainError("Could not start ISO transmission");
@@ -690,7 +690,7 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation) {
 
   gtk_widget_set_sensitive(main_window,FALSE);
 
-  usleep(50000); // sleep some time (50ms) to allow the cam to warm-up/boot
+  usleep(DELAY); // sleep some time (50ms) to allow the cam to warm-up/boot
 
   raw1394_update_generation(handle, generation);
   // Now we have to deal with this bus reset...
@@ -726,7 +726,7 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation) {
 	      fprintf(stderr,"  Restarting ISO service\n");
 	      IsoStopThread(camera_ptr);
 	      fprintf(stderr,"   stop\n");
-	      usleep(5000);
+	      usleep(DELAY);
 	      IsoStartThread(camera_ptr);
 	      fprintf(stderr,"   start\n");
 	      }*/
@@ -845,7 +845,7 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation) {
 	if (dc1394_start_iso_transmission(cp2->camera_info.handle,cp2->camera_info.id)!=DC1394_SUCCESS) {
 	  MainError("Could start ISO");
 	}
-	usleep(50000);
+	usleep(DELAY);
       }
     }
     cp2=cp2->next;
@@ -888,7 +888,7 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation) {
   while (camera_ptr!=NULL) {
     if (GetService(camera_ptr,SERVICE_ISO)!=NULL) {
       IsoStopThread(camera_ptr);
-      usleep(50000);
+      usleep(DELAY);
       IsoStartThread(camera_ptr);
     }
     camera_ptr=camera_ptr->next;
@@ -1015,7 +1015,7 @@ SetFormat7Crop(int sx, int sy, int px, int py, int mode) {
     adjsy->value=sy;
     gtk_signal_emit_by_name(GTK_OBJECT (adjsy), "changed");
     
-    usleep(100e3);
+    usleep(DELAY);
 
     if (mode==camera->misc_info.mode) {
       IsoFlowResume(&state);
@@ -1133,7 +1133,7 @@ AutoWhiteBalance(void* arg)
       prev_ptr=service->current_buffer;
       //fprintf(stderr,"prev buffer: 0x%x\n",prev_ptr);
       while (prev_ptr==service->current_buffer)
-	usleep(10000);// .01 sec
+	usleep(DELAY);// .05 sec
       
       // re-grab pixel value (and average with 3x3 mask??)
       GetRGBPix(px,py,service, &pixR, &target, &pixB);
