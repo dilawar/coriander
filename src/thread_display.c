@@ -302,6 +302,10 @@ SDLInit(chain_t *display_service)
     info->sdlflags&= ~SDL_HWACCEL;
   }
 
+  // force the system to try hardware accel
+  info->sdlflags|= SDL_HWSURFACE;
+  info->sdlflags|= SDL_HWACCEL;
+
   modes=SDL_ListModes(NULL,info->sdlflags);
   if (modes!=(SDL_Rect**)-1) {
     // not all resolutions are OK for this video card. For safety we switch to software accel

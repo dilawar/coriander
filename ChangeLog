@@ -1,7 +1,10 @@
 Coriander, (c) 2000-2003 Damien Douxchamps <ddouxchamps@users.sf.net>
 
-Changes towards version 0.99.4
+Changes in version 0.99.4
 
+   October 17, 2003, by Damien Douxchamps
+   - force SDL to try hardware acceleration. Thanks to Frederic Devernay.
+	
    August 29, 2003, by Damien Douxchamps
    - Fixed global iso control
    - Homogenous tab size for notebooks

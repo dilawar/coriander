@@ -1,5 +1,6 @@
-Known bugs for version 0.99.3:
+Known bugs for version 0.99.4:
 
 - If you want to use coriander remotely, i.e. run coriander on
   a remote machine with a display export, the BPP settings of
   computer displays should be the same.
+- it seems that the trigger mode menu still makes some problems.
