@@ -85,6 +85,7 @@ main (int argc, char *argv[])
 
   g_thread_init(NULL);
   gnome_init ("coriander", VERSION, argc, argv);
+  gdk_imlib_init();
 
   handle=dc1394_create_handle(port);
   // probe the IEEE1394 bus for DC camera:

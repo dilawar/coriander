@@ -1,5 +1,12 @@
 Coriander, (c) 2000-2001 Damien Douxchamps <douxchamps@ieee.org>
 
+Changes in version 0.17-pre2, Sept 16, 2001, by Dan Dennedy:
+    - capture.c: bugfix major memory leak in multi-capture
+    - capture.c: bugfix capture failing with video1394 loaded 
+      and porthole not open
+    - capture.c: factor out some code to a convert_to_yuv()
+      function to achieve symmetry with convert_to_rgb() 
+
 Changes in version 0.17-pre1, July 25, 2001:
 
 	- true error handling: data not used when an error is detected.

@@ -50,7 +50,8 @@ extern dc1394_camerainfo *camera;
 extern Format7Info *format7_info;
 extern GtkWidget *porthole_window;
 
-void convert_to_rgb( dc1394_cameracapture *capture, unsigned char *src, unsigned char *dest)
+static inline void
+convert_to_rgb( dc1394_cameracapture *capture, unsigned char *src, unsigned char *dest)
 {
   switch(misc_info->mode) {
     case MODE_160x120_YUV444:
@@ -92,6 +93,58 @@ void convert_to_rgb( dc1394_cameracapture *capture, unsigned char *src, unsigned
   }
 }
 
+static inline void
+convert_to_yuv( dc1394_cameracapture *capture, unsigned char *src, unsigned char *dest)
+{
+      switch(misc_info->mode) {
+        case MODE_160x120_YUV444:
+          iyu22yuy2( src, dest,
+            capture->frame_width*capture->frame_height);
+          break;
+        case MODE_320x240_YUV422:
+        case MODE_640x480_YUV422:
+        case MODE_800x600_YUV422:
+        case MODE_1024x768_YUV422:
+        case MODE_1280x960_YUV422:
+        case MODE_1600x1200_YUV422:
+          if (pi.xv_format == GUID_UYVY_PACKED)
+            memcpy( dest, src, 
+              capture->quadlets_per_frame*4);
+          else
+            uyvy2yuy2( src, dest, 
+              capture->frame_width*capture->frame_height);
+          break;
+        case MODE_640x480_YUV411:
+          iyu12yuy2( src, dest, 
+            capture->frame_width*capture->frame_height);
+          break;
+        case MODE_640x480_RGB:
+        case MODE_800x600_RGB:
+        case MODE_1024x768_RGB:
+        case MODE_1280x960_RGB:
+        case MODE_1600x1200_RGB:
+          rgb2yuy2( src, dest, 
+            capture->frame_width*capture->frame_height);
+          break;
+        case MODE_640x480_MONO:
+        case MODE_800x600_MONO:
+        case MODE_1024x768_MONO:
+        case MODE_1280x960_MONO:
+        case MODE_1600x1200_MONO:
+    case MODE_FORMAT7_0:
+    case MODE_FORMAT7_1:
+    case MODE_FORMAT7_2:
+    case MODE_FORMAT7_3:
+    case MODE_FORMAT7_4:
+    case MODE_FORMAT7_5:
+    case MODE_FORMAT7_6:
+    case MODE_FORMAT7_7:
+          y2yuy2( src, dest, 
+            capture->frame_width*capture->frame_height);
+          break;
+      }
+}
+
 gint IsoStartThread(gpointer p)
 {
   GtkWidget *scope = lookup_widget( GTK_WIDGET(p), "camera_scope");
@@ -115,20 +168,21 @@ gint IsoStartThread(gpointer p)
     default: maxspeed=SPEED_100;break;
     }
 
-  if (dc1394_dma_setup_capture( camera->handle, camera->id, misc_info->iso_channel, 
+  if (dc1394_dma_setup_capture( pi.handle, camera->id, misc_info->iso_channel, 
                                 misc_info->format, misc_info->mode, maxspeed,
                                 misc_info->framerate, DMA_BUFFERS, capture)
-      ==DC1394_SUCCESS)
+      == DC1394_SUCCESS)
   {
     pi.receive_method=RECEIVE_METHOD_VIDEO1394;
   }
   else 
   {
-    if (dc1394_setup_capture(camera->handle, camera->id,
+    if ((g_single_capture.capture_buffer == NULL) &&
+       (dc1394_setup_capture(camera->handle, camera->id,
                              misc_info->iso_channel, 
                              misc_info->format, misc_info->mode, maxspeed,
                              misc_info->framerate, capture)
-        == DC1394_SUCCESS)
+        == DC1394_SUCCESS))
     {
       pi.receive_method=RECEIVE_METHOD_RAW1394;
     }
@@ -173,8 +227,8 @@ gint IsoStopThread(void)
     if (pi.gdk_buffer != NULL) free(pi.gdk_buffer);
       
     if (pi.receive_method == RECEIVE_METHOD_VIDEO1394) {
-      dc1394_dma_release_camera(camera->handle, capture);
-      dc1394_dma_unlisten(camera->handle, capture);
+      dc1394_dma_release_camera(pi.handle, capture);
+      dc1394_dma_unlisten(pi.handle, capture);
     } else 
       dc1394_release_camera(camera->handle, capture);
       
@@ -279,53 +333,7 @@ gint porthole_idler(gpointer p)
 
 #ifdef HAVE_X11_EXTENSIONS_XVLIB_H
     if (pi.display_method == DISPLAY_METHOD_XV) {
-      switch(misc_info->mode) {
-        case MODE_160x120_YUV444:
-          iyu22yuy2( (char *) capture->capture_buffer, pi.xv_image->data,
-            capture->frame_width*capture->frame_height);
-          break;
-        case MODE_320x240_YUV422:
-        case MODE_640x480_YUV422:
-        case MODE_800x600_YUV422:
-        case MODE_1024x768_YUV422:
-        case MODE_1280x960_YUV422:
-        case MODE_1600x1200_YUV422:
-          if (pi.xv_format == GUID_UYVY_PACKED)
-            memcpy( pi.xv_image->data, (char *) capture->capture_buffer, 
-              capture->quadlets_per_frame*4);
-          else
-            uyvy2yuy2( (char *) capture->capture_buffer, pi.xv_image->data, 
-              capture->frame_width*capture->frame_height);
-          break;
-        case MODE_640x480_YUV411:
-          iyu12yuy2( (char *) capture->capture_buffer, pi.xv_image->data, 
-            capture->frame_width*capture->frame_height);
-          break;
-        case MODE_640x480_RGB:
-        case MODE_800x600_RGB:
-        case MODE_1024x768_RGB:
-        case MODE_1280x960_RGB:
-        case MODE_1600x1200_RGB:
-          rgb2yuy2( (char *) capture->capture_buffer, pi.xv_image->data, 
-            capture->frame_width*capture->frame_height);
-          break;
-        case MODE_640x480_MONO:
-        case MODE_800x600_MONO:
-        case MODE_1024x768_MONO:
-        case MODE_1280x960_MONO:
-        case MODE_1600x1200_MONO:
-    case MODE_FORMAT7_0:
-    case MODE_FORMAT7_1:
-    case MODE_FORMAT7_2:
-    case MODE_FORMAT7_3:
-    case MODE_FORMAT7_4:
-    case MODE_FORMAT7_5:
-    case MODE_FORMAT7_6:
-    case MODE_FORMAT7_7:
-          y2yuy2( (char *) capture->capture_buffer, pi.xv_image->data, 
-            capture->frame_width*capture->frame_height);
-          break;
-      }
+      convert_to_yuv( capture, (unsigned char *) capture->capture_buffer, pi.xv_image->data);
       xvPut();
     } else
 #endif
@@ -365,6 +373,8 @@ gboolean capture_single_frame(void)
 gboolean capture_multi_start(gchar *filename)
 {
   gchar *tmp;
+  int    maxspeed;
+  
   if (misc_info->format == FORMAT_STILL_IMAGE)
     return FALSE;
   
@@ -373,49 +383,47 @@ gboolean capture_multi_start(gchar *filename)
   if (tmp == NULL) return FALSE;
   tmp[0] = '\0';
   strcpy( g_ext, strrchr( filename, '.'));
-  
-  if (pi.receive_method == RECEIVE_METHOD_RAW1394) {
-    if (dc1394_setup_capture( camera->handle, camera->id, misc_info->iso_channel, 
-          misc_info->format, misc_info->mode, misc_info->iso_speed, misc_info->framerate, 
-          &g_single_capture) == DC1394_SUCCESS)
-      return TRUE;
-    else 
-      return FALSE;
-  }
-  return TRUE;
+
+  switch (selfid->packetZero.phySpeed)
+    {
+    case 1: maxspeed=SPEED_200;break;
+    case 2: maxspeed=SPEED_400;break;
+    default: maxspeed=SPEED_100;break;
+    }
+
+  /* always setup raw-based capture, so it is ready to fall back to */  
+  if (dc1394_setup_capture( camera->handle, camera->id, misc_info->iso_channel, 
+       misc_info->format, misc_info->mode, maxspeed, misc_info->framerate, 
+       &g_single_capture) == DC1394_SUCCESS)
+    return TRUE;
+  else 
+    return FALSE;
 }
 
 void capture_multi_stop(void)
 {
-  if (pi.receive_method == RECEIVE_METHOD_RAW1394) 
-    dc1394_release_camera(camera->handle, &g_single_capture);
+  dc1394_release_camera(camera->handle, &g_single_capture);
 }
 
 gint capture_idler(gpointer p)
 {
   static int counter = 0;
-  gchar filename_out[256];
+  static gchar filename_out[256];
 
   /* maximum of 10000 frames */
   if (counter < MAX_FRAMES) {
-     if (pi.receive_method == RECEIVE_METHOD_RAW1394) {
-	  dc1394_single_capture( camera->handle, &g_single_capture);
-       convert_to_rgb( &g_single_capture, (unsigned char *) g_single_capture.capture_buffer, g_rgb_buffer);
-       
-     } else {  /* RECEIVE_METHOD_VIDEO1394 */
-       /* Hey, man, you must have closed the porthole window! */
-       if (pi.handle == NULL) {
-	 pi.receive_method = RECEIVE_METHOD_RAW1394;
-	 if (!dc1394_setup_capture( camera->handle, camera->id, misc_info->iso_channel, 
-				    misc_info->format, misc_info->mode, misc_info->iso_speed, misc_info->framerate, 
-				    &g_single_capture) == DC1394_SUCCESS)
-	   return 0;
-	 dc1394_single_capture( camera->handle, &g_single_capture);
-	 convert_to_rgb( &g_single_capture, (unsigned char *) g_single_capture.capture_buffer, g_rgb_buffer);
-	 
-       } else /* OK, porthole still open and using dma */
-	 convert_to_rgb( capture, (unsigned char *) capture->capture_buffer, g_rgb_buffer);
-     }
+    if (pi.receive_method == RECEIVE_METHOD_VIDEO1394) {
+       /* if porthole open, then use its buffer */
+       if (pi.handle != NULL) {
+         convert_to_rgb( capture, (unsigned char *) capture->capture_buffer, g_rgb_buffer);
+       } else { 
+         dc1394_single_capture( camera->handle, &g_single_capture);
+         convert_to_rgb( &g_single_capture, (unsigned char *) g_single_capture.capture_buffer, g_rgb_buffer);
+       }
+    } else {  /* RECEIVE_METHOD_RAW1394 */
+      dc1394_single_capture( camera->handle, &g_single_capture);
+      convert_to_rgb( &g_single_capture, (unsigned char *) g_single_capture.capture_buffer, g_rgb_buffer);
+    }
      
     sprintf( filename_out, "%s_%4.4d%s", g_filename, counter++, g_ext);
     save_single_frame( filename_out);
@@ -426,7 +434,7 @@ gint capture_idler(gpointer p)
 
 void save_single_frame(gchar *filename)
 {
-  GdkImlibImage *im;
+  GdkImlibImage *im = NULL;
 
   switch(misc_info->mode) {
     case MODE_160x120_YUV444:
@@ -475,5 +483,6 @@ void save_single_frame(gchar *filename)
         (g_rgb_buffer, NULL, 1600, 1200);
        gdk_imlib_save_image(im, filename, NULL);
        break;
-  };
+  }
+  if (im != NULL) gdk_imlib_kill_image(im);
 }

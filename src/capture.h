@@ -74,9 +74,6 @@ typedef struct
   char                   *gdk_buffer;
 } porthole_info;
 
-void
-convert_to_rgb( dc1394_cameracapture *capture, unsigned char *src, unsigned char *dest);
-
 gint
 IsoStartThread(gpointer p);
 
