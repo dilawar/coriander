@@ -19,7 +19,6 @@
 #include "build_menus.h"
 
 extern GtkWidget *main_window;
-extern PrefsInfo preferences; 
 extern camera_t* camera;
 extern camera_t* cameras;
 extern char* fps_label_list[NUM_FRAMERATES];

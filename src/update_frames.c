@@ -24,7 +24,7 @@ extern CtxtInfo_t ctxt;
 extern char* phy_speed_list[4];
 extern char* phy_delay_list[4];
 extern char* power_class_list[8];
-extern PrefsInfo preferences; 
+extern PrefsUI_t preferences; 
 extern camera_t* camera;
 extern camera_t* cameras;
 extern BusInfo_t* businfo;
@@ -45,9 +45,9 @@ void
 UpdatePrefsDisplayFrame(void)
 {
   gtk_widget_set_sensitive(lookup_widget(main_window,"display_redraw_rate"),
-			   preferences.display_redraw==DISPLAY_REDRAW_ON);
+			   camera->prefs.display_redraw==DISPLAY_REDRAW_ON);
   gtk_widget_set_sensitive(lookup_widget(main_window,"label155"),
-			   preferences.display_redraw==DISPLAY_REDRAW_ON);
+			   camera->prefs.display_redraw==DISPLAY_REDRAW_ON);
 }
 
 void
@@ -58,17 +58,17 @@ UpdatePrefsReceiveFrame(void)
 
   // normal:
   gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_video1394_device"),
-			   preferences.receive_method==RECEIVE_METHOD_VIDEO1394);
+			   camera->prefs.receive_method==RECEIVE_METHOD_VIDEO1394);
   gtk_widget_set_sensitive(lookup_widget(main_window,"label84"),
-			   preferences.receive_method==RECEIVE_METHOD_VIDEO1394);
+			   camera->prefs.receive_method==RECEIVE_METHOD_VIDEO1394);
   gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_receive_dropframes"),
-			   preferences.receive_method==RECEIVE_METHOD_VIDEO1394);
+			   camera->prefs.receive_method==RECEIVE_METHOD_VIDEO1394);
   gtk_widget_set_sensitive(lookup_widget(main_window,"label153"),
-			   preferences.receive_method==RECEIVE_METHOD_VIDEO1394);
+			   camera->prefs.receive_method==RECEIVE_METHOD_VIDEO1394);
   gtk_widget_set_sensitive(lookup_widget(main_window,"label154"),
-			   preferences.receive_method==RECEIVE_METHOD_VIDEO1394);
+			   camera->prefs.receive_method==RECEIVE_METHOD_VIDEO1394);
   gtk_widget_set_sensitive(lookup_widget(main_window,"dma_buffer_size"),
-			   preferences.receive_method==RECEIVE_METHOD_VIDEO1394);
+			   camera->prefs.receive_method==RECEIVE_METHOD_VIDEO1394);
 
   // thread presence balnking:
   if (GetService(camera,SERVICE_ISO)!=NULL)
@@ -88,22 +88,22 @@ UpdatePrefsSaveFrame(void)
 
   // normal:
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (lookup_widget(main_window,"prefs_save_noconvert")),
-			       preferences.save_scratch==SAVE_SCRATCH_VIDEO);
+			       camera->prefs.save_scratch==SAVE_SCRATCH_VIDEO);
   gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_save_convert"),
-			   preferences.save_scratch!=SAVE_SCRATCH_VIDEO);
+			   camera->prefs.save_scratch!=SAVE_SCRATCH_VIDEO);
   gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_save_date_tag"),
-			   preferences.save_scratch==SAVE_SCRATCH_SEQUENTIAL);
+			   camera->prefs.save_scratch==SAVE_SCRATCH_SEQUENTIAL);
   gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_save_num_tag"),
-			   preferences.save_scratch==SAVE_SCRATCH_SEQUENTIAL);
-  gtk_widget_set_sensitive(lookup_widget(main_window,"ram_buffer_frame"), preferences.use_ram_buffer && (preferences.save_scratch==SAVE_SCRATCH_VIDEO));
-  gtk_widget_set_sensitive(lookup_widget(main_window,"use_ram_buffer"), preferences.save_scratch==SAVE_SCRATCH_VIDEO);
+			   camera->prefs.save_scratch==SAVE_SCRATCH_SEQUENTIAL);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"ram_buffer_frame"), camera->prefs.use_ram_buffer && (camera->prefs.save_scratch==SAVE_SCRATCH_VIDEO));
+  gtk_widget_set_sensitive(lookup_widget(main_window,"use_ram_buffer"), camera->prefs.save_scratch==SAVE_SCRATCH_VIDEO);
 
   // thread presence blanking:
   if (GetService(camera,SERVICE_SAVE)!=NULL) {
     gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_save_file_frame"), FALSE);
     gtk_widget_set_sensitive(lookup_widget(main_window,"ram_buffer_frame"), FALSE);
     gtk_widget_set_sensitive(lookup_widget(main_window,"use_ram_buffer"), FALSE);
-    if (preferences.save_scratch==SAVE_SCRATCH_VIDEO) {
+    if (camera->prefs.save_scratch==SAVE_SCRATCH_VIDEO) {
       gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_save_scratch"), FALSE);
       gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_save_seq"), FALSE);
     }
@@ -120,9 +120,9 @@ void
 UpdatePrefsFtpFrame(void)
 {
   gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_ftp_date_tag"),
-			   preferences.ftp_scratch==FTP_SCRATCH_SEQUENTIAL);
+			   camera->prefs.ftp_scratch==FTP_SCRATCH_SEQUENTIAL);
   gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_ftp_num_tag"),
-			   preferences.ftp_scratch==FTP_SCRATCH_SEQUENTIAL);
+			   camera->prefs.ftp_scratch==FTP_SCRATCH_SEQUENTIAL);
 
   // thread presence balnking:
   if (GetService(camera,SERVICE_FTP)!=NULL) {

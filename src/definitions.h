@@ -50,6 +50,50 @@ enum
     FORMAT7_POS_Y
 };
 
+typedef struct _CamPrefs
+{
+  int display_keep_ratio;
+  int display_period;
+  //int display_scale;
+  int display_redraw;
+  float display_redraw_rate;
+  int receive_method;
+  char *video1394_device;
+  int video1394_dropframes;
+  int dma_buffer_size;
+  char *save_filename;
+  int save_scratch;
+  int save_period;
+  int save_convert;
+  int save_datenum;
+  int use_ram_buffer;
+  unsigned int ram_buffer_size;
+  char *ftp_address;
+  char *ftp_user;
+  char *ftp_password;
+  char *ftp_filename;
+  char *ftp_path;
+  int ftp_scratch;
+  int ftp_period;
+  int ftp_datenum;
+
+  int v4l_period;
+  char *v4l_dev_name;
+
+  char *camera_name;
+
+  // internal data:
+  int receive_method2index[2];
+
+} PrefsCam_t;
+
+typedef struct _UIPrefs
+{
+  float op_timeout;
+  int auto_update;
+  float auto_update_frequency;
+} PrefsUI_t;
+
 typedef enum _Service_T
 {
   SERVICE_ISO=0,
@@ -133,6 +177,8 @@ typedef struct _CameraInfo_T {
   // structure information
   struct _CameraInfo_T* prev;
   struct _CameraInfo_T* next;
+
+  PrefsCam_t prefs;
 
 } camera_t;
 

@@ -21,8 +21,6 @@
 extern GtkWidget *main_window;
 extern char* feature_menu_table_list[NUM_FEATURES]; 
 extern char* feature_menu_items_list[NUM_FEATURES];
-extern GtkWidget *preferences_window;
-extern PrefsInfo preferences;
 extern camera_t* camera;
 
 

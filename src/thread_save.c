@@ -18,7 +18,6 @@
 
 #include "thread_save.h" 
 
-extern PrefsInfo preferences;
 extern GtkWidget *main_window;
 extern CtxtInfo_t ctxt;
 extern camera_t* camera;
@@ -49,7 +48,7 @@ SaveStartThread(camera_t* cam)
     
     /* setup save_thread: handles, ...*/
     pthread_mutex_lock(&save_service->mutex_data);
-    strcpy(info->filename, preferences.save_filename);
+    strcpy(info->filename, cam->prefs.save_filename);
     tmp = strrchr(info->filename, '.');
     
     if (tmp==NULL) {
@@ -60,19 +59,19 @@ SaveStartThread(camera_t* cam)
     }
     
     tmp[0] = '\0';// cut filename before point
-    strcpy(info->filename_ext, strrchr(preferences.save_filename, '.'));
+    strcpy(info->filename_ext, strrchr(cam->prefs.save_filename, '.'));
     
-    info->period=preferences.save_period;
+    info->period=cam->prefs.save_period;
     CommonChainSetup(cam, save_service,SERVICE_SAVE);
     
     info->buffer=NULL;
     info->counter=0;
-    info->scratch=preferences.save_scratch;
-    info->datenum=preferences.save_datenum;
+    info->scratch=cam->prefs.save_scratch;
+    info->datenum=cam->prefs.save_datenum;
     // if format extension is ".raw", we dump raw data on the file and perform no conversion
-    info->rawdump=preferences.save_convert;
-    info->use_ram_buffer=preferences.use_ram_buffer;
-    info->ram_buffer_size=preferences.ram_buffer_size*1024*1024; // ram buffer size in MB
+    info->rawdump=cam->prefs.save_convert;
+    info->use_ram_buffer=cam->prefs.use_ram_buffer;
+    info->ram_buffer_size=cam->prefs.ram_buffer_size*1024*1024; // ram buffer size in MB
 
     info->bigbuffer=NULL;
 

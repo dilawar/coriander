@@ -21,7 +21,6 @@
 #ifdef HAVE_SDLLIB
 
 extern GtkWidget *main_window;
-extern PrefsInfo preferences;
 extern camera_t* camera;
 
 int

@@ -23,47 +23,10 @@
 #include "definitions.h"
 #include "tools.h"
 
-typedef struct _PrefsInfo
-{
-  float op_timeout;
-  int auto_update;
-  float auto_update_frequency;
-  int display_keep_ratio;
-  int display_period;
-  //int display_scale;
-  int display_redraw;
-  float display_redraw_rate;
-  int receive_method;
-  char *video1394_device;
-  int video1394_dropframes;
-  int dma_buffer_size;
-  char *save_filename;
-  int save_scratch;
-  int save_period;
-  int save_convert;
-  int save_datenum;
-  int use_ram_buffer;
-  unsigned int ram_buffer_size;
-  char *ftp_address;
-  char *ftp_user;
-  char *ftp_password;
-  char *ftp_filename;
-  char *ftp_path;
-  int ftp_scratch;
-  int ftp_period;
-  int ftp_datenum;
-
-  int v4l_period;
-  char *v4l_dev_name;
-
-  char **camera_names;
-
-  // internal data:
-  int receive_method2index[2];
-
-} PrefsInfo;
-
 void
 LoadConfigFile(void);
+
+void
+LoadCameraConfig(camera_t* camera);
 
 #endif

@@ -18,7 +18,6 @@
 
 #include "thread_iso.h"
 
-extern PrefsInfo preferences; 
 extern GtkWidget *main_window;
 extern CtxtInfo_t ctxt;
 extern camera_t* camera;
@@ -66,11 +65,11 @@ gint IsoStartThread(camera_t* cam)
 
     // copy params if we are the current camera
     if (cam==camera) {
-      info->receive_method=preferences.receive_method;
-      strcpy(info->video1394_device, preferences.video1394_device);
+      info->receive_method=cam->prefs.receive_method;
+      strcpy(info->video1394_device, cam->prefs.video1394_device);
       info->capture.dma_device_file=info->video1394_device;
-      info->video1394_dropframes=preferences.video1394_dropframes;
-      info->dma_buffer_size=preferences.dma_buffer_size;
+      info->video1394_dropframes=cam->prefs.video1394_dropframes;
+      info->dma_buffer_size=cam->prefs.dma_buffer_size;
     }
 
     switch(info->receive_method) {

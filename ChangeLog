@@ -4,6 +4,12 @@ Changes towards version 1.0.0
 
    May 3, 2004, by Damien Douxchamps
    - overlay size is now checked and should not go over the allowed XV size
+   - updated libdc version-checking macro
+   - added LFS support (thanks to Richard Cunningham for the tip!)
+   - all thread preferences are now camera-specific. Changing data on one
+     camera will not change it on other cams too.
+   - default values for video1394 device is automatically set to
+     /dev/video1394/<portnum>
 	
 Changes in version 1.0.0-pre2
 

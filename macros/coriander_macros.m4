@@ -23,7 +23,7 @@ AC_DEFUN([AC_CHECK_LIBDC],[
  	fi
 ]) 
 
-AC_DEFUN([AC_CHECK_LIBDC_VERSION],[
+AC_DEFUN([AC_CHECK_LIBDC_VERSION_FUNCTION],[
 	AC_SUBST(LIBDC_CFLAGS)
 	AC_SUBST(LIBDC_LIBS)
  	AC_CHECK_LIB(dc1394_control,GetCameraControlRegister,libdc1394=ok,libdc1394=old,-lraw1394)
@@ -33,7 +33,34 @@ AC_DEFUN([AC_CHECK_LIBDC_VERSION],[
 	else
           AC_ERROR([libdc1394 is too old. 
 **************************************************************************
-**   Please upgrade to the current CVS or to a version >= 0.9.2         **
+**   Please upgrade to the current CVS or to a version >= 0.9.4         **
+**   Source tarball and CVS at:  http://www.sf.net/projects/libdc1394   **
+**************************************************************************])
+ 	fi
+])
+
+AC_DEFUN([AC_CHECK_LIBDC_VERSION_COMPILE],[
+	AC_SUBST(LIBDC_CFLAGS)
+	AC_SUBST(LIBDC_LIBS)
+	AC_TRY_COMPILE([
+        #include <libraw1394/raw1394.h>
+        #include <libdc1394/dc1394_control.h>
+	],[
+	int main(void) {
+	raw1394handle_t handle;
+	dc1394_cameracapture camera;
+	  dc1394_dma_setup_capture(handle, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	                           "tmp", &camera);
+	  return 0;
+	}
+	],libdc1394=ok,libdc1394=no);
+ 	if test x$libdc1394 = xok; then
+           LIBDC_LIBS="-ldc1394_control"
+           LIBDC_CFLAGS=""
+	else
+          AC_ERROR([libdc1394 is too old. 
+**************************************************************************
+**   Please upgrade to the current CVS or to a version >= 0.9.4         **
 **   Source tarball and CVS at:  http://www.sf.net/projects/libdc1394   **
 **************************************************************************])
  	fi
@@ -92,7 +119,7 @@ AC_DEFUN([AC_CHECK_FTPLIB],[
 AC_DEFUN([AC_CHECK_SDLLIB],[
 	AC_SUBST(SDLLIB_CFLAGS)
 	AC_SUBST(SDLLIB_LIBS)
-	AC_CHECK_PROG(have_sdl_config, sdl-config, "found", "not found")
+	AC_CHECK_PROG(have_sdl_config, sdl-config, "found", "no")
 	if test x$have_sdl_config = xfound; then
 	  SDLLIB_LIBS=`sdl-config --libs`
 	  SDLLIB_CFLAGS=`sdl-config --cflags`
@@ -187,7 +214,7 @@ AC_DEFUN([AC_CHECK_SSE2],[
 AC_DEFUN([AC_CHECK_GDK_PIXBUF],[
 	AC_SUBST(GDK_PIXBUF_CFLAGS)
 	AC_SUBST(GDK_PIXBUF_LIBS)
-	AC_CHECK_PROG(have_gdk_pixbuf_config, gdk-pixbuf-config, "found", "not found")
+	AC_CHECK_PROG(have_gdk_pixbuf_config, gdk-pixbuf-config, "found", "no")
 	if test x$have_gdk_pixbuf_config = xfound; then
 	  GDK_PIXBUF_LIBS=`gdk-pixbuf-config --libs`
 	  GDK_PIXBUF_CFLAGS=`gdk-pixbuf-config --cflags`
@@ -218,4 +245,21 @@ AC_DEFUN([AC_CHECK_XV],[
 **   your system has overlay capabilities.                              **
 **************************************************************************])
  	fi
+])
+
+AC_DEFUN([AC_CHECK_LFS],[
+	AC_SUBST(COR_LFS_CFLAGS)
+	AC_SUBST(COR_LFS_LDFLAGS)
+	AC_CHECK_PROG(have_getconf, getconf, "found", "no")
+	if test x$have_getconf = xfound; then
+	  COR_LFS_CFLAGS=`getconf LFS_CFLAGS`
+	  COR_LFS_LDFLAGS=`getconf LFS_LDFLAGS`
+	else
+	  AC_MSG_RESULT([getconf not found.
+**************************************************************************
+**   I need the 'getconf' shell utility to configure coriander for      **
+**   LFS (Large File System). Since you don't have getconf coriander    **
+**   will not be able to write files > 2GB.                             **
+**************************************************************************])
+	fi
 ])

@@ -111,6 +111,14 @@ NewCamera(void) {
   camera_t* cam;
 
   cam=(camera_t*)malloc(sizeof(camera_t));
+  cam->prefs.video1394_device=(char*)malloc(STRING_SIZE*sizeof(char));
+  cam->prefs.ftp_user = (char*)malloc(STRING_SIZE*sizeof(char));
+  cam->prefs.ftp_address = (char*)malloc(STRING_SIZE*sizeof(char));
+  cam->prefs.ftp_filename =(char*)malloc(STRING_SIZE*sizeof(char));
+  cam->prefs.ftp_path =(char*)malloc(STRING_SIZE*sizeof(char));
+  cam->prefs.v4l_dev_name =(char*)malloc(STRING_SIZE*sizeof(char));
+  cam->name = (char*)malloc(STRING_SIZE*sizeof(char));
+  cam->prefs.save_filename = (char*)malloc(STRING_SIZE*sizeof(char));
   pthread_mutex_init(&cam->uimutex, NULL);
   return cam;
 
@@ -133,6 +141,7 @@ GetCameraData(int port, nodeid_t node, camera_t* cam) {
   cam->bayer=NO_BAYER_DECODING;
   cam->stereo=NO_STEREO_DECODING;
   cam->bpp=8;
+  LoadCameraConfig(cam);
   pthread_mutex_unlock(&cam->uimutex);
 
 }
@@ -217,6 +226,14 @@ RemoveCamera(u_int64_t guid) {
 void
 FreeCamera(camera_t* cam) {
 
+  free(cam->prefs.video1394_device);
+  free(cam->prefs.ftp_user);
+  free(cam->prefs.ftp_address);
+  free(cam->prefs.ftp_filename); 
+  free(cam->prefs.ftp_path); 
+  free(cam->prefs.v4l_dev_name); 
+  free(cam->name);
+  free(cam->prefs.save_filename);
   free(cam);
   cam=NULL;
 

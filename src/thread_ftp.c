@@ -18,7 +18,6 @@
 
 #include "thread_ftp.h"
 
-extern PrefsInfo preferences;
 extern GtkWidget *main_window;
 extern CtxtInfo_t ctxt;
 extern camera_t* camera;
@@ -49,14 +48,14 @@ FtpStartThread(camera_t* cam)
     
     /* setup ftp_thread: handles, ...*/
     pthread_mutex_lock(&ftp_service->mutex_data);
-    info->period=preferences.ftp_period;
-    info->datenum=preferences.ftp_datenum;
+    info->period=cam->prefs.ftp_period;
+    info->datenum=cam->prefs.ftp_datenum;
     info->counter=0;
-    strcpy(info->address, preferences.ftp_address);
-    strcpy(info->user, preferences.ftp_user);
-    strcpy(info->password, preferences.ftp_password);
-    strcpy(info->path, preferences.ftp_path);
-    strcpy(info->filename, preferences.ftp_filename);
+    strcpy(info->address, cam->prefs.ftp_address);
+    strcpy(info->user, cam->prefs.ftp_user);
+    strcpy(info->password, cam->prefs.ftp_password);
+    strcpy(info->path, cam->prefs.ftp_path);
+    strcpy(info->filename, cam->prefs.ftp_filename);
     tmp = strrchr(info->filename, '.');
     
     if (tmp==NULL) {
@@ -67,14 +66,14 @@ FtpStartThread(camera_t* cam)
     }
     
     tmp[0] = '\0';// cut filename before point
-    strcpy(info->filename_ext, strrchr(preferences.ftp_filename, '.'));
+    strcpy(info->filename_ext, strrchr(cam->prefs.ftp_filename, '.'));
     
     CommonChainSetup(cam,ftp_service,SERVICE_FTP);
     
     info->buffer=NULL;
     info->imlib_buffer_size=0;
     
-    info->scratch=preferences.ftp_scratch;
+    info->scratch=cam->prefs.ftp_scratch;
     
 #ifdef HAVE_FTPLIB
     if (!OpenFtpConnection(info)) {

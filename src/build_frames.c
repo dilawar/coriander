@@ -22,7 +22,7 @@
 extern GtkWidget *main_window;
 extern GtkWidget *preferences_window;
 extern GtkWidget *absolute_settings_window;
-extern PrefsInfo preferences;
+extern PrefsUI_t preferences;
 extern camera_t* camera;
 extern BusInfo_t* businfo;
 
@@ -140,10 +140,10 @@ void
 BuildPrefsSaveFrame(void)
 {
   // frame drop
-  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(main_window, "prefs_save_period"), preferences.save_period);
+  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(main_window, "prefs_save_period"), camera->prefs.save_period);
   // scratch
-  //fprintf(stderr,"building save scratch options. current: %d\n",preferences.save_scratch);
-  switch(preferences.save_scratch) {
+  //fprintf(stderr,"building save scratch options. current: %d\n",camera->prefs.save_scratch);
+  switch(camera->prefs.save_scratch) {
   case SAVE_SCRATCH_OVERWRITE:
     gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(main_window, "prefs_save_scratch"),TRUE);
     break;
@@ -155,23 +155,23 @@ BuildPrefsSaveFrame(void)
     break;
   }
   // scratch
-  if (preferences.save_convert == SAVE_CONVERT_ON)
+  if (camera->prefs.save_convert == SAVE_CONVERT_ON)
     gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(main_window, "prefs_save_convert"),TRUE);
   else
     gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(main_window, "prefs_save_noconvert"),TRUE);
   
   //filename
-  gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window, "prefs_save_filename")), preferences.save_filename);
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window, "prefs_save_filename")), camera->prefs.save_filename);
 
   // file sequence tags
-  if (preferences.save_datenum==SAVE_TAG_DATE)
+  if (camera->prefs.save_datenum==SAVE_TAG_DATE)
     gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(main_window, "prefs_save_date_tag"),TRUE);
   else
     gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(main_window, "prefs_save_num_tag"),TRUE);
 
   // ram buffer
-  gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(main_window, "use_ram_buffer"),preferences.use_ram_buffer);
-  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(main_window,"ram_buffer_size"), preferences.ram_buffer_size);
+  gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(main_window, "use_ram_buffer"),camera->prefs.use_ram_buffer);
+  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(main_window,"ram_buffer_size"), camera->prefs.ram_buffer_size);
   
 }
 
@@ -180,9 +180,9 @@ BuildPrefsV4lFrame(void)
 {
   // frame drop
   gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(main_window,
-							  "prefs_v4l_period"), preferences.v4l_period);
+							  "prefs_v4l_period"), camera->prefs.v4l_period);
   //filename
-  gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window, "prefs_v4l_dev_name")), preferences.v4l_dev_name);
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window, "prefs_v4l_dev_name")), camera->prefs.v4l_dev_name);
 }
 
 void
@@ -198,9 +198,9 @@ BuildPrefsFtpFrame(void)
 {
 #ifdef HAVE_FTPLIB
   // frame drop
-  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(main_window, "prefs_ftp_period"), preferences.ftp_period);
+  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(main_window, "prefs_ftp_period"), camera->prefs.ftp_period);
   // scratch
-  switch(preferences.ftp_scratch) {
+  switch(camera->prefs.ftp_scratch) {
   case FTP_SCRATCH_OVERWRITE:
     gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(main_window, "prefs_ftp_scratch"),TRUE);
     break;
@@ -209,11 +209,11 @@ BuildPrefsFtpFrame(void)
     break;
   }
   // file,... names
-  gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window, "prefs_ftp_filename")), preferences.ftp_filename);
-  gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window, "prefs_ftp_address")), preferences.ftp_address);
-  gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window, "prefs_ftp_password")),preferences.ftp_password);
-  gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window, "prefs_ftp_path")), preferences.ftp_path);
-  gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window, "prefs_ftp_user")), preferences.ftp_user);
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window, "prefs_ftp_filename")), camera->prefs.ftp_filename);
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window, "prefs_ftp_address")), camera->prefs.ftp_address);
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window, "prefs_ftp_password")),camera->prefs.ftp_password);
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window, "prefs_ftp_path")), camera->prefs.ftp_path);
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window, "prefs_ftp_user")), camera->prefs.ftp_user);
 
 #else
 
@@ -224,7 +224,7 @@ BuildPrefsFtpFrame(void)
 #endif
 
   // file sequence tags
-  if (preferences.ftp_datenum==FTP_TAG_DATE)
+  if (camera->prefs.ftp_datenum==FTP_TAG_DATE)
     gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(main_window, "prefs_ftp_date_tag"),TRUE);
   else
     gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(main_window, "prefs_ftp_num_tag"),TRUE);
@@ -236,19 +236,19 @@ BuildPrefsDisplayFrame(void)
   //GtkAdjustment* adj;
   //chain_t* service;
   // frame drop
-  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(main_window,"prefs_display_period"), preferences.display_period);
+  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(main_window,"prefs_display_period"), camera->prefs.display_period);
 
   // keep aspect ratio
-  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window,"prefs_display_keep_ratio")), preferences.display_keep_ratio);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window,"prefs_display_keep_ratio")), camera->prefs.display_keep_ratio);
 
   // display redraw
-  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window,"display_redraw")), preferences.display_redraw==DISPLAY_REDRAW_ON);
-  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(main_window,"display_redraw_rate"), preferences.display_redraw_rate);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window,"display_redraw")), camera->prefs.display_redraw==DISPLAY_REDRAW_ON);
+  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(main_window,"display_redraw_rate"), camera->prefs.display_redraw_rate);
 
   /*
 
   // display scaling
-  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(main_window,"prefs_display_scale"), preferences.display_scale);
+  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(main_window,"prefs_display_scale"), camera->prefs.display_scale);
   
   adj=gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON (lookup_widget(main_window, "prefs_display_scale")));
 
@@ -304,7 +304,7 @@ BuildPrefsReceiveFrame(void)
   gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
 		      GTK_SIGNAL_FUNC (on_prefs_receive_method_activate),
 		      (int*)RECEIVE_METHOD_RAW1394); 
-  preferences.receive_method2index[RECEIVE_METHOD_RAW1394]=k;
+  camera->prefs.receive_method2index[RECEIVE_METHOD_RAW1394]=k;
   k++;
 
   // 'video1394' menuitem optional addition:
@@ -314,19 +314,19 @@ BuildPrefsReceiveFrame(void)
   gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
 		      GTK_SIGNAL_FUNC (on_prefs_receive_method_activate),
 		      (int*)RECEIVE_METHOD_VIDEO1394); 
-  preferences.receive_method2index[RECEIVE_METHOD_VIDEO1394]=k;
+  camera->prefs.receive_method2index[RECEIVE_METHOD_VIDEO1394]=k;
   k++;
   
   gtk_option_menu_set_menu (GTK_OPTION_MENU (new_option_menu), new_menu);
 
   // menu history
   gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(main_window, "prefs_receive_method_menu")),
-			      preferences.receive_method2index[preferences.receive_method]);
+			      camera->prefs.receive_method2index[camera->prefs.receive_method]);
 
-  gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window, "prefs_video1394_device")), preferences.video1394_device);
-  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window, "prefs_receive_dropframes")), preferences.video1394_dropframes);
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window, "prefs_video1394_device")), camera->prefs.video1394_device);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window, "prefs_receive_dropframes")), camera->prefs.video1394_dropframes);
 
-  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(main_window, "dma_buffer_size"), preferences.dma_buffer_size);
+  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(main_window, "dma_buffer_size"), camera->prefs.dma_buffer_size);
 }
 
 void

@@ -19,7 +19,6 @@
 
 #include "thread_v4l.h"
 
-extern PrefsInfo preferences;
 extern GtkWidget *main_window;
 extern CtxtInfo_t ctxt;
 extern camera_t* camera;
@@ -53,14 +52,14 @@ V4lStartThread(camera_t* cam)
     /* setup v4l_thread: handles, ...*/
     pthread_mutex_lock(&v4l_service->mutex_data);
     
-    info->period=preferences.v4l_period;
+    info->period=cam->prefs.v4l_period;
     CommonChainSetup(cam, v4l_service,SERVICE_V4L);
     
     info->v4l_buffer=NULL;
     //info->counter=0;
 
-    // COPY PREFERENCES HERE
-    strcpy(info->v4l_dev_name,preferences.v4l_dev_name);
+    // COPY CAM->PREFS HERE
+    strcpy(info->v4l_dev_name,cam->prefs.v4l_dev_name);
 
     // open V4L device
     info->v4l_dev=-1;

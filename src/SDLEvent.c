@@ -20,7 +20,6 @@
 
 #ifdef HAVE_SDLLIB
 
-extern PrefsInfo preferences;
 extern GtkWidget *main_window;
 extern watchthread_info_t watchthread_info;
 extern camera_t* camera;
@@ -361,7 +360,7 @@ SDLResizeDisplay(chain_t *display_service, int width, int height)
   if ((width<1)||(height<1)||(width>MAX_DISPLAY_WIDTH)||(height>MAX_DISPLAY_HEIGHT))
     return;
 
-  if (preferences.display_keep_ratio>0) {
+  if (display_service->camera->prefs.display_keep_ratio>0) {
     // keep aspect ratio and resize following which dimension we change
     if (abs(width-info->sdlvideorect.w) >= (abs(height-info->sdlvideorect.h))) {
       // we changed the width, set height accordingly

@@ -18,7 +18,6 @@
 
 #include "thread_display.h"
 
-extern PrefsInfo preferences;
 extern GtkWidget *main_window;
 extern CtxtInfo_t ctxt;
 extern camera_t* camera;
@@ -51,7 +50,7 @@ DisplayStartThread(camera_t* cam)
     pthread_mutex_unlock(&info->mutex_cancel);
     
     pthread_mutex_lock(&display_service->mutex_data);
-    info->period=preferences.display_period;
+    info->period=cam->prefs.display_period;
     CommonChainSetup(cam, display_service,SERVICE_DISPLAY);
     
     pthread_mutex_lock(&display_service->mutex_struct);
@@ -183,7 +182,7 @@ DisplayThread(void* arg)
 	    display_service->processed_frames++;
 	  }
 	  else { //
-	    if (preferences.display_redraw==DISPLAY_REDRAW_ON) {
+	    if (display_service->camera->prefs.display_redraw==DISPLAY_REDRAW_ON) {
 	      ConditionalTimeoutRedraw(display_service);
 	    }
 	    skip_counter++;
@@ -194,7 +193,7 @@ DisplayThread(void* arg)
 	pthread_mutex_unlock(&display_service->mutex_data);
       }
       else { //
-	if (preferences.display_redraw==DISPLAY_REDRAW_ON) {
+	if (display_service->camera->prefs.display_redraw==DISPLAY_REDRAW_ON) {
 	  ConditionalTimeoutRedraw(display_service);
 	}
 	pthread_mutex_unlock(&display_service->mutex_data);
@@ -219,7 +218,7 @@ ConditionalTimeoutRedraw(chain_t* service)
   if (service->current_buffer->width!=-1) {
     info->redraw_current_time=times(&info->redraw_tms_buf);
     interval=fabs((float)(info->redraw_current_time-info->redraw_prev_time)/sysconf(_SC_CLK_TCK));
-    if (interval>(1.0/preferences.display_redraw_rate)) { // redraw e.g. 4 times per second
+    if (interval>(1.0/service->camera->prefs.display_redraw_rate)) { // redraw e.g. 4 times per second
 #ifdef HAVE_SDLLIB
       if (SDL_LockYUVOverlay(info->sdloverlay) == 0) {
 	//MainStatus("Conditional display redraw");

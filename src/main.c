@@ -51,7 +51,7 @@ GtkWidget *help_window;
 GtkWidget *preferences_window;
 GtkWidget *waiting_camera_window;
 CtxtInfo_t ctxt;
-PrefsInfo preferences;
+PrefsUI_t preferences;
 int silent_ui_update;
 camera_t* camera;
 camera_t* cameras;
