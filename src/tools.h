@@ -44,10 +44,10 @@ typedef struct _whitebaldata
 */
 
 void
-GetFormat7Capabilities(raw1394handle_t handle, nodeid_t node, Format7Info_t *info);
+GetFormat7Capabilities(camera_t* cam);
 
 void
-GetFormat7ModeInfo(raw1394handle_t handle, nodeid_t node, int mode, Format7Info_t* info);
+GetFormat7ModeInfo(camera_t* cam, int mode_id);
 
 void
 SwitchToNearestFPS(quadlet_t compat, int current);

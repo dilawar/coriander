@@ -25,7 +25,7 @@ extern camera_t* camera;
 
 gint IsoStartThread(camera_t* cam)
 {
-  int maxspeed;
+  int maxspeed, port;
   //int channel, speed;
   chain_t* iso_service=NULL;
   isothread_info_t *info=NULL;
@@ -49,9 +49,11 @@ gint IsoStartThread(camera_t* cam)
     }
     
     info->handle = NULL;
-    
+     
     // the iso receive handler gets its own raw1394 handle to free the controls
-    if ( (info->handle = dc1394_create_handle(0)) < 0) { // THIS PORT FIXED TO ZERO IS WRONG !!!!!!!!!!!!!!!!!!!!!!!!
+    port=dc1394_get_camera_port(cam->camera_info.handle);
+    //fprintf(stderr,"port for this camera is %d\n",port);
+    if ( (info->handle = dc1394_create_handle(port)) < 0) {
       FreeChain(iso_service);
       return(-1);
     }

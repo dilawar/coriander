@@ -34,7 +34,7 @@ camera_t*
 NewCamera(void);
 
 void
-GetCameraData(raw1394handle_t handle, nodeid_t node, camera_t* camera);
+GetCameraData(int port, nodeid_t node, camera_t* cam);
 
 void
 AppendCamera(camera_t* camera);

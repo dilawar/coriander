@@ -120,7 +120,6 @@ main (int argc, char *argv[])
   // get camera infos and serialize the port info for each camera
   GetCamerasInfo(businfo);
 
-  raw1394_set_bus_reset_handler(businfo->handles[0], bus_reset_handler);
   GrabSelfIds(businfo->handles, businfo->port_num);
 
   SetChannels();

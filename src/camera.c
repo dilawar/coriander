@@ -33,6 +33,7 @@ GetCameraNodes(BusInfo_t* bi) {
 
   if (tmp_handle!=NULL) {
     bi->port_num=raw1394_get_port_info(tmp_handle, NULL, 0);
+    //fprintf(stderr,"%d port(s) found\n",bi->port_num);
     raw1394_destroy_handle(tmp_handle);
 
     if ((bi->camera_nodes!=NULL)&&(bi->port_camera_num!=NULL)&&(bi->handles!=NULL)) {
@@ -60,8 +61,11 @@ GetCameraNodes(BusInfo_t* bi) {
       bi->handles[port]=dc1394_create_handle(port);
       if (bi->handles[port]!=0) { // if the card is present
 	bi->card_found=1;
+	// set bus reset handler
+	raw1394_set_bus_reset_handler(bi->handles[port], bus_reset_handler);
 	// probe the IEEE1394 bus for DC camera:
 	bi->camera_nodes[port]=dc1394_get_camera_nodes(bi->handles[port], &(bi->port_camera_num[port]), 0); // 0 not to show the cams.
+	//fprintf(stderr,"There is %d cameras on port %d\n",bi->port_camera_num[port],port);
 	bi->camera_num+=bi->port_camera_num[port];
       }
     }
@@ -74,12 +78,29 @@ GetCamerasInfo(BusInfo_t* bi) {
   int i;
   int port;
   camera_t* camera_ptr;
+  camera_t* tmp;
   for (port=0;port<bi->port_num;port++) {
     if (bi->handles[port]!=0) {
       for (i=0;i<bi->port_camera_num[port];i++) {
 	camera_ptr=NewCamera();
-	GetCameraData(bi->handles[port], bi->camera_nodes[port][i], camera_ptr);
-	AppendCamera(camera_ptr);
+	GetCameraData(port, bi->camera_nodes[port][i], camera_ptr);
+
+	// check that the camera is not yet found through another interface card (for strange bus topologies):
+	tmp=cameras;
+	while (tmp!=NULL) {
+	  if (tmp->camera_info.euid_64==camera_ptr->camera_info.euid_64) {
+	    // the camera is already there. don't append.
+	    FreeCamera(camera_ptr);
+	    break;
+	  }
+	  else {
+	    tmp=tmp->next;
+	  }
+	}
+	// if the camera was not found, add it
+	if (tmp==NULL) {
+	  AppendCamera(camera_ptr);
+	}
       }
     }
   }
@@ -96,15 +117,16 @@ NewCamera(void) {
 }
 
 void
-GetCameraData(raw1394handle_t handle, nodeid_t node, camera_t* cam) {
+GetCameraData(int port, nodeid_t node, camera_t* cam) {
 
-  if (dc1394_get_camera_info(handle, node, &cam->camera_info)!=DC1394_SUCCESS)
+  cam->camera_info.handle=dc1394_create_handle(port);
+  if (dc1394_get_camera_info(cam->camera_info.handle, node, &cam->camera_info)!=DC1394_SUCCESS)
     MainError("Could not get camera basic information!");
-  if (dc1394_get_camera_misc_info(handle, cam->camera_info.id, &cam->misc_info)!=DC1394_SUCCESS)
+  if (dc1394_get_camera_misc_info(cam->camera_info.handle, cam->camera_info.id, &cam->misc_info)!=DC1394_SUCCESS)
     MainError("Could not get camera misc information!");
-  if (dc1394_get_camera_feature_set(handle, cam->camera_info.id, &cam->feature_set)!=DC1394_SUCCESS)
+  if (dc1394_get_camera_feature_set(cam->camera_info.handle, cam->camera_info.id, &cam->feature_set)!=DC1394_SUCCESS)
     MainError("Could not get camera feature information!");
-  GetFormat7Capabilities(handle, cam->camera_info.id, &cam->format7_info);
+  GetFormat7Capabilities(cam);
   cam->image_pipe=NULL;
   pthread_mutex_lock(&cam->uimutex);
   cam->want_to_display=0;
