@@ -4,6 +4,7 @@ Changes towards version 0.99.5
 
    Novmeber 17, 2003, by Damien Douxchamps
    - update to match latest libdc1394 CVS.
+   - fixed FPS update issue when changing mode/format
 	
    Novmeber 15, 2003, by Damien Douxchamps
    - fixed bad F7 mode detection that caused segfault when accessing the

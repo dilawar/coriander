@@ -35,6 +35,7 @@ extern char* channel_num_list[16];
 extern char* phy_speed_list[4];
 extern char* phy_delay_list[4];
 extern char* power_class_list[8];
+extern char* fps_label_list[NUM_FRAMERATES];
 extern camera_t* camera;
 extern camera_t* cameras;
 extern int camera_num;
@@ -113,12 +114,48 @@ GetFormat7Capabilities(raw1394handle_t handle, nodeid_t node, Format7Info *info)
 }
 
 void
+SwitchToNearestFPS(quadlet_t compat, int current) {
+  int i;
+  dc1394bool_t cont=DC1394_TRUE;
+  int new_framerate=-1;
+  char *temp;
+
+  temp=(char*)malloc(STRING_SIZE*sizeof(char));
+
+  current=current-FRAMERATE_MIN;
+
+  for (i=0;i<=((NUM_FRAMERATES>>1)+1);i++) { // search radius is num_framerates/2 +1 for safe rounding
+    if ( (compat&(0x1<<(31-(current+i)))) && cont) {
+      new_framerate=current+i+FRAMERATE_MIN;
+      cont=DC1394_FALSE;
+    }
+    if ( (compat&(0x1<<(31-(current-i)))) && cont) {
+      new_framerate=current-i+FRAMERATE_MIN;
+      cont=DC1394_FALSE;
+    }
+  }
+
+  if (new_framerate!=current) {
+    sprintf(temp,"Invalid framerate. Updating to nearest: %s",fps_label_list[new_framerate-FRAMERATE_MIN]);
+    MainStatus(temp);
+    if (dc1394_set_video_framerate(camera->camera_info.handle,camera->camera_info.id,new_framerate)!=DC1394_SUCCESS) {
+      MainError("Cannot set video framerate");
+    }
+    else {
+      camera->misc_info.framerate=new_framerate;
+    }
+  }
+
+  free(temp);
+}
+
+void
 ChangeModeAndFormat         (GtkMenuItem     *menuitem,
 			     gpointer         user_data)
 {
   int state;
   int format;
-
+  quadlet_t value;
   int mode;
   
   mode=(int)user_data;
@@ -140,7 +177,7 @@ ChangeModeAndFormat         (GtkMenuItem     *menuitem,
 	  format=FORMAT_SCALABLE_IMAGE_SIZE;
 
   IsoFlowCheck(&state);
-
+  
   if (dc1394_set_video_format(camera->camera_info.handle,camera->camera_info.id,format)!=DC1394_SUCCESS)
     MainError("Could not set video format");
   else
@@ -151,6 +188,17 @@ ChangeModeAndFormat         (GtkMenuItem     *menuitem,
   else
     camera->misc_info.mode=mode;
  
+  // check consistancy of framerate:
+  if (dc1394_query_supported_framerates(camera->camera_info.handle, camera->camera_info.id, format, mode, &value)!=DC1394_SUCCESS)
+    MainError("Could not read supported framerates");
+  else {
+    if ((value & (0x1<<(31-(camera->misc_info.framerate-FRAMERATE_MIN))))==0) {
+      // the current framerate is not OK for the new mode/format. Switch to nearest framerate
+      //MainStatus("changemodeandformat fps update");
+      SwitchToNearestFPS(value,camera->misc_info.framerate);
+    }
+  }
+
   IsoFlowResume(&state);
 
   // REPROBE EVERYTHING

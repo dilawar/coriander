@@ -47,6 +47,9 @@ void
 GetFormat7Capabilities(raw1394handle_t handle, nodeid_t node, Format7Info *info);
 
 void
+SwitchToNearestFPS(quadlet_t compat, int current);
+
+void
 ChangeModeAndFormat         (GtkMenuItem     *menuitem,
 			     gpointer         user_data);
 void

@@ -299,11 +299,6 @@ BuildFpsMenu(void)
   GtkWidget* glade_menuitem;
   int index[NUM_FRAMERATES];
   int k=0;
-  int new_framerate=0;
-  dc1394bool_t cont=DC1394_TRUE;
-  char *temp;
-
-  temp=(char*)malloc(STRING_SIZE*sizeof(char));
 
   if (camera->misc_info.format == FORMAT_SCALABLE_IMAGE_SIZE) {
     value = 0; /* format 7 has no fixed framerates */
@@ -350,31 +345,11 @@ BuildFpsMenu(void)
     
     // sets the active menu item:
     if (index[camera->misc_info.framerate-FRAMERATE_MIN]<0) { // previously selected framerate unsupported!!
-      // automatically switch to nearest fps available
-      for (i=1;i<=((NUM_FRAMERATES>>1)+1);i++) { // search radius is num_framerates/2 +1 for safe rounding
-	if (((camera->misc_info.framerate-FRAMERATE_MIN-i)>=0) && cont) {
-	  if (index[camera->misc_info.framerate-FRAMERATE_MIN-i]>=0) { // try down 
-	    new_framerate=camera->misc_info.framerate-i;
-	    cont=DC1394_FALSE;
-	  }
-	}
-	if (((camera->misc_info.framerate-FRAMERATE_MIN+i)<NUM_FRAMERATES) && cont) {
-	  if (index[camera->misc_info.framerate-FRAMERATE_MIN+i]>=0) { // try up  
-	    new_framerate=camera->misc_info.framerate+i;
-	    cont=DC1394_FALSE;
-	  }
-	}
-      }
-      sprintf(temp,"Invalid framerate. Updating to nearest: %s",fps_label_list[new_framerate-FRAMERATE_MIN]);
-      MainStatus(temp);
-      if (dc1394_set_video_framerate(camera->camera_info.handle,camera->camera_info.id,new_framerate)!=DC1394_SUCCESS)
-	MainError("Cannot set video framerate");
-      camera->misc_info.framerate=new_framerate;
+      SwitchToNearestFPS(value, camera->misc_info.framerate);
     }
     gtk_option_menu_set_history (GTK_OPTION_MENU (fps), index[camera->misc_info.framerate-FRAMERATE_MIN]);
   }
-
-  free(temp);
+  
 }
 
 
