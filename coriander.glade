@@ -30,7 +30,7 @@
     <handler>on_commander_window_delete_event</handler>
     <last_modification_time>Tue, 26 Dec 2000 12:06:25 GMT</last_modification_time>
   </signal>
-  <title>Coriander 0.19</title>
+  <title>Coriander 0.19b</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_NONE</position>
   <modal>False</modal>
@@ -130,91 +130,6 @@
 	      <last_modification_time>Mon, 25 Dec 2000 10:07:46 GMT</last_modification_time>
 	    </signal>
 	    <label>_Porthole</label>
-	    <right_justify>False</right_justify>
-	  </widget>
-
-	  <widget>
-	    <class>GtkMenuItem</class>
-	    <name>aperture</name>
-	    <accelerator>
-	      <modifiers>GDK_CONTROL_MASK</modifiers>
-	      <key>GDK_A</key>
-	      <signal>activate</signal>
-	    </accelerator>
-	    <signal>
-	      <name>activate</name>
-	      <handler>on_aperture_activate</handler>
-	      <last_modification_time>Mon, 25 Dec 2000 10:07:47 GMT</last_modification_time>
-	    </signal>
-	    <label>_Aperture</label>
-	    <right_justify>False</right_justify>
-	  </widget>
-
-	  <widget>
-	    <class>GtkMenuItem</class>
-	    <name>color</name>
-	    <accelerator>
-	      <modifiers>GDK_CONTROL_MASK</modifiers>
-	      <key>GDK_O</key>
-	      <signal>activate</signal>
-	    </accelerator>
-	    <signal>
-	      <name>activate</name>
-	      <handler>on_color_activate</handler>
-	      <last_modification_time>Mon, 25 Dec 2000 10:07:46 GMT</last_modification_time>
-	    </signal>
-	    <label>C_olor</label>
-	    <right_justify>False</right_justify>
-	  </widget>
-
-	  <widget>
-	    <class>GtkMenuItem</class>
-	    <name>capture</name>
-	    <accelerator>
-	      <modifiers>GDK_CONTROL_MASK</modifiers>
-	      <key>GDK_C</key>
-	      <signal>activate</signal>
-	    </accelerator>
-	    <signal>
-	      <name>activate</name>
-	      <handler>on_capture_activate</handler>
-	      <last_modification_time>Sat, 30 Dec 2000 15:51:37 GMT</last_modification_time>
-	    </signal>
-	    <label>_Capture</label>
-	    <right_justify>False</right_justify>
-	  </widget>
-
-	  <widget>
-	    <class>GtkMenuItem</class>
-	    <name>status</name>
-	    <accelerator>
-	      <modifiers>GDK_CONTROL_MASK</modifiers>
-	      <key>GDK_S</key>
-	      <signal>activate</signal>
-	    </accelerator>
-	    <signal>
-	      <name>activate</name>
-	      <handler>on_status_activate</handler>
-	      <last_modification_time>Sat, 30 Dec 2000 15:51:33 GMT</last_modification_time>
-	    </signal>
-	    <label>_Status</label>
-	    <right_justify>False</right_justify>
-	  </widget>
-
-	  <widget>
-	    <class>GtkMenuItem</class>
-	    <name>temp_window</name>
-	    <accelerator>
-	      <modifiers>GDK_CONTROL_MASK</modifiers>
-	      <key>GDK_T</key>
-	      <signal>activate</signal>
-	    </accelerator>
-	    <signal>
-	      <name>activate</name>
-	      <handler>on_temp_window_activate</handler>
-	      <last_modification_time>Sat, 30 Dec 2000 21:41:04 GMT</last_modification_time>
-	    </signal>
-	    <label>_Temperature</label>
 	    <right_justify>False</right_justify>
 	  </widget>
 
@@ -854,8 +769,8 @@
     </widget>
 
     <widget>
-      <class>GtkVBox</class>
-      <name>vbox40</name>
+      <class>GtkHBox</class>
+      <name>hbox53</name>
       <homogeneous>False</homogeneous>
       <spacing>0</spacing>
       <child>
@@ -865,155 +780,9 @@
       </child>
 
       <widget>
-	<class>GtkFrame</class>
-	<name>camera_select_frame</name>
-	<border_width>5</border_width>
-	<label>Camera Select</label>
-	<label_xalign>0</label_xalign>
-	<shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
-	<child>
-	  <padding>0</padding>
-	  <expand>False</expand>
-	  <fill>True</fill>
-	</child>
-
-	<widget>
-	  <class>GtkTable</class>
-	  <name>table9</name>
-	  <rows>1</rows>
-	  <columns>1</columns>
-	  <homogeneous>False</homogeneous>
-	  <row_spacing>0</row_spacing>
-	  <column_spacing>0</column_spacing>
-
-	  <widget>
-	    <class>GtkOptionMenu</class>
-	    <name>camera_select</name>
-	    <border_width>1</border_width>
-	    <sensitive>False</sensitive>
-	    <can_focus>True</can_focus>
-	    <items>Node 0: Sony DFW-VL500
-</items>
-	    <initial_choice>0</initial_choice>
-	    <child>
-	      <left_attach>0</left_attach>
-	      <right_attach>1</right_attach>
-	      <top_attach>0</top_attach>
-	      <bottom_attach>1</bottom_attach>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	      <xexpand>True</xexpand>
-	      <yexpand>False</yexpand>
-	      <xshrink>False</xshrink>
-	      <yshrink>False</yshrink>
-	      <xfill>True</xfill>
-	      <yfill>False</yfill>
-	    </child>
-	  </widget>
-	</widget>
-      </widget>
-
-      <widget>
-	<class>GtkFrame</class>
-	<name>service_frame</name>
-	<border_width>5</border_width>
-	<label>Image services</label>
-	<label_xalign>0</label_xalign>
-	<shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
-	<child>
-	  <padding>0</padding>
-	  <expand>False</expand>
-	  <fill>True</fill>
-	</child>
-
-	<widget>
-	  <class>GtkHBox</class>
-	  <name>hbox49</name>
-	  <homogeneous>True</homogeneous>
-	  <spacing>0</spacing>
-
-	  <widget>
-	    <class>GtkToggleButton</class>
-	    <name>service_iso</name>
-	    <border_width>2</border_width>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>toggled</name>
-	      <handler>on_service_iso_toggled</handler>
-	      <last_modification_time>Sun, 04 Nov 2001 17:11:41 GMT</last_modification_time>
-	    </signal>
-	    <label>Receive</label>
-	    <active>False</active>
-	    <child>
-	      <padding>0</padding>
-	      <expand>True</expand>
-	      <fill>True</fill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkToggleButton</class>
-	    <name>service_display</name>
-	    <border_width>2</border_width>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>toggled</name>
-	      <handler>on_service_display_toggled</handler>
-	      <last_modification_time>Sun, 04 Nov 2001 17:12:00 GMT</last_modification_time>
-	    </signal>
-	    <label>Display</label>
-	    <active>False</active>
-	    <child>
-	      <padding>0</padding>
-	      <expand>True</expand>
-	      <fill>True</fill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkToggleButton</class>
-	    <name>service_save</name>
-	    <border_width>2</border_width>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>toggled</name>
-	      <handler>on_service_save_toggled</handler>
-	      <last_modification_time>Sun, 04 Nov 2001 17:12:05 GMT</last_modification_time>
-	    </signal>
-	    <label>Save</label>
-	    <active>False</active>
-	    <child>
-	      <padding>0</padding>
-	      <expand>True</expand>
-	      <fill>True</fill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkToggleButton</class>
-	    <name>service_ftp</name>
-	    <border_width>2</border_width>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>toggled</name>
-	      <handler>on_service_ftp_toggled</handler>
-	      <last_modification_time>Sun, 04 Nov 2001 17:12:09 GMT</last_modification_time>
-	    </signal>
-	    <label>FTP</label>
-	    <active>False</active>
-	    <child>
-	      <padding>0</padding>
-	      <expand>True</expand>
-	      <fill>True</fill>
-	    </child>
-	  </widget>
-	</widget>
-      </widget>
-
-      <widget>
-	<class>GtkHBox</class>
-	<name>hbox37</name>
-	<homogeneous>True</homogeneous>
+	<class>GtkVBox</class>
+	<name>vbox40</name>
+	<homogeneous>False</homogeneous>
 	<spacing>0</spacing>
 	<child>
 	  <padding>0</padding>
@@ -1023,314 +792,9 @@
 
 	<widget>
 	  <class>GtkFrame</class>
-	  <name>power_frame</name>
+	  <name>camera_select_frame</name>
 	  <border_width>5</border_width>
-	  <sensitive>False</sensitive>
-	  <label>Power</label>
-	  <label_xalign>0</label_xalign>
-	  <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
-	  <child>
-	    <padding>0</padding>
-	    <expand>False</expand>
-	    <fill>True</fill>
-	  </child>
-
-	  <widget>
-	    <class>GtkVBox</class>
-	    <name>vbox20</name>
-	    <homogeneous>True</homogeneous>
-	    <spacing>0</spacing>
-
-	    <widget>
-	      <class>GtkButton</class>
-	      <name>power_on</name>
-	      <border_width>2</border_width>
-	      <sensitive>False</sensitive>
-	      <can_focus>True</can_focus>
-	      <signal>
-		<name>clicked</name>
-		<handler>on_power_on_clicked</handler>
-		<last_modification_time>Wed, 27 Dec 2000 23:21:36 GMT</last_modification_time>
-	      </signal>
-	      <label>ON</label>
-	      <child>
-		<padding>0</padding>
-		<expand>True</expand>
-		<fill>True</fill>
-	      </child>
-	    </widget>
-
-	    <widget>
-	      <class>GtkButton</class>
-	      <name>power_off</name>
-	      <border_width>2</border_width>
-	      <sensitive>False</sensitive>
-	      <can_focus>True</can_focus>
-	      <signal>
-		<name>clicked</name>
-		<handler>on_power_off_clicked</handler>
-		<last_modification_time>Wed, 27 Dec 2000 23:21:40 GMT</last_modification_time>
-	      </signal>
-	      <label>OFF</label>
-	      <child>
-		<padding>0</padding>
-		<expand>True</expand>
-		<fill>True</fill>
-	      </child>
-	    </widget>
-
-	    <widget>
-	      <class>GtkButton</class>
-	      <name>power_reset</name>
-	      <border_width>2</border_width>
-	      <sensitive>False</sensitive>
-	      <can_focus>True</can_focus>
-	      <signal>
-		<name>clicked</name>
-		<handler>on_power_reset_clicked</handler>
-		<last_modification_time>Wed, 27 Dec 2000 23:21:29 GMT</last_modification_time>
-	      </signal>
-	      <label>RESET</label>
-	      <child>
-		<padding>0</padding>
-		<expand>True</expand>
-		<fill>True</fill>
-	      </child>
-	    </widget>
-	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkFrame</class>
-	  <name>iso_frame</name>
-	  <border_width>5</border_width>
-	  <sensitive>False</sensitive>
-	  <label>ISO Control</label>
-	  <label_xalign>0</label_xalign>
-	  <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
-	  <child>
-	    <padding>0</padding>
-	    <expand>False</expand>
-	    <fill>True</fill>
-	  </child>
-
-	  <widget>
-	    <class>GtkVBox</class>
-	    <name>vbox50</name>
-	    <homogeneous>False</homogeneous>
-	    <spacing>0</spacing>
-
-	    <widget>
-	      <class>GtkButton</class>
-	      <name>iso_start</name>
-	      <border_width>2</border_width>
-	      <sensitive>False</sensitive>
-	      <can_focus>True</can_focus>
-	      <signal>
-		<name>clicked</name>
-		<handler>on_iso_start_clicked</handler>
-		<last_modification_time>Mon, 08 Jan 2001 13:26:20 GMT</last_modification_time>
-	      </signal>
-	      <label>START</label>
-	      <child>
-		<padding>0</padding>
-		<expand>True</expand>
-		<fill>True</fill>
-	      </child>
-	    </widget>
-
-	    <widget>
-	      <class>GtkButton</class>
-	      <name>iso_stop</name>
-	      <border_width>2</border_width>
-	      <sensitive>False</sensitive>
-	      <can_focus>True</can_focus>
-	      <signal>
-		<name>clicked</name>
-		<handler>on_iso_stop_clicked</handler>
-		<last_modification_time>Mon, 08 Jan 2001 13:26:27 GMT</last_modification_time>
-	      </signal>
-	      <label>STOP</label>
-	      <child>
-		<padding>0</padding>
-		<expand>True</expand>
-		<fill>True</fill>
-	      </child>
-	    </widget>
-
-	    <widget>
-	      <class>GtkButton</class>
-	      <name>iso_restart</name>
-	      <border_width>2</border_width>
-	      <sensitive>False</sensitive>
-	      <can_focus>True</can_focus>
-	      <signal>
-		<name>clicked</name>
-		<handler>on_iso_restart_clicked</handler>
-		<last_modification_time>Mon, 08 Jan 2001 13:26:34 GMT</last_modification_time>
-	      </signal>
-	      <label>RESTART</label>
-	      <child>
-		<padding>0</padding>
-		<expand>True</expand>
-		<fill>True</fill>
-	      </child>
-	    </widget>
-	  </widget>
-	</widget>
-      </widget>
-
-      <widget>
-	<class>GtkHBox</class>
-	<name>hbox38</name>
-	<homogeneous>True</homogeneous>
-	<spacing>0</spacing>
-	<child>
-	  <padding>0</padding>
-	  <expand>True</expand>
-	  <fill>True</fill>
-	</child>
-
-	<widget>
-	  <class>GtkVBox</class>
-	  <name>vbox41</name>
-	  <homogeneous>False</homogeneous>
-	  <spacing>0</spacing>
-	  <child>
-	    <padding>0</padding>
-	    <expand>True</expand>
-	    <fill>True</fill>
-	  </child>
-
-	  <widget>
-	    <class>GtkFrame</class>
-	    <name>memory_frame</name>
-	    <border_width>5</border_width>
-	    <sensitive>False</sensitive>
-	    <label>Memory channels</label>
-	    <label_xalign>0</label_xalign>
-	    <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>True</fill>
-	    </child>
-
-	    <widget>
-	      <class>GtkTable</class>
-	      <name>table16</name>
-	      <rows>3</rows>
-	      <columns>1</columns>
-	      <homogeneous>True</homogeneous>
-	      <row_spacing>0</row_spacing>
-	      <column_spacing>0</column_spacing>
-
-	      <widget>
-		<class>GtkOptionMenu</class>
-		<name>memory_channel</name>
-		<border_width>1</border_width>
-		<sensitive>False</sensitive>
-		<can_focus>True</can_focus>
-		<items>Factory
-1...
-</items>
-		<initial_choice>0</initial_choice>
-		<child>
-		  <left_attach>0</left_attach>
-		  <right_attach>1</right_attach>
-		  <top_attach>0</top_attach>
-		  <bottom_attach>1</bottom_attach>
-		  <xpad>0</xpad>
-		  <ypad>0</ypad>
-		  <xexpand>True</xexpand>
-		  <yexpand>True</yexpand>
-		  <xshrink>False</xshrink>
-		  <yshrink>False</yshrink>
-		  <xfill>True</xfill>
-		  <yfill>True</yfill>
-		</child>
-	      </widget>
-
-	      <widget>
-		<class>GtkButton</class>
-		<name>load_mem</name>
-		<border_width>2</border_width>
-		<can_focus>True</can_focus>
-		<signal>
-		  <name>clicked</name>
-		  <handler>on_load_mem_clicked</handler>
-		  <last_modification_time>Sun, 31 Dec 2000 12:22:56 GMT</last_modification_time>
-		</signal>
-		<label>LOAD</label>
-		<child>
-		  <left_attach>0</left_attach>
-		  <right_attach>1</right_attach>
-		  <top_attach>1</top_attach>
-		  <bottom_attach>2</bottom_attach>
-		  <xpad>0</xpad>
-		  <ypad>0</ypad>
-		  <xexpand>True</xexpand>
-		  <yexpand>True</yexpand>
-		  <xshrink>False</xshrink>
-		  <yshrink>False</yshrink>
-		  <xfill>True</xfill>
-		  <yfill>True</yfill>
-		</child>
-	      </widget>
-
-	      <widget>
-		<class>GtkButton</class>
-		<name>save_mem</name>
-		<border_width>2</border_width>
-		<sensitive>False</sensitive>
-		<can_focus>True</can_focus>
-		<signal>
-		  <name>clicked</name>
-		  <handler>on_save_mem_clicked</handler>
-		  <last_modification_time>Sun, 31 Dec 2000 12:23:01 GMT</last_modification_time>
-		</signal>
-		<label>SAVE</label>
-		<child>
-		  <left_attach>0</left_attach>
-		  <right_attach>1</right_attach>
-		  <top_attach>2</top_attach>
-		  <bottom_attach>3</bottom_attach>
-		  <xpad>0</xpad>
-		  <ypad>0</ypad>
-		  <xexpand>True</xexpand>
-		  <yexpand>True</yexpand>
-		  <xshrink>False</xshrink>
-		  <yshrink>False</yshrink>
-		  <xfill>True</xfill>
-		  <yfill>True</yfill>
-		</child>
-	      </widget>
-	    </widget>
-	  </widget>
-
-	  <widget>
-	    <class>GtkPixmap</class>
-	    <name>coriander_logo</name>
-	    <filename>coriander_logo.xpm</filename>
-	    <xalign>0.5</xalign>
-	    <yalign>0.5</yalign>
-	    <xpad>0</xpad>
-	    <ypad>0</ypad>
-	    <build_insensitive>True</build_insensitive>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkFrame</class>
-	  <name>trigger_frame</name>
-	  <border_width>5</border_width>
-	  <sensitive>False</sensitive>
-	  <label>Trigger</label>
+	  <label>Camera Select</label>
 	  <label_xalign>0</label_xalign>
 	  <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
 	  <child>
@@ -1341,168 +805,27 @@
 
 	  <widget>
 	    <class>GtkTable</class>
-	    <name>table17</name>
-	    <rows>4</rows>
-	    <columns>2</columns>
-	    <homogeneous>True</homogeneous>
+	    <name>table9</name>
+	    <rows>1</rows>
+	    <columns>1</columns>
+	    <homogeneous>False</homogeneous>
 	    <row_spacing>0</row_spacing>
 	    <column_spacing>0</column_spacing>
 
 	    <widget>
-	      <class>GtkLabel</class>
-	      <name>label16</name>
-	      <sensitive>False</sensitive>
-	      <label>Count : </label>
-	      <justify>GTK_JUSTIFY_CENTER</justify>
-	      <wrap>False</wrap>
-	      <xalign>0.5</xalign>
-	      <yalign>0.5</yalign>
-	      <xpad>2</xpad>
-	      <ypad>2</ypad>
-	      <child>
-		<left_attach>0</left_attach>
-		<right_attach>1</right_attach>
-		<top_attach>3</top_attach>
-		<bottom_attach>4</bottom_attach>
-		<xpad>0</xpad>
-		<ypad>0</ypad>
-		<xexpand>False</xexpand>
-		<yexpand>False</yexpand>
-		<xshrink>False</xshrink>
-		<yshrink>False</yshrink>
-		<xfill>False</xfill>
-		<yfill>False</yfill>
-	      </child>
-	    </widget>
-
-	    <widget>
-	      <class>GtkSpinButton</class>
-	      <name>trigger_count</name>
-	      <sensitive>False</sensitive>
-	      <can_focus>True</can_focus>
-	      <climb_rate>1</climb_rate>
-	      <digits>0</digits>
-	      <numeric>True</numeric>
-	      <update_policy>GTK_UPDATE_IF_VALID</update_policy>
-	      <snap>False</snap>
-	      <wrap>False</wrap>
-	      <value>0</value>
-	      <lower>0</lower>
-	      <upper>65535</upper>
-	      <step>1</step>
-	      <page>10</page>
-	      <page_size>10</page_size>
-	      <child>
-		<left_attach>1</left_attach>
-		<right_attach>2</right_attach>
-		<top_attach>3</top_attach>
-		<bottom_attach>4</bottom_attach>
-		<xpad>0</xpad>
-		<ypad>0</ypad>
-		<xexpand>True</xexpand>
-		<yexpand>False</yexpand>
-		<xshrink>False</xshrink>
-		<yshrink>False</yshrink>
-		<xfill>True</xfill>
-		<yfill>False</yfill>
-	      </child>
-	    </widget>
-
-	    <widget>
 	      <class>GtkOptionMenu</class>
-	      <name>fps_menu</name>
+	      <name>camera_select</name>
 	      <border_width>1</border_width>
+	      <sensitive>False</sensitive>
 	      <can_focus>True</can_focus>
-	      <items>N/A
+	      <items>Node 0: Sony DFW-VL500
 </items>
 	      <initial_choice>0</initial_choice>
-	      <child>
-		<left_attach>0</left_attach>
-		<right_attach>2</right_attach>
-		<top_attach>2</top_attach>
-		<bottom_attach>3</bottom_attach>
-		<xpad>0</xpad>
-		<ypad>0</ypad>
-		<xexpand>True</xexpand>
-		<yexpand>False</yexpand>
-		<xshrink>False</xshrink>
-		<yshrink>False</yshrink>
-		<xfill>True</xfill>
-		<yfill>False</yfill>
-	      </child>
-	    </widget>
-
-	    <widget>
-	      <class>GtkToggleButton</class>
-	      <name>trigger_external</name>
-	      <border_width>2</border_width>
-	      <sensitive>False</sensitive>
-	      <can_focus>True</can_focus>
-	      <signal>
-		<name>toggled</name>
-		<handler>on_trigger_external_toggled</handler>
-		<last_modification_time>Tue, 02 Jan 2001 15:32:48 GMT</last_modification_time>
-	      </signal>
-	      <label>External</label>
-	      <active>False</active>
 	      <child>
 		<left_attach>0</left_attach>
 		<right_attach>1</right_attach>
 		<top_attach>0</top_attach>
 		<bottom_attach>1</bottom_attach>
-		<xpad>0</xpad>
-		<ypad>0</ypad>
-		<xexpand>False</xexpand>
-		<yexpand>False</yexpand>
-		<xshrink>False</xshrink>
-		<yshrink>False</yshrink>
-		<xfill>True</xfill>
-		<yfill>True</yfill>
-	      </child>
-	    </widget>
-
-	    <widget>
-	      <class>GtkToggleButton</class>
-	      <name>trigger_polarity</name>
-	      <border_width>2</border_width>
-	      <sensitive>False</sensitive>
-	      <can_focus>True</can_focus>
-	      <signal>
-		<name>toggled</name>
-		<handler>on_trigger_polarity_toggled</handler>
-		<last_modification_time>Wed, 27 Dec 2000 23:22:00 GMT</last_modification_time>
-	      </signal>
-	      <label>Polarity</label>
-	      <active>False</active>
-	      <child>
-		<left_attach>1</left_attach>
-		<right_attach>2</right_attach>
-		<top_attach>0</top_attach>
-		<bottom_attach>1</bottom_attach>
-		<xpad>0</xpad>
-		<ypad>0</ypad>
-		<xexpand>False</xexpand>
-		<yexpand>False</yexpand>
-		<xshrink>False</xshrink>
-		<yshrink>False</yshrink>
-		<xfill>True</xfill>
-		<yfill>True</yfill>
-	      </child>
-	    </widget>
-
-	    <widget>
-	      <class>GtkOptionMenu</class>
-	      <name>trigger_mode</name>
-	      <border_width>1</border_width>
-	      <can_focus>True</can_focus>
-	      <items>N/A
-</items>
-	      <initial_choice>0</initial_choice>
-	      <child>
-		<left_attach>0</left_attach>
-		<right_attach>2</right_attach>
-		<top_attach>1</top_attach>
-		<bottom_attach>2</bottom_attach>
 		<xpad>0</xpad>
 		<ypad>0</ypad>
 		<xexpand>True</xexpand>
@@ -1514,6 +837,3581 @@
 	      </child>
 	    </widget>
 	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkFrame</class>
+	  <name>service_frame</name>
+	  <border_width>5</border_width>
+	  <label>Image services</label>
+	  <label_xalign>0</label_xalign>
+	  <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+	  <child>
+	    <padding>0</padding>
+	    <expand>False</expand>
+	    <fill>True</fill>
+	  </child>
+
+	  <widget>
+	    <class>GtkHBox</class>
+	    <name>hbox49</name>
+	    <homogeneous>True</homogeneous>
+	    <spacing>0</spacing>
+
+	    <widget>
+	      <class>GtkToggleButton</class>
+	      <name>service_iso</name>
+	      <border_width>2</border_width>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>toggled</name>
+		<handler>on_service_iso_toggled</handler>
+		<last_modification_time>Sun, 04 Nov 2001 17:11:41 GMT</last_modification_time>
+	      </signal>
+	      <label>Receive</label>
+	      <relief>GTK_RELIEF_NORMAL</relief>
+	      <active>False</active>
+	      <child>
+		<padding>0</padding>
+		<expand>True</expand>
+		<fill>True</fill>
+	      </child>
+	    </widget>
+
+	    <widget>
+	      <class>GtkToggleButton</class>
+	      <name>service_display</name>
+	      <border_width>2</border_width>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>toggled</name>
+		<handler>on_service_display_toggled</handler>
+		<last_modification_time>Sun, 04 Nov 2001 17:12:00 GMT</last_modification_time>
+	      </signal>
+	      <label>Display</label>
+	      <relief>GTK_RELIEF_NORMAL</relief>
+	      <active>False</active>
+	      <child>
+		<padding>0</padding>
+		<expand>True</expand>
+		<fill>True</fill>
+	      </child>
+	    </widget>
+
+	    <widget>
+	      <class>GtkToggleButton</class>
+	      <name>service_save</name>
+	      <border_width>2</border_width>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>toggled</name>
+		<handler>on_service_save_toggled</handler>
+		<last_modification_time>Sun, 04 Nov 2001 17:12:05 GMT</last_modification_time>
+	      </signal>
+	      <label>Save</label>
+	      <relief>GTK_RELIEF_NORMAL</relief>
+	      <active>False</active>
+	      <child>
+		<padding>0</padding>
+		<expand>True</expand>
+		<fill>True</fill>
+	      </child>
+	    </widget>
+
+	    <widget>
+	      <class>GtkToggleButton</class>
+	      <name>service_ftp</name>
+	      <border_width>2</border_width>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>toggled</name>
+		<handler>on_service_ftp_toggled</handler>
+		<last_modification_time>Sun, 04 Nov 2001 17:12:09 GMT</last_modification_time>
+	      </signal>
+	      <label>FTP</label>
+	      <relief>GTK_RELIEF_NORMAL</relief>
+	      <active>False</active>
+	      <child>
+		<padding>0</padding>
+		<expand>True</expand>
+		<fill>True</fill>
+	      </child>
+	    </widget>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkHBox</class>
+	  <name>hbox37</name>
+	  <homogeneous>True</homogeneous>
+	  <spacing>0</spacing>
+	  <child>
+	    <padding>0</padding>
+	    <expand>False</expand>
+	    <fill>True</fill>
+	  </child>
+
+	  <widget>
+	    <class>GtkFrame</class>
+	    <name>power_frame</name>
+	    <border_width>5</border_width>
+	    <sensitive>False</sensitive>
+	    <label>Power</label>
+	    <label_xalign>0</label_xalign>
+	    <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>True</fill>
+	    </child>
+
+	    <widget>
+	      <class>GtkVBox</class>
+	      <name>vbox20</name>
+	      <homogeneous>True</homogeneous>
+	      <spacing>0</spacing>
+
+	      <widget>
+		<class>GtkButton</class>
+		<name>power_on</name>
+		<border_width>2</border_width>
+		<sensitive>False</sensitive>
+		<can_focus>True</can_focus>
+		<signal>
+		  <name>clicked</name>
+		  <handler>on_power_on_clicked</handler>
+		  <last_modification_time>Wed, 27 Dec 2000 23:21:36 GMT</last_modification_time>
+		</signal>
+		<label>ON</label>
+		<relief>GTK_RELIEF_NORMAL</relief>
+		<child>
+		  <padding>0</padding>
+		  <expand>True</expand>
+		  <fill>True</fill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkButton</class>
+		<name>power_off</name>
+		<border_width>2</border_width>
+		<sensitive>False</sensitive>
+		<can_focus>True</can_focus>
+		<signal>
+		  <name>clicked</name>
+		  <handler>on_power_off_clicked</handler>
+		  <last_modification_time>Wed, 27 Dec 2000 23:21:40 GMT</last_modification_time>
+		</signal>
+		<label>OFF</label>
+		<relief>GTK_RELIEF_NORMAL</relief>
+		<child>
+		  <padding>0</padding>
+		  <expand>True</expand>
+		  <fill>True</fill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkButton</class>
+		<name>power_reset</name>
+		<border_width>2</border_width>
+		<sensitive>False</sensitive>
+		<can_focus>True</can_focus>
+		<signal>
+		  <name>clicked</name>
+		  <handler>on_power_reset_clicked</handler>
+		  <last_modification_time>Wed, 27 Dec 2000 23:21:29 GMT</last_modification_time>
+		</signal>
+		<label>RESET</label>
+		<relief>GTK_RELIEF_NORMAL</relief>
+		<child>
+		  <padding>0</padding>
+		  <expand>True</expand>
+		  <fill>True</fill>
+		</child>
+	      </widget>
+	    </widget>
+	  </widget>
+
+	  <widget>
+	    <class>GtkFrame</class>
+	    <name>iso_frame</name>
+	    <border_width>5</border_width>
+	    <sensitive>False</sensitive>
+	    <label>ISO Control</label>
+	    <label_xalign>0</label_xalign>
+	    <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>True</fill>
+	    </child>
+
+	    <widget>
+	      <class>GtkVBox</class>
+	      <name>vbox50</name>
+	      <homogeneous>False</homogeneous>
+	      <spacing>0</spacing>
+
+	      <widget>
+		<class>GtkButton</class>
+		<name>iso_start</name>
+		<border_width>2</border_width>
+		<sensitive>False</sensitive>
+		<can_focus>True</can_focus>
+		<signal>
+		  <name>clicked</name>
+		  <handler>on_iso_start_clicked</handler>
+		  <last_modification_time>Mon, 08 Jan 2001 13:26:20 GMT</last_modification_time>
+		</signal>
+		<label>START</label>
+		<relief>GTK_RELIEF_NORMAL</relief>
+		<child>
+		  <padding>0</padding>
+		  <expand>True</expand>
+		  <fill>True</fill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkButton</class>
+		<name>iso_stop</name>
+		<border_width>2</border_width>
+		<sensitive>False</sensitive>
+		<can_focus>True</can_focus>
+		<signal>
+		  <name>clicked</name>
+		  <handler>on_iso_stop_clicked</handler>
+		  <last_modification_time>Mon, 08 Jan 2001 13:26:27 GMT</last_modification_time>
+		</signal>
+		<label>STOP</label>
+		<relief>GTK_RELIEF_NORMAL</relief>
+		<child>
+		  <padding>0</padding>
+		  <expand>True</expand>
+		  <fill>True</fill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkButton</class>
+		<name>iso_restart</name>
+		<border_width>2</border_width>
+		<sensitive>False</sensitive>
+		<can_focus>True</can_focus>
+		<signal>
+		  <name>clicked</name>
+		  <handler>on_iso_restart_clicked</handler>
+		  <last_modification_time>Mon, 08 Jan 2001 13:26:34 GMT</last_modification_time>
+		</signal>
+		<label>RESTART</label>
+		<relief>GTK_RELIEF_NORMAL</relief>
+		<child>
+		  <padding>0</padding>
+		  <expand>True</expand>
+		  <fill>True</fill>
+		</child>
+	      </widget>
+	    </widget>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkHBox</class>
+	  <name>hbox38</name>
+	  <homogeneous>True</homogeneous>
+	  <spacing>0</spacing>
+	  <child>
+	    <padding>0</padding>
+	    <expand>False</expand>
+	    <fill>True</fill>
+	  </child>
+
+	  <widget>
+	    <class>GtkVBox</class>
+	    <name>vbox41</name>
+	    <homogeneous>False</homogeneous>
+	    <spacing>0</spacing>
+	    <child>
+	      <padding>0</padding>
+	      <expand>True</expand>
+	      <fill>True</fill>
+	    </child>
+
+	    <widget>
+	      <class>GtkFrame</class>
+	      <name>memory_frame</name>
+	      <border_width>5</border_width>
+	      <sensitive>False</sensitive>
+	      <label>Memory channels</label>
+	      <label_xalign>0</label_xalign>
+	      <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+	      <child>
+		<padding>0</padding>
+		<expand>False</expand>
+		<fill>True</fill>
+	      </child>
+
+	      <widget>
+		<class>GtkTable</class>
+		<name>table16</name>
+		<rows>3</rows>
+		<columns>1</columns>
+		<homogeneous>True</homogeneous>
+		<row_spacing>0</row_spacing>
+		<column_spacing>0</column_spacing>
+
+		<widget>
+		  <class>GtkOptionMenu</class>
+		  <name>memory_channel</name>
+		  <border_width>1</border_width>
+		  <sensitive>False</sensitive>
+		  <can_focus>True</can_focus>
+		  <items>Factory
+1...
+</items>
+		  <initial_choice>0</initial_choice>
+		  <child>
+		    <left_attach>0</left_attach>
+		    <right_attach>1</right_attach>
+		    <top_attach>0</top_attach>
+		    <bottom_attach>1</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>True</xexpand>
+		    <yexpand>True</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>True</xfill>
+		    <yfill>True</yfill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkButton</class>
+		  <name>load_mem</name>
+		  <border_width>2</border_width>
+		  <can_focus>True</can_focus>
+		  <signal>
+		    <name>clicked</name>
+		    <handler>on_load_mem_clicked</handler>
+		    <last_modification_time>Sun, 31 Dec 2000 12:22:56 GMT</last_modification_time>
+		  </signal>
+		  <label>LOAD</label>
+		  <relief>GTK_RELIEF_NORMAL</relief>
+		  <child>
+		    <left_attach>0</left_attach>
+		    <right_attach>1</right_attach>
+		    <top_attach>1</top_attach>
+		    <bottom_attach>2</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>True</xexpand>
+		    <yexpand>True</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>True</xfill>
+		    <yfill>True</yfill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkButton</class>
+		  <name>save_mem</name>
+		  <border_width>2</border_width>
+		  <sensitive>False</sensitive>
+		  <can_focus>True</can_focus>
+		  <signal>
+		    <name>clicked</name>
+		    <handler>on_save_mem_clicked</handler>
+		    <last_modification_time>Sun, 31 Dec 2000 12:23:01 GMT</last_modification_time>
+		  </signal>
+		  <label>SAVE</label>
+		  <relief>GTK_RELIEF_NORMAL</relief>
+		  <child>
+		    <left_attach>0</left_attach>
+		    <right_attach>1</right_attach>
+		    <top_attach>2</top_attach>
+		    <bottom_attach>3</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>True</xexpand>
+		    <yexpand>True</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>True</xfill>
+		    <yfill>True</yfill>
+		  </child>
+		</widget>
+	      </widget>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPixmap</class>
+	      <name>coriander_logo</name>
+	      <filename>coriander_logo.xpm</filename>
+	      <xalign>0.5</xalign>
+	      <yalign>0.5</yalign>
+	      <xpad>0</xpad>
+	      <ypad>0</ypad>
+	      <build_insensitive>True</build_insensitive>
+	      <child>
+		<padding>0</padding>
+		<expand>False</expand>
+		<fill>False</fill>
+	      </child>
+	    </widget>
+	  </widget>
+
+	  <widget>
+	    <class>GtkFrame</class>
+	    <name>trigger_frame</name>
+	    <border_width>5</border_width>
+	    <sensitive>False</sensitive>
+	    <label>Trigger</label>
+	    <label_xalign>0</label_xalign>
+	    <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>True</fill>
+	    </child>
+
+	    <widget>
+	      <class>GtkTable</class>
+	      <name>table17</name>
+	      <rows>4</rows>
+	      <columns>2</columns>
+	      <homogeneous>True</homogeneous>
+	      <row_spacing>0</row_spacing>
+	      <column_spacing>0</column_spacing>
+
+	      <widget>
+		<class>GtkLabel</class>
+		<name>label16</name>
+		<sensitive>False</sensitive>
+		<label>Count : </label>
+		<justify>GTK_JUSTIFY_CENTER</justify>
+		<wrap>False</wrap>
+		<xalign>0.5</xalign>
+		<yalign>0.5</yalign>
+		<xpad>2</xpad>
+		<ypad>2</ypad>
+		<child>
+		  <left_attach>0</left_attach>
+		  <right_attach>1</right_attach>
+		  <top_attach>3</top_attach>
+		  <bottom_attach>4</bottom_attach>
+		  <xpad>0</xpad>
+		  <ypad>0</ypad>
+		  <xexpand>False</xexpand>
+		  <yexpand>False</yexpand>
+		  <xshrink>False</xshrink>
+		  <yshrink>False</yshrink>
+		  <xfill>False</xfill>
+		  <yfill>False</yfill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkSpinButton</class>
+		<name>trigger_count</name>
+		<sensitive>False</sensitive>
+		<can_focus>True</can_focus>
+		<climb_rate>1</climb_rate>
+		<digits>0</digits>
+		<numeric>True</numeric>
+		<update_policy>GTK_UPDATE_IF_VALID</update_policy>
+		<snap>False</snap>
+		<wrap>False</wrap>
+		<value>0</value>
+		<lower>0</lower>
+		<upper>65535</upper>
+		<step>1</step>
+		<page>10</page>
+		<page_size>10</page_size>
+		<child>
+		  <left_attach>1</left_attach>
+		  <right_attach>2</right_attach>
+		  <top_attach>3</top_attach>
+		  <bottom_attach>4</bottom_attach>
+		  <xpad>0</xpad>
+		  <ypad>0</ypad>
+		  <xexpand>True</xexpand>
+		  <yexpand>False</yexpand>
+		  <xshrink>False</xshrink>
+		  <yshrink>False</yshrink>
+		  <xfill>True</xfill>
+		  <yfill>False</yfill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkOptionMenu</class>
+		<name>fps_menu</name>
+		<border_width>1</border_width>
+		<can_focus>True</can_focus>
+		<items>N/A
+</items>
+		<initial_choice>0</initial_choice>
+		<child>
+		  <left_attach>0</left_attach>
+		  <right_attach>2</right_attach>
+		  <top_attach>2</top_attach>
+		  <bottom_attach>3</bottom_attach>
+		  <xpad>0</xpad>
+		  <ypad>0</ypad>
+		  <xexpand>True</xexpand>
+		  <yexpand>False</yexpand>
+		  <xshrink>False</xshrink>
+		  <yshrink>False</yshrink>
+		  <xfill>True</xfill>
+		  <yfill>False</yfill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkToggleButton</class>
+		<name>trigger_external</name>
+		<border_width>2</border_width>
+		<sensitive>False</sensitive>
+		<can_focus>True</can_focus>
+		<signal>
+		  <name>toggled</name>
+		  <handler>on_trigger_external_toggled</handler>
+		  <last_modification_time>Tue, 02 Jan 2001 15:32:48 GMT</last_modification_time>
+		</signal>
+		<label>External</label>
+		<relief>GTK_RELIEF_NORMAL</relief>
+		<active>False</active>
+		<child>
+		  <left_attach>0</left_attach>
+		  <right_attach>1</right_attach>
+		  <top_attach>0</top_attach>
+		  <bottom_attach>1</bottom_attach>
+		  <xpad>0</xpad>
+		  <ypad>0</ypad>
+		  <xexpand>False</xexpand>
+		  <yexpand>False</yexpand>
+		  <xshrink>False</xshrink>
+		  <yshrink>False</yshrink>
+		  <xfill>True</xfill>
+		  <yfill>True</yfill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkToggleButton</class>
+		<name>trigger_polarity</name>
+		<border_width>2</border_width>
+		<sensitive>False</sensitive>
+		<can_focus>True</can_focus>
+		<signal>
+		  <name>toggled</name>
+		  <handler>on_trigger_polarity_toggled</handler>
+		  <last_modification_time>Wed, 27 Dec 2000 23:22:00 GMT</last_modification_time>
+		</signal>
+		<label>Polarity</label>
+		<relief>GTK_RELIEF_NORMAL</relief>
+		<active>False</active>
+		<child>
+		  <left_attach>1</left_attach>
+		  <right_attach>2</right_attach>
+		  <top_attach>0</top_attach>
+		  <bottom_attach>1</bottom_attach>
+		  <xpad>0</xpad>
+		  <ypad>0</ypad>
+		  <xexpand>False</xexpand>
+		  <yexpand>False</yexpand>
+		  <xshrink>False</xshrink>
+		  <yshrink>False</yshrink>
+		  <xfill>True</xfill>
+		  <yfill>True</yfill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkOptionMenu</class>
+		<name>trigger_mode</name>
+		<border_width>1</border_width>
+		<can_focus>True</can_focus>
+		<items>N/A
+</items>
+		<initial_choice>0</initial_choice>
+		<child>
+		  <left_attach>0</left_attach>
+		  <right_attach>2</right_attach>
+		  <top_attach>1</top_attach>
+		  <bottom_attach>2</bottom_attach>
+		  <xpad>0</xpad>
+		  <ypad>0</ypad>
+		  <xexpand>True</xexpand>
+		  <yexpand>False</yexpand>
+		  <xshrink>False</xshrink>
+		  <yshrink>False</yshrink>
+		  <xfill>True</xfill>
+		  <yfill>False</yfill>
+		</child>
+	      </widget>
+	    </widget>
+	  </widget>
+	</widget>
+      </widget>
+
+      <widget>
+	<class>GtkNotebook</class>
+	<name>notebook2</name>
+	<border_width>5</border_width>
+	<can_focus>True</can_focus>
+	<show_tabs>True</show_tabs>
+	<show_border>True</show_border>
+	<tab_pos>GTK_POS_TOP</tab_pos>
+	<scrollable>False</scrollable>
+	<tab_hborder>2</tab_hborder>
+	<tab_vborder>2</tab_vborder>
+	<popup_enable>False</popup_enable>
+	<child>
+	  <padding>0</padding>
+	  <expand>True</expand>
+	  <fill>True</fill>
+	</child>
+
+	<widget>
+	  <class>GtkHBox</class>
+	  <name>hbox6</name>
+	  <homogeneous>False</homogeneous>
+	  <spacing>0</spacing>
+
+	  <widget>
+	    <class>GtkFrame</class>
+	    <name>exposure_frame</name>
+	    <border_width>5</border_width>
+	    <sensitive>False</sensitive>
+	    <label>AutoExp</label>
+	    <label_xalign>0</label_xalign>
+	    <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	    </child>
+
+	    <widget>
+	      <class>GtkVBox</class>
+	      <name>vbox9</name>
+	      <homogeneous>False</homogeneous>
+	      <spacing>0</spacing>
+
+	      <widget>
+		<class>GtkToggleButton</class>
+		<name>exposure_power</name>
+		<border_width>2</border_width>
+		<sensitive>False</sensitive>
+		<can_focus>True</can_focus>
+		<signal>
+		  <name>toggled</name>
+		  <handler>on_exposure_power_toggled</handler>
+		  <last_modification_time>Wed, 27 Dec 2000 23:23:49 GMT</last_modification_time>
+		</signal>
+		<label>ON</label>
+		<relief>GTK_RELIEF_NORMAL</relief>
+		<active>False</active>
+		<child>
+		  <padding>0</padding>
+		  <expand>False</expand>
+		  <fill>False</fill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkRadioButton</class>
+		<name>exposure_man</name>
+		<sensitive>False</sensitive>
+		<can_focus>True</can_focus>
+		<signal>
+		  <name>toggled</name>
+		  <handler>on_exposure_man_toggled</handler>
+		  <last_modification_time>Thu, 28 Dec 2000 10:34:33 GMT</last_modification_time>
+		</signal>
+		<label>Man</label>
+		<active>True</active>
+		<draw_indicator>True</draw_indicator>
+		<group>exposure</group>
+		<child>
+		  <padding>0</padding>
+		  <expand>False</expand>
+		  <fill>False</fill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkRadioButton</class>
+		<name>exposure_auto</name>
+		<sensitive>False</sensitive>
+		<can_focus>True</can_focus>
+		<label>Auto</label>
+		<active>False</active>
+		<draw_indicator>True</draw_indicator>
+		<group>exposure</group>
+		<child>
+		  <padding>0</padding>
+		  <expand>False</expand>
+		  <fill>False</fill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkButton</class>
+		<name>exposure_op</name>
+		<border_width>2</border_width>
+		<sensitive>False</sensitive>
+		<can_focus>True</can_focus>
+		<signal>
+		  <name>clicked</name>
+		  <handler>on_exposure_op_clicked</handler>
+		  <last_modification_time>Wed, 27 Dec 2000 23:24:10 GMT</last_modification_time>
+		</signal>
+		<label>AUTO</label>
+		<relief>GTK_RELIEF_NORMAL</relief>
+		<child>
+		  <padding>0</padding>
+		  <expand>False</expand>
+		  <fill>False</fill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkVScale</class>
+		<name>exposure_scale</name>
+		<sensitive>False</sensitive>
+		<can_focus>True</can_focus>
+		<draw_value>True</draw_value>
+		<value_pos>GTK_POS_LEFT</value_pos>
+		<digits>0</digits>
+		<policy>GTK_UPDATE_CONTINUOUS</policy>
+		<value>0</value>
+		<lower>0</lower>
+		<upper>255</upper>
+		<step>1</step>
+		<page>10</page>
+		<page_size>0</page_size>
+		<child>
+		  <padding>0</padding>
+		  <expand>True</expand>
+		  <fill>True</fill>
+		</child>
+	      </widget>
+	    </widget>
+	  </widget>
+
+	  <widget>
+	    <class>GtkFrame</class>
+	    <name>iris_frame</name>
+	    <border_width>5</border_width>
+	    <sensitive>False</sensitive>
+	    <label>Iris</label>
+	    <label_xalign>0</label_xalign>
+	    <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	    </child>
+
+	    <widget>
+	      <class>GtkVBox</class>
+	      <name>vbox11</name>
+	      <homogeneous>False</homogeneous>
+	      <spacing>0</spacing>
+
+	      <widget>
+		<class>GtkToggleButton</class>
+		<name>iris_power</name>
+		<border_width>2</border_width>
+		<sensitive>False</sensitive>
+		<can_focus>True</can_focus>
+		<signal>
+		  <name>toggled</name>
+		  <handler>on_iris_power_toggled</handler>
+		  <last_modification_time>Wed, 27 Dec 2000 23:23:52 GMT</last_modification_time>
+		</signal>
+		<label>ON</label>
+		<relief>GTK_RELIEF_NORMAL</relief>
+		<active>False</active>
+		<child>
+		  <padding>0</padding>
+		  <expand>False</expand>
+		  <fill>False</fill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkRadioButton</class>
+		<name>iris_man</name>
+		<sensitive>False</sensitive>
+		<can_focus>True</can_focus>
+		<signal>
+		  <name>toggled</name>
+		  <handler>on_iris_man_toggled</handler>
+		  <last_modification_time>Thu, 28 Dec 2000 10:34:39 GMT</last_modification_time>
+		</signal>
+		<label>Man</label>
+		<active>True</active>
+		<draw_indicator>True</draw_indicator>
+		<group>iris</group>
+		<child>
+		  <padding>0</padding>
+		  <expand>False</expand>
+		  <fill>False</fill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkRadioButton</class>
+		<name>iris_auto</name>
+		<sensitive>False</sensitive>
+		<can_focus>True</can_focus>
+		<label>Auto</label>
+		<active>False</active>
+		<draw_indicator>True</draw_indicator>
+		<group>iris</group>
+		<child>
+		  <padding>0</padding>
+		  <expand>False</expand>
+		  <fill>False</fill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkButton</class>
+		<name>iris_op</name>
+		<border_width>2</border_width>
+		<sensitive>False</sensitive>
+		<can_focus>True</can_focus>
+		<signal>
+		  <name>clicked</name>
+		  <handler>on_iris_op_clicked</handler>
+		  <last_modification_time>Wed, 27 Dec 2000 23:24:14 GMT</last_modification_time>
+		</signal>
+		<label>AUTO</label>
+		<relief>GTK_RELIEF_NORMAL</relief>
+		<child>
+		  <padding>0</padding>
+		  <expand>False</expand>
+		  <fill>False</fill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkVScale</class>
+		<name>iris_scale</name>
+		<sensitive>False</sensitive>
+		<can_focus>True</can_focus>
+		<draw_value>True</draw_value>
+		<value_pos>GTK_POS_LEFT</value_pos>
+		<digits>0</digits>
+		<policy>GTK_UPDATE_CONTINUOUS</policy>
+		<value>0</value>
+		<lower>0</lower>
+		<upper>255</upper>
+		<step>1</step>
+		<page>10</page>
+		<page_size>0</page_size>
+		<child>
+		  <padding>0</padding>
+		  <expand>True</expand>
+		  <fill>True</fill>
+		</child>
+	      </widget>
+	    </widget>
+	  </widget>
+
+	  <widget>
+	    <class>GtkFrame</class>
+	    <name>shutter_frame</name>
+	    <border_width>5</border_width>
+	    <sensitive>False</sensitive>
+	    <label>Shutter</label>
+	    <label_xalign>0</label_xalign>
+	    <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	    </child>
+
+	    <widget>
+	      <class>GtkVBox</class>
+	      <name>vbox12</name>
+	      <homogeneous>False</homogeneous>
+	      <spacing>0</spacing>
+
+	      <widget>
+		<class>GtkToggleButton</class>
+		<name>shutter_power</name>
+		<border_width>2</border_width>
+		<sensitive>False</sensitive>
+		<can_focus>True</can_focus>
+		<signal>
+		  <name>toggled</name>
+		  <handler>on_shutter_power_toggled</handler>
+		  <last_modification_time>Wed, 27 Dec 2000 23:23:57 GMT</last_modification_time>
+		</signal>
+		<label>ON</label>
+		<relief>GTK_RELIEF_NORMAL</relief>
+		<active>False</active>
+		<child>
+		  <padding>0</padding>
+		  <expand>False</expand>
+		  <fill>False</fill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkRadioButton</class>
+		<name>shutter_man</name>
+		<sensitive>False</sensitive>
+		<can_focus>True</can_focus>
+		<signal>
+		  <name>toggled</name>
+		  <handler>on_shutter_man_toggled</handler>
+		  <last_modification_time>Thu, 28 Dec 2000 10:34:47 GMT</last_modification_time>
+		</signal>
+		<label>Man</label>
+		<active>True</active>
+		<draw_indicator>True</draw_indicator>
+		<group>shutter</group>
+		<child>
+		  <padding>0</padding>
+		  <expand>False</expand>
+		  <fill>False</fill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkRadioButton</class>
+		<name>shutter_auto</name>
+		<sensitive>False</sensitive>
+		<can_focus>True</can_focus>
+		<label>Auto</label>
+		<active>False</active>
+		<draw_indicator>True</draw_indicator>
+		<group>shutter</group>
+		<child>
+		  <padding>0</padding>
+		  <expand>False</expand>
+		  <fill>False</fill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkButton</class>
+		<name>shutter_op</name>
+		<border_width>2</border_width>
+		<sensitive>False</sensitive>
+		<can_focus>True</can_focus>
+		<signal>
+		  <name>clicked</name>
+		  <handler>on_shutter_op_clicked</handler>
+		  <last_modification_time>Wed, 27 Dec 2000 23:24:18 GMT</last_modification_time>
+		</signal>
+		<label>AUTO</label>
+		<relief>GTK_RELIEF_NORMAL</relief>
+		<child>
+		  <padding>0</padding>
+		  <expand>False</expand>
+		  <fill>False</fill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkVScale</class>
+		<name>shutter_scale</name>
+		<sensitive>False</sensitive>
+		<can_focus>True</can_focus>
+		<draw_value>True</draw_value>
+		<value_pos>GTK_POS_LEFT</value_pos>
+		<digits>0</digits>
+		<policy>GTK_UPDATE_CONTINUOUS</policy>
+		<value>0</value>
+		<lower>0</lower>
+		<upper>255</upper>
+		<step>1</step>
+		<page>10</page>
+		<page_size>0</page_size>
+		<child>
+		  <padding>0</padding>
+		  <expand>True</expand>
+		  <fill>True</fill>
+		</child>
+	      </widget>
+	    </widget>
+	  </widget>
+
+	  <widget>
+	    <class>GtkFrame</class>
+	    <name>gain_frame</name>
+	    <border_width>5</border_width>
+	    <sensitive>False</sensitive>
+	    <label>Gain</label>
+	    <label_xalign>0</label_xalign>
+	    <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	    </child>
+
+	    <widget>
+	      <class>GtkVBox</class>
+	      <name>vbox13</name>
+	      <homogeneous>False</homogeneous>
+	      <spacing>0</spacing>
+
+	      <widget>
+		<class>GtkToggleButton</class>
+		<name>gain_power</name>
+		<border_width>2</border_width>
+		<sensitive>False</sensitive>
+		<can_focus>True</can_focus>
+		<signal>
+		  <name>toggled</name>
+		  <handler>on_gain_power_toggled</handler>
+		  <last_modification_time>Wed, 27 Dec 2000 23:24:01 GMT</last_modification_time>
+		</signal>
+		<label>ON</label>
+		<relief>GTK_RELIEF_NORMAL</relief>
+		<active>False</active>
+		<child>
+		  <padding>0</padding>
+		  <expand>False</expand>
+		  <fill>False</fill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkRadioButton</class>
+		<name>gain_man</name>
+		<sensitive>False</sensitive>
+		<can_focus>True</can_focus>
+		<signal>
+		  <name>toggled</name>
+		  <handler>on_gain_man_toggled</handler>
+		  <last_modification_time>Thu, 28 Dec 2000 10:34:55 GMT</last_modification_time>
+		</signal>
+		<label>Man</label>
+		<active>True</active>
+		<draw_indicator>True</draw_indicator>
+		<group>gain</group>
+		<child>
+		  <padding>0</padding>
+		  <expand>False</expand>
+		  <fill>False</fill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkRadioButton</class>
+		<name>gain_auto</name>
+		<sensitive>False</sensitive>
+		<can_focus>True</can_focus>
+		<label>Auto</label>
+		<active>False</active>
+		<draw_indicator>True</draw_indicator>
+		<group>gain</group>
+		<child>
+		  <padding>0</padding>
+		  <expand>False</expand>
+		  <fill>False</fill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkButton</class>
+		<name>gain_op</name>
+		<border_width>2</border_width>
+		<sensitive>False</sensitive>
+		<can_focus>True</can_focus>
+		<signal>
+		  <name>clicked</name>
+		  <handler>on_gain_op_clicked</handler>
+		  <last_modification_time>Wed, 27 Dec 2000 23:24:22 GMT</last_modification_time>
+		</signal>
+		<label>AUTO</label>
+		<relief>GTK_RELIEF_NORMAL</relief>
+		<child>
+		  <padding>0</padding>
+		  <expand>False</expand>
+		  <fill>False</fill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkVScale</class>
+		<name>gain_scale</name>
+		<sensitive>False</sensitive>
+		<can_focus>True</can_focus>
+		<draw_value>True</draw_value>
+		<value_pos>GTK_POS_LEFT</value_pos>
+		<digits>0</digits>
+		<policy>GTK_UPDATE_CONTINUOUS</policy>
+		<value>0</value>
+		<lower>0</lower>
+		<upper>255</upper>
+		<step>1</step>
+		<page>10</page>
+		<page_size>0</page_size>
+		<child>
+		  <padding>0</padding>
+		  <expand>True</expand>
+		  <fill>True</fill>
+		</child>
+	      </widget>
+	    </widget>
+	  </widget>
+
+	  <widget>
+	    <class>GtkFrame</class>
+	    <name>filter_frame</name>
+	    <border_width>5</border_width>
+	    <sensitive>False</sensitive>
+	    <label>Filter</label>
+	    <label_xalign>0</label_xalign>
+	    <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	    </child>
+
+	    <widget>
+	      <class>GtkVBox</class>
+	      <name>vbox10</name>
+	      <homogeneous>False</homogeneous>
+	      <spacing>0</spacing>
+
+	      <widget>
+		<class>GtkToggleButton</class>
+		<name>filter_power</name>
+		<border_width>2</border_width>
+		<sensitive>False</sensitive>
+		<can_focus>True</can_focus>
+		<signal>
+		  <name>toggled</name>
+		  <handler>on_filter_power_toggled</handler>
+		  <last_modification_time>Wed, 27 Dec 2000 23:24:05 GMT</last_modification_time>
+		</signal>
+		<label>ON</label>
+		<relief>GTK_RELIEF_NORMAL</relief>
+		<active>False</active>
+		<child>
+		  <padding>0</padding>
+		  <expand>False</expand>
+		  <fill>False</fill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkRadioButton</class>
+		<name>filter_man</name>
+		<sensitive>False</sensitive>
+		<can_focus>True</can_focus>
+		<signal>
+		  <name>toggled</name>
+		  <handler>on_filter_man_toggled</handler>
+		  <last_modification_time>Thu, 28 Dec 2000 10:35:04 GMT</last_modification_time>
+		</signal>
+		<label>Man</label>
+		<active>True</active>
+		<draw_indicator>True</draw_indicator>
+		<group>filter</group>
+		<child>
+		  <padding>0</padding>
+		  <expand>False</expand>
+		  <fill>False</fill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkRadioButton</class>
+		<name>filter_auto</name>
+		<sensitive>False</sensitive>
+		<can_focus>True</can_focus>
+		<label>Auto</label>
+		<active>False</active>
+		<draw_indicator>True</draw_indicator>
+		<group>filter</group>
+		<child>
+		  <padding>0</padding>
+		  <expand>False</expand>
+		  <fill>False</fill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkButton</class>
+		<name>filter_op</name>
+		<border_width>2</border_width>
+		<sensitive>False</sensitive>
+		<can_focus>True</can_focus>
+		<signal>
+		  <name>clicked</name>
+		  <handler>on_filter_op_clicked</handler>
+		  <last_modification_time>Wed, 27 Dec 2000 23:24:27 GMT</last_modification_time>
+		</signal>
+		<label>AUTO</label>
+		<relief>GTK_RELIEF_NORMAL</relief>
+		<child>
+		  <padding>0</padding>
+		  <expand>False</expand>
+		  <fill>False</fill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkVScale</class>
+		<name>filter_scale</name>
+		<sensitive>False</sensitive>
+		<can_focus>True</can_focus>
+		<draw_value>True</draw_value>
+		<value_pos>GTK_POS_LEFT</value_pos>
+		<digits>0</digits>
+		<policy>GTK_UPDATE_CONTINUOUS</policy>
+		<value>0</value>
+		<lower>0</lower>
+		<upper>255</upper>
+		<step>1</step>
+		<page>10</page>
+		<page_size>0</page_size>
+		<child>
+		  <padding>0</padding>
+		  <expand>True</expand>
+		  <fill>True</fill>
+		</child>
+	      </widget>
+	    </widget>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <child_name>Notebook:tab</child_name>
+	  <name>label56</name>
+	  <label>Aperture</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkVBox</class>
+	  <name>vbox58</name>
+	  <homogeneous>False</homogeneous>
+	  <spacing>0</spacing>
+
+	  <widget>
+	    <class>GtkFrame</class>
+	    <name>hue_frame</name>
+	    <border_width>5</border_width>
+	    <sensitive>False</sensitive>
+	    <label>Hue</label>
+	    <label_xalign>0</label_xalign>
+	    <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>True</fill>
+	    </child>
+
+	    <widget>
+	      <class>GtkHBox</class>
+	      <name>hbox8</name>
+	      <homogeneous>False</homogeneous>
+	      <spacing>0</spacing>
+
+	      <widget>
+		<class>GtkTable</class>
+		<name>table4</name>
+		<rows>2</rows>
+		<columns>2</columns>
+		<homogeneous>False</homogeneous>
+		<row_spacing>0</row_spacing>
+		<column_spacing>0</column_spacing>
+		<child>
+		  <padding>0</padding>
+		  <expand>False</expand>
+		  <fill>True</fill>
+		</child>
+
+		<widget>
+		  <class>GtkRadioButton</class>
+		  <name>hue_man</name>
+		  <sensitive>False</sensitive>
+		  <can_focus>True</can_focus>
+		  <signal>
+		    <name>toggled</name>
+		    <handler>on_hue_man_toggled</handler>
+		    <last_modification_time>Thu, 28 Dec 2000 10:33:56 GMT</last_modification_time>
+		  </signal>
+		  <label>Man</label>
+		  <active>True</active>
+		  <draw_indicator>True</draw_indicator>
+		  <group>hue</group>
+		  <child>
+		    <left_attach>1</left_attach>
+		    <right_attach>2</right_attach>
+		    <top_attach>0</top_attach>
+		    <bottom_attach>1</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>False</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>False</xfill>
+		    <yfill>False</yfill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkRadioButton</class>
+		  <name>hue_auto</name>
+		  <sensitive>False</sensitive>
+		  <can_focus>True</can_focus>
+		  <label>Auto</label>
+		  <active>False</active>
+		  <draw_indicator>True</draw_indicator>
+		  <group>hue</group>
+		  <child>
+		    <left_attach>1</left_attach>
+		    <right_attach>2</right_attach>
+		    <top_attach>1</top_attach>
+		    <bottom_attach>2</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>False</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>False</xfill>
+		    <yfill>False</yfill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkButton</class>
+		  <name>hue_op</name>
+		  <border_width>2</border_width>
+		  <sensitive>False</sensitive>
+		  <can_focus>True</can_focus>
+		  <signal>
+		    <name>clicked</name>
+		    <handler>on_hue_op_clicked</handler>
+		    <last_modification_time>Wed, 27 Dec 2000 23:20:11 GMT</last_modification_time>
+		  </signal>
+		  <label>AUTO</label>
+		  <relief>GTK_RELIEF_NORMAL</relief>
+		  <child>
+		    <left_attach>0</left_attach>
+		    <right_attach>1</right_attach>
+		    <top_attach>1</top_attach>
+		    <bottom_attach>2</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>False</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>False</xfill>
+		    <yfill>False</yfill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkAlignment</class>
+		  <name>alignment3</name>
+		  <xalign>0.5</xalign>
+		  <yalign>0.5</yalign>
+		  <xscale>1</xscale>
+		  <yscale>1</yscale>
+		  <child>
+		    <left_attach>0</left_attach>
+		    <right_attach>1</right_attach>
+		    <top_attach>0</top_attach>
+		    <bottom_attach>1</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>False</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>True</xfill>
+		    <yfill>False</yfill>
+		  </child>
+
+		  <widget>
+		    <class>GtkToggleButton</class>
+		    <name>hue_power</name>
+		    <border_width>2</border_width>
+		    <sensitive>False</sensitive>
+		    <can_focus>True</can_focus>
+		    <signal>
+		      <name>toggled</name>
+		      <handler>on_hue_power_toggled</handler>
+		      <last_modification_time>Wed, 27 Dec 2000 23:20:06 GMT</last_modification_time>
+		    </signal>
+		    <label>ON</label>
+		    <relief>GTK_RELIEF_NORMAL</relief>
+		    <active>False</active>
+		  </widget>
+		</widget>
+	      </widget>
+
+	      <widget>
+		<class>GtkHScale</class>
+		<name>hue_scale</name>
+		<sensitive>False</sensitive>
+		<can_focus>True</can_focus>
+		<draw_value>True</draw_value>
+		<value_pos>GTK_POS_TOP</value_pos>
+		<digits>0</digits>
+		<policy>GTK_UPDATE_CONTINUOUS</policy>
+		<value>0</value>
+		<lower>0</lower>
+		<upper>255</upper>
+		<step>1</step>
+		<page>10</page>
+		<page_size>0</page_size>
+		<child>
+		  <padding>0</padding>
+		  <expand>True</expand>
+		  <fill>True</fill>
+		</child>
+	      </widget>
+	    </widget>
+	  </widget>
+
+	  <widget>
+	    <class>GtkFrame</class>
+	    <name>saturation_frame</name>
+	    <border_width>5</border_width>
+	    <sensitive>False</sensitive>
+	    <label>Saturation</label>
+	    <label_xalign>0</label_xalign>
+	    <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>True</fill>
+	    </child>
+
+	    <widget>
+	      <class>GtkHBox</class>
+	      <name>hbox7</name>
+	      <homogeneous>False</homogeneous>
+	      <spacing>0</spacing>
+
+	      <widget>
+		<class>GtkTable</class>
+		<name>table3</name>
+		<rows>2</rows>
+		<columns>2</columns>
+		<homogeneous>False</homogeneous>
+		<row_spacing>0</row_spacing>
+		<column_spacing>0</column_spacing>
+		<child>
+		  <padding>0</padding>
+		  <expand>False</expand>
+		  <fill>True</fill>
+		</child>
+
+		<widget>
+		  <class>GtkRadioButton</class>
+		  <name>saturation_man</name>
+		  <sensitive>False</sensitive>
+		  <can_focus>True</can_focus>
+		  <signal>
+		    <name>toggled</name>
+		    <handler>on_saturation_man_toggled</handler>
+		    <last_modification_time>Thu, 28 Dec 2000 10:33:49 GMT</last_modification_time>
+		  </signal>
+		  <label>Man</label>
+		  <active>True</active>
+		  <draw_indicator>True</draw_indicator>
+		  <group>saturation</group>
+		  <child>
+		    <left_attach>1</left_attach>
+		    <right_attach>2</right_attach>
+		    <top_attach>0</top_attach>
+		    <bottom_attach>1</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>False</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>False</xfill>
+		    <yfill>False</yfill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkRadioButton</class>
+		  <name>saturation_auto</name>
+		  <sensitive>False</sensitive>
+		  <can_focus>True</can_focus>
+		  <label>Auto</label>
+		  <active>False</active>
+		  <draw_indicator>True</draw_indicator>
+		  <group>saturation</group>
+		  <child>
+		    <left_attach>1</left_attach>
+		    <right_attach>2</right_attach>
+		    <top_attach>1</top_attach>
+		    <bottom_attach>2</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>False</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>False</xfill>
+		    <yfill>False</yfill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkButton</class>
+		  <name>saturation_op</name>
+		  <border_width>2</border_width>
+		  <sensitive>False</sensitive>
+		  <can_focus>True</can_focus>
+		  <signal>
+		    <name>clicked</name>
+		    <handler>on_saturation_op_clicked</handler>
+		    <last_modification_time>Wed, 27 Dec 2000 23:20:02 GMT</last_modification_time>
+		  </signal>
+		  <label>AUTO</label>
+		  <relief>GTK_RELIEF_NORMAL</relief>
+		  <child>
+		    <left_attach>0</left_attach>
+		    <right_attach>1</right_attach>
+		    <top_attach>1</top_attach>
+		    <bottom_attach>2</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>False</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>False</xfill>
+		    <yfill>False</yfill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkAlignment</class>
+		  <name>alignment2</name>
+		  <xalign>0.5</xalign>
+		  <yalign>0.5</yalign>
+		  <xscale>1</xscale>
+		  <yscale>1</yscale>
+		  <child>
+		    <left_attach>0</left_attach>
+		    <right_attach>1</right_attach>
+		    <top_attach>0</top_attach>
+		    <bottom_attach>1</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>False</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>True</xfill>
+		    <yfill>False</yfill>
+		  </child>
+
+		  <widget>
+		    <class>GtkToggleButton</class>
+		    <name>saturation_power</name>
+		    <border_width>2</border_width>
+		    <sensitive>False</sensitive>
+		    <can_focus>True</can_focus>
+		    <signal>
+		      <name>toggled</name>
+		      <handler>on_saturation_power_toggled</handler>
+		      <last_modification_time>Wed, 27 Dec 2000 23:19:58 GMT</last_modification_time>
+		    </signal>
+		    <label>ON</label>
+		    <relief>GTK_RELIEF_NORMAL</relief>
+		    <active>False</active>
+		  </widget>
+		</widget>
+	      </widget>
+
+	      <widget>
+		<class>GtkHScale</class>
+		<name>saturation_scale</name>
+		<sensitive>False</sensitive>
+		<can_focus>True</can_focus>
+		<draw_value>True</draw_value>
+		<value_pos>GTK_POS_TOP</value_pos>
+		<digits>0</digits>
+		<policy>GTK_UPDATE_CONTINUOUS</policy>
+		<value>0</value>
+		<lower>0</lower>
+		<upper>255</upper>
+		<step>1</step>
+		<page>10</page>
+		<page_size>0</page_size>
+		<child>
+		  <padding>0</padding>
+		  <expand>True</expand>
+		  <fill>True</fill>
+		</child>
+	      </widget>
+	    </widget>
+	  </widget>
+
+	  <widget>
+	    <class>GtkFrame</class>
+	    <name>whitebal_frame</name>
+	    <border_width>5</border_width>
+	    <sensitive>False</sensitive>
+	    <label>White Balance</label>
+	    <label_xalign>0</label_xalign>
+	    <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>True</fill>
+	    </child>
+
+	    <widget>
+	      <class>GtkHBox</class>
+	      <name>hbox10</name>
+	      <homogeneous>False</homogeneous>
+	      <spacing>0</spacing>
+
+	      <widget>
+		<class>GtkVBox</class>
+		<name>vbox15</name>
+		<homogeneous>False</homogeneous>
+		<spacing>0</spacing>
+		<child>
+		  <padding>0</padding>
+		  <expand>False</expand>
+		  <fill>False</fill>
+		</child>
+
+		<widget>
+		  <class>GtkToggleButton</class>
+		  <name>whitebal_power</name>
+		  <border_width>2</border_width>
+		  <sensitive>False</sensitive>
+		  <can_focus>True</can_focus>
+		  <signal>
+		    <name>toggled</name>
+		    <handler>on_whitebal_power_toggled</handler>
+		    <last_modification_time>Wed, 27 Dec 2000 23:20:16 GMT</last_modification_time>
+		  </signal>
+		  <label>ON</label>
+		  <relief>GTK_RELIEF_NORMAL</relief>
+		  <active>False</active>
+		  <child>
+		    <padding>0</padding>
+		    <expand>False</expand>
+		    <fill>False</fill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkRadioButton</class>
+		  <name>whitebal_man</name>
+		  <sensitive>False</sensitive>
+		  <can_focus>True</can_focus>
+		  <signal>
+		    <name>toggled</name>
+		    <handler>on_whitebal_man_toggled</handler>
+		    <last_modification_time>Thu, 28 Dec 2000 10:34:07 GMT</last_modification_time>
+		  </signal>
+		  <label>Man</label>
+		  <active>True</active>
+		  <draw_indicator>True</draw_indicator>
+		  <group>whitebal</group>
+		  <child>
+		    <padding>0</padding>
+		    <expand>False</expand>
+		    <fill>False</fill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkRadioButton</class>
+		  <name>whitebal_auto</name>
+		  <sensitive>False</sensitive>
+		  <can_focus>True</can_focus>
+		  <label>Auto</label>
+		  <active>True</active>
+		  <draw_indicator>True</draw_indicator>
+		  <group>whitebal</group>
+		  <child>
+		    <padding>0</padding>
+		    <expand>False</expand>
+		    <fill>False</fill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkButton</class>
+		  <name>whitebal_op</name>
+		  <border_width>2</border_width>
+		  <sensitive>False</sensitive>
+		  <can_focus>True</can_focus>
+		  <signal>
+		    <name>clicked</name>
+		    <handler>on_whitebal_op_clicked</handler>
+		    <last_modification_time>Wed, 27 Dec 2000 23:20:20 GMT</last_modification_time>
+		  </signal>
+		  <label>AUTO</label>
+		  <relief>GTK_RELIEF_NORMAL</relief>
+		  <child>
+		    <padding>0</padding>
+		    <expand>False</expand>
+		    <fill>False</fill>
+		  </child>
+		</widget>
+	      </widget>
+
+	      <widget>
+		<class>GtkHBox</class>
+		<name>hbox46</name>
+		<homogeneous>False</homogeneous>
+		<spacing>0</spacing>
+		<child>
+		  <padding>0</padding>
+		  <expand>True</expand>
+		  <fill>True</fill>
+		</child>
+
+		<widget>
+		  <class>GtkVSeparator</class>
+		  <name>vseparator1</name>
+		  <child>
+		    <padding>1</padding>
+		    <expand>False</expand>
+		    <fill>True</fill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkTable</class>
+		  <name>table22</name>
+		  <rows>2</rows>
+		  <columns>2</columns>
+		  <homogeneous>False</homogeneous>
+		  <row_spacing>0</row_spacing>
+		  <column_spacing>0</column_spacing>
+		  <child>
+		    <padding>0</padding>
+		    <expand>True</expand>
+		    <fill>True</fill>
+		  </child>
+
+		  <widget>
+		    <class>GtkHScale</class>
+		    <name>whitebal_BU_scale</name>
+		    <sensitive>False</sensitive>
+		    <can_focus>True</can_focus>
+		    <draw_value>True</draw_value>
+		    <value_pos>GTK_POS_TOP</value_pos>
+		    <digits>0</digits>
+		    <policy>GTK_UPDATE_CONTINUOUS</policy>
+		    <value>0</value>
+		    <lower>0</lower>
+		    <upper>255</upper>
+		    <step>1</step>
+		    <page>10</page>
+		    <page_size>0</page_size>
+		    <child>
+		      <left_attach>1</left_attach>
+		      <right_attach>2</right_attach>
+		      <top_attach>0</top_attach>
+		      <bottom_attach>1</bottom_attach>
+		      <xpad>0</xpad>
+		      <ypad>0</ypad>
+		      <xexpand>True</xexpand>
+		      <yexpand>True</yexpand>
+		      <xshrink>False</xshrink>
+		      <yshrink>False</yshrink>
+		      <xfill>True</xfill>
+		      <yfill>True</yfill>
+		    </child>
+		  </widget>
+
+		  <widget>
+		    <class>GtkHScale</class>
+		    <name>whitebal_RV_scale</name>
+		    <sensitive>False</sensitive>
+		    <can_focus>True</can_focus>
+		    <draw_value>True</draw_value>
+		    <value_pos>GTK_POS_TOP</value_pos>
+		    <digits>0</digits>
+		    <policy>GTK_UPDATE_CONTINUOUS</policy>
+		    <value>0</value>
+		    <lower>0</lower>
+		    <upper>255</upper>
+		    <step>1</step>
+		    <page>10</page>
+		    <page_size>0</page_size>
+		    <child>
+		      <left_attach>1</left_attach>
+		      <right_attach>2</right_attach>
+		      <top_attach>1</top_attach>
+		      <bottom_attach>2</bottom_attach>
+		      <xpad>0</xpad>
+		      <ypad>0</ypad>
+		      <xexpand>True</xexpand>
+		      <yexpand>True</yexpand>
+		      <xshrink>False</xshrink>
+		      <yshrink>False</yshrink>
+		      <xfill>True</xfill>
+		      <yfill>True</yfill>
+		    </child>
+		  </widget>
+
+		  <widget>
+		    <class>GtkLabel</class>
+		    <name>label44</name>
+		    <label>Blue/
+U-field:</label>
+		    <justify>GTK_JUSTIFY_CENTER</justify>
+		    <wrap>False</wrap>
+		    <xalign>0</xalign>
+		    <yalign>0.5</yalign>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <child>
+		      <left_attach>0</left_attach>
+		      <right_attach>1</right_attach>
+		      <top_attach>0</top_attach>
+		      <bottom_attach>1</bottom_attach>
+		      <xpad>0</xpad>
+		      <ypad>0</ypad>
+		      <xexpand>False</xexpand>
+		      <yexpand>False</yexpand>
+		      <xshrink>False</xshrink>
+		      <yshrink>False</yshrink>
+		      <xfill>True</xfill>
+		      <yfill>False</yfill>
+		    </child>
+		  </widget>
+
+		  <widget>
+		    <class>GtkLabel</class>
+		    <name>label45</name>
+		    <label>Red/
+V-field:</label>
+		    <justify>GTK_JUSTIFY_CENTER</justify>
+		    <wrap>False</wrap>
+		    <xalign>0</xalign>
+		    <yalign>0.5</yalign>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <child>
+		      <left_attach>0</left_attach>
+		      <right_attach>1</right_attach>
+		      <top_attach>1</top_attach>
+		      <bottom_attach>2</bottom_attach>
+		      <xpad>0</xpad>
+		      <ypad>0</ypad>
+		      <xexpand>False</xexpand>
+		      <yexpand>False</yexpand>
+		      <xshrink>False</xshrink>
+		      <yshrink>False</yshrink>
+		      <xfill>True</xfill>
+		      <yfill>False</yfill>
+		    </child>
+		  </widget>
+		</widget>
+	      </widget>
+	    </widget>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <child_name>Notebook:tab</child_name>
+	  <name>label57</name>
+	  <label>Color</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkVBox</class>
+	  <name>vbox59</name>
+	  <homogeneous>False</homogeneous>
+	  <spacing>0</spacing>
+
+	  <widget>
+	    <class>GtkFrame</class>
+	    <name>brightness_frame</name>
+	    <border_width>5</border_width>
+	    <sensitive>False</sensitive>
+	    <label>Brightness</label>
+	    <label_xalign>0</label_xalign>
+	    <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>True</fill>
+	    </child>
+
+	    <widget>
+	      <class>GtkHBox</class>
+	      <name>hbox22</name>
+	      <homogeneous>False</homogeneous>
+	      <spacing>0</spacing>
+
+	      <widget>
+		<class>GtkTable</class>
+		<name>table11</name>
+		<rows>2</rows>
+		<columns>2</columns>
+		<homogeneous>False</homogeneous>
+		<row_spacing>0</row_spacing>
+		<column_spacing>0</column_spacing>
+		<child>
+		  <padding>0</padding>
+		  <expand>False</expand>
+		  <fill>True</fill>
+		</child>
+
+		<widget>
+		  <class>GtkRadioButton</class>
+		  <name>brightness_man</name>
+		  <sensitive>False</sensitive>
+		  <can_focus>True</can_focus>
+		  <signal>
+		    <name>toggled</name>
+		    <handler>on_brightness_man_toggled</handler>
+		    <last_modification_time>Thu, 28 Dec 2000 10:33:32 GMT</last_modification_time>
+		  </signal>
+		  <label>Man</label>
+		  <active>True</active>
+		  <draw_indicator>True</draw_indicator>
+		  <group>brightness</group>
+		  <child>
+		    <left_attach>1</left_attach>
+		    <right_attach>2</right_attach>
+		    <top_attach>0</top_attach>
+		    <bottom_attach>1</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>False</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>False</xfill>
+		    <yfill>False</yfill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkRadioButton</class>
+		  <name>brightness_auto</name>
+		  <sensitive>False</sensitive>
+		  <can_focus>True</can_focus>
+		  <label>Auto</label>
+		  <active>False</active>
+		  <draw_indicator>True</draw_indicator>
+		  <group>brightness</group>
+		  <child>
+		    <left_attach>1</left_attach>
+		    <right_attach>2</right_attach>
+		    <top_attach>1</top_attach>
+		    <bottom_attach>2</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>False</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>False</xfill>
+		    <yfill>False</yfill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkButton</class>
+		  <name>brightness_op</name>
+		  <border_width>2</border_width>
+		  <sensitive>False</sensitive>
+		  <can_focus>True</can_focus>
+		  <signal>
+		    <name>clicked</name>
+		    <handler>on_brightness_op_clicked</handler>
+		    <last_modification_time>Wed, 27 Dec 2000 23:19:40 GMT</last_modification_time>
+		  </signal>
+		  <label>AUTO</label>
+		  <relief>GTK_RELIEF_NORMAL</relief>
+		  <child>
+		    <left_attach>0</left_attach>
+		    <right_attach>1</right_attach>
+		    <top_attach>1</top_attach>
+		    <bottom_attach>2</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>False</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>False</xfill>
+		    <yfill>False</yfill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkAlignment</class>
+		  <name>alignment7</name>
+		  <xalign>0.5</xalign>
+		  <yalign>0.5</yalign>
+		  <xscale>1</xscale>
+		  <yscale>1</yscale>
+		  <child>
+		    <left_attach>0</left_attach>
+		    <right_attach>1</right_attach>
+		    <top_attach>0</top_attach>
+		    <bottom_attach>1</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>False</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>True</xfill>
+		    <yfill>False</yfill>
+		  </child>
+
+		  <widget>
+		    <class>GtkToggleButton</class>
+		    <name>brightness_power</name>
+		    <border_width>2</border_width>
+		    <sensitive>False</sensitive>
+		    <can_focus>True</can_focus>
+		    <signal>
+		      <name>toggled</name>
+		      <handler>on_brightness_power_toggled</handler>
+		      <last_modification_time>Wed, 27 Dec 2000 23:19:31 GMT</last_modification_time>
+		    </signal>
+		    <label>ON</label>
+		    <relief>GTK_RELIEF_NORMAL</relief>
+		    <active>False</active>
+		  </widget>
+		</widget>
+	      </widget>
+
+	      <widget>
+		<class>GtkHScale</class>
+		<name>brightness_scale</name>
+		<sensitive>False</sensitive>
+		<can_focus>True</can_focus>
+		<draw_value>True</draw_value>
+		<value_pos>GTK_POS_TOP</value_pos>
+		<digits>0</digits>
+		<policy>GTK_UPDATE_CONTINUOUS</policy>
+		<value>0</value>
+		<lower>0</lower>
+		<upper>255</upper>
+		<step>1</step>
+		<page>10</page>
+		<page_size>0</page_size>
+		<child>
+		  <padding>0</padding>
+		  <expand>True</expand>
+		  <fill>True</fill>
+		</child>
+	      </widget>
+	    </widget>
+	  </widget>
+
+	  <widget>
+	    <class>GtkFrame</class>
+	    <name>gamma_frame</name>
+	    <border_width>5</border_width>
+	    <sensitive>False</sensitive>
+	    <label>Gamma</label>
+	    <label_xalign>0</label_xalign>
+	    <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>True</fill>
+	    </child>
+
+	    <widget>
+	      <class>GtkHBox</class>
+	      <name>hbox23</name>
+	      <homogeneous>False</homogeneous>
+	      <spacing>0</spacing>
+
+	      <widget>
+		<class>GtkTable</class>
+		<name>table12</name>
+		<rows>2</rows>
+		<columns>2</columns>
+		<homogeneous>False</homogeneous>
+		<row_spacing>0</row_spacing>
+		<column_spacing>0</column_spacing>
+		<child>
+		  <padding>0</padding>
+		  <expand>False</expand>
+		  <fill>True</fill>
+		</child>
+
+		<widget>
+		  <class>GtkRadioButton</class>
+		  <name>gamma_man</name>
+		  <sensitive>False</sensitive>
+		  <can_focus>True</can_focus>
+		  <signal>
+		    <name>toggled</name>
+		    <handler>on_gamma_man_toggled</handler>
+		    <last_modification_time>Thu, 28 Dec 2000 10:33:39 GMT</last_modification_time>
+		  </signal>
+		  <label>Man</label>
+		  <active>True</active>
+		  <draw_indicator>True</draw_indicator>
+		  <group>gamma</group>
+		  <child>
+		    <left_attach>1</left_attach>
+		    <right_attach>2</right_attach>
+		    <top_attach>0</top_attach>
+		    <bottom_attach>1</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>False</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>False</xfill>
+		    <yfill>False</yfill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkRadioButton</class>
+		  <name>gamma_auto</name>
+		  <sensitive>False</sensitive>
+		  <can_focus>True</can_focus>
+		  <label>Auto</label>
+		  <active>False</active>
+		  <draw_indicator>True</draw_indicator>
+		  <group>gamma</group>
+		  <child>
+		    <left_attach>1</left_attach>
+		    <right_attach>2</right_attach>
+		    <top_attach>1</top_attach>
+		    <bottom_attach>2</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>False</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>False</xfill>
+		    <yfill>False</yfill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkButton</class>
+		  <name>gamma_op</name>
+		  <border_width>2</border_width>
+		  <sensitive>False</sensitive>
+		  <can_focus>True</can_focus>
+		  <signal>
+		    <name>clicked</name>
+		    <handler>on_gamma_op_clicked</handler>
+		    <last_modification_time>Wed, 27 Dec 2000 23:19:53 GMT</last_modification_time>
+		  </signal>
+		  <label>AUTO</label>
+		  <relief>GTK_RELIEF_NORMAL</relief>
+		  <child>
+		    <left_attach>0</left_attach>
+		    <right_attach>1</right_attach>
+		    <top_attach>1</top_attach>
+		    <bottom_attach>2</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>False</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>False</xfill>
+		    <yfill>False</yfill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkAlignment</class>
+		  <name>alignment8</name>
+		  <xalign>0.5</xalign>
+		  <yalign>0.5</yalign>
+		  <xscale>1</xscale>
+		  <yscale>1</yscale>
+		  <child>
+		    <left_attach>0</left_attach>
+		    <right_attach>1</right_attach>
+		    <top_attach>0</top_attach>
+		    <bottom_attach>1</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>False</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>True</xfill>
+		    <yfill>False</yfill>
+		  </child>
+
+		  <widget>
+		    <class>GtkToggleButton</class>
+		    <name>gamma_power</name>
+		    <border_width>2</border_width>
+		    <sensitive>False</sensitive>
+		    <can_focus>True</can_focus>
+		    <signal>
+		      <name>toggled</name>
+		      <handler>on_gamma_power_toggled</handler>
+		      <last_modification_time>Wed, 27 Dec 2000 23:19:49 GMT</last_modification_time>
+		    </signal>
+		    <label>ON</label>
+		    <relief>GTK_RELIEF_NORMAL</relief>
+		    <active>False</active>
+		  </widget>
+		</widget>
+	      </widget>
+
+	      <widget>
+		<class>GtkHScale</class>
+		<name>gamma_scale</name>
+		<sensitive>False</sensitive>
+		<can_focus>True</can_focus>
+		<draw_value>True</draw_value>
+		<value_pos>GTK_POS_TOP</value_pos>
+		<digits>0</digits>
+		<policy>GTK_UPDATE_CONTINUOUS</policy>
+		<value>0</value>
+		<lower>0</lower>
+		<upper>255</upper>
+		<step>1</step>
+		<page>10</page>
+		<page_size>0</page_size>
+		<child>
+		  <padding>0</padding>
+		  <expand>True</expand>
+		  <fill>True</fill>
+		</child>
+	      </widget>
+	    </widget>
+	  </widget>
+
+	  <widget>
+	    <class>GtkFrame</class>
+	    <name>sharpness_frame</name>
+	    <border_width>5</border_width>
+	    <sensitive>False</sensitive>
+	    <label>Sharpness</label>
+	    <label_xalign>0</label_xalign>
+	    <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>True</fill>
+	    </child>
+
+	    <widget>
+	      <class>GtkHBox</class>
+	      <name>hbox21</name>
+	      <homogeneous>False</homogeneous>
+	      <spacing>0</spacing>
+
+	      <widget>
+		<class>GtkTable</class>
+		<name>table10</name>
+		<rows>2</rows>
+		<columns>2</columns>
+		<homogeneous>False</homogeneous>
+		<row_spacing>0</row_spacing>
+		<column_spacing>0</column_spacing>
+		<child>
+		  <padding>0</padding>
+		  <expand>False</expand>
+		  <fill>True</fill>
+		</child>
+
+		<widget>
+		  <class>GtkRadioButton</class>
+		  <name>sharpness_man</name>
+		  <sensitive>False</sensitive>
+		  <can_focus>True</can_focus>
+		  <signal>
+		    <name>toggled</name>
+		    <handler>on_sharpness_man_toggled</handler>
+		    <last_modification_time>Thu, 28 Dec 2000 10:34:12 GMT</last_modification_time>
+		  </signal>
+		  <label>Man</label>
+		  <active>True</active>
+		  <draw_indicator>True</draw_indicator>
+		  <group>sharpness</group>
+		  <child>
+		    <left_attach>1</left_attach>
+		    <right_attach>2</right_attach>
+		    <top_attach>0</top_attach>
+		    <bottom_attach>1</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>False</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>False</xfill>
+		    <yfill>False</yfill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkRadioButton</class>
+		  <name>sharpness_auto</name>
+		  <sensitive>False</sensitive>
+		  <can_focus>True</can_focus>
+		  <label>Auto</label>
+		  <active>False</active>
+		  <draw_indicator>True</draw_indicator>
+		  <group>sharpness</group>
+		  <child>
+		    <left_attach>1</left_attach>
+		    <right_attach>2</right_attach>
+		    <top_attach>1</top_attach>
+		    <bottom_attach>2</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>False</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>False</xfill>
+		    <yfill>False</yfill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkButton</class>
+		  <name>sharpness_op</name>
+		  <border_width>2</border_width>
+		  <sensitive>False</sensitive>
+		  <can_focus>True</can_focus>
+		  <signal>
+		    <name>clicked</name>
+		    <handler>on_sharpness_op_clicked</handler>
+		    <last_modification_time>Wed, 27 Dec 2000 23:20:32 GMT</last_modification_time>
+		  </signal>
+		  <label>AUTO</label>
+		  <relief>GTK_RELIEF_NORMAL</relief>
+		  <child>
+		    <left_attach>0</left_attach>
+		    <right_attach>1</right_attach>
+		    <top_attach>1</top_attach>
+		    <bottom_attach>2</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>False</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>False</xfill>
+		    <yfill>False</yfill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkAlignment</class>
+		  <name>alignment6</name>
+		  <xalign>0.5</xalign>
+		  <yalign>0.5</yalign>
+		  <xscale>1</xscale>
+		  <yscale>1</yscale>
+		  <child>
+		    <left_attach>0</left_attach>
+		    <right_attach>1</right_attach>
+		    <top_attach>0</top_attach>
+		    <bottom_attach>1</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>False</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>True</xfill>
+		    <yfill>False</yfill>
+		  </child>
+
+		  <widget>
+		    <class>GtkToggleButton</class>
+		    <name>sharpness_power</name>
+		    <border_width>2</border_width>
+		    <sensitive>False</sensitive>
+		    <can_focus>True</can_focus>
+		    <signal>
+		      <name>toggled</name>
+		      <handler>on_sharpness_power_toggled</handler>
+		      <last_modification_time>Wed, 27 Dec 2000 23:20:27 GMT</last_modification_time>
+		    </signal>
+		    <label>ON</label>
+		    <relief>GTK_RELIEF_NORMAL</relief>
+		    <active>False</active>
+		  </widget>
+		</widget>
+	      </widget>
+
+	      <widget>
+		<class>GtkHScale</class>
+		<name>sharpness_scale</name>
+		<sensitive>False</sensitive>
+		<can_focus>True</can_focus>
+		<draw_value>True</draw_value>
+		<value_pos>GTK_POS_TOP</value_pos>
+		<digits>0</digits>
+		<policy>GTK_UPDATE_CONTINUOUS</policy>
+		<value>0</value>
+		<lower>0</lower>
+		<upper>255</upper>
+		<step>1</step>
+		<page>10</page>
+		<page_size>0</page_size>
+		<child>
+		  <padding>0</padding>
+		  <expand>True</expand>
+		  <fill>True</fill>
+		</child>
+	      </widget>
+	    </widget>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <child_name>Notebook:tab</child_name>
+	  <name>label58</name>
+	  <label>Luminance</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkVBox</class>
+	  <name>vbox60</name>
+	  <homogeneous>False</homogeneous>
+	  <spacing>0</spacing>
+
+	  <widget>
+	    <class>GtkFrame</class>
+	    <name>temp_frame</name>
+	    <border_width>5</border_width>
+	    <sensitive>False</sensitive>
+	    <label>Temperature</label>
+	    <label_xalign>0</label_xalign>
+	    <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>True</fill>
+	    </child>
+
+	    <widget>
+	      <class>GtkHBox</class>
+	      <name>hbox27</name>
+	      <homogeneous>False</homogeneous>
+	      <spacing>0</spacing>
+
+	      <widget>
+		<class>GtkVBox</class>
+		<name>vbox30</name>
+		<homogeneous>False</homogeneous>
+		<spacing>0</spacing>
+		<child>
+		  <padding>0</padding>
+		  <expand>False</expand>
+		  <fill>False</fill>
+		</child>
+
+		<widget>
+		  <class>GtkToggleButton</class>
+		  <name>temp_power</name>
+		  <border_width>2</border_width>
+		  <sensitive>False</sensitive>
+		  <can_focus>True</can_focus>
+		  <signal>
+		    <name>toggled</name>
+		    <handler>on_temp_power_toggled</handler>
+		    <last_modification_time>Sat, 30 Dec 2000 20:25:46 GMT</last_modification_time>
+		  </signal>
+		  <label>ON</label>
+		  <relief>GTK_RELIEF_NORMAL</relief>
+		  <active>False</active>
+		  <child>
+		    <padding>0</padding>
+		    <expand>False</expand>
+		    <fill>False</fill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkRadioButton</class>
+		  <name>temp_man</name>
+		  <sensitive>False</sensitive>
+		  <can_focus>True</can_focus>
+		  <signal>
+		    <name>toggled</name>
+		    <handler>on_temp_man_toggled</handler>
+		    <last_modification_time>Sat, 30 Dec 2000 20:25:51 GMT</last_modification_time>
+		  </signal>
+		  <label>Man</label>
+		  <active>True</active>
+		  <draw_indicator>True</draw_indicator>
+		  <group>temp</group>
+		  <child>
+		    <padding>0</padding>
+		    <expand>False</expand>
+		    <fill>False</fill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkRadioButton</class>
+		  <name>temp_auto</name>
+		  <sensitive>False</sensitive>
+		  <can_focus>True</can_focus>
+		  <label>Auto</label>
+		  <active>False</active>
+		  <draw_indicator>True</draw_indicator>
+		  <group>temp</group>
+		  <child>
+		    <padding>0</padding>
+		    <expand>False</expand>
+		    <fill>False</fill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkButton</class>
+		  <name>temp_op</name>
+		  <border_width>2</border_width>
+		  <sensitive>False</sensitive>
+		  <can_focus>True</can_focus>
+		  <signal>
+		    <name>clicked</name>
+		    <handler>on_temp_op_clicked</handler>
+		    <last_modification_time>Sat, 30 Dec 2000 20:25:59 GMT</last_modification_time>
+		  </signal>
+		  <label>AUTO</label>
+		  <relief>GTK_RELIEF_NORMAL</relief>
+		  <child>
+		    <padding>0</padding>
+		    <expand>False</expand>
+		    <fill>False</fill>
+		  </child>
+		</widget>
+	      </widget>
+
+	      <widget>
+		<class>GtkHBox</class>
+		<name>hbox47</name>
+		<homogeneous>False</homogeneous>
+		<spacing>0</spacing>
+		<child>
+		  <padding>0</padding>
+		  <expand>True</expand>
+		  <fill>True</fill>
+		</child>
+
+		<widget>
+		  <class>GtkVSeparator</class>
+		  <name>vseparator2</name>
+		  <child>
+		    <padding>2</padding>
+		    <expand>False</expand>
+		    <fill>True</fill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkTable</class>
+		  <name>table23</name>
+		  <rows>2</rows>
+		  <columns>2</columns>
+		  <homogeneous>False</homogeneous>
+		  <row_spacing>0</row_spacing>
+		  <column_spacing>0</column_spacing>
+		  <child>
+		    <padding>0</padding>
+		    <expand>True</expand>
+		    <fill>True</fill>
+		  </child>
+
+		  <widget>
+		    <class>GtkHScale</class>
+		    <name>temp_current_scale</name>
+		    <sensitive>False</sensitive>
+		    <can_focus>True</can_focus>
+		    <draw_value>True</draw_value>
+		    <value_pos>GTK_POS_TOP</value_pos>
+		    <digits>1</digits>
+		    <policy>GTK_UPDATE_CONTINUOUS</policy>
+		    <value>0</value>
+		    <lower>0</lower>
+		    <upper>255</upper>
+		    <step>1</step>
+		    <page>10</page>
+		    <page_size>0</page_size>
+		    <child>
+		      <left_attach>1</left_attach>
+		      <right_attach>2</right_attach>
+		      <top_attach>0</top_attach>
+		      <bottom_attach>1</bottom_attach>
+		      <xpad>0</xpad>
+		      <ypad>0</ypad>
+		      <xexpand>True</xexpand>
+		      <yexpand>True</yexpand>
+		      <xshrink>False</xshrink>
+		      <yshrink>False</yshrink>
+		      <xfill>True</xfill>
+		      <yfill>True</yfill>
+		    </child>
+		  </widget>
+
+		  <widget>
+		    <class>GtkHScale</class>
+		    <name>temp_goal_scale</name>
+		    <sensitive>False</sensitive>
+		    <can_focus>True</can_focus>
+		    <draw_value>True</draw_value>
+		    <value_pos>GTK_POS_TOP</value_pos>
+		    <digits>1</digits>
+		    <policy>GTK_UPDATE_CONTINUOUS</policy>
+		    <value>0</value>
+		    <lower>0</lower>
+		    <upper>255</upper>
+		    <step>1</step>
+		    <page>10</page>
+		    <page_size>0</page_size>
+		    <child>
+		      <left_attach>1</left_attach>
+		      <right_attach>2</right_attach>
+		      <top_attach>1</top_attach>
+		      <bottom_attach>2</bottom_attach>
+		      <xpad>0</xpad>
+		      <ypad>0</ypad>
+		      <xexpand>False</xexpand>
+		      <yexpand>True</yexpand>
+		      <xshrink>False</xshrink>
+		      <yshrink>False</yshrink>
+		      <xfill>True</xfill>
+		      <yfill>True</yfill>
+		    </child>
+		  </widget>
+
+		  <widget>
+		    <class>GtkLabel</class>
+		    <name>label46</name>
+		    <label>Current:</label>
+		    <justify>GTK_JUSTIFY_CENTER</justify>
+		    <wrap>False</wrap>
+		    <xalign>0</xalign>
+		    <yalign>0.5</yalign>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <child>
+		      <left_attach>0</left_attach>
+		      <right_attach>1</right_attach>
+		      <top_attach>0</top_attach>
+		      <bottom_attach>1</bottom_attach>
+		      <xpad>1</xpad>
+		      <ypad>0</ypad>
+		      <xexpand>False</xexpand>
+		      <yexpand>False</yexpand>
+		      <xshrink>False</xshrink>
+		      <yshrink>False</yshrink>
+		      <xfill>True</xfill>
+		      <yfill>False</yfill>
+		    </child>
+		  </widget>
+
+		  <widget>
+		    <class>GtkLabel</class>
+		    <name>label47</name>
+		    <label>Target:</label>
+		    <justify>GTK_JUSTIFY_CENTER</justify>
+		    <wrap>False</wrap>
+		    <xalign>0</xalign>
+		    <yalign>0.5</yalign>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <child>
+		      <left_attach>0</left_attach>
+		      <right_attach>1</right_attach>
+		      <top_attach>1</top_attach>
+		      <bottom_attach>2</bottom_attach>
+		      <xpad>1</xpad>
+		      <ypad>0</ypad>
+		      <xexpand>False</xexpand>
+		      <yexpand>False</yexpand>
+		      <xshrink>False</xshrink>
+		      <yshrink>False</yshrink>
+		      <xfill>True</xfill>
+		      <yfill>False</yfill>
+		    </child>
+		  </widget>
+		</widget>
+	      </widget>
+	    </widget>
+	  </widget>
+
+	  <widget>
+	    <class>GtkFrame</class>
+	    <name>capqual_frame</name>
+	    <border_width>5</border_width>
+	    <sensitive>False</sensitive>
+	    <label>Capture Quality</label>
+	    <label_xalign>0</label_xalign>
+	    <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>True</fill>
+	    </child>
+
+	    <widget>
+	      <class>GtkHBox</class>
+	      <name>hbox24</name>
+	      <homogeneous>False</homogeneous>
+	      <spacing>0</spacing>
+
+	      <widget>
+		<class>GtkTable</class>
+		<name>table13</name>
+		<rows>2</rows>
+		<columns>2</columns>
+		<homogeneous>False</homogeneous>
+		<row_spacing>0</row_spacing>
+		<column_spacing>0</column_spacing>
+		<child>
+		  <padding>0</padding>
+		  <expand>False</expand>
+		  <fill>True</fill>
+		</child>
+
+		<widget>
+		  <class>GtkRadioButton</class>
+		  <name>capqual_man</name>
+		  <sensitive>False</sensitive>
+		  <can_focus>True</can_focus>
+		  <signal>
+		    <name>toggled</name>
+		    <handler>on_capqual_man_toggled</handler>
+		    <last_modification_time>Sat, 30 Dec 2000 15:44:42 GMT</last_modification_time>
+		  </signal>
+		  <label>Man</label>
+		  <active>True</active>
+		  <draw_indicator>True</draw_indicator>
+		  <group>capqual</group>
+		  <child>
+		    <left_attach>1</left_attach>
+		    <right_attach>2</right_attach>
+		    <top_attach>0</top_attach>
+		    <bottom_attach>1</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>False</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>False</xfill>
+		    <yfill>False</yfill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkRadioButton</class>
+		  <name>capqual_auto</name>
+		  <sensitive>False</sensitive>
+		  <can_focus>True</can_focus>
+		  <label>Auto</label>
+		  <active>False</active>
+		  <draw_indicator>True</draw_indicator>
+		  <group>capqual</group>
+		  <child>
+		    <left_attach>1</left_attach>
+		    <right_attach>2</right_attach>
+		    <top_attach>1</top_attach>
+		    <bottom_attach>2</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>False</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>False</xfill>
+		    <yfill>False</yfill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkButton</class>
+		  <name>capqual_op</name>
+		  <border_width>2</border_width>
+		  <sensitive>False</sensitive>
+		  <can_focus>True</can_focus>
+		  <signal>
+		    <name>clicked</name>
+		    <handler>on_capqual_op_clicked</handler>
+		    <last_modification_time>Sat, 30 Dec 2000 15:44:27 GMT</last_modification_time>
+		  </signal>
+		  <label>AUTO</label>
+		  <relief>GTK_RELIEF_NORMAL</relief>
+		  <child>
+		    <left_attach>0</left_attach>
+		    <right_attach>1</right_attach>
+		    <top_attach>1</top_attach>
+		    <bottom_attach>2</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>False</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>False</xfill>
+		    <yfill>False</yfill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkAlignment</class>
+		  <name>alignment9</name>
+		  <xalign>0.5</xalign>
+		  <yalign>0.5</yalign>
+		  <xscale>1</xscale>
+		  <yscale>1</yscale>
+		  <child>
+		    <left_attach>0</left_attach>
+		    <right_attach>1</right_attach>
+		    <top_attach>0</top_attach>
+		    <bottom_attach>1</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>False</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>True</xfill>
+		    <yfill>False</yfill>
+		  </child>
+
+		  <widget>
+		    <class>GtkToggleButton</class>
+		    <name>capqual_power</name>
+		    <border_width>2</border_width>
+		    <sensitive>False</sensitive>
+		    <can_focus>True</can_focus>
+		    <signal>
+		      <name>toggled</name>
+		      <handler>on_capqual_power_toggled</handler>
+		      <last_modification_time>Sat, 30 Dec 2000 15:44:22 GMT</last_modification_time>
+		    </signal>
+		    <label>ON</label>
+		    <relief>GTK_RELIEF_NORMAL</relief>
+		    <active>False</active>
+		  </widget>
+		</widget>
+	      </widget>
+
+	      <widget>
+		<class>GtkHScale</class>
+		<name>capqual_scale</name>
+		<sensitive>False</sensitive>
+		<can_focus>True</can_focus>
+		<draw_value>True</draw_value>
+		<value_pos>GTK_POS_TOP</value_pos>
+		<digits>0</digits>
+		<policy>GTK_UPDATE_CONTINUOUS</policy>
+		<value>0</value>
+		<lower>0</lower>
+		<upper>255</upper>
+		<step>1</step>
+		<page>10</page>
+		<page_size>0</page_size>
+		<child>
+		  <padding>0</padding>
+		  <expand>True</expand>
+		  <fill>True</fill>
+		</child>
+	      </widget>
+	    </widget>
+	  </widget>
+
+	  <widget>
+	    <class>GtkFrame</class>
+	    <name>capsize</name>
+	    <border_width>5</border_width>
+	    <sensitive>False</sensitive>
+	    <label>Capture Size</label>
+	    <label_xalign>0</label_xalign>
+	    <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>True</fill>
+	    </child>
+
+	    <widget>
+	      <class>GtkHBox</class>
+	      <name>hbox25</name>
+	      <homogeneous>False</homogeneous>
+	      <spacing>0</spacing>
+
+	      <widget>
+		<class>GtkTable</class>
+		<name>table14</name>
+		<rows>2</rows>
+		<columns>2</columns>
+		<homogeneous>False</homogeneous>
+		<row_spacing>0</row_spacing>
+		<column_spacing>0</column_spacing>
+		<child>
+		  <padding>0</padding>
+		  <expand>False</expand>
+		  <fill>True</fill>
+		</child>
+
+		<widget>
+		  <class>GtkRadioButton</class>
+		  <name>capsize_man</name>
+		  <sensitive>False</sensitive>
+		  <can_focus>True</can_focus>
+		  <signal>
+		    <name>toggled</name>
+		    <handler>on_capsize_man_toggled</handler>
+		    <last_modification_time>Sat, 30 Dec 2000 15:44:49 GMT</last_modification_time>
+		  </signal>
+		  <label>Man</label>
+		  <active>True</active>
+		  <draw_indicator>True</draw_indicator>
+		  <group>capsize</group>
+		  <child>
+		    <left_attach>1</left_attach>
+		    <right_attach>2</right_attach>
+		    <top_attach>0</top_attach>
+		    <bottom_attach>1</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>False</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>False</xfill>
+		    <yfill>False</yfill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkRadioButton</class>
+		  <name>capsize_auto</name>
+		  <sensitive>False</sensitive>
+		  <can_focus>True</can_focus>
+		  <label>Auto</label>
+		  <active>False</active>
+		  <draw_indicator>True</draw_indicator>
+		  <group>capsize</group>
+		  <child>
+		    <left_attach>1</left_attach>
+		    <right_attach>2</right_attach>
+		    <top_attach>1</top_attach>
+		    <bottom_attach>2</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>False</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>False</xfill>
+		    <yfill>False</yfill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkButton</class>
+		  <name>capsize_op</name>
+		  <border_width>2</border_width>
+		  <sensitive>False</sensitive>
+		  <can_focus>True</can_focus>
+		  <signal>
+		    <name>clicked</name>
+		    <handler>on_capsize_op_clicked</handler>
+		    <last_modification_time>Sat, 30 Dec 2000 15:44:37 GMT</last_modification_time>
+		  </signal>
+		  <label>AUTO</label>
+		  <relief>GTK_RELIEF_NORMAL</relief>
+		  <child>
+		    <left_attach>0</left_attach>
+		    <right_attach>1</right_attach>
+		    <top_attach>1</top_attach>
+		    <bottom_attach>2</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>False</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>False</xfill>
+		    <yfill>False</yfill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkAlignment</class>
+		  <name>alignment10</name>
+		  <xalign>0.5</xalign>
+		  <yalign>0.5</yalign>
+		  <xscale>1</xscale>
+		  <yscale>1</yscale>
+		  <child>
+		    <left_attach>0</left_attach>
+		    <right_attach>1</right_attach>
+		    <top_attach>0</top_attach>
+		    <bottom_attach>1</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>False</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>True</xfill>
+		    <yfill>False</yfill>
+		  </child>
+
+		  <widget>
+		    <class>GtkToggleButton</class>
+		    <name>capsize_power</name>
+		    <border_width>2</border_width>
+		    <sensitive>False</sensitive>
+		    <can_focus>True</can_focus>
+		    <signal>
+		      <name>toggled</name>
+		      <handler>on_capsize_power_toggled</handler>
+		      <last_modification_time>Sat, 30 Dec 2000 15:44:32 GMT</last_modification_time>
+		    </signal>
+		    <label>ON</label>
+		    <relief>GTK_RELIEF_NORMAL</relief>
+		    <active>False</active>
+		  </widget>
+		</widget>
+	      </widget>
+
+	      <widget>
+		<class>GtkHScale</class>
+		<name>capsize_scale</name>
+		<sensitive>False</sensitive>
+		<can_focus>True</can_focus>
+		<draw_value>True</draw_value>
+		<value_pos>GTK_POS_TOP</value_pos>
+		<digits>0</digits>
+		<policy>GTK_UPDATE_CONTINUOUS</policy>
+		<value>0</value>
+		<lower>0</lower>
+		<upper>255</upper>
+		<step>1</step>
+		<page>10</page>
+		<page_size>0</page_size>
+		<child>
+		  <padding>0</padding>
+		  <expand>True</expand>
+		  <fill>True</fill>
+		</child>
+	      </widget>
+	    </widget>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <child_name>Notebook:tab</child_name>
+	  <name>label59</name>
+	  <label>Misc</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkVBox</class>
+	  <name>vbox28</name>
+	  <homogeneous>False</homogeneous>
+	  <spacing>0</spacing>
+
+	  <widget>
+	    <class>GtkFrame</class>
+	    <name>camera_status_frame</name>
+	    <border_width>5</border_width>
+	    <label>Camera</label>
+	    <label_xalign>0</label_xalign>
+	    <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+	    <child>
+	      <padding>0</padding>
+	      <expand>True</expand>
+	      <fill>True</fill>
+	    </child>
+
+	    <widget>
+	      <class>GtkHBox</class>
+	      <name>hbox17</name>
+	      <homogeneous>False</homogeneous>
+	      <spacing>0</spacing>
+
+	      <widget>
+		<class>GtkVBox</class>
+		<name>vbox23</name>
+		<homogeneous>True</homogeneous>
+		<spacing>0</spacing>
+		<child>
+		  <padding>0</padding>
+		  <expand>False</expand>
+		  <fill>False</fill>
+		</child>
+
+		<widget>
+		  <class>GtkLabel</class>
+		  <name>label1</name>
+		  <label>Vendor:</label>
+		  <justify>GTK_JUSTIFY_LEFT</justify>
+		  <wrap>False</wrap>
+		  <xalign>0.5</xalign>
+		  <yalign>0.5</yalign>
+		  <xpad>2</xpad>
+		  <ypad>2</ypad>
+		  <child>
+		    <padding>0</padding>
+		    <expand>False</expand>
+		    <fill>False</fill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkLabel</class>
+		  <name>label2</name>
+		  <label>Model:</label>
+		  <justify>GTK_JUSTIFY_LEFT</justify>
+		  <wrap>False</wrap>
+		  <xalign>0.5</xalign>
+		  <yalign>0.5</yalign>
+		  <xpad>2</xpad>
+		  <ypad>2</ypad>
+		  <child>
+		    <padding>0</padding>
+		    <expand>False</expand>
+		    <fill>False</fill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkLabel</class>
+		  <name>label3</name>
+		  <label>Handle:</label>
+		  <justify>GTK_JUSTIFY_LEFT</justify>
+		  <wrap>False</wrap>
+		  <xalign>0.5</xalign>
+		  <yalign>0.5</yalign>
+		  <xpad>2</xpad>
+		  <ypad>2</ypad>
+		  <child>
+		    <padding>0</padding>
+		    <expand>False</expand>
+		    <fill>False</fill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkLabel</class>
+		  <name>label17</name>
+		  <label>Node:</label>
+		  <justify>GTK_JUSTIFY_LEFT</justify>
+		  <wrap>False</wrap>
+		  <xalign>0.5</xalign>
+		  <yalign>0.5</yalign>
+		  <xpad>2</xpad>
+		  <ypad>2</ypad>
+		  <child>
+		    <padding>0</padding>
+		    <expand>False</expand>
+		    <fill>False</fill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkLabel</class>
+		  <name>label31</name>
+		  <label>GUID:</label>
+		  <justify>GTK_JUSTIFY_LEFT</justify>
+		  <wrap>False</wrap>
+		  <xalign>0.5</xalign>
+		  <yalign>0.5</yalign>
+		  <xpad>2</xpad>
+		  <ypad>2</ypad>
+		  <child>
+		    <padding>0</padding>
+		    <expand>False</expand>
+		    <fill>False</fill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkLabel</class>
+		  <name>label32</name>
+		  <label>PHY speed:</label>
+		  <justify>GTK_JUSTIFY_LEFT</justify>
+		  <wrap>False</wrap>
+		  <xalign>0.5</xalign>
+		  <yalign>0.5</yalign>
+		  <xpad>2</xpad>
+		  <ypad>2</ypad>
+		  <child>
+		    <padding>0</padding>
+		    <expand>False</expand>
+		    <fill>False</fill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkLabel</class>
+		  <name>label33</name>
+		  <label>PHY delay:</label>
+		  <justify>GTK_JUSTIFY_LEFT</justify>
+		  <wrap>False</wrap>
+		  <xalign>0.5</xalign>
+		  <yalign>0.5</yalign>
+		  <xpad>2</xpad>
+		  <ypad>2</ypad>
+		  <child>
+		    <padding>0</padding>
+		    <expand>False</expand>
+		    <fill>False</fill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkLabel</class>
+		  <name>label34</name>
+		  <label>IIDC specs:</label>
+		  <justify>GTK_JUSTIFY_LEFT</justify>
+		  <wrap>False</wrap>
+		  <xalign>0.5</xalign>
+		  <yalign>0.5</yalign>
+		  <xpad>2</xpad>
+		  <ypad>2</ypad>
+		  <child>
+		    <padding>0</padding>
+		    <expand>False</expand>
+		    <fill>False</fill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkLabel</class>
+		  <name>label35</name>
+		  <label>Power class:</label>
+		  <justify>GTK_JUSTIFY_LEFT</justify>
+		  <wrap>False</wrap>
+		  <xalign>0.5</xalign>
+		  <yalign>0.5</yalign>
+		  <xpad>2</xpad>
+		  <ypad>2</ypad>
+		  <child>
+		    <padding>0</padding>
+		    <expand>False</expand>
+		    <fill>False</fill>
+		  </child>
+		</widget>
+	      </widget>
+
+	      <widget>
+		<class>GtkVBox</class>
+		<name>vbox21</name>
+		<homogeneous>True</homogeneous>
+		<spacing>0</spacing>
+		<child>
+		  <padding>0</padding>
+		  <expand>True</expand>
+		  <fill>True</fill>
+		</child>
+
+		<widget>
+		  <class>GtkStatusbar</class>
+		  <name>camera_vendor_status</name>
+		  <border_width>2</border_width>
+		  <child>
+		    <padding>0</padding>
+		    <expand>True</expand>
+		    <fill>True</fill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkStatusbar</class>
+		  <name>camera_model_status</name>
+		  <border_width>2</border_width>
+		  <child>
+		    <padding>0</padding>
+		    <expand>False</expand>
+		    <fill>False</fill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkStatusbar</class>
+		  <name>camera_handle_status</name>
+		  <border_width>2</border_width>
+		  <child>
+		    <padding>0</padding>
+		    <expand>False</expand>
+		    <fill>False</fill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkStatusbar</class>
+		  <name>camera_node_status</name>
+		  <border_width>2</border_width>
+		  <child>
+		    <padding>0</padding>
+		    <expand>False</expand>
+		    <fill>False</fill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkStatusbar</class>
+		  <name>camera_guid_status</name>
+		  <border_width>2</border_width>
+		  <child>
+		    <padding>0</padding>
+		    <expand>False</expand>
+		    <fill>False</fill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkStatusbar</class>
+		  <name>camera_maxiso_status</name>
+		  <border_width>2</border_width>
+		  <child>
+		    <padding>0</padding>
+		    <expand>False</expand>
+		    <fill>False</fill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkStatusbar</class>
+		  <name>camera_delay_status</name>
+		  <border_width>2</border_width>
+		  <child>
+		    <padding>0</padding>
+		    <expand>False</expand>
+		    <fill>False</fill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkStatusbar</class>
+		  <name>camera_dc_status</name>
+		  <border_width>2</border_width>
+		  <child>
+		    <padding>0</padding>
+		    <expand>False</expand>
+		    <fill>False</fill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkStatusbar</class>
+		  <name>camera_pwclass_status</name>
+		  <border_width>2</border_width>
+		  <child>
+		    <padding>0</padding>
+		    <expand>False</expand>
+		    <fill>False</fill>
+		  </child>
+		</widget>
+	      </widget>
+	    </widget>
+	  </widget>
+
+	  <widget>
+	    <class>GtkFrame</class>
+	    <name>transfer_status_frame</name>
+	    <border_width>5</border_width>
+	    <label>Transfer</label>
+	    <label_xalign>0</label_xalign>
+	    <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+	    <child>
+	      <padding>0</padding>
+	      <expand>True</expand>
+	      <fill>True</fill>
+	    </child>
+
+	    <widget>
+	      <class>GtkHBox</class>
+	      <name>hbox39</name>
+	      <homogeneous>False</homogeneous>
+	      <spacing>0</spacing>
+
+	      <widget>
+		<class>GtkVBox</class>
+		<name>vbox42</name>
+		<homogeneous>True</homogeneous>
+		<spacing>0</spacing>
+		<child>
+		  <padding>0</padding>
+		  <expand>False</expand>
+		  <fill>False</fill>
+		</child>
+
+		<widget>
+		  <class>GtkLabel</class>
+		  <name>label18</name>
+		  <label>Channel:</label>
+		  <justify>GTK_JUSTIFY_LEFT</justify>
+		  <wrap>False</wrap>
+		  <xalign>0.5</xalign>
+		  <yalign>0.5</yalign>
+		  <xpad>2</xpad>
+		  <ypad>2</ypad>
+		  <child>
+		    <padding>0</padding>
+		    <expand>False</expand>
+		    <fill>False</fill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkLabel</class>
+		  <name>label19</name>
+		  <label>Speed:</label>
+		  <justify>GTK_JUSTIFY_LEFT</justify>
+		  <wrap>False</wrap>
+		  <xalign>0.5</xalign>
+		  <yalign>0.5</yalign>
+		  <xpad>2</xpad>
+		  <ypad>2</ypad>
+		  <child>
+		    <padding>0</padding>
+		    <expand>False</expand>
+		    <fill>False</fill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkLabel</class>
+		  <name>label20</name>
+		  <label>Status:</label>
+		  <justify>GTK_JUSTIFY_LEFT</justify>
+		  <wrap>False</wrap>
+		  <xalign>0.5</xalign>
+		  <yalign>0.5</yalign>
+		  <xpad>2</xpad>
+		  <ypad>2</ypad>
+		  <child>
+		    <padding>0</padding>
+		    <expand>False</expand>
+		    <fill>False</fill>
+		  </child>
+		</widget>
+	      </widget>
+
+	      <widget>
+		<class>GtkVBox</class>
+		<name>vbox43</name>
+		<homogeneous>True</homogeneous>
+		<spacing>0</spacing>
+		<child>
+		  <padding>0</padding>
+		  <expand>True</expand>
+		  <fill>True</fill>
+		</child>
+
+		<widget>
+		  <class>GtkStatusbar</class>
+		  <name>iso_channel_status</name>
+		  <border_width>2</border_width>
+		  <child>
+		    <padding>0</padding>
+		    <expand>True</expand>
+		    <fill>True</fill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkStatusbar</class>
+		  <name>iso_speed_status</name>
+		  <border_width>2</border_width>
+		  <child>
+		    <padding>0</padding>
+		    <expand>False</expand>
+		    <fill>False</fill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkStatusbar</class>
+		  <name>iso_status_status</name>
+		  <border_width>2</border_width>
+		  <child>
+		    <padding>0</padding>
+		    <expand>False</expand>
+		    <fill>False</fill>
+		  </child>
+		</widget>
+	      </widget>
+	    </widget>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <child_name>Notebook:tab</child_name>
+	  <name>label60</name>
+	  <label>Status</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
 	</widget>
       </widget>
     </widget>
@@ -1699,6 +4597,7 @@
 		<last_modification_time>Wed, 27 Dec 2000 23:23:12 GMT</last_modification_time>
 	      </signal>
 	      <label>AUTO</label>
+	      <relief>GTK_RELIEF_NORMAL</relief>
 	      <child>
 		<left_attach>0</left_attach>
 		<right_attach>1</right_attach>
@@ -1749,6 +4648,7 @@
 		  <last_modification_time>Wed, 27 Dec 2000 23:23:08 GMT</last_modification_time>
 		</signal>
 		<label>ON</label>
+		<relief>GTK_RELIEF_NORMAL</relief>
 		<active>False</active>
 	      </widget>
 	    </widget>
@@ -1943,6 +4843,7 @@
 	      <last_modification_time>Wed, 27 Dec 2000 23:22:29 GMT</last_modification_time>
 	    </signal>
 	    <label>AUTO</label>
+	    <relief>GTK_RELIEF_NORMAL</relief>
 	    <child>
 	      <left_attach>0</left_attach>
 	      <right_attach>1</right_attach>
@@ -1993,6 +4894,7 @@
 		<last_modification_time>Wed, 27 Dec 2000 23:22:25 GMT</last_modification_time>
 	      </signal>
 	      <label>ON</label>
+	      <relief>GTK_RELIEF_NORMAL</relief>
 	      <active>False</active>
 	    </widget>
 	  </widget>
@@ -2063,6 +4965,7 @@
 	    <last_modification_time>Wed, 27 Dec 2000 23:22:33 GMT</last_modification_time>
 	  </signal>
 	  <label>ON</label>
+	  <relief>GTK_RELIEF_NORMAL</relief>
 	  <active>False</active>
 	  <child>
 	    <padding>0</padding>
@@ -2120,6 +5023,7 @@
 	    <last_modification_time>Wed, 27 Dec 2000 23:22:53 GMT</last_modification_time>
 	  </signal>
 	  <label>AUTO</label>
+	  <relief>GTK_RELIEF_NORMAL</relief>
 	  <child>
 	    <padding>0</padding>
 	    <expand>False</expand>
@@ -2192,6 +5096,7 @@
 	    <last_modification_time>Wed, 27 Dec 2000 23:22:58 GMT</last_modification_time>
 	  </signal>
 	  <label>ON</label>
+	  <relief>GTK_RELIEF_NORMAL</relief>
 	  <active>False</active>
 	  <child>
 	    <padding>0</padding>
@@ -2249,6 +5154,7 @@
 	    <last_modification_time>Wed, 27 Dec 2000 23:23:02 GMT</last_modification_time>
 	  </signal>
 	  <label>AUTO</label>
+	  <relief>GTK_RELIEF_NORMAL</relief>
 	  <child>
 	    <padding>0</padding>
 	    <expand>False</expand>
@@ -2276,2985 +5182,6 @@
 	    <expand>True</expand>
 	    <fill>True</fill>
 	  </child>
-	</widget>
-      </widget>
-    </widget>
-  </widget>
-</widget>
-
-<widget>
-  <class>GtkWindow</class>
-  <name>color_window</name>
-  <width>350</width>
-  <signal>
-    <name>delete_event</name>
-    <handler>gtk_widget_hide</handler>
-    <last_modification_time>Tue, 26 Dec 2000 12:13:39 GMT</last_modification_time>
-  </signal>
-  <signal>
-    <name>destroy_event</name>
-    <handler>gtk_widget_hide</handler>
-    <last_modification_time>Tue, 26 Dec 2000 12:13:47 GMT</last_modification_time>
-  </signal>
-  <signal>
-    <name>destroy</name>
-    <handler>gtk_widget_hide</handler>
-    <last_modification_time>Tue, 26 Dec 2000 12:13:57 GMT</last_modification_time>
-  </signal>
-  <title>Color</title>
-  <type>GTK_WINDOW_TOPLEVEL</type>
-  <position>GTK_WIN_POS_NONE</position>
-  <modal>False</modal>
-  <default_width>350</default_width>
-  <allow_shrink>False</allow_shrink>
-  <allow_grow>False</allow_grow>
-  <auto_shrink>False</auto_shrink>
-
-  <widget>
-    <class>GtkVBox</class>
-    <name>vbox8</name>
-    <homogeneous>False</homogeneous>
-    <spacing>0</spacing>
-
-    <widget>
-      <class>GtkFrame</class>
-      <name>brightness_frame</name>
-      <border_width>5</border_width>
-      <sensitive>False</sensitive>
-      <label>Brightness</label>
-      <label_xalign>0</label_xalign>
-      <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
-      <child>
-	<padding>0</padding>
-	<expand>False</expand>
-	<fill>False</fill>
-      </child>
-
-      <widget>
-	<class>GtkHBox</class>
-	<name>hbox22</name>
-	<homogeneous>False</homogeneous>
-	<spacing>0</spacing>
-
-	<widget>
-	  <class>GtkTable</class>
-	  <name>table11</name>
-	  <rows>2</rows>
-	  <columns>2</columns>
-	  <homogeneous>False</homogeneous>
-	  <row_spacing>0</row_spacing>
-	  <column_spacing>0</column_spacing>
-	  <child>
-	    <padding>0</padding>
-	    <expand>False</expand>
-	    <fill>True</fill>
-	  </child>
-
-	  <widget>
-	    <class>GtkRadioButton</class>
-	    <name>brightness_man</name>
-	    <sensitive>False</sensitive>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>toggled</name>
-	      <handler>on_brightness_man_toggled</handler>
-	      <last_modification_time>Thu, 28 Dec 2000 10:33:32 GMT</last_modification_time>
-	    </signal>
-	    <label>Man</label>
-	    <active>True</active>
-	    <draw_indicator>True</draw_indicator>
-	    <group>brightness</group>
-	    <child>
-	      <left_attach>1</left_attach>
-	      <right_attach>2</right_attach>
-	      <top_attach>0</top_attach>
-	      <bottom_attach>1</bottom_attach>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	      <xexpand>False</xexpand>
-	      <yexpand>False</yexpand>
-	      <xshrink>False</xshrink>
-	      <yshrink>False</yshrink>
-	      <xfill>False</xfill>
-	      <yfill>False</yfill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkRadioButton</class>
-	    <name>brightness_auto</name>
-	    <sensitive>False</sensitive>
-	    <can_focus>True</can_focus>
-	    <label>Auto</label>
-	    <active>False</active>
-	    <draw_indicator>True</draw_indicator>
-	    <group>brightness</group>
-	    <child>
-	      <left_attach>1</left_attach>
-	      <right_attach>2</right_attach>
-	      <top_attach>1</top_attach>
-	      <bottom_attach>2</bottom_attach>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	      <xexpand>False</xexpand>
-	      <yexpand>False</yexpand>
-	      <xshrink>False</xshrink>
-	      <yshrink>False</yshrink>
-	      <xfill>False</xfill>
-	      <yfill>False</yfill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkButton</class>
-	    <name>brightness_op</name>
-	    <border_width>2</border_width>
-	    <sensitive>False</sensitive>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>clicked</name>
-	      <handler>on_brightness_op_clicked</handler>
-	      <last_modification_time>Wed, 27 Dec 2000 23:19:40 GMT</last_modification_time>
-	    </signal>
-	    <label>AUTO</label>
-	    <child>
-	      <left_attach>0</left_attach>
-	      <right_attach>1</right_attach>
-	      <top_attach>1</top_attach>
-	      <bottom_attach>2</bottom_attach>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	      <xexpand>False</xexpand>
-	      <yexpand>False</yexpand>
-	      <xshrink>False</xshrink>
-	      <yshrink>False</yshrink>
-	      <xfill>False</xfill>
-	      <yfill>False</yfill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkAlignment</class>
-	    <name>alignment7</name>
-	    <xalign>0.5</xalign>
-	    <yalign>0.5</yalign>
-	    <xscale>1</xscale>
-	    <yscale>1</yscale>
-	    <child>
-	      <left_attach>0</left_attach>
-	      <right_attach>1</right_attach>
-	      <top_attach>0</top_attach>
-	      <bottom_attach>1</bottom_attach>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	      <xexpand>False</xexpand>
-	      <yexpand>False</yexpand>
-	      <xshrink>False</xshrink>
-	      <yshrink>False</yshrink>
-	      <xfill>True</xfill>
-	      <yfill>False</yfill>
-	    </child>
-
-	    <widget>
-	      <class>GtkToggleButton</class>
-	      <name>brightness_power</name>
-	      <border_width>2</border_width>
-	      <sensitive>False</sensitive>
-	      <can_focus>True</can_focus>
-	      <signal>
-		<name>toggled</name>
-		<handler>on_brightness_power_toggled</handler>
-		<last_modification_time>Wed, 27 Dec 2000 23:19:31 GMT</last_modification_time>
-	      </signal>
-	      <label>ON</label>
-	      <active>False</active>
-	    </widget>
-	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkHScale</class>
-	  <name>brightness_scale</name>
-	  <sensitive>False</sensitive>
-	  <can_focus>True</can_focus>
-	  <draw_value>True</draw_value>
-	  <value_pos>GTK_POS_TOP</value_pos>
-	  <digits>0</digits>
-	  <policy>GTK_UPDATE_CONTINUOUS</policy>
-	  <value>0</value>
-	  <lower>0</lower>
-	  <upper>255</upper>
-	  <step>1</step>
-	  <page>10</page>
-	  <page_size>0</page_size>
-	  <child>
-	    <padding>0</padding>
-	    <expand>True</expand>
-	    <fill>True</fill>
-	  </child>
-	</widget>
-      </widget>
-    </widget>
-
-    <widget>
-      <class>GtkFrame</class>
-      <name>gamma_frame</name>
-      <border_width>5</border_width>
-      <sensitive>False</sensitive>
-      <label>Gamma</label>
-      <label_xalign>0</label_xalign>
-      <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
-      <child>
-	<padding>0</padding>
-	<expand>False</expand>
-	<fill>False</fill>
-      </child>
-
-      <widget>
-	<class>GtkHBox</class>
-	<name>hbox23</name>
-	<homogeneous>False</homogeneous>
-	<spacing>0</spacing>
-
-	<widget>
-	  <class>GtkTable</class>
-	  <name>table12</name>
-	  <rows>2</rows>
-	  <columns>2</columns>
-	  <homogeneous>False</homogeneous>
-	  <row_spacing>0</row_spacing>
-	  <column_spacing>0</column_spacing>
-	  <child>
-	    <padding>0</padding>
-	    <expand>False</expand>
-	    <fill>True</fill>
-	  </child>
-
-	  <widget>
-	    <class>GtkRadioButton</class>
-	    <name>gamma_man</name>
-	    <sensitive>False</sensitive>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>toggled</name>
-	      <handler>on_gamma_man_toggled</handler>
-	      <last_modification_time>Thu, 28 Dec 2000 10:33:39 GMT</last_modification_time>
-	    </signal>
-	    <label>Man</label>
-	    <active>True</active>
-	    <draw_indicator>True</draw_indicator>
-	    <group>gamma</group>
-	    <child>
-	      <left_attach>1</left_attach>
-	      <right_attach>2</right_attach>
-	      <top_attach>0</top_attach>
-	      <bottom_attach>1</bottom_attach>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	      <xexpand>False</xexpand>
-	      <yexpand>False</yexpand>
-	      <xshrink>False</xshrink>
-	      <yshrink>False</yshrink>
-	      <xfill>False</xfill>
-	      <yfill>False</yfill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkRadioButton</class>
-	    <name>gamma_auto</name>
-	    <sensitive>False</sensitive>
-	    <can_focus>True</can_focus>
-	    <label>Auto</label>
-	    <active>False</active>
-	    <draw_indicator>True</draw_indicator>
-	    <group>gamma</group>
-	    <child>
-	      <left_attach>1</left_attach>
-	      <right_attach>2</right_attach>
-	      <top_attach>1</top_attach>
-	      <bottom_attach>2</bottom_attach>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	      <xexpand>False</xexpand>
-	      <yexpand>False</yexpand>
-	      <xshrink>False</xshrink>
-	      <yshrink>False</yshrink>
-	      <xfill>False</xfill>
-	      <yfill>False</yfill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkButton</class>
-	    <name>gamma_op</name>
-	    <border_width>2</border_width>
-	    <sensitive>False</sensitive>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>clicked</name>
-	      <handler>on_gamma_op_clicked</handler>
-	      <last_modification_time>Wed, 27 Dec 2000 23:19:53 GMT</last_modification_time>
-	    </signal>
-	    <label>AUTO</label>
-	    <child>
-	      <left_attach>0</left_attach>
-	      <right_attach>1</right_attach>
-	      <top_attach>1</top_attach>
-	      <bottom_attach>2</bottom_attach>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	      <xexpand>False</xexpand>
-	      <yexpand>False</yexpand>
-	      <xshrink>False</xshrink>
-	      <yshrink>False</yshrink>
-	      <xfill>False</xfill>
-	      <yfill>False</yfill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkAlignment</class>
-	    <name>alignment8</name>
-	    <xalign>0.5</xalign>
-	    <yalign>0.5</yalign>
-	    <xscale>1</xscale>
-	    <yscale>1</yscale>
-	    <child>
-	      <left_attach>0</left_attach>
-	      <right_attach>1</right_attach>
-	      <top_attach>0</top_attach>
-	      <bottom_attach>1</bottom_attach>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	      <xexpand>False</xexpand>
-	      <yexpand>False</yexpand>
-	      <xshrink>False</xshrink>
-	      <yshrink>False</yshrink>
-	      <xfill>True</xfill>
-	      <yfill>False</yfill>
-	    </child>
-
-	    <widget>
-	      <class>GtkToggleButton</class>
-	      <name>gamma_power</name>
-	      <border_width>2</border_width>
-	      <sensitive>False</sensitive>
-	      <can_focus>True</can_focus>
-	      <signal>
-		<name>toggled</name>
-		<handler>on_gamma_power_toggled</handler>
-		<last_modification_time>Wed, 27 Dec 2000 23:19:49 GMT</last_modification_time>
-	      </signal>
-	      <label>ON</label>
-	      <active>False</active>
-	    </widget>
-	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkHScale</class>
-	  <name>gamma_scale</name>
-	  <sensitive>False</sensitive>
-	  <can_focus>True</can_focus>
-	  <draw_value>True</draw_value>
-	  <value_pos>GTK_POS_TOP</value_pos>
-	  <digits>0</digits>
-	  <policy>GTK_UPDATE_CONTINUOUS</policy>
-	  <value>0</value>
-	  <lower>0</lower>
-	  <upper>255</upper>
-	  <step>1</step>
-	  <page>10</page>
-	  <page_size>0</page_size>
-	  <child>
-	    <padding>0</padding>
-	    <expand>True</expand>
-	    <fill>True</fill>
-	  </child>
-	</widget>
-      </widget>
-    </widget>
-
-    <widget>
-      <class>GtkFrame</class>
-      <name>saturation_frame</name>
-      <border_width>5</border_width>
-      <sensitive>False</sensitive>
-      <label>Saturation</label>
-      <label_xalign>0</label_xalign>
-      <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
-      <child>
-	<padding>0</padding>
-	<expand>False</expand>
-	<fill>False</fill>
-      </child>
-
-      <widget>
-	<class>GtkHBox</class>
-	<name>hbox7</name>
-	<homogeneous>False</homogeneous>
-	<spacing>0</spacing>
-
-	<widget>
-	  <class>GtkTable</class>
-	  <name>table3</name>
-	  <rows>2</rows>
-	  <columns>2</columns>
-	  <homogeneous>False</homogeneous>
-	  <row_spacing>0</row_spacing>
-	  <column_spacing>0</column_spacing>
-	  <child>
-	    <padding>0</padding>
-	    <expand>False</expand>
-	    <fill>True</fill>
-	  </child>
-
-	  <widget>
-	    <class>GtkRadioButton</class>
-	    <name>saturation_man</name>
-	    <sensitive>False</sensitive>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>toggled</name>
-	      <handler>on_saturation_man_toggled</handler>
-	      <last_modification_time>Thu, 28 Dec 2000 10:33:49 GMT</last_modification_time>
-	    </signal>
-	    <label>Man</label>
-	    <active>True</active>
-	    <draw_indicator>True</draw_indicator>
-	    <group>saturation</group>
-	    <child>
-	      <left_attach>1</left_attach>
-	      <right_attach>2</right_attach>
-	      <top_attach>0</top_attach>
-	      <bottom_attach>1</bottom_attach>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	      <xexpand>False</xexpand>
-	      <yexpand>False</yexpand>
-	      <xshrink>False</xshrink>
-	      <yshrink>False</yshrink>
-	      <xfill>False</xfill>
-	      <yfill>False</yfill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkRadioButton</class>
-	    <name>saturation_auto</name>
-	    <sensitive>False</sensitive>
-	    <can_focus>True</can_focus>
-	    <label>Auto</label>
-	    <active>False</active>
-	    <draw_indicator>True</draw_indicator>
-	    <group>saturation</group>
-	    <child>
-	      <left_attach>1</left_attach>
-	      <right_attach>2</right_attach>
-	      <top_attach>1</top_attach>
-	      <bottom_attach>2</bottom_attach>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	      <xexpand>False</xexpand>
-	      <yexpand>False</yexpand>
-	      <xshrink>False</xshrink>
-	      <yshrink>False</yshrink>
-	      <xfill>False</xfill>
-	      <yfill>False</yfill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkButton</class>
-	    <name>saturation_op</name>
-	    <border_width>2</border_width>
-	    <sensitive>False</sensitive>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>clicked</name>
-	      <handler>on_saturation_op_clicked</handler>
-	      <last_modification_time>Wed, 27 Dec 2000 23:20:02 GMT</last_modification_time>
-	    </signal>
-	    <label>AUTO</label>
-	    <child>
-	      <left_attach>0</left_attach>
-	      <right_attach>1</right_attach>
-	      <top_attach>1</top_attach>
-	      <bottom_attach>2</bottom_attach>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	      <xexpand>False</xexpand>
-	      <yexpand>False</yexpand>
-	      <xshrink>False</xshrink>
-	      <yshrink>False</yshrink>
-	      <xfill>False</xfill>
-	      <yfill>False</yfill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkAlignment</class>
-	    <name>alignment2</name>
-	    <xalign>0.5</xalign>
-	    <yalign>0.5</yalign>
-	    <xscale>1</xscale>
-	    <yscale>1</yscale>
-	    <child>
-	      <left_attach>0</left_attach>
-	      <right_attach>1</right_attach>
-	      <top_attach>0</top_attach>
-	      <bottom_attach>1</bottom_attach>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	      <xexpand>False</xexpand>
-	      <yexpand>False</yexpand>
-	      <xshrink>False</xshrink>
-	      <yshrink>False</yshrink>
-	      <xfill>True</xfill>
-	      <yfill>False</yfill>
-	    </child>
-
-	    <widget>
-	      <class>GtkToggleButton</class>
-	      <name>saturation_power</name>
-	      <border_width>2</border_width>
-	      <sensitive>False</sensitive>
-	      <can_focus>True</can_focus>
-	      <signal>
-		<name>toggled</name>
-		<handler>on_saturation_power_toggled</handler>
-		<last_modification_time>Wed, 27 Dec 2000 23:19:58 GMT</last_modification_time>
-	      </signal>
-	      <label>ON</label>
-	      <active>False</active>
-	    </widget>
-	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkHScale</class>
-	  <name>saturation_scale</name>
-	  <sensitive>False</sensitive>
-	  <can_focus>True</can_focus>
-	  <draw_value>True</draw_value>
-	  <value_pos>GTK_POS_TOP</value_pos>
-	  <digits>0</digits>
-	  <policy>GTK_UPDATE_CONTINUOUS</policy>
-	  <value>0</value>
-	  <lower>0</lower>
-	  <upper>255</upper>
-	  <step>1</step>
-	  <page>10</page>
-	  <page_size>0</page_size>
-	  <child>
-	    <padding>0</padding>
-	    <expand>True</expand>
-	    <fill>True</fill>
-	  </child>
-	</widget>
-      </widget>
-    </widget>
-
-    <widget>
-      <class>GtkFrame</class>
-      <name>hue_frame</name>
-      <border_width>5</border_width>
-      <sensitive>False</sensitive>
-      <label>Hue</label>
-      <label_xalign>0</label_xalign>
-      <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
-      <child>
-	<padding>0</padding>
-	<expand>False</expand>
-	<fill>False</fill>
-      </child>
-
-      <widget>
-	<class>GtkHBox</class>
-	<name>hbox8</name>
-	<homogeneous>False</homogeneous>
-	<spacing>0</spacing>
-
-	<widget>
-	  <class>GtkTable</class>
-	  <name>table4</name>
-	  <rows>2</rows>
-	  <columns>2</columns>
-	  <homogeneous>False</homogeneous>
-	  <row_spacing>0</row_spacing>
-	  <column_spacing>0</column_spacing>
-	  <child>
-	    <padding>0</padding>
-	    <expand>False</expand>
-	    <fill>True</fill>
-	  </child>
-
-	  <widget>
-	    <class>GtkRadioButton</class>
-	    <name>hue_man</name>
-	    <sensitive>False</sensitive>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>toggled</name>
-	      <handler>on_hue_man_toggled</handler>
-	      <last_modification_time>Thu, 28 Dec 2000 10:33:56 GMT</last_modification_time>
-	    </signal>
-	    <label>Man</label>
-	    <active>True</active>
-	    <draw_indicator>True</draw_indicator>
-	    <group>hue</group>
-	    <child>
-	      <left_attach>1</left_attach>
-	      <right_attach>2</right_attach>
-	      <top_attach>0</top_attach>
-	      <bottom_attach>1</bottom_attach>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	      <xexpand>False</xexpand>
-	      <yexpand>False</yexpand>
-	      <xshrink>False</xshrink>
-	      <yshrink>False</yshrink>
-	      <xfill>False</xfill>
-	      <yfill>False</yfill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkRadioButton</class>
-	    <name>hue_auto</name>
-	    <sensitive>False</sensitive>
-	    <can_focus>True</can_focus>
-	    <label>Auto</label>
-	    <active>False</active>
-	    <draw_indicator>True</draw_indicator>
-	    <group>hue</group>
-	    <child>
-	      <left_attach>1</left_attach>
-	      <right_attach>2</right_attach>
-	      <top_attach>1</top_attach>
-	      <bottom_attach>2</bottom_attach>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	      <xexpand>False</xexpand>
-	      <yexpand>False</yexpand>
-	      <xshrink>False</xshrink>
-	      <yshrink>False</yshrink>
-	      <xfill>False</xfill>
-	      <yfill>False</yfill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkButton</class>
-	    <name>hue_op</name>
-	    <border_width>2</border_width>
-	    <sensitive>False</sensitive>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>clicked</name>
-	      <handler>on_hue_op_clicked</handler>
-	      <last_modification_time>Wed, 27 Dec 2000 23:20:11 GMT</last_modification_time>
-	    </signal>
-	    <label>AUTO</label>
-	    <child>
-	      <left_attach>0</left_attach>
-	      <right_attach>1</right_attach>
-	      <top_attach>1</top_attach>
-	      <bottom_attach>2</bottom_attach>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	      <xexpand>False</xexpand>
-	      <yexpand>False</yexpand>
-	      <xshrink>False</xshrink>
-	      <yshrink>False</yshrink>
-	      <xfill>False</xfill>
-	      <yfill>False</yfill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkAlignment</class>
-	    <name>alignment3</name>
-	    <xalign>0.5</xalign>
-	    <yalign>0.5</yalign>
-	    <xscale>1</xscale>
-	    <yscale>1</yscale>
-	    <child>
-	      <left_attach>0</left_attach>
-	      <right_attach>1</right_attach>
-	      <top_attach>0</top_attach>
-	      <bottom_attach>1</bottom_attach>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	      <xexpand>False</xexpand>
-	      <yexpand>False</yexpand>
-	      <xshrink>False</xshrink>
-	      <yshrink>False</yshrink>
-	      <xfill>True</xfill>
-	      <yfill>False</yfill>
-	    </child>
-
-	    <widget>
-	      <class>GtkToggleButton</class>
-	      <name>hue_power</name>
-	      <border_width>2</border_width>
-	      <sensitive>False</sensitive>
-	      <can_focus>True</can_focus>
-	      <signal>
-		<name>toggled</name>
-		<handler>on_hue_power_toggled</handler>
-		<last_modification_time>Wed, 27 Dec 2000 23:20:06 GMT</last_modification_time>
-	      </signal>
-	      <label>ON</label>
-	      <active>False</active>
-	    </widget>
-	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkHScale</class>
-	  <name>hue_scale</name>
-	  <sensitive>False</sensitive>
-	  <can_focus>True</can_focus>
-	  <draw_value>True</draw_value>
-	  <value_pos>GTK_POS_TOP</value_pos>
-	  <digits>0</digits>
-	  <policy>GTK_UPDATE_CONTINUOUS</policy>
-	  <value>0</value>
-	  <lower>0</lower>
-	  <upper>255</upper>
-	  <step>1</step>
-	  <page>10</page>
-	  <page_size>0</page_size>
-	  <child>
-	    <padding>0</padding>
-	    <expand>True</expand>
-	    <fill>True</fill>
-	  </child>
-	</widget>
-      </widget>
-    </widget>
-
-    <widget>
-      <class>GtkFrame</class>
-      <name>whitebal_frame</name>
-      <border_width>5</border_width>
-      <sensitive>False</sensitive>
-      <label>White Balance</label>
-      <label_xalign>0</label_xalign>
-      <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
-      <child>
-	<padding>0</padding>
-	<expand>False</expand>
-	<fill>False</fill>
-      </child>
-
-      <widget>
-	<class>GtkHBox</class>
-	<name>hbox10</name>
-	<homogeneous>False</homogeneous>
-	<spacing>0</spacing>
-
-	<widget>
-	  <class>GtkVBox</class>
-	  <name>vbox15</name>
-	  <homogeneous>False</homogeneous>
-	  <spacing>0</spacing>
-	  <child>
-	    <padding>0</padding>
-	    <expand>False</expand>
-	    <fill>False</fill>
-	  </child>
-
-	  <widget>
-	    <class>GtkToggleButton</class>
-	    <name>whitebal_power</name>
-	    <border_width>2</border_width>
-	    <sensitive>False</sensitive>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>toggled</name>
-	      <handler>on_whitebal_power_toggled</handler>
-	      <last_modification_time>Wed, 27 Dec 2000 23:20:16 GMT</last_modification_time>
-	    </signal>
-	    <label>ON</label>
-	    <active>False</active>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkRadioButton</class>
-	    <name>whitebal_man</name>
-	    <sensitive>False</sensitive>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>toggled</name>
-	      <handler>on_whitebal_man_toggled</handler>
-	      <last_modification_time>Thu, 28 Dec 2000 10:34:07 GMT</last_modification_time>
-	    </signal>
-	    <label>Man</label>
-	    <active>True</active>
-	    <draw_indicator>True</draw_indicator>
-	    <group>whitebal</group>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkRadioButton</class>
-	    <name>whitebal_auto</name>
-	    <sensitive>False</sensitive>
-	    <can_focus>True</can_focus>
-	    <label>Auto</label>
-	    <active>True</active>
-	    <draw_indicator>True</draw_indicator>
-	    <group>whitebal</group>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkButton</class>
-	    <name>whitebal_op</name>
-	    <border_width>2</border_width>
-	    <sensitive>False</sensitive>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>clicked</name>
-	      <handler>on_whitebal_op_clicked</handler>
-	      <last_modification_time>Wed, 27 Dec 2000 23:20:20 GMT</last_modification_time>
-	    </signal>
-	    <label>AUTO</label>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkHBox</class>
-	  <name>hbox46</name>
-	  <homogeneous>False</homogeneous>
-	  <spacing>0</spacing>
-	  <child>
-	    <padding>0</padding>
-	    <expand>True</expand>
-	    <fill>True</fill>
-	  </child>
-
-	  <widget>
-	    <class>GtkVSeparator</class>
-	    <name>vseparator1</name>
-	    <child>
-	      <padding>1</padding>
-	      <expand>False</expand>
-	      <fill>True</fill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkTable</class>
-	    <name>table22</name>
-	    <rows>2</rows>
-	    <columns>2</columns>
-	    <homogeneous>False</homogeneous>
-	    <row_spacing>0</row_spacing>
-	    <column_spacing>0</column_spacing>
-	    <child>
-	      <padding>0</padding>
-	      <expand>True</expand>
-	      <fill>True</fill>
-	    </child>
-
-	    <widget>
-	      <class>GtkHScale</class>
-	      <name>whitebal_BU_scale</name>
-	      <sensitive>False</sensitive>
-	      <can_focus>True</can_focus>
-	      <draw_value>True</draw_value>
-	      <value_pos>GTK_POS_TOP</value_pos>
-	      <digits>0</digits>
-	      <policy>GTK_UPDATE_CONTINUOUS</policy>
-	      <value>0</value>
-	      <lower>0</lower>
-	      <upper>255</upper>
-	      <step>1</step>
-	      <page>10</page>
-	      <page_size>0</page_size>
-	      <child>
-		<left_attach>1</left_attach>
-		<right_attach>2</right_attach>
-		<top_attach>0</top_attach>
-		<bottom_attach>1</bottom_attach>
-		<xpad>0</xpad>
-		<ypad>0</ypad>
-		<xexpand>True</xexpand>
-		<yexpand>True</yexpand>
-		<xshrink>False</xshrink>
-		<yshrink>False</yshrink>
-		<xfill>True</xfill>
-		<yfill>True</yfill>
-	      </child>
-	    </widget>
-
-	    <widget>
-	      <class>GtkHScale</class>
-	      <name>whitebal_RV_scale</name>
-	      <sensitive>False</sensitive>
-	      <can_focus>True</can_focus>
-	      <draw_value>True</draw_value>
-	      <value_pos>GTK_POS_TOP</value_pos>
-	      <digits>0</digits>
-	      <policy>GTK_UPDATE_CONTINUOUS</policy>
-	      <value>0</value>
-	      <lower>0</lower>
-	      <upper>255</upper>
-	      <step>1</step>
-	      <page>10</page>
-	      <page_size>0</page_size>
-	      <child>
-		<left_attach>1</left_attach>
-		<right_attach>2</right_attach>
-		<top_attach>1</top_attach>
-		<bottom_attach>2</bottom_attach>
-		<xpad>0</xpad>
-		<ypad>0</ypad>
-		<xexpand>True</xexpand>
-		<yexpand>True</yexpand>
-		<xshrink>False</xshrink>
-		<yshrink>False</yshrink>
-		<xfill>True</xfill>
-		<yfill>True</yfill>
-	      </child>
-	    </widget>
-
-	    <widget>
-	      <class>GtkLabel</class>
-	      <name>label44</name>
-	      <label>Blue/
-U-field:</label>
-	      <justify>GTK_JUSTIFY_CENTER</justify>
-	      <wrap>False</wrap>
-	      <xalign>0</xalign>
-	      <yalign>0.5</yalign>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	      <child>
-		<left_attach>0</left_attach>
-		<right_attach>1</right_attach>
-		<top_attach>0</top_attach>
-		<bottom_attach>1</bottom_attach>
-		<xpad>0</xpad>
-		<ypad>0</ypad>
-		<xexpand>False</xexpand>
-		<yexpand>False</yexpand>
-		<xshrink>False</xshrink>
-		<yshrink>False</yshrink>
-		<xfill>True</xfill>
-		<yfill>False</yfill>
-	      </child>
-	    </widget>
-
-	    <widget>
-	      <class>GtkLabel</class>
-	      <name>label45</name>
-	      <label>Red/
-V-field:</label>
-	      <justify>GTK_JUSTIFY_CENTER</justify>
-	      <wrap>False</wrap>
-	      <xalign>0</xalign>
-	      <yalign>0.5</yalign>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	      <child>
-		<left_attach>0</left_attach>
-		<right_attach>1</right_attach>
-		<top_attach>1</top_attach>
-		<bottom_attach>2</bottom_attach>
-		<xpad>0</xpad>
-		<ypad>0</ypad>
-		<xexpand>False</xexpand>
-		<yexpand>False</yexpand>
-		<xshrink>False</xshrink>
-		<yshrink>False</yshrink>
-		<xfill>True</xfill>
-		<yfill>False</yfill>
-	      </child>
-	    </widget>
-	  </widget>
-	</widget>
-      </widget>
-    </widget>
-
-    <widget>
-      <class>GtkFrame</class>
-      <name>sharpness_frame</name>
-      <border_width>5</border_width>
-      <sensitive>False</sensitive>
-      <label>Sharpness</label>
-      <label_xalign>0</label_xalign>
-      <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
-      <child>
-	<padding>0</padding>
-	<expand>False</expand>
-	<fill>False</fill>
-      </child>
-
-      <widget>
-	<class>GtkHBox</class>
-	<name>hbox21</name>
-	<homogeneous>False</homogeneous>
-	<spacing>0</spacing>
-
-	<widget>
-	  <class>GtkTable</class>
-	  <name>table10</name>
-	  <rows>2</rows>
-	  <columns>2</columns>
-	  <homogeneous>False</homogeneous>
-	  <row_spacing>0</row_spacing>
-	  <column_spacing>0</column_spacing>
-	  <child>
-	    <padding>0</padding>
-	    <expand>False</expand>
-	    <fill>True</fill>
-	  </child>
-
-	  <widget>
-	    <class>GtkRadioButton</class>
-	    <name>sharpness_man</name>
-	    <sensitive>False</sensitive>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>toggled</name>
-	      <handler>on_sharpness_man_toggled</handler>
-	      <last_modification_time>Thu, 28 Dec 2000 10:34:12 GMT</last_modification_time>
-	    </signal>
-	    <label>Man</label>
-	    <active>True</active>
-	    <draw_indicator>True</draw_indicator>
-	    <group>sharpness</group>
-	    <child>
-	      <left_attach>1</left_attach>
-	      <right_attach>2</right_attach>
-	      <top_attach>0</top_attach>
-	      <bottom_attach>1</bottom_attach>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	      <xexpand>False</xexpand>
-	      <yexpand>False</yexpand>
-	      <xshrink>False</xshrink>
-	      <yshrink>False</yshrink>
-	      <xfill>False</xfill>
-	      <yfill>False</yfill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkRadioButton</class>
-	    <name>sharpness_auto</name>
-	    <sensitive>False</sensitive>
-	    <can_focus>True</can_focus>
-	    <label>Auto</label>
-	    <active>False</active>
-	    <draw_indicator>True</draw_indicator>
-	    <group>sharpness</group>
-	    <child>
-	      <left_attach>1</left_attach>
-	      <right_attach>2</right_attach>
-	      <top_attach>1</top_attach>
-	      <bottom_attach>2</bottom_attach>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	      <xexpand>False</xexpand>
-	      <yexpand>False</yexpand>
-	      <xshrink>False</xshrink>
-	      <yshrink>False</yshrink>
-	      <xfill>False</xfill>
-	      <yfill>False</yfill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkButton</class>
-	    <name>sharpness_op</name>
-	    <border_width>2</border_width>
-	    <sensitive>False</sensitive>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>clicked</name>
-	      <handler>on_sharpness_op_clicked</handler>
-	      <last_modification_time>Wed, 27 Dec 2000 23:20:32 GMT</last_modification_time>
-	    </signal>
-	    <label>AUTO</label>
-	    <child>
-	      <left_attach>0</left_attach>
-	      <right_attach>1</right_attach>
-	      <top_attach>1</top_attach>
-	      <bottom_attach>2</bottom_attach>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	      <xexpand>False</xexpand>
-	      <yexpand>False</yexpand>
-	      <xshrink>False</xshrink>
-	      <yshrink>False</yshrink>
-	      <xfill>False</xfill>
-	      <yfill>False</yfill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkAlignment</class>
-	    <name>alignment6</name>
-	    <xalign>0.5</xalign>
-	    <yalign>0.5</yalign>
-	    <xscale>1</xscale>
-	    <yscale>1</yscale>
-	    <child>
-	      <left_attach>0</left_attach>
-	      <right_attach>1</right_attach>
-	      <top_attach>0</top_attach>
-	      <bottom_attach>1</bottom_attach>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	      <xexpand>False</xexpand>
-	      <yexpand>False</yexpand>
-	      <xshrink>False</xshrink>
-	      <yshrink>False</yshrink>
-	      <xfill>True</xfill>
-	      <yfill>False</yfill>
-	    </child>
-
-	    <widget>
-	      <class>GtkToggleButton</class>
-	      <name>sharpness_power</name>
-	      <border_width>2</border_width>
-	      <sensitive>False</sensitive>
-	      <can_focus>True</can_focus>
-	      <signal>
-		<name>toggled</name>
-		<handler>on_sharpness_power_toggled</handler>
-		<last_modification_time>Wed, 27 Dec 2000 23:20:27 GMT</last_modification_time>
-	      </signal>
-	      <label>ON</label>
-	      <active>False</active>
-	    </widget>
-	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkHScale</class>
-	  <name>sharpness_scale</name>
-	  <sensitive>False</sensitive>
-	  <can_focus>True</can_focus>
-	  <draw_value>True</draw_value>
-	  <value_pos>GTK_POS_TOP</value_pos>
-	  <digits>0</digits>
-	  <policy>GTK_UPDATE_CONTINUOUS</policy>
-	  <value>0</value>
-	  <lower>0</lower>
-	  <upper>255</upper>
-	  <step>1</step>
-	  <page>10</page>
-	  <page_size>0</page_size>
-	  <child>
-	    <padding>0</padding>
-	    <expand>True</expand>
-	    <fill>True</fill>
-	  </child>
-	</widget>
-      </widget>
-    </widget>
-  </widget>
-</widget>
-
-<widget>
-  <class>GtkWindow</class>
-  <name>aperture_window</name>
-  <height>350</height>
-  <signal>
-    <name>delete_event</name>
-    <handler>gtk_widget_hide</handler>
-    <last_modification_time>Tue, 26 Dec 2000 12:14:09 GMT</last_modification_time>
-  </signal>
-  <signal>
-    <name>destroy_event</name>
-    <handler>gtk_widget_hide</handler>
-    <last_modification_time>Tue, 26 Dec 2000 12:14:19 GMT</last_modification_time>
-  </signal>
-  <signal>
-    <name>destroy</name>
-    <handler>gtk_widget_hide</handler>
-    <last_modification_time>Tue, 26 Dec 2000 12:14:28 GMT</last_modification_time>
-  </signal>
-  <title>Aperture</title>
-  <type>GTK_WINDOW_TOPLEVEL</type>
-  <position>GTK_WIN_POS_NONE</position>
-  <modal>False</modal>
-  <default_height>350</default_height>
-  <allow_shrink>False</allow_shrink>
-  <allow_grow>False</allow_grow>
-  <auto_shrink>False</auto_shrink>
-
-  <widget>
-    <class>GtkHBox</class>
-    <name>hbox6</name>
-    <homogeneous>False</homogeneous>
-    <spacing>0</spacing>
-
-    <widget>
-      <class>GtkFrame</class>
-      <name>exposure_frame</name>
-      <border_width>5</border_width>
-      <sensitive>False</sensitive>
-      <label>AutoExp</label>
-      <label_xalign>0</label_xalign>
-      <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
-      <child>
-	<padding>0</padding>
-	<expand>False</expand>
-	<fill>False</fill>
-      </child>
-
-      <widget>
-	<class>GtkVBox</class>
-	<name>vbox9</name>
-	<homogeneous>False</homogeneous>
-	<spacing>0</spacing>
-
-	<widget>
-	  <class>GtkToggleButton</class>
-	  <name>exposure_power</name>
-	  <border_width>2</border_width>
-	  <sensitive>False</sensitive>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>toggled</name>
-	    <handler>on_exposure_power_toggled</handler>
-	    <last_modification_time>Wed, 27 Dec 2000 23:23:49 GMT</last_modification_time>
-	  </signal>
-	  <label>ON</label>
-	  <active>False</active>
-	  <child>
-	    <padding>0</padding>
-	    <expand>False</expand>
-	    <fill>False</fill>
-	  </child>
-	</widget>
-
-	<widget>
-	  <class>GtkRadioButton</class>
-	  <name>exposure_man</name>
-	  <sensitive>False</sensitive>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>toggled</name>
-	    <handler>on_exposure_man_toggled</handler>
-	    <last_modification_time>Thu, 28 Dec 2000 10:34:33 GMT</last_modification_time>
-	  </signal>
-	  <label>Man</label>
-	  <active>True</active>
-	  <draw_indicator>True</draw_indicator>
-	  <group>exposure</group>
-	  <child>
-	    <padding>0</padding>
-	    <expand>False</expand>
-	    <fill>False</fill>
-	  </child>
-	</widget>
-
-	<widget>
-	  <class>GtkRadioButton</class>
-	  <name>exposure_auto</name>
-	  <sensitive>False</sensitive>
-	  <can_focus>True</can_focus>
-	  <label>Auto</label>
-	  <active>False</active>
-	  <draw_indicator>True</draw_indicator>
-	  <group>exposure</group>
-	  <child>
-	    <padding>0</padding>
-	    <expand>False</expand>
-	    <fill>False</fill>
-	  </child>
-	</widget>
-
-	<widget>
-	  <class>GtkButton</class>
-	  <name>exposure_op</name>
-	  <border_width>2</border_width>
-	  <sensitive>False</sensitive>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>clicked</name>
-	    <handler>on_exposure_op_clicked</handler>
-	    <last_modification_time>Wed, 27 Dec 2000 23:24:10 GMT</last_modification_time>
-	  </signal>
-	  <label>AUTO</label>
-	  <child>
-	    <padding>0</padding>
-	    <expand>False</expand>
-	    <fill>False</fill>
-	  </child>
-	</widget>
-
-	<widget>
-	  <class>GtkVScale</class>
-	  <name>exposure_scale</name>
-	  <sensitive>False</sensitive>
-	  <can_focus>True</can_focus>
-	  <draw_value>True</draw_value>
-	  <value_pos>GTK_POS_LEFT</value_pos>
-	  <digits>0</digits>
-	  <policy>GTK_UPDATE_CONTINUOUS</policy>
-	  <value>0</value>
-	  <lower>0</lower>
-	  <upper>255</upper>
-	  <step>1</step>
-	  <page>10</page>
-	  <page_size>0</page_size>
-	  <child>
-	    <padding>0</padding>
-	    <expand>True</expand>
-	    <fill>True</fill>
-	  </child>
-	</widget>
-      </widget>
-    </widget>
-
-    <widget>
-      <class>GtkFrame</class>
-      <name>iris_frame</name>
-      <border_width>5</border_width>
-      <sensitive>False</sensitive>
-      <label>Iris</label>
-      <label_xalign>0</label_xalign>
-      <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
-      <child>
-	<padding>0</padding>
-	<expand>False</expand>
-	<fill>False</fill>
-      </child>
-
-      <widget>
-	<class>GtkVBox</class>
-	<name>vbox11</name>
-	<homogeneous>False</homogeneous>
-	<spacing>0</spacing>
-
-	<widget>
-	  <class>GtkToggleButton</class>
-	  <name>iris_power</name>
-	  <border_width>2</border_width>
-	  <sensitive>False</sensitive>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>toggled</name>
-	    <handler>on_iris_power_toggled</handler>
-	    <last_modification_time>Wed, 27 Dec 2000 23:23:52 GMT</last_modification_time>
-	  </signal>
-	  <label>ON</label>
-	  <active>False</active>
-	  <child>
-	    <padding>0</padding>
-	    <expand>False</expand>
-	    <fill>False</fill>
-	  </child>
-	</widget>
-
-	<widget>
-	  <class>GtkRadioButton</class>
-	  <name>iris_man</name>
-	  <sensitive>False</sensitive>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>toggled</name>
-	    <handler>on_iris_man_toggled</handler>
-	    <last_modification_time>Thu, 28 Dec 2000 10:34:39 GMT</last_modification_time>
-	  </signal>
-	  <label>Man</label>
-	  <active>True</active>
-	  <draw_indicator>True</draw_indicator>
-	  <group>iris</group>
-	  <child>
-	    <padding>0</padding>
-	    <expand>False</expand>
-	    <fill>False</fill>
-	  </child>
-	</widget>
-
-	<widget>
-	  <class>GtkRadioButton</class>
-	  <name>iris_auto</name>
-	  <sensitive>False</sensitive>
-	  <can_focus>True</can_focus>
-	  <label>Auto</label>
-	  <active>False</active>
-	  <draw_indicator>True</draw_indicator>
-	  <group>iris</group>
-	  <child>
-	    <padding>0</padding>
-	    <expand>False</expand>
-	    <fill>False</fill>
-	  </child>
-	</widget>
-
-	<widget>
-	  <class>GtkButton</class>
-	  <name>iris_op</name>
-	  <border_width>2</border_width>
-	  <sensitive>False</sensitive>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>clicked</name>
-	    <handler>on_iris_op_clicked</handler>
-	    <last_modification_time>Wed, 27 Dec 2000 23:24:14 GMT</last_modification_time>
-	  </signal>
-	  <label>AUTO</label>
-	  <child>
-	    <padding>0</padding>
-	    <expand>False</expand>
-	    <fill>False</fill>
-	  </child>
-	</widget>
-
-	<widget>
-	  <class>GtkVScale</class>
-	  <name>iris_scale</name>
-	  <sensitive>False</sensitive>
-	  <can_focus>True</can_focus>
-	  <draw_value>True</draw_value>
-	  <value_pos>GTK_POS_LEFT</value_pos>
-	  <digits>0</digits>
-	  <policy>GTK_UPDATE_CONTINUOUS</policy>
-	  <value>0</value>
-	  <lower>0</lower>
-	  <upper>255</upper>
-	  <step>1</step>
-	  <page>10</page>
-	  <page_size>0</page_size>
-	  <child>
-	    <padding>0</padding>
-	    <expand>True</expand>
-	    <fill>True</fill>
-	  </child>
-	</widget>
-      </widget>
-    </widget>
-
-    <widget>
-      <class>GtkFrame</class>
-      <name>shutter_frame</name>
-      <border_width>5</border_width>
-      <sensitive>False</sensitive>
-      <label>Shutter</label>
-      <label_xalign>0</label_xalign>
-      <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
-      <child>
-	<padding>0</padding>
-	<expand>False</expand>
-	<fill>False</fill>
-      </child>
-
-      <widget>
-	<class>GtkVBox</class>
-	<name>vbox12</name>
-	<homogeneous>False</homogeneous>
-	<spacing>0</spacing>
-
-	<widget>
-	  <class>GtkToggleButton</class>
-	  <name>shutter_power</name>
-	  <border_width>2</border_width>
-	  <sensitive>False</sensitive>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>toggled</name>
-	    <handler>on_shutter_power_toggled</handler>
-	    <last_modification_time>Wed, 27 Dec 2000 23:23:57 GMT</last_modification_time>
-	  </signal>
-	  <label>ON</label>
-	  <active>False</active>
-	  <child>
-	    <padding>0</padding>
-	    <expand>False</expand>
-	    <fill>False</fill>
-	  </child>
-	</widget>
-
-	<widget>
-	  <class>GtkRadioButton</class>
-	  <name>shutter_man</name>
-	  <sensitive>False</sensitive>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>toggled</name>
-	    <handler>on_shutter_man_toggled</handler>
-	    <last_modification_time>Thu, 28 Dec 2000 10:34:47 GMT</last_modification_time>
-	  </signal>
-	  <label>Man</label>
-	  <active>True</active>
-	  <draw_indicator>True</draw_indicator>
-	  <group>shutter</group>
-	  <child>
-	    <padding>0</padding>
-	    <expand>False</expand>
-	    <fill>False</fill>
-	  </child>
-	</widget>
-
-	<widget>
-	  <class>GtkRadioButton</class>
-	  <name>shutter_auto</name>
-	  <sensitive>False</sensitive>
-	  <can_focus>True</can_focus>
-	  <label>Auto</label>
-	  <active>False</active>
-	  <draw_indicator>True</draw_indicator>
-	  <group>shutter</group>
-	  <child>
-	    <padding>0</padding>
-	    <expand>False</expand>
-	    <fill>False</fill>
-	  </child>
-	</widget>
-
-	<widget>
-	  <class>GtkButton</class>
-	  <name>shutter_op</name>
-	  <border_width>2</border_width>
-	  <sensitive>False</sensitive>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>clicked</name>
-	    <handler>on_shutter_op_clicked</handler>
-	    <last_modification_time>Wed, 27 Dec 2000 23:24:18 GMT</last_modification_time>
-	  </signal>
-	  <label>AUTO</label>
-	  <child>
-	    <padding>0</padding>
-	    <expand>False</expand>
-	    <fill>False</fill>
-	  </child>
-	</widget>
-
-	<widget>
-	  <class>GtkVScale</class>
-	  <name>shutter_scale</name>
-	  <sensitive>False</sensitive>
-	  <can_focus>True</can_focus>
-	  <draw_value>True</draw_value>
-	  <value_pos>GTK_POS_LEFT</value_pos>
-	  <digits>0</digits>
-	  <policy>GTK_UPDATE_CONTINUOUS</policy>
-	  <value>0</value>
-	  <lower>0</lower>
-	  <upper>255</upper>
-	  <step>1</step>
-	  <page>10</page>
-	  <page_size>0</page_size>
-	  <child>
-	    <padding>0</padding>
-	    <expand>True</expand>
-	    <fill>True</fill>
-	  </child>
-	</widget>
-      </widget>
-    </widget>
-
-    <widget>
-      <class>GtkFrame</class>
-      <name>gain_frame</name>
-      <border_width>5</border_width>
-      <sensitive>False</sensitive>
-      <label>Gain</label>
-      <label_xalign>0</label_xalign>
-      <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
-      <child>
-	<padding>0</padding>
-	<expand>False</expand>
-	<fill>False</fill>
-      </child>
-
-      <widget>
-	<class>GtkVBox</class>
-	<name>vbox13</name>
-	<homogeneous>False</homogeneous>
-	<spacing>0</spacing>
-
-	<widget>
-	  <class>GtkToggleButton</class>
-	  <name>gain_power</name>
-	  <border_width>2</border_width>
-	  <sensitive>False</sensitive>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>toggled</name>
-	    <handler>on_gain_power_toggled</handler>
-	    <last_modification_time>Wed, 27 Dec 2000 23:24:01 GMT</last_modification_time>
-	  </signal>
-	  <label>ON</label>
-	  <active>False</active>
-	  <child>
-	    <padding>0</padding>
-	    <expand>False</expand>
-	    <fill>False</fill>
-	  </child>
-	</widget>
-
-	<widget>
-	  <class>GtkRadioButton</class>
-	  <name>gain_man</name>
-	  <sensitive>False</sensitive>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>toggled</name>
-	    <handler>on_gain_man_toggled</handler>
-	    <last_modification_time>Thu, 28 Dec 2000 10:34:55 GMT</last_modification_time>
-	  </signal>
-	  <label>Man</label>
-	  <active>True</active>
-	  <draw_indicator>True</draw_indicator>
-	  <group>gain</group>
-	  <child>
-	    <padding>0</padding>
-	    <expand>False</expand>
-	    <fill>False</fill>
-	  </child>
-	</widget>
-
-	<widget>
-	  <class>GtkRadioButton</class>
-	  <name>gain_auto</name>
-	  <sensitive>False</sensitive>
-	  <can_focus>True</can_focus>
-	  <label>Auto</label>
-	  <active>False</active>
-	  <draw_indicator>True</draw_indicator>
-	  <group>gain</group>
-	  <child>
-	    <padding>0</padding>
-	    <expand>False</expand>
-	    <fill>False</fill>
-	  </child>
-	</widget>
-
-	<widget>
-	  <class>GtkButton</class>
-	  <name>gain_op</name>
-	  <border_width>2</border_width>
-	  <sensitive>False</sensitive>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>clicked</name>
-	    <handler>on_gain_op_clicked</handler>
-	    <last_modification_time>Wed, 27 Dec 2000 23:24:22 GMT</last_modification_time>
-	  </signal>
-	  <label>AUTO</label>
-	  <child>
-	    <padding>0</padding>
-	    <expand>False</expand>
-	    <fill>False</fill>
-	  </child>
-	</widget>
-
-	<widget>
-	  <class>GtkVScale</class>
-	  <name>gain_scale</name>
-	  <sensitive>False</sensitive>
-	  <can_focus>True</can_focus>
-	  <draw_value>True</draw_value>
-	  <value_pos>GTK_POS_LEFT</value_pos>
-	  <digits>0</digits>
-	  <policy>GTK_UPDATE_CONTINUOUS</policy>
-	  <value>0</value>
-	  <lower>0</lower>
-	  <upper>255</upper>
-	  <step>1</step>
-	  <page>10</page>
-	  <page_size>0</page_size>
-	  <child>
-	    <padding>0</padding>
-	    <expand>True</expand>
-	    <fill>True</fill>
-	  </child>
-	</widget>
-      </widget>
-    </widget>
-
-    <widget>
-      <class>GtkFrame</class>
-      <name>filter_frame</name>
-      <border_width>5</border_width>
-      <sensitive>False</sensitive>
-      <label>Filter</label>
-      <label_xalign>0</label_xalign>
-      <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
-      <child>
-	<padding>0</padding>
-	<expand>False</expand>
-	<fill>False</fill>
-      </child>
-
-      <widget>
-	<class>GtkVBox</class>
-	<name>vbox10</name>
-	<homogeneous>False</homogeneous>
-	<spacing>0</spacing>
-
-	<widget>
-	  <class>GtkToggleButton</class>
-	  <name>filter_power</name>
-	  <border_width>2</border_width>
-	  <sensitive>False</sensitive>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>toggled</name>
-	    <handler>on_filter_power_toggled</handler>
-	    <last_modification_time>Wed, 27 Dec 2000 23:24:05 GMT</last_modification_time>
-	  </signal>
-	  <label>ON</label>
-	  <active>False</active>
-	  <child>
-	    <padding>0</padding>
-	    <expand>False</expand>
-	    <fill>False</fill>
-	  </child>
-	</widget>
-
-	<widget>
-	  <class>GtkRadioButton</class>
-	  <name>filter_man</name>
-	  <sensitive>False</sensitive>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>toggled</name>
-	    <handler>on_filter_man_toggled</handler>
-	    <last_modification_time>Thu, 28 Dec 2000 10:35:04 GMT</last_modification_time>
-	  </signal>
-	  <label>Man</label>
-	  <active>True</active>
-	  <draw_indicator>True</draw_indicator>
-	  <group>filter</group>
-	  <child>
-	    <padding>0</padding>
-	    <expand>False</expand>
-	    <fill>False</fill>
-	  </child>
-	</widget>
-
-	<widget>
-	  <class>GtkRadioButton</class>
-	  <name>filter_auto</name>
-	  <sensitive>False</sensitive>
-	  <can_focus>True</can_focus>
-	  <label>Auto</label>
-	  <active>False</active>
-	  <draw_indicator>True</draw_indicator>
-	  <group>filter</group>
-	  <child>
-	    <padding>0</padding>
-	    <expand>False</expand>
-	    <fill>False</fill>
-	  </child>
-	</widget>
-
-	<widget>
-	  <class>GtkButton</class>
-	  <name>filter_op</name>
-	  <border_width>2</border_width>
-	  <sensitive>False</sensitive>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>clicked</name>
-	    <handler>on_filter_op_clicked</handler>
-	    <last_modification_time>Wed, 27 Dec 2000 23:24:27 GMT</last_modification_time>
-	  </signal>
-	  <label>AUTO</label>
-	  <child>
-	    <padding>0</padding>
-	    <expand>False</expand>
-	    <fill>False</fill>
-	  </child>
-	</widget>
-
-	<widget>
-	  <class>GtkVScale</class>
-	  <name>filter_scale</name>
-	  <sensitive>False</sensitive>
-	  <can_focus>True</can_focus>
-	  <draw_value>True</draw_value>
-	  <value_pos>GTK_POS_LEFT</value_pos>
-	  <digits>0</digits>
-	  <policy>GTK_UPDATE_CONTINUOUS</policy>
-	  <value>0</value>
-	  <lower>0</lower>
-	  <upper>255</upper>
-	  <step>1</step>
-	  <page>10</page>
-	  <page_size>0</page_size>
-	  <child>
-	    <padding>0</padding>
-	    <expand>True</expand>
-	    <fill>True</fill>
-	  </child>
-	</widget>
-      </widget>
-    </widget>
-  </widget>
-</widget>
-
-<widget>
-  <class>GtkWindow</class>
-  <name>status_window</name>
-  <width>250</width>
-  <signal>
-    <name>delete_event</name>
-    <handler>gtk_widget_hide</handler>
-    <last_modification_time>Sat, 30 Dec 2000 15:43:14 GMT</last_modification_time>
-  </signal>
-  <signal>
-    <name>destroy_event</name>
-    <handler>gtk_widget_hide</handler>
-    <last_modification_time>Sat, 30 Dec 2000 15:43:22 GMT</last_modification_time>
-  </signal>
-  <signal>
-    <name>destroy</name>
-    <handler>gtk_widget_hide</handler>
-    <last_modification_time>Sat, 30 Dec 2000 15:43:29 GMT</last_modification_time>
-  </signal>
-  <title>Camera Status</title>
-  <type>GTK_WINDOW_TOPLEVEL</type>
-  <position>GTK_WIN_POS_NONE</position>
-  <modal>False</modal>
-  <allow_shrink>False</allow_shrink>
-  <allow_grow>False</allow_grow>
-  <auto_shrink>False</auto_shrink>
-
-  <widget>
-    <class>GtkVBox</class>
-    <name>vbox28</name>
-    <homogeneous>False</homogeneous>
-    <spacing>0</spacing>
-
-    <widget>
-      <class>GtkFrame</class>
-      <name>camera_status_frame</name>
-      <border_width>5</border_width>
-      <label>Camera</label>
-      <label_xalign>0</label_xalign>
-      <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
-      <child>
-	<padding>0</padding>
-	<expand>True</expand>
-	<fill>True</fill>
-      </child>
-
-      <widget>
-	<class>GtkHBox</class>
-	<name>hbox17</name>
-	<homogeneous>False</homogeneous>
-	<spacing>0</spacing>
-
-	<widget>
-	  <class>GtkVBox</class>
-	  <name>vbox23</name>
-	  <width>70</width>
-	  <homogeneous>True</homogeneous>
-	  <spacing>0</spacing>
-	  <child>
-	    <padding>0</padding>
-	    <expand>False</expand>
-	    <fill>False</fill>
-	  </child>
-
-	  <widget>
-	    <class>GtkLabel</class>
-	    <name>label1</name>
-	    <label>Vendor:</label>
-	    <justify>GTK_JUSTIFY_LEFT</justify>
-	    <wrap>False</wrap>
-	    <xalign>0.5</xalign>
-	    <yalign>0.5</yalign>
-	    <xpad>2</xpad>
-	    <ypad>2</ypad>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkLabel</class>
-	    <name>label2</name>
-	    <label>Model:</label>
-	    <justify>GTK_JUSTIFY_LEFT</justify>
-	    <wrap>False</wrap>
-	    <xalign>0.5</xalign>
-	    <yalign>0.5</yalign>
-	    <xpad>2</xpad>
-	    <ypad>2</ypad>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkLabel</class>
-	    <name>label3</name>
-	    <label>Handle:</label>
-	    <justify>GTK_JUSTIFY_LEFT</justify>
-	    <wrap>False</wrap>
-	    <xalign>0.5</xalign>
-	    <yalign>0.5</yalign>
-	    <xpad>2</xpad>
-	    <ypad>2</ypad>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkLabel</class>
-	    <name>label17</name>
-	    <label>Node:</label>
-	    <justify>GTK_JUSTIFY_LEFT</justify>
-	    <wrap>False</wrap>
-	    <xalign>0.5</xalign>
-	    <yalign>0.5</yalign>
-	    <xpad>2</xpad>
-	    <ypad>2</ypad>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkLabel</class>
-	    <name>label31</name>
-	    <label>GUID:</label>
-	    <justify>GTK_JUSTIFY_LEFT</justify>
-	    <wrap>False</wrap>
-	    <xalign>0.5</xalign>
-	    <yalign>0.5</yalign>
-	    <xpad>2</xpad>
-	    <ypad>2</ypad>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkLabel</class>
-	    <name>label32</name>
-	    <label>PHY speed:</label>
-	    <justify>GTK_JUSTIFY_LEFT</justify>
-	    <wrap>False</wrap>
-	    <xalign>0.5</xalign>
-	    <yalign>0.5</yalign>
-	    <xpad>2</xpad>
-	    <ypad>2</ypad>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkLabel</class>
-	    <name>label33</name>
-	    <label>PHY delay:</label>
-	    <justify>GTK_JUSTIFY_LEFT</justify>
-	    <wrap>False</wrap>
-	    <xalign>0.5</xalign>
-	    <yalign>0.5</yalign>
-	    <xpad>2</xpad>
-	    <ypad>2</ypad>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkLabel</class>
-	    <name>label34</name>
-	    <label>IIDC specs:</label>
-	    <justify>GTK_JUSTIFY_LEFT</justify>
-	    <wrap>False</wrap>
-	    <xalign>0.5</xalign>
-	    <yalign>0.5</yalign>
-	    <xpad>2</xpad>
-	    <ypad>2</ypad>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkLabel</class>
-	    <name>label35</name>
-	    <label>Power class:</label>
-	    <justify>GTK_JUSTIFY_LEFT</justify>
-	    <wrap>False</wrap>
-	    <xalign>0.5</xalign>
-	    <yalign>0.5</yalign>
-	    <xpad>2</xpad>
-	    <ypad>2</ypad>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkVBox</class>
-	  <name>vbox21</name>
-	  <homogeneous>True</homogeneous>
-	  <spacing>0</spacing>
-	  <child>
-	    <padding>0</padding>
-	    <expand>True</expand>
-	    <fill>True</fill>
-	  </child>
-
-	  <widget>
-	    <class>GtkStatusbar</class>
-	    <name>camera_vendor_status</name>
-	    <border_width>2</border_width>
-	    <child>
-	      <padding>0</padding>
-	      <expand>True</expand>
-	      <fill>True</fill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkStatusbar</class>
-	    <name>camera_model_status</name>
-	    <border_width>2</border_width>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkStatusbar</class>
-	    <name>camera_handle_status</name>
-	    <border_width>2</border_width>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkStatusbar</class>
-	    <name>camera_node_status</name>
-	    <border_width>2</border_width>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkStatusbar</class>
-	    <name>camera_guid_status</name>
-	    <border_width>2</border_width>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkStatusbar</class>
-	    <name>camera_maxiso_status</name>
-	    <border_width>2</border_width>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkStatusbar</class>
-	    <name>camera_delay_status</name>
-	    <border_width>2</border_width>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkStatusbar</class>
-	    <name>camera_dc_status</name>
-	    <border_width>2</border_width>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkStatusbar</class>
-	    <name>camera_pwclass_status</name>
-	    <border_width>2</border_width>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
-	</widget>
-      </widget>
-    </widget>
-
-    <widget>
-      <class>GtkFrame</class>
-      <name>transfer_status_frame</name>
-      <border_width>5</border_width>
-      <label>Transfer</label>
-      <label_xalign>0</label_xalign>
-      <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
-      <child>
-	<padding>0</padding>
-	<expand>True</expand>
-	<fill>True</fill>
-      </child>
-
-      <widget>
-	<class>GtkHBox</class>
-	<name>hbox39</name>
-	<homogeneous>False</homogeneous>
-	<spacing>0</spacing>
-
-	<widget>
-	  <class>GtkVBox</class>
-	  <name>vbox42</name>
-	  <width>70</width>
-	  <homogeneous>True</homogeneous>
-	  <spacing>0</spacing>
-	  <child>
-	    <padding>0</padding>
-	    <expand>False</expand>
-	    <fill>False</fill>
-	  </child>
-
-	  <widget>
-	    <class>GtkLabel</class>
-	    <name>label18</name>
-	    <label>Channel:</label>
-	    <justify>GTK_JUSTIFY_LEFT</justify>
-	    <wrap>False</wrap>
-	    <xalign>0.5</xalign>
-	    <yalign>0.5</yalign>
-	    <xpad>2</xpad>
-	    <ypad>2</ypad>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkLabel</class>
-	    <name>label19</name>
-	    <label>Speed:</label>
-	    <justify>GTK_JUSTIFY_LEFT</justify>
-	    <wrap>False</wrap>
-	    <xalign>0.5</xalign>
-	    <yalign>0.5</yalign>
-	    <xpad>2</xpad>
-	    <ypad>2</ypad>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkLabel</class>
-	    <name>label20</name>
-	    <label>Status:</label>
-	    <justify>GTK_JUSTIFY_LEFT</justify>
-	    <wrap>False</wrap>
-	    <xalign>0.5</xalign>
-	    <yalign>0.5</yalign>
-	    <xpad>2</xpad>
-	    <ypad>2</ypad>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkVBox</class>
-	  <name>vbox43</name>
-	  <homogeneous>True</homogeneous>
-	  <spacing>0</spacing>
-	  <child>
-	    <padding>0</padding>
-	    <expand>True</expand>
-	    <fill>True</fill>
-	  </child>
-
-	  <widget>
-	    <class>GtkStatusbar</class>
-	    <name>iso_channel_status</name>
-	    <border_width>2</border_width>
-	    <child>
-	      <padding>0</padding>
-	      <expand>True</expand>
-	      <fill>True</fill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkStatusbar</class>
-	    <name>iso_speed_status</name>
-	    <border_width>2</border_width>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkStatusbar</class>
-	    <name>iso_status_status</name>
-	    <border_width>2</border_width>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
-	</widget>
-      </widget>
-    </widget>
-  </widget>
-</widget>
-
-<widget>
-  <class>GtkWindow</class>
-  <name>capture_window</name>
-  <width>350</width>
-  <signal>
-    <name>delete_event</name>
-    <handler>gtk_widget_hide</handler>
-    <last_modification_time>Sat, 30 Dec 2000 15:43:41 GMT</last_modification_time>
-  </signal>
-  <signal>
-    <name>destroy_event</name>
-    <handler>gtk_widget_hide</handler>
-    <last_modification_time>Sat, 30 Dec 2000 15:43:47 GMT</last_modification_time>
-  </signal>
-  <signal>
-    <name>destroy</name>
-    <handler>gtk_widget_hide</handler>
-    <last_modification_time>Sat, 30 Dec 2000 15:43:55 GMT</last_modification_time>
-  </signal>
-  <title>Capture</title>
-  <type>GTK_WINDOW_TOPLEVEL</type>
-  <position>GTK_WIN_POS_NONE</position>
-  <modal>False</modal>
-  <default_width>350</default_width>
-  <allow_shrink>False</allow_shrink>
-  <allow_grow>False</allow_grow>
-  <auto_shrink>False</auto_shrink>
-
-  <widget>
-    <class>GtkVBox</class>
-    <name>vbox29</name>
-    <homogeneous>False</homogeneous>
-    <spacing>0</spacing>
-
-    <widget>
-      <class>GtkFrame</class>
-      <name>capqual_frame</name>
-      <border_width>5</border_width>
-      <sensitive>False</sensitive>
-      <label>Capture Quality</label>
-      <label_xalign>0</label_xalign>
-      <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
-      <child>
-	<padding>0</padding>
-	<expand>True</expand>
-	<fill>True</fill>
-      </child>
-
-      <widget>
-	<class>GtkHBox</class>
-	<name>hbox24</name>
-	<homogeneous>False</homogeneous>
-	<spacing>0</spacing>
-
-	<widget>
-	  <class>GtkTable</class>
-	  <name>table13</name>
-	  <rows>2</rows>
-	  <columns>2</columns>
-	  <homogeneous>False</homogeneous>
-	  <row_spacing>0</row_spacing>
-	  <column_spacing>0</column_spacing>
-	  <child>
-	    <padding>0</padding>
-	    <expand>False</expand>
-	    <fill>True</fill>
-	  </child>
-
-	  <widget>
-	    <class>GtkRadioButton</class>
-	    <name>capqual_man</name>
-	    <sensitive>False</sensitive>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>toggled</name>
-	      <handler>on_capqual_man_toggled</handler>
-	      <last_modification_time>Sat, 30 Dec 2000 15:44:42 GMT</last_modification_time>
-	    </signal>
-	    <label>Man</label>
-	    <active>True</active>
-	    <draw_indicator>True</draw_indicator>
-	    <group>capqual</group>
-	    <child>
-	      <left_attach>1</left_attach>
-	      <right_attach>2</right_attach>
-	      <top_attach>0</top_attach>
-	      <bottom_attach>1</bottom_attach>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	      <xexpand>False</xexpand>
-	      <yexpand>False</yexpand>
-	      <xshrink>False</xshrink>
-	      <yshrink>False</yshrink>
-	      <xfill>False</xfill>
-	      <yfill>False</yfill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkRadioButton</class>
-	    <name>capqual_auto</name>
-	    <sensitive>False</sensitive>
-	    <can_focus>True</can_focus>
-	    <label>Auto</label>
-	    <active>False</active>
-	    <draw_indicator>True</draw_indicator>
-	    <group>capqual</group>
-	    <child>
-	      <left_attach>1</left_attach>
-	      <right_attach>2</right_attach>
-	      <top_attach>1</top_attach>
-	      <bottom_attach>2</bottom_attach>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	      <xexpand>False</xexpand>
-	      <yexpand>False</yexpand>
-	      <xshrink>False</xshrink>
-	      <yshrink>False</yshrink>
-	      <xfill>False</xfill>
-	      <yfill>False</yfill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkButton</class>
-	    <name>capqual_op</name>
-	    <border_width>2</border_width>
-	    <sensitive>False</sensitive>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>clicked</name>
-	      <handler>on_capqual_op_clicked</handler>
-	      <last_modification_time>Sat, 30 Dec 2000 15:44:27 GMT</last_modification_time>
-	    </signal>
-	    <label>AUTO</label>
-	    <child>
-	      <left_attach>0</left_attach>
-	      <right_attach>1</right_attach>
-	      <top_attach>1</top_attach>
-	      <bottom_attach>2</bottom_attach>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	      <xexpand>False</xexpand>
-	      <yexpand>False</yexpand>
-	      <xshrink>False</xshrink>
-	      <yshrink>False</yshrink>
-	      <xfill>False</xfill>
-	      <yfill>False</yfill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkAlignment</class>
-	    <name>alignment9</name>
-	    <xalign>0.5</xalign>
-	    <yalign>0.5</yalign>
-	    <xscale>1</xscale>
-	    <yscale>1</yscale>
-	    <child>
-	      <left_attach>0</left_attach>
-	      <right_attach>1</right_attach>
-	      <top_attach>0</top_attach>
-	      <bottom_attach>1</bottom_attach>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	      <xexpand>False</xexpand>
-	      <yexpand>False</yexpand>
-	      <xshrink>False</xshrink>
-	      <yshrink>False</yshrink>
-	      <xfill>True</xfill>
-	      <yfill>False</yfill>
-	    </child>
-
-	    <widget>
-	      <class>GtkToggleButton</class>
-	      <name>capqual_power</name>
-	      <border_width>2</border_width>
-	      <sensitive>False</sensitive>
-	      <can_focus>True</can_focus>
-	      <signal>
-		<name>toggled</name>
-		<handler>on_capqual_power_toggled</handler>
-		<last_modification_time>Sat, 30 Dec 2000 15:44:22 GMT</last_modification_time>
-	      </signal>
-	      <label>ON</label>
-	      <active>False</active>
-	    </widget>
-	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkHScale</class>
-	  <name>capqual_scale</name>
-	  <sensitive>False</sensitive>
-	  <can_focus>True</can_focus>
-	  <draw_value>True</draw_value>
-	  <value_pos>GTK_POS_TOP</value_pos>
-	  <digits>0</digits>
-	  <policy>GTK_UPDATE_CONTINUOUS</policy>
-	  <value>0</value>
-	  <lower>0</lower>
-	  <upper>255</upper>
-	  <step>1</step>
-	  <page>10</page>
-	  <page_size>0</page_size>
-	  <child>
-	    <padding>0</padding>
-	    <expand>True</expand>
-	    <fill>True</fill>
-	  </child>
-	</widget>
-      </widget>
-    </widget>
-
-    <widget>
-      <class>GtkFrame</class>
-      <name>capsize</name>
-      <border_width>5</border_width>
-      <sensitive>False</sensitive>
-      <label>Capture Size</label>
-      <label_xalign>0</label_xalign>
-      <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
-      <child>
-	<padding>0</padding>
-	<expand>True</expand>
-	<fill>True</fill>
-      </child>
-
-      <widget>
-	<class>GtkHBox</class>
-	<name>hbox25</name>
-	<homogeneous>False</homogeneous>
-	<spacing>0</spacing>
-
-	<widget>
-	  <class>GtkTable</class>
-	  <name>table14</name>
-	  <rows>2</rows>
-	  <columns>2</columns>
-	  <homogeneous>False</homogeneous>
-	  <row_spacing>0</row_spacing>
-	  <column_spacing>0</column_spacing>
-	  <child>
-	    <padding>0</padding>
-	    <expand>False</expand>
-	    <fill>True</fill>
-	  </child>
-
-	  <widget>
-	    <class>GtkRadioButton</class>
-	    <name>capsize_man</name>
-	    <sensitive>False</sensitive>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>toggled</name>
-	      <handler>on_capsize_man_toggled</handler>
-	      <last_modification_time>Sat, 30 Dec 2000 15:44:49 GMT</last_modification_time>
-	    </signal>
-	    <label>Man</label>
-	    <active>True</active>
-	    <draw_indicator>True</draw_indicator>
-	    <group>capsize</group>
-	    <child>
-	      <left_attach>1</left_attach>
-	      <right_attach>2</right_attach>
-	      <top_attach>0</top_attach>
-	      <bottom_attach>1</bottom_attach>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	      <xexpand>False</xexpand>
-	      <yexpand>False</yexpand>
-	      <xshrink>False</xshrink>
-	      <yshrink>False</yshrink>
-	      <xfill>False</xfill>
-	      <yfill>False</yfill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkRadioButton</class>
-	    <name>capsize_auto</name>
-	    <sensitive>False</sensitive>
-	    <can_focus>True</can_focus>
-	    <label>Auto</label>
-	    <active>False</active>
-	    <draw_indicator>True</draw_indicator>
-	    <group>capsize</group>
-	    <child>
-	      <left_attach>1</left_attach>
-	      <right_attach>2</right_attach>
-	      <top_attach>1</top_attach>
-	      <bottom_attach>2</bottom_attach>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	      <xexpand>False</xexpand>
-	      <yexpand>False</yexpand>
-	      <xshrink>False</xshrink>
-	      <yshrink>False</yshrink>
-	      <xfill>False</xfill>
-	      <yfill>False</yfill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkButton</class>
-	    <name>capsize_op</name>
-	    <border_width>2</border_width>
-	    <sensitive>False</sensitive>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>clicked</name>
-	      <handler>on_capsize_op_clicked</handler>
-	      <last_modification_time>Sat, 30 Dec 2000 15:44:37 GMT</last_modification_time>
-	    </signal>
-	    <label>AUTO</label>
-	    <child>
-	      <left_attach>0</left_attach>
-	      <right_attach>1</right_attach>
-	      <top_attach>1</top_attach>
-	      <bottom_attach>2</bottom_attach>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	      <xexpand>False</xexpand>
-	      <yexpand>False</yexpand>
-	      <xshrink>False</xshrink>
-	      <yshrink>False</yshrink>
-	      <xfill>False</xfill>
-	      <yfill>False</yfill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkAlignment</class>
-	    <name>alignment10</name>
-	    <xalign>0.5</xalign>
-	    <yalign>0.5</yalign>
-	    <xscale>1</xscale>
-	    <yscale>1</yscale>
-	    <child>
-	      <left_attach>0</left_attach>
-	      <right_attach>1</right_attach>
-	      <top_attach>0</top_attach>
-	      <bottom_attach>1</bottom_attach>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	      <xexpand>False</xexpand>
-	      <yexpand>False</yexpand>
-	      <xshrink>False</xshrink>
-	      <yshrink>False</yshrink>
-	      <xfill>True</xfill>
-	      <yfill>False</yfill>
-	    </child>
-
-	    <widget>
-	      <class>GtkToggleButton</class>
-	      <name>capsize_power</name>
-	      <border_width>2</border_width>
-	      <sensitive>False</sensitive>
-	      <can_focus>True</can_focus>
-	      <signal>
-		<name>toggled</name>
-		<handler>on_capsize_power_toggled</handler>
-		<last_modification_time>Sat, 30 Dec 2000 15:44:32 GMT</last_modification_time>
-	      </signal>
-	      <label>ON</label>
-	      <active>False</active>
-	    </widget>
-	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkHScale</class>
-	  <name>capsize_scale</name>
-	  <sensitive>False</sensitive>
-	  <can_focus>True</can_focus>
-	  <draw_value>True</draw_value>
-	  <value_pos>GTK_POS_TOP</value_pos>
-	  <digits>0</digits>
-	  <policy>GTK_UPDATE_CONTINUOUS</policy>
-	  <value>0</value>
-	  <lower>0</lower>
-	  <upper>255</upper>
-	  <step>1</step>
-	  <page>10</page>
-	  <page_size>0</page_size>
-	  <child>
-	    <padding>0</padding>
-	    <expand>True</expand>
-	    <fill>True</fill>
-	  </child>
-	</widget>
-      </widget>
-    </widget>
-  </widget>
-</widget>
-
-<widget>
-  <class>GtkWindow</class>
-  <name>temp_window</name>
-  <width>350</width>
-  <signal>
-    <name>delete_event</name>
-    <handler>gtk_widget_hide</handler>
-    <last_modification_time>Sat, 30 Dec 2000 20:27:20 GMT</last_modification_time>
-  </signal>
-  <signal>
-    <name>destroy_event</name>
-    <handler>gtk_widget_hide</handler>
-    <last_modification_time>Sat, 30 Dec 2000 20:27:33 GMT</last_modification_time>
-  </signal>
-  <signal>
-    <name>destroy</name>
-    <handler>gtk_widget_hide</handler>
-    <last_modification_time>Sat, 30 Dec 2000 20:27:44 GMT</last_modification_time>
-  </signal>
-  <title>Temperature Monitor</title>
-  <type>GTK_WINDOW_TOPLEVEL</type>
-  <position>GTK_WIN_POS_NONE</position>
-  <modal>False</modal>
-  <default_width>350</default_width>
-  <allow_shrink>False</allow_shrink>
-  <allow_grow>False</allow_grow>
-  <auto_shrink>False</auto_shrink>
-
-  <widget>
-    <class>GtkFrame</class>
-    <name>temp_frame</name>
-    <border_width>5</border_width>
-    <sensitive>False</sensitive>
-    <label>Temperature</label>
-    <label_xalign>0</label_xalign>
-    <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
-
-    <widget>
-      <class>GtkHBox</class>
-      <name>hbox27</name>
-      <homogeneous>False</homogeneous>
-      <spacing>0</spacing>
-
-      <widget>
-	<class>GtkVBox</class>
-	<name>vbox30</name>
-	<homogeneous>False</homogeneous>
-	<spacing>0</spacing>
-	<child>
-	  <padding>0</padding>
-	  <expand>False</expand>
-	  <fill>False</fill>
-	</child>
-
-	<widget>
-	  <class>GtkToggleButton</class>
-	  <name>temp_power</name>
-	  <border_width>2</border_width>
-	  <sensitive>False</sensitive>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>toggled</name>
-	    <handler>on_temp_power_toggled</handler>
-	    <last_modification_time>Sat, 30 Dec 2000 20:25:46 GMT</last_modification_time>
-	  </signal>
-	  <label>ON</label>
-	  <active>False</active>
-	  <child>
-	    <padding>0</padding>
-	    <expand>False</expand>
-	    <fill>False</fill>
-	  </child>
-	</widget>
-
-	<widget>
-	  <class>GtkRadioButton</class>
-	  <name>temp_man</name>
-	  <sensitive>False</sensitive>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>toggled</name>
-	    <handler>on_temp_man_toggled</handler>
-	    <last_modification_time>Sat, 30 Dec 2000 20:25:51 GMT</last_modification_time>
-	  </signal>
-	  <label>Man</label>
-	  <active>True</active>
-	  <draw_indicator>True</draw_indicator>
-	  <group>temp</group>
-	  <child>
-	    <padding>0</padding>
-	    <expand>False</expand>
-	    <fill>False</fill>
-	  </child>
-	</widget>
-
-	<widget>
-	  <class>GtkRadioButton</class>
-	  <name>temp_auto</name>
-	  <sensitive>False</sensitive>
-	  <can_focus>True</can_focus>
-	  <label>Auto</label>
-	  <active>False</active>
-	  <draw_indicator>True</draw_indicator>
-	  <group>temp</group>
-	  <child>
-	    <padding>0</padding>
-	    <expand>False</expand>
-	    <fill>False</fill>
-	  </child>
-	</widget>
-
-	<widget>
-	  <class>GtkButton</class>
-	  <name>temp_op</name>
-	  <border_width>2</border_width>
-	  <sensitive>False</sensitive>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>clicked</name>
-	    <handler>on_temp_op_clicked</handler>
-	    <last_modification_time>Sat, 30 Dec 2000 20:25:59 GMT</last_modification_time>
-	  </signal>
-	  <label>AUTO</label>
-	  <child>
-	    <padding>0</padding>
-	    <expand>False</expand>
-	    <fill>False</fill>
-	  </child>
-	</widget>
-      </widget>
-
-      <widget>
-	<class>GtkHBox</class>
-	<name>hbox47</name>
-	<homogeneous>False</homogeneous>
-	<spacing>0</spacing>
-	<child>
-	  <padding>0</padding>
-	  <expand>True</expand>
-	  <fill>True</fill>
-	</child>
-
-	<widget>
-	  <class>GtkVSeparator</class>
-	  <name>vseparator2</name>
-	  <child>
-	    <padding>2</padding>
-	    <expand>False</expand>
-	    <fill>True</fill>
-	  </child>
-	</widget>
-
-	<widget>
-	  <class>GtkTable</class>
-	  <name>table23</name>
-	  <rows>2</rows>
-	  <columns>2</columns>
-	  <homogeneous>False</homogeneous>
-	  <row_spacing>0</row_spacing>
-	  <column_spacing>0</column_spacing>
-	  <child>
-	    <padding>0</padding>
-	    <expand>True</expand>
-	    <fill>True</fill>
-	  </child>
-
-	  <widget>
-	    <class>GtkHScale</class>
-	    <name>temp_current_scale</name>
-	    <sensitive>False</sensitive>
-	    <can_focus>True</can_focus>
-	    <draw_value>True</draw_value>
-	    <value_pos>GTK_POS_TOP</value_pos>
-	    <digits>1</digits>
-	    <policy>GTK_UPDATE_CONTINUOUS</policy>
-	    <value>0</value>
-	    <lower>0</lower>
-	    <upper>255</upper>
-	    <step>1</step>
-	    <page>10</page>
-	    <page_size>0</page_size>
-	    <child>
-	      <left_attach>1</left_attach>
-	      <right_attach>2</right_attach>
-	      <top_attach>0</top_attach>
-	      <bottom_attach>1</bottom_attach>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	      <xexpand>True</xexpand>
-	      <yexpand>True</yexpand>
-	      <xshrink>False</xshrink>
-	      <yshrink>False</yshrink>
-	      <xfill>True</xfill>
-	      <yfill>True</yfill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkHScale</class>
-	    <name>temp_goal_scale</name>
-	    <sensitive>False</sensitive>
-	    <can_focus>True</can_focus>
-	    <draw_value>True</draw_value>
-	    <value_pos>GTK_POS_TOP</value_pos>
-	    <digits>1</digits>
-	    <policy>GTK_UPDATE_CONTINUOUS</policy>
-	    <value>0</value>
-	    <lower>0</lower>
-	    <upper>255</upper>
-	    <step>1</step>
-	    <page>10</page>
-	    <page_size>0</page_size>
-	    <child>
-	      <left_attach>1</left_attach>
-	      <right_attach>2</right_attach>
-	      <top_attach>1</top_attach>
-	      <bottom_attach>2</bottom_attach>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	      <xexpand>False</xexpand>
-	      <yexpand>True</yexpand>
-	      <xshrink>False</xshrink>
-	      <yshrink>False</yshrink>
-	      <xfill>True</xfill>
-	      <yfill>True</yfill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkLabel</class>
-	    <name>label46</name>
-	    <label>Current:</label>
-	    <justify>GTK_JUSTIFY_CENTER</justify>
-	    <wrap>False</wrap>
-	    <xalign>0</xalign>
-	    <yalign>0.5</yalign>
-	    <xpad>0</xpad>
-	    <ypad>0</ypad>
-	    <child>
-	      <left_attach>0</left_attach>
-	      <right_attach>1</right_attach>
-	      <top_attach>0</top_attach>
-	      <bottom_attach>1</bottom_attach>
-	      <xpad>1</xpad>
-	      <ypad>0</ypad>
-	      <xexpand>False</xexpand>
-	      <yexpand>False</yexpand>
-	      <xshrink>False</xshrink>
-	      <yshrink>False</yshrink>
-	      <xfill>True</xfill>
-	      <yfill>False</yfill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkLabel</class>
-	    <name>label47</name>
-	    <label>Target:</label>
-	    <justify>GTK_JUSTIFY_CENTER</justify>
-	    <wrap>False</wrap>
-	    <xalign>0</xalign>
-	    <yalign>0.5</yalign>
-	    <xpad>0</xpad>
-	    <ypad>0</ypad>
-	    <child>
-	      <left_attach>0</left_attach>
-	      <right_attach>1</right_attach>
-	      <top_attach>1</top_attach>
-	      <bottom_attach>2</bottom_attach>
-	      <xpad>1</xpad>
-	      <ypad>0</ypad>
-	      <xexpand>False</xexpand>
-	      <yexpand>False</yexpand>
-	      <xshrink>False</xshrink>
-	      <yshrink>False</yshrink>
-	      <xfill>True</xfill>
-	      <yfill>False</yfill>
-	    </child>
-	  </widget>
 	</widget>
       </widget>
     </widget>
@@ -6106,6 +6033,7 @@ controlled with the AV/C protocol, please refer to http://linux1394.sourceforge.
 	    <name>togglebutton1</name>
 	    <can_focus>True</can_focus>
 	    <label>Thru:</label>
+	    <relief>GTK_RELIEF_NORMAL</relief>
 	    <active>False</active>
 	    <child>
 	      <left_attach>0</left_attach>
@@ -6150,6 +6078,7 @@ controlled with the AV/C protocol, please refer to http://linux1394.sourceforge.
 	    <border_width>2</border_width>
 	    <can_focus>True</can_focus>
 	    <label>Load</label>
+	    <relief>GTK_RELIEF_NORMAL</relief>
 	    <child>
 	      <padding>0</padding>
 	      <expand>False</expand>
@@ -6163,6 +6092,7 @@ controlled with the AV/C protocol, please refer to http://linux1394.sourceforge.
 	    <border_width>2</border_width>
 	    <can_focus>True</can_focus>
 	    <label>Save</label>
+	    <relief>GTK_RELIEF_NORMAL</relief>
 	    <child>
 	      <padding>0</padding>
 	      <expand>False</expand>
@@ -6176,6 +6106,7 @@ controlled with the AV/C protocol, please refer to http://linux1394.sourceforge.
 	    <border_width>2</border_width>
 	    <can_focus>True</can_focus>
 	    <label>Delete</label>
+	    <relief>GTK_RELIEF_NORMAL</relief>
 	    <child>
 	      <padding>0</padding>
 	      <expand>False</expand>
@@ -6232,6 +6163,7 @@ controlled with the AV/C protocol, please refer to http://linux1394.sourceforge.
       <last_modification_time>Mon, 05 Nov 2001 12:12:39 GMT</last_modification_time>
     </signal>
     <label>OK</label>
+    <relief>GTK_RELIEF_NORMAL</relief>
   </widget>
 
   <widget>
@@ -6246,6 +6178,7 @@ controlled with the AV/C protocol, please refer to http://linux1394.sourceforge.
       <last_modification_time>Mon, 05 Nov 2001 12:12:46 GMT</last_modification_time>
     </signal>
     <label>Cancel</label>
+    <relief>GTK_RELIEF_NORMAL</relief>
   </widget>
 </widget>
 
@@ -6855,6 +6788,7 @@ controlled with the AV/C protocol, please refer to http://linux1394.sourceforge.
 		<last_modification_time>Mon, 05 Nov 2001 11:51:36 GMT</last_modification_time>
 	      </signal>
 	      <label>Choose...</label>
+	      <relief>GTK_RELIEF_NORMAL</relief>
 	      <child>
 		<padding>0</padding>
 		<expand>False</expand>
@@ -7385,6 +7319,7 @@ controlled with the AV/C protocol, please refer to http://linux1394.sourceforge.
 	  <last_modification_time>Mon, 29 Oct 2001 09:00:06 GMT</last_modification_time>
 	</signal>
 	<stock_button>GNOME_STOCK_BUTTON_APPLY</stock_button>
+	<relief>GTK_RELIEF_NORMAL</relief>
 	<child>
 	  <padding>0</padding>
 	  <expand>True</expand>
@@ -7403,6 +7338,7 @@ controlled with the AV/C protocol, please refer to http://linux1394.sourceforge.
 	  <last_modification_time>Mon, 29 Oct 2001 09:00:11 GMT</last_modification_time>
 	</signal>
 	<stock_button>GNOME_STOCK_BUTTON_CLOSE</stock_button>
+	<relief>GTK_RELIEF_NORMAL</relief>
 	<child>
 	  <padding>0</padding>
 	  <expand>True</expand>
