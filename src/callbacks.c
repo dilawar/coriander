@@ -1290,9 +1290,11 @@ on_mono16_bpp_changed                  (GtkEditable     *editable,
                                         gpointer         user_data)
 {
   int value;
+  int state[5];
   value=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(commander_window,"mono16_bpp")));
-
+  IsoFlowCheck(state);
   uiinfo->bpp=value;
+  IsoFlowResume(state);
   //fprintf(stderr,"uiinfo->bpp = %d\n",uiinfo->bpp);
 }
 
