@@ -2,6 +2,9 @@ Coriander, (c) 2000-2003 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 0.99.3
 
+   August 8, 2003, by Damien Douxchamps
+   - fixed a little GTK problem during camera addition on the bus.
+	
    August 7, 2003, by Damien Douxchamps
    - F7 available modes are probed correctly. There was a bug in the
      F7 detection after a unplug/replug event. Thanks to Arne Caspari

@@ -705,7 +705,7 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation) {
 
   gtk_widget_set_sensitive(main_window,FALSE);
 
-  usleep(500000); // sleep some time to allow the cam to warm-up/boot
+  usleep(5000); // sleep some time (5ms) to allow the cam to warm-up/boot
 
   raw1394_update_generation(handle, generation);
   // Now we have to deal with this bus reset...
@@ -811,15 +811,20 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation) {
 
   if (bi.camera_num>0) {
     //fprintf(stderr,"build/refresh GUI\n");
-    if (waiting_camera_window!=NULL)
+    //fprintf(stderr,"0x%x\n",waiting_camera_window);
+    if (waiting_camera_window!=NULL) {
       gtk_widget_destroy(GTK_WIDGET(waiting_camera_window));
+      waiting_camera_window=NULL;
+    }
 
+    //fprintf(stderr,"destroyed win\n");
+    BuildAllWindows();
+    //fprintf(stderr,"finished building GUI\n");
+    UpdateAllWindows();
+    //fprintf(stderr,"finished updating GUI\n");
     // Build/refresh GUI
     if (camera->want_to_display>0)
       DisplayStartThread(camera);
-    
-    BuildAllWindows();
-    UpdateAllWindows();
     
     // resume all FPS displays:
     ResumeFPSDisplay();
