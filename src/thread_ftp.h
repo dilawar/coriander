@@ -26,6 +26,8 @@
 #endif
 
 #include <pthread.h> 
+#include <time.h>
+#include <sys/times.h>
 #include "definitions.h"
 
 typedef enum
@@ -55,6 +57,12 @@ typedef struct
 #ifdef HAVE_FTPLIB
   netbuf             *ftp_handle;
 #endif
+
+  // timing data:
+  struct tms tms_buf;
+  clock_t prev_time;
+  clock_t current_time;
+  int frames;
 
 } ftpthread_info_t;
 

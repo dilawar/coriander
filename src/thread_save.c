@@ -138,6 +138,8 @@ SaveThread(void* arg)
   GdkImlibImage *im=NULL;
   long int skip_counter;
   FILE *fd=NULL;
+  char tmp_string[20];
+  float delay;
 
   save_service=(chain_t*)arg;
   pthread_mutex_lock(&save_service->mutex_data);
@@ -157,6 +159,10 @@ SaveThread(void* arg)
      if (fd==NULL)
        MainError("Can't open file for saving");
    }
+
+  // time inits:
+  info->prev_time = times(&info->tms_buf);
+  info->frames=0;
 
   while (1)
     { 
@@ -211,6 +217,24 @@ SaveThread(void* arg)
 		}
 	      else
 		skip_counter++;
+
+      info->current_time=times(&info->tms_buf);
+      delay=(float)(info->current_time-info->prev_time)/CLK_TCK;
+      info->frames++;
+      if (delay>1.0) // update every second
+	{
+	  sprintf(tmp_string," %.2f",(float)info->frames/delay);
+	  //fprintf(stderr,"save: %s fps\n",tmp_string);
+	  /*
+	  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"fps_save"),
+			       ctxt.fps_save_ctxt, ctxt.fps_save_id);
+	  ctxt.fps_save_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"fps_save"),
+						 ctxt.fps_save_ctxt, tmp_string);
+	  */
+	  info->prev_time=info->current_time;
+	  info->frames=0;
+	}
+
 	      pthread_mutex_unlock(&save_service->mutex_data);
 	    }
 	  else

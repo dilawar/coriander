@@ -34,12 +34,20 @@
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
 #include "thread_base.h" 
+#include <time.h>
+#include <sys/times.h>
 
 typedef struct
 {
   long int                period;
   pthread_mutex_t         mutex_cancel_display;
   int                     cancel_display_req;
+
+  // timing data:
+  struct tms tms_buf;
+  clock_t prev_time;
+  clock_t current_time;
+  int frames;
 
 #ifdef HAVE_SDLLIB
 

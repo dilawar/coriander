@@ -313,68 +313,26 @@ UpdateServicesFrame(void)
 void
 UpdateCursorFrame(int posx, int posy, int r, int g, int b, int y, int u, int v)
 {
-  char temp[STRING_SIZE];
-  //fprintf(stderr,"Cursor Position: %d %d\n",posx,posy);
+  char temp[50];
 
-  fprintf(stderr,"");// Don't know why, but this seems necessary to make the cursor info work...
   // position: 
-  sprintf(temp," %d",posx);
-  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"cursor_x"), ctxt.cursor_x_ctxt, ctxt.cursor_x_id);
-  ctxt.cursor_x_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"cursor_x"), ctxt.cursor_x_ctxt, temp);
+  sprintf(temp," %d,%d",posx,posy);
+  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"cursor_pos"), ctxt.cursor_pos_ctxt, ctxt.cursor_pos_id);
+  ctxt.cursor_pos_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"cursor_pos"), ctxt.cursor_pos_ctxt, temp);
 
-  sprintf(temp," %d",posy);
-  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"cursor_y"), ctxt.cursor_y_ctxt, ctxt.cursor_y_id);
-  ctxt.cursor_y_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"cursor_y"), ctxt.cursor_y_ctxt, temp);
-  
   // color:
   if (r>-255)
     {
-      sprintf(temp," %d",r);
-      gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"cursor_color_r"),
-			   ctxt.cursor_color_r_ctxt, ctxt.cursor_color_r_id);
-      ctxt.cursor_color_r_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"cursor_color_r"),
-						ctxt.cursor_color_r_ctxt, temp);
+      sprintf(temp," %03d,%03d,%03d",r,g,b);
+      gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"cursor_rgb"), ctxt.cursor_rgb_ctxt, ctxt.cursor_rgb_id);
+      ctxt.cursor_rgb_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"cursor_rgb"), ctxt.cursor_rgb_ctxt, temp);
     }
   
-  if (g>-255)
-    {
-      sprintf(temp," %d",g);
-      gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"cursor_color_g"),
-			   ctxt.cursor_color_g_ctxt, ctxt.cursor_color_g_id);
-      ctxt.cursor_color_g_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"cursor_color_g"),
-						ctxt.cursor_color_g_ctxt, temp);
-    }
-  if (b>-255)
-    {
-      sprintf(temp," %d",b);
-      gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"cursor_color_b"),
-			   ctxt.cursor_color_b_ctxt, ctxt.cursor_color_b_id);
-      ctxt.cursor_color_b_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"cursor_color_b"),
-						ctxt.cursor_color_b_ctxt, temp);
-    }
   if (y>-255)
     {
-      sprintf(temp," %d",y);
-      gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"cursor_color_y"),
-			   ctxt.cursor_color_y_ctxt, ctxt.cursor_color_y_id);
-      ctxt.cursor_color_y_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"cursor_color_y"),
-						ctxt.cursor_color_y_ctxt, temp);
-    }
-  if (u>-255)
-    {
-      sprintf(temp," %d",u);
-      gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"cursor_color_u"),
-			   ctxt.cursor_color_u_ctxt, ctxt.cursor_color_u_id);
-      ctxt.cursor_color_u_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"cursor_color_u"),
-						ctxt.cursor_color_u_ctxt, temp);
-    }
-  if (v>-255)
-    {
-      sprintf(temp," %d",v);
-      gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"cursor_color_v"),
-			   ctxt.cursor_color_v_ctxt, ctxt.cursor_color_v_id);
-      ctxt.cursor_color_v_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"cursor_color_v"),
-						ctxt.cursor_color_v_ctxt, temp);
+      sprintf(temp," %03d,%03d,%03d",y,u,v);
+      gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"cursor_yuv"), ctxt.cursor_yuv_ctxt, ctxt.cursor_yuv_id);
+      ctxt.cursor_yuv_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"cursor_yuv"), ctxt.cursor_yuv_ctxt, temp);
     }
 }
 

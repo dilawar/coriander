@@ -151,6 +151,8 @@ RealThread(void* arg)
   chain_t* real_service=NULL;
   realthread_info_t *info=NULL;
   long int skip_counter;
+  char tmp_string[20];
+  float delay;
 
   real_service=(chain_t*)arg;
   pthread_mutex_lock(&real_service->mutex_data);
@@ -162,6 +164,10 @@ RealThread(void* arg)
   pthread_setcancelstate(PTHREAD_CANCEL_DISABLE,NULL);
   pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED,NULL);
   pthread_mutex_unlock(&real_service->mutex_data);
+
+  // time inits:
+  info->prev_time = times(&info->tms_buf);
+  info->frames=0;
 
   //fprintf(stderr,"About to enter while\n");
 #ifdef HAVE_REALLIB
@@ -224,6 +230,24 @@ RealThread(void* arg)
 		}
 	      else
 		skip_counter++;
+
+      info->current_time=times(&info->tms_buf);
+      delay=(float)(info->current_time-info->prev_time)/CLK_TCK;
+      info->frames++;
+      if (delay>1.0) // update every second
+	{
+	  sprintf(tmp_string," %.2f",(float)info->frames/delay);
+	  //fprintf(stderr,"real: %s fps\n",tmp_string);
+	  /*
+	  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"fps_real"),
+			       ctxt.fps_real_ctxt, ctxt.fps_real_id);
+	  ctxt.fps_real_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"fps_real"),
+						 ctxt.fps_real_ctxt, tmp_string);
+	  */
+	  info->prev_time=info->current_time;
+	  info->frames=0;
+	}
+
 	      pthread_mutex_unlock(&real_service->mutex_data);
 	    }
 	  else

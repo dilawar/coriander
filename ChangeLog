@@ -2,6 +2,11 @@ Coriander, (c) 2000-2002 Damien Douxchamps <douxchamps@ieee.org>
 
 Changes towards version 0.26
 
+   September 24, 2002, by Damien Douxchamps
+   - first implementation of an live fps display. Nothing is shown
+     right now because I can't get it to work with GTK. You can 
+     uncomment some fprintf in the threads to have a console output.
+	
    September 12, 2002, by Damien Douxchamps
    - some F7 update about color mode changes
    - more bpp debugging

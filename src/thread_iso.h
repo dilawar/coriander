@@ -16,11 +16,13 @@
  * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <gnome.h>
-#include "conversions.h"
-
 #ifndef __THREAD_ISO_H__
 #define __THREAD_ISO_H__
+
+#include <gnome.h>
+#include "conversions.h"
+#include <time.h>
+#include <sys/times.h>
 
 #define DMA_BUFFERS 4
 
@@ -36,6 +38,13 @@ typedef struct
   receive_method_t        receive_method;
   dc1394_cameracapture    capture;
 
+
+  // timing data:
+  struct tms tms_buf;
+  clock_t prev_time;
+  clock_t current_time;
+  int frames;
+  
 } isothread_info_t;
 
 gint

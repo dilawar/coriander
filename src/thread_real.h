@@ -23,6 +23,8 @@
 #include <gnome.h>
 #include "thread_base.h"
 #include "definitions.h"
+#include <time.h>
+#include <sys/times.h>
  
 #ifdef HAVE_REALLIB
 #include "RealErrorSink.h"
@@ -67,6 +69,12 @@ typedef struct
   int                realPlayerCompatibility;
   int                maxFrameRate;
   long int           period;
+
+  // timing data:
+  struct tms tms_buf;
+  clock_t prev_time;
+  clock_t current_time;
+  int frames;
 
 #ifdef HAVE_REALLIB
 

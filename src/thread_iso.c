@@ -35,7 +35,9 @@ extern dc1394_miscinfo *misc_info;
 extern dc1394_camerainfo *camera;
 extern SelfIdPacket_t *selfid;
 extern PrefsInfo preferences; 
+extern GtkWidget *commander_window;
 extern int current_camera;
+extern CtxtInfo ctxt;
 
 gint IsoStartThread(void)
 {
@@ -206,8 +208,10 @@ IsoCleanupThread(void* arg)
       //fprintf(stderr,"dma done with buffer\n");
     }
   
+  // clear timing info on GUI...
 
-    pthread_mutex_unlock(&iso_service->mutex_data);
+ 
+  pthread_mutex_unlock(&iso_service->mutex_data);
 
   
   return(NULL);
@@ -222,6 +226,9 @@ IsoThread(void* arg)
   unsigned char *temp;
   int cond16bit;
   int factor;
+  char tmp_string[20];
+  float delay;
+
   // we should only use mutex_data in this function
 
   iso_service=(chain_t*)arg;
@@ -261,6 +268,10 @@ IsoThread(void* arg)
       temp=(unsigned char*)malloc(iso_service->width*factor*iso_service->height*factor*sizeof(unsigned char));
       //fprintf(stderr,"tmp size: %ld\n",iso_service->width*factor*iso_service->height*factor);
     }
+
+  // time inits:
+  info->prev_time = times(&info->tms_buf);
+  info->frames=0;
 
   while (1)
     {
@@ -310,6 +321,23 @@ IsoThread(void* arg)
 	  break;
 	}
       //fprintf(stderr,"done\n");
+      info->current_time=times(&info->tms_buf);
+      delay=(float)(info->current_time-info->prev_time)/CLK_TCK;
+      info->frames++;
+      if (delay>1.0) // update every second
+	{
+	  sprintf(tmp_string," %.2f",(float)info->frames/delay);
+	  //fprintf(stderr,"receive: %s fps\n",tmp_string);
+	  /*
+	  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"fps_receive"),
+	  		       ctxt.fps_receive_ctxt, ctxt.fps_receive_id);
+	  ctxt.fps_receive_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"fps_receive"),
+	  					 ctxt.fps_receive_ctxt, tmp_string);
+	  */
+	  info->prev_time=info->current_time;
+	  info->frames=0;
+	}
+
       pthread_mutex_unlock(&iso_service->mutex_data);
 	  
       pthread_mutex_lock(&iso_service->mutex_data);

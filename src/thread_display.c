@@ -135,6 +135,8 @@ DisplayThread(void* arg)
   chain_t* display_service=NULL;
   displaythread_info_t *info=NULL;
   long int skip_counter;
+  char tmp_string[20];
+  float delay;
 
   // we should only use mutex_data in this function
 
@@ -145,6 +147,11 @@ DisplayThread(void* arg)
   pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED,NULL);
   pthread_mutex_unlock(&display_service->mutex_data);
   skip_counter=0;
+
+  // time inits:
+  info->prev_time = times(&info->tms_buf);
+  info->frames=0;
+
   while (1)
     {
       pthread_mutex_lock(&info->mutex_cancel_display);
@@ -179,6 +186,24 @@ DisplayThread(void* arg)
 		}
 	      else
 		skip_counter++;
+
+      info->current_time=times(&info->tms_buf);
+      delay=(float)(info->current_time-info->prev_time)/CLK_TCK;
+      info->frames++;
+      if (delay>1.0) // update every second
+	{
+	  sprintf(tmp_string," %.2f",(float)info->frames/delay);
+	  //fprintf(stderr,"display: %s fps\n",tmp_string);
+	  /*
+	  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"fps_display"),
+			       ctxt.fps_display_ctxt, ctxt.fps_display_id);
+	  ctxt.fps_display_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"fps_display"),
+						 ctxt.fps_display_ctxt, tmp_string);
+	  */
+	  info->prev_time=info->current_time;
+	  info->frames=0;
+	}
+
 	      pthread_mutex_unlock(&display_service->mutex_data);
 	    }
 	  else

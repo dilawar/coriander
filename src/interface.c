@@ -256,6 +256,7 @@ create_commander_window (void)
   GtkWidget *pan_scale;
   GtkWidget *label110;
   GtkWidget *vbox72;
+  GtkWidget *notebook4;
   GtkWidget *frame2;
   GtkWidget *table48;
   GtkWidget *label1;
@@ -282,31 +283,35 @@ create_commander_window (void)
   GtkWidget *label33;
   GtkWidget *label17;
   GtkWidget *camera_guid_status;
-  GtkWidget *table49;
+  GtkWidget *label118;
+  GtkWidget *vbox76;
+  GtkWidget *frame4;
+  GtkWidget *hbox62;
+  GtkWidget *table64;
   GtkWidget *table50;
   GtkWidget *label102;
-  GtkWidget *cursor_x;
+  GtkWidget *cursor_pos;
   GtkWidget *table51;
   GtkWidget *label103;
-  GtkWidget *cursor_y;
+  GtkWidget *cursor_rgb;
   GtkWidget *table52;
   GtkWidget *label104;
-  GtkWidget *cursor_color_r;
-  GtkWidget *table53;
-  GtkWidget *label105;
-  GtkWidget *cursor_color_g;
-  GtkWidget *table54;
-  GtkWidget *label106;
-  GtkWidget *cursor_color_b;
-  GtkWidget *table55;
-  GtkWidget *label107;
-  GtkWidget *cursor_color_y;
-  GtkWidget *table56;
-  GtkWidget *label108;
-  GtkWidget *cursor_color_u;
-  GtkWidget *table57;
-  GtkWidget *label109;
-  GtkWidget *cursor_color_v;
+  GtkWidget *cursor_yuv;
+  GtkWidget *frame3;
+  GtkWidget *hbox61;
+  GtkWidget *table65;
+  GtkWidget *label121;
+  GtkWidget *label122;
+  GtkWidget *label123;
+  GtkWidget *label124;
+  GtkWidget *label126;
+  GtkWidget *fps_display;
+  GtkWidget *fps_save;
+  GtkWidget *fps_ftp;
+  GtkWidget *fps_real;
+  GtkWidget *fps_receive;
+  GtkWidget *label119;
+  GtkWidget *table49;
   GtkWidget *main_status;
   GtkWidget *label111;
 
@@ -1819,12 +1824,19 @@ create_commander_window (void)
   gtk_widget_show (vbox72);
   gtk_container_add (GTK_CONTAINER (notebook2), vbox72);
 
+  notebook4 = gtk_notebook_new ();
+  gtk_widget_ref (notebook4);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "notebook4", notebook4,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (notebook4);
+  gtk_box_pack_start (GTK_BOX (vbox72), notebook4, FALSE, FALSE, 0);
+
   frame2 = gtk_frame_new (_("Status"));
   gtk_widget_ref (frame2);
   gtk_object_set_data_full (GTK_OBJECT (commander_window), "frame2", frame2,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (frame2);
-  gtk_box_pack_start (GTK_BOX (vbox72), frame2, FALSE, FALSE, 0);
+  gtk_container_add (GTK_CONTAINER (notebook4), frame2);
   gtk_container_set_border_width (GTK_CONTAINER (frame2), 5);
 
   table48 = gtk_table_new (8, 4, TRUE);
@@ -2086,24 +2098,55 @@ create_commander_window (void)
                     (GtkAttachOptions) (0), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (camera_guid_status), 2);
 
-  table49 = gtk_table_new (2, 8, TRUE);
-  gtk_widget_ref (table49);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "table49", table49,
+  label118 = gtk_label_new (_("Camera"));
+  gtk_widget_ref (label118);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "label118", label118,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (table49);
-  gtk_box_pack_start (GTK_BOX (vbox72), table49, FALSE, FALSE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (table49), 3);
+  gtk_widget_show (label118);
+  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook4), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook4), 0), label118);
+
+  vbox76 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_ref (vbox76);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "vbox76", vbox76,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (vbox76);
+  gtk_container_add (GTK_CONTAINER (notebook4), vbox76);
+
+  frame4 = gtk_frame_new (_("Cursor"));
+  gtk_widget_ref (frame4);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "frame4", frame4,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (frame4);
+  gtk_box_pack_start (GTK_BOX (vbox76), frame4, FALSE, TRUE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (frame4), 5);
+
+  hbox62 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_ref (hbox62);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "hbox62", hbox62,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (hbox62);
+  gtk_container_add (GTK_CONTAINER (frame4), hbox62);
+  gtk_container_set_border_width (GTK_CONTAINER (hbox62), 3);
+
+  table64 = gtk_table_new (1, 3, TRUE);
+  gtk_widget_ref (table64);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "table64", table64,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (table64);
+  gtk_box_pack_start (GTK_BOX (hbox62), table64, TRUE, TRUE, 4);
+  gtk_table_set_col_spacings (GTK_TABLE (table64), 2);
 
   table50 = gtk_table_new (1, 2, FALSE);
   gtk_widget_ref (table50);
   gtk_object_set_data_full (GTK_OBJECT (commander_window), "table50", table50,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (table50);
-  gtk_table_attach (GTK_TABLE (table49), table50, 0, 1, 1, 2,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+  gtk_table_attach (GTK_TABLE (table64), table50, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 3, 0);
+  gtk_table_set_col_spacings (GTK_TABLE (table50), 3);
 
-  label102 = gtk_label_new (_("X:"));
+  label102 = gtk_label_new (_("XY:"));
   gtk_widget_ref (label102);
   gtk_object_set_data_full (GTK_OBJECT (commander_window), "label102", label102,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -2113,12 +2156,12 @@ create_commander_window (void)
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label102), 0, 0.5);
 
-  cursor_x = gtk_statusbar_new ();
-  gtk_widget_ref (cursor_x);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "cursor_x", cursor_x,
+  cursor_pos = gtk_statusbar_new ();
+  gtk_widget_ref (cursor_pos);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "cursor_pos", cursor_pos,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (cursor_x);
-  gtk_table_attach (GTK_TABLE (table50), cursor_x, 1, 2, 0, 1,
+  gtk_widget_show (cursor_pos);
+  gtk_table_attach (GTK_TABLE (table50), cursor_pos, 1, 2, 0, 1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
@@ -2127,11 +2170,12 @@ create_commander_window (void)
   gtk_object_set_data_full (GTK_OBJECT (commander_window), "table51", table51,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (table51);
-  gtk_table_attach (GTK_TABLE (table49), table51, 1, 2, 1, 2,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+  gtk_table_attach (GTK_TABLE (table64), table51, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 3, 0);
+  gtk_table_set_col_spacings (GTK_TABLE (table51), 3);
 
-  label103 = gtk_label_new (_("Y:"));
+  label103 = gtk_label_new (_("RGB:"));
   gtk_widget_ref (label103);
   gtk_object_set_data_full (GTK_OBJECT (commander_window), "label103", label103,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -2141,12 +2185,12 @@ create_commander_window (void)
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label103), 0, 0.5);
 
-  cursor_y = gtk_statusbar_new ();
-  gtk_widget_ref (cursor_y);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "cursor_y", cursor_y,
+  cursor_rgb = gtk_statusbar_new ();
+  gtk_widget_ref (cursor_rgb);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "cursor_rgb", cursor_rgb,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (cursor_y);
-  gtk_table_attach (GTK_TABLE (table51), cursor_y, 1, 2, 0, 1,
+  gtk_widget_show (cursor_rgb);
+  gtk_table_attach (GTK_TABLE (table51), cursor_rgb, 1, 2, 0, 1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
@@ -2155,11 +2199,12 @@ create_commander_window (void)
   gtk_object_set_data_full (GTK_OBJECT (commander_window), "table52", table52,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (table52);
-  gtk_table_attach (GTK_TABLE (table49), table52, 2, 3, 1, 2,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+  gtk_table_attach (GTK_TABLE (table64), table52, 2, 3, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 3, 0);
+  gtk_table_set_col_spacings (GTK_TABLE (table52), 3);
 
-  label104 = gtk_label_new (_("R:"));
+  label104 = gtk_label_new (_("YUV:"));
   gtk_widget_ref (label104);
   gtk_object_set_data_full (GTK_OBJECT (commander_window), "label104", label104,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -2169,161 +2214,155 @@ create_commander_window (void)
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label104), 0, 0.5);
 
-  cursor_color_r = gtk_statusbar_new ();
-  gtk_widget_ref (cursor_color_r);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "cursor_color_r", cursor_color_r,
+  cursor_yuv = gtk_statusbar_new ();
+  gtk_widget_ref (cursor_yuv);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "cursor_yuv", cursor_yuv,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (cursor_color_r);
-  gtk_table_attach (GTK_TABLE (table52), cursor_color_r, 1, 2, 0, 1,
+  gtk_widget_show (cursor_yuv);
+  gtk_table_attach (GTK_TABLE (table52), cursor_yuv, 1, 2, 0, 1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  table53 = gtk_table_new (1, 2, FALSE);
-  gtk_widget_ref (table53);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "table53", table53,
+  frame3 = gtk_frame_new (_("FPS"));
+  gtk_widget_ref (frame3);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "frame3", frame3,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (table53);
-  gtk_table_attach (GTK_TABLE (table49), table53, 3, 4, 1, 2,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+  gtk_widget_show (frame3);
+  gtk_box_pack_start (GTK_BOX (vbox76), frame3, FALSE, TRUE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (frame3), 5);
 
-  label105 = gtk_label_new (_("G:"));
-  gtk_widget_ref (label105);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "label105", label105,
+  hbox61 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_ref (hbox61);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "hbox61", hbox61,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label105);
-  gtk_table_attach (GTK_TABLE (table53), label105, 0, 1, 0, 1,
+  gtk_widget_show (hbox61);
+  gtk_container_add (GTK_CONTAINER (frame3), hbox61);
+  gtk_container_set_border_width (GTK_CONTAINER (hbox61), 3);
+
+  table65 = gtk_table_new (2, 5, TRUE);
+  gtk_widget_ref (table65);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "table65", table65,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (table65);
+  gtk_box_pack_start (GTK_BOX (hbox61), table65, TRUE, TRUE, 4);
+  gtk_table_set_col_spacings (GTK_TABLE (table65), 2);
+
+  label121 = gtk_label_new (_("Receive:"));
+  gtk_widget_ref (label121);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "label121", label121,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label121);
+  gtk_table_attach (GTK_TABLE (table65), label121, 0, 1, 0, 1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_misc_set_alignment (GTK_MISC (label105), 0, 0.5);
+  gtk_misc_set_alignment (GTK_MISC (label121), 0, 0.5);
 
-  cursor_color_g = gtk_statusbar_new ();
-  gtk_widget_ref (cursor_color_g);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "cursor_color_g", cursor_color_g,
+  label122 = gtk_label_new (_("Display:"));
+  gtk_widget_ref (label122);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "label122", label122,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (cursor_color_g);
-  gtk_table_attach (GTK_TABLE (table53), cursor_color_g, 1, 2, 0, 1,
+  gtk_widget_show (label122);
+  gtk_table_attach (GTK_TABLE (table65), label122, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label122), 0, 0.5);
+
+  label123 = gtk_label_new (_("Save:"));
+  gtk_widget_ref (label123);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "label123", label123,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label123);
+  gtk_table_attach (GTK_TABLE (table65), label123, 2, 3, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label123), 0, 0.5);
+
+  label124 = gtk_label_new (_("FTP:"));
+  gtk_widget_ref (label124);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "label124", label124,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label124);
+  gtk_table_attach (GTK_TABLE (table65), label124, 3, 4, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label124), 0, 0.5);
+
+  label126 = gtk_label_new (_("Real:"));
+  gtk_widget_ref (label126);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "label126", label126,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label126);
+  gtk_table_attach (GTK_TABLE (table65), label126, 4, 5, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label126), 0, 0.5);
+
+  fps_display = gtk_statusbar_new ();
+  gtk_widget_ref (fps_display);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "fps_display", fps_display,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (fps_display);
+  gtk_table_attach (GTK_TABLE (table65), fps_display, 1, 2, 1, 2,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  table54 = gtk_table_new (1, 2, FALSE);
-  gtk_widget_ref (table54);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "table54", table54,
+  fps_save = gtk_statusbar_new ();
+  gtk_widget_ref (fps_save);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "fps_save", fps_save,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (table54);
-  gtk_table_attach (GTK_TABLE (table49), table54, 4, 5, 1, 2,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (GTK_FILL), 0, 0);
-
-  label106 = gtk_label_new (_("B:"));
-  gtk_widget_ref (label106);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "label106", label106,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label106);
-  gtk_table_attach (GTK_TABLE (table54), label106, 0, 1, 0, 1,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_misc_set_alignment (GTK_MISC (label106), 0, 0.5);
-
-  cursor_color_b = gtk_statusbar_new ();
-  gtk_widget_ref (cursor_color_b);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "cursor_color_b", cursor_color_b,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (cursor_color_b);
-  gtk_table_attach (GTK_TABLE (table54), cursor_color_b, 1, 2, 0, 1,
+  gtk_widget_show (fps_save);
+  gtk_table_attach (GTK_TABLE (table65), fps_save, 2, 3, 1, 2,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  table55 = gtk_table_new (1, 2, FALSE);
-  gtk_widget_ref (table55);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "table55", table55,
+  fps_ftp = gtk_statusbar_new ();
+  gtk_widget_ref (fps_ftp);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "fps_ftp", fps_ftp,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (table55);
-  gtk_table_attach (GTK_TABLE (table49), table55, 5, 6, 1, 2,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (GTK_FILL), 0, 0);
-
-  label107 = gtk_label_new (_("Y:"));
-  gtk_widget_ref (label107);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "label107", label107,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label107);
-  gtk_table_attach (GTK_TABLE (table55), label107, 0, 1, 0, 1,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_misc_set_alignment (GTK_MISC (label107), 0, 0.5);
-
-  cursor_color_y = gtk_statusbar_new ();
-  gtk_widget_ref (cursor_color_y);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "cursor_color_y", cursor_color_y,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (cursor_color_y);
-  gtk_table_attach (GTK_TABLE (table55), cursor_color_y, 1, 2, 0, 1,
+  gtk_widget_show (fps_ftp);
+  gtk_table_attach (GTK_TABLE (table65), fps_ftp, 3, 4, 1, 2,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  table56 = gtk_table_new (1, 2, FALSE);
-  gtk_widget_ref (table56);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "table56", table56,
+  fps_real = gtk_statusbar_new ();
+  gtk_widget_ref (fps_real);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "fps_real", fps_real,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (table56);
-  gtk_table_attach (GTK_TABLE (table49), table56, 6, 7, 1, 2,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (GTK_FILL), 0, 0);
-
-  label108 = gtk_label_new (_("U:"));
-  gtk_widget_ref (label108);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "label108", label108,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label108);
-  gtk_table_attach (GTK_TABLE (table56), label108, 0, 1, 0, 1,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_misc_set_alignment (GTK_MISC (label108), 0, 0.5);
-
-  cursor_color_u = gtk_statusbar_new ();
-  gtk_widget_ref (cursor_color_u);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "cursor_color_u", cursor_color_u,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (cursor_color_u);
-  gtk_table_attach (GTK_TABLE (table56), cursor_color_u, 1, 2, 0, 1,
+  gtk_widget_show (fps_real);
+  gtk_table_attach (GTK_TABLE (table65), fps_real, 4, 5, 1, 2,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  table57 = gtk_table_new (1, 2, FALSE);
-  gtk_widget_ref (table57);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "table57", table57,
+  fps_receive = gtk_statusbar_new ();
+  gtk_widget_ref (fps_receive);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "fps_receive", fps_receive,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (table57);
-  gtk_table_attach (GTK_TABLE (table49), table57, 7, 8, 1, 2,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (GTK_FILL), 0, 0);
-
-  label109 = gtk_label_new (_("V:"));
-  gtk_widget_ref (label109);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "label109", label109,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label109);
-  gtk_table_attach (GTK_TABLE (table57), label109, 0, 1, 0, 1,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_misc_set_alignment (GTK_MISC (label109), 0, 0.5);
-
-  cursor_color_v = gtk_statusbar_new ();
-  gtk_widget_ref (cursor_color_v);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "cursor_color_v", cursor_color_v,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (cursor_color_v);
-  gtk_table_attach (GTK_TABLE (table57), cursor_color_v, 1, 2, 0, 1,
+  gtk_widget_show (fps_receive);
+  gtk_table_attach (GTK_TABLE (table65), fps_receive, 0, 1, 1, 2,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
+
+  label119 = gtk_label_new (_("Live info"));
+  gtk_widget_ref (label119);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "label119", label119,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label119);
+  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook4), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook4), 1), label119);
+
+  table49 = gtk_table_new (1, 1, TRUE);
+  gtk_widget_ref (table49);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "table49", table49,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (table49);
+  gtk_box_pack_start (GTK_BOX (vbox72), table49, FALSE, FALSE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (table49), 3);
 
   main_status = gtk_statusbar_new ();
   gtk_widget_ref (main_status);
   gtk_object_set_data_full (GTK_OBJECT (commander_window), "main_status", main_status,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (main_status);
-  gtk_table_attach (GTK_TABLE (table49), main_status, 0, 8, 0, 1,
+  gtk_table_attach (GTK_TABLE (table49), main_status, 0, 1, 0, 1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 

@@ -156,6 +156,8 @@ FtpThread(void* arg)
   ftpthread_info_t *info=NULL;
   GdkImlibImage *im=NULL;
   long int skip_counter;
+  char tmp_string[20];
+  float delay;
 
   ftp_service=(chain_t*)arg;
   pthread_mutex_lock(&ftp_service->mutex_data);
@@ -167,6 +169,10 @@ FtpThread(void* arg)
   pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED,NULL);
   pthread_mutex_unlock(&ftp_service->mutex_data);
  
+
+  // time inits:
+  info->prev_time = times(&info->tms_buf);
+  info->frames=0;
 
   while (1)
     { 
@@ -221,6 +227,24 @@ FtpThread(void* arg)
 		}
 	      else
 		skip_counter++;
+
+      info->current_time=times(&info->tms_buf);
+      delay=(float)(info->current_time-info->prev_time)/CLK_TCK;
+      info->frames++;
+      if (delay>1.0) // update every second
+	{
+	  sprintf(tmp_string," %.2f",(float)info->frames/delay);
+	  //fprintf(stderr,"ftp: %s fps\n",tmp_string);
+	  /*
+	  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"fps_ftp"),
+			       ctxt.fps_ftp_ctxt, ctxt.fps_ftp_id);
+	  ctxt.fps_ftp_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"fps_ftp"),
+						 ctxt.fps_ftp_ctxt, tmp_string);
+	  */
+	  info->prev_time=info->current_time;
+	  info->frames=0;
+	}
+
 	      pthread_mutex_unlock(&ftp_service->mutex_data);
 	    }
 	  else

@@ -102,7 +102,10 @@ BuildTriggerModeMenu(void)
   gtk_option_menu_set_menu (GTK_OPTION_MENU (trigger_mode), trigger_mode_menu);
 
   // sets the active menu item:
-  gtk_option_menu_set_history (GTK_OPTION_MENU (trigger_mode), index[feature_set->feature[FEATURE_TRIGGER-FEATURE_MIN].trigger_mode]);
+  //fprintf(stderr,"trig: max: %d, default: %d\n",NUM_TRIGGER_MODE,
+  //	  feature_set->feature[FEATURE_TRIGGER-FEATURE_MIN].trigger_mode);
+  gtk_option_menu_set_history (GTK_OPTION_MENU (trigger_mode), 
+			       index[feature_set->feature[FEATURE_TRIGGER-FEATURE_MIN].trigger_mode]);
 }
 
 
@@ -226,8 +229,12 @@ BuildFormat7ModeMenu(void)
 
   gtk_option_menu_set_menu (GTK_OPTION_MENU (mode_num), mode_num_menu);
 
-  // sets the active menu item:
-  gtk_option_menu_set_history (GTK_OPTION_MENU (mode_num), index[format7_info->edit_mode-MODE_FORMAT7_MIN]); // default: use the first mode for edit
+  // sets the active menu item: // default: use the first mode for edit
+  //fprintf(stderr,"F7 mode: max: %d, default: %d\n",
+  //	  NUM_MODE_FORMAT7,format7_info->edit_mode-MODE_FORMAT7_MIN);
+
+  gtk_option_menu_set_history (GTK_OPTION_MENU (mode_num), 
+			       index[format7_info->edit_mode-MODE_FORMAT7_MIN]);
 
 }
 
@@ -275,6 +282,8 @@ BuildFormat7ColorMenu(void)
   gtk_option_menu_set_menu (GTK_OPTION_MENU (color_num), color_num_menu);
 
   // sets the active menu item:
+  //fprintf(stderr,"F7 mode: max: %d, default: %d\n",NUM_COLOR_FORMAT7,
+  //	  format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].color_coding_id);
   gtk_option_menu_set_history (GTK_OPTION_MENU (color_num),
 			       index[format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].color_coding_id]);
 

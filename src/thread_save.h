@@ -23,6 +23,8 @@
 
 
 #include <pthread.h>
+#include <time.h>
+#include <sys/times.h>
 #include "thread_base.h"
 #include "definitions.h"
 
@@ -55,6 +57,12 @@ typedef struct
   int                save_scratch;
   long int           period;
   int                rawdump;
+
+  // timing data:
+  struct tms tms_buf;
+  clock_t prev_time;
+  clock_t current_time;
+  int frames;
 
 } savethread_info_t;
 

@@ -142,23 +142,24 @@ typedef struct _CtxtInfo
   int iso_status_id;
   int main_id;
 
-  int cursor_x_ctxt;
-  int cursor_y_ctxt;
-  int cursor_color_r_ctxt;
-  int cursor_color_g_ctxt;
-  int cursor_color_b_ctxt;
-  int cursor_color_y_ctxt;
-  int cursor_color_u_ctxt;
-  int cursor_color_v_ctxt;
+  int cursor_pos_ctxt;
+  int cursor_yuv_ctxt;
+  int cursor_rgb_ctxt;
 
-  int cursor_x_id;
-  int cursor_y_id;
-  int cursor_color_r_id;
-  int cursor_color_g_id;
-  int cursor_color_b_id;
-  int cursor_color_y_id;
-  int cursor_color_u_id;
-  int cursor_color_v_id;
+  int cursor_pos_id;
+  int cursor_rgb_id;
+  int cursor_yuv_id;
+
+  int fps_receive_ctxt;
+  int fps_receive_id;
+  int fps_display_ctxt;
+  int fps_display_id;
+  int fps_save_ctxt;
+  int fps_save_id;
+  int fps_ftp_ctxt;
+  int fps_ftp_id;
+  int fps_real_ctxt;
+  int fps_real_id;
 
 } CtxtInfo;
 

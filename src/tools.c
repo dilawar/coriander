@@ -273,23 +273,27 @@ void GetContextStatus()
 
   // note: these empty messages will be replaced after the execution of update_frame for status window
 
-  ctxt.cursor_x_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"cursor_x"),"");
-  ctxt.cursor_y_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"cursor_y"),"");
-  ctxt.cursor_color_r_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"cursor_color_r"),"");
-  ctxt.cursor_color_g_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"cursor_color_g"),"");
-  ctxt.cursor_color_b_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"cursor_color_b"),"");
-  ctxt.cursor_color_y_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"cursor_color_y"),"");
-  ctxt.cursor_color_u_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"cursor_color_u"),"");
-  ctxt.cursor_color_v_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"cursor_color_v"),"");
+  ctxt.cursor_pos_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"cursor_pos"),"");
+  ctxt.cursor_rgb_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"cursor_rgb"),"");
+  ctxt.cursor_yuv_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"cursor_yuv"),"");
 
-  ctxt.cursor_x_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"cursor_x"), ctxt.cursor_x_ctxt, "");
-  ctxt.cursor_y_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"cursor_y"), ctxt.cursor_y_ctxt, "");
-  ctxt.cursor_color_r_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"cursor_color_r"), ctxt.cursor_color_r_ctxt, "");
-  ctxt.cursor_color_g_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"cursor_color_g"), ctxt.cursor_color_g_ctxt, "");
-  ctxt.cursor_color_b_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"cursor_color_b"), ctxt.cursor_color_b_ctxt, "");
-  ctxt.cursor_color_y_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"cursor_color_y"), ctxt.cursor_color_y_ctxt, "");
-  ctxt.cursor_color_u_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"cursor_color_u"), ctxt.cursor_color_u_ctxt, "");
-  ctxt.cursor_color_v_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"cursor_color_v"), ctxt.cursor_color_v_ctxt, "");
+  ctxt.cursor_pos_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"cursor_pos"), ctxt.cursor_pos_ctxt, "");
+  ctxt.cursor_rgb_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"cursor_rgb"), ctxt.cursor_rgb_ctxt, "");
+  ctxt.cursor_yuv_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"cursor_yuv"), ctxt.cursor_yuv_ctxt, "");
+
+
+  // FPS:
+  ctxt.fps_receive_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"fps_receive"),"");
+  ctxt.fps_display_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"fps_display"),"");
+  ctxt.fps_save_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"fps_save"),"");
+  ctxt.fps_ftp_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"fps_ftp"),"");
+  ctxt.fps_real_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"fps_real"),"");
+
+  ctxt.fps_receive_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"fps_receive"), ctxt.fps_receive_ctxt, "");
+  ctxt.fps_display_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"fps_display"), ctxt.fps_display_ctxt, "");
+  ctxt.fps_save_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"fps_save"), ctxt.fps_save_ctxt, "");
+  ctxt.fps_ftp_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"fps_ftp"), ctxt.fps_ftp_ctxt, "");
+  ctxt.fps_real_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"fps_real"), ctxt.fps_real_ctxt, "");
   
 }
 
