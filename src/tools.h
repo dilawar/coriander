@@ -30,10 +30,10 @@ void
 ChangeModeAndFormat(int mode, int format);
 
 void
-IsoFlowCheck(int* state);
+IsoFlowCheck(int *state);
 
 void
-IsoFlowResume(int* state);
+IsoFlowResume(int *state);
 
 void
 GetContextStatus(void);
@@ -43,6 +43,9 @@ GrabSelfIds(raw1394handle_t handle);
 
 void
 SelectCamera(int i);
+
+void
+SetChannel(int camera_index);
 
 void
 MainError(const char *string);
