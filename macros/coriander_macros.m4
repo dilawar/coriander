@@ -138,7 +138,7 @@ AC_DEFUN([AC_CHECK_FTPLIB],[
 
 **************************************************************************
 **   ftplib is required for FTP support.                                **
-**   Source tarball available at:  http://www.eclipse.net/~pfau/ftplib  **
+**   Source tarball available at: http://nbpfaus.net/~pfau/ftplib/      **
 **   FTP SERVICE DISABLED                                               **
 **************************************************************************))
 ])
