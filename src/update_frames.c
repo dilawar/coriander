@@ -26,6 +26,7 @@
 #include "build_menus.h"
 #include "definitions.h"
 #include "tools.h"
+#include "capture.h"
 #include "build_ranges.h"
 #include <string.h>
 #include <libdc1394/dc1394_control.h>
@@ -42,6 +43,7 @@ extern char* phy_speed_list[4];
 extern char* phy_delay_list[4];
 extern char* power_class_list[8];
 extern SelfIdPacket_t *selfid;
+extern capture_info ci;
 
 void
 UpdateCameraFrame(void)
@@ -240,3 +242,20 @@ UpdateTransferStatusFrame(void)
 
 }
 
+void
+UpdateFTPFrame(void)
+{
+
+  GtkWidget *window = gtk_widget_get_toplevel(lookup_widget(capture_window,"checkbutton_capture_ftp"));
+
+  ci.ftp_enable = gtk_toggle_button_get_active((GtkToggleButton *)(lookup_widget(window,"checkbutton_capture_ftp")));
+
+  gtk_widget_set_sensitive( lookup_widget(window, "entry_capture_ftp_address"), ci.ftp_enable);
+  gtk_widget_set_sensitive( lookup_widget(window, "entry_capture_ftp_path"), ci.ftp_enable);
+  gtk_widget_set_sensitive( lookup_widget(window, "entry_capture_ftp_user"), ci.ftp_enable);
+  gtk_widget_set_sensitive( lookup_widget(window, "entry_capture_ftp_passwd"), ci.ftp_enable);
+  gtk_widget_set_sensitive( lookup_widget(window, "label_capture_ftp_address"), ci.ftp_enable);
+  gtk_widget_set_sensitive( lookup_widget(window, "label_capture_ftp_path"), ci.ftp_enable);
+  gtk_widget_set_sensitive( lookup_widget(window, "label_capture_ftp_user"), ci.ftp_enable);
+  gtk_widget_set_sensitive( lookup_widget(window, "label_capture_ftp_passwd"), ci.ftp_enable);
+}

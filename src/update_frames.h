@@ -49,4 +49,6 @@ UpdateCameraStatusFrame(void);
 void
 UpdateTransferStatusFrame(void);
 
+void
+UpdateFTPFrame(void);
 #endif

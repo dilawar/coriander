@@ -36,6 +36,20 @@ Changes in version 0.17-pre2, Sept 16, 2001, by Dan Dennedy:
     - capture.c: bugfix some dc1394_setup_catpure calls using the wrong
       handle introduced 2 days ago.
 
+    Sept 24, by Damien Douxchamps:
+    - in an attempt to use radio buttons in the format selection menu, I
+      changed the format/mode menu building procedure. Some parts have been
+      left commented out, waiting for Glade to support menu-radio buttons
+      in a better way. Some definitions have been created in definitions.c.
+    - changed the compilation order in src/Makefile.am: definitions and tools
+      have been moved 'up'.
+    - removed the 'BuildFormat7Ranges' prompt to stdout.
+    - removed BuildFormat7Ranges.c file from CVS
+    - created UpdateFTPFrame in update_frame.c from Dan's code. Added label
+      shading to field shading in order to make things clearer. The function
+      has been added in the UpdateCaptureFrame window.
+    - some cosmetic UI changes in FTP frame
+	
 Changes in version 0.17-pre1, July 25, 2001:
 
 	- true error handling: data not used when an error is detected.

@@ -498,7 +498,7 @@ create_commander_window (void)
   GtkWidget *trigger_mode;
   GtkWidget *trigger_mode_menu;
   GtkWidget *main_status;
-GtkAccelGroup *accel_group;
+  GtkAccelGroup *accel_group;
 
   commander_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_object_set_data (GTK_OBJECT (commander_window), "commander_window", commander_window);
@@ -519,8 +519,8 @@ GtkAccelGroup *accel_group;
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (menubar);
   gtk_box_pack_start (GTK_BOX (vbox26), menubar, FALSE, FALSE, 0);
-accel_group = gtk_accel_group_new();
-gtk_accel_group_attach(accel_group, GTK_OBJECT(commander_window));
+  accel_group = gtk_accel_group_new();
+  gtk_accel_group_attach(accel_group, GTK_OBJECT(commander_window));
   gnome_app_fill_menu (GTK_MENU_SHELL (menubar), menubar_uiinfo,
                        accel_group, TRUE, 0);
 
@@ -3254,10 +3254,10 @@ create_capture_window (void)
   GtkWidget *checkbutton_capture_ftp;
   GtkWidget *table_capture_ftp;
   GtkWidget *label_capture_ftp_address;
-  GtkWidget *entry_capture_ftp_address;
   GtkWidget *label_capture_ftp_path;
   GtkWidget *label_capture_ftp_user;
   GtkWidget *label_capture_ftp_passwd;
+  GtkWidget *entry_capture_ftp_address;
   GtkWidget *entry_capture_ftp_path;
   GtkWidget *entry_capture_ftp_user;
   GtkWidget *entry_capture_ftp_passwd;
@@ -3587,7 +3587,7 @@ create_capture_window (void)
   gtk_box_pack_start (GTK_BOX (vbox_capture_ftp), table_capture_ftp, TRUE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (table_capture_ftp), 4);
 
-  label_capture_ftp_address = gtk_label_new (_("Address"));
+  label_capture_ftp_address = gtk_label_new (_("Address: "));
   gtk_widget_ref (label_capture_ftp_address);
   gtk_object_set_data_full (GTK_OBJECT (capture_window), "label_capture_ftp_address", label_capture_ftp_address,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -3599,18 +3599,7 @@ create_capture_window (void)
   gtk_misc_set_alignment (GTK_MISC (label_capture_ftp_address), 1, 0.5);
   gtk_misc_set_padding (GTK_MISC (label_capture_ftp_address), 2, 0);
 
-  entry_capture_ftp_address = gtk_entry_new ();
-  gtk_widget_ref (entry_capture_ftp_address);
-  gtk_object_set_data_full (GTK_OBJECT (capture_window), "entry_capture_ftp_address", entry_capture_ftp_address,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (entry_capture_ftp_address);
-  gtk_table_attach (GTK_TABLE (table_capture_ftp), entry_capture_ftp_address, 1, 2, 0, 1,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_usize (entry_capture_ftp_address, -2, 26);
-  gtk_widget_set_sensitive (entry_capture_ftp_address, FALSE);
-
-  label_capture_ftp_path = gtk_label_new (_("Path"));
+  label_capture_ftp_path = gtk_label_new (_("Path: "));
   gtk_widget_ref (label_capture_ftp_path);
   gtk_object_set_data_full (GTK_OBJECT (capture_window), "label_capture_ftp_path", label_capture_ftp_path,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -3622,7 +3611,7 @@ create_capture_window (void)
   gtk_misc_set_alignment (GTK_MISC (label_capture_ftp_path), 1, 0.5);
   gtk_misc_set_padding (GTK_MISC (label_capture_ftp_path), 2, 0);
 
-  label_capture_ftp_user = gtk_label_new (_("Username"));
+  label_capture_ftp_user = gtk_label_new (_("Username: "));
   gtk_widget_ref (label_capture_ftp_user);
   gtk_object_set_data_full (GTK_OBJECT (capture_window), "label_capture_ftp_user", label_capture_ftp_user,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -3634,7 +3623,7 @@ create_capture_window (void)
   gtk_misc_set_alignment (GTK_MISC (label_capture_ftp_user), 1, 0.5);
   gtk_misc_set_padding (GTK_MISC (label_capture_ftp_user), 2, 0);
 
-  label_capture_ftp_passwd = gtk_label_new (_("Password"));
+  label_capture_ftp_passwd = gtk_label_new (_("Password: "));
   gtk_widget_ref (label_capture_ftp_passwd);
   gtk_object_set_data_full (GTK_OBJECT (capture_window), "label_capture_ftp_passwd", label_capture_ftp_passwd,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -3646,6 +3635,17 @@ create_capture_window (void)
   gtk_misc_set_alignment (GTK_MISC (label_capture_ftp_passwd), 1, 0.5);
   gtk_misc_set_padding (GTK_MISC (label_capture_ftp_passwd), 2, 0);
 
+  entry_capture_ftp_address = gtk_entry_new ();
+  gtk_widget_ref (entry_capture_ftp_address);
+  gtk_object_set_data_full (GTK_OBJECT (capture_window), "entry_capture_ftp_address", entry_capture_ftp_address,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (entry_capture_ftp_address);
+  gtk_table_attach (GTK_TABLE (table_capture_ftp), entry_capture_ftp_address, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 1);
+  gtk_widget_set_usize (entry_capture_ftp_address, -2, 22);
+  gtk_widget_set_sensitive (entry_capture_ftp_address, FALSE);
+
   entry_capture_ftp_path = gtk_entry_new ();
   gtk_widget_ref (entry_capture_ftp_path);
   gtk_object_set_data_full (GTK_OBJECT (capture_window), "entry_capture_ftp_path", entry_capture_ftp_path,
@@ -3653,8 +3653,8 @@ create_capture_window (void)
   gtk_widget_show (entry_capture_ftp_path);
   gtk_table_attach (GTK_TABLE (table_capture_ftp), entry_capture_ftp_path, 1, 2, 1, 2,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_usize (entry_capture_ftp_path, -2, 26);
+                    (GtkAttachOptions) (0), 0, 1);
+  gtk_widget_set_usize (entry_capture_ftp_path, -2, 22);
   gtk_widget_set_sensitive (entry_capture_ftp_path, FALSE);
 
   entry_capture_ftp_user = gtk_entry_new ();
@@ -3664,8 +3664,8 @@ create_capture_window (void)
   gtk_widget_show (entry_capture_ftp_user);
   gtk_table_attach (GTK_TABLE (table_capture_ftp), entry_capture_ftp_user, 1, 2, 2, 3,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_usize (entry_capture_ftp_user, -2, 26);
+                    (GtkAttachOptions) (0), 0, 1);
+  gtk_widget_set_usize (entry_capture_ftp_user, -2, 22);
   gtk_widget_set_sensitive (entry_capture_ftp_user, FALSE);
 
   entry_capture_ftp_passwd = gtk_entry_new ();
@@ -3675,8 +3675,8 @@ create_capture_window (void)
   gtk_widget_show (entry_capture_ftp_passwd);
   gtk_table_attach (GTK_TABLE (table_capture_ftp), entry_capture_ftp_passwd, 1, 2, 3, 4,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_usize (entry_capture_ftp_passwd, -2, 26);
+                    (GtkAttachOptions) (0), 0, 1);
+  gtk_widget_set_usize (entry_capture_ftp_passwd, -2, 22);
   gtk_widget_set_sensitive (entry_capture_ftp_passwd, FALSE);
 
   hbox_capture = gtk_hbox_new (TRUE, 0);

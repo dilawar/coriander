@@ -31,10 +31,17 @@
 extern GtkWidget *commander_window;
 extern dc1394_camerainfo *camera;
 extern dc1394_feature_set *feature_set;
+extern dc1394_miscinfo *misc_info;
+extern char* format_list[5];
+extern char* format0_list[7];
+extern char* format1_list[8];
+extern char* format2_list[8];
+extern char* format6_list[1];
+extern char* format7_list[8];
 
 void UpdateFormatMenu(void)
 {
-  int err;
+  int err,i;
   quadlet_t modes, formats;
 
   // disable things that are not ready yet:
@@ -62,6 +69,8 @@ void UpdateFormatMenu(void)
   gtk_widget_set_sensitive(lookup_widget(commander_window,"format_7"),formats & (0x1<<24) );
   
   // corresponding modes:
+
+  // format 0:
   if (formats & (0x1<<31))
     {
       err= dc1394_query_supported_modes(camera->handle, camera->id, FORMAT_VGA_NONCOMPRESSED, &modes);
@@ -70,33 +79,32 @@ void UpdateFormatMenu(void)
 	  MainError("Could not query Format0 modes");
 	  modes=0;
 	}
-      gtk_widget_set_sensitive(lookup_widget(commander_window,"f0_mode0"),modes & (0x1<<31) );
-      gtk_widget_set_sensitive(lookup_widget(commander_window,"f0_mode1"),modes & (0x1<<30) );
-      gtk_widget_set_sensitive(lookup_widget(commander_window,"f0_mode2"),modes & (0x1<<29) );
-      gtk_widget_set_sensitive(lookup_widget(commander_window,"f0_mode3"),modes & (0x1<<28) );
-      gtk_widget_set_sensitive(lookup_widget(commander_window,"f0_mode4"),modes & (0x1<<27) );
-      gtk_widget_set_sensitive(lookup_widget(commander_window,"f0_mode5"),modes & (0x1<<26) );
-      gtk_widget_set_sensitive(lookup_widget(commander_window,"f0_mode6"),modes & (0x1<<25) );
+      for (i=0;i<7;i++)
+	{
+	  gtk_widget_set_sensitive(lookup_widget(commander_window,format0_list[i]),modes & (0x1<<(31-i)) );
+	  //if ( (modes & (0x1<<(31-i))) && (misc_info->mode==(MODE_FORMAT0_MIN+i)) && (misc_info->format==FORMAT_VGA_NONCOMPRESSED))
+	  //  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (lookup_widget(commander_window,format0_list[i])), TRUE);
+	}
     }
 
+  // format 1:
   if (formats & (0x1<<30))
     {
       err= dc1394_query_supported_modes(camera->handle, camera->id, FORMAT_SVGA_NONCOMPRESSED_1, &modes);
       if (!err)
-      {
-	MainError("Could not query Format1 modes");
-	modes=0;
-      }
-      gtk_widget_set_sensitive(lookup_widget(commander_window,"f1_mode0"),modes & (0x1<<31) );
-      gtk_widget_set_sensitive(lookup_widget(commander_window,"f1_mode1"),modes & (0x1<<30) );
-      gtk_widget_set_sensitive(lookup_widget(commander_window,"f1_mode2"),modes & (0x1<<29) );
-      gtk_widget_set_sensitive(lookup_widget(commander_window,"f1_mode3"),modes & (0x1<<28) );
-      gtk_widget_set_sensitive(lookup_widget(commander_window,"f1_mode4"),modes & (0x1<<27) );
-      gtk_widget_set_sensitive(lookup_widget(commander_window,"f1_mode5"),modes & (0x1<<26) );
-      gtk_widget_set_sensitive(lookup_widget(commander_window,"f1_mode6"),modes & (0x1<<25) );
-      gtk_widget_set_sensitive(lookup_widget(commander_window,"f1_mode7"),modes & (0x1<<24) );
+	{
+	  MainError("Could not query Format1 modes");
+	  modes=0;
+	}
+      for (i=0;i<8;i++)
+	{
+	  gtk_widget_set_sensitive(lookup_widget(commander_window,format1_list[i]),modes & (0x1<<(31-i)) );
+	  //if ( (modes & (0x1<<(31-i))) && (misc_info->mode==(MODE_FORMAT1_MIN+i)) && (misc_info->format==FORMAT_SVGA_NONCOMPRESSED_1))
+	  //  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (lookup_widget(commander_window,format1_list[i])), TRUE);
+	}
     }
 
+  // format 2:
   if (formats & (0x1<<29))
     {
       err= dc1394_query_supported_modes(camera->handle, camera->id, FORMAT_SVGA_NONCOMPRESSED_2, &modes);
@@ -105,16 +113,15 @@ void UpdateFormatMenu(void)
 	  MainError("Could not query Format2 modes");
 	  modes=0;
 	}
-      gtk_widget_set_sensitive(lookup_widget(commander_window,"f2_mode0"),modes & (0x1<<31) );
-      gtk_widget_set_sensitive(lookup_widget(commander_window,"f2_mode1"),modes & (0x1<<30) );
-      gtk_widget_set_sensitive(lookup_widget(commander_window,"f2_mode2"),modes & (0x1<<29) );
-      gtk_widget_set_sensitive(lookup_widget(commander_window,"f2_mode3"),modes & (0x1<<28) );
-      gtk_widget_set_sensitive(lookup_widget(commander_window,"f2_mode4"),modes & (0x1<<27) );
-      gtk_widget_set_sensitive(lookup_widget(commander_window,"f2_mode5"),modes & (0x1<<26) );
-      gtk_widget_set_sensitive(lookup_widget(commander_window,"f2_mode6"),modes & (0x1<<25) );
-      gtk_widget_set_sensitive(lookup_widget(commander_window,"f2_mode7"),modes & (0x1<<24) );
+      for (i=0;i<8;i++)
+	{
+	  gtk_widget_set_sensitive(lookup_widget(commander_window,format2_list[i]),modes & (0x1<<(31-i)) );
+	  //if ( (modes & (0x1<<(31-i))) && (misc_info->mode==(MODE_FORMAT2_MIN+i)) && (misc_info->format==FORMAT_SVGA_NONCOMPRESSED_2))
+	  //  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (lookup_widget(commander_window,format2_list[i])), TRUE);
+	}
     }
 
+  // format 6:
   if (formats & (0x1<<25))
     {
       err= dc1394_query_supported_modes(camera->handle, camera->id, FORMAT_STILL_IMAGE, &modes);
@@ -123,9 +130,15 @@ void UpdateFormatMenu(void)
 	  MainError("Could not query Format6 modes");
 	  modes=0;
 	}
-      gtk_widget_set_sensitive(lookup_widget(commander_window,"f6_mode0"),modes & (0x1<<31) );
+      for (i=0;i<1;i++)
+	{
+	  gtk_widget_set_sensitive(lookup_widget(commander_window,format6_list[i]),modes & (0x1<<(31-i)) );
+	  //if ( (modes & (0x1<<(31-i))) && (misc_info->mode==(MODE_FORMAT6_MIN+i)) && (misc_info->format==FORMAT_STILL_IMAGE))
+	  //  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (lookup_widget(commander_window,format6_list[i])), TRUE);
+	}
     }
 
+  // format 7:
   if (formats & (0x1<<24))
     {
       err= dc1394_query_supported_modes(camera->handle, camera->id, FORMAT_SCALABLE_IMAGE_SIZE, &modes);
@@ -134,14 +147,12 @@ void UpdateFormatMenu(void)
 	  MainError("Could not query Format7 modes");
 	  modes=0;
 	}
-      gtk_widget_set_sensitive(lookup_widget(commander_window,"f7_mode0"),modes & (0x1<<31) );
-      gtk_widget_set_sensitive(lookup_widget(commander_window,"f7_mode1"),modes & (0x1<<30) );
-      gtk_widget_set_sensitive(lookup_widget(commander_window,"f7_mode2"),modes & (0x1<<29) );
-      gtk_widget_set_sensitive(lookup_widget(commander_window,"f7_mode3"),modes & (0x1<<28) );
-      gtk_widget_set_sensitive(lookup_widget(commander_window,"f7_mode4"),modes & (0x1<<27) );
-      gtk_widget_set_sensitive(lookup_widget(commander_window,"f7_mode5"),modes & (0x1<<26) );
-      gtk_widget_set_sensitive(lookup_widget(commander_window,"f7_mode6"),modes & (0x1<<25) );
-      gtk_widget_set_sensitive(lookup_widget(commander_window,"f7_mode7"),modes & (0x1<<24) );
+      for (i=0;i<8;i++)
+	{
+	  gtk_widget_set_sensitive(lookup_widget(commander_window,format7_list[i]),modes & (0x1<<(31-i)) );
+	  //if ( (modes & (0x1<<(31-i))) && (misc_info->mode==(MODE_FORMAT7_MIN+i)) && (misc_info->format==FORMAT_SCALABLE_IMAGE_SIZE))
+	  //  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (lookup_widget(commander_window,format7_list[i])), TRUE);
+	}
     }
 }
 

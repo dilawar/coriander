@@ -25,6 +25,7 @@
 #include "support.h"
 #include "definitions.h"
 #include "build_menus.h"
+#include "build_ranges.h"
 #include "build_frames.h"
 #include "update_frames.h"
 #include "tools.h"

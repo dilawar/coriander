@@ -102,7 +102,7 @@ BuildFormat7Ranges(void)
   Format7ModeInfo *info;
   
   info=&format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN];
-  printf( "BuildFormat7Ranges()\n");
+  //printf( "BuildFormat7Ranges()\n");
 
   // define the adjustments for the 4 format7 controls. Note that (pos_x+size_x)<=max_size_x which yields some inter-dependencies
 

@@ -262,3 +262,58 @@ const char * phy_delay_list[4] = {
   "Unknown"
 };
 
+
+const char * format_list[5]= {
+  "format_0",
+  "format_1",
+  "format_2",
+  "format_6",
+  "format_7"
+};
+
+const char * format0_list[7]= {
+  "f0_mode0",
+  "f0_mode1",
+  "f0_mode2",
+  "f0_mode3",
+  "f0_mode4",
+  "f0_mode5",
+  "f0_mode6"
+};
+
+const char * format1_list[8]= {
+  "f1_mode0",
+  "f1_mode1",
+  "f1_mode2",
+  "f1_mode3",
+  "f1_mode4",
+  "f1_mode5",
+  "f1_mode6",
+  "f1_mode7"
+};
+
+const char * format2_list[8]= {
+  "f2_mode0",
+  "f2_mode1",
+  "f2_mode2",
+  "f2_mode3",
+  "f2_mode4",
+  "f2_mode5",
+  "f2_mode6",
+  "f2_mode7"
+};
+
+const char * format6_list[1]= {
+  "f6_mode0"
+};
+
+const char * format7_list[8]= {
+  "f7_mode0",
+  "f7_mode1",
+  "f7_mode2",
+  "f7_mode3",
+  "f7_mode4",
+  "f7_mode5",
+  "f7_mode6",
+  "f7_mode7"
+};

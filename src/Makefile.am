@@ -11,6 +11,8 @@ coriander_SOURCES = \
 	main.c \
 	support.c support.h \
 	interface.c interface.h \
+	definitions.c definitions.h \
+	tools.c tools.h \
 	callbacks.c callbacks.h \
 	update_frames.c update_frames.h \
 	build_frames.c build_frames.h \
@@ -21,10 +23,8 @@ coriander_SOURCES = \
 	update_ranges.c update_ranges.h \
 	build_ranges.c build_ranges.h \
 	callback_proc.c callback_proc.h \
-	definitions.c definitions.h \
 	conversions.c conversions.h \
 	capture.c capture.h \
-	tools.c tools.h \
 	topology.c topology.h
 
 coriander_LDADD = $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(INTLLIBS) $(PTHREAD_LIB) \

@@ -1,4 +1,4 @@
- /* $Id: topology.c,v 1.1 2001-08-08 16:47:48 moorman Exp $
+ /* $Id: topology.c,v 1.2 2001-09-24 08:41:23 ddouxchamps Exp $
  *
  * topology.c - Linux IEEE-1394 topology map fetching routine.
  * This routine serves as a temporary replacement for the
@@ -137,6 +137,7 @@ RAW1394topologyMap *raw1394GetTopologyMap(raw1394handle_t handle) {
 int cooked1394_read(raw1394handle_t handle, nodeid_t node, nodeaddr_t addr,
                  size_t length, quadlet_t *buffer) {
 	int retval, i;
+	retval=-1;
 	for(i=0; i<MAXTRIES; i++) {
 		retval = raw1394_read(handle, node, addr, length, buffer);
 		if( retval >= 0 ) return retval;	/* Everything is OK */
@@ -150,6 +151,7 @@ int cooked1394_read(raw1394handle_t handle, nodeid_t node, nodeaddr_t addr,
 int cooked1394_write(raw1394handle_t handle, nodeid_t node, nodeaddr_t addr,
                   size_t length, quadlet_t *data) {
 	int retval, i;
+	retval=-1;
 	for(i=0; i<MAXTRIES; i++) {
 		retval = raw1394_write(handle, node, addr, length, data);
 		if( retval >= 0 ) return retval;	/* Everything is OK */

@@ -118,6 +118,7 @@ UpdateCaptureWindow(void)
 
   UpdateCaptureFrame();
   UpdateIsoFrame();
+  UpdateFTPFrame();
 
 }
 

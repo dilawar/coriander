@@ -1570,13 +1570,9 @@ void
 on_checkbutton_capture_ftp_toggled     (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-  GtkWidget *window = gtk_widget_get_toplevel(GTK_WIDGET(togglebutton));
+
 #ifdef HAVE_FTPLIB
-  ci.ftp_enable = gtk_toggle_button_get_active(togglebutton);
-  gtk_widget_set_sensitive( lookup_widget(window, "entry_capture_ftp_address"), ci.ftp_enable);
-  gtk_widget_set_sensitive( lookup_widget(window, "entry_capture_ftp_path"), ci.ftp_enable);
-  gtk_widget_set_sensitive( lookup_widget(window, "entry_capture_ftp_user"), ci.ftp_enable);
-  gtk_widget_set_sensitive( lookup_widget(window, "entry_capture_ftp_passwd"), ci.ftp_enable);
+  UpdateFTPFrame();
 #else
   if (gtk_toggle_button_get_active(togglebutton)) MessageBox("You must have FtpLib to use FTP!");
   gtk_toggle_button_set_active( togglebutton, FALSE);

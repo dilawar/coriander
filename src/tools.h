@@ -21,6 +21,7 @@
 
 #include <libdc1394/dc1394_control.h>
 #include <libraw1394/raw1394.h>
+#include "definitions.h"
 
 void
 GetFormat7Capabilities(raw1394handle_t handle, nodeid_t node, Format7Info *info);
