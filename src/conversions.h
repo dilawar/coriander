@@ -24,15 +24,15 @@
 #endif
 
 #include <string.h>
-#include "conversions.h"
 
+// UYVY <-> YUYV
 void
 uyvy2yuyv (unsigned char *src, unsigned char *dest, int NumPixels);
 
 void
 yuyv2uyvy (unsigned char *src, unsigned char *dest, int NumPixels);
 
-
+// XXX -> UYVY
 void
 uyyvyy2uyvy (unsigned char *src, unsigned char *dest, int NumPixels);
 
@@ -51,7 +51,7 @@ rgb2uyvy (unsigned char *src, unsigned char *dest, int NumPixels);
 void
 rgb482uyvy (unsigned char *src, unsigned char *dest, int NumPixels);
 
-
+// XXX -> RGB
 void
 rgb482rgb (unsigned char *src, unsigned char *dest, int NumPixels);
 
@@ -69,5 +69,9 @@ y2rgb (unsigned char *src, unsigned char *dest, int NumPixels);
 
 void
 y162rgb (unsigned char *src, unsigned char *dest, int NumPixels);
+
+// BAYER -> RGB
+void
+BayerNearestNeighbor(unsigned char *src, unsigned char *dest, int sx, int sy);
 
 #endif

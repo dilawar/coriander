@@ -20,7 +20,6 @@
 #  include <config.h>
 #endif
 
-#include <string.h>
 #include "conversions.h"
 
 extern void swab();
@@ -396,6 +395,68 @@ y162rgb (unsigned char *src, unsigned char *dest, int NumPixels) {
       dest[j--] = y;
       dest[j--] = y;
       dest[j--] = y;
+    }
+}
+
+/****************************************************************
+ *     Color conversion functions for cameras that can          * 
+ * output raw-Bayer pattern images, such as some Basler cameras *
+ * Most of the algos presented here com from                    *
+ * http://ise0.Stanford.EDU/~tingchen/main.htm                  *
+ ****************************************************************/
+
+void
+BayerNearestNeighbor(unsigned char *src, unsigned char *dest, int sx, int sy)
+{
+  unsigned char *outR, *outG, *outB;
+  register int i,j;
+
+  // sx and sy should be even
+  // first pixel should be Green, second red:
+  // G R G R G R G R
+  // B G B G B G B G
+  // G R G R G R G R
+  outR=dest[0];
+  outG=dest[sx*sy];
+  outB=dest[sx*sy*2];
+
+  // R channel
+  for (i=0;i<sy;i+=2)//every two lines
+    { //get one full line
+      for (j=0;j<sx;j+=2)
+	{
+	  outR[i*sx+j]=src[i*sx+j+1];
+	  outR[i*sx+j+1]=outR[i*sx+j];
+	}
+      // copy it for the next line
+      for (j=0;j<sx;j++)
+	outR[(i+1)*sx+j]=outR[i*sx+j];
+    }
+      
+  // B channel
+  for (i=0;i<sy;i+=2)//every two lines
+    { //get one full line
+      for (j=0;j<sx;j+=2)
+	{
+	  outB[i*sx+j]=src[(i+1)*sx+j];
+	  outB[i*sx+j+1]=outB[i*sx+j];
+	}
+      // copy it for the next line
+      for (j=0;j<sx;j++)
+	outB[(i+1)*sx+j]=outB[i*sx+j];
+    }
+
+  // G channel
+  for (i=0;i<sy;i+=2)//every two lines
+    { //get one full line
+      for (j=0;j<sx;j+=2)
+	{
+	  outG[i*sx+j]=src[i*sx+j];
+	  outG[i*sx+j+1]=outB[(i+1)*sx+(j+1)];
+	}
+      // copy it for the next line
+      for (j=0;j<sx;j++)
+	outG[(i+1)*sx+j]=outG[i*sx+j];
     }
 }
 
