@@ -1,5 +1,17 @@
 Coriander, (c) 2000-2001 Damien Douxchamps <douxchamps@ieee.org>
 
+Changes towards version 0.20:
+
+    Nov 12, by Damien Douxchamps:
+    - updated the thread mechanism to allow multi-camera. Yeah, that
+      feature had disappeared...
+    - new small procedure to allow cameras to use different channels.
+      This allows the use of several cameras with threads at the same
+      time. There is no support for multi-display at this time (i.e.
+      running several coriander on several cams on one linux box).
+    - change of formats and fps now works.
+    - did some more cleanup of the code.
+
 Changes in version 0.19:
 
     Nov 6, by Damien Douxchamps:
