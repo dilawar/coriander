@@ -65,10 +65,10 @@ void
 y2uyvy (unsigned char *src, unsigned char *dest, int NumPixels);
 
 void
-y162uyvy (unsigned char *src, unsigned char *dest, int NumPixels);
+y162uyvy (unsigned char *src, unsigned char *dest, int NumPixels, int bits);
 
 void
-y162y (unsigned char *src, unsigned char *dest, int NumPixels);
+y162y (unsigned char *src, unsigned char *dest, int NumPixels, int bits);
 
 void
 rgb2uyvy (unsigned char *src, unsigned char *dest, int NumPixels);
@@ -93,7 +93,7 @@ void
 y2rgb (unsigned char *src, unsigned char *dest, int NumPixels);
 
 void
-y162rgb (unsigned char *src, unsigned char *dest, int NumPixels);
+y162rgb (unsigned char *src, unsigned char *dest, int NumPixels, int bits);
 
 // BAYER -> RGB
 void

@@ -2,6 +2,10 @@ Coriander, (c) 2000-2002 Damien Douxchamps <douxchamps@ieee.org>
 
 Changes towards version 0.26
 
+   September 10, 2002, by Damien Douxchamps
+   - added a bpp setting to get nice pictures from 16bpp modes used
+     by less-than-16bpp cameras.
+	
    September 7, 2002, by Damien Douxchamps
    - corrected a bug in RGB to UYVY conversion function (column
      swapping)

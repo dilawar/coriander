@@ -57,7 +57,7 @@ AC_DEFUN([AC_CHECK_LIBDC_VERSION],[
            LIBDC_CFLAGS=""
 	else
           AC_ERROR(**      libdc1394 is too old.
-**      Please update at least to CVS of 2002-07-28.
+**      Please update at least to 0.9.0-2.
 **      Source tarballs and CVS available on the SourceForge website:
 **      http://www.sf.net/projects/libdc1394)
  	fi

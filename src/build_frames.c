@@ -403,6 +403,18 @@ BuildPrefsReceiveFrame(void)
 void
 BuildOptionFrame(void)
 {
+  GtkAdjustment *adjustment;
+
+  // the following line is necessary in order not to have unsensitive menu items:
+  gtk_widget_set_sensitive(lookup_widget(commander_window,"option_frame"),TRUE);
+  
+  // set the bpp_count value adjustment
+  adjustment=(GtkAdjustment*)gtk_adjustment_new(8,8,16,1,2,0);// from 8 to 16 bits
+  gtk_spin_button_set_adjustment((GtkSpinButton*)lookup_widget(commander_window, "mono16_bpp"),adjustment);
+ 
+  // connect signal
+  gtk_signal_connect (GTK_OBJECT (lookup_widget(commander_window, "mono16_bpp")), "changed",
+				  GTK_SIGNAL_FUNC (on_mono16_bpp_value_changed), (int*)1); // (dummy user data)
   BuildBayerMenu();
   BuildBayerPatternMenu();
 }

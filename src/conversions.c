@@ -181,17 +181,17 @@ y2uyvy (unsigned char *src, unsigned char *dest, int NumPixels) {
 }
 
 void
-y162uyvy (unsigned char *src, unsigned char *dest, int NumPixels) {
+y162uyvy (unsigned char *src, unsigned char *dest, int NumPixels, int bits) {
   register int i = (NumPixels << 1)-1;
   register int j = (NumPixels << 1)-1;
   register int y0, y1;
 
   while (i > 0)
     {
-      i--;
-      y1   = src[i--];
-      i--;
-      y0   = src[i--];
+      y1 = src[i--];
+      y1 = (y1 + (src[i--]<<8))>>(16-bits);
+      y0 = src[i--];
+      y0 = (y0 + (src[i--]<<8))>>(16-bits);
 #ifdef YUYV
       dest[j--] = 128;
       dest[j--] = y1;
@@ -207,14 +207,15 @@ y162uyvy (unsigned char *src, unsigned char *dest, int NumPixels) {
 }
 
 void
-y162y (unsigned char *src, unsigned char *dest, int NumPixels) {
+y162y (unsigned char *src, unsigned char *dest, int NumPixels, int bits) {
   register int i = (NumPixels<<1)-1;
   register int j = NumPixels-1;
+  register int y;
 
   while (i > 0)
     {
-      i--;
-      dest[j--] = src[i--];
+      y = src[i--];
+      dest[j--] = (y + (src[i--]<<8))>>(16-bits);
     }
 }
 
@@ -406,15 +407,15 @@ y2rgb (unsigned char *src, unsigned char *dest, int NumPixels) {
 }
 
 void
-y162rgb (unsigned char *src, unsigned char *dest, int NumPixels) {
+y162rgb (unsigned char *src, unsigned char *dest, int NumPixels, int bits) {
   register int i = (NumPixels << 1)-1;
   register int j = NumPixels + ( NumPixels << 1 )-1;
   register int y;
 
   while (i > 0)
     {
-      i--;
-      y = (unsigned char)src[i--];
+      y = src[i--];
+      y = (y + (src[i--]<<8))>>(16-bits);
       dest[j--] = y;
       dest[j--] = y;
       dest[j--] = y;

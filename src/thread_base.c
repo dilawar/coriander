@@ -155,6 +155,7 @@ CommonChainSetup(chain_t* chain, service_t req_service, unsigned int camera)
       chain->bytes_per_frame=buffer_size;
       chain->mode=misc_info->mode;
       chain->bayer=uiinfo->bayer;
+      chain->bpp=uiinfo->bpp;
       chain->bayer_pattern=uiinfo->bayer_pattern;
       chain->stereo_decoding=uiinfo->stereo;
       chain->format=misc_info->format;
@@ -192,6 +193,7 @@ CommonChainSetup(chain_t* chain, service_t req_service, unsigned int camera)
 	  chain->format=chain->prev_chain->format;
 	  chain->bytes_per_frame=chain->prev_chain->bytes_per_frame;
 	  buffer_size=chain->bytes_per_frame;
+	  chain->bpp=chain->prev_chain->bpp;
 	  chain->bayer=chain->prev_chain->bayer;
 	  chain->bayer_pattern=chain->prev_chain->bayer_pattern;
 	  chain->stereo_decoding=chain->prev_chain->stereo_decoding;
@@ -298,7 +300,7 @@ FreeChain(chain_t* chain)
 
 
 void
-convert_to_rgb(unsigned char *src, unsigned char *dest, int mode, int width, int height, int f7_colormode, int bayer)
+convert_to_rgb(unsigned char *src, unsigned char *dest, int mode, int width, int height, int f7_colormode, int bayer, int bits)
 {
   if (bayer==NO_BAYER_DECODING)
     {
@@ -337,7 +339,7 @@ convert_to_rgb(unsigned char *src, unsigned char *dest, int mode, int width, int
 	case MODE_1024x768_MONO16:
 	case MODE_1280x960_MONO16:
 	case MODE_1600x1200_MONO16:
-	  y162rgb(src,dest,width*height);
+	  y162rgb(src,dest,width*height,bits);
 	  break;
 	case MODE_FORMAT7_0:
 	case MODE_FORMAT7_1:
@@ -365,7 +367,7 @@ convert_to_rgb(unsigned char *src, unsigned char *dest, int mode, int width, int
 	      memcpy(dest,src,3*width*height);
 	      break;
 	    case COLOR_FORMAT7_MONO16:
-	      y162rgb(src,dest,width*height);
+	      y162rgb(src,dest,width*height,bits);
 	      break;
 	    case COLOR_FORMAT7_RGB16:
 	      rgb482rgb(src,dest,width*height);

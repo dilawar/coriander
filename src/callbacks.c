@@ -187,6 +187,13 @@ on_trigger_value_changed               (GtkAdjustment    *adj,
     feature_set->feature[FEATURE_TRIGGER-FEATURE_MIN].value=adj->value;
 }
 
+void
+on_mono16_bpp_value_changed               (GtkAdjustment    *adj,
+                                        gpointer         user_data)
+{
+  uiinfo->bpp=adj->value;
+}
+
 
 void
 on_memory_channel_activate              (GtkMenuItem     *menuitem,
@@ -1263,5 +1270,8 @@ on_stereo_button_toggled               (GtkToggleButton *togglebutton,
     uiinfo->stereo=STEREO_DECODING;
   else
     uiinfo->stereo=NO_STEREO_DECODING;
+
+  UpdateOptionFrame();
+
 }
 

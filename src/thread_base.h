@@ -56,6 +56,7 @@ typedef struct _Chain_T
   long int        bytes_per_frame;
   int             mode;
   int             format;
+  int             bpp;
   bayer_decoding_t bayer;
   bayer_pattern_t  bayer_pattern;
   stereo_decoding_t  stereo_decoding;
@@ -93,7 +94,7 @@ FreeChain(chain_t* chain);
 
 void
 convert_to_rgb(unsigned char *src, unsigned char *dest, int mode,
-	       int width, int height, int f7_colormode, int bayer);
+	       int width, int height, int f7_colormode, int bayer, int bits);
 
 void
 CleanThreads(clean_mode_t mode);

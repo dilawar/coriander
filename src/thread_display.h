@@ -79,7 +79,7 @@ sdlInit(chain_t *display_service);
 
 void
 convert_to_yuv_for_SDL(unsigned char *src, unsigned char *dest, int mode,
-		       int width, int height, int f7_colormode, int bayer);
+		       int width, int height, int f7_colormode, int bayer, int bits);
 
 void
 SDLDisplayArea(chain_t *display_service);

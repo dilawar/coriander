@@ -108,11 +108,10 @@ create_commander_window (void)
   GtkWidget *table59;
   GtkWidget *hbox59;
   GtkWidget *iso_frame;
-  GtkWidget *vbox76;
+  GtkWidget *table62;
   GtkWidget *iso_start;
   GtkWidget *iso_stop;
   GtkWidget *iso_restart;
-  GtkWidget *label113;
   GtkWidget *trigger_frame;
   GtkWidget *table17;
   GtkWidget *trigger_external;
@@ -132,6 +131,9 @@ create_commander_window (void)
   GtkWidget *pattern_menu;
   GtkWidget *pattern_menu_menu;
   GtkWidget *stereo_button;
+  GtkWidget *label114;
+  GtkObject *mono16_bpp_adj;
+  GtkWidget *mono16_bpp;
   GtkWidget *format_frame;
   GtkWidget *table60;
   GtkWidget *format_select;
@@ -577,19 +579,21 @@ create_commander_window (void)
   gtk_container_set_border_width (GTK_CONTAINER (iso_frame), 5);
   gtk_widget_set_sensitive (iso_frame, FALSE);
 
-  vbox76 = gtk_vbox_new (TRUE, 0);
-  gtk_widget_ref (vbox76);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "vbox76", vbox76,
+  table62 = gtk_table_new (5, 2, TRUE);
+  gtk_widget_ref (table62);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "table62", table62,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (vbox76);
-  gtk_container_add (GTK_CONTAINER (iso_frame), vbox76);
+  gtk_widget_show (table62);
+  gtk_container_add (GTK_CONTAINER (iso_frame), table62);
 
   iso_start = gtk_button_new_with_label (_("START"));
   gtk_widget_ref (iso_start);
   gtk_object_set_data_full (GTK_OBJECT (commander_window), "iso_start", iso_start,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (iso_start);
-  gtk_box_pack_start (GTK_BOX (vbox76), iso_start, TRUE, TRUE, 0);
+  gtk_table_attach (GTK_TABLE (table62), iso_start, 0, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (iso_start), 2);
   gtk_widget_set_sensitive (iso_start, FALSE);
 
@@ -598,7 +602,9 @@ create_commander_window (void)
   gtk_object_set_data_full (GTK_OBJECT (commander_window), "iso_stop", iso_stop,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (iso_stop);
-  gtk_box_pack_start (GTK_BOX (vbox76), iso_stop, TRUE, TRUE, 0);
+  gtk_table_attach (GTK_TABLE (table62), iso_stop, 0, 2, 1, 2,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (iso_stop), 2);
   gtk_widget_set_sensitive (iso_stop, FALSE);
 
@@ -607,16 +613,11 @@ create_commander_window (void)
   gtk_object_set_data_full (GTK_OBJECT (commander_window), "iso_restart", iso_restart,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (iso_restart);
-  gtk_box_pack_start (GTK_BOX (vbox76), iso_restart, TRUE, TRUE, 0);
+  gtk_table_attach (GTK_TABLE (table62), iso_restart, 0, 2, 2, 3,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (iso_restart), 2);
   gtk_widget_set_sensitive (iso_restart, FALSE);
-
-  label113 = gtk_label_new ("");
-  gtk_widget_ref (label113);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "label113", label113,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label113);
-  gtk_box_pack_start (GTK_BOX (vbox76), label113, FALSE, FALSE, 0);
 
   trigger_frame = gtk_frame_new (_("Trigger"));
   gtk_widget_ref (trigger_frame);
@@ -718,7 +719,7 @@ create_commander_window (void)
   gtk_box_pack_start (GTK_BOX (hbox59), image_options_frame, TRUE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (image_options_frame), 5);
 
-  table61 = gtk_table_new (4, 2, TRUE);
+  table61 = gtk_table_new (5, 2, TRUE);
   gtk_widget_ref (table61);
   gtk_object_set_data_full (GTK_OBJECT (commander_window), "table61", table61,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -783,6 +784,29 @@ create_commander_window (void)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (GTK_FILL), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (stereo_button), 2);
+
+  label114 = gtk_label_new (_("Bpp : "));
+  gtk_widget_ref (label114);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "label114", label114,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label114);
+  gtk_table_attach (GTK_TABLE (table61), label114, 0, 1, 4, 5,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_widget_set_sensitive (label114, FALSE);
+  gtk_misc_set_padding (GTK_MISC (label114), 2, 2);
+
+  mono16_bpp_adj = gtk_adjustment_new (8, 8, 16, 1, 2, 2);
+  mono16_bpp = gtk_spin_button_new (GTK_ADJUSTMENT (mono16_bpp_adj), 1, 0);
+  gtk_widget_ref (mono16_bpp);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "mono16_bpp", mono16_bpp,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (mono16_bpp);
+  gtk_table_attach (GTK_TABLE (table61), mono16_bpp, 1, 2, 4, 5,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (mono16_bpp), TRUE);
+  gtk_spin_button_set_update_policy (GTK_SPIN_BUTTON (mono16_bpp), GTK_UPDATE_IF_VALID);
 
   format_frame = gtk_frame_new (_("Format"));
   gtk_widget_ref (format_frame);

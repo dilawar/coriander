@@ -412,3 +412,7 @@ on_bayer_pattern_menu_activate           (GtkMenuItem     *menuitem,
 void
 on_stereo_button_toggled               (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
+
+void
+on_mono16_bpp_value_changed               (GtkAdjustment    *adj,
+					   gpointer         user_data);

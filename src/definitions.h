@@ -101,6 +101,8 @@ typedef struct _UIInfo
   int bayer;
   int bayer_pattern;
   int stereo;
+  int bpp;
+
 } UIInfo;
 
 typedef struct _StatusInfo

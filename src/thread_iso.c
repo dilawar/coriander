@@ -286,7 +286,7 @@ IsoThread(void* arg)
 	if (iso_service->bayer!=NO_BAYER_DECODING)
 	  if (cond16bit>0)
 	    y162y((unsigned char *)info->capture.capture_buffer,temp,
-		  iso_service->width*factor*iso_service->height*factor);
+		  iso_service->width*factor*iso_service->height*factor, iso_service->bpp);
 
       //fprintf(stderr,"bayer decoding...");
       switch (iso_service->bayer)
