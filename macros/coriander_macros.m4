@@ -20,15 +20,13 @@ AC_DEFUN([AC_CHECK_LIBDC],[
  	])
  	AC_MSG_RESULT($libdc1394)
  	if test x$libdc1394 = xno; then
-          AC_ERROR(
-
+          AC_ERROR(libdc1394 is not installed.  
 **************************************************************************
-**   libdc1394 is not installed.                                        **
-**   Please install libdc1394 version 0.9.1 or later.                   **
+**   Please install libdc1394 version > 0.9.1                           **
 **   Source tarball and CVS at:  http://www.sf.net/projects/libdc1394   **
 **************************************************************************)
  	fi
-])
+]) 
 
 AC_DEFUN([AC_CHECK_LIBDC_VERSION],[
 	AC_SUBST(LIBDC_CFLAGS)
@@ -48,9 +46,9 @@ AC_DEFUN([AC_CHECK_LIBDC_VERSION],[
   	dc1394_get_sw_version(info.handle, info.id, &value);
 	capture.dma_device_file=NULL;
 	dc1394_destroy_handle(info.handle);
-        dc1394_format7_dma_setup_capture(info.handle, info.id,
-                         	1, 1, 1, 1, 1, 1, 1,
-                         	dmafile, &capture);
+        dc1394_dma_setup_format7_capture(info.handle, info.id,
+                         	         1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                         	         dmafile, &capture);
 	dc1394_query_absolute_feature_value(info.handle, info.id, 1,&value);
 	features.feature[0].abs_control=0;
 	features.feature[0].abs_value=0.0;
@@ -64,10 +62,8 @@ AC_DEFUN([AC_CHECK_LIBDC_VERSION],[
            LIBDC_LIBS="-ldc1394_control"
            LIBDC_CFLAGS=""
 	else
-          AC_ERROR(
-
+          AC_ERROR(libdc1394 is too old. 
 **************************************************************************
-**   libdc1394 is too old.                                              **
 **   Please update to the current CVS or to a version > 0.9.1           **
 **   Source tarball and CVS at:  http://www.sf.net/projects/libdc1394   **
 **************************************************************************)
@@ -87,10 +83,8 @@ AC_DEFUN([AC_CHECK_LIBRAW],[
  	])
  	AC_MSG_RESULT($libraw1394)
  	if test x$libraw1394 = xno; then
-          AC_ERROR(
-
+          AC_ERROR(libraw1394 is not installed.
 **************************************************************************
-**   libraw1394 is not installed.                                       **
 **   Please install version 0.9.0 or later.                             **
 **   Source tarball and CVS at:  http://www.sf.net/projects/libraw1394  **
 **************************************************************************)
@@ -116,10 +110,8 @@ AC_DEFUN([AC_CHECK_LIBRAW_VERSION],[
            LIBRAW_LIBS="-lraw1394"
            LIBRAW_CFLAGS=""
 	else
-          AC_ERROR(
-
+          AC_ERROR(libraw1394 is too old.
 **************************************************************************
-**   libraw1394 is too old.				     	        **
 **   Please update to at least version 0.9.0                            **
 **   Source tarball and CVS at:  http://www.sf.net/projects/libraw1394  **
 **************************************************************************)
@@ -134,10 +126,8 @@ AC_DEFUN([AC_CHECK_FTPLIB],[
           AC_DEFINE(HAVE_FTPLIB)
           FTPLIB_LIBS="-lftp"
           FTPLIB_CFLAGS="",
-          AC_MSG_RESULT(
-
+          AC_MSG_RESULT(ftplib is required for FTP support.
 **************************************************************************
-**   ftplib is required for FTP support.                                **
 **   Source tarball available at: http://nbpfaus.net/~pfau/ftplib/      **
 **   FTP SERVICE DISABLED                                               **
 **************************************************************************))
@@ -152,10 +142,8 @@ AC_DEFUN([AC_CHECK_SDLLIB],[
 	  SDLLIB_CFLAGS=`sdl-config --cflags`
 	  AC_DEFINE(HAVE_SDLLIB)
 	else
-	  AC_MSG_RESULT(
-
+	  AC_MSG_RESULT(SDL required for display support.
 **************************************************************************
-**   SDL required for display support.                                  **
 **   SDL can be downloaded in various formats at http://www.libsdl.org  **
 **   DISPLAY SERVICE DISABLED                                           **
 **************************************************************************)
