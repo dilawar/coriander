@@ -39,7 +39,7 @@ void
 GetContextStatus(void);
 
 void
-GrabSelfIds(raw1394handle_t handle);
+GrabSelfIds(raw1394handle_t* handles, int portmax);
 
 void
 SelectCamera(int i);

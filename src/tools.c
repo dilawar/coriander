@@ -238,24 +238,30 @@ void GetContextStatus()
   // note: these empty messages will be replaced after the execution of update_frame for status window
 }
 
-void GrabSelfIds(raw1394handle_t handle)
+void GrabSelfIds(raw1394handle_t* handles, int portmax)
 {
   RAW1394topologyMap *topomap;
   SelfIdPacket_t packet;
   unsigned int* pselfid_int;
-  int i, j;
+  int i, j, port;
 
-  // get and decode SelfIds.
-  topomap=raw1394GetTopologyMap(handle);
-
-  for (i=0;i<topomap->selfIdCount;i++)
+  for (port=0;port<portmax;port++)
     {
-      pselfid_int = (unsigned int *) &topomap->selfIdPacket[i];
-      decode_selfid(&packet,pselfid_int);
-      // find the camera related to this packet:
-      for (j=0;j<camera_num;j++)
-	if (cameras[j].id==packet.packetZero.phyID)
-	  selfids[j]=packet;
+      if (handles[port]!=0)
+	{
+	  // get and decode SelfIds.
+	  topomap=raw1394GetTopologyMap(handles[port]);
+	  
+	  for (i=0;i<topomap->selfIdCount;i++)
+	    {
+	      pselfid_int = (unsigned int *) &topomap->selfIdPacket[i];
+	      decode_selfid(&packet,pselfid_int);
+	      // find the camera related to this packet:
+	      for (j=0;j<camera_num;j++)
+		if (cameras[j].id==packet.packetZero.phyID)
+		  selfids[j]=packet;
+	    }
+	}
     }
 }
 

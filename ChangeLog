@@ -1,5 +1,10 @@
 Coriander, (c) 2000-2002 Damien Douxchamps <douxchamps@ieee.org>
 
+Changes towards version 0.26
+	
+   July 4, 2002, by Damien Douxchamps
+   - Multiple interface card support, beta version.
+	
 Changes in version 0.25
 
    July 2, 2002, by Damien Douxchamps

@@ -75,105 +75,138 @@ int current_camera;
 int
 main (int argc, char *argv[])
 {
-  int err, i;
-  nodeid_t *camera_nodes; 
-  raw1394handle_t handle;
-  int port=0; // port 0 is the first IEEE1394 card. We ONLY probe this one.
+  int err, i, cam;
+  nodeid_t **camera_nodes; 
+  raw1394handle_t *handles;
+  int port;
+  int index;
+  int *port_camera_num;
+  int portmax=8; // Number of ports (e.g. interface cards) that we probe.
+  int card_found;
 
 #ifdef ENABLE_NLS
   bindtextdomain (PACKAGE, PACKAGE_LOCALE_DIR);
   textdomain (PACKAGE);
 #endif
-
   gnome_init ("coriander", VERSION, argc, argv);
 
-  handle=dc1394_create_handle(port);
-  if (handle==0)
+  camera_nodes=(nodeid_t**)malloc(portmax*sizeof(nodeid_t*));
+  port_camera_num=(int*)malloc(portmax*sizeof(int));
+  handles=(raw1394handle_t *)malloc(portmax*sizeof(raw1394handle_t));
+
+  card_found=0;
+  for (port=0;port<portmax;port++)
+    {
+      // get a handle to the current interface card
+      handles[port]=dc1394_create_handle(port);
+      if (handles[port]!=0) // if the card is present
+	{
+	  card_found=1;
+	  // probe the IEEE1394 bus for DC camera:
+	  camera_nodes[port]=dc1394_get_camera_nodes(handles[port], &port_camera_num[port], 0); // 0 not to show the cams.
+	  camera_num+=port_camera_num[port];
+	}
+    }
+  if (card_found==0)
     {
       gtk_widget_show(create_no_handle_window());
       gtk_main ();
     }
   else
     {
-  // probe the IEEE1394 bus for DC camera:
-  camera_nodes=dc1394_get_camera_nodes(handle, &camera_num, 0); // 0 not to show the cams.
-  if (camera_num<1)
-    {
-      gtk_widget_show(create_no_camera_window());
-      gtk_main ();
-    }
-  else
-    {
-  // allocate memory space for all camera infos & download all infos:
-  cameras=(dc1394_camerainfo*)calloc(camera_num,sizeof(dc1394_camerainfo));
-  feature_sets=(dc1394_feature_set*)calloc(camera_num,sizeof(dc1394_feature_set));
-  misc_infos=(dc1394_miscinfo*)calloc(camera_num,sizeof(dc1394_miscinfo));
-  image_pipes=(chain_t**)calloc(camera_num,sizeof(chain_t*));
-  format7_infos=(Format7Info*)calloc(camera_num,sizeof(Format7Info));
-  uiinfos=(UIInfo*)calloc(camera_num,sizeof(UIInfo));
-  selfids=(SelfIdPacket_t*)calloc(camera_num,sizeof(SelfIdPacket_t));
+      if (camera_num<1)
+	{
+	  gtk_widget_show(create_no_camera_window());
+	  gtk_main ();
+	}
+      else// we have at least one camera on one interface card.
+	{
+	  // allocate memory space for all camera infos & download all infos:
+	  cameras=(dc1394_camerainfo*)calloc(camera_num,sizeof(dc1394_camerainfo));
+	  feature_sets=(dc1394_feature_set*)calloc(camera_num,sizeof(dc1394_feature_set));
+	  misc_infos=(dc1394_miscinfo*)calloc(camera_num,sizeof(dc1394_miscinfo));
+	  image_pipes=(chain_t**)calloc(camera_num,sizeof(chain_t*));
+	  format7_infos=(Format7Info*)calloc(camera_num,sizeof(Format7Info));
+	  uiinfos=(UIInfo*)calloc(camera_num,sizeof(UIInfo));
+	  selfids=(SelfIdPacket_t*)calloc(camera_num,sizeof(SelfIdPacket_t));
+	  
+	  // get camera infos and serialize the port info for each camera
+	  index=0;
+	  for (port=0;port<portmax;port++)
+	    {
+	      if (handles[port]!=0)
+		for (cam=0;cam<port_camera_num[port];cam++)
+		  {
+		    err=1;
+		    err*=dc1394_get_camera_info(handles[port], camera_nodes[port][cam], &cameras[index]);
+		    err*=dc1394_get_camera_misc_info(cameras[index].handle, cameras[index].id, &misc_infos[index]);
+		    err*=dc1394_get_camera_feature_set(cameras[index].handle, cameras[index].id, &feature_sets[index]);
+		    if (!err) MainError("Could not get camera basic informations!");
+		    GetFormat7Capabilities(cameras[index].handle, cameras[index].id, &format7_infos[index]);
+		    image_pipes[index]=NULL;
+		    uiinfos[index].test_pattern=0;
+		    uiinfos[index].want_to_display=0;
+		    index++;
+		  }
+	    }
 
-  err=1;
-  for (i=0;i<camera_num;i++)
-    {
-      err*=dc1394_get_camera_misc_info(handle, camera_nodes[i], &misc_infos[i]);
-      err*=dc1394_get_camera_info(handle, camera_nodes[i], &cameras[i]);
-      err*=dc1394_get_camera_feature_set(handle, cameras[i].id, &feature_sets[i]);
-      if (!err) MainError("Could not get camera basic informations!");
-      GetFormat7Capabilities(handle, cameras[i].id, &format7_infos[i]);
-      image_pipes[i]=NULL;
-      uiinfos[i].test_pattern=0;
-      uiinfos[i].want_to_display=0;
-    }
-  GrabSelfIds(handle);
-  silent_ui_update=0;
-  SetChannels();
+	  GrabSelfIds(handles, portmax);
+	  silent_ui_update=0;
+	  SetChannels();
+	  
+	  // current camera is the first camera:
+	  SelectCamera(0);
+	  
+	  // Create the permanent control windows.
+	  // (note BTW that other windows like 'file_selector' are created
+	  //  and destroyed on purpose while the following windows always exist.)
+	  
+	  preferences_window= create_preferences_window();
+	  commander_window = create_commander_window();
+	  format7_window = create_format7_window();
+	  
+	  // Setup the GUI in accordance with the camera capabilities
+	  GetContextStatus();
+	  BuildAllWindows();
+	  UpdateAllWindows();
+	  WatchStartThread(&watchthread_info);
+	  
+	  MainStatus("Welcome to Coriander...");
+	  gtk_widget_show (commander_window); // this is the only window shown at boot-time
+	  
+	  gtk_main();
+	  
+	  // clean all threads for all cams:
+	  for (i=0;i<camera_num;i++)
+	    {
+	      SelectCamera(i);
+	      CleanThreads(CLEAN_MODE_NO_UI_UPDATE);
+	    }
+	  
+	  WatchStopThread(&watchthread_info);
+	  
+	  free(cameras);
+	  free(feature_sets);
+	  free(misc_infos);
+	  free(image_pipes);
+	  free(format7_infos);
+	  free(uiinfos);
+	  free(selfids);
 
-  // current camera is the first camera:
-  SelectCamera(0);
+	  for (i=0;i<portmax;i++)
+	    {
+	      if (handles[i]!=0)
+		raw1394_destroy_handle(handles[i]);
+	      free(camera_nodes[i]);
+	    }
 
-  // Create the permanent control windows.
-  // (note BTW that other windows like 'file_selector' are created
-  //  and destroyed on purpose while the following windows always exist.)
-  
-  preferences_window= create_preferences_window();
-  commander_window = create_commander_window();
-  format7_window = create_format7_window();
+	  free(camera_nodes);
+	  free(handles);
+	  free(port_camera_num);
 
-  // Setup the GUI in accordance with the camera capabilities
-  GetContextStatus();
-  BuildAllWindows();
-  UpdateAllWindows();
-  WatchStartThread(&watchthread_info);
-
-
-  MainStatus("Welcome to Coriander...");
-  gtk_widget_show (commander_window); // this is the only window shown at boot-time
-
-  gtk_main();
-
-  // clean all threads for all cams:
-  for (i=0;i<camera_num;i++)
-    {
-      SelectCamera(i);
-      CleanThreads(CLEAN_MODE_NO_UI_UPDATE);
-    }
-
-  WatchStopThread(&watchthread_info);
-
-  free(cameras);
-  free(feature_sets);
-  free(misc_infos);
-  free(image_pipes);
-  free(format7_infos);
-  free(uiinfos);
-  free(selfids);
-
-    } // end of if no handle check
-  raw1394_destroy_handle(handle);
+	} // end of if no handle check
 
     } // end of if no camera check
   
-
   return 0;
 }
