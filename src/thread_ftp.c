@@ -19,7 +19,7 @@
 #include "thread_ftp.h"
 
 extern PrefsInfo preferences;
-extern GtkWidget *commander_window;
+extern GtkWidget *main_window;
 extern CtxtInfo ctxt;
 extern camera_t *camera;
  
@@ -157,9 +157,9 @@ FtpShowFPS(gpointer *data)
 
   sprintf(tmp_string," %.2f",fps);
 
-  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"fps_ftp"),
+  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_ftp"),
 		       ctxt.fps_ftp_ctxt, ctxt.fps_ftp_id);
-  ctxt.fps_ftp_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"fps_ftp"),
+  ctxt.fps_ftp_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_ftp"),
 					 ctxt.fps_ftp_ctxt, tmp_string);
   
   pthread_mutex_lock(&ftp_service->mutex_data);
@@ -279,9 +279,9 @@ FtpStopThread(void)
     pthread_mutex_lock(&ftp_service->mutex_struct);
     
     gtk_timeout_remove(info->timeout_func_id);
-    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"fps_ftp"),
+    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_ftp"),
 			 ctxt.fps_ftp_ctxt, ctxt.fps_ftp_id);
-    ctxt.fps_ftp_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"fps_ftp"),
+    ctxt.fps_ftp_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_ftp"),
 				       ctxt.fps_ftp_ctxt, "");
     
     RemoveChain(ftp_service);

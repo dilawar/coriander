@@ -19,7 +19,7 @@
 
 #include "build_frames.h"
 
-extern GtkWidget *commander_window;
+extern GtkWidget *main_window;
 extern GtkWidget *preferences_window;
 extern GtkWidget *absolute_settings_window;
 extern PrefsInfo preferences;
@@ -35,14 +35,14 @@ void
 BuildServiceFrame(void)
 {
 #ifdef HAVE_FTPLIB
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"service_ftp"),TRUE);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"service_ftp"),TRUE);
 #else
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"service_ftp"),FALSE);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"service_ftp"),FALSE);
 #endif
 #ifdef HAVE_SDLLIB
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"service_display"),TRUE);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"service_display"),TRUE);
 #else
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"service_display"),FALSE);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"service_display"),FALSE);
 #endif
   // ADD V4L
 
@@ -53,12 +53,12 @@ BuildTriggerFrame(void)
 {
 
   // the following line is necessary in order not to have unsensitive menu items:
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"trigger_frame"),TRUE);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"trigger_frame"),TRUE);
 
   BuildTriggerModeMenu();
   BuildFpsMenu();
   
-  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"trigger_external")),
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window,"trigger_external")),
 			       camera->feature_set.feature[FEATURE_TRIGGER-FEATURE_MIN].is_on);
 }
 
@@ -68,15 +68,15 @@ BuildPowerFrame(void)
 {
   quadlet_t basic_funcs;
   // these two functions are always present:
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"power_frame"),TRUE);
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"power_reset"),TRUE);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"power_frame"),TRUE);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"power_reset"),TRUE);
 
   // activate if camera capable of power on/off:
   if (dc1394_query_basic_functionality(camera->camera_info.handle,camera->camera_info.id,&basic_funcs)!=DC1394_SUCCESS)
     MainError("Could not query basic functionalities");
 
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"power_on"),(basic_funcs & 0x1<<16));
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"power_off"),(basic_funcs & 0x1<<16));
+  gtk_widget_set_sensitive(lookup_widget(main_window,"power_on"),(basic_funcs & 0x1<<16));
+  gtk_widget_set_sensitive(lookup_widget(main_window,"power_off"),(basic_funcs & 0x1<<16));
 
 }
 
@@ -85,7 +85,7 @@ void
 BuildMemoryFrame(void)
 {
   // the following line is necessary in order not to have unsensitive menu items:
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"memory_frame"),TRUE);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"memory_frame"),TRUE);
 
   // activate the mem channel menu:
   BuildMemoryChannelMenu();
@@ -98,10 +98,10 @@ BuildIsoFrame(void)
   // TODO: only if ISO capable
   if (dc1394_get_iso_status(camera->camera_info.handle,camera->camera_info.id,&camera->misc_info.is_iso_on)!=DC1394_SUCCESS)
     MainError("Can't get ISO status");
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"iso_frame"),TRUE);
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"iso_start"),!camera->misc_info.is_iso_on);
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"iso_restart"),camera->misc_info.is_iso_on);
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"iso_stop"),camera->misc_info.is_iso_on);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"iso_frame"),TRUE);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"iso_start"),!camera->misc_info.is_iso_on);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"iso_restart"),camera->misc_info.is_iso_on);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"iso_stop"),camera->misc_info.is_iso_on);
 
 }
 
@@ -109,10 +109,10 @@ void
 BuildGlobalIsoFrame(void)
 {
   // TODO: only if ISO capable
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"global_iso_frame"),TRUE);
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"global_iso_start"),TRUE);
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"global_iso_restart"),TRUE);
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"global_iso_stop"),TRUE);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"global_iso_frame"),TRUE);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"global_iso_start"),TRUE);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"global_iso_restart"),TRUE);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"global_iso_stop"),TRUE);
 
 }
 
@@ -137,37 +137,37 @@ void
 BuildPrefsSaveFrame(void)
 {
   // frame drop
-  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(commander_window,
+  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(main_window,
 							  "prefs_save_period"), preferences.save_period);
   // scratch
   switch(preferences.save_scratch) {
   case SAVE_SCRATCH_OVERWRITE:
-    gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(commander_window, "prefs_save_scratch"),TRUE);
+    gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(main_window, "prefs_save_scratch"),TRUE);
     break;
   case SAVE_SCRATCH_SEQUENTIAL:
-    gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(commander_window, "prefs_save_seq"),TRUE);
+    gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(main_window, "prefs_save_seq"),TRUE);
   case SAVE_SCRATCH_SEQUENCE:
-    gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(commander_window, "prefs_save_video"),TRUE);
+    gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(main_window, "prefs_save_video"),TRUE);
     break;
   }
   // scratch
   if (preferences.save_convert == SAVE_CONVERT_ON)
-    gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(commander_window, "prefs_save_convert"),TRUE);
+    gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(main_window, "prefs_save_convert"),TRUE);
   else
-    gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(commander_window, "prefs_save_noconvert"),TRUE);
+    gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(main_window, "prefs_save_noconvert"),TRUE);
   
   //filename
-  gtk_entry_set_text(GTK_ENTRY(lookup_widget(commander_window, "prefs_save_filename")), preferences.save_filename);
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window, "prefs_save_filename")), preferences.save_filename);
 }
 
 void
 BuildPrefsV4lFrame(void)
 {
   // frame drop
-  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(commander_window,
+  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(main_window,
 							  "prefs_v4l_period"), preferences.v4l_period);
   //filename
-  gtk_entry_set_text(GTK_ENTRY(lookup_widget(commander_window, "prefs_v4l_dev_name")), preferences.v4l_dev_name);
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window, "prefs_v4l_dev_name")), preferences.v4l_dev_name);
 }
 
 void
@@ -183,28 +183,28 @@ BuildPrefsFtpFrame(void)
 {
 #ifdef HAVE_FTPLIB
   // frame drop
-  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(commander_window, "prefs_ftp_period"), preferences.ftp_period);
+  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(main_window, "prefs_ftp_period"), preferences.ftp_period);
   // scratch
   switch(preferences.ftp_scratch) {
   case FTP_SCRATCH_OVERWRITE:
-    gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(commander_window, "prefs_ftp_scratch"),TRUE);
+    gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(main_window, "prefs_ftp_scratch"),TRUE);
     break;
   case FTP_SCRATCH_SEQUENTIAL:
-    gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(commander_window, "prefs_ftp_seq"),TRUE);
+    gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(main_window, "prefs_ftp_seq"),TRUE);
     break;
   }
   // file,... names
-  gtk_entry_set_text(GTK_ENTRY(lookup_widget(commander_window, "prefs_ftp_filename")), preferences.ftp_filename);
-  gtk_entry_set_text(GTK_ENTRY(lookup_widget(commander_window, "prefs_ftp_address")), preferences.ftp_address);
-  gtk_entry_set_text(GTK_ENTRY(lookup_widget(commander_window, "prefs_ftp_password")),preferences.ftp_password);
-  gtk_entry_set_text(GTK_ENTRY(lookup_widget(commander_window, "prefs_ftp_path")), preferences.ftp_path);
-  gtk_entry_set_text(GTK_ENTRY(lookup_widget(commander_window, "prefs_ftp_user")), preferences.ftp_user);
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window, "prefs_ftp_filename")), preferences.ftp_filename);
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window, "prefs_ftp_address")), preferences.ftp_address);
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window, "prefs_ftp_password")),preferences.ftp_password);
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window, "prefs_ftp_path")), preferences.ftp_path);
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window, "prefs_ftp_user")), preferences.ftp_user);
 
 #else
 
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"prefs_ftp_framedrop_frame"),FALSE);
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"prefs_ftp_scratch_frame"),FALSE);
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"prefs_ftp_server_frame"),FALSE);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_ftp_framedrop_frame"),FALSE);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_ftp_scratch_frame"),FALSE);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_ftp_server_frame"),FALSE);
 
 #endif
 
@@ -214,9 +214,9 @@ void
 BuildPrefsDisplayFrame(void)
 {
   // frame drop
-  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(commander_window,"prefs_display_period"), preferences.display_period);
+  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(main_window,"prefs_display_period"), preferences.display_period);
 
-  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"prefs_display_keep_ratio")), preferences.display_keep_ratio);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window,"prefs_display_keep_ratio")), preferences.display_keep_ratio);
 }
 
 void
@@ -235,14 +235,14 @@ BuildPrefsReceiveFrame(void)
       video_ok=1;
   }
   // BUILD A NEW  OPTION_MENU:
-  gtk_widget_destroy(GTK_WIDGET(lookup_widget(commander_window,"prefs_receive_method_menu"))); // remove previous menu
+  gtk_widget_destroy(GTK_WIDGET(lookup_widget(main_window,"prefs_receive_method_menu"))); // remove previous menu
   
   new_option_menu = gtk_option_menu_new ();
   gtk_widget_ref (new_option_menu);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "prefs_receive_method_menu", new_option_menu,
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "prefs_receive_method_menu", new_option_menu,
 			    (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (new_option_menu);
-  gtk_table_attach (GTK_TABLE (lookup_widget(commander_window,"table45")),
+  gtk_table_attach (GTK_TABLE (lookup_widget(main_window,"table45")),
 		    new_option_menu, 0, 1, 0, 1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
@@ -275,18 +275,18 @@ BuildPrefsReceiveFrame(void)
   gtk_option_menu_set_menu (GTK_OPTION_MENU (new_option_menu), new_menu);
 
   // menu history
-  gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(commander_window, "prefs_receive_method_menu")),
+  gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(main_window, "prefs_receive_method_menu")),
 			      preferences.receive_method2index[preferences.receive_method]);
 
-  gtk_entry_set_text(GTK_ENTRY(lookup_widget(commander_window, "prefs_video1394_device")), preferences.video1394_device);
-  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window, "prefs_receive_dropframes")), preferences.video1394_dropframes);
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window, "prefs_video1394_device")), preferences.video1394_device);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window, "prefs_receive_dropframes")), preferences.video1394_dropframes);
 }
 
 void
 BuildOptionFrame(void)
 {
   pthread_mutex_lock(&camera->uimutex);
-  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(commander_window, "mono16_bpp"),camera->bpp);
+  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(main_window, "mono16_bpp"),camera->bpp);
   pthread_mutex_unlock(&camera->uimutex);
   BuildBayerMenu();
   BuildBayerPatternMenu();

@@ -18,7 +18,7 @@
 
 #include "update_menus.h"
 
-extern GtkWidget *commander_window;
+extern GtkWidget *main_window;
 extern camera_t* camera;
 extern char* format_list[5];
 extern char* format0_list[7];
@@ -37,9 +37,9 @@ void UpdateFormatMenu(void)
   }
 
   // also disable 'window menu' items (this should go in another function, I know...)
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"format7_window"),formats & (0x1<<24) );
+  gtk_widget_set_sensitive(lookup_widget(main_window,"format7_window"),formats & (0x1<<24) );
   //gtk_widget_set_sensitive(lookup_widget(commander_window,"format6_window"),formats & (0x1<<25) );
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"temperature_frame"),
+  gtk_widget_set_sensitive(lookup_widget(main_window,"temperature_frame"),
 			   camera->feature_set.feature[FEATURE_TEMPERATURE-FEATURE_MIN].available );
   
 }

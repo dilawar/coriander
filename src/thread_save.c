@@ -20,7 +20,7 @@
 
 extern PrefsInfo preferences;
 extern camera_t* camera;
-extern GtkWidget *commander_window;
+extern GtkWidget *main_window;
 extern CtxtInfo ctxt;
 
 gint
@@ -139,9 +139,9 @@ SaveShowFPS(gpointer *data)
   
   sprintf(tmp_string," %.2f",fps);
 
-  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"fps_save"),
+  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_save"),
 		       ctxt.fps_save_ctxt, ctxt.fps_save_id);
-  ctxt.fps_save_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"fps_save"),
+  ctxt.fps_save_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_save"),
 					 ctxt.fps_save_ctxt, tmp_string);
   
   pthread_mutex_lock(&save_service->mutex_data);
@@ -289,8 +289,8 @@ SaveStopThread(void)
     pthread_mutex_lock(&save_service->mutex_struct);
     
     gtk_timeout_remove(info->timeout_func_id);
-    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"fps_save"), ctxt.fps_save_ctxt, ctxt.fps_save_id);
-    ctxt.fps_save_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"fps_save"), ctxt.fps_save_ctxt, "");
+    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_save"), ctxt.fps_save_ctxt, ctxt.fps_save_id);
+    ctxt.fps_save_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_save"), ctxt.fps_save_ctxt, "");
     
     RemoveChain(save_service);
     

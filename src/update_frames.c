@@ -18,7 +18,7 @@
 
 #include "update_frames.h"
 
-extern GtkWidget *commander_window;
+extern GtkWidget *main_window;
 extern GtkWidget *preferences_window;
 extern CtxtInfo ctxt;
 extern char* phy_speed_list[4];
@@ -44,20 +44,20 @@ UpdatePrefsDisplayFrame(void)
 void
 UpdatePrefsReceiveFrame(void)
 {
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"prefs_video1394_device"),
+  gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_video1394_device"),
 			   preferences.receive_method==RECEIVE_METHOD_VIDEO1394);
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"label84"),
+  gtk_widget_set_sensitive(lookup_widget(main_window,"label84"),
 			   preferences.receive_method==RECEIVE_METHOD_VIDEO1394);
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"prefs_receive_dropframes"),
+  gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_receive_dropframes"),
 			   preferences.receive_method==RECEIVE_METHOD_VIDEO1394);
 }
 
 void
 UpdatePrefsSaveFrame(void)
 {
-  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (lookup_widget(commander_window,"prefs_save_noconvert")),
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (lookup_widget(main_window,"prefs_save_noconvert")),
 			       preferences.save_scratch==SAVE_SCRATCH_SEQUENCE);
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"prefs_save_convert"),
+  gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_save_convert"),
 			   preferences.save_scratch!=SAVE_SCRATCH_SEQUENCE);
 }
 
@@ -83,27 +83,27 @@ void
 UpdateTriggerFrame(void)
 {
   // always set the trigger frame on (because it contains the fps menu):
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"trigger_frame"),TRUE);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"trigger_frame"),TRUE);
 
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"trigger_external"),
+  gtk_widget_set_sensitive(lookup_widget(main_window,"trigger_external"),
 			   camera->feature_set.feature[FEATURE_TRIGGER-FEATURE_MIN].available);
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"fps_menu"),
+  gtk_widget_set_sensitive(lookup_widget(main_window,"fps_menu"),
 			   !(camera->feature_set.feature[FEATURE_TRIGGER-FEATURE_MIN].is_on) &&
 			   (camera->misc_info.format != FORMAT_SCALABLE_IMAGE_SIZE));
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"trigger_mode"),
+  gtk_widget_set_sensitive(lookup_widget(main_window,"trigger_mode"),
 			   camera->feature_set.feature[FEATURE_TRIGGER-FEATURE_MIN].is_on && 
 			   camera->feature_set.feature[FEATURE_TRIGGER-FEATURE_MIN].available);
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"trigger_polarity"),
+  gtk_widget_set_sensitive(lookup_widget(main_window,"trigger_polarity"),
 			   camera->feature_set.feature[FEATURE_TRIGGER-FEATURE_MIN].available &&
 			   camera->feature_set.feature[FEATURE_TRIGGER-FEATURE_MIN].is_on &&
 			   camera->feature_set.feature[FEATURE_TRIGGER-FEATURE_MIN].polarity_capable);
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"trigger_count"),
+  gtk_widget_set_sensitive(lookup_widget(main_window,"trigger_count"),
 			   (camera->feature_set.feature[FEATURE_TRIGGER-FEATURE_MIN].available) &&
 			   (camera->feature_set.feature[FEATURE_TRIGGER-FEATURE_MIN].is_on) && 
 			   ((camera->feature_set.feature[FEATURE_TRIGGER-FEATURE_MIN].trigger_mode == TRIGGER_MODE_2)||
 			     camera->feature_set.feature[FEATURE_TRIGGER-FEATURE_MIN].trigger_mode == TRIGGER_MODE_3));
 
-  gtk_widget_set_sensitive(lookup_widget(commander_window, "label16"),
+  gtk_widget_set_sensitive(lookup_widget(main_window, "label16"),
 			   (camera->feature_set.feature[FEATURE_TRIGGER-FEATURE_MIN].available) &&
 			   (camera->feature_set.feature[FEATURE_TRIGGER-FEATURE_MIN].is_on) && 
 			   ((camera->feature_set.feature[FEATURE_TRIGGER-FEATURE_MIN].trigger_mode == TRIGGER_MODE_2)||
@@ -119,24 +119,24 @@ UpdatePowerFrame(void)
 void
 UpdateMemoryFrame(void)
 {
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"memory_channel"),TRUE);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"memory_channel"),TRUE);
 
   // save not activated by default (it is not avail. for factory defaults channel):
-  gtk_widget_set_sensitive(GTK_WIDGET (lookup_widget(commander_window,"save_mem")),
+  gtk_widget_set_sensitive(GTK_WIDGET (lookup_widget(main_window,"save_mem")),
 			   ((camera->misc_info.mem_channel_number>0)&&(camera->misc_info.save_channel>0)));
 
   // load always present, so we can activate it:
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"memory_frame"),TRUE);
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"load_mem"),TRUE);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"memory_frame"),TRUE);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"load_mem"),TRUE);
 }
 
 
 void
 UpdateIsoFrame(void)
 {
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"iso_start"),!camera->misc_info.is_iso_on);
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"iso_restart"),camera->misc_info.is_iso_on);
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"iso_stop"),camera->misc_info.is_iso_on);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"iso_start"),!camera->misc_info.is_iso_on);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"iso_restart"),camera->misc_info.is_iso_on);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"iso_stop"),camera->misc_info.is_iso_on);
 }
 
 void
@@ -160,38 +160,38 @@ UpdateCameraStatusFrame(void)
 
   // vendor:
   sprintf(temp," %s",camera->camera_info.vendor);
-  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"camera_vendor_status"), ctxt.vendor_ctxt, ctxt.vendor_id);
-  ctxt.vendor_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"camera_vendor_status"), ctxt.vendor_ctxt, temp);
+  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"camera_vendor_status"), ctxt.vendor_ctxt, ctxt.vendor_id);
+  ctxt.vendor_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"camera_vendor_status"), ctxt.vendor_ctxt, temp);
 
   // camera model:
   sprintf(temp," %s",camera->camera_info.model);
-  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"camera_model_status"), ctxt.model_ctxt, ctxt.model_id);
-  ctxt.model_id=gtk_statusbar_push( (GtkStatusbar*)lookup_widget(commander_window,"camera_model_status"), ctxt.model_ctxt, temp);
+  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"camera_model_status"), ctxt.model_ctxt, ctxt.model_id);
+  ctxt.model_id=gtk_statusbar_push( (GtkStatusbar*)lookup_widget(main_window,"camera_model_status"), ctxt.model_ctxt, temp);
 
   // camera node:
   sprintf(temp," %d",camera->camera_info.id);
-  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"camera_node_status"), ctxt.node_ctxt, ctxt.node_id);
-  ctxt.node_id=gtk_statusbar_push( (GtkStatusbar*)lookup_widget(commander_window,"camera_node_status"), ctxt.node_ctxt, temp);
+  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"camera_node_status"), ctxt.node_ctxt, ctxt.node_id);
+  ctxt.node_id=gtk_statusbar_push( (GtkStatusbar*)lookup_widget(main_window,"camera_node_status"), ctxt.node_ctxt, temp);
 
   // camera handle:
   sprintf(temp," 0x%x",(unsigned int)camera->camera_info.handle);
-  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"camera_handle_status"), ctxt.handle_ctxt, ctxt.handle_id);
-  ctxt.handle_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(commander_window,"camera_handle_status"), ctxt.handle_ctxt, temp);
+  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"camera_handle_status"), ctxt.handle_ctxt, ctxt.handle_id);
+  ctxt.handle_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"camera_handle_status"), ctxt.handle_ctxt, temp);
 
   // camera GUID:
   sprintf(temp," 0x%06x-%02x%08x", value[2], value[1], value[0]);
-  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"camera_guid_status"), ctxt.guid_ctxt, ctxt.guid_id);
-  ctxt.guid_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(commander_window,"camera_guid_status"), ctxt.guid_ctxt, temp);
+  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"camera_guid_status"), ctxt.guid_ctxt, ctxt.guid_id);
+  ctxt.guid_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"camera_guid_status"), ctxt.guid_ctxt, temp);
 
   // camera maximal PHY speed:
   sprintf(temp," %s",phy_speed_list[camera->selfid.packetZero.phySpeed]);
-  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"camera_maxiso_status"), ctxt.max_iso_ctxt, ctxt.max_iso_id);
-  ctxt.max_iso_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(commander_window,"camera_maxiso_status"), ctxt.max_iso_ctxt, temp);
+  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"camera_maxiso_status"), ctxt.max_iso_ctxt, ctxt.max_iso_id);
+  ctxt.max_iso_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"camera_maxiso_status"), ctxt.max_iso_ctxt, temp);
 
   // camera maximal PHY delay:
   sprintf(temp," %s",phy_delay_list[camera->selfid.packetZero.phyDelay]);
-  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"camera_delay_status"), ctxt.delay_ctxt, ctxt.delay_id);
-  ctxt.delay_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(commander_window,"camera_delay_status"), ctxt.delay_ctxt, temp);
+  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"camera_delay_status"), ctxt.delay_ctxt, ctxt.delay_id);
+  ctxt.delay_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"camera_delay_status"), ctxt.delay_ctxt, temp);
 
   // IIDC software revision:
   if (dc1394_get_sw_version(camera->camera_info.handle, camera->camera_info.id, &sw_version)!=DC1394_SUCCESS) {
@@ -205,17 +205,17 @@ UpdateCameraStatusFrame(void)
   case 0x000114: sprintf(temp," Point Grey 114");break;
   default: sprintf(temp," Unknown");
   }
-  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"camera_dc_status"), ctxt.dc_ctxt, ctxt.dc_id);
-  ctxt.dc_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(commander_window,"camera_dc_status"), ctxt.dc_ctxt, temp);
+  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"camera_dc_status"), ctxt.dc_ctxt, ctxt.dc_id);
+  ctxt.dc_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"camera_dc_status"), ctxt.dc_ctxt, temp);
 
   // power class:
   sprintf(temp," %s",power_class_list[camera->selfid.packetZero.powerClass]);
-  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"camera_pwclass_status"), ctxt.pwclass_ctxt, ctxt.pwclass_id);
-  ctxt.pwclass_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(commander_window,"camera_pwclass_status"), ctxt.pwclass_ctxt,temp);
+  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"camera_pwclass_status"), ctxt.pwclass_ctxt, ctxt.pwclass_id);
+  ctxt.pwclass_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"camera_pwclass_status"), ctxt.pwclass_ctxt,temp);
 
   // camera name: 
   //fprintf(stderr,"name: %s\n",camera->name);
-  gtk_entry_set_text(GTK_ENTRY(lookup_widget(commander_window,"camera_name_text")), camera->name);
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window,"camera_name_text")), camera->name);
 
 }
 
@@ -225,18 +225,14 @@ UpdateTransferStatusFrame(void)
 {
   char temp[STRING_SIZE];
   sprintf(temp," %d",camera->misc_info.iso_channel);
-  gtk_statusbar_remove( (GtkStatusbar*) lookup_widget(commander_window,"iso_channel_status"), ctxt.iso_channel_ctxt, ctxt.iso_channel_id);
-  ctxt.iso_channel_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"iso_channel_status"), ctxt.iso_channel_ctxt, temp);
-
-  sprintf(temp," %d",camera->misc_info.iso_speed);
-  gtk_statusbar_remove( (GtkStatusbar*) lookup_widget(commander_window,"iso_speed_status"), ctxt.iso_speed_ctxt, ctxt.iso_speed_id);
-  ctxt.iso_speed_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"iso_speed_status"), ctxt.iso_speed_ctxt, " N/A");
+  gtk_statusbar_remove( (GtkStatusbar*) lookup_widget(main_window,"iso_channel_status"), ctxt.iso_channel_ctxt, ctxt.iso_channel_id);
+  ctxt.iso_channel_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(main_window,"iso_channel_status"), ctxt.iso_channel_ctxt, temp);
 
   if (dc1394_get_iso_channel_and_speed(camera->camera_info.handle, camera->camera_info.id, &camera->misc_info.iso_channel, &camera->misc_info.iso_speed)!=DC1394_SUCCESS)
     MainError("Can't get ISO channel and speed");
   sprintf(temp," %d",camera->misc_info.iso_channel);
-  gtk_statusbar_remove( (GtkStatusbar*) lookup_widget(commander_window,"iso_channel_status"), ctxt.iso_channel_ctxt, ctxt.iso_channel_id);
-  ctxt.iso_channel_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"iso_channel_status"), ctxt.iso_channel_ctxt, temp);
+  gtk_statusbar_remove( (GtkStatusbar*) lookup_widget(main_window,"iso_channel_status"), ctxt.iso_channel_ctxt, ctxt.iso_channel_id);
+  ctxt.iso_channel_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(main_window,"iso_channel_status"), ctxt.iso_channel_ctxt, temp);
 
 }
 
@@ -247,20 +243,20 @@ UpdateCursorFrame(void)
 
   // position: 
   sprintf(temp," %d,%d",cursor_info.x,cursor_info.y);
-  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"cursor_pos"), ctxt.cursor_pos_ctxt, ctxt.cursor_pos_id);
-  ctxt.cursor_pos_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"cursor_pos"), ctxt.cursor_pos_ctxt, temp);
+  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"cursor_pos"), ctxt.cursor_pos_ctxt, ctxt.cursor_pos_id);
+  ctxt.cursor_pos_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"cursor_pos"), ctxt.cursor_pos_ctxt, temp);
 
   // color:
   if (cursor_info.col_r>-255) {
     sprintf(temp," %03d,%03d,%03d",cursor_info.col_r,cursor_info.col_g,cursor_info.col_b);
-    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"cursor_rgb"), ctxt.cursor_rgb_ctxt, ctxt.cursor_rgb_id);
-    ctxt.cursor_rgb_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"cursor_rgb"), ctxt.cursor_rgb_ctxt, temp);
+    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"cursor_rgb"), ctxt.cursor_rgb_ctxt, ctxt.cursor_rgb_id);
+    ctxt.cursor_rgb_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"cursor_rgb"), ctxt.cursor_rgb_ctxt, temp);
   }
   
   if (cursor_info.col_y>-255) {
     sprintf(temp," %03d,%03d,%03d",cursor_info.col_y,cursor_info.col_u,cursor_info.col_v);
-    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"cursor_yuv"), ctxt.cursor_yuv_ctxt, ctxt.cursor_yuv_id);
-      ctxt.cursor_yuv_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"cursor_yuv"), ctxt.cursor_yuv_ctxt, temp);
+    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"cursor_yuv"), ctxt.cursor_yuv_ctxt, ctxt.cursor_yuv_id);
+      ctxt.cursor_yuv_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"cursor_yuv"), ctxt.cursor_yuv_ctxt, temp);
   }
 }
 
@@ -270,7 +266,7 @@ UpdateOptionFrame(void)
   int cond16, cond8, cond422;
 
   pthread_mutex_lock(&camera->uimutex);
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"pattern_menu"),
+  gtk_widget_set_sensitive(lookup_widget(main_window,"pattern_menu"),
 			   camera->bayer!=NO_BAYER_DECODING);
   pthread_mutex_unlock(&camera->uimutex);
   if (camera->misc_info.format!=FORMAT_SCALABLE_IMAGE_SIZE) {
@@ -296,13 +292,13 @@ UpdateOptionFrame(void)
     cond8=(camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN].color_coding_id==COLOR_FORMAT7_MONO8);
     cond422=(camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN].color_coding_id==COLOR_FORMAT7_YUV422);
   }
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"pattern_menu"),(cond8||cond16||cond422));
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"bayer_menu"),(cond8||cond16||cond422));
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"stereo_menu"),cond16||cond422);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"pattern_menu"),(cond8||cond16||cond422));
+  gtk_widget_set_sensitive(lookup_widget(main_window,"bayer_menu"),(cond8||cond16||cond422));
+  gtk_widget_set_sensitive(lookup_widget(main_window,"stereo_menu"),cond16||cond422);
   pthread_mutex_lock(&camera->uimutex);
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"mono16_bpp"),cond16&&
+  gtk_widget_set_sensitive(lookup_widget(main_window,"mono16_bpp"),cond16&&
 			   (camera->stereo==NO_STEREO_DECODING)&&(camera->bayer==NO_BAYER_DECODING));
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"label114"),cond16&&
+  gtk_widget_set_sensitive(lookup_widget(main_window,"label114"),cond16&&
 			   (camera->stereo==NO_STEREO_DECODING)&&(camera->bayer==NO_BAYER_DECODING));
   pthread_mutex_unlock(&camera->uimutex);
   
@@ -312,15 +308,15 @@ UpdateOptionFrame(void)
 void
 UpdateServiceFrame(void)
 {
-  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (lookup_widget(commander_window,"service_iso")),
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (lookup_widget(main_window,"service_iso")),
 			       GetService(SERVICE_ISO)!=NULL);
-  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (lookup_widget(commander_window,"service_display")),
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (lookup_widget(main_window,"service_display")),
 			       GetService(SERVICE_DISPLAY)!=NULL);
-  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (lookup_widget(commander_window,"service_save")),
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (lookup_widget(main_window,"service_save")),
 			       GetService(SERVICE_SAVE)!=NULL);
-  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (lookup_widget(commander_window,"service_ftp")),
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (lookup_widget(main_window,"service_ftp")),
 			       GetService(SERVICE_FTP)!=NULL);
-  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (lookup_widget(commander_window,"service_v4l")),
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (lookup_widget(main_window,"service_v4l")),
 			       GetService(SERVICE_V4L)!=NULL);
 
 }

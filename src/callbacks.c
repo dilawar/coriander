@@ -26,7 +26,7 @@ extern GtkWidget *format7_window;
 extern GtkWidget *about_window;
 extern GtkWidget *absolute_settings_window;
 extern GtkWidget *help_window;
-extern GtkWidget *commander_window;
+extern GtkWidget *main_window;
 extern GtkWidget *preferences_window;
 extern camera_t* camera;
 extern camera_t* cameras;
@@ -34,7 +34,7 @@ extern PrefsInfo preferences;
 extern int silent_ui_update;
 
 gboolean
-on_commander_window_delete_event       (GtkWidget       *widget,
+on_main_window_delete_event       (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data)
 {
@@ -225,8 +225,8 @@ void
 on_iso_restart_clicked                 (GtkButton       *button,
                                         gpointer         user_data)
 {
-  on_iso_stop_clicked(GTK_BUTTON(lookup_widget(commander_window,"iso_stop")),NULL);
-  on_iso_start_clicked(GTK_BUTTON(lookup_widget(commander_window,"iso_start")),NULL);
+  on_iso_stop_clicked(GTK_BUTTON(lookup_widget(main_window,"iso_stop")),NULL);
+  on_iso_start_clicked(GTK_BUTTON(lookup_widget(main_window,"iso_start")),NULL);
   UpdateTransferStatusFrame();
 }
 
@@ -666,7 +666,7 @@ on_camera_name_text_changed            (GtkEditable     *editable,
   char tmp[STRING_SIZE];
   const char *camera_name_str =  "coriander/camera_names/";
 
-  camera->name=gtk_entry_get_text(GTK_ENTRY(lookup_widget(commander_window, "camera_name_text")));
+  camera->name=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window, "camera_name_text")));
   sprintf(tmp,"%s%llx",camera_name_str, camera->camera_info.euid_64);
   
   gnome_config_set_string(tmp,camera->name);
@@ -697,7 +697,7 @@ void
 on_prefs_display_period_changed        (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  preferences.display_period=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(commander_window,"prefs_display_period")));
+  preferences.display_period=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(main_window,"prefs_display_period")));
   gnome_config_set_int("coriander/display/period",preferences.display_period);
   gnome_config_sync();
 }
@@ -706,7 +706,7 @@ void
 on_prefs_save_period_changed           (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  preferences.save_period=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(commander_window,"prefs_save_period")));
+  preferences.save_period=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(main_window,"prefs_save_period")));
   gnome_config_set_int("coriander/save/period",preferences.save_period);
   gnome_config_sync();
 }
@@ -716,7 +716,7 @@ void
 on_prefs_v4l_period_changed            (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  preferences.v4l_period=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(commander_window,"prefs_v4l_period")));
+  preferences.v4l_period=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(main_window,"prefs_v4l_period")));
   gnome_config_set_int("coriander/v4l/period",preferences.v4l_period);
   gnome_config_sync();
 }
@@ -725,7 +725,7 @@ void
 on_prefs_ftp_period_changed            (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  preferences.ftp_period=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(commander_window,"prefs_ftp_period")));
+  preferences.ftp_period=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(main_window,"prefs_ftp_period")));
   gnome_config_set_int("coriander/ftp/period",preferences.ftp_period);
   gnome_config_sync();
 }
@@ -735,7 +735,7 @@ void
 on_prefs_ftp_address_changed           (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  preferences.ftp_address=gtk_entry_get_text(GTK_ENTRY(lookup_widget(commander_window,"prefs_ftp_address")));
+  preferences.ftp_address=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"prefs_ftp_address")));
   gnome_config_set_string("coriander/ftp/address",preferences.ftp_address);
   gnome_config_sync();
 }
@@ -745,7 +745,7 @@ void
 on_prefs_ftp_path_changed              (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  preferences.ftp_path=gtk_entry_get_text(GTK_ENTRY(lookup_widget(commander_window,"prefs_ftp_path")));
+  preferences.ftp_path=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"prefs_ftp_path")));
   gnome_config_set_string("coriander/ftp/path",preferences.ftp_path);
   gnome_config_sync();
 
@@ -756,7 +756,7 @@ void
 on_prefs_ftp_user_changed              (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  preferences.ftp_user=gtk_entry_get_text(GTK_ENTRY(lookup_widget(commander_window,"prefs_ftp_user")));
+  preferences.ftp_user=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"prefs_ftp_user")));
   gnome_config_set_string("coriander/ftp/user",preferences.ftp_user);
   gnome_config_sync();
 
@@ -767,7 +767,7 @@ void
 on_prefs_ftp_password_changed          (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  preferences.ftp_password=gtk_entry_get_text(GTK_ENTRY(lookup_widget(commander_window,"prefs_ftp_password")));
+  preferences.ftp_password=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"prefs_ftp_password")));
   gnome_config_set_string("coriander/ftp/password",preferences.ftp_password);
   gnome_config_sync();
 }
@@ -777,7 +777,7 @@ void
 on_prefs_ftp_filename_changed          (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  preferences.ftp_filename=gtk_entry_get_text(GTK_ENTRY(lookup_widget(commander_window,"prefs_ftp_filename")));
+  preferences.ftp_filename=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"prefs_ftp_filename")));
   gnome_config_set_string("coriander/ftp/filename",preferences.ftp_filename);
   gnome_config_sync();
 }
@@ -787,7 +787,7 @@ void
 on_prefs_save_filename_changed         (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  preferences.save_filename=gtk_entry_get_text(GTK_ENTRY(lookup_widget(commander_window,"prefs_save_filename")));
+  preferences.save_filename=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"prefs_save_filename")));
   gnome_config_set_string("coriander/save/filename",preferences.save_filename);
   gnome_config_sync();
 }
@@ -875,7 +875,7 @@ on_get_filename_dialog_ok_clicked      (GtkButton       *button,
 {
   GtkWidget *dialog = gtk_widget_get_toplevel(GTK_WIDGET(button));
   gchar *filename = gtk_file_selection_get_filename(GTK_FILE_SELECTION(dialog));
-  gtk_entry_set_text(GTK_ENTRY(lookup_widget(commander_window, "prefs_save_filename")),filename);
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window, "prefs_save_filename")),filename);
   gtk_widget_destroy(dialog);
 }
 
@@ -936,7 +936,7 @@ void
 on_prefs_video1394_device_changed      (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  preferences.video1394_device=gtk_entry_get_text(GTK_ENTRY(lookup_widget(commander_window,"prefs_video1394_device")));
+  preferences.video1394_device=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"prefs_video1394_device")));
   gnome_config_set_string("coriander/receive/video1394_device",preferences.video1394_device);
   gnome_config_sync();
 
@@ -946,7 +946,7 @@ void
 on_prefs_v4l_dev_name_changed      (GtkEditable     *editable,
                                   gpointer         user_data)
 {
-  preferences.v4l_dev_name=gtk_entry_get_text(GTK_ENTRY(lookup_widget(commander_window,"prefs_v4l_dev_name")));
+  preferences.v4l_dev_name=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"prefs_v4l_dev_name")));
   gnome_config_set_string("coriander/v4l/v4l_dev_name",preferences.v4l_dev_name);
   gnome_config_sync();
 
@@ -1009,7 +1009,7 @@ on_trigger_count_changed               (GtkEditable     *editable,
                                         gpointer         user_data)
 {
   int value;
-  value=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(commander_window,"trigger_count")));
+  value=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(main_window,"trigger_count")));
 
   if (dc1394_set_feature_value(camera->camera_info.handle, camera->camera_info.id, FEATURE_TRIGGER, value)!=DC1394_SUCCESS)
     MainError("Could not set external trigger count");
@@ -1023,7 +1023,7 @@ on_mono16_bpp_changed                  (GtkEditable     *editable,
                                         gpointer         user_data)
 {
   int value;
-  value=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(commander_window,"mono16_bpp")));
+  value=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(main_window,"mono16_bpp")));
   pthread_mutex_lock(&camera->uimutex);
   camera->bpp=value;
   //fprintf(stderr,"uiinfo->bpp = %d\n",uiinfo->bpp);
@@ -1261,8 +1261,8 @@ void
 on_global_iso_restart_clicked          (GtkButton       *button,
                                         gpointer         user_data)
 {
-  on_global_iso_stop_clicked(GTK_BUTTON(lookup_widget(commander_window,"global_iso_stop")),NULL);
-  on_global_iso_start_clicked(GTK_BUTTON(lookup_widget(commander_window,"global_iso_start")),NULL);
+  on_global_iso_stop_clicked(GTK_BUTTON(lookup_widget(main_window,"global_iso_stop")),NULL);
+  on_global_iso_start_clicked(GTK_BUTTON(lookup_widget(main_window,"global_iso_start")),NULL);
 }
 
 
@@ -1291,3 +1291,4 @@ on_global_iso_start_clicked            (GtkButton       *button,
     camera_ptr=camera_ptr->next;
   }
 }
+

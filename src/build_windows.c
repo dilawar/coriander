@@ -18,7 +18,7 @@
 
 #include "build_windows.h" 
 
-extern GtkWidget *commander_window;
+extern GtkWidget *main_window;
 extern GtkWidget *help_window;
 extern const char *help_key_bindings_keys[KEY_BINDINGS_NUM];
 extern const char *help_key_bindings_functions[KEY_BINDINGS_NUM];
@@ -77,15 +77,15 @@ BuildFeatureWindow(void)
   GtkWidget* vbox_features;
   int i;
   // destroy previous feature vbox
-  gtk_widget_destroy(lookup_widget(commander_window,"vbox_features"));
+  gtk_widget_destroy(lookup_widget(main_window,"vbox_features"));
 
   // build new feature vbox
   vbox_features = gtk_vbox_new (FALSE, 0);
   gtk_widget_ref (vbox_features);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "vbox_features", vbox_features,
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "vbox_features", vbox_features,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (vbox_features);
-  gtk_container_add (GTK_CONTAINER (lookup_widget(commander_window,"viewport1")), vbox_features);
+  gtk_container_add (GTK_CONTAINER (lookup_widget(main_window,"viewport1")), vbox_features);
 
   for (i=FEATURE_MIN;i<=FEATURE_MAX;i++) {
     if ((camera->feature_set.feature[i-FEATURE_MIN].available>0)&&
@@ -160,5 +160,5 @@ BuildAbsoluteSettingsWindow(void)
   abs_available+=BuildAbsLuminanceFrame();
   abs_available+=BuildAbsPositioningFrame();
 
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"absolute_settings_window"), (abs_available>0) );
+  gtk_widget_set_sensitive(lookup_widget(main_window,"absolute_settings_window"), (abs_available>0) );
 }

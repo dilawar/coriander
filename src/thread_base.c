@@ -18,7 +18,6 @@
 
 #include "thread_base.h" 
 
-extern GtkWidget* commander_window;
 extern camera_t* camera;
 extern camera_t* cameras;
 

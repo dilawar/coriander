@@ -18,7 +18,6 @@
 
 #include "update_windows.h"
 
-extern GtkWidget *commander_window;
 extern camera_t* camera;
 
 void

@@ -20,7 +20,7 @@
 
 extern GtkWidget *format7_window;
 extern GtkWidget *preferences_window;
-extern GtkWidget *commander_window;
+extern GtkWidget *main_window;
 extern camera_t* camera;
 extern char* feature_menu_table_list[NUM_FEATURES];
 extern char* feature_menu_items_list[NUM_FEATURES];
@@ -35,10 +35,10 @@ BuildEmptyRange(int feature)
   frame = gtk_frame_new (_(feature_name_list[feature-FEATURE_MIN]));
   gtk_widget_ref (frame);
   sprintf(stemp,"feature_%d_frame",feature);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), stemp, frame,
+  gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, frame,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (frame);
-  gtk_box_pack_start (GTK_BOX (lookup_widget(commander_window,"vbox_features")), frame, FALSE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (lookup_widget(main_window,"vbox_features")), frame, FALSE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (frame), 5);
   gtk_widget_set_sensitive (frame, TRUE);
 
@@ -47,14 +47,14 @@ BuildEmptyRange(int feature)
     table = gtk_table_new (3, 2, FALSE);
     gtk_widget_ref (table);
     sprintf(stemp,"feature_%d_table",feature);
-    gtk_object_set_data_full (GTK_OBJECT (commander_window), stemp, table,
+    gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, table,
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (table);
     gtk_container_add (GTK_CONTAINER (frame), table);
 
     label1 = gtk_label_new (_("Current:"));
     gtk_widget_ref (label1);
-    gtk_object_set_data_full (GTK_OBJECT (commander_window), "label_temp_scale_current", label1,
+    gtk_object_set_data_full (GTK_OBJECT (main_window), "label_temp_scale_current", label1,
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (label1);
     gtk_table_attach (GTK_TABLE (table), label1, 0, 1, 1, 2,
@@ -65,7 +65,7 @@ BuildEmptyRange(int feature)
 
     label2 = gtk_label_new (_("Target:"));
     gtk_widget_ref (label2);
-    gtk_object_set_data_full (GTK_OBJECT (commander_window), "label_temp_scale_target", label2,
+    gtk_object_set_data_full (GTK_OBJECT (main_window), "label_temp_scale_target", label2,
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (label2);
     gtk_table_attach (GTK_TABLE (table), label2, 0, 1, 2, 3,
@@ -79,14 +79,14 @@ BuildEmptyRange(int feature)
     table = gtk_table_new (3, 2, FALSE);
     gtk_widget_ref (table);
     sprintf(stemp,"feature_%d_table",feature);
-    gtk_object_set_data_full (GTK_OBJECT (commander_window), stemp, table,
+    gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, table,
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (table);
     gtk_container_add (GTK_CONTAINER (frame), table);
 
     label1 = gtk_label_new (_("Blue/U-field:"));
     gtk_widget_ref (label1);
-    gtk_object_set_data_full (GTK_OBJECT (commander_window), "label_wb_scale_bu", label1,
+    gtk_object_set_data_full (GTK_OBJECT (main_window), "label_wb_scale_bu", label1,
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (label1);
     gtk_table_attach (GTK_TABLE (table), label1, 0, 1, 1, 2,
@@ -97,7 +97,7 @@ BuildEmptyRange(int feature)
 
     label2 = gtk_label_new (_("Red/V-field:"));
     gtk_widget_ref (label2);
-    gtk_object_set_data_full (GTK_OBJECT (commander_window), "label_wb_scale_rv", label2,
+    gtk_object_set_data_full (GTK_OBJECT (main_window), "label_wb_scale_rv", label2,
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (label2);
     gtk_table_attach (GTK_TABLE (table), label2, 0, 1, 2, 3,
@@ -112,7 +112,7 @@ BuildEmptyRange(int feature)
     table = gtk_table_new (1, 2, FALSE);
     gtk_widget_ref (table);
     sprintf(stemp,"feature_%d_table",feature);
-    gtk_object_set_data_full (GTK_OBJECT (commander_window), stemp, table,
+    gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, table,
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (table);
     gtk_container_add (GTK_CONTAINER (frame), table);
@@ -135,15 +135,15 @@ void BuildRange(int feature)
   // BUILD A NEW OPTION_MENU:
 
   sprintf(stemp,"feature_%d_menu",feature);
-  //gtk_widget_destroy(GTK_WIDGET(lookup_widget(commander_window,stemp))); // remove previous menu
+  //gtk_widget_destroy(GTK_WIDGET(lookup_widget(main_window,stemp))); // remove previous menu
   
   new_option_menu = gtk_option_menu_new ();
   gtk_widget_ref (new_option_menu);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), stemp, new_option_menu,
+  gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, new_option_menu,
 			    (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (new_option_menu);
   sprintf(stemp,"feature_%d_table",feature);
-  gtk_table_attach (GTK_TABLE (lookup_widget(commander_window, stemp)),
+  gtk_table_attach (GTK_TABLE (lookup_widget(main_window, stemp)),
 		    new_option_menu, 0, 1, 0, 1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
@@ -215,11 +215,11 @@ void BuildRange(int feature)
     scale = gtk_hscale_new (adjustment);
     gtk_widget_ref (scale);
     sprintf(stemp,"feature_%d_bu_scale",feature);
-    gtk_object_set_data_full (GTK_OBJECT (commander_window), stemp, scale,
+    gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, scale,
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (scale);
     sprintf(stemp,"feature_%d_table",feature);
-    gtk_table_attach (GTK_TABLE (lookup_widget(commander_window,stemp)), scale, 1, 2, 1, 2,
+    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale, 1, 2, 1, 2,
 		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 		      (GtkAttachOptions) (GTK_FILL), 0, 0);
     gtk_widget_set_sensitive (scale, TRUE);
@@ -228,11 +228,11 @@ void BuildRange(int feature)
     scale2 = gtk_hscale_new (adjustment);
     gtk_widget_ref (scale2);
     sprintf(stemp,"feature_%d_rv_scale",feature);
-    gtk_object_set_data_full (GTK_OBJECT (commander_window), stemp, scale2,
+    gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, scale2,
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (scale2);
     sprintf(stemp,"feature_%d_table",feature);
-    gtk_table_attach (GTK_TABLE (lookup_widget(commander_window,stemp)), scale2, 1, 2, 2, 3,
+    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale2, 1, 2, 2, 3,
 		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 		      (GtkAttachOptions) (GTK_FILL), 0, 0);
     gtk_widget_set_sensitive (scale2, TRUE);
@@ -255,11 +255,11 @@ void BuildRange(int feature)
     scale = gtk_hscale_new (adjustment);
     gtk_widget_ref (scale);
     sprintf(stemp,"feature_%d_current_scale",feature);
-    gtk_object_set_data_full (GTK_OBJECT (commander_window), stemp, scale,
+    gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, scale,
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (scale);
     sprintf(stemp,"feature_%d_table",feature);
-    gtk_table_attach (GTK_TABLE (lookup_widget(commander_window,stemp)), scale, 1, 2, 1, 2,
+    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale, 1, 2, 1, 2,
 		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 		      (GtkAttachOptions) (GTK_FILL), 0, 0);
     gtk_widget_set_sensitive (scale, TRUE);
@@ -268,11 +268,11 @@ void BuildRange(int feature)
     scale2 = gtk_hscale_new (adjustment);
     gtk_widget_ref (scale2);
     sprintf(stemp,"feature_%d_target_scale",feature);
-    gtk_object_set_data_full (GTK_OBJECT (commander_window), stemp, scale2,
+    gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, scale2,
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (scale2);
     sprintf(stemp,"feature_%d_table",feature);
-    gtk_table_attach (GTK_TABLE (lookup_widget(commander_window,stemp)), scale2, 1, 2, 2, 3,
+    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale2, 1, 2, 2, 3,
 		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 		      (GtkAttachOptions) (GTK_FILL), 0, 0);
     gtk_widget_set_sensitive (scale2, TRUE);
@@ -290,11 +290,11 @@ void BuildRange(int feature)
     scale = gtk_hscale_new (adjustment);
     gtk_widget_ref (scale);
     sprintf(stemp,"feature_%d_scale",feature);
-    gtk_object_set_data_full (GTK_OBJECT (commander_window), stemp, scale,
+    gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, scale,
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (scale);
     sprintf(stemp,"feature_%d_table",feature);
-    gtk_table_attach (GTK_TABLE (lookup_widget(commander_window,stemp)), scale, 1, 2, 0, 1,
+    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale, 1, 2, 0, 1,
 		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 		      (GtkAttachOptions) (GTK_FILL), 0, 0);
     gtk_widget_set_sensitive (scale, TRUE);

@@ -45,7 +45,7 @@
 #include "thread_display.h"
 #include "SDLEvent.h"
 
-GtkWidget *commander_window;
+GtkWidget *main_window;
 GtkWidget *absolute_settings_window;
 GtkWidget *about_window;
 GtkWidget *help_window;
@@ -151,7 +151,7 @@ main (int argc, char *argv[])
       g_thread_init(NULL);
       
       preferences_window= create_preferences_window();
-      commander_window = create_commander_window();
+      main_window = create_main_window();
       format7_window = create_format7_window();
       absolute_settings_window = create_absolute_settings_window();
       
@@ -163,7 +163,7 @@ main (int argc, char *argv[])
       WatchStartThread(&watchthread_info);
 #endif
       MainStatus("Welcome to Coriander...");
-      gtk_widget_show (commander_window); // this is the only window shown at boot-time
+      gtk_widget_show (main_window); // this is the only window shown at boot-time
       
       main_timeout=gtk_timeout_add(10, (GtkFunction)main_timeout_handler, (gpointer*)portmax);
       //gdk_threads_enter();

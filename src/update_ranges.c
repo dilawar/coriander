@@ -19,7 +19,7 @@
 #include "update_ranges.h"
 
 extern GtkWidget *format7_window;
-extern GtkWidget *commander_window;
+extern GtkWidget *main_window;
 extern char* feature_menu_table_list[NUM_FEATURES]; 
 extern char* feature_menu_items_list[NUM_FEATURES];
 extern GtkWidget *preferences_window;
@@ -35,10 +35,10 @@ UpdateRange(int feature)
   // is feature available?
   sprintf(stemp,"feature_%d_frame",feature);
   if (camera->feature_set.feature[feature-FEATURE_MIN].available==0) { // feature not available: unsensitive the frame
-    gtk_widget_set_sensitive(lookup_widget(commander_window, stemp),FALSE);
+    gtk_widget_set_sensitive(lookup_widget(main_window, stemp),FALSE);
   }
   else { // sensitive the current frame:
-    gtk_widget_set_sensitive(lookup_widget(commander_window, stemp),TRUE);
+    gtk_widget_set_sensitive(lookup_widget(main_window, stemp),TRUE);
     
     // select the current menuitem:
     if ((!camera->feature_set.feature[feature-FEATURE_MIN].is_on)&& // off
@@ -66,19 +66,19 @@ UpdateRange(int feature)
      
     // sets the active menu item:
     sprintf(stemp,"feature_%d_menu",feature);
-    gtk_option_menu_set_history (GTK_OPTION_MENU (lookup_widget(commander_window,stemp)), index);
+    gtk_option_menu_set_history (GTK_OPTION_MENU (lookup_widget(main_window,stemp)), index);
     
     
     switch(feature) {
     case FEATURE_WHITE_BALANCE:
       sprintf(stemp,"feature_%d_bu_scale",feature);
-      gtk_widget_set_sensitive(lookup_widget(commander_window, stemp),
+      gtk_widget_set_sensitive(lookup_widget(main_window, stemp),
 			       (!camera->feature_set.feature[feature-FEATURE_MIN].auto_active)&&
 			       (!camera->feature_set.feature[feature-FEATURE_MIN].one_push_active)&&
 			       (!(camera->feature_set.feature[feature-FEATURE_MIN].on_off_capable&&
 				  !camera->feature_set.feature[feature-FEATURE_MIN].is_on)));
       sprintf(stemp,"feature_%d_rv_scale",feature);
-      gtk_widget_set_sensitive(lookup_widget(commander_window, stemp),
+      gtk_widget_set_sensitive(lookup_widget(main_window, stemp),
 			       (!camera->feature_set.feature[feature-FEATURE_MIN].auto_active)&&
 			       (!camera->feature_set.feature[feature-FEATURE_MIN].one_push_active)&&
 			       (!(camera->feature_set.feature[feature-FEATURE_MIN].on_off_capable&&
@@ -86,16 +86,16 @@ UpdateRange(int feature)
     case FEATURE_TEMPERATURE:
       // the only changeable range is the target one, the other is just an indicator.
       sprintf(stemp,"feature_%d_target_scale",feature);
-      gtk_widget_set_sensitive(lookup_widget(commander_window, stemp),
+      gtk_widget_set_sensitive(lookup_widget(main_window, stemp),
 			       (!camera->feature_set.feature[feature-FEATURE_MIN].auto_active)&&
 			       (!camera->feature_set.feature[feature-FEATURE_MIN].one_push_active)&&
 			       (!(camera->feature_set.feature[feature-FEATURE_MIN].on_off_capable&&
 				  !camera->feature_set.feature[feature-FEATURE_MIN].is_on)));
       sprintf(stemp,"feature_%d_current_scale",feature);
-      gtk_widget_set_sensitive(lookup_widget(commander_window, stemp),FALSE);break;
+      gtk_widget_set_sensitive(lookup_widget(main_window, stemp),FALSE);break;
     default:
       sprintf(stemp,"feature_%d_scale",feature);
-      gtk_widget_set_sensitive(lookup_widget(commander_window, stemp),
+      gtk_widget_set_sensitive(lookup_widget(main_window, stemp),
 			       (!camera->feature_set.feature[feature-FEATURE_MIN].auto_active)&&
 			       (!camera->feature_set.feature[feature-FEATURE_MIN].one_push_active)&&
 			       (!(camera->feature_set.feature[feature-FEATURE_MIN].on_off_capable&&
@@ -103,7 +103,7 @@ UpdateRange(int feature)
     }
     
       // grab&set range value if readable:
-    UpdateRangeValue(commander_window,feature);
+    UpdateRangeValue(main_window,feature);
   }
 }
 

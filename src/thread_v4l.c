@@ -21,7 +21,7 @@
 
 extern PrefsInfo preferences;
 extern camera_t* camera;
-extern GtkWidget *commander_window;
+extern GtkWidget *main_window;
 extern CtxtInfo ctxt;
 
 gint
@@ -140,9 +140,9 @@ V4lShowFPS(gpointer *data)
   
   sprintf(tmp_string," %.2f",fps);
 
-  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"fps_v4l"),
+  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_v4l"),
 		       ctxt.fps_v4l_ctxt, ctxt.fps_v4l_id);
-  ctxt.fps_v4l_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"fps_v4l"),
+  ctxt.fps_v4l_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_v4l"),
 					 ctxt.fps_v4l_ctxt, tmp_string);
   
   pthread_mutex_lock(&v4l_service->mutex_data);
@@ -239,8 +239,8 @@ V4lStopThread(void)
     pthread_mutex_lock(&v4l_service->mutex_struct);
     
     gtk_timeout_remove(info->timeout_func_id);
-    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"fps_v4l"), ctxt.fps_v4l_ctxt, ctxt.fps_v4l_id);
-    ctxt.fps_v4l_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"fps_v4l"), ctxt.fps_v4l_ctxt, "");
+    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_v4l"), ctxt.fps_v4l_ctxt, ctxt.fps_v4l_id);
+    ctxt.fps_v4l_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_v4l"), ctxt.fps_v4l_ctxt, "");
     
     RemoveChain(v4l_service);
     

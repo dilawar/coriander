@@ -19,7 +19,7 @@
 #include "thread_display.h"
 
 extern PrefsInfo preferences;
-extern GtkWidget *commander_window;
+extern GtkWidget *main_window;
 extern CtxtInfo ctxt;
 extern camera_t* camera;
 
@@ -113,9 +113,9 @@ DisplayShowFPS(gpointer *data)
 
   sprintf(tmp_string," %.2f",fps);
 
-  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"fps_display"),
+  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_display"),
 		       ctxt.fps_display_ctxt, ctxt.fps_display_id);
-  ctxt.fps_display_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"fps_display"),
+  ctxt.fps_display_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_display"),
 					 ctxt.fps_display_ctxt, tmp_string);
   
   pthread_mutex_lock(&display_service->mutex_data);
@@ -218,9 +218,9 @@ DisplayStopThread(void)
     pthread_mutex_lock(&display_service->mutex_struct);
     
     gtk_timeout_remove(info->timeout_func_id);
-    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"fps_display"),
+    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_display"),
 			 ctxt.fps_display_ctxt, ctxt.fps_display_id);
-    ctxt.fps_display_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"fps_display"),
+    ctxt.fps_display_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_display"),
 					   ctxt.fps_display_ctxt, "");
     
     RemoveChain(display_service);

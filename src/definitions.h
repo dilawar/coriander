@@ -194,7 +194,6 @@ typedef struct _CtxtInfo
   int delay_ctxt;
   int dc_ctxt;
   int pwclass_ctxt;
-  int iso_speed_ctxt;
   int iso_channel_ctxt;
   int iso_status_ctxt;
   int main_ctxt;
@@ -208,7 +207,6 @@ typedef struct _CtxtInfo
   int delay_id;
   int dc_id;
   int pwclass_id;
-  int iso_speed_id;
   int iso_channel_id;
   int iso_status_id;
   int main_id;

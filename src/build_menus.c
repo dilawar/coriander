@@ -18,7 +18,7 @@
 
 #include "build_menus.h"
 
-extern GtkWidget *commander_window;
+extern GtkWidget *main_window;
 extern GtkWidget *format7_window;
 extern PrefsInfo preferences; 
 extern camera_t* camera;
@@ -49,14 +49,14 @@ BuildTriggerModeMenu(void)
   if (dc1394_query_feature_characteristics(camera->camera_info.handle,camera->camera_info.id,FEATURE_TRIGGER,&value)!=DC1394_SUCCESS)
     MainError("Could not query trigger feature characteristics");
   modes=( (value & (0xF << 12))>>12 );
-  gtk_widget_destroy(GTK_WIDGET (lookup_widget(commander_window,"trigger_mode"))); // remove previous menu
+  gtk_widget_destroy(GTK_WIDGET (lookup_widget(main_window,"trigger_mode"))); // remove previous menu
 
   trigger_mode = gtk_option_menu_new ();
   gtk_widget_ref (trigger_mode);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "trigger_mode", trigger_mode,
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "trigger_mode", trigger_mode,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (trigger_mode);
-  gtk_table_attach_defaults (GTK_TABLE (lookup_widget(commander_window,"table17")), trigger_mode, 0, 2, 1, 2);
+  gtk_table_attach_defaults (GTK_TABLE (lookup_widget(main_window,"table17")), trigger_mode, 0, 2, 1, 2);
   gtk_container_set_border_width (GTK_CONTAINER (trigger_mode), 1);
 
   trigger_mode_menu = gtk_menu_new ();
@@ -99,14 +99,14 @@ BuildMemoryChannelMenu(void)
 
   camera->misc_info.save_channel=camera->misc_info.load_channel;
 
-  gtk_widget_destroy(GTK_WIDGET (lookup_widget(commander_window,"memory_channel"))); // remove previous menu
+  gtk_widget_destroy(GTK_WIDGET (lookup_widget(main_window,"memory_channel"))); // remove previous menu
 
   channel_num = gtk_option_menu_new ();
   gtk_widget_ref (channel_num);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "memory_channel", channel_num,
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "memory_channel", channel_num,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (channel_num);
-  gtk_table_attach_defaults (GTK_TABLE (lookup_widget(commander_window,"table16")), channel_num, 0, 1, 0, 1);
+  gtk_table_attach_defaults (GTK_TABLE (lookup_widget(main_window,"table16")), channel_num, 0, 1, 0, 1);
   gtk_container_set_border_width (GTK_CONTAINER (channel_num), 1);
 
   channel_num_menu = gtk_menu_new ();
@@ -137,14 +137,14 @@ BuildCameraMenu(void)
   GtkWidget* camera_id_menu;
   GtkWidget* glade_menuitem;
 
-  gtk_widget_destroy(GTK_WIDGET (lookup_widget(commander_window,"camera_select"))); // remove previous menu
+  gtk_widget_destroy(GTK_WIDGET (lookup_widget(main_window,"camera_select"))); // remove previous menu
 
   camera_id = gtk_option_menu_new ();
   gtk_widget_ref (camera_id);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "camera_select", camera_id,
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "camera_select", camera_id,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (camera_id);
-  gtk_table_attach_defaults (GTK_TABLE (lookup_widget(commander_window,"table9")), camera_id, 1, 2, 0, 1);
+  gtk_table_attach_defaults (GTK_TABLE (lookup_widget(main_window,"table9")), camera_id, 1, 2, 0, 1);
   gtk_container_set_border_width (GTK_CONTAINER (camera_id), 1);
 
   camera_id_menu = gtk_menu_new (); 
@@ -294,22 +294,22 @@ BuildFpsMenu(void)
 
   if (camera->misc_info.format == FORMAT_SCALABLE_IMAGE_SIZE) {
     value = 0; /* format 7 has no fixed framerates */
-    gtk_widget_set_sensitive(lookup_widget(commander_window,"fps_menu"),FALSE);
+    gtk_widget_set_sensitive(lookup_widget(main_window,"fps_menu"),FALSE);
   }
   else {
-    gtk_widget_set_sensitive(lookup_widget(commander_window,"fps_menu"),TRUE);
+    gtk_widget_set_sensitive(lookup_widget(main_window,"fps_menu"),TRUE);
     if (dc1394_query_supported_framerates(camera->camera_info.handle, camera->camera_info.id, camera->misc_info.format, camera->misc_info.mode, &value)!=DC1394_SUCCESS)
       MainError("Could not query supported framerates");
   
  
-    gtk_widget_destroy(GTK_WIDGET (lookup_widget(commander_window,"fps_menu"))); // remove previous menu
+    gtk_widget_destroy(GTK_WIDGET (lookup_widget(main_window,"fps_menu"))); // remove previous menu
     
     fps = gtk_option_menu_new ();
     gtk_widget_ref (fps);
-    gtk_object_set_data_full (GTK_OBJECT (commander_window), "fps_menu", fps,
+    gtk_object_set_data_full (GTK_OBJECT (main_window), "fps_menu", fps,
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (fps);
-    gtk_table_attach_defaults (GTK_TABLE (lookup_widget(commander_window,"table17")), fps, 0, 2, 2, 3);
+    gtk_table_attach_defaults (GTK_TABLE (lookup_widget(main_window,"table17")), fps, 0, 2, 2, 3);
     gtk_container_set_border_width (GTK_CONTAINER (fps), 1);
     
     fps_menu = gtk_menu_new ();
@@ -332,8 +332,8 @@ BuildFpsMenu(void)
     gtk_option_menu_set_menu (GTK_OPTION_MENU (fps), fps_menu);
     
     // here we set the sensitiveness, AFTER the 'gtk_option_menu_set_menu' command:
-    //gtk_widget_set_sensitive (lookup_widget(commander_window,"fps_menu"),
-    //			    !(GTK_TOGGLE_BUTTON (lookup_widget(commander_window,"trigger_external")))->active);
+    //gtk_widget_set_sensitive (lookup_widget(main_window,"fps_menu"),
+    //			    !(GTK_TOGGLE_BUTTON (lookup_widget(main_window,"trigger_external")))->active);
     
     // sets the active menu item:
     if (index[camera->misc_info.framerate-FRAMERATE_MIN]<0) { // previously selected framerate unsupported!!
@@ -376,14 +376,14 @@ BuildFormatMenu(void)
   GtkWidget* mode_num_menu;
   GtkWidget* glade_menuitem;
 
-  gtk_widget_destroy(GTK_WIDGET (lookup_widget(commander_window,"format_select"))); // remove previous menu
+  gtk_widget_destroy(GTK_WIDGET (lookup_widget(main_window,"format_select"))); // remove previous menu
 
   mode_num = gtk_option_menu_new ();
   gtk_widget_ref (mode_num);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "format_select", mode_num,
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "format_select", mode_num,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (mode_num);
-  gtk_table_attach_defaults (GTK_TABLE (lookup_widget(commander_window,"table60")), mode_num, 0, 1, 0, 1);
+  gtk_table_attach_defaults (GTK_TABLE (lookup_widget(main_window,"table60")), mode_num, 0, 1, 0, 1);
   gtk_container_set_border_width (GTK_CONTAINER (mode_num), 1);
 
   mode_num_menu = gtk_menu_new ();
@@ -535,14 +535,14 @@ BuildBayerMenu(void)
   GtkWidget* glade_menuitem;
 
   // build bayer option menu:
-  gtk_widget_destroy(GTK_WIDGET(lookup_widget(commander_window,"bayer_menu"))); // remove previous menu
+  gtk_widget_destroy(GTK_WIDGET(lookup_widget(main_window,"bayer_menu"))); // remove previous menu
   
   new_option_menu = gtk_option_menu_new ();
   gtk_widget_ref (new_option_menu);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "bayer_menu", new_option_menu,
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "bayer_menu", new_option_menu,
 			    (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (new_option_menu);
-  gtk_table_attach (GTK_TABLE (lookup_widget(commander_window,"table61")),
+  gtk_table_attach (GTK_TABLE (lookup_widget(main_window,"table61")),
 		    new_option_menu, 0, 2, 0, 1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
@@ -584,7 +584,7 @@ BuildBayerMenu(void)
 
   // menu history
   pthread_mutex_lock(&camera->uimutex);
-  gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(commander_window, "bayer_menu")),camera->bayer);
+  gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(main_window, "bayer_menu")),camera->bayer);
   pthread_mutex_unlock(&camera->uimutex);
       
 }
@@ -597,14 +597,14 @@ BuildBayerPatternMenu(void)
   GtkWidget* glade_menuitem;
 
   // build bayer option menu:
-  gtk_widget_destroy(GTK_WIDGET(lookup_widget(commander_window,"pattern_menu"))); // remove previous menu
+  gtk_widget_destroy(GTK_WIDGET(lookup_widget(main_window,"pattern_menu"))); // remove previous menu
   
   new_option_menu = gtk_option_menu_new ();
   gtk_widget_ref (new_option_menu);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "pattern_menu", new_option_menu,
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "pattern_menu", new_option_menu,
 			    (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (new_option_menu);
-  gtk_table_attach (GTK_TABLE (lookup_widget(commander_window,"table61")),
+  gtk_table_attach (GTK_TABLE (lookup_widget(main_window,"table61")),
 		    new_option_menu, 0, 2, 1, 2,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
@@ -645,7 +645,7 @@ BuildBayerPatternMenu(void)
 
   // menu history
   pthread_mutex_lock(&camera->uimutex);
-  gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(commander_window, "pattern_menu")),
+  gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(main_window, "pattern_menu")),
 			      camera->bayer_pattern);
   pthread_mutex_unlock(&camera->uimutex);
       
@@ -660,14 +660,14 @@ BuildStereoMenu(void)
   GtkWidget* glade_menuitem;
 
   // build bayer option menu:
-  gtk_widget_destroy(GTK_WIDGET(lookup_widget(commander_window,"stereo_menu"))); // remove previous menu
+  gtk_widget_destroy(GTK_WIDGET(lookup_widget(main_window,"stereo_menu"))); // remove previous menu
   
   new_option_menu = gtk_option_menu_new ();
   gtk_widget_ref (new_option_menu);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "stereo_menu", new_option_menu,
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "stereo_menu", new_option_menu,
 			    (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (new_option_menu);
-  gtk_table_attach (GTK_TABLE (lookup_widget(commander_window,"table61")),
+  gtk_table_attach (GTK_TABLE (lookup_widget(main_window,"table61")),
 		    new_option_menu, 0, 2, 2, 3,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
@@ -701,7 +701,7 @@ BuildStereoMenu(void)
 
   // menu history
   pthread_mutex_lock(&camera->uimutex);
-  gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(commander_window, "stereo_menu")),camera->stereo);
+  gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(main_window, "stereo_menu")),camera->stereo);
   pthread_mutex_unlock(&camera->uimutex);
       
 }

@@ -37,7 +37,7 @@
 #include "build_menus.h"
 
 gboolean
-on_commander_window_delete_event       (GtkWidget       *widget,
+on_main_window_delete_event       (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data);
 

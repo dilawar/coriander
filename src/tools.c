@@ -29,7 +29,7 @@
   g = g > 255 ? 255 : g;\
   b = b > 255 ? 255 : b
 
-extern GtkWidget *commander_window;
+extern GtkWidget *main_window;
 extern GtkWidget *absolute_settings_window;
 extern char* feature_abs_entry_list[NUM_FEATURES];
 extern char* feature_abs_switch_list[NUM_FEATURES];
@@ -172,7 +172,7 @@ void IsoFlowCheck(int *state)
   // memorize state:
   *state=(GetService(SERVICE_ISO)!=NULL);
   if (*state!=0) {
-    gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(commander_window,"service_iso"),FALSE);
+    gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(main_window,"service_iso"),FALSE);
   }
 }
 
@@ -188,7 +188,7 @@ void IsoFlowResume(int *state)
   }
 
   if (*state!=0) {
-    gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(commander_window,"service_iso"),TRUE);
+    gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(main_window,"service_iso"),TRUE);
   }
   
   if (was_on>0) {
@@ -216,56 +216,54 @@ void IsoFlowResume(int *state)
 
 void GetContextStatus()
 {
-  ctxt.model_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"camera_model_status"),"");
-  ctxt.vendor_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"camera_vendor_status"),"");
-  ctxt.handle_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"camera_handle_status"),"");
-  ctxt.node_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"camera_node_status"),"");
-  ctxt.guid_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"camera_guid_status"),"");
-  ctxt.max_iso_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"camera_maxiso_status"),"");
-  ctxt.delay_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"camera_delay_status"),"");
-  ctxt.dc_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"camera_dc_status"),"");
-  ctxt.pwclass_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"camera_pwclass_status"),"");
+  ctxt.model_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(main_window,"camera_model_status"),"");
+  ctxt.vendor_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(main_window,"camera_vendor_status"),"");
+  ctxt.handle_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(main_window,"camera_handle_status"),"");
+  ctxt.node_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(main_window,"camera_node_status"),"");
+  ctxt.guid_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(main_window,"camera_guid_status"),"");
+  ctxt.max_iso_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(main_window,"camera_maxiso_status"),"");
+  ctxt.delay_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(main_window,"camera_delay_status"),"");
+  ctxt.dc_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(main_window,"camera_dc_status"),"");
+  ctxt.pwclass_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(main_window,"camera_pwclass_status"),"");
 
-  ctxt.iso_channel_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"iso_channel_status"),"");
-  ctxt.iso_speed_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"iso_speed_status"),"");
+  ctxt.iso_channel_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(main_window,"iso_channel_status"),"");
 
   // init message ids.
-  ctxt.model_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"camera_model_status"), ctxt.model_ctxt, "");
-  ctxt.vendor_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"camera_vendor_status"), ctxt.vendor_ctxt, "");
-  ctxt.handle_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"camera_handle_status"), ctxt.handle_ctxt, "");
-  ctxt.node_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"camera_node_status"), ctxt.node_ctxt, "");
-  ctxt.guid_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"camera_guid_status"), ctxt.guid_ctxt, "");
-  ctxt.max_iso_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"camera_maxiso_status"), ctxt.max_iso_ctxt, "");
-  ctxt.delay_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"camera_delay_status"), ctxt.delay_ctxt, "");
-  ctxt.dc_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"camera_dc_status"), ctxt.dc_ctxt, "");
-  ctxt.pwclass_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"camera_pwclass_status"), ctxt.pwclass_ctxt, "");
+  ctxt.model_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(main_window,"camera_model_status"), ctxt.model_ctxt, "");
+  ctxt.vendor_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(main_window,"camera_vendor_status"), ctxt.vendor_ctxt, "");
+  ctxt.handle_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(main_window,"camera_handle_status"), ctxt.handle_ctxt, "");
+  ctxt.node_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(main_window,"camera_node_status"), ctxt.node_ctxt, "");
+  ctxt.guid_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(main_window,"camera_guid_status"), ctxt.guid_ctxt, "");
+  ctxt.max_iso_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(main_window,"camera_maxiso_status"), ctxt.max_iso_ctxt, "");
+  ctxt.delay_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(main_window,"camera_delay_status"), ctxt.delay_ctxt, "");
+  ctxt.dc_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(main_window,"camera_dc_status"), ctxt.dc_ctxt, "");
+  ctxt.pwclass_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(main_window,"camera_pwclass_status"), ctxt.pwclass_ctxt, "");
 
-  ctxt.iso_channel_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"iso_channel_status"), ctxt.iso_channel_ctxt, "");
-  ctxt.iso_speed_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"iso_speed_status"), ctxt.iso_speed_ctxt, "");
+  ctxt.iso_channel_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(main_window,"iso_channel_status"), ctxt.iso_channel_ctxt, "");
 
   // note: these empty messages will be replaced after the execution of update_frame for status window
 
-  ctxt.cursor_pos_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"cursor_pos"),"");
-  ctxt.cursor_rgb_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"cursor_rgb"),"");
-  ctxt.cursor_yuv_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"cursor_yuv"),"");
+  ctxt.cursor_pos_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(main_window,"cursor_pos"),"");
+  ctxt.cursor_rgb_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(main_window,"cursor_rgb"),"");
+  ctxt.cursor_yuv_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(main_window,"cursor_yuv"),"");
 
-  ctxt.cursor_pos_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"cursor_pos"), ctxt.cursor_pos_ctxt, "");
-  ctxt.cursor_rgb_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"cursor_rgb"), ctxt.cursor_rgb_ctxt, "");
-  ctxt.cursor_yuv_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"cursor_yuv"), ctxt.cursor_yuv_ctxt, "");
+  ctxt.cursor_pos_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(main_window,"cursor_pos"), ctxt.cursor_pos_ctxt, "");
+  ctxt.cursor_rgb_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(main_window,"cursor_rgb"), ctxt.cursor_rgb_ctxt, "");
+  ctxt.cursor_yuv_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(main_window,"cursor_yuv"), ctxt.cursor_yuv_ctxt, "");
 
 
   // FPS:
-  ctxt.fps_receive_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"fps_receive"),"");
-  ctxt.fps_display_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"fps_display"),"");
-  ctxt.fps_save_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"fps_save"),"");
-  ctxt.fps_ftp_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"fps_ftp"),"");
-  ctxt.fps_v4l_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"fps_v4l"),"");
+  ctxt.fps_receive_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(main_window,"fps_receive"),"");
+  ctxt.fps_display_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(main_window,"fps_display"),"");
+  ctxt.fps_save_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(main_window,"fps_save"),"");
+  ctxt.fps_ftp_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(main_window,"fps_ftp"),"");
+  ctxt.fps_v4l_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(main_window,"fps_v4l"),"");
 
-  ctxt.fps_receive_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"fps_receive"), ctxt.fps_receive_ctxt, "");
-  ctxt.fps_display_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"fps_display"), ctxt.fps_display_ctxt, "");
-  ctxt.fps_save_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"fps_save"), ctxt.fps_save_ctxt, "");
-  ctxt.fps_ftp_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"fps_ftp"), ctxt.fps_ftp_ctxt, "");
-  ctxt.fps_v4l_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"fps_v4l"), ctxt.fps_v4l_ctxt, "");
+  ctxt.fps_receive_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(main_window,"fps_receive"), ctxt.fps_receive_ctxt, "");
+  ctxt.fps_display_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(main_window,"fps_display"), ctxt.fps_display_ctxt, "");
+  ctxt.fps_save_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(main_window,"fps_save"), ctxt.fps_save_ctxt, "");
+  ctxt.fps_ftp_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(main_window,"fps_ftp"), ctxt.fps_ftp_ctxt, "");
+  ctxt.fps_v4l_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(main_window,"fps_v4l"), ctxt.fps_v4l_ctxt, "");
   
 }
 
@@ -322,8 +320,8 @@ void MainError(const char *string)
 {
   char temp[STRING_SIZE];
   sprintf(temp,"ERROR: %s\n",string);
-  if (commander_window !=NULL) {
-    gtk_text_insert((GtkText*)lookup_widget(commander_window,"main_status"), NULL,NULL,NULL,temp,-1);
+  if (main_window !=NULL) {
+    gtk_text_insert((GtkText*)lookup_widget(main_window,"main_status"), NULL,NULL,NULL,temp,-1);
   }
 }
 
@@ -331,8 +329,8 @@ void MainStatus(const char *string)
 {
   char temp[STRING_SIZE];
   sprintf(temp,"%s\n",string);
-  if (commander_window !=NULL) {
-    gtk_text_insert((GtkText*)lookup_widget(commander_window,"main_status"), NULL,NULL,NULL,temp,-1);
+  if (main_window !=NULL) {
+    gtk_text_insert((GtkText*)lookup_widget(main_window,"main_status"), NULL,NULL,NULL,temp,-1);
   }
 }
 
@@ -538,7 +536,7 @@ SetAbsoluteControl(int feature, int power)
   else {
     camera->feature_set.feature[feature-FEATURE_MIN].abs_control=power;
     sprintf(string,"feature_%d_frame",feature);
-    gtk_widget_set_sensitive(lookup_widget(commander_window, string), !power);
+    gtk_widget_set_sensitive(lookup_widget(main_window, string), !power);
     gtk_widget_set_sensitive(lookup_widget(absolute_settings_window,feature_abs_entry_list[feature-FEATURE_MIN]),power);
     gtk_widget_set_sensitive(lookup_widget(absolute_settings_window,feature_abs_label_list[feature-FEATURE_MIN]),power);
     if (power>0) {
@@ -635,9 +633,9 @@ StopFPSDisplay(void)
     infoiso=(isothread_info_t*)service->data;
     //fprintf(stderr,"Stopping iso fps, id %d...",infoiso->timeout_func_id);
     gtk_timeout_remove(infoiso->timeout_func_id);
-    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"fps_receive"),
+    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_receive"),
 			 ctxt.fps_receive_ctxt, ctxt.fps_receive_id);
-    ctxt.fps_receive_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"fps_receive"),
+    ctxt.fps_receive_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_receive"),
 					   ctxt.fps_receive_ctxt, "");
     //fprintf(stderr,"done\n");
   
@@ -649,9 +647,9 @@ StopFPSDisplay(void)
     infosave=(savethread_info_t*)service->data;
     //fprintf(stderr,"Stopping save fps, id %d...",infosave->timeout_func_id);
     gtk_timeout_remove(infosave->timeout_func_id);
-    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"fps_save"),
+    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_save"),
 			 ctxt.fps_save_ctxt, ctxt.fps_save_id);
-    ctxt.fps_save_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"fps_save"),
+    ctxt.fps_save_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_save"),
 					   ctxt.fps_save_ctxt, "");
     //fprintf(stderr,"done\n");
   }
@@ -660,9 +658,9 @@ StopFPSDisplay(void)
     infoftp=(ftpthread_info_t*)service->data;
     //fprintf(stderr,"Stopping ftp fps, id %d...",infoftp->timeout_func_id);
     gtk_timeout_remove(infoftp->timeout_func_id);
-    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"fps_ftp"),
+    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_ftp"),
 			 ctxt.fps_ftp_ctxt, ctxt.fps_ftp_id);
-    ctxt.fps_ftp_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"fps_ftp"),
+    ctxt.fps_ftp_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_ftp"),
 					   ctxt.fps_ftp_ctxt, "");
     //fprintf(stderr,"done\n");
   }
@@ -671,9 +669,9 @@ StopFPSDisplay(void)
     infov4l=(v4lthread_info_t*)service->data;
     //fprintf(stderr,"Stopping v4l fps, id %d...",infov4l->timeout_func_id);
     gtk_timeout_remove(infov4l->timeout_func_id);
-    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"fps_v4l"),
+    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_v4l"),
 			 ctxt.fps_v4l_ctxt, ctxt.fps_v4l_id);
-    ctxt.fps_v4l_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"fps_v4l"),
+    ctxt.fps_v4l_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_v4l"),
 					   ctxt.fps_v4l_ctxt, "");
     //fprintf(stderr,"done\n");
   }
@@ -758,7 +756,7 @@ main_timeout_handler(gpointer* port_num) {
   // so the program progressively breaks with strange GUI behavior/look.
   if (!(main_timeout_ticker%100)) { // every 100ms
     if (WM_cancel_display>0) {
-      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (lookup_widget(commander_window,"service_display")), FALSE);
+      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (lookup_widget(main_window,"service_display")), FALSE);
       WM_cancel_display=0;
     }
     //fprintf(stderr,"check display cancel\n");

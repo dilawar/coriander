@@ -22,7 +22,7 @@
 
 extern PrefsInfo preferences;
 extern GtkWidget *format7_window;
-extern GtkWidget *commander_window;
+extern GtkWidget *main_window;
 extern watchthread_info_t watchthread_info;
 extern camera_t* camera;
 extern int WM_cancel_display;

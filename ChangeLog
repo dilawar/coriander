@@ -5,6 +5,11 @@ Changes towards version 0.33
    May 28, 2003, by Damien Douxchamps
    - fixed missing #includes in thread_display.h. Thanks to Marc Leconte
      for spotting this.
+   - changed main window name to 'main_window' instead of 'commander_window'
+     this was a legacy name from version 0.01...
+   - removed the iso_speed status info box
+   - removed the shortcut patch file 'interface.patch' and 'interface.mods'
+     since this is not used anymore.
 	
    May 27, 2003, by Damien Douxchamps
    - misc updates in the save service.
