@@ -75,8 +75,6 @@ GetFormat7Capabilities(raw1394handle_t handle, nodeid_t node, Format7Info_t *inf
       info->edit_mode=-1;
     }
   }  
-      
-  //info->edit_mode = MODE_FORMAT7_MIN;
 }
 
 void

@@ -132,8 +132,11 @@ main (int argc, char *argv[])
 
   // Setup the GUI in accordance with the camera capabilities
   GetContextStatus();
+  //fprintf(stderr,"Building all windows...\n");
   BuildAllWindows();
+  //fprintf(stderr,"Updating all windows...\n");
   UpdateAllWindows();
+  //fprintf(stderr,"Starting GUI...\n");
 
   MainStatus("Welcome to Coriander...");
   gtk_widget_show (main_window); // this is the only window shown at boot-time
