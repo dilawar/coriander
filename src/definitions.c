@@ -262,14 +262,14 @@ const char * format6_list[NUM_FORMAT6_MODES]= {
 };
 
 const char * format7_list[NUM_MODE_FORMAT7]= {
-  "Mode_0",
-  "Mode_1",
-  "Mode_2",
-  "Mode_3",
-  "Mode_4",
-  "Mode_5",
-  "Mode_6",
-  "Mode_7"
+  "Format7, Mode_0",
+  "Format7, Mode_1",
+  "Format7, Mode_2",
+  "Format7, Mode_3",
+  "Format7, Mode_4",
+  "Format7, Mode_5",
+  "Format7, Mode_6",
+  "Format7, Mode_7"
 };
 
 

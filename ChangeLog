@@ -2,6 +2,9 @@ Coriander, (c) 2000-2002 Damien Douxchamps <douxchamps@ieee.org>
 
 Changes towards version 0.26
 
+   September 11, 2002, by Damien Douxchamps
+   - added 'format_7' to f7 modes string in format menu.
+	
    September 10, 2002, by Damien Douxchamps
    - added a bpp setting to get nice pictures from 16bpp modes used
      by less-than-16bpp cameras.
