@@ -35,6 +35,7 @@
 #include <libdc1394/dc1394_control.h>
 #include <string.h>
 #include <ftplib.h>
+#include <limits.h>
 
 /* globals required by capture */
 unsigned char g_rgb_buffer[1600*1200*3];
@@ -45,6 +46,7 @@ guint gIdleID;
 porthole_info pi;
 capture_info ci = 
   {
+      0,
       CAPTURE_FREQ_IMMEDIATE,
       1,
       CAPTURE_MODE_SEQUENTIAL,
@@ -247,6 +249,7 @@ gint IsoStopThread(void)
       
     raw1394_destroy_handle(pi.handle);
     pi.handle = NULL;
+    pi.receive_method = RECEIVE_METHOD_RAW1394;
   }
 
   return (1);
@@ -363,23 +366,33 @@ gint porthole_idler(gpointer p)
 
 gboolean capture_single_frame(void)
 {
+  int maxspeed;
+
   if (misc_info->format == FORMAT_STILL_IMAGE)
     return FALSE;
 
-  if (pi.receive_method == RECEIVE_METHOD_VIDEO1394) {
+  switch (selfid->packetZero.phySpeed)
+    {
+    case 1: maxspeed=SPEED_200;break;
+    case 2: maxspeed=SPEED_400;break;
+    default: maxspeed=SPEED_100;break;
+    }
+  
+  if (pi.handle != NULL)
+    {
       convert_to_rgb( capture, (unsigned char *) capture->capture_buffer, g_rgb_buffer);
       return TRUE;
-  } else {
-    if (dc1394_setup_capture(camera->handle, camera->id, misc_info->iso_channel, 
-         misc_info->format, misc_info->mode, misc_info->iso_speed,
-         misc_info->framerate, &g_single_capture) == DC1394_SUCCESS) 
+    
+    }
+  else if (dc1394_setup_capture(camera->handle, camera->id, misc_info->iso_channel, 
+             misc_info->format, misc_info->mode, maxspeed,
+             misc_info->framerate, &g_single_capture) == DC1394_SUCCESS) 
     {
        dc1394_single_capture( camera->handle, &g_single_capture);
        convert_to_rgb( &g_single_capture, (unsigned char *) g_single_capture.capture_buffer, g_rgb_buffer);
        dc1394_release_camera(camera->handle, &g_single_capture);
        return TRUE;
      }
-  }
   return FALSE;
 }
 
@@ -402,6 +415,8 @@ gboolean capture_multi_start(gchar *filename)
     tmp[0] = '\0';
     strcpy( g_ext, strrchr( filename, '.'));
   }
+  
+  ci.counter = 0;
 
   switch (selfid->packetZero.phySpeed)
     {
@@ -426,27 +441,19 @@ void capture_multi_stop(void)
 
 gint capture_idler(gpointer p)
 {
-  static int counter = 0;
   static gchar filename_out[256];
 
-  /* maximum of 10000 frames */
-  if (ci.mode == CAPTURE_MODE_OVERWRITE || counter < MAX_FRAMES) {
-    if (pi.receive_method == RECEIVE_METHOD_VIDEO1394) {
-       /* if porthole open, then use its buffer */
-       if (pi.handle != NULL) {
-         convert_to_rgb( capture, (unsigned char *) capture->capture_buffer, g_rgb_buffer);
-       } else { 
-         dc1394_single_capture( camera->handle, &g_single_capture);
-         convert_to_rgb( &g_single_capture, (unsigned char *) g_single_capture.capture_buffer, g_rgb_buffer);
-       }
-    } else {  /* RECEIVE_METHOD_RAW1394 */
+  if (ci.mode == CAPTURE_MODE_OVERWRITE || ci.counter < ULONG_MAX) {
+    if (pi.handle != NULL) { /* get the porthole's buffer */
+      convert_to_rgb( capture, (unsigned char *) capture->capture_buffer, g_rgb_buffer);
+    } else {  /* fall back on the distinct raw capturer */
       dc1394_single_capture( camera->handle, &g_single_capture);
       convert_to_rgb( &g_single_capture, (unsigned char *) g_single_capture.capture_buffer, g_rgb_buffer);
     }
 
     if (ci.mode == CAPTURE_MODE_SEQUENTIAL)     
     {
-      sprintf( filename_out, "%s_%4.4d%s", g_filename, counter++, g_ext);
+      sprintf( filename_out, "%s_%10.10li%s", g_filename, ci.counter++, g_ext);
       save_single_frame( filename_out);
       if (ci.ftp_enable)
         ftp_single_frame( filename_out, ci.ftp_address, ci.ftp_path, filename_out, ci.ftp_user, ci.ftp_passwd);
@@ -540,7 +547,7 @@ gboolean ftp_single_frame(gchar *filename, gchar *host, gchar *path, gchar *dest
     sprintf(tmp, "ftp: logged in as %s", user);
     MainStatus(tmp);
     
-    if (path != "") {
+    if (path != NULL && strcmp(path,"")) {
       if (!FtpChdir(path, ftp_handle))
       {
         MainError("ftp chdir failed");

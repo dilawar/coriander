@@ -43,25 +43,25 @@
 #define GUID_YUY2_PACKED 0x32595559
 #define GUID_UYVY_PACKED 0x59565955
 
-enum
+typedef enum
 {
   RECEIVE_METHOD_RAW1394,
   RECEIVE_METHOD_VIDEO1394
-};
+} receive_method_t;
 
-enum
+typedef enum
 {
   DISPLAY_METHOD_XV,
   DISPLAY_METHOD_GDK
-};
+} display_method_t;
 
 typedef struct
 {
   raw1394handle_t         handle;
   gboolean                is_open;
-  GtkWidget               *drawable;
-  short                   display_method;
-  short                   receive_method;
+  GtkWidget              *drawable;
+  display_method_t        display_method;
+  receive_method_t        receive_method;
 #ifdef HAVE_X11_EXTENSIONS_XVLIB_H
   Display                *display;
   Window                  window;
@@ -88,16 +88,17 @@ typedef enum
 
 typedef struct
 {
+  unsigned long     counter;
 
   capture_frequency frequency;  
-  guint32 period;
-  capture_mode mode;
+  guint32           period;
+  capture_mode      mode;
     
-  gboolean ftp_enable;
-  gchar   *ftp_address;
-  gchar   *ftp_path;
-  gchar   *ftp_user;
-  gchar   *ftp_passwd;
+  gboolean          ftp_enable;
+  gchar            *ftp_address;
+  gchar            *ftp_path;
+  gchar            *ftp_user;
+  gchar            *ftp_passwd;
   
 } capture_info;
 

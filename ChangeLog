@@ -12,6 +12,14 @@ Changes in version 0.17-pre2, Sept 16, 2001, by Dan Dennedy:
       continually overwrite same file
     - added ftp client option to capture based upon FtpLib, which
       is detected with autoconf and handled appropriately.
+      
+    Sept 17:
+    - capture.c: optimize re-use of porthole buffer when capturing.
+    - capture.c: increased counter capacity to limit of unsigned long
+      and changed file format to include 10-digit number.
+    - capture.c: apply speed detection code to a few more calls to
+      dc1394_setup_capture.
+    - capture.c, ftp: do not issue chdir if path is empty string.
 
 Changes in version 0.17-pre1, July 25, 2001:
 
@@ -26,7 +34,7 @@ Changes in version 0.17-pre1, July 25, 2001:
 	
 Changes in version 0.16, June 25, 2001:
 
-        - added first Status window implementation. Enabled status window
+    - added first Status window implementation. Enabled status window
 	  menu item in update_menus.c:line 42.
 	- removed 250 lines in callbacks.c by creating ChangeModeAndFormat
 	  function in tools.c
