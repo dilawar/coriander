@@ -5,7 +5,8 @@ Changes towards version 0.99
    June 12, 2003, by Damien Douxchamps
    - fixed some problems in transmission of GUI parameters to threads
    - removed some free() in main.c that prevented the program from exiting
-     on some platforms. Weird stuff... 
+     on some platforms. Weird stuff...
+   - fixed availability of the imlib conversion in the save thread setup
 	
    June 11, 2003, by Damien Douxchamps
    - added a choice between date and numbers tags for sequential save/ftp.
