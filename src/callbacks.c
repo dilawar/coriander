@@ -374,7 +374,7 @@ on_scale_value_changed             ( GtkAdjustment    *adj,
 	else {
 	  feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].BU_value=adj->value;
 	  if (feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].absolute_capable!=0) {
-	    GetAbsValue(FEATURE_TEMPERATURE);
+	    GetAbsValue(FEATURE_WHITE_BALANCE);
 	  }
 	}
 	break;
@@ -384,7 +384,7 @@ on_scale_value_changed             ( GtkAdjustment    *adj,
 	else {
 	  feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].RV_value=adj->value;
 	  if (feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].absolute_capable!=0) {
-	    GetAbsValue(FEATURE_TEMPERATURE);
+	    GetAbsValue(FEATURE_WHITE_BALANCE);
 	  }
 	}
 	break;
@@ -394,8 +394,8 @@ on_scale_value_changed             ( GtkAdjustment    *adj,
 	else {
 	  feature_set->feature[(int)user_data-FEATURE_MIN].value=adj->value;
 	  if ((int)user_data!=FEATURE_TRIGGER) {
-	    if (feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].absolute_capable!=0) {
-	      GetAbsValue(FEATURE_TEMPERATURE);
+	    if (feature_set->feature[(int)user_data-FEATURE_MIN].absolute_capable!=0) {
+	      GetAbsValue((int)user_data);
 	    }
 	  } 
 	}
