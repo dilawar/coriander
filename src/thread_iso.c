@@ -234,6 +234,7 @@ IsoThread(void* arg)
 {
   chain_t *iso_service;
   isothread_info_t *info;
+  int dma_ok=DC1394_FAILURE;
 
   // we should only use mutex_data in this function
 
@@ -256,7 +257,7 @@ IsoThread(void* arg)
     if (info->receive_method == RECEIVE_METHOD_RAW1394)
       dc1394_single_capture(info->handle, &info->capture);
     else
-      dc1394_dma_single_capture(&info->capture);
+      dma_ok=dc1394_dma_single_capture(&info->capture);
     
     ftime(&info->rawtime);
     localtime_r(&info->rawtime.time, &(iso_service->current_buffer->captime));
@@ -320,7 +321,7 @@ IsoThread(void* arg)
     info->current_time=times(&info->tms_buf);
     info->frames++;
     
-    if (info->receive_method == RECEIVE_METHOD_VIDEO1394)
+    if ((info->receive_method == RECEIVE_METHOD_VIDEO1394)&&(dma_ok==DC1394_SUCCESS))
       dc1394_dma_done_with_buffer(&info->capture);
     
     pthread_mutex_unlock(&iso_service->mutex_data);

@@ -282,10 +282,10 @@ SDLInit(chain_t *display_service)
 
   // Initialize the SDL library (video subsystem)
   if ( SDL_Init(SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE) == -1) {
-    MainError("Couldn't initialize SDL video subsystem");
+    MainError(SDL_GetError());
     return(0);
   }
-  
+
   sdl_videoinfo = SDL_GetVideoInfo();
   if (sdl_videoinfo->hw_available)
     info->SDL_flags=info->SDL_flags | SDL_HWSURFACE;
@@ -294,24 +294,17 @@ SDLInit(chain_t *display_service)
   info->SDL_bpp=SDL_VideoModeOK(display_service->current_buffer->width, display_service->current_buffer->height, 
 				info->SDL_bpp, info->SDL_flags);
   
-  ////////////// BPP ////////////// 
-  //if (info->SDL_bpp>0)
-  //  fprintf(stderr,"mode OK: %d bpp\n",info->SDL_bpp);
-  //else
-  //  fprintf(stderr,"mode KO: %d bpp\n",info->SDL_bpp);
-  /////////////////////////////////
-
   info->SDL_video = SDL_SetVideoMode(display_service->current_buffer->width, display_service->current_buffer->height, 
 				     info->SDL_bpp, info->SDL_flags);
 
   if (info->SDL_video == NULL) {
+    MainError(SDL_GetError());
     SDL_Quit();
-    MainError("Error while getting video surface");
     return(0);
   }
-  
+
   if (SDL_SetColorKey( info->SDL_video, SDL_SRCCOLORKEY, 0x0) < 0 ) {
-    MainError("Failed to set SDL surface key color");
+    MainError(SDL_GetError());
   }
   
   // Show cursor
@@ -320,24 +313,13 @@ SDLInit(chain_t *display_service)
   // set window title:
   SDL_WM_SetCaption(camera->name,"");
 
+  info->SDL_video->format->BytesPerPixel=2;
   // Create YUV Overlay
   info->SDL_overlay = SDL_CreateYUVOverlay(display_service->current_buffer->width, display_service->current_buffer->height, 
 					   SDL_YUY2_OVERLAY,info->SDL_video);
-
-  ////////////// HW SURFACE /////////////
-  //if (info->SDL_overlay->hw_overlay)
-  //  fprintf(stderr,"HW available\n");
-  //else
-  //  fprintf(stderr,"HW not available\n");
-  ///////////////////////////////////////
-
-  //////////////// FORMAT ///////////////
-  //fprintf(stderr,"format : 0x%x\n",info->SDL_overlay->format);
-  ///////////////////////////////////////
-  
-  if (info->SDL_overlay == NULL) {
+  if (info->SDL_overlay==NULL) {
+    MainError(SDL_GetError());
     SDL_Quit();
-    MainError("Error while creating yuv overlay");
     return(0);
   }
 

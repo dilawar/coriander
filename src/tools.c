@@ -941,6 +941,10 @@ SetFormat7Crop(int sx, int sy, int px, int py) {
     gtk_signal_emit_by_name(GTK_OBJECT (adjsy), "changed");
     
     usleep(100e3);
+
+    int ppf;
+    dc1394_query_format7_packet_per_frame(camera->camera_info.handle,camera->camera_info.id,0,&ppf);
+    fprintf(stderr,"ppf: %d, theoretical framerate= %.2f\n",ppf,1/((float)ppf*125e-6));
     
     if (camera->format7_info.edit_mode==camera->misc_info.mode) {
       IsoFlowResume(&state);

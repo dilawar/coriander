@@ -1,6 +1,11 @@
 Coriander, (c) 2000-2003 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 1.00
+
+   June 30, 3003, by Damien Douxchamps
+   - additional condition for dc1394_dma_done_with_buffer: capture must
+     have been successful. Another Dan's idea.
+   - added SDL_GetError calls during setup + other SDL updates (John Lien)
 	
    June 21, 2003, by Damien Douxchamps
    - added a buffer copy when forcing an image redraw so that is keeps
