@@ -189,13 +189,15 @@ ChangeModeAndFormat         (GtkMenuItem     *menuitem,
     camera->misc_info.mode=mode;
  
   // check consistancy of framerate:
-  if (dc1394_query_supported_framerates(camera->camera_info.handle, camera->camera_info.id, format, mode, &value)!=DC1394_SUCCESS)
-    MainError("Could not read supported framerates");
-  else {
-    if ((value & (0x1<<(31-(camera->misc_info.framerate-FRAMERATE_MIN))))==0) {
-      // the current framerate is not OK for the new mode/format. Switch to nearest framerate
-      //MainStatus("changemodeandformat fps update");
-      SwitchToNearestFPS(value,camera->misc_info.framerate);
+  if (camera->misc_info.format!=FORMAT_SCALABLE_IMAGE_SIZE) {
+    if (dc1394_query_supported_framerates(camera->camera_info.handle, camera->camera_info.id, format, mode, &value)!=DC1394_SUCCESS)
+      MainError("Could not read supported framerates");
+    else {
+      if ((value & (0x1<<(31-(camera->misc_info.framerate-FRAMERATE_MIN))))==0) {
+	// the current framerate is not OK for the new mode/format. Switch to nearest framerate
+	//MainStatus("changemodeandformat fps update");
+	SwitchToNearestFPS(value,camera->misc_info.framerate);
+      }
     }
   }
 

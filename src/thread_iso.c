@@ -300,7 +300,7 @@ IsoThread(void* arg)
       }
       break;
     }
-    //fprintf(stderr,"0x%x\n",info->capture.capture_buffer);
+
     // Bayer decoding
     switch (iso_service->current_buffer->bayer) {
     case BAYER_DECODING_NEAREST:
@@ -316,11 +316,14 @@ IsoThread(void* arg)
 		      iso_service->current_buffer->width, iso_service->current_buffer->height, iso_service->current_buffer->bayer_pattern);
       break;
     case NO_BAYER_DECODING:
-      //fprintf(stderr,"memcopy\n");
+      if (info->temp!=info->capture.capture_buffer) {
+	fprintf(stderr,"Kaiiii! Capture buffer changed!\n");
+      }
       // this is only necessary if no stereo was performed
-      if (iso_service->current_buffer->stereo_decoding==NO_STEREO_DECODING)
+      if (iso_service->current_buffer->stereo_decoding==NO_STEREO_DECODING) {
 	memcpy(iso_service->current_buffer->image, info->temp,
 	       iso_service->current_buffer->bytes_per_frame);
+      }
       break;
     }
     

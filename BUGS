@@ -4,3 +4,6 @@ Known bugs for version 0.99.4:
   a remote machine with a display export, the BPP settings of
   computer displays should be the same.
 - it seems that the trigger mode menu still makes some problems.
+- F7 seems to have some troubles during capture: changing mode
+  format even only once disable any further capture until the
+  camera is rebooted.
