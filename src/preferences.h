@@ -45,6 +45,9 @@ typedef struct _PrefsInfo
   int ftp_scratch;
   int ftp_period;
 
+  int v4l_period;
+  char *v4l_dev_name;
+
   char **camera_names;
 
   // internal data:
@@ -54,12 +57,5 @@ typedef struct _PrefsInfo
 
 void
 LoadConfigFile(void);
-/*
-void
-LoadSetup(char *filename);
-
-void
-SaveSetup(char *filename);
-*/
 
 #endif

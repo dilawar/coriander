@@ -66,6 +66,11 @@ UpdatePrefsFtpFrame(void)
 {
 }
 
+void
+UpdatePrefsV4lFrame(void)
+{
+}
+
 
 void
 UpdateCameraFrame(void)
@@ -314,5 +319,7 @@ UpdateServiceFrame(void)
 			       GetService(SERVICE_SAVE)!=NULL);
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (lookup_widget(commander_window,"service_ftp")),
 			       GetService(SERVICE_FTP)!=NULL);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (lookup_widget(commander_window,"service_v4l")),
+			       GetService(SERVICE_V4L)!=NULL);
 
 }

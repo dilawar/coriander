@@ -41,6 +41,7 @@ UpdatePreferencesWindow(void)
   UpdatePrefsGeneralFrame();    
   UpdatePrefsSaveFrame();
   UpdatePrefsFtpFrame();
+  UpdatePrefsV4lFrame();
 }
 
 void

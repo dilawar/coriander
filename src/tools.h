@@ -30,6 +30,7 @@
 #include "thread_iso.h"
 #include "thread_ftp.h"
 #include "thread_save.h"
+#include "thread_v4l.h"
 
 /*
 typedef struct _whitebaldata

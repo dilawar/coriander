@@ -482,7 +482,6 @@ on_service_iso_toggled                 (GtkToggleButton *togglebutton,
     }
     else
       IsoStopThread();
-    //CleanThreads(CLEAN_MODE_UI_UPDATE_NOT_ISO);
   }
 
 }
@@ -494,8 +493,6 @@ on_service_display_toggled             (GtkToggleButton *togglebutton,
 {
   if (!silent_ui_update) {
     if (togglebutton->active) {
-      //if (GetService(SERVICE_ISO,current_camera)==NULL)
-      //  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"service_iso")), TRUE);
       pthread_mutex_lock(&camera->uimutex);
       camera->want_to_display=1;
       pthread_mutex_unlock(&camera->uimutex);
@@ -518,8 +515,6 @@ on_service_save_toggled                (GtkToggleButton *togglebutton,
 {
   if (!silent_ui_update) {
     if (togglebutton->active) {
-      //if (GetService(SERVICE_ISO,current_camera)==NULL)
-      //  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"service_iso")), TRUE);
       if (SaveStartThread()==-1)
 	gtk_toggle_button_set_active(togglebutton,0);
     }
@@ -535,13 +530,26 @@ on_service_ftp_toggled                 (GtkToggleButton *togglebutton,
 {
   if (!silent_ui_update) {
     if (togglebutton->active) {
-      //if (GetService(SERVICE_ISO,current_camera)==NULL)
-      //  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"service_iso")), TRUE);
       if (FtpStartThread()==-1)
 	gtk_toggle_button_set_active(togglebutton,0);
     }
     else
       FtpStopThread();
+  }
+}
+
+
+void
+on_service_v4l_toggled                 (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  if (!silent_ui_update) {
+    if (togglebutton->active) {
+      if (V4lStartThread()==-1)
+	gtk_toggle_button_set_active(togglebutton,0);
+    }
+    else
+      V4lStopThread();
   }
 }
 
@@ -701,6 +709,15 @@ on_prefs_save_period_changed           (GtkEditable     *editable,
   gnome_config_sync();
 }
 
+
+void
+on_prefs_v4l_period_changed            (GtkEditable     *editable,
+                                        gpointer         user_data)
+{
+  preferences.v4l_period=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(commander_window,"prefs_v4l_period")));
+  gnome_config_set_int("coriander/v4l/period",preferences.v4l_period);
+  gnome_config_sync();
+}
 
 void
 on_prefs_ftp_period_changed            (GtkEditable     *editable,
@@ -919,6 +936,16 @@ on_prefs_video1394_device_changed      (GtkEditable     *editable,
 {
   preferences.video1394_device=gtk_entry_get_text(GTK_ENTRY(lookup_widget(commander_window,"prefs_video1394_device")));
   gnome_config_set_string("coriander/receive/video1394_device",preferences.video1394_device);
+  gnome_config_sync();
+
+}
+
+void
+on_prefs_v4l_dev_name_changed      (GtkEditable     *editable,
+                                  gpointer         user_data)
+{
+  preferences.v4l_dev_name=gtk_entry_get_text(GTK_ENTRY(lookup_widget(commander_window,"prefs_v4l_dev_name")));
+  gnome_config_set_string("coriander/v4l/v4l_dev_name",preferences.v4l_dev_name);
   gnome_config_sync();
 
 }

@@ -54,6 +54,7 @@ typedef enum _Service_T
   SERVICE_ISO=0,
   SERVICE_DISPLAY,
   SERVICE_SAVE,
+  SERVICE_V4L,
   SERVICE_FTP
 } service_t;
 
@@ -228,6 +229,8 @@ typedef struct _CtxtInfo
   int fps_save_id;
   int fps_ftp_ctxt;
   int fps_ftp_id;
+  int fps_v4l_ctxt;
+  int fps_v4l_id;
 
 } CtxtInfo;
 

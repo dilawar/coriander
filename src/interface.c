@@ -111,12 +111,14 @@ create_commander_window (void)
   GtkWidget *table65;
   GtkWidget *fps_display;
   GtkWidget *fps_save;
-  GtkWidget *fps_ftp;
   GtkWidget *fps_receive;
   GtkWidget *service_iso;
   GtkWidget *service_display;
   GtkWidget *service_save;
   GtkWidget *service_ftp;
+  GtkWidget *fps_ftp;
+  GtkWidget *fps_v4l;
+  GtkWidget *service_v4l;
   GtkWidget *notebook5;
   GtkWidget *table59;
   GtkWidget *format_frame;
@@ -194,6 +196,17 @@ create_commander_window (void)
   GtkWidget *prefs_save_convert;
   GtkWidget *prefs_save_noconvert;
   GtkWidget *label145;
+  GtkWidget *vbox79;
+  GtkWidget *frame9;
+  GtkWidget *hbox63;
+  GtkWidget *label149;
+  GtkObject *prefs_v4l_period_adj;
+  GtkWidget *prefs_v4l_period;
+  GtkWidget *label150;
+  GtkWidget *frame10;
+  GtkWidget *hbox64;
+  GtkWidget *prefs_v4l_dev_name;
+  GtkWidget *label146;
   GtkWidget *vbox55;
   GtkWidget *prefs_ftp_server_frame;
   GtkWidget *table_capture_ftp;
@@ -218,7 +231,7 @@ create_commander_window (void)
   GSList *ftp_mode_group = NULL;
   GtkWidget *prefs_ftp_seq;
   GtkWidget *prefs_ftp_scratch;
-  GtkWidget *label146;
+  GtkWidget *label148;
   GtkWidget *label57;
   GtkWidget *scrolledwindow2;
   GtkWidget *viewport1;
@@ -608,7 +621,7 @@ create_commander_window (void)
   gtk_container_add (GTK_CONTAINER (switch_frame), hbox61);
   gtk_container_set_border_width (GTK_CONTAINER (hbox61), 3);
 
-  table65 = gtk_table_new (2, 4, TRUE);
+  table65 = gtk_table_new (2, 5, TRUE);
   gtk_widget_ref (table65);
   gtk_object_set_data_full (GTK_OBJECT (commander_window), "table65", table65,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -631,15 +644,6 @@ create_commander_window (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (fps_save);
   gtk_table_attach (GTK_TABLE (table65), fps_save, 2, 3, 1, 2,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-
-  fps_ftp = gtk_statusbar_new ();
-  gtk_widget_ref (fps_ftp);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "fps_ftp", fps_ftp,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (fps_ftp);
-  gtk_table_attach (GTK_TABLE (table65), fps_ftp, 3, 4, 1, 2,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
@@ -684,9 +688,36 @@ create_commander_window (void)
   gtk_object_set_data_full (GTK_OBJECT (commander_window), "service_ftp", service_ftp,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (service_ftp);
-  gtk_table_attach (GTK_TABLE (table65), service_ftp, 3, 4, 0, 1,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+  gtk_table_attach (GTK_TABLE (table65), service_ftp, 4, 5, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  fps_ftp = gtk_statusbar_new ();
+  gtk_widget_ref (fps_ftp);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "fps_ftp", fps_ftp,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (fps_ftp);
+  gtk_table_attach (GTK_TABLE (table65), fps_ftp, 4, 5, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  fps_v4l = gtk_statusbar_new ();
+  gtk_widget_ref (fps_v4l);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "fps_v4l", fps_v4l,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (fps_v4l);
+  gtk_table_attach (GTK_TABLE (table65), fps_v4l, 3, 4, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  service_v4l = gtk_toggle_button_new_with_label (_("V4L"));
+  gtk_widget_ref (service_v4l);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "service_v4l", service_v4l,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (service_v4l);
+  gtk_table_attach (GTK_TABLE (table65), service_v4l, 3, 4, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
 
   notebook5 = gtk_notebook_new ();
   gtk_widget_ref (notebook5);
@@ -1299,6 +1330,86 @@ create_commander_window (void)
   gtk_widget_show (label145);
   gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook5), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook5), 2), label145);
 
+  vbox79 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_ref (vbox79);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "vbox79", vbox79,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (vbox79);
+  gtk_container_add (GTK_CONTAINER (notebook5), vbox79);
+
+  frame9 = gtk_frame_new (_("Frame drop"));
+  gtk_widget_ref (frame9);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "frame9", frame9,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (frame9);
+  gtk_box_pack_start (GTK_BOX (vbox79), frame9, FALSE, TRUE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (frame9), 5);
+
+  hbox63 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_ref (hbox63);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "hbox63", hbox63,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (hbox63);
+  gtk_container_add (GTK_CONTAINER (frame9), hbox63);
+
+  label149 = gtk_label_new (_("Every"));
+  gtk_widget_ref (label149);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "label149", label149,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label149);
+  gtk_box_pack_start (GTK_BOX (hbox63), label149, FALSE, FALSE, 0);
+  gtk_misc_set_padding (GTK_MISC (label149), 5, 0);
+
+  prefs_v4l_period_adj = gtk_adjustment_new (1, 1, 9999, 1, 10, 10);
+  prefs_v4l_period = gtk_spin_button_new (GTK_ADJUSTMENT (prefs_v4l_period_adj), 1, 0);
+  gtk_widget_ref (prefs_v4l_period);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "prefs_v4l_period", prefs_v4l_period,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (prefs_v4l_period);
+  gtk_box_pack_start (GTK_BOX (hbox63), prefs_v4l_period, FALSE, FALSE, 0);
+  gtk_widget_set_usize (prefs_v4l_period, 100, -2);
+  gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (prefs_v4l_period), TRUE);
+  gtk_spin_button_set_update_policy (GTK_SPIN_BUTTON (prefs_v4l_period), GTK_UPDATE_IF_VALID);
+
+  label150 = gtk_label_new (_("frames"));
+  gtk_widget_ref (label150);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "label150", label150,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label150);
+  gtk_box_pack_start (GTK_BOX (hbox63), label150, FALSE, FALSE, 2);
+  gtk_misc_set_padding (GTK_MISC (label150), 5, 8);
+
+  frame10 = gtk_frame_new (_("Output device"));
+  gtk_widget_ref (frame10);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "frame10", frame10,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (frame10);
+  gtk_box_pack_start (GTK_BOX (vbox79), frame10, FALSE, TRUE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (frame10), 5);
+
+  hbox64 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_ref (hbox64);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "hbox64", hbox64,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (hbox64);
+  gtk_container_add (GTK_CONTAINER (frame10), hbox64);
+  gtk_container_set_border_width (GTK_CONTAINER (hbox64), 5);
+
+  prefs_v4l_dev_name = gtk_entry_new ();
+  gtk_widget_ref (prefs_v4l_dev_name);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "prefs_v4l_dev_name", prefs_v4l_dev_name,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (prefs_v4l_dev_name);
+  gtk_box_pack_start (GTK_BOX (hbox64), prefs_v4l_dev_name, TRUE, TRUE, 0);
+  gtk_widget_set_usize (prefs_v4l_dev_name, -2, 22);
+
+  label146 = gtk_label_new (_("V4L"));
+  gtk_widget_ref (label146);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "label146", label146,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label146);
+  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook5), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook5), 3), label146);
+
   vbox55 = gtk_vbox_new (FALSE, 0);
   gtk_widget_ref (vbox55);
   gtk_object_set_data_full (GTK_OBJECT (commander_window), "vbox55", vbox55,
@@ -1504,12 +1615,12 @@ create_commander_window (void)
   gtk_widget_show (prefs_ftp_scratch);
   gtk_box_pack_start (GTK_BOX (vbox57), prefs_ftp_scratch, FALSE, FALSE, 0);
 
-  label146 = gtk_label_new (_("FTP"));
-  gtk_widget_ref (label146);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "label146", label146,
+  label148 = gtk_label_new (_("FTP"));
+  gtk_widget_ref (label148);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "label148", label148,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label146);
-  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook5), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook5), 3), label146);
+  gtk_widget_show (label148);
+  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook5), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook5), 4), label148);
 
   label57 = gtk_label_new (_("Services"));
   gtk_widget_ref (label57);
@@ -2197,6 +2308,9 @@ create_commander_window (void)
   gtk_signal_connect (GTK_OBJECT (service_ftp), "toggled",
                       GTK_SIGNAL_FUNC (on_service_ftp_toggled),
                       NULL);
+  gtk_signal_connect (GTK_OBJECT (service_v4l), "toggled",
+                      GTK_SIGNAL_FUNC (on_service_v4l_toggled),
+                      NULL);
   gtk_signal_connect (GTK_OBJECT (prefs_receive_dropframes), "toggled",
                       GTK_SIGNAL_FUNC (on_prefs_receive_drop_frames_toggled),
                       NULL);
@@ -2253,6 +2367,12 @@ create_commander_window (void)
                       NULL);
   gtk_signal_connect (GTK_OBJECT (prefs_save_noconvert), "toggled",
                       GTK_SIGNAL_FUNC (on_prefs_save_noconvert_toggled),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (prefs_v4l_period), "changed",
+                      GTK_SIGNAL_FUNC (on_prefs_v4l_period_changed),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (prefs_v4l_dev_name), "changed",
+                      GTK_SIGNAL_FUNC (on_prefs_v4l_dev_name_changed),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (prefs_ftp_address), "changed",
                       GTK_SIGNAL_FUNC (on_prefs_ftp_address_changed),

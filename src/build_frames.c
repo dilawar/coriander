@@ -44,6 +44,8 @@ BuildServiceFrame(void)
 #else
   gtk_widget_set_sensitive(lookup_widget(commander_window,"service_display"),FALSE);
 #endif
+  // ADD V4L
+
 }
 
 void
@@ -156,6 +158,16 @@ BuildPrefsSaveFrame(void)
   
   //filename
   gtk_entry_set_text(GTK_ENTRY(lookup_widget(commander_window, "prefs_save_filename")), preferences.save_filename);
+}
+
+void
+BuildPrefsV4lFrame(void)
+{
+  // frame drop
+  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(commander_window,
+							  "prefs_v4l_period"), preferences.v4l_period);
+  //filename
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(commander_window, "prefs_v4l_dev_name")), preferences.v4l_dev_name);
 }
 
 void

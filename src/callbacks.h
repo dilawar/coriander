@@ -461,4 +461,16 @@ void
 on_global_iso_start_clicked            (GtkButton       *button,
                                         gpointer         user_data);
 
+void
+on_service_v4l_toggled                 (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_prefs_v4l_period_changed            (GtkEditable     *editable,
+                                        gpointer         user_data);
+
+void
+on_prefs_v4l_dev_name_changed      (GtkEditable     *editable,
+                                    gpointer         user_data);
+
 #endif

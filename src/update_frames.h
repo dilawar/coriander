@@ -74,6 +74,9 @@ void
 UpdatePrefsFtpFrame(void);
 
 void
+UpdatePrefsV4lFrame(void);
+
+void
 UpdateCursorFrame(int posx, int posy, int r, int g, int b, int y, int u, int v);
 
 void

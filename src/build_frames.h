@@ -86,6 +86,9 @@ void
 BuildPrefsDisplayFrame(void);
 
 void
+BuildPrefsV4lFrame(void);
+
+void
 BuildPrefsReceiveFrame(void);
 
 void

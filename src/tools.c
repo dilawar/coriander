@@ -256,11 +256,13 @@ void GetContextStatus()
   ctxt.fps_display_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"fps_display"),"");
   ctxt.fps_save_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"fps_save"),"");
   ctxt.fps_ftp_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"fps_ftp"),"");
+  ctxt.fps_v4l_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(commander_window,"fps_v4l"),"");
 
   ctxt.fps_receive_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"fps_receive"), ctxt.fps_receive_ctxt, "");
   ctxt.fps_display_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"fps_display"), ctxt.fps_display_ctxt, "");
   ctxt.fps_save_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"fps_save"), ctxt.fps_save_ctxt, "");
   ctxt.fps_ftp_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"fps_ftp"), ctxt.fps_ftp_ctxt, "");
+  ctxt.fps_v4l_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"fps_v4l"), ctxt.fps_v4l_ctxt, "");
   
 }
 
@@ -623,6 +625,7 @@ StopFPSDisplay(void)
   //displaythread_info_t* infodisplay;
   savethread_info_t* infosave;
   ftpthread_info_t* infoftp;
+  v4lthread_info_t* infov4l;
 
   service=GetService(SERVICE_ISO);
   if (service!=NULL) {
@@ -660,6 +663,17 @@ StopFPSDisplay(void)
 					   ctxt.fps_ftp_ctxt, "");
     //fprintf(stderr,"done\n");
   }
+  service=GetService(SERVICE_V4L);
+  if (service!=NULL) {
+    infov4l=(v4lthread_info_t*)service->data;
+    //fprintf(stderr,"Stopping v4l fps, id %d...",infov4l->timeout_func_id);
+    gtk_timeout_remove(infov4l->timeout_func_id);
+    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"fps_v4l"),
+			 ctxt.fps_v4l_ctxt, ctxt.fps_v4l_id);
+    ctxt.fps_v4l_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"fps_v4l"),
+					   ctxt.fps_v4l_ctxt, "");
+    //fprintf(stderr,"done\n");
+  }
 }
 
 void
@@ -670,6 +684,7 @@ ResumeFPSDisplay(void)
   //displaythread_info_t* infodisplay;
   savethread_info_t* infosave;
   ftpthread_info_t* infoftp;
+  v4lthread_info_t* infov4l;
 
   service=GetService(SERVICE_ISO);
   if (service!=NULL) {
@@ -693,6 +708,13 @@ ResumeFPSDisplay(void)
     //fprintf(stderr,"Starting ftp fps...");
     infoftp->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)FtpShowFPS, (gpointer*) service);
     //fprintf(stderr,"done: id= %d\n",infoftp->timeout_func_id);
+  }
+  service=GetService(SERVICE_V4L);
+  if (service!=NULL) {
+    infov4l=(v4lthread_info_t*)service->data;
+    //fprintf(stderr,"Starting v4l fps...");
+    infov4l->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)V4lShowFPS, (gpointer*) service);
+    //fprintf(stderr,"done: id= %d\n",infov4l->timeout_func_id);
   }
 }
 

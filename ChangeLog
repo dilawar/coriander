@@ -2,6 +2,10 @@ Coriander, (c) 2000-2003 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 0.33
 
+   May 26, 2003, by Damien Douxchamps
+   - First prototype of vloopback service, based on the very nice example
+     by Dan Dennedy found in libdc1394.
+	
    May 25, 2003, by Damien Douxchamps
    - another big change and cleanup: the cameras information are now
      allocated dynamically and the cameras are linked as a chain. This will
