@@ -220,14 +220,16 @@ IsoThread(void* arg)
     pthread_cleanup_push((void*)IsoCleanupThread, (void*)iso_service);
 
     // IF FRAME USED (and we use no-drop mode)
-    if (((iso_service->current_buffer->used==1)&&(iso_service->camera->prefs.iso_nodrop==1))||
+    if (((iso_service->current_buffer->used>0)&&(iso_service->camera->prefs.iso_nodrop>0))||
 	(iso_service->camera->prefs.iso_nodrop==0)) {
     
       if (info->receive_method == RECEIVE_METHOD_RAW1394)
 	dc1394_single_capture(info->handle, &info->capture);
       else
 	dma_ok=dc1394_dma_single_capture(&info->capture);
-      
+    
+      //printf("Got frame\n");
+  
       gettimeofday(&info->rawtime, NULL);
       localtime_r(&info->rawtime.tv_sec, &(iso_service->current_buffer->captime));
       iso_service->current_buffer->captime_usec=info->rawtime.tv_usec;
@@ -320,6 +322,7 @@ IsoThread(void* arg)
     }
     pthread_mutex_lock(&iso_service->mutex_data);
     RollBuffers(iso_service);
+    //printf("Buffers rolled in ISO\n");
     pthread_mutex_unlock(&iso_service->mutex_data);
     pthread_cleanup_pop(0);
   }

@@ -3295,7 +3295,7 @@ create_about_window (void)
   about_window = gnome_about_new ("Coriander", VERSION,
                         _("Copyright 2000-2005 Damien Douxchamps"),
                         authors,
-                        _("Coriander home page is http://coriander.sourceforge.net\n \nCoriander received equipment donations/leases from the following companies:\n- Hamamatsu Corporation     http://www.hpk.co.jp\n- Allied Vision Technologies     http://www.alliedvisiontec.com\n- The Imaging Source     http://www.1394imaging.com\n \nMany thanks to our sponsors!"),
+                        _("Coriander home page is http://coriander.sourceforge.net\n \nCoriander received equipment donations/leases from the following companies:\n- Hamamatsu Corporation     http://www.hpk.co.jp\n- The Imaging Source     http://www.1394imaging.com\n- Point Grey Research     http://www.ptgrey.com\n- Basler GmbH     http://www.balserweb.com\n \nMany thanks to our sponsors!"),
                         "coriander/coriander-logo.png");
   gtk_object_set_data (GTK_OBJECT (about_window), "about_window", about_window);
   gtk_window_set_modal (GTK_WINDOW (about_window), TRUE);

@@ -719,8 +719,10 @@ SaveThread(void* arg)
     else {
       pthread_mutex_unlock(&info->mutex_cancel);
       pthread_mutex_lock(&save_service->mutex_data);
+      //printf("About to roll buffers in SAVE thread\n");
       if(RollBuffers(save_service)) { // have buffers been rolled?
 	// check params
+	//printf("New frame arrived\n");
 	SaveThreadCheckParams(save_service);
 	if (save_service->current_buffer->width!=-1) {
 	  if (skip_counter>=(info->period-1)) {
@@ -911,6 +913,7 @@ SaveThread(void* arg)
 	pthread_mutex_unlock(&save_service->mutex_data);
       }
       else {
+	//printf("No new frame, unlocking mutex\n");
 	pthread_mutex_unlock(&save_service->mutex_data);
       }
     }

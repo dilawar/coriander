@@ -1532,7 +1532,8 @@ on_save_filename_subentry_changed      (GtkEditable     *editable,
   }
   else {
     // error: no extension provided
-    MainError("You should provide an extension for the save filename. Default extension is RAW");
+    // The following message should go in the SAVE thread setup functions //////////////////////////
+    // MainError("You should provide an extension for the save filename. Default extension is RAW");
   }
   /*
   fprintf(stderr,"filname: %s\n",camera->prefs.save_filename);
@@ -1571,7 +1572,9 @@ on_save_filename_subentry_changed      (GtkEditable     *editable,
     camera->prefs.save_format=SAVE_FORMAT_XPM;
   }
   else if (strncasecmp(camera->prefs.save_filename_ext, "raw",3)==0) {
-    camera->prefs.save_format=SAVE_FORMAT_RAW;
+    // don't switch to still if we were in video mode
+    if (camera->prefs.save_format!=SAVE_FORMAT_RAW_VIDEO)
+      camera->prefs.save_format=SAVE_FORMAT_RAW;
   }
 
   //BuildSaveModeMenu();
