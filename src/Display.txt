@@ -1,21 +1,21 @@
 Some remarks about the new experimental live display.
 
+The display service (thread) is always available. If SDL isn't available than you just don't see the live image, everything else still works (zoom, pan, select, crop, pixel position and values, etc).
+
+The display service runs from a thread and thus (at least for gtk 1.2) can not use gtk itself. Instead it passes it on to the main thread using the mainthread_info structure.
+
 We have to deal with five rectangles:
 
-a - The image received from the camera. It's size and depth can be changed from 
-    the control panel or by cropping, in which case b and c should adapt.
+a - The source image received from the camera. It's size and depth can be changed from the services or format 7 tab or the display window, in which case b and c should adapt and d will be cleared.
 
-b - The imaginairy SDL rectangle where the source image would be splashed using current 
-    camera and zoom settings. Don't worry :), it's visable area is c, so it's 
-    "content" will only be splashed using those limits.
+b - The imaginairy projection where the source image would be splashed using current zoom settings. Don't worry :), it's visable area is c, so it's "content" will only be splashed using those limits.
 
-c - The display window is a viewport to b (could be larger or smaller) using current 
-    pan settings. It can be changed by resizing the window.
+c - The display window is a viewport to b (can be larger or smaller) using current zoom and pan settings. It can be changed by resizing the window.
 
-d - The selection can be made inside the display window
+d - The selection can be made inside c.
 
-e - The crop area is d adapted to the camera's capabilities
+e - The crop area is d adapted to the camera's capabilities.
 
-Thats it for now. Most of the "TODO" marks will either be explaned here or dealt with.
+That's it for now. Most of the "TODO" marks will either be explaned here or dealt with.
 
 /JK
