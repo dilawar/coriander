@@ -2,6 +2,10 @@ Coriander, (c) 2000-2002 Damien Douxchamps <douxchamps@ieee.org>
 
 Changes towards version 0.27
 
+   November 2, 2002, by Damien Douxchamps
+   - updated F7 code: a bug had been introduced on Oct. 31, plus
+     some better handling of F7 control via SDL.
+	
    October 31, 2002, by Damien Douxchamps
    - misc code beautification in thread_iso.c
    - replaced all 'if (!dc1394_xxx)' by 'if (dc1394_xxx!=DC1394SUCCESS)

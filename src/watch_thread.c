@@ -128,13 +128,21 @@ WatchThread(void *arg)
 	      }
 	      size[0]=((lower_right[0]-upper_left[0])/info->f7_step[0])*info->f7_step[0];
 	      size[1]=((lower_right[1]-upper_left[1])/info->f7_step[1])*info->f7_step[1];
-	      /*
-	      fprintf(stderr,"corners: [%d %d] [%d %d], pos: [%d %d], size[%d %d]\n",
-		      upper_left[0],upper_left[1],lower_right[0],lower_right[1],
-		      pos[0],pos[1],size[0],size[1]);
-	      */
+	      
+	      //fprintf(stderr,"corners: [%d %d] [%d %d], pos: [%d %d], size[%d %d]\n",
+	      //      upper_left[0],upper_left[1],lower_right[0],lower_right[1],
+	      //      pos[0],pos[1],size[0],size[1]);
+	      
 	      IsoFlowCheck(state);
 	      //fprintf(stderr,"ISO check completed\n");
+
+	      //     WARNING!!
+	      // the order in which we apply the F7 changes IS IMPORTANT!
+	      // example: from size=128x128, pos=128x128, we can't go to size=1280x1024, pos=0x0 by first changing the size!!
+	      // Thus, we need to know what to do first...
+	      // OR, we can set the position to ZEROxZERO, then change size, then change position!! :-))
+	      if (dc1394_set_format7_image_position(camera->handle,camera->id, misc_info->mode, 0, 0)!=DC1394_SUCCESS)
+		MainError("Could not set Format7 image position to ZERO!!");
 	      if ((dc1394_set_format7_image_size(camera->handle,camera->id, misc_info->mode, size[0], size[1])!=DC1394_SUCCESS)||
 		  (dc1394_set_format7_image_position(camera->handle,camera->id, misc_info->mode, pos[0], pos[1])!=DC1394_SUCCESS))
 		MainError("Could not set Format7 image size and position");
