@@ -1242,4 +1242,15 @@ on_bayer_menu_activate           (GtkMenuItem     *menuitem,
   tmp=(int)user_data;
   
   uiinfo->bayer=tmp;
+  UpdateOptionFrame();
+}
+
+void
+on_bayer_pattern_menu_activate           (GtkMenuItem     *menuitem,
+					  gpointer         user_data)
+{
+  int tmp;
+  tmp=(int)user_data;
+  
+  uiinfo->bayer_pattern=tmp;
 }

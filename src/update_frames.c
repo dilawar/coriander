@@ -39,6 +39,7 @@
 #include <libdc1394/dc1394_control.h>
 #include "raw1394support.h"
 
+extern UIInfo *uiinfo;
 extern GtkWidget *commander_window;
 extern GtkWidget *preferences_window;
 extern dc1394_miscinfo *misc_info;
@@ -374,4 +375,11 @@ UpdateCursorFrame(int posx, int posy, int r, int g, int b, int y, int u, int v)
       ctxt.cursor_color_v_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"cursor_color_v"),
 						ctxt.cursor_color_v_ctxt, temp);
     }
+}
+
+void
+UpdateOptionFrame(void)
+{
+  gtk_widget_set_sensitive(lookup_widget(commander_window,"pattern_menu"),uiinfo->bayer!=NO_BAYER_DECODING);
+
 }

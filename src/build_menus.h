@@ -39,4 +39,10 @@ BuildFpsMenu(void);
 void
 BuildFormatMenu(void);
 
+void
+BuildBayerMenu(void);
+
+void
+BuildBayerPatternMenu(void);
+
 #endif

@@ -28,6 +28,7 @@
 #include "preferences.h"
 #include "tools.h"
 #include "build_menus.h"
+#include "conversions.h"
 #include <libdc1394/dc1394_control.h>
 
 extern dc1394_feature_set *feature_set;
@@ -50,6 +51,7 @@ extern dc1394_camerainfo *camera;
 extern dc1394_camerainfo *cameras;
 extern int current_camera;
 extern int camera_num;
+extern UIInfo *uiinfo;
 
 void
 BuildTriggerModeMenu(void)
@@ -558,3 +560,100 @@ BuildFormatMenu(void)
 }
 
 
+void
+BuildBayerMenu(void)
+{
+  GtkWidget* new_option_menu;
+  GtkWidget* new_menu;
+  GtkWidget* glade_menuitem;
+
+  // build bayer option menu:
+  gtk_widget_destroy(GTK_WIDGET(lookup_widget(commander_window,"bayer_menu"))); // remove previous menu
+  
+  new_option_menu = gtk_option_menu_new ();
+  gtk_widget_ref (new_option_menu);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "bayer_menu", new_option_menu,
+			    (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (new_option_menu);
+  gtk_table_attach (GTK_TABLE (lookup_widget(commander_window,"table61")),
+		    new_option_menu, 0, 2, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (new_option_menu), 1);
+  
+  new_menu = gtk_menu_new ();
+
+  // add no bayer option
+  glade_menuitem = gtk_menu_item_new_with_label (_("No Bayer"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
+		      GTK_SIGNAL_FUNC (on_bayer_menu_activate),
+		      (int*)NO_BAYER_DECODING); 
+  // add nearest_neighbor option
+  glade_menuitem = gtk_menu_item_new_with_label (_("Nearest"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
+		      GTK_SIGNAL_FUNC (on_bayer_menu_activate),
+		      (int*)BAYER_DECODING_NEAREST); 
+  // add EDGE_SENSE option
+  glade_menuitem = gtk_menu_item_new_with_label (_("Edge Sense"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
+		      GTK_SIGNAL_FUNC (on_bayer_menu_activate),
+		      (int*)BAYER_DECODING_EDGE_SENSE); 
+  
+  gtk_option_menu_set_menu (GTK_OPTION_MENU (new_option_menu), new_menu);
+
+  // menu history
+  gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(commander_window, "bayer_menu")),uiinfo->bayer);
+      
+}
+
+void
+BuildBayerPatternMenu(void)
+{
+  GtkWidget* new_option_menu;
+  GtkWidget* new_menu;
+  GtkWidget* glade_menuitem;
+
+  // build bayer option menu:
+  gtk_widget_destroy(GTK_WIDGET(lookup_widget(commander_window,"pattern_menu"))); // remove previous menu
+  
+  new_option_menu = gtk_option_menu_new ();
+  gtk_widget_ref (new_option_menu);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "pattern_menu", new_option_menu,
+			    (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (new_option_menu);
+  gtk_table_attach (GTK_TABLE (lookup_widget(commander_window,"table61")),
+		    new_option_menu, 0, 2, 2, 3,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (new_option_menu), 1);
+  
+  new_menu = gtk_menu_new ();
+
+  // add no bayer option
+  glade_menuitem = gtk_menu_item_new_with_label (_("BGGR"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
+		      GTK_SIGNAL_FUNC (on_bayer_pattern_menu_activate),
+		      (int*)BAYER_PATTERN_BGGR); 
+  // add nearest_neighbor option
+  glade_menuitem = gtk_menu_item_new_with_label (_("GRBG"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
+		      GTK_SIGNAL_FUNC (on_bayer_pattern_menu_activate),
+		      (int*)BAYER_PATTERN_GRBG); 
+
+  gtk_option_menu_set_menu (GTK_OPTION_MENU (new_option_menu), new_menu);
+
+  // menu history
+  gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(commander_window, "pattern_menu")),
+			      uiinfo->bayer_pattern);
+      
+}

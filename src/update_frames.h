@@ -70,4 +70,7 @@ UpdateServicesFrame(void);
 void
 UpdateCursorFrame(int posx, int posy, int r, int g, int b, int y, int u, int v);
 
+void
+UpdateOptionFrame(void);
+
 #endif

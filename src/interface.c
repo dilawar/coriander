@@ -129,6 +129,8 @@ create_commander_window (void)
   GtkWidget *test_pattern;
   GtkWidget *bayer_menu;
   GtkWidget *bayer_menu_menu;
+  GtkWidget *pattern_menu;
+  GtkWidget *pattern_menu_menu;
   GtkWidget *format_frame;
   GtkWidget *table60;
   GtkWidget *format_select;
@@ -752,6 +754,24 @@ create_commander_window (void)
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (bayer_menu_menu), glade_menuitem);
   gtk_option_menu_set_menu (GTK_OPTION_MENU (bayer_menu), bayer_menu_menu);
+
+  pattern_menu = gtk_option_menu_new ();
+  gtk_widget_ref (pattern_menu);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "pattern_menu", pattern_menu,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (pattern_menu);
+  gtk_table_attach (GTK_TABLE (table61), pattern_menu, 0, 2, 2, 3,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (pattern_menu), 1);
+  pattern_menu_menu = gtk_menu_new ();
+  glade_menuitem = gtk_menu_item_new_with_label (_("BGGR"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (pattern_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("GRBG"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (pattern_menu_menu), glade_menuitem);
+  gtk_option_menu_set_menu (GTK_OPTION_MENU (pattern_menu), pattern_menu_menu);
 
   format_frame = gtk_frame_new (_("Format"));
   gtk_widget_ref (format_frame);

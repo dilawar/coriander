@@ -404,3 +404,7 @@ on_prefs_receive_drop_frames_toggled   (GtkToggleButton *togglebutton,
 void
 on_bayer_menu_activate           (GtkMenuItem     *menuitem,
 				  gpointer         user_data);
+
+void
+on_bayer_pattern_menu_activate           (GtkMenuItem     *menuitem,
+					  gpointer         user_data);
