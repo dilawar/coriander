@@ -172,22 +172,25 @@ DisplayThread(void* arg)
 	      SDL_UnlockYUVOverlay(info->SDL_overlay);
 	      SDL_DisplayYUVOverlay(info->SDL_overlay, &info->SDL_videoRect);
 	      //fprintf(stderr,"Displayed\n");
+	      info->redraw_prev_time=times(&info->redraw_tms_buf);
 	    }
 #endif
 	  info->frames++;
 	  }
-	  else
+	  else { //
+	    ConditionalTimeoutRedraw(display_service);
 	    skip_counter++;
-	  
+	  }
 	  // FPS display:
 	  info->current_time=times(&info->tms_buf);
 	}
 	
 	pthread_mutex_unlock(&display_service->mutex_data);
       }
-      else {
+      else { //
+	ConditionalTimeoutRedraw(display_service);
 	pthread_mutex_unlock(&display_service->mutex_data);
-	usleep(THREAD_LOOP_SLEEP_TIME_US);
+	usleep(0);
       }
     }
   }
@@ -196,6 +199,27 @@ DisplayThread(void* arg)
   return ((void*)1);
 }
 
+// the goal of the following function is to redraw the SDL display twice a second so that the image follows the screen
+// during window movement or if another window comes momentarily on top of the display while no images are coming. 
+void
+ConditionalTimeoutRedraw(chain_t* service)
+{
+  displaythread_info_t *info=NULL;
+
+  info=(displaythread_info_t*)service->data;
+
+  info->redraw_current_time=times(&info->redraw_tms_buf);
+  if ((float)(info->current_time-info->prev_time)/sysconf(_SC_CLK_TCK)>.5) { // redraw twice per second
+#ifdef HAVE_SDLLIB
+    if (SDL_LockYUVOverlay(info->SDL_overlay) == 0) {
+      SDLDisplayArea(service);
+      SDL_UnlockYUVOverlay(info->SDL_overlay);
+      SDL_DisplayYUVOverlay(info->SDL_overlay, &info->SDL_videoRect);
+    }
+#endif
+    info->redraw_prev_time=times(&info->redraw_tms_buf);
+  }
+}
 
 gint
 DisplayStopThread(camera_t* cam)

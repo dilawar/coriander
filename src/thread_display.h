@@ -48,6 +48,10 @@ typedef struct
   int frames;
   int timeout_func_id;
 
+  struct tms redraw_tms_buf;
+  clock_t redraw_prev_time;
+  clock_t redraw_current_time;
+
 #ifdef HAVE_SDLLIB
 
   // general SDL stuff
@@ -81,6 +85,9 @@ DisplayThread(void* arg);
 
 gint
 DisplayStopThread(camera_t* cam);
+
+void
+ConditionalTimeoutRedraw(chain_t* service);
 
 #ifdef HAVE_SDLLIB
 

@@ -257,7 +257,7 @@ FtpThread(void* arg)
       }
       else {
 	pthread_mutex_unlock(&ftp_service->mutex_data);
-	usleep(THREAD_LOOP_SLEEP_TIME_US);
+	usleep(0);
       }
     }
   }

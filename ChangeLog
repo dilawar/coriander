@@ -2,6 +2,11 @@ Coriander, (c) 2000-2003 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 1.00
 	
+   June 19, 2003, by Damien Douxchamps
+   - added a minimal display redraw rate of 2Hz. This avoids display
+     'freeze' or blanking when the window is moved or overlapped while
+     no images are coming to the thread.
+	
    June 17, 2003, by Damien Douxchamps
    - added a control for DMA buffer size.
    - misc fixes in preferences
