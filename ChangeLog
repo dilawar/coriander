@@ -2,6 +2,10 @@ Coriander, (c) 2000-2002 Damien Douxchamps <douxchamps@ieee.org>
 
 Changes towards version 0.25
 
+   Mar 26, 2002, by Dan Dennedy
+   - change calls to raw1394_destroy_handle to dc1394_destroy_handle
+     requires updated libdc1394 from CVS.
+
    Mar 24, 2002, by Damien Douxchamps
    - finished the interactive region selection for F7.
    - added the 'm' shortcut to switch to max size in F7.

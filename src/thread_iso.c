@@ -95,7 +95,7 @@ gint IsoStartThread(void)
 	    else
 	      {
 		MainError("Can't use VIDEO1394. Try RAW1394 receive mode.");
-		raw1394_destroy_handle(info->handle);
+		dc1394_destroy_handle(info->handle);
 		pthread_mutex_unlock(&iso_service->mutex_data);
 		FreeChain(iso_service);
 		return(-1);
@@ -113,7 +113,7 @@ gint IsoStartThread(void)
 	    else
 	      {
 		MainError("Can't use VIDEO1394. Try RAW1394 receive mode.");
-		raw1394_destroy_handle(info->handle);
+		dc1394_destroy_handle(info->handle);
 		pthread_mutex_unlock(&iso_service->mutex_data);
 		FreeChain(iso_service);
 		return(-1);
@@ -131,7 +131,7 @@ gint IsoStartThread(void)
 	    else
 	      {
 		MainError("Can't use RAW1394. Try VIDEO1394 receive mode.");
-		raw1394_destroy_handle(info->handle);
+		dc1394_destroy_handle(info->handle);
 		pthread_mutex_unlock(&iso_service->mutex_data);
 		FreeChain(iso_service);
 		return(-1);
@@ -149,7 +149,7 @@ gint IsoStartThread(void)
 	    else
 	      {
 		MainError("Can't use RAW1394. Try VIDEO1394 receive mode.");
-		raw1394_destroy_handle(info->handle);
+		dc1394_destroy_handle(info->handle);
 		pthread_mutex_unlock(&iso_service->mutex_data);
 		FreeChain(iso_service);
 		return(-1);
@@ -273,7 +273,7 @@ gint IsoStopThread(void)
       else 
 	dc1394_release_camera(camera->handle, &info->capture);
       
-      raw1394_destroy_handle(info->handle);
+      dc1394_destroy_handle(info->handle);
       info->handle = NULL;
 
       pthread_mutex_unlock(&iso_service->mutex_struct);
