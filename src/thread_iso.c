@@ -552,7 +552,7 @@ AllocImageBuffer(chain_t* iso_service)
 void
 SetColorMode(buffer_t *buffer)
 {
-  int bpp=-1;
+  float bpp=-1;
 
   if (buffer->bayer==NO_BAYER_DECODING) {
     switch(buffer->mode) {
@@ -658,7 +658,7 @@ SetColorMode(buffer_t *buffer)
   if (bpp==-1)
     fprintf(stderr,"ERROR: BPP is -1!!\n");
 
-  buffer->buffer_image_bytes=(int)buffer->width*buffer->height*bpp;
+  buffer->buffer_image_bytes=(int)(buffer->width*buffer->height*bpp);
   //fprintf(stderr,"Color mode set to %d\n",buffer->buffer_color_mode);
 
 }
