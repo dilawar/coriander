@@ -38,7 +38,6 @@ extern GtkWidget *commander_window;
 extern GtkWidget *preferences_window;
 extern dc1394_feature_set *feature_set;
 extern dc1394_camerainfo *camera;
-extern GtkWidget *capture_window;
 extern dc1394_miscinfo *misc_info;
 extern PrefsInfo preferences;
 

@@ -1461,7 +1461,6 @@
       <widget>
 	<class>GtkNotebook</class>
 	<name>notebook2</name>
-	<border_width>5</border_width>
 	<can_focus>True</can_focus>
 	<show_tabs>True</show_tabs>
 	<show_border>True</show_border>
@@ -3996,6 +3995,7 @@ V-field:</label>
 	      <widget>
 		<class>GtkVBox</class>
 		<name>vbox23</name>
+		<width>70</width>
 		<homogeneous>True</homogeneous>
 		<spacing>0</spacing>
 		<child>
@@ -4293,6 +4293,7 @@ V-field:</label>
 	      <widget>
 		<class>GtkVBox</class>
 		<name>vbox42</name>
+		<width>70</width>
 		<homogeneous>True</homogeneous>
 		<spacing>0</spacing>
 		<child>
