@@ -1,3 +1,3 @@
-Known bugs for version 1.0.1:
+- If the total DMA buffer size is larger than a certain threshold, coriander
+  will crash. The source of this problem is in a low-level kernel bug.
 
-There is no known bug at this time.

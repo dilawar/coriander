@@ -1,30 +1,37 @@
 _______________________________________________________________________________
 
-	              Open issues for Coriander 1.0.1 ...
+	                  Open issues for Coriander ...
 	          Damien Douxchamps <ddouxchamps@users.sf.net>
 _______________________________________________________________________________
-
-- short term:
-	- record and play 'scenario' files (files containing a list of
-	  timed commands)
-	- record and recall camera setup files
-	- command line capability
 
 - video:
     	- add a button somewhere to quickly capture an image and save it to
 	  disk (this was previously called "capture single").
-	- use available XV color modes to avoid conversions
+	- use available XV color modes to avoid useless conversions
 
 - refresh/update:
 	- regularly update ranges in auto-mode
 
 - misc stuff:
+	- merge Johann's patch for a nice display window
 	- add autofocus, autowhitebalance and autoexposure (autocontrast)
 	  in software
+	- upgrade fwrite to correct argument order
+	- record and play 'scenario' files (files containing a list of
+	  timed commands)
+	- record and recall camera setup files
+	- command line capability
 
 - services:
 	- add an SHM service
 	- update the V4L service
+	- protect overwriting files with a confirmation dialog
+	- When a video is being saved, it should not be possible to change
+	  the camera mode (it should be greyed out, or should end the save if
+	  hanged); or should prompt user to supply a new file name to continue
+	  saving (or some combination of above?).
+	- save to stdout
+	- patch for ffmpeg (jpeg and video)
 
 - long term:
 	- add advanced features capability. This would probably require a
