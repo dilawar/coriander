@@ -1,12 +1,11 @@
 _______________________________________________________________________________
 
-	                    Open issues for Coriander 0.17 ...
-	   Damien Douxchamps <douxchamps@ieee.org> , September 25, 2001
+	                    Open issues for Coriander 0.18 ...
+	   Damien Douxchamps <douxchamps@ieee.org> , October 26, 2001
 _______________________________________________________________________________
 
 - video:
 	- overlay update rate different from camera rate
-	- external trigger freezes the GUI. To be fixed.
 - refresh/update:
 	- regularly update ranges in auto-mode
 - multi-camera:

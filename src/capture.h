@@ -57,11 +57,11 @@ typedef enum
 
 typedef struct
 {
-  raw1394handle_t         handle;
   gboolean                is_open;
   GtkWidget              *drawable;
   display_method_t        display_method;
-  receive_method_t        receive_method;
+  pthread_t               thread;
+  pthread_mutex_t         mutex;
 #ifdef HAVE_X11_EXTENSIONS_XVLIB_H
   Display                *display;
   Window                  window;
@@ -73,6 +73,47 @@ typedef struct
 #endif
   char                   *gdk_buffer;
 } porthole_info;
+
+typedef struct
+{
+  pthread_mutex_t mutex_capture;
+  pthread_mutex_t mutex_cancel_display;
+  int cancel_display_thread;
+  int porthole;
+  int isothread;
+  int capture;
+
+} activity_info;
+
+/*
+typedef struct 
+ {
+      0,
+      CAPTURE_FREQ_IMMEDIATE,
+      1,
+      CAPTURE_MODE_SEQUENTIAL,
+      FALSE,
+      "",
+      "",
+      "",
+      ""
+} ;
+
+typedef struct
+{ 
+  pthread_t               thread;
+  pthread_mutex_t         mutex;
+  cap_data_t              data;
+} capture_info;
+*/
+
+typedef struct
+{ 
+  pthread_t               thread;
+  raw1394handle_t         handle;
+  short                   buffer_updated;
+  receive_method_t        receive_method;
+} isothread_info;
 
 typedef enum
 {
@@ -88,25 +129,51 @@ typedef enum
 
 typedef struct
 {
-  unsigned long     counter;
+  pthread_t               thread;
+  pthread_mutex_t         mutex;
+  unsigned long           counter;
 
-  capture_frequency frequency;  
-  guint32           period;
-  capture_mode      mode;
+  capture_frequency       frequency;  
+  guint32                 period;
+  capture_mode            mode;
     
-  gboolean          ftp_enable;
-  gchar            *ftp_address;
-  gchar            *ftp_path;
-  gchar            *ftp_user;
-  gchar            *ftp_passwd;
+  gboolean                ftp_enable;
+  gchar                  *ftp_address;
+  gchar                  *ftp_path;
+  gchar                  *ftp_user;
+  gchar                  *ftp_passwd;
   
 } capture_info;
+/*
+void
+convert_to_yuv( dc1394_cameracapture *capture, unsigned char *src, unsigned char *dest, int mode);
 
+void
+convert_to_rgb( dc1394_cameracapture *capture, unsigned char *src, unsigned char *dest, int mode);
+*/
 gint
-IsoStartThread(gpointer p);
+IsoStartThread(void);
+
+void*
+IsoReceiveThreadCleanup(void* arg);
+
+void*
+IsoReceiveThread(void* arg);
 
 gint
 IsoStopThread(void);
+
+gint
+PortholeStartThread(void);
+
+void*
+DisplayThreadCleanup(void* arg);
+
+void*
+PortholeDisplayThread(void* arg);
+
+gint
+PortholeStopThread(void);
 
 #ifdef HAVE_X11_EXTENSIONS_XVLIB_H
 
@@ -120,9 +187,6 @@ xvPut(void);
 
 void
 gdkPut(void);
-
-gint
-porthole_idler(gpointer);
 
 gboolean
 capture_single_frame(void);

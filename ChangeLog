@@ -1,7 +1,25 @@
 Coriander, (c) 2000-2001 Damien Douxchamps <douxchamps@ieee.org>
 
-Changes towards version 0.18:
+Changes in version 0.18:
 
+    Oct 26, by Damien Douxchamps:
+    I did a large change concerning the capture and display: ISO receive
+    and display threads have been changed from GTK threads to pthreads.
+    This improves performances and avoid the locking bug of the external
+    trigger function. A quick explaination: GTK thread are NOT real
+    threads: if you use 'top' you will only see one process, even if
+    several of these threads make Coriander. Real threads, on the other
+    hand, will create multiple processes sharing the same memory space.
+    It's better because 1) if a thread locks itself (e.g. waiting for a
+    frame to come after a trigger), it will not lock the whole program
+    and 2) several functions can be done at the same time (e.g. making
+    continuous adjustments with sliders does not block the display). I
+    noticed some better performance in general using pthreads, but it
+    should be extensively tested. This version 0.18 is thus a little beta,
+    as those who will probe the code will notice.
+    - massive update of threads. The capture thread should be upgraded; it
+      will come with the next version.
+    
     Sept 26, by Damien Douxchamps:
     - corrected a bug concerning the camera select frame: table 9 was missing.
     - cleaned the ISO button callbacks and added proper button activation.

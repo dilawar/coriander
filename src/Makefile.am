@@ -1,5 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
+CPPFLAGS = -D_REENTRANT
+
 INCLUDES = \
 	-I$(top_srcdir)/intl \
 	$(GNOME_INCLUDEDIR) \
@@ -28,5 +30,5 @@ coriander_SOURCES = \
 	topology.c topology.h
 
 coriander_LDADD = $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(INTLLIBS) $(PTHREAD_LIB) \
-	$(XV_LIB) $(FTP_LIB) -ldc1394_control -lraw1394 -lgthread 
+	$(XV_LIB) $(FTP_LIB) -ldc1394_control -lraw1394 -lgthread
 

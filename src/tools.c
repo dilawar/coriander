@@ -69,8 +69,9 @@ extern char* phy_delay_list[4];
 extern char* power_class_list[8];
 extern int camera_num;
 extern int current_camera;
-extern guint gIdleID;
 extern porthole_info pi;
+extern capture_info ci;
+extern isothread_info it;
 extern CtxtInfo ctxt;
 
 
@@ -131,9 +132,9 @@ void IsoFlowCheck()
 { 
   int err;
 
-  if ( (pi.is_open = (pi.handle != NULL)) )
+  if ( (pi.is_open = (it.handle != NULL)) )
     {
-      gtk_idle_remove(gIdleID);
+      PortholeStopThread();
       IsoStopThread();
     }
   err=dc1394_get_iso_channel_and_speed(camera->handle, camera->id, &misc_info->iso_channel, &misc_info->iso_speed);
@@ -156,7 +157,6 @@ void IsoFlowCheck()
 void IsoFlowResume()
 {
   int err;
-  GtkWidget *window = lookup_widget(porthole_window, "camera_scope");
 
   if (misc_info->is_iso_on)// restart if it was 'on' before the changes
     {
@@ -168,8 +168,8 @@ void IsoFlowResume()
 	  if (!err) MainError("Could not start ISO transmission");
 	  else
 	    {
-	      if (pi.is_open && (IsoStartThread(window)>0) )
-		gIdleID = gtk_idle_add( porthole_idler, NULL);  
+	      if (pi.is_open && (IsoStartThread()>0) )
+		PortholeStartThread();
 	    }
 	}
     }

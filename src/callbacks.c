@@ -61,9 +61,9 @@ extern Format7Info *format7_infos;
 extern UIInfo *uiinfo;
 extern UIInfo *uiinfos;
 extern int current_camera;
-extern guint gIdleID;
 extern porthole_info pi;
 extern capture_info ci;
+extern isothread_info it;
 extern guint gCaptureIdleID;
 
 gboolean
@@ -128,15 +128,11 @@ void
 on_porthole_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-  GtkWidget *scope = lookup_widget(porthole_window, "camera_scope");
-  gtk_widget_show (porthole_window);
 
+  gtk_widget_show (porthole_window);
+  pi.is_open=TRUE;
   if (uiinfo->overlay_power==1)
-    if (pi.handle == NULL)
-      // start a separate thread for iso receive
-      if (IsoStartThread(scope) > 0)
-	// run a gtk idler thread to update the display
-	gIdleID = gtk_idle_add( porthole_idler, NULL);
+    PortholeStartThread();
 }
 
 gboolean
@@ -144,10 +140,9 @@ on_porthole_window_delete_event       (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data)
 {
-  gtk_idle_remove(gIdleID);
-  IsoStopThread();
+  PortholeStopThread();
   pi.is_open = FALSE;
-  gtk_widget_hide( porthole_window);
+  gtk_widget_hide(porthole_window);
   return TRUE;
 }
 
@@ -1087,14 +1082,11 @@ void
 on_iso_start_clicked                   (GtkButton       *button,
                                         gpointer         user_data)
 {
-  int err, channel, speed;
-  GtkWidget *window = lookup_widget(porthole_window, "camera_scope");
+  //int err;
 
-  // future addition: if no iso setup made, do it first.
-  err=dc1394_get_iso_channel_and_speed(camera->handle, camera->id, &channel, &speed); //??
-  if (!err) MainError("Could not get ISO channel and speed");
-  err=dc1394_start_iso_transmission(camera->handle,camera->id);
-  if (!err)
+  if (!IsoStartThread())
+  //err=dc1394_start_iso_transmission(camera->handle,camera->id);
+    //if (!err)
     MainError("Could not start ISO transmission");
   else
     {
@@ -1103,8 +1095,9 @@ on_iso_start_clicked                   (GtkButton       *button,
       gtk_widget_set_sensitive( GTK_WIDGET(lookup_widget(capture_window, "capture_single")), TRUE);
       UpdateIsoFrame();
     }
-  if (pi.is_open && (pi.handle == NULL) && (IsoStartThread(window)>0) )
-    gIdleID = gtk_idle_add( porthole_idler, NULL);
+  
+  if ((uiinfo->overlay_power>0)&&pi.is_open)
+    PortholeStartThread();
 
   UpdateTransferStatusFrame();
 }
@@ -1116,11 +1109,9 @@ on_iso_stop_clicked                    (GtkButton       *button,
 {
   int err;
 
-  if ( (pi.is_open = (pi.handle != NULL)) )
-    {
-      gtk_idle_remove(gIdleID);
-      IsoStopThread();
-    }
+  PortholeStopThread();
+  IsoStopThread();
+
   err=dc1394_stop_iso_transmission(camera->handle,camera->id);
   if (!err)
     MainError("Could not stop ISO transmission");
@@ -1131,6 +1122,7 @@ on_iso_stop_clicked                    (GtkButton       *button,
       gtk_widget_set_sensitive( lookup_widget(capture_window, "capture_single"), FALSE);//
       UpdateIsoFrame();
     }
+  //fprintf(stderr,"ISO stopped\n");
   UpdateTransferStatusFrame();
 }
 
@@ -1141,31 +1133,6 @@ on_iso_restart_clicked                 (GtkButton       *button,
 {
   on_iso_stop_clicked(GTK_BUTTON(lookup_widget(commander_window,"iso_stop")),NULL);
   on_iso_start_clicked(GTK_BUTTON(lookup_widget(commander_window,"iso_start")),NULL);
-  /*  int err, channel, speed;
-  GtkWidget *window = lookup_widget(porthole_window, "camera_scope");
-
-  if ( (pi.is_open = (pi.handle != NULL)) )
-    {
-      gtk_idle_remove(gIdleID);
-      IsoStopThread();
-    }
-  if ( (pi.is_open = (pi.handle != NULL)) ) IsoStopThread();
-  err=dc1394_stop_iso_transmission(camera->handle,camera->id);
-  if (!err) MainError("Could not stop ISO transmission");
-  err=dc1394_get_iso_channel_and_speed(camera->handle, camera->id, &channel, &speed);//??
-  if (!err) MainError("Could not get ISO channel and speed");
-  err=dc1394_start_iso_transmission(camera->handle,camera->id);
-  if (!err)
-    MainError("Could not start ISO transmission");
-  else
-    {
-      misc_info->is_iso_on=DC1394_TRUE;
-      if (pi.is_open) IsoStartThread(window);
-      gtk_widget_set_sensitive( lookup_widget(capture_window, "capture_start"), TRUE);
-      gtk_widget_set_sensitive( lookup_widget(capture_window, "capture_stop"), TRUE);
-      gtk_widget_set_sensitive( lookup_widget(capture_window, "capture_single"), TRUE);
-    }
-  */
   UpdateTransferStatusFrame();
 }
 
@@ -1468,23 +1435,15 @@ on_overlay_button_toggled              (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
 
-  GtkWidget *scope = lookup_widget(porthole_window, "camera_scope");
-  
   uiinfo->overlay_power=togglebutton->active;
   if (uiinfo->overlay_power>0)
     {
-      if (pi.handle == NULL)
-      // start a separate thread for iso receive
-      if (IsoStartThread(scope) > 0)
-	// run a gtk idler thread to update the display
-	gIdleID = gtk_idle_add( porthole_idler, NULL);
+      IsoStartThread();
+      PortholeStartThread();
+      UpdateIsoFrame();
     }
   else
-    {
-      gtk_idle_remove(gIdleID);
-      IsoStopThread();
-      pi.is_open = FALSE;
-    }
+    PortholeStopThread();
 }
 
 
