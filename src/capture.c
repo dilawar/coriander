@@ -186,7 +186,7 @@ gint IsoStartThread(gpointer p)
     default: maxspeed=SPEED_100;break;
     }
 
-  if (dc1394_dma_setup_capture( pi.handle, camera->id, misc_info->iso_channel, 
+  if (dc1394_dma_setup_capture( camera->handle, camera->id, misc_info->iso_channel, 
                                 misc_info->format, misc_info->mode, maxspeed,
                                 misc_info->framerate, DMA_BUFFERS, capture)
       == DC1394_SUCCESS)
@@ -246,7 +246,7 @@ gint IsoStopThread(void)
       
     if (pi.receive_method == RECEIVE_METHOD_VIDEO1394) {
       dc1394_dma_release_camera(pi.handle, capture);
-      dc1394_dma_unlisten(pi.handle, capture);
+      dc1394_dma_unlisten(camera->handle, capture);
     } else 
       dc1394_release_camera(camera->handle, capture);
       

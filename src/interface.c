@@ -498,7 +498,7 @@ create_commander_window (void)
   GtkWidget *trigger_mode;
   GtkWidget *trigger_mode_menu;
   GtkWidget *main_status;
-  GtkAccelGroup *accel_group;
+GtkAccelGroup *accel_group;
 
   commander_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_object_set_data (GTK_OBJECT (commander_window), "commander_window", commander_window);
@@ -519,8 +519,8 @@ create_commander_window (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (menubar);
   gtk_box_pack_start (GTK_BOX (vbox26), menubar, FALSE, FALSE, 0);
-  accel_group = gtk_accel_group_new();
-  gtk_accel_group_attach(accel_group, GTK_OBJECT(commander_window));
+accel_group = gtk_accel_group_new();
+gtk_accel_group_attach(accel_group, GTK_OBJECT(commander_window));
   gnome_app_fill_menu (GTK_MENU_SHELL (menubar), menubar_uiinfo,
                        accel_group, TRUE, 0);
 
@@ -1263,6 +1263,7 @@ create_porthole_window (void)
   GtkWidget *camera_scope_frame;
   GtkWidget *scrolledwindow1;
   GtkWidget *viewport1;
+  GtkWidget *alignment11;
   GtkWidget *camera_scope;
   GtkWidget *focus_frame;
   GtkWidget *hbox11;
@@ -1291,9 +1292,6 @@ create_porthole_window (void)
   GtkWidget *zoom_op;
   GtkWidget *zoom_scale;
   GtkWidget *overlay_button;
-  GtkAccelGroup *accel_group;
-
-  accel_group = gtk_accel_group_new ();
 
   porthole_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_object_set_data (GTK_OBJECT (porthole_window), "porthole_window", porthole_window);
@@ -1417,6 +1415,7 @@ create_porthole_window (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (scrolledwindow1);
   gtk_container_add (GTK_CONTAINER (camera_scope_frame), scrolledwindow1);
+  gtk_widget_set_usize (scrolledwindow1, 334, 254);
   gtk_container_set_border_width (GTK_CONTAINER (scrolledwindow1), 5);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow1), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
@@ -1426,16 +1425,20 @@ create_porthole_window (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (viewport1);
   gtk_container_add (GTK_CONTAINER (scrolledwindow1), viewport1);
-  gtk_widget_set_usize (viewport1, 320, 240);
-  gtk_viewport_set_shadow_type (GTK_VIEWPORT (viewport1), GTK_SHADOW_NONE);
+
+  alignment11 = gtk_alignment_new (0.5, 0.5, 1, 1);
+  gtk_widget_ref (alignment11);
+  gtk_object_set_data_full (GTK_OBJECT (porthole_window), "alignment11", alignment11,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (alignment11);
+  gtk_container_add (GTK_CONTAINER (viewport1), alignment11);
 
   camera_scope = gtk_drawing_area_new ();
   gtk_widget_ref (camera_scope);
   gtk_object_set_data_full (GTK_OBJECT (porthole_window), "camera_scope", camera_scope,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (camera_scope);
-  gtk_container_add (GTK_CONTAINER (viewport1), camera_scope);
-  gtk_widget_set_usize (camera_scope, 320, 240);
+  gtk_container_add (GTK_CONTAINER (alignment11), camera_scope);
 
   focus_frame = gtk_frame_new (_("Focus"));
   gtk_widget_ref (focus_frame);
@@ -1661,9 +1664,6 @@ create_porthole_window (void)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 5, 0);
   gtk_container_set_border_width (GTK_CONTAINER (overlay_button), 2);
-  gtk_widget_add_accelerator (overlay_button, "toggled", accel_group,
-                              GDK_space, 0,
-                              GTK_ACCEL_VISIBLE);
 
   gtk_signal_connect (GTK_OBJECT (porthole_window), "destroy_event",
                       GTK_SIGNAL_FUNC (gtk_widget_hide),
@@ -1673,12 +1673,6 @@ create_porthole_window (void)
                       NULL);
   gtk_signal_connect (GTK_OBJECT (porthole_window), "destroy",
                       GTK_SIGNAL_FUNC (gtk_widget_hide),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (porthole_window), "size_request",
-                      GTK_SIGNAL_FUNC (on_porthole_window_size_request),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (porthole_window), "size_allocate",
-                      GTK_SIGNAL_FUNC (on_porthole_window_size_allocate),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (pan_man), "toggled",
                       GTK_SIGNAL_FUNC (on_pan_man_toggled),
@@ -1719,8 +1713,6 @@ create_porthole_window (void)
   gtk_signal_connect (GTK_OBJECT (overlay_button), "toggled",
                       GTK_SIGNAL_FUNC (on_overlay_button_toggled),
                       NULL);
-
-  gtk_window_add_accel_group (GTK_WINDOW (porthole_window), accel_group);
 
   return porthole_window;
 }

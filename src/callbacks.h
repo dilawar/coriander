@@ -571,16 +571,6 @@ on_porthole_window_delete_event        (GtkWidget       *widget,
                                         gpointer         user_data);
 
 void
-on_porthole_window_size_request        (GtkWidget       *widget,
-                                        GtkRequisition  *requisition,
-                                        gpointer         user_data);
-
-void
-on_porthole_window_size_allocate       (GtkWidget       *widget,
-                                        GtkAllocation   *allocation,
-                                        gpointer         user_data);
-
-void
 on_f0_mode6_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 

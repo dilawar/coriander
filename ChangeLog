@@ -25,6 +25,16 @@ Changes in version 0.17-pre2, Sept 16, 2001, by Dan Dennedy:
     - callbacks.c: enabling FTP without FtpLib invokes MessageBox.
     - added menu accelerators (see src/interface.mods)
     - removed international support from build
+    
+    Sept 18:
+    - interface.c: bugfix the porthole window not scaling smoothly by adding
+      a GtkAlignmentWidget
+    - interface.c: remove the incomplete accelerator for video overlay 
+      toggle button that was introduced yesterday.
+    - callbacks.c: removed the on_camera_scope_size_allocate and
+      on_camera_scape_size_request event handlers due to fix above.
+    - capture.c: bugfix some dc1394_setup_catpure calls using the wrong
+      handle introduced 2 days ago.
 
 Changes in version 0.17-pre1, July 25, 2001:
 

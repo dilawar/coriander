@@ -1191,28 +1191,6 @@ on_camera_select_activate              (GtkMenuItem     *menuitem,
 }
 
 void
-on_porthole_window_size_request        (GtkWidget       *widget,
-                                        GtkRequisition  *requisition,
-                                        gpointer         user_data)
-{
-}
-
-
-void
-on_porthole_window_size_allocate       (GtkWidget       *widget,
-                                        GtkAllocation   *allocation,
-                                        gpointer         user_data)
-{
-
-// printf("x: %d, y: %d\n", allocation->width, allocation->height);
-
-  GtkWidget *scope_frame = lookup_widget( widget, "scrolledwindow1");
-  gtk_widget_set_usize( scope_frame, allocation->width-200, allocation->height-240);
-
-}
-
-
-void
 on_edit_format7_mode_activate             (GtkMenuItem     *menuitem,
 					 gpointer         user_data)
 {
