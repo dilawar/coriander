@@ -19,12 +19,6 @@
 #ifndef __UPDATERANGES_H__
 #define __UPDATERANGES_H__
 
-#include <gnome.h>
-#include <libdc1394/dc1394_control.h>
-#include "preferences.h"
-#include "support.h"
-#include "tools.h"
-
 void
 UpdateRange(int feature);
 
@@ -37,4 +31,4 @@ UpdateFormat7BppRange(void);
 void
 UpdateFormat7Ranges(void);
 
-#endif
+#endif // __UPDATERANGES_H__

@@ -16,15 +16,7 @@
  * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-
-#include "build_frames.h"
-
-extern GtkWidget *main_window;
-extern GtkWidget *preferences_window;
-extern GtkWidget *absolute_settings_window;
-extern Prefs_t preferences;
-extern camera_t* camera;
-extern BusInfo_t* businfo;
+#include "coriander.h"
 
 void
 BuildCameraFrame(void)
@@ -250,6 +242,11 @@ BuildPrefsDisplayFrame(void)
   // display redraw
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window,"display_redraw")), camera->prefs.display_redraw==DISPLAY_REDRAW_ON);
   gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(main_window,"display_redraw_rate"), camera->prefs.display_redraw_rate);
+
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window, "prefs_overlay_filename")), camera->prefs.overlay_filename);
+
+  BuildOverlayPatternMenu();
+  BuildOverlayTypeMenu();
 
   /*
 

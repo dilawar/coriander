@@ -19,27 +19,29 @@
 #ifndef __THREAD_DISPLAY_H__
 #define __THREAD_DISPLAY_H__
 
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif
-
-#ifdef HAVE_SDLLIB
-#include "SDL.h"
-#include "SDLEvent.h"
-#endif
-
-#include <math.h>
-#include "support.h"
-#include "definitions.h"
-#include "thread_base.h"
-#include "watch_thread.h"
-#include "preferences.h"
-
 typedef enum
 {
   DISPLAY_REDRAW_OFF=0,
   DISPLAY_REDRAW_ON
 } display_redraw_t;
+
+enum
+{
+  OVERLAY_PATTERN_OFF=0,
+  OVERLAY_PATTERN_CIRCLE,
+  OVERLAY_PATTERN_SMALL_CROSS,
+  OVERLAY_PATTERN_LARGE_CROSS,
+  OVERLAY_PATTERN_GOLDEN_MEAN,
+  OVERLAY_PATTERN_IMAGE
+};
+
+enum
+{
+  OVERLAY_TYPE_REPLACE=0,
+  OVERLAY_TYPE_RANDOM,
+  OVERLAY_TYPE_INVERT,
+  OVERLAY_TYPE_AVERAGE
+};
 
 typedef struct
 {
@@ -97,6 +99,9 @@ void
 SDLDisplayArea(chain_t *display_service);
 
 void
+SDLDisplayPattern(chain_t *display_service);
+
+void
 SDLQuit(chain_t *display_service);
 
 void
@@ -104,4 +109,4 @@ DisplayThreadCheckParams(chain_t *display_service);
 
 #endif
 
-#endif
+#endif // __THREAD_DISPLAY_H__

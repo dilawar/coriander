@@ -16,24 +16,11 @@
  * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "callbacks.h"
+#include "coriander.h"
 
 #define EEPROM_CNFG       0xF00U
 #define TEST_CNFG         0xF04U
 #define CCR_BASE          0xFFFFF0F00000ULL
-
-extern GtkWidget *about_window;
-extern GtkWidget *help_window;
-extern GtkWidget *main_window;
-extern GtkWidget *preferences_window;
-extern camera_t* camera;
-extern camera_t* cameras;
-extern Prefs_t preferences;
-extern int silent_ui_update;
-
-#ifdef HAVE_SDLLIB
-extern watchthread_info_t watchthread_info;
-#endif
 
 gboolean
 on_main_window_delete_event       (GtkWidget       *widget,
@@ -998,34 +985,6 @@ on_prefs_save_noconvert_toggled        (GtkToggleButton *togglebutton,
 
 
 void
-on_prefs_save_choose_clicked           (GtkButton       *button,
-                                        gpointer         user_data)
-{
-  GtkWidget *dialog = create_get_filename_dialog();
-  gtk_widget_show(dialog);
-}
-
-void
-on_get_filename_dialog_ok_clicked      (GtkButton       *button,
-                                        gpointer         user_data)
-{
-  GtkWidget *dialog = gtk_widget_get_toplevel(GTK_WIDGET(button));
-  gchar *filename = gtk_file_selection_get_filename(GTK_FILE_SELECTION(dialog));
-  gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window, "prefs_save_filename")),filename);
-  gtk_widget_destroy(dialog);
-}
-
-
-void
-on_get_filename_dialog_cancel_clicked  (GtkButton       *button,
-                                        gpointer         user_data)
-{
-    GtkWidget *dialog = gtk_widget_get_toplevel(GTK_WIDGET(button));
-    gtk_widget_destroy(dialog);
-}
-
-
-void
 on_prefs_ftp_seq_toggled               (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
@@ -1499,11 +1458,45 @@ void
 on_overlay_byte_order_UYVY_toggled     (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-    if (togglebutton->active)
+  if (togglebutton->active)
     preferences.overlay_byte_order=OVERLAY_BYTE_ORDER_UYVY;
   else
     preferences.overlay_byte_order=OVERLAY_BYTE_ORDER_YUYV;
   gnome_config_set_int("coriander/global/overlay_byte_order",preferences.overlay_byte_order);
   gnome_config_sync();
+}
+
+
+void
+on_overlay_type_menu_activate           (GtkMenuItem     *menuitem,
+					 gpointer         user_data)
+{
+
+  camera->prefs.overlay_type=(int)user_data;
+  gnome_config_set_int("coriander/display/overlay_type",camera->prefs.overlay_type);
+  gnome_config_sync();
+  UpdatePrefsDisplayOverlayFrame();
+}
+
+void
+on_overlay_pattern_menu_activate        (GtkMenuItem     *menuitem,
+					 gpointer         user_data)
+{
+
+  camera->prefs.overlay_pattern=(int)user_data;
+  gnome_config_set_int("coriander/display/overlay_pattern",camera->prefs.overlay_pattern);
+  gnome_config_sync();
+  UpdatePrefsDisplayOverlayFrame();
+}
+
+void
+on_overlay_color_picker_color_set      (GnomeColorPicker *gnomecolorpicker,
+                                        guint            arg1,
+                                        guint            arg2,
+                                        guint            arg3,
+                                        guint            arg4,
+                                        gpointer         user_data)
+{
+
 }
 

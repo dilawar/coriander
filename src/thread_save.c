@@ -16,11 +16,7 @@
  * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "thread_save.h" 
-
-extern GtkWidget *main_window;
-extern CtxtInfo_t ctxt;
-extern camera_t* camera;
+#include "coriander.h"
 
 gint
 SaveStartThread(camera_t* cam)

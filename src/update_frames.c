@@ -16,18 +16,11 @@
  * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "update_frames.h"
+#include "coriander.h"
 
-extern GtkWidget *main_window;
-extern GtkWidget *preferences_window;
-extern CtxtInfo_t ctxt;
 extern char* phy_speed_list[7];
 extern char* phy_delay_list[4];
 extern char* power_class_list[8];
-extern Prefs_t preferences; 
-extern camera_t* camera;
-extern camera_t* cameras;
-extern BusInfo_t* businfo;
 
 #ifdef HAVE_SDLLIB
 extern cursor_info_t cursor_info;
@@ -48,6 +41,8 @@ UpdatePrefsDisplayFrame(void)
 			   camera->prefs.display_redraw==DISPLAY_REDRAW_ON);
   gtk_widget_set_sensitive(lookup_widget(main_window,"label155"),
 			   camera->prefs.display_redraw==DISPLAY_REDRAW_ON);
+
+  UpdatePrefsDisplayOverlayFrame();
 }
 
 void
@@ -95,8 +90,10 @@ UpdatePrefsSaveFrame(void)
 			   camera->prefs.save_scratch==SAVE_SCRATCH_SEQUENTIAL);
   gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_save_num_tag"),
 			   camera->prefs.save_scratch==SAVE_SCRATCH_SEQUENTIAL);
-  gtk_widget_set_sensitive(lookup_widget(main_window,"ram_buffer_frame"), camera->prefs.use_ram_buffer && (camera->prefs.save_scratch==SAVE_SCRATCH_VIDEO));
-  gtk_widget_set_sensitive(lookup_widget(main_window,"use_ram_buffer"), camera->prefs.save_scratch==SAVE_SCRATCH_VIDEO);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"ram_buffer_frame"),
+			   camera->prefs.use_ram_buffer && (camera->prefs.save_scratch==SAVE_SCRATCH_VIDEO));
+  gtk_widget_set_sensitive(lookup_widget(main_window,"use_ram_buffer"),
+			   camera->prefs.save_scratch==SAVE_SCRATCH_VIDEO);
 
   // thread presence blanking:
   if (GetService(camera,SERVICE_SAVE)!=NULL) {
@@ -110,9 +107,6 @@ UpdatePrefsSaveFrame(void)
     else
       gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_save_video"), FALSE);
   }
-      
-    
-
 }
 
 
@@ -735,4 +729,10 @@ UpdateServiceTree(void)
     free(temp[i]);
   }
   free(temp);
+}
+
+void
+UpdatePrefsDisplayOverlayFrame(void)
+{
+
 }

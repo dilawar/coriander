@@ -16,13 +16,10 @@
  * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "build_ranges.h"
+#include "coriander.h"
 
 #define RANGE_TABLE_WIDTH 5
 
-extern GtkWidget *preferences_window;
-extern GtkWidget *main_window;
-extern camera_t* camera;
 extern char* feature_menu_table_list[NUM_FEATURES];
 extern char* feature_menu_items_list[NUM_FEATURES];
 extern char* feature_name_list[NUM_FEATURES];

@@ -19,24 +19,6 @@
 #ifndef __CALLBACKS_H__
 #define __CALLBACKS_H__
 
-#include <gnome.h>
-#include <libdc1394/dc1394_control.h>
-#include <pthread.h>
-#include "interface.h"
-#include "support.h"
-#include "definitions.h"
-#include "camera.h"
-#include "preferences.h"
-#include "update_frames.h" 
-#include "update_windows.h"
-#include "tools.h"
-#include "thread_display.h"
-#include "build_windows.h"
-#include "update_ranges.h"
-#include "thread_iso.h"
-#include "build_menus.h"
-#include "conversions.h"
-
 gboolean
 on_main_window_delete_event       (GtkWidget       *widget,
                                         GdkEvent        *event,
@@ -194,32 +176,6 @@ on_prefs_save_seq_toggled              (GtkToggleButton *togglebutton,
 
 void
 on_prefs_save_scratch_toggled          (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
-
-void
-on_prefs_save_choose_clicked           (GtkButton       *button,
-                                        gpointer         user_data);
-
-gboolean
-on_get_filename_dialog_delete_event    (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data);
-
-gboolean
-on_get_filename_dialog_destroy_event   (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data);
-
-void
-on_get_filename_dialog_destroy         (GtkObject       *object,
-                                        gpointer         user_data);
-
-void
-on_get_filename_dialog_ok_clicked      (GtkButton       *button,
-                                        gpointer         user_data);
-
-void
-on_get_filename_dialog_cancel_clicked  (GtkButton       *button,
                                         gpointer         user_data);
 
 void
@@ -436,4 +392,20 @@ void
 on_overlay_byte_order_UYVY_toggled     (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
 
-#endif
+void
+on_overlay_type_menu_activate           (GtkMenuItem     *menuitem,
+					 gpointer         user_data);
+
+void
+on_overlay_pattern_menu_activate        (GtkMenuItem     *menuitem,
+					 gpointer         user_data);
+
+void
+on_overlay_color_picker_color_set      (GnomeColorPicker *gnomecolorpicker,
+                                        guint            arg1,
+                                        guint            arg2,
+                                        guint            arg3,
+                                        guint            arg4,
+                                        gpointer         user_data);
+
+#endif // __CALLBACKS_H__

@@ -19,12 +19,6 @@
 #ifndef __DEFINITIONS_H__
 #define __DEFINITIONS_H__
 
-#include <libdc1394/dc1394_control.h>
-#include <sys/times.h>
-#include <pthread.h>
-#include "raw1394support.h"
-#include "conversions.h"
-
 #define  BU                  1000     // definitions for distinguishing the BU and RV
 #define  RV                  2000     // scales of the FEATURE_WHITE_BALANCE feature
 #define  NO                 FALSE
@@ -81,6 +75,13 @@ typedef struct _CamPrefs
   char *v4l_dev_name;
 
   char* name;
+
+  char *overlay_filename;
+  int overlay_type;
+  int overlay_color_r;
+  int overlay_color_g;
+  int overlay_color_b;
+  int overlay_pattern;
 
   // internal data:
   int receive_method2index[2];
@@ -318,5 +319,5 @@ typedef struct _CtxtInfo
 } CtxtInfo_t;
 
 
-#endif
+#endif // __DEFINITIONS_H__
 

@@ -16,16 +16,16 @@
  * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "SDLEvent.h"
+#include "coriander.h"
 
 #ifdef HAVE_SDLLIB
 
-extern GtkWidget *main_window;
-extern watchthread_info_t watchthread_info;
-extern camera_t* camera;
-extern int WM_cancel_display;
-extern cursor_info_t cursor_info;
-extern xvinfo_t xvinfo;
+//extern GtkWidget *main_window;
+//extern watchthread_info_t watchthread_info;
+//extern camera_t* camera;
+//extern int WM_cancel_display;
+//extern cursor_info_t cursor_info;
+//extern xvinfo_t xvinfo;
 //extern whitebal_data_t* whitebal_data;
 
 // This should be probed automatically.

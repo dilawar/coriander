@@ -20,22 +20,6 @@
 #ifndef __BUILDFRAMES_H__
 #define __BUILDFRAMES_H__
 
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif 
-
-#include <gnome.h>
-#include <libdc1394/dc1394_control.h>
-#include "support.h"
-#include "preferences.h"
-#include "definitions.h"
-#include "build_menus.h"
-#include "tools.h"
-#include "thread_save.h"
-#include "thread_ftp.h"
-#include "thread_iso.h"
-#include "callbacks.h"
-
 void
 BuildPrefsGeneralFrame(void);
 
@@ -95,4 +79,5 @@ BuildOptionFrame(void);
 
 void
 BuildBandwidthFrame(void);
-#endif
+
+#endif // __BUILDFRAMES_H__

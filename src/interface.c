@@ -192,12 +192,20 @@ create_main_window (void)
   GtkObject *display_redraw_rate_adj;
   GtkWidget *display_redraw_rate;
   GtkWidget *label155;
+  GtkWidget *frame11;
+  GtkWidget *table80;
+  GtkWidget *overlay_pattern_menu;
+  GtkWidget *overlay_pattern_menu_menu;
+  GtkWidget *overlay_type_menu;
+  GtkWidget *overlay_type_menu_menu;
+  GtkWidget *overlay_color_picker;
+  GtkWidget *overlay_file_entry;
+  GtkWidget *combo_entry1;
   GtkWidget *label144;
   GtkWidget *vbox54;
   GtkWidget *prefs_save_file_frame;
-  GtkWidget *hbox51;
-  GtkWidget *prefs_save_filename;
-  GtkWidget *prefs_save_choose;
+  GtkWidget *save_filename_entry;
+  GtkWidget *combo_entry2;
   GtkWidget *prefs_save_framedrop;
   GtkWidget *hbox_capture_freq_periodic;
   GtkWidget *label76;
@@ -1535,6 +1543,102 @@ create_main_window (void)
   gtk_box_pack_start (GTK_BOX (hbox69), label155, FALSE, TRUE, 0);
   gtk_misc_set_padding (GTK_MISC (label155), 5, 0);
 
+  frame11 = gtk_frame_new (_("Overlay"));
+  gtk_widget_ref (frame11);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "frame11", frame11,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (frame11);
+  gtk_box_pack_start (GTK_BOX (vbox53), frame11, FALSE, TRUE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (frame11), 5);
+
+  table80 = gtk_table_new (2, 3, FALSE);
+  gtk_widget_ref (table80);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "table80", table80,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (table80);
+  gtk_container_add (GTK_CONTAINER (frame11), table80);
+
+  overlay_pattern_menu = gtk_option_menu_new ();
+  gtk_widget_ref (overlay_pattern_menu);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "overlay_pattern_menu", overlay_pattern_menu,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (overlay_pattern_menu);
+  gtk_table_attach (GTK_TABLE (table80), overlay_pattern_menu, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_EXPAND), 1, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (overlay_pattern_menu), 1);
+  overlay_pattern_menu_menu = gtk_menu_new ();
+  glade_menuitem = gtk_menu_item_new_with_label (_("OFF"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (overlay_pattern_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Golden mean"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (overlay_pattern_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Small cross"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (overlay_pattern_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Large cross"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (overlay_pattern_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Circle"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (overlay_pattern_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Image"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (overlay_pattern_menu_menu), glade_menuitem);
+  gtk_option_menu_set_menu (GTK_OPTION_MENU (overlay_pattern_menu), overlay_pattern_menu_menu);
+
+  overlay_type_menu = gtk_option_menu_new ();
+  gtk_widget_ref (overlay_type_menu);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "overlay_type_menu", overlay_type_menu,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (overlay_type_menu);
+  gtk_table_attach (GTK_TABLE (table80), overlay_type_menu, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_EXPAND), 1, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (overlay_type_menu), 1);
+  overlay_type_menu_menu = gtk_menu_new ();
+  glade_menuitem = gtk_menu_item_new_with_label (_("Invert"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (overlay_type_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Random"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (overlay_type_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Replace"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (overlay_type_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Average"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (overlay_type_menu_menu), glade_menuitem);
+  gtk_option_menu_set_menu (GTK_OPTION_MENU (overlay_type_menu), overlay_type_menu_menu);
+
+  overlay_color_picker = gnome_color_picker_new ();
+  gtk_widget_ref (overlay_color_picker);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "overlay_color_picker", overlay_color_picker,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (overlay_color_picker);
+  gtk_table_attach (GTK_TABLE (table80), overlay_color_picker, 2, 3, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (overlay_color_picker), 2);
+  gnome_color_picker_set_title (GNOME_COLOR_PICKER (overlay_color_picker), _("Select overlay color"));
+
+  overlay_file_entry = gnome_file_entry_new (NULL, _("Choose a overlay image"));
+  gtk_widget_ref (overlay_file_entry);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "overlay_file_entry", overlay_file_entry,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (overlay_file_entry);
+  gtk_table_attach (GTK_TABLE (table80), overlay_file_entry, 0, 3, 1, 2,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (overlay_file_entry), 3);
+
+  combo_entry1 = gnome_file_entry_gtk_entry (GNOME_FILE_ENTRY (overlay_file_entry));
+  gtk_widget_ref (combo_entry1);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "combo_entry1", combo_entry1,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (combo_entry1);
+
   label144 = gtk_label_new (_("Display"));
   gtk_widget_ref (label144);
   gtk_object_set_data_full (GTK_OBJECT (main_window), "label144", label144,
@@ -1557,27 +1661,19 @@ create_main_window (void)
   gtk_box_pack_start (GTK_BOX (vbox54), prefs_save_file_frame, FALSE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (prefs_save_file_frame), 5);
 
-  hbox51 = gtk_hbox_new (FALSE, 0);
-  gtk_widget_ref (hbox51);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "hbox51", hbox51,
+  save_filename_entry = gnome_file_entry_new (NULL, _("Choose a filename"));
+  gtk_widget_ref (save_filename_entry);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "save_filename_entry", save_filename_entry,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (hbox51);
-  gtk_container_add (GTK_CONTAINER (prefs_save_file_frame), hbox51);
+  gtk_widget_show (save_filename_entry);
+  gtk_container_add (GTK_CONTAINER (prefs_save_file_frame), save_filename_entry);
+  gtk_container_set_border_width (GTK_CONTAINER (save_filename_entry), 3);
 
-  prefs_save_filename = gtk_entry_new ();
-  gtk_widget_ref (prefs_save_filename);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "prefs_save_filename", prefs_save_filename,
+  combo_entry2 = gnome_file_entry_gtk_entry (GNOME_FILE_ENTRY (save_filename_entry));
+  gtk_widget_ref (combo_entry2);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "combo_entry2", combo_entry2,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (prefs_save_filename);
-  gtk_box_pack_start (GTK_BOX (hbox51), prefs_save_filename, TRUE, TRUE, 5);
-
-  prefs_save_choose = gtk_button_new_with_label (_("Choose..."));
-  gtk_widget_ref (prefs_save_choose);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "prefs_save_choose", prefs_save_choose,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (prefs_save_choose);
-  gtk_box_pack_start (GTK_BOX (hbox51), prefs_save_choose, FALSE, FALSE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (prefs_save_choose), 5);
+  gtk_widget_show (combo_entry2);
 
   prefs_save_framedrop = gtk_frame_new (_("Frame drop"));
   gtk_widget_ref (prefs_save_framedrop);
@@ -3038,11 +3134,8 @@ create_main_window (void)
   gtk_signal_connect (GTK_OBJECT (display_redraw_rate), "changed",
                       GTK_SIGNAL_FUNC (on_display_redraw_rate_changed),
                       NULL);
-  gtk_signal_connect (GTK_OBJECT (prefs_save_filename), "changed",
-                      GTK_SIGNAL_FUNC (on_prefs_save_filename_changed),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (prefs_save_choose), "clicked",
-                      GTK_SIGNAL_FUNC (on_prefs_save_choose_clicked),
+  gtk_signal_connect (GTK_OBJECT (overlay_color_picker), "color_set",
+                      GTK_SIGNAL_FUNC (on_overlay_color_picker_color_set),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (prefs_save_period), "changed",
                       GTK_SIGNAL_FUNC (on_prefs_save_period_changed),
@@ -3227,47 +3320,6 @@ create_no_camera_window (void)
                       NULL);
 
   return no_camera_window;
-}
-
-GtkWidget*
-create_get_filename_dialog (void)
-{
-  GtkWidget *get_filename_dialog;
-  GtkWidget *get_filename_dialog_ok;
-  GtkWidget *get_filename_dialog_cancel;
-
-  get_filename_dialog = gtk_file_selection_new (_("Select a file..."));
-  gtk_object_set_data (GTK_OBJECT (get_filename_dialog), "get_filename_dialog", get_filename_dialog);
-  gtk_container_set_border_width (GTK_CONTAINER (get_filename_dialog), 10);
-  gtk_window_set_policy (GTK_WINDOW (get_filename_dialog), FALSE, TRUE, TRUE);
-
-  get_filename_dialog_ok = GTK_FILE_SELECTION (get_filename_dialog)->ok_button;
-  gtk_object_set_data (GTK_OBJECT (get_filename_dialog), "get_filename_dialog_ok", get_filename_dialog_ok);
-  gtk_widget_show (get_filename_dialog_ok);
-  GTK_WIDGET_SET_FLAGS (get_filename_dialog_ok, GTK_CAN_DEFAULT);
-
-  get_filename_dialog_cancel = GTK_FILE_SELECTION (get_filename_dialog)->cancel_button;
-  gtk_object_set_data (GTK_OBJECT (get_filename_dialog), "get_filename_dialog_cancel", get_filename_dialog_cancel);
-  gtk_widget_show (get_filename_dialog_cancel);
-  GTK_WIDGET_SET_FLAGS (get_filename_dialog_cancel, GTK_CAN_DEFAULT);
-
-  gtk_signal_connect (GTK_OBJECT (get_filename_dialog), "delete_event",
-                      GTK_SIGNAL_FUNC (gtk_widget_destroy),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (get_filename_dialog), "destroy_event",
-                      GTK_SIGNAL_FUNC (gtk_widget_destroy),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (get_filename_dialog), "destroy",
-                      GTK_SIGNAL_FUNC (gtk_widget_destroy),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (get_filename_dialog_ok), "clicked",
-                      GTK_SIGNAL_FUNC (on_get_filename_dialog_ok_clicked),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (get_filename_dialog_cancel), "clicked",
-                      GTK_SIGNAL_FUNC (on_get_filename_dialog_cancel_clicked),
-                      NULL);
-
-  return get_filename_dialog;
 }
 
 GtkWidget*
@@ -3520,7 +3572,7 @@ create_v4l_failure_window (void)
 
   /* We create it with an OK button, and then remove the button, to work
      around a bug in gnome-libs. */
-  v4l_failure_window = gnome_message_box_new (_("Warning: Could not start V4L service\n\nPlease check that:\n- you have v4l support in your kernel\n- v4l kernel modules are loaded, if any\n- you have read/write permission on the selected video device\n- the vloopback module is loaded"),
+  v4l_failure_window = gnome_message_box_new (_("Warning: Could not start the V4L service\n\nPlease check that:\n- V4L kernel modules are loaded or that V4L support is in your kernel\n- you have read/write permission on the selected video device\n- the vloopback module is loaded"),
                               GNOME_MESSAGE_BOX_WARNING,
                               GNOME_STOCK_BUTTON_OK, NULL);
   gtk_container_remove (GTK_CONTAINER (GNOME_DIALOG (v4l_failure_window)->action_area), GNOME_DIALOG (v4l_failure_window)->buttons->data);

@@ -19,19 +19,6 @@
 #ifndef __UPDATEFRAMES_H__
 #define __UPDATEFRAMES_H__
 
-#include <gnome.h>
-#include <libdc1394/dc1394_control.h>
-#include "support.h"
-#include "definitions.h"
-#include "raw1394support.h"
-#include "tools.h"
-#include "build_menus.h"
-#include "thread_base.h"
-#include "thread_save.h"
-#include "thread_ftp.h"
-#include "thread_iso.h"
-#include "build_ranges.h"
-
 void
 UpdatePrefsGeneralFrame(void);
 
@@ -95,4 +82,7 @@ UpdateBandwidthFrame(void);
 void
 UpdateServiceTree(void);
 
-#endif
+void
+UpdatePrefsDisplayOverlayFrame(void);
+
+#endif // __UPDATEFRAMES_H__

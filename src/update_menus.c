@@ -16,10 +16,8 @@
  * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "update_menus.h"
+#include "coriander.h"
 
-extern GtkWidget *main_window;
-extern camera_t* camera;
 extern char* format_list[5];
 extern char* format0_list[7];
 extern char* format1_list[8];

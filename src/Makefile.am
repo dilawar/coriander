@@ -8,6 +8,7 @@ bin_PROGRAMS = coriander
 
 coriander_SOURCES = \
 	main.c \
+	coriander.h \
 	support.c support.h \
 	interface.c interface.h \
 	definitions.c definitions.h \

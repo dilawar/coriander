@@ -19,14 +19,6 @@
 #ifndef __THREAD_BASE_H__
 #define __THREAD_BASE_H__
 
-#include <gnome.h>
-#include <pthread.h>
-#include <libdc1394/dc1394_control.h>
-#include <time.h>
-#include <string.h>
-#include "definitions.h"
-#include "conversions.h"
-
 #define GUID_YUV12_PLANAR 0x32315659 
 #define GUID_YUY2_PACKED  0x32595559
 #define GUID_UYVY_PACKED  0x59565955
@@ -58,4 +50,4 @@ convert_to_rgb(buffer_t *buffer, unsigned char *dest);
 void
 InitBuffer(buffer_t *buffer);
 
-#endif
+#endif // __THREAD_BASE_H__

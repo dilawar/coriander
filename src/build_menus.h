@@ -19,13 +19,6 @@
 #ifndef __BUILDMENUS_H__
 #define __BUILDMENUS_H__
 
-#include <gnome.h>
-#include <libdc1394/dc1394_control.h>
-#include "preferences.h"
-#include "definitions.h"
-#include "tools.h"
-#include "support.h"
-
 void
 BuildTriggerModeMenu(void);
 
@@ -56,4 +49,10 @@ BuildBayerPatternMenu(void);
 void
 BuildStereoMenu(void);
 
-#endif
+void
+BuildOverlayTypeMenu(void);
+
+void
+BuildOverlayPatternMenu(void);
+
+#endif // __BUILDMENUS_H__

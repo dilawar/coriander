@@ -19,12 +19,6 @@
 #ifndef __BUILDRANGES_H__
 #define __BUILDRANGES_H__
 
-#include <gnome.h>
-#include <libdc1394/dc1394_control.h>
-#include "definitions.h"
-#include "support.h"
-#include "callbacks.h"
-
 void
 BuildRange(int feature);
 
@@ -37,4 +31,4 @@ BuildFormat7Ranges(void);
 void
 BuildFormat7BppRange(void);
 
-#endif
+#endif // __BUILDRANGES_H__

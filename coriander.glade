@@ -2487,7 +2487,147 @@ St. Field
 	      </widget>
 
 	      <widget>
-		<class>Placeholder</class>
+		<class>GtkFrame</class>
+		<name>frame11</name>
+		<border_width>5</border_width>
+		<label>Overlay</label>
+		<label_xalign>0</label_xalign>
+		<shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+		<child>
+		  <padding>0</padding>
+		  <expand>False</expand>
+		  <fill>True</fill>
+		</child>
+
+		<widget>
+		  <class>GtkTable</class>
+		  <name>table80</name>
+		  <rows>2</rows>
+		  <columns>3</columns>
+		  <homogeneous>False</homogeneous>
+		  <row_spacing>0</row_spacing>
+		  <column_spacing>0</column_spacing>
+
+		  <widget>
+		    <class>GtkOptionMenu</class>
+		    <name>overlay_pattern_menu</name>
+		    <border_width>1</border_width>
+		    <can_focus>True</can_focus>
+		    <items>OFF
+Golden mean
+Small cross
+Large cross
+Circle
+Image
+</items>
+		    <initial_choice>0</initial_choice>
+		    <child>
+		      <left_attach>0</left_attach>
+		      <right_attach>1</right_attach>
+		      <top_attach>0</top_attach>
+		      <bottom_attach>1</bottom_attach>
+		      <xpad>1</xpad>
+		      <ypad>0</ypad>
+		      <xexpand>False</xexpand>
+		      <yexpand>True</yexpand>
+		      <xshrink>False</xshrink>
+		      <yshrink>False</yshrink>
+		      <xfill>True</xfill>
+		      <yfill>False</yfill>
+		    </child>
+		  </widget>
+
+		  <widget>
+		    <class>GtkOptionMenu</class>
+		    <name>overlay_type_menu</name>
+		    <border_width>1</border_width>
+		    <can_focus>True</can_focus>
+		    <items>Invert
+Random
+Replace
+Average
+</items>
+		    <initial_choice>0</initial_choice>
+		    <child>
+		      <left_attach>1</left_attach>
+		      <right_attach>2</right_attach>
+		      <top_attach>0</top_attach>
+		      <bottom_attach>1</bottom_attach>
+		      <xpad>1</xpad>
+		      <ypad>0</ypad>
+		      <xexpand>False</xexpand>
+		      <yexpand>True</yexpand>
+		      <xshrink>False</xshrink>
+		      <yshrink>False</yshrink>
+		      <xfill>True</xfill>
+		      <yfill>False</yfill>
+		    </child>
+		  </widget>
+
+		  <widget>
+		    <class>GnomeColorPicker</class>
+		    <name>overlay_color_picker</name>
+		    <border_width>2</border_width>
+		    <can_focus>True</can_focus>
+		    <signal>
+		      <name>color_set</name>
+		      <handler>on_overlay_color_picker_color_set</handler>
+		      <last_modification_time>Sun, 14 Nov 2004 09:56:11 GMT</last_modification_time>
+		    </signal>
+		    <dither>True</dither>
+		    <use_alpha>False</use_alpha>
+		    <title>Select overlay color</title>
+		    <child>
+		      <left_attach>2</left_attach>
+		      <right_attach>3</right_attach>
+		      <top_attach>0</top_attach>
+		      <bottom_attach>1</bottom_attach>
+		      <xpad>0</xpad>
+		      <ypad>0</ypad>
+		      <xexpand>False</xexpand>
+		      <yexpand>True</yexpand>
+		      <xshrink>False</xshrink>
+		      <yshrink>False</yshrink>
+		      <xfill>True</xfill>
+		      <yfill>True</yfill>
+		    </child>
+		  </widget>
+
+		  <widget>
+		    <class>GnomeFileEntry</class>
+		    <name>overlay_file_entry</name>
+		    <border_width>3</border_width>
+		    <max_saved>10</max_saved>
+		    <title>Choose a overlay image</title>
+		    <directory>False</directory>
+		    <modal>False</modal>
+		    <child>
+		      <left_attach>0</left_attach>
+		      <right_attach>3</right_attach>
+		      <top_attach>1</top_attach>
+		      <bottom_attach>2</bottom_attach>
+		      <xpad>0</xpad>
+		      <ypad>0</ypad>
+		      <xexpand>True</xexpand>
+		      <yexpand>False</yexpand>
+		      <xshrink>False</xshrink>
+		      <yshrink>False</yshrink>
+		      <xfill>True</xfill>
+		      <yfill>False</yfill>
+		    </child>
+
+		    <widget>
+		      <class>GtkEntry</class>
+		      <child_name>GnomeEntry:entry</child_name>
+		      <name>combo-entry1</name>
+		      <can_focus>True</can_focus>
+		      <editable>True</editable>
+		      <text_visible>True</text_visible>
+		      <text_max_length>0</text_max_length>
+		      <text></text>
+		    </widget>
+		  </widget>
+		</widget>
 	      </widget>
 	    </widget>
 
@@ -2524,48 +2664,23 @@ St. Field
 		</child>
 
 		<widget>
-		  <class>GtkHBox</class>
-		  <name>hbox51</name>
-		  <homogeneous>False</homogeneous>
-		  <spacing>0</spacing>
+		  <class>GnomeFileEntry</class>
+		  <name>save_filename_entry</name>
+		  <border_width>3</border_width>
+		  <max_saved>10</max_saved>
+		  <title>Choose a filename</title>
+		  <directory>False</directory>
+		  <modal>False</modal>
 
 		  <widget>
 		    <class>GtkEntry</class>
-		    <name>prefs_save_filename</name>
+		    <child_name>GnomeEntry:entry</child_name>
+		    <name>combo-entry2</name>
 		    <can_focus>True</can_focus>
-		    <signal>
-		      <name>changed</name>
-		      <handler>on_prefs_save_filename_changed</handler>
-		      <last_modification_time>Fri, 05 Jul 2002 10:03:03 GMT</last_modification_time>
-		    </signal>
 		    <editable>True</editable>
 		    <text_visible>True</text_visible>
 		    <text_max_length>0</text_max_length>
 		    <text></text>
-		    <child>
-		      <padding>5</padding>
-		      <expand>True</expand>
-		      <fill>True</fill>
-		    </child>
-		  </widget>
-
-		  <widget>
-		    <class>GtkButton</class>
-		    <name>prefs_save_choose</name>
-		    <border_width>5</border_width>
-		    <can_focus>True</can_focus>
-		    <signal>
-		      <name>clicked</name>
-		      <handler>on_prefs_save_choose_clicked</handler>
-		      <last_modification_time>Mon, 05 Nov 2001 11:51:36 GMT</last_modification_time>
-		    </signal>
-		    <label>Choose...</label>
-		    <relief>GTK_RELIEF_NORMAL</relief>
-		    <child>
-		      <padding>0</padding>
-		      <expand>False</expand>
-		      <fill>False</fill>
-		    </child>
 		  </widget>
 		</widget>
 	      </widget>
@@ -5678,65 +5793,6 @@ controlled with the AV/C protocol, please refer to http://www.linux1394.org</mes
 </widget>
 
 <widget>
-  <class>GtkFileSelection</class>
-  <name>get_filename_dialog</name>
-  <border_width>10</border_width>
-  <signal>
-    <name>delete_event</name>
-    <handler>gtk_widget_destroy</handler>
-    <last_modification_time>Mon, 05 Nov 2001 14:24:25 GMT</last_modification_time>
-  </signal>
-  <signal>
-    <name>destroy_event</name>
-    <handler>gtk_widget_destroy</handler>
-    <last_modification_time>Mon, 05 Nov 2001 14:24:34 GMT</last_modification_time>
-  </signal>
-  <signal>
-    <name>destroy</name>
-    <handler>gtk_widget_destroy</handler>
-    <last_modification_time>Mon, 05 Nov 2001 14:24:41 GMT</last_modification_time>
-  </signal>
-  <title>Select a file...</title>
-  <type>GTK_WINDOW_TOPLEVEL</type>
-  <position>GTK_WIN_POS_NONE</position>
-  <modal>False</modal>
-  <allow_shrink>False</allow_shrink>
-  <allow_grow>True</allow_grow>
-  <auto_shrink>True</auto_shrink>
-  <show_file_op_buttons>True</show_file_op_buttons>
-
-  <widget>
-    <class>GtkButton</class>
-    <child_name>FileSel:ok_button</child_name>
-    <name>get_filename_dialog_ok</name>
-    <can_default>True</can_default>
-    <can_focus>True</can_focus>
-    <signal>
-      <name>clicked</name>
-      <handler>on_get_filename_dialog_ok_clicked</handler>
-      <last_modification_time>Mon, 05 Nov 2001 12:12:39 GMT</last_modification_time>
-    </signal>
-    <label>OK</label>
-    <relief>GTK_RELIEF_NORMAL</relief>
-  </widget>
-
-  <widget>
-    <class>GtkButton</class>
-    <child_name>FileSel:cancel_button</child_name>
-    <name>get_filename_dialog_cancel</name>
-    <can_default>True</can_default>
-    <can_focus>True</can_focus>
-    <signal>
-      <name>clicked</name>
-      <handler>on_get_filename_dialog_cancel_clicked</handler>
-      <last_modification_time>Mon, 05 Nov 2001 12:12:46 GMT</last_modification_time>
-    </signal>
-    <label>Cancel</label>
-    <relief>GTK_RELIEF_NORMAL</relief>
-  </widget>
-</widget>
-
-<widget>
   <class>GtkWindow</class>
   <name>preferences_window</name>
   <signal>
@@ -6097,11 +6153,10 @@ controlled with the AV/C protocol, please refer to http://www.linux1394.org</mes
   <class>GnomeMessageBox</class>
   <name>v4l_failure_window</name>
   <message_box_type>GNOME_MESSAGE_BOX_WARNING</message_box_type>
-  <message>Warning: Could not start V4L service
+  <message>Warning: Could not start the V4L service
 
 Please check that:
-- you have v4l support in your kernel
-- v4l kernel modules are loaded, if any
+- V4L kernel modules are loaded or that V4L support is in your kernel
 - you have read/write permission on the selected video device
 - the vloopback module is loaded</message>
   <title>Coriander Warning</title>

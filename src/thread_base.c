@@ -16,10 +16,7 @@
  * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "thread_base.h" 
-
-extern camera_t* camera;
-extern camera_t* cameras;
+#include "coriander.h"
 
 chain_t*
 GetService(camera_t* cam, service_t service)

@@ -19,17 +19,7 @@
 #ifndef __WATCH_THREAD_H__
 #define __WATCH_THREAD_H__
 
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif
-
 #ifdef HAVE_SDLLIB
-
-#include <pthread.h>
-#include <gnome.h>
-#include "preferences.h"
-#include "support.h"
-#include "tools.h"
 
 typedef struct
 {
@@ -67,4 +57,4 @@ GetValidF7Crop(watchthread_info_t *wtinfo, chain_t *display_service);
 
 #endif
 
-#endif
+#endif // __WATCH_THREAD_H__

@@ -16,13 +16,10 @@
  * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "update_ranges.h"
+#include "coriander.h"
 
-extern GtkWidget *main_window;
 extern char* feature_menu_table_list[NUM_FEATURES]; 
 extern char* feature_menu_items_list[NUM_FEATURES];
-extern camera_t* camera;
-
 
 void
 UpdateRange(int feature)

@@ -20,22 +20,6 @@
 #ifndef __THREAD_V4L_H__
 #define __THREAD_V4L_H__
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/ioctl.h>
-#include <sys/types.h>
-#include <pthread.h>
-#include <sys/times.h>
-#include <fcntl.h>
-#include <math.h>
-#include "videodev.h"
-#include "definitions.h"
-#include "support.h"
-#include "thread_base.h"
-#include "preferences.h"
-#include "tools.h"
-
 typedef struct
 {
   //long int                period;
@@ -73,4 +57,4 @@ V4lThreadCheckParams(chain_t *v4l_service);
 void
 swap_rb(unsigned char *image, int size);
 
-#endif
+#endif // __THREAD_V4L_H__

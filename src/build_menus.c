@@ -16,11 +16,8 @@
  * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "build_menus.h"
+#include "coriander.h"
 
-extern GtkWidget *main_window;
-extern camera_t* camera;
-extern camera_t* cameras;
 extern char* fps_label_list[NUM_FRAMERATES];
 extern char* format7_color_list[NUM_MODE_FORMAT7];
 extern char* format7_mode_list[NUM_MODE_FORMAT7];
@@ -720,4 +717,148 @@ BuildStereoMenu(void)
   gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(main_window, "stereo_menu")),camera->stereo);
   pthread_mutex_unlock(&camera->uimutex);
       
+}
+
+void
+BuildOverlayPatternMenu(void)
+{
+  GtkWidget* new_option_menu;
+  GtkWidget* new_menu;
+  GtkWidget* glade_menuitem;
+
+  // build bayer option menu:
+  gtk_widget_destroy(GTK_WIDGET(lookup_widget(main_window,"overlay_pattern_menu"))); // remove previous menu
+  
+  new_option_menu = gtk_option_menu_new ();
+  gtk_widget_ref (new_option_menu);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "overlay_pattern_menu", new_option_menu,
+			    (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (new_option_menu);
+  gtk_table_attach (GTK_TABLE (lookup_widget(main_window,"table80")),
+		    new_option_menu, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (new_option_menu), 1);
+  
+  new_menu = gtk_menu_new ();
+
+  // OFF
+  glade_menuitem = gtk_menu_item_new_with_label (_("OFF"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
+		      GTK_SIGNAL_FUNC (on_overlay_pattern_menu_activate),
+		      (int*)OVERLAY_PATTERN_OFF);
+  
+  // Golden mean
+  glade_menuitem = gtk_menu_item_new_with_label (_("Golden mean"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
+		      GTK_SIGNAL_FUNC (on_overlay_pattern_menu_activate),
+		      (int*)OVERLAY_PATTERN_GOLDEN_MEAN);
+  
+  // Small cross
+  glade_menuitem = gtk_menu_item_new_with_label (_("Small Cross"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
+		      GTK_SIGNAL_FUNC (on_overlay_pattern_menu_activate),
+		      (int*)OVERLAY_PATTERN_SMALL_CROSS);
+  
+  // Large cross
+  glade_menuitem = gtk_menu_item_new_with_label (_("Large Cross"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
+		      GTK_SIGNAL_FUNC (on_overlay_pattern_menu_activate),
+		      (int*)OVERLAY_PATTERN_LARGE_CROSS);
+  
+  // Circle
+  glade_menuitem = gtk_menu_item_new_with_label (_("Circle"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
+		      GTK_SIGNAL_FUNC (on_overlay_pattern_menu_activate),
+		      (int*)OVERLAY_PATTERN_CIRCLE);
+  
+  // Image
+  glade_menuitem = gtk_menu_item_new_with_label (_("Custom image"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
+		      GTK_SIGNAL_FUNC (on_overlay_pattern_menu_activate),
+		      (int*)OVERLAY_PATTERN_IMAGE);
+  
+  gtk_option_menu_set_menu (GTK_OPTION_MENU (new_option_menu), new_menu);
+
+  // menu history
+  pthread_mutex_lock(&camera->uimutex);
+  gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(main_window, "overlay_pattern_menu")),camera->prefs.overlay_pattern);
+  pthread_mutex_unlock(&camera->uimutex);
+      
+}
+
+void
+BuildOverlayTypeMenu(void)
+{
+  GtkWidget* new_option_menu;
+  GtkWidget* new_menu;
+  GtkWidget* glade_menuitem;
+
+  // build bayer option menu:
+  gtk_widget_destroy(GTK_WIDGET(lookup_widget(main_window,"overlay_type_menu"))); // remove previous menu
+  
+  new_option_menu = gtk_option_menu_new ();
+  gtk_widget_ref (new_option_menu);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "overlay_type_menu", new_option_menu,
+			    (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (new_option_menu);
+  gtk_table_attach (GTK_TABLE (lookup_widget(main_window,"table80")),
+		    new_option_menu, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (new_option_menu), 1);
+  
+  new_menu = gtk_menu_new ();
+
+  // Invert
+  glade_menuitem = gtk_menu_item_new_with_label (_("Invert"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
+		      GTK_SIGNAL_FUNC (on_overlay_type_menu_activate),
+		      (int*)OVERLAY_TYPE_INVERT);
+  
+  // Random
+  glade_menuitem = gtk_menu_item_new_with_label (_("Random"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
+		      GTK_SIGNAL_FUNC (on_overlay_type_menu_activate),
+		      (int*)OVERLAY_TYPE_RANDOM);
+  
+  // Replace
+  glade_menuitem = gtk_menu_item_new_with_label (_("Replace"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
+		      GTK_SIGNAL_FUNC (on_overlay_type_menu_activate),
+		      (int*)OVERLAY_TYPE_REPLACE);
+  
+  // Average
+  glade_menuitem = gtk_menu_item_new_with_label (_("Average"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
+		      GTK_SIGNAL_FUNC (on_overlay_type_menu_activate),
+		      (int*)OVERLAY_TYPE_AVERAGE);
+  
+  gtk_option_menu_set_menu (GTK_OPTION_MENU (new_option_menu), new_menu);
+
+  // menu history
+  pthread_mutex_lock(&camera->uimutex);
+  gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(main_window, "overlay_type_menu")),camera->prefs.overlay_type);
+  pthread_mutex_unlock(&camera->uimutex);
+  
 }

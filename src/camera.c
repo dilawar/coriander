@@ -16,10 +16,7 @@
  * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "camera.h"
-
-extern camera_t* camera;
-extern camera_t* cameras;
+#include "coriander.h"
 
 void
 GetCameraNodes(BusInfo_t* bi) {
@@ -119,6 +116,7 @@ NewCamera(void) {
   cam->prefs.v4l_dev_name =(char*)malloc(STRING_SIZE*sizeof(char));
   cam->prefs.name = (char*)malloc(STRING_SIZE*sizeof(char));
   cam->prefs.save_filename = (char*)malloc(STRING_SIZE*sizeof(char));
+  cam->prefs.overlay_filename = (char*)malloc(STRING_SIZE*sizeof(char));
   pthread_mutex_init(&cam->uimutex, NULL);
   return cam;
 
@@ -227,6 +225,7 @@ FreeCamera(camera_t* cam) {
   free(cam->prefs.v4l_dev_name); 
   free(cam->prefs.name);
   free(cam->prefs.save_filename);
+  free(cam->prefs.overlay_filename);
   free(cam);
   cam=NULL;
 }

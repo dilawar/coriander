@@ -20,11 +20,6 @@
 #ifndef __CONVERSIONS_H__
 #define __CONVERSIONS_H__
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <libdc1394/dc1394_control.h>
-
 typedef enum
 {
   NO_BAYER_DECODING=0,
@@ -113,4 +108,4 @@ BayerSimple(unsigned char *src, unsigned char *dest, int sx, int sy, int type);
 void
 StereoDecode(unsigned char *src, unsigned char *dest, unsigned long long int NumPixels);
 
-#endif
+#endif // __CONVERSIONS_H__

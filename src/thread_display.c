@@ -16,17 +16,7 @@
  * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "thread_display.h"
-
-extern GtkWidget *main_window;
-extern CtxtInfo_t ctxt;
-extern camera_t* camera;
-extern xvinfo_t xvinfo;
-extern Prefs_t preferences;
-
-#ifdef HAVE_SDLLIB
-extern watchthread_info_t watchthread_info;
-#endif
+#include "coriander.h"
 
 gint
 DisplayStartThread(camera_t* cam)
@@ -133,7 +123,9 @@ DisplayThread(void* arg)
 	      if (SDL_LockYUVOverlay(info->sdloverlay) == 0) {
 		convert_to_yuv_for_SDL(display_service->current_buffer, info->sdloverlay, preferences.overlay_byte_order);
 		
+		// informative overlays
 		SDLDisplayArea(display_service);
+		SDLDisplayPattern(display_service);
 		
 		SDL_UnlockYUVOverlay(info->sdloverlay);
 		SDL_DisplayYUVOverlay(info->sdloverlay, &info->sdlvideorect);
@@ -441,6 +433,105 @@ SDLDisplayArea(chain_t *display_service)
   } else {
     pthread_mutex_unlock(&watchthread_info.mutex_area);
   }
+}
+
+void
+SDLDisplayPattern(chain_t *display_service)
+{
+  displaythread_info_t *info=(displaythread_info_t*)display_service->data;
+  unsigned char *pimage;
+  int sx = display_service->current_buffer->width;
+  int sy = display_service->current_buffer->height;
+  register int i;
+  register int j;
+
+  pthread_mutex_lock(&watchthread_info.mutex_area);
+  pimage=info->sdloverlay->pixels[0];
+  switch(display_service->camera->prefs.overlay_pattern) {
+  case OVERLAY_PATTERN_OFF:
+    break;
+  case OVERLAY_PATTERN_CIRCLE:
+    break;
+  case OVERLAY_PATTERN_SMALL_CROSS:
+    j=sy/2;
+    for (i=(7*sx)/16;i<=(9*sx)/16;i++) {
+      pimage[(j*sx+i)*2]=255;
+    }
+    j=sx/2;
+    for (i=(7*sy)/16;i<=(9*sy)/16;i++) {
+      pimage[(i*sx+j)*2]=255;
+    }
+    break;
+  case OVERLAY_PATTERN_LARGE_CROSS:
+    j=sy/2;
+    for (i=0;i<sx;i++) {
+      pimage[(j*sx+i)*2]=255;
+    }
+    j=sx/2;
+    for (i=0;i<sy;i++) {
+      pimage[(i*sx+j)*2]=255;
+    }
+    break;
+  case OVERLAY_PATTERN_GOLDEN_MEAN:
+    j=sy/3;
+    for (i=0;i<sx;i++) {
+      pimage[(j*sx+i)*2]=255;
+    }
+    j=(2*sy)/3;
+    for (i=0;i<sx;i++) {
+      pimage[(j*sx+i)*2]=255;
+    }
+    j=sx/3;
+    for (i=0;i<sy;i++) {
+      pimage[(i*sx+j)*2]=255;
+    }
+    j=(2*sx)/3;
+    for (i=0;i<sy;i++) {
+      pimage[(i*sx+j)*2]=255;
+    }
+    break;
+  case OVERLAY_PATTERN_IMAGE:
+    break;
+  default:
+    fprintf(stderr,"Wrong overlay pattern ID\n");
+    break;
+  }
+  /*
+  OVERLAY_TYPE_REPLACE=0,
+  OVERLAY_TYPE_RANDOM,
+  OVERLAY_TYPE_INVERT,
+  OVERLAY_TYPE_AVERAGE
+  */
+  /*
+  if (watchthread_info.draw==1) {
+    upper_left[0]=watchthread_info.pos[0];
+    upper_left[1]=watchthread_info.pos[1];
+    lower_right[0]=watchthread_info.pos[0]+watchthread_info.size[0]-1;
+    lower_right[1]=watchthread_info.pos[1]+watchthread_info.size[1]-1;
+    width=display_service->current_buffer->width;
+    pthread_mutex_unlock(&watchthread_info.mutex_area);
+    
+    if (lower_right[0]<upper_left[0]) {
+      tmp=lower_right[0];
+      lower_right[0]=upper_left[0];
+      upper_left[0]=tmp;
+    }
+    if (lower_right[1]<upper_left[1]) {
+      tmp=lower_right[1];
+      lower_right[1]=upper_left[1];
+      upper_left[1]=tmp;
+    }
+
+    for (i=upper_left[1];i<=lower_right[1];i++) {
+      pimage=info->sdloverlay->pixels[0]+i*info->sdloverlay->pitches[0];
+      for (j=upper_left[0];j<=lower_right[0];j++) {
+	pimage[j*2]=(unsigned char)(255-pimage[j*2]);
+      }
+    }
+  } else {
+    pthread_mutex_unlock(&watchthread_info.mutex_area);
+  }
+  */
 }
 
 void

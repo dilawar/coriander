@@ -19,15 +19,6 @@
 #ifndef __THREAD_SAVE_H__
 #define __THREAD_SAVE_H__
 
-#include <pthread.h>
-#include <sys/times.h>
-#include <math.h>
-#include "support.h"
-#include "thread_base.h"
-#include "preferences.h"
-#include "definitions.h"
-#include "tools.h"
-
 typedef enum
 {
   SAVE_SCRATCH_SEQUENTIAL=0,
@@ -86,4 +77,4 @@ SaveStopThread(camera_t* cam);
 void
 SaveThreadCheckParams(chain_t *save_service);
 
-#endif
+#endif // __THREAD_SAVE_H__

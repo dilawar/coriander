@@ -19,22 +19,6 @@
 #ifndef __THREAD_ISO_H__
 #define __THREAD_ISO_H__
 
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif
-
-#include <gnome.h>
-#include <pthread.h>
-#include <sys/times.h>
-#include <sys/timeb.h>
-#include <libdc1394/dc1394_control.h>
-#include <math.h>
-#include "support.h"
-#include "thread_base.h"
-#include "topology.h"
-#include "definitions.h"
-#include "tools.h" 
-
 typedef enum
 {
   RECEIVE_METHOD_RAW1394=0, 
@@ -87,6 +71,6 @@ AllocImageBuffer(chain_t* iso_service);
 void
 SetColorMode(buffer_t *buffer);
 
-#endif
+#endif // __THREAD_ISO_H__
 
 

@@ -21,52 +21,7 @@
  * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif
-
-#include <gnome.h> 
-#include <libraw1394/raw1394.h>
-#include <libdc1394/dc1394_control.h>
-#include "raw1394support.h"
-#include "interface.h"
-#include "support.h"
-#include "definitions.h"
-#include "camera.h"
-#include "thread_base.h"
-#include "build_windows.h"
-#include "update_windows.h"
-#include "tools.h"
-#include "watch_thread.h"
-#include "preferences.h"
-#include "thread_iso.h"
-#include "thread_save.h"
-#include "thread_ftp.h"
-#include "thread_display.h"
-#include "SDLEvent.h"
-
-GtkWidget *main_window;
-GtkWidget *about_window;
-GtkWidget *help_window;
-GtkWidget *preferences_window;
-GtkWidget *waiting_camera_window;
-CtxtInfo_t ctxt;
-Prefs_t preferences;
-int silent_ui_update;
-camera_t* camera;
-camera_t* cameras;
-
-xvinfo_t xvinfo;
-BusInfo_t* businfo;
-
-unsigned int format7_tab_presence;
-unsigned int main_timeout_ticker;
-unsigned int WM_cancel_display;
-
-#ifdef HAVE_SDLLIB
-cursor_info_t cursor_info;
-watchthread_info_t watchthread_info;
-#endif
+#include "coriander.h"
 
 int
 main (int argc, char *argv[])

@@ -16,10 +16,7 @@
  * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "update_windows.h"
-
-extern camera_t* camera;
-extern unsigned int format7_tab_presence;
+#include "coriander.h"
 
 void
 UpdateFormat7Window(void)

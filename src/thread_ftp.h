@@ -19,25 +19,6 @@
 #ifndef __THREAD_FTP_H__
 #define __THREAD_FTP_H__
 
-
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif
-
-#ifdef HAVE_FTPLIB
-#include <ftplib.h>
-#endif
-
-#include <pthread.h>
-#include <sys/times.h>
-#include <gnome.h>
-#include <math.h>
-#include "support.h"
-#include "definitions.h"
-#include "thread_base.h"
-#include "tools.h"
-
-
 typedef enum
 {
   FTP_SCRATCH_SEQUENTIAL=0,
@@ -106,4 +87,4 @@ CheckFtpConnection(ftpthread_info_t* info);
 
 #endif
 
-#endif
+#endif // __THREAD_FTP_H__

@@ -16,12 +16,7 @@
  * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "preferences.h"
-
-extern Prefs_t preferences; 
-extern camera_t* camera;
-extern camera_t* cameras;
-extern int camera_num;
+#include "coriander.h"
 
 void
 LoadConfigFile(void)
@@ -30,6 +25,11 @@ LoadConfigFile(void)
   preferences.camprefs.display_keep_ratio   = gnome_config_get_int("coriander/display/keep_ratio=0");
   preferences.camprefs.display_period       = gnome_config_get_int("coriander/display/period=1");
   preferences.camprefs.display_redraw       = gnome_config_get_int("coriander/display/redraw=1");
+  preferences.camprefs.overlay_color_r      = gnome_config_get_int("coriander/display/overlay_color_r=128");
+  preferences.camprefs.overlay_color_g      = gnome_config_get_int("coriander/display/overlay_color_g=128");
+  preferences.camprefs.overlay_color_b      = gnome_config_get_int("coriander/display/overlay_color_b=128");
+  preferences.camprefs.overlay_type         = gnome_config_get_int("coriander/display/overlay_type=0");
+  preferences.camprefs.overlay_pattern      = gnome_config_get_int("coriander/display/overlay_pattern=0");
   preferences.camprefs.display_redraw_rate  = gnome_config_get_float("coriander/display/redraw_rate=4.0");
   preferences.camprefs.receive_method       = gnome_config_get_int("coriander/receive/method=0");
   preferences.camprefs.dma_buffer_size      = gnome_config_get_int("coriander/receive/dma_buffer_size=10");
@@ -52,6 +52,7 @@ LoadConfigFile(void)
   preferences.camprefs.video1394_device = gnome_config_get_string("coriander/receive/video1394_device=/dev/video1394/0");
 
   preferences.camprefs.save_filename = gnome_config_get_string("coriander/save/filename=test.jpg");
+  preferences.camprefs.overlay_filename = gnome_config_get_string("coriander/display/overlay_filename=test.");
   preferences.camprefs.ftp_filename  = gnome_config_get_string("coriander/ftp/filename=");
   preferences.camprefs.ftp_path      = gnome_config_get_string("coriander/ftp/path=");
   preferences.camprefs.ftp_address   = gnome_config_get_string("coriander/ftp/address=");
@@ -75,6 +76,11 @@ CopyCameraPrefs(camera_t* cam) {
   cam->prefs.display_period         = preferences.camprefs.display_period;
   cam->prefs.display_redraw         = preferences.camprefs.display_redraw;
   cam->prefs.display_redraw_rate    = preferences.camprefs.display_redraw_rate;
+  cam->prefs.overlay_color_r        = preferences.camprefs.overlay_color_r;
+  cam->prefs.overlay_color_g        = preferences.camprefs.overlay_color_g;
+  cam->prefs.overlay_color_b        = preferences.camprefs.overlay_color_b;
+  cam->prefs.overlay_type           = preferences.camprefs.overlay_type;
+  cam->prefs.overlay_pattern        = preferences.camprefs.overlay_pattern;
   cam->prefs.receive_method         = preferences.camprefs.receive_method;
   cam->prefs.video1394_dropframes   = preferences.camprefs.video1394_dropframes;
   cam->prefs.dma_buffer_size        = preferences.camprefs.dma_buffer_size;
@@ -87,6 +93,7 @@ CopyCameraPrefs(camera_t* cam) {
   cam->prefs.ftp_datenum            = preferences.camprefs.ftp_datenum;
   cam->prefs.v4l_period             = preferences.camprefs.v4l_period;
   strcpy(cam->prefs.save_filename   , preferences.camprefs.save_filename);
+  strcpy(cam->prefs.overlay_filename, preferences.camprefs.overlay_filename);
   strcpy(cam->prefs.ftp_filename    , preferences.camprefs.ftp_filename);
   strcpy(cam->prefs.ftp_path        , preferences.camprefs.ftp_path);
   strcpy(cam->prefs.ftp_address     , preferences.camprefs.ftp_address);

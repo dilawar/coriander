@@ -16,7 +16,7 @@
  * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/* $Id: raw1394support.h,v 1.4 2003-02-25 16:32:53 ddouxchamps Exp $
+/* $Id: raw1394support.h,v 1.5 2004-11-24 05:39:18 ddouxchamps Exp $
  *
  * raw1394.h - Linux IEEE-1394 Subsystem RAW 1394 support library
  * for some compatibility with older library
@@ -24,9 +24,6 @@
 
 #ifndef __RAW1394SUPPORT_H__
 #define __RAW1394SUPPORT_H__
-
-#include <libraw1394/raw1394.h>
-#include <libraw1394/csr.h>
 
 #define SELFID_PORT_CHILD        0x3
 #define SELFID_PORT_PARENT       0x2
@@ -78,4 +75,4 @@ typedef struct RAW1394topologyMap_t {
     SelfIdPacket_t selfIdPacket[(0x400 - 4)];
 } RAW1394topologyMap;
 
-#endif
+#endif // __RAW1394SUPPORT_H__

@@ -19,12 +19,6 @@
 #ifndef __UPDATEWINDOWS_H__
 #define __UPDATEWINDOWS_H__
 
-#include <libdc1394/dc1394_control.h> 
-#include "update_ranges.h"
-#include "build_menus.h"
-#include "update_frames.h"
-#include "update_menus.h"
-
 void 
 UpdateFormat7Window(void);
 
@@ -43,4 +37,4 @@ UpdateStatusWindow(void);
 void
 UpdateAllWindows(void);
 
-#endif
+#endif // __UPDATEWINDOWS_H__

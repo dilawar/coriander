@@ -19,14 +19,10 @@
 #ifndef __PREFERENCES_H__
 #define __PREFERENCES_H__
 
-#include <gnome.h>
-#include "definitions.h"
-#include "tools.h"
-
 void
 LoadConfigFile(void);
 
 void
 CopyCameraPrefs(camera_t* cam);
 
-#endif
+#endif // __PREFERENCES_H__

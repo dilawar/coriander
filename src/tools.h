@@ -19,34 +19,6 @@
 #ifndef __TOOLS_H__
 #define __TOOLS_H__
 
-#include "support.h"
-#include "thread_base.h"
-#include "raw1394support.h"
-#include "topology.h"
-#include "update_windows.h"
-#include "build_windows.h"
-#include "update_frames.h"
-#include "update_ranges.h"
-#include "thread_iso.h"
-#include "thread_ftp.h"
-#include "thread_save.h"
-#include "thread_v4l.h"
-#include "definitions.h"
-
-#ifdef HAVE_GDK_PIXBUF
-#include <gdk/gdk.h>
-#include <gdk-pixbuf/gdk-pixbuf.h>
-#include <gdk-pixbuf/gdk-pixbuf-loader.h>
-#endif
-
-#ifdef HAVE_XV
-// X11 includes for the simplified XVinfo
-#include <X11/Xlib.h>
-#include <X11/extensions/Xvlib.h>
-#include <ctype.h>
-
-#endif
-
 typedef struct _xvinfo
 {
 #ifdef HAVE_XV
@@ -128,5 +100,5 @@ window_set_icon(GtkWidget* window);
 void
 GetXvInfo(xvinfo_t *xvinfo);
 
-#endif
+#endif // __TOOLS_H__
 

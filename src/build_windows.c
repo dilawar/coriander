@@ -16,14 +16,10 @@
  * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "build_windows.h" 
+#include "coriander.h"
 
-extern GtkWidget *main_window;
-extern GtkWidget *help_window;
 extern const char *help_key_bindings_keys[KEY_BINDINGS_NUM];
 extern const char *help_key_bindings_functions[KEY_BINDINGS_NUM];
-extern camera_t* camera;
-extern unsigned int format7_tab_presence;
 
 void
 BuildPreferencesWindow(void)

@@ -17,8 +17,9 @@
  * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "conversions.h"
+#include "coriander.h"
 
+// this should disappear...
 extern void swab();
 
 // color conversion functions from Bart Nabbe.

@@ -19,11 +19,6 @@
 #ifndef __CAMERA_H__
 #define __CAMERA_H__
 
-#include <libdc1394/dc1394_control.h>
-#include "definitions.h"
-#include "raw1394support.h"
-#include "tools.h"
-
 void
 GetCameraNodes(BusInfo_t* businfo);
 
@@ -48,4 +43,4 @@ RemoveCamera(u_int64_t guid);
 void
 FreeCamera(camera_t* camera);
 
-#endif
+#endif // __CAMERA_H__

@@ -16,8 +16,8 @@
  * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __VIDEODEV_H
-#define __VIDEODEV_H
+#ifndef __VIDEODEV_H__
+#define __VIDEODEV_H__
 
 typedef unsigned short u16;
 typedef unsigned int u32;
@@ -109,4 +109,4 @@ struct video_window
 #define VIDIOCSVBIFMT          _IOW('v',29, struct vbi_format)         /* Set VBI information */
 
 
-#endif
+#endif // __VIDEODEV_H__

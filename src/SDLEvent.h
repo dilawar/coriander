@@ -19,20 +19,7 @@
 #ifndef __SDLEVENT_H__
 #define __SDLEVENT_H__
 
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif
-
 #ifdef HAVE_SDLLIB
-
-#include <gnome.h>
-#include "preferences.h"
-#include "definitions.h"
-#include "thread_base.h"
-#include "watch_thread.h"
-#include "thread_display.h"
-#include "tools.h"
-#include "update_frames.h"
 
 typedef struct _cursor_info_t {
 
@@ -87,4 +74,6 @@ SDLSetMaxSize(chain_t *display_service);
 
 #endif
 
-#endif
+#endif // __SDLEVENT_H__
+
+
