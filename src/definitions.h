@@ -75,7 +75,7 @@ typedef struct _Format7Info
 
 typedef struct _UIInfo
 {
-  int overlay_power;
+  int want_display;
   int test_pattern;
   int all_auto;
   int all_man;
