@@ -1459,7 +1459,6 @@ void
 on_overlay_type_menu_activate           (GtkMenuItem     *menuitem,
 					 gpointer         user_data)
 {
-
   camera->prefs.overlay_type=(int)user_data;
   gnome_config_set_int("coriander/display/overlay_type",camera->prefs.overlay_type);
   gnome_config_sync();
@@ -1470,7 +1469,6 @@ void
 on_overlay_pattern_menu_activate        (GtkMenuItem     *menuitem,
 					 gpointer         user_data)
 {
-
   camera->prefs.overlay_pattern=(int)user_data;
   gnome_config_set_int("coriander/display/overlay_pattern",camera->prefs.overlay_pattern);
   gnome_config_sync();
@@ -1485,7 +1483,14 @@ on_overlay_color_picker_color_set      (GnomeColorPicker *gnomecolorpicker,
                                         guint            arg4,
                                         gpointer         user_data)
 {
-
+  //fprintf(stderr,"0x%x 0x%x 0x%x\n",arg1,arg2,arg3);
+  camera->prefs.overlay_color_r=arg1>>8;
+  camera->prefs.overlay_color_g=arg2>>8;
+  camera->prefs.overlay_color_b=arg3>>8;
+  gnome_config_set_int("coriander/display/overlay_color_r",camera->prefs.overlay_color_r);
+  gnome_config_set_int("coriander/display/overlay_color_g",camera->prefs.overlay_color_g);
+  gnome_config_set_int("coriander/display/overlay_color_b",camera->prefs.overlay_color_b);
+  gnome_config_sync();
 }
 
 

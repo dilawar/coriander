@@ -734,5 +734,8 @@ UpdateServiceTree(void)
 void
 UpdatePrefsDisplayOverlayFrame(void)
 {
-
+  //fprintf(stderr,"updated: %d %d\n",camera->prefs.overlay_pattern,camera->prefs.overlay_type);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"overlay_type_menu"), camera->prefs.overlay_pattern!=OVERLAY_PATTERN_OFF);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"overlay_color_picker"), (camera->prefs.overlay_pattern!=OVERLAY_PATTERN_OFF) && (camera->prefs.overlay_type==OVERLAY_TYPE_REPLACE));
+  gtk_widget_set_sensitive(lookup_widget(main_window,"overlay_file_entry"), (camera->prefs.overlay_pattern==OVERLAY_PATTERN_IMAGE));
 }

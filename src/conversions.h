@@ -42,6 +42,32 @@ enum
   OVERLAY_BYTE_ORDER_UYVY
 };
 
+// color conversion functions from Bart Nabbe.
+// corrected by Damien: bad coeficients in YUV2RGB
+#define YUV2RGB(y, u, v, r, g, b)\
+  r = y + ((v*1436) >> 10);\
+  g = y - ((u*352 + v*731) >> 10);\
+  b = y + ((u*1814) >> 10);\
+  r = r < 0 ? 0 : r;\
+  g = g < 0 ? 0 : g;\
+  b = b < 0 ? 0 : b;\
+  r = r > 255 ? 255 : r;\
+  g = g > 255 ? 255 : g;\
+  b = b > 255 ? 255 : b
+  
+
+#define RGB2YUV(r, g, b, y, u, v)\
+  y = (306*r + 601*g + 117*b)  >> 10;\
+  u = ((-172*r - 340*g + 512*b) >> 10)  + 128;\
+  v = ((512*r - 429*g - 83*b) >> 10) + 128;\
+  y = y < 0 ? 0 : y;\
+  u = u < 0 ? 0 : u;\
+  v = v < 0 ? 0 : v;\
+  y = y > 255 ? 255 : y;\
+  u = u > 255 ? 255 : u;\
+  v = v > 255 ? 255 : v
+
+
 // UYVY <-> YUYV
 void
 uyvy2yuyv (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels, int byte_order);

@@ -125,7 +125,7 @@ DisplayThread(void* arg)
 		
 		// informative overlays
 		SDLDisplayArea(display_service);
-		//SDLDisplayPattern(display_service);
+		SDLDisplayPattern(display_service);
 		
 		SDL_UnlockYUVOverlay(info->sdloverlay);
 		SDL_DisplayYUVOverlay(info->sdloverlay, &info->sdlvideorect);
@@ -442,52 +442,209 @@ SDLDisplayPattern(chain_t *display_service)
   unsigned char *pimage;
   int sx = display_service->current_buffer->width;
   int sy = display_service->current_buffer->height;
+  int y,u,v;
+  unsigned char block[4];
   register int i;
   register int j;
+
+  RGB2YUV(camera->prefs.overlay_color_r,camera->prefs.overlay_color_g,camera->prefs.overlay_color_b,y,u,v);
+
+  switch(display_service->camera->prefs.overlay_type) {
+  case OVERLAY_TYPE_REPLACE:
+    switch(preferences.overlay_byte_order) {
+    case OVERLAY_BYTE_ORDER_YUYV:
+      block[0]=y;
+      block[1]=u;
+      block[2]=y;
+      block[3]=v;
+      break;
+    case OVERLAY_BYTE_ORDER_UYVY:
+      block[0]=u;
+      block[1]=y;
+      block[2]=v;
+      block[3]=y;
+      break;
+    default:
+      fprintf(stderr,"Invalid overlay coding\n");
+      break;
+    }
+    break;
+  case OVERLAY_TYPE_RANDOM:
+    block[0]=random()/(RAND_MAX/255);
+    block[1]=random()/(RAND_MAX/255);
+    block[2]=random()/(RAND_MAX/255);
+    block[3]=random()/(RAND_MAX/255);
+    break;
+  case OVERLAY_TYPE_INVERT:
+    break;
+  default:
+    fprintf(stderr,"Invalid overlay coding\n");
+    break;
+  }
 
   //pthread_mutex_lock(&watchthread_info.mutex_area);
   pimage=info->sdloverlay->pixels[0];
   switch(display_service->camera->prefs.overlay_pattern) {
   case OVERLAY_PATTERN_OFF:
     break;
-  case OVERLAY_PATTERN_CIRCLE:
+  case OVERLAY_PATTERN_RECTANGLE:
+    if (display_service->camera->prefs.overlay_type==OVERLAY_TYPE_INVERT) {
+      j=(7*sy)/16;
+      for (i=(7*sx)/16;i<=(9*sx)/16;i+=2) {
+	pimage[(j*sx+i)*2]=255-pimage[(j*sx+i)*2];
+	pimage[(j*sx+i)*2+1]=255-pimage[(j*sx+i)*2+1];
+	pimage[(j*sx+i)*2+2]=255-pimage[(j*sx+i)*2+2];
+	pimage[(j*sx+i)*2+3]=255-pimage[(j*sx+i)*2+3];
+      }
+      j=(9*sy)/16;
+      for (i=(7*sx)/16;i<=(9*sx)/16;i+=2) {
+	pimage[(j*sx+i)*2]=255-pimage[(j*sx+i)*2];
+	pimage[(j*sx+i)*2+1]=255-pimage[(j*sx+i)*2+1];
+	pimage[(j*sx+i)*2+2]=255-pimage[(j*sx+i)*2+2];
+	pimage[(j*sx+i)*2+3]=255-pimage[(j*sx+i)*2+3];
+      }
+      j=(7*sx)/16;
+      for (i=(7*sy)/16;i<=(9*sy)/16;i+=2) {
+	pimage[(i*sx+j)*2]=255-pimage[(i*sx+j)*2];
+	pimage[(i*sx+j)*2+1]=255-pimage[(i*sx+j)*2+1];
+	pimage[(i*sx+j)*2+2]=255-pimage[(i*sx+j)*2+2];
+	pimage[(i*sx+j)*2+3]=255-pimage[(i*sx+j)*2+3];
+      }
+      j=(9*sx)/16;
+      for (i=(7*sy)/16;i<=(9*sy)/16;i+=2) {
+	pimage[(i*sx+j)*2]=255-pimage[(i*sx+j)*2];
+	pimage[(i*sx+j)*2+1]=255-pimage[(i*sx+j)*2+1];
+	pimage[(i*sx+j)*2+2]=255-pimage[(i*sx+j)*2+2];
+	pimage[(i*sx+j)*2+3]=255-pimage[(i*sx+j)*2+3];
+      }
+    }
+    else {
+      j=(7*sy)/16;
+      for (i=(7*sx)/16;i<=(9*sx)/16;i+=2) {
+	pimage[(j*sx+i)*2]=block[0];
+	pimage[(j*sx+i)*2+1]=block[1];
+	pimage[(j*sx+i)*2+2]=block[2];
+	pimage[(j*sx+i)*2+3]=block[3];
+      }
+      j=(9*sy)/16;
+      for (i=(7*sx)/16;i<=(9*sx)/16;i+=2) {
+	pimage[(j*sx+i)*2]=block[0];
+	pimage[(j*sx+i)*2+1]=block[1];
+	pimage[(j*sx+i)*2+2]=block[2];
+	pimage[(j*sx+i)*2+3]=block[3];
+      }
+      j=(7*sx)/16;
+      for (i=(7*sy)/16;i<=(9*sy)/16;i+=2) {
+	pimage[(i*sx+j)*2]=block[0];
+	pimage[(i*sx+j)*2+1]=block[1];
+	pimage[(i*sx+j)*2+2]=block[2];
+	pimage[(i*sx+j)*2+3]=block[3];
+      }
+      j=(9*sx)/16;
+      for (i=(7*sy)/16;i<=(9*sy)/16;i+=2) {
+	pimage[(i*sx+j)*2]=block[0];
+	pimage[(i*sx+j)*2+1]=block[1];
+	pimage[(i*sx+j)*2+2]=block[2];
+	pimage[(i*sx+j)*2+3]=block[3];
+      }
+    }
     break;
   case OVERLAY_PATTERN_SMALL_CROSS:
-    j=sy/2;
-    for (i=(7*sx)/16;i<=(9*sx)/16;i++) {
-      pimage[(j*sx+i)*2]=255;
+    if (display_service->camera->prefs.overlay_type==OVERLAY_TYPE_INVERT) {
+      j=sy/2;
+      for (i=(7*sx)/16;i<=(9*sx)/16;i+=2) {
+	pimage[(j*sx+i)*2]=255-pimage[(j*sx+i)*2];
+	pimage[(j*sx+i)*2+1]=255-pimage[(j*sx+i+1)*2];
+	pimage[(j*sx+i)*2+2]=255-pimage[(j*sx+i+2)*2];
+	pimage[(j*sx+i)*2+3]=255-pimage[(j*sx+i+3)*2];
+      }
+      j=sx/2;
+      for (i=(7*sy)/16;i<=(9*sy)/16;i+=2) {
+	pimage[(i*sx+j)*2]=255-pimage[(i*sx+j)*2];
+	pimage[(i*sx+j)*2+1]=255-pimage[(i*sx+j+1)*2];
+	pimage[(i*sx+j)*2+2]=255-pimage[(i*sx+j+2)*2];
+	pimage[(i*sx+j)*2+3]=255-pimage[(i*sx+j+3)*2];
+      }
     }
-    j=sx/2;
-    for (i=(7*sy)/16;i<=(9*sy)/16;i++) {
-      pimage[(i*sx+j)*2]=255;
+    else {
+      j=sy/2;
+      for (i=(7*sx)/16;i<=(9*sx)/16;i+=2) {
+	pimage[(j*sx+i)*2]=block[0];
+	pimage[(j*sx+i)*2+1]=block[1];
+	pimage[(j*sx+i)*2+2]=block[2];
+	pimage[(j*sx+i)*2+3]=block[3];
+      }
+      j=sx/2;
+      for (i=(7*sy)/16;i<=(9*sy)/16;i+=2) {
+	pimage[(i*sx+j)*2]=block[0];
+	pimage[(i*sx+j)*2+1]=block[1];
+	pimage[(i*sx+j)*2+2]=block[2];
+	pimage[(i*sx+j)*2+3]=block[3];
+      }
     }
     break;
   case OVERLAY_PATTERN_LARGE_CROSS:
-    j=sy/2;
-    for (i=0;i<sx;i++) {
-      pimage[(j*sx+i)*2]=255;
+    if (display_service->camera->prefs.overlay_type==OVERLAY_TYPE_INVERT) {
+      j=sy/2;
+      for (i=0;i<sx;i+=2) {
+	pimage[(j*sx+i)*2]=255-pimage[(j*sx+i)*2];
+	pimage[(j*sx+i)*2+1]=255-pimage[(j*sx+i+1)*2];
+	pimage[(j*sx+i)*2+2]=255-pimage[(j*sx+i+2)*2];
+	pimage[(j*sx+i)*2+3]=255-pimage[(j*sx+i+3)*2];
+      }
+      j=sx/2;
+      for (i=0;i<sy;i+=2) {
+	pimage[(i*sx+j)*2]=255-pimage[(i*sx+j)*2];
+	pimage[(i*sx+j)*2+1]=255-pimage[(i*sx+j+1)*2];
+	pimage[(i*sx+j)*2+2]=255-pimage[(i*sx+j+2)*2];
+	pimage[(i*sx+j)*2+3]=255-pimage[(i*sx+j+3)*2];
+      }
     }
-    j=sx/2;
-    for (i=0;i<sy;i++) {
-      pimage[(i*sx+j)*2]=255;
+    else {
+      j=sy/2;
+      for (i=0;i<sx;i+=2) {
+	pimage[(j*sx+i)*2]=block[0];
+	pimage[(j*sx+i)*2+1]=block[1];
+	pimage[(j*sx+i)*2+2]=block[2];
+	pimage[(j*sx+i)*2+3]=block[3];
+      }
+      j=sx/2;
+      for (i=0;i<sy;i+=2) {
+	pimage[(i*sx+j)*2]=block[0];
+	pimage[(i*sx+j)*2+1]=block[1];
+	pimage[(i*sx+j)*2+2]=block[2];
+	pimage[(i*sx+j)*2+3]=block[3];
+      }
     }
     break;
   case OVERLAY_PATTERN_GOLDEN_MEAN:
     j=sy/3;
-    for (i=0;i<sx;i++) {
-      pimage[(j*sx+i)*2]=255;
+    for (i=0;i<sx;i+=2) {
+      pimage[(j*sx+i)*2]=block[0];
+      pimage[(j*sx+i)*2+1]=block[1];
+      pimage[(j*sx+i)*2+2]=block[2];
+      pimage[(j*sx+i)*2+3]=block[3];
     }
-    j=(2*sy)/3;
-    for (i=0;i<sx;i++) {
-      pimage[(j*sx+i)*2]=255;
+    j=2*sy/3;
+    for (i=0;i<sx;i+=2) {
+      pimage[(j*sx+i)*2]=block[0];
+      pimage[(j*sx+i)*2+1]=block[1];
+      pimage[(j*sx+i)*2+2]=block[2];
+      pimage[(j*sx+i)*2+3]=block[3];
     }
     j=sx/3;
-    for (i=0;i<sy;i++) {
-      pimage[(i*sx+j)*2]=255;
+    for (i=0;i<sy;i+=2) {
+      pimage[(i*sx+j)*2]=block[0];
+      pimage[(i*sx+j)*2+1]=block[1];
+      pimage[(i*sx+j)*2+2]=block[2];
+      pimage[(i*sx+j)*2+3]=block[3];
     }
-    j=(2*sx)/3;
-    for (i=0;i<sy;i++) {
-      pimage[(i*sx+j)*2]=255;
+    j=2*sx/3;
+    for (i=0;i<sy;i+=2) {
+      pimage[(i*sx+j)*2]=block[0];
+      pimage[(i*sx+j)*2+1]=block[1];
+      pimage[(i*sx+j)*2+2]=block[2];
+      pimage[(i*sx+j)*2+3]=block[3];
     }
     break;
   case OVERLAY_PATTERN_IMAGE:

@@ -750,15 +750,15 @@ BuildOverlayPatternMenu(void)
   gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
 		      GTK_SIGNAL_FUNC (on_overlay_pattern_menu_activate),
 		      (int*)OVERLAY_PATTERN_OFF);
-  
-  // Golden mean
-  glade_menuitem = gtk_menu_item_new_with_label (_("Golden mean"));
+ 
+  // Rectangle
+  glade_menuitem = gtk_menu_item_new_with_label (_("Rectangle"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
   gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
 		      GTK_SIGNAL_FUNC (on_overlay_pattern_menu_activate),
-		      (int*)OVERLAY_PATTERN_GOLDEN_MEAN);
-  
+		      (int*)OVERLAY_PATTERN_RECTANGLE);
+
   // Small cross
   glade_menuitem = gtk_menu_item_new_with_label (_("Small Cross"));
   gtk_widget_show (glade_menuitem);
@@ -775,14 +775,16 @@ BuildOverlayPatternMenu(void)
 		      GTK_SIGNAL_FUNC (on_overlay_pattern_menu_activate),
 		      (int*)OVERLAY_PATTERN_LARGE_CROSS);
   
-  // Circle
-  glade_menuitem = gtk_menu_item_new_with_label (_("Circle"));
+  // Golden mean (rem: golden mean is more complex and involves the golden ratio of 1.618...
+  // The "thirds" is a simplification
+  glade_menuitem = gtk_menu_item_new_with_label (_("Thirds"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
   gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
 		      GTK_SIGNAL_FUNC (on_overlay_pattern_menu_activate),
-		      (int*)OVERLAY_PATTERN_CIRCLE);
-  
+		      (int*)OVERLAY_PATTERN_GOLDEN_MEAN);
+ 
+  /*
   // Image
   glade_menuitem = gtk_menu_item_new_with_label (_("Custom image"));
   gtk_widget_show (glade_menuitem);
@@ -790,7 +792,7 @@ BuildOverlayPatternMenu(void)
   gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
 		      GTK_SIGNAL_FUNC (on_overlay_pattern_menu_activate),
 		      (int*)OVERLAY_PATTERN_IMAGE);
-  
+  */
   gtk_option_menu_set_menu (GTK_OPTION_MENU (new_option_menu), new_menu);
 
   // menu history
@@ -823,6 +825,22 @@ BuildOverlayTypeMenu(void)
   
   new_menu = gtk_menu_new ();
 
+  // Replace
+  glade_menuitem = gtk_menu_item_new_with_label (_("Replace"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
+		      GTK_SIGNAL_FUNC (on_overlay_type_menu_activate),
+		      (int*)OVERLAY_TYPE_REPLACE);
+
+  // Random
+  glade_menuitem = gtk_menu_item_new_with_label (_("Random"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
+		      GTK_SIGNAL_FUNC (on_overlay_type_menu_activate),
+		      (int*)OVERLAY_TYPE_RANDOM);
+
   // Invert
   glade_menuitem = gtk_menu_item_new_with_label (_("Invert"));
   gtk_widget_show (glade_menuitem);
@@ -831,22 +849,7 @@ BuildOverlayTypeMenu(void)
 		      GTK_SIGNAL_FUNC (on_overlay_type_menu_activate),
 		      (int*)OVERLAY_TYPE_INVERT);
   
-  // Random
-  glade_menuitem = gtk_menu_item_new_with_label (_("Random"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-		      GTK_SIGNAL_FUNC (on_overlay_type_menu_activate),
-		      (int*)OVERLAY_TYPE_RANDOM);
-  
-  // Replace
-  glade_menuitem = gtk_menu_item_new_with_label (_("Replace"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-		      GTK_SIGNAL_FUNC (on_overlay_type_menu_activate),
-		      (int*)OVERLAY_TYPE_REPLACE);
-  
+  /*  
   // Average
   glade_menuitem = gtk_menu_item_new_with_label (_("Average"));
   gtk_widget_show (glade_menuitem);
@@ -854,7 +857,7 @@ BuildOverlayTypeMenu(void)
   gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
 		      GTK_SIGNAL_FUNC (on_overlay_type_menu_activate),
 		      (int*)OVERLAY_TYPE_AVERAGE);
-  
+  */
   gtk_option_menu_set_menu (GTK_OPTION_MENU (new_option_menu), new_menu);
 
   // menu history

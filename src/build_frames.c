@@ -248,6 +248,11 @@ BuildPrefsDisplayFrame(void)
   BuildOverlayPatternMenu();
   BuildOverlayTypeMenu();
 
+  gnome_color_picker_set_i8(GNOME_COLOR_PICKER(lookup_widget(main_window,"overlay_color_picker")),
+			    camera->prefs.overlay_color_r,
+			    camera->prefs.overlay_color_g,
+			    camera->prefs.overlay_color_b,0);
+  
   /*
 
   // display scaling
