@@ -75,7 +75,6 @@ MessageBox(gchar *message);
 
 void
 SetScaleSensitivity(GtkWidget* widget, int feature, dc1394bool_t sense);
-
 /*
 void
 GetRGBPix(int px, int py, chain_t *service, int* R, int* G, int* B);

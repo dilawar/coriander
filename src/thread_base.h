@@ -30,7 +30,7 @@
 #define GUID_YUV12_PLANAR 0x32315659 
 #define GUID_YUY2_PACKED  0x32595559
 #define GUID_UYVY_PACKED  0x59565955
-#define THREAD_LOOP_SLEEP_TIME_US 1
+#define THREAD_LOOP_SLEEP_TIME_US 0
 
 chain_t*
 GetService(camera_t* cam, service_t service);

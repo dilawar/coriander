@@ -65,7 +65,7 @@ GetFormat7Capabilities(raw1394handle_t handle, nodeid_t node, Format7Info *info)
 	// quick hack to keep size/position even. If pos/size is ODD, strange color/distorsions occur on some cams
 	// (e.g. Basler cams). This will have to really fixed later.
 	// REM: this is fixed by using the unit_position:
-	//fprintf(stderr,"Using pos units = %d %d\n",info->mode[i].step_pos_x,info->mode[i].step_pos_y);
+	// fprintf(stderr,"Using pos units = %d %d\n",info->mode[i].step_pos_x,info->mode[i].step_pos_y);
 	if (dc1394_query_format7_unit_position(handle,node,f,&info->mode[i].step_pos_x,&info->mode[i].step_pos_y)!=DC1394_SUCCESS)
 	  MainError("Got a problem querying format7 unit position");
 	info->mode[i].use_unit_pos=((info->mode[i].step_pos_x>0)&&(info->mode[i].step_pos_x<info->mode[i].max_size_x)&&
@@ -593,7 +593,6 @@ StopFPSDisplay(void)
 {
   chain_t *service;
   isothread_info_t* infoiso;
-  //displaythread_info_t* infodisplay;
   savethread_info_t* infosave;
   ftpthread_info_t* infoftp;
   v4lthread_info_t* infov4l;
@@ -601,13 +600,11 @@ StopFPSDisplay(void)
   service=GetService(camera, SERVICE_ISO);
   if (service!=NULL) {
     infoiso=(isothread_info_t*)service->data;
-    //fprintf(stderr,"Stopping iso fps, id %d...",infoiso->timeout_func_id);
     gtk_timeout_remove(infoiso->timeout_func_id);
     gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_receive"),
 			 ctxt.fps_receive_ctxt, ctxt.fps_receive_id);
     ctxt.fps_receive_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_receive"),
 					   ctxt.fps_receive_ctxt, "");
-    //fprintf(stderr,"done\n");
   
   } 
   // we don't need to stop display FPS: the thread is completely disabled if necessary.
@@ -615,35 +612,29 @@ StopFPSDisplay(void)
   service=GetService(camera, SERVICE_SAVE);
   if (service!=NULL) {
     infosave=(savethread_info_t*)service->data;
-    //fprintf(stderr,"Stopping save fps, id %d...",infosave->timeout_func_id);
     gtk_timeout_remove(infosave->timeout_func_id);
     gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_save"),
 			 ctxt.fps_save_ctxt, ctxt.fps_save_id);
     ctxt.fps_save_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_save"),
 					   ctxt.fps_save_ctxt, "");
-    //fprintf(stderr,"done\n");
   }
   service=GetService(camera, SERVICE_FTP);
   if (service!=NULL) {
     infoftp=(ftpthread_info_t*)service->data;
-    //fprintf(stderr,"Stopping ftp fps, id %d...",infoftp->timeout_func_id);
     gtk_timeout_remove(infoftp->timeout_func_id);
     gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_ftp"),
 			 ctxt.fps_ftp_ctxt, ctxt.fps_ftp_id);
     ctxt.fps_ftp_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_ftp"),
 					   ctxt.fps_ftp_ctxt, "");
-    //fprintf(stderr,"done\n");
   }
   service=GetService(camera, SERVICE_V4L);
   if (service!=NULL) {
     infov4l=(v4lthread_info_t*)service->data;
-    //fprintf(stderr,"Stopping v4l fps, id %d...",infov4l->timeout_func_id);
     gtk_timeout_remove(infov4l->timeout_func_id);
     gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_v4l"),
 			 ctxt.fps_v4l_ctxt, ctxt.fps_v4l_id);
     ctxt.fps_v4l_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_v4l"),
 					   ctxt.fps_v4l_ctxt, "");
-    //fprintf(stderr,"done\n");
   }
 }
 
@@ -652,7 +643,6 @@ ResumeFPSDisplay(void)
 {
   chain_t *service;
   isothread_info_t* infoiso;
-  //displaythread_info_t* infodisplay;
   savethread_info_t* infosave;
   ftpthread_info_t* infoftp;
   v4lthread_info_t* infov4l;
@@ -660,32 +650,24 @@ ResumeFPSDisplay(void)
   service=GetService(camera, SERVICE_ISO);
   if (service!=NULL) {
     infoiso=(isothread_info_t*)service->data;
-    //fprintf(stderr,"Starting iso fps...");
     infoiso->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)IsoShowFPS, (gpointer*) service);
-    //fprintf(stderr,"done: id= %d\n",infoiso->timeout_func_id);
   } 
   // we don't restart display FPS because if necessary the thread will be restarted anyway.
   
   service=GetService(camera, SERVICE_SAVE);
   if (service!=NULL) {
     infosave=(savethread_info_t*)service->data;
-    //fprintf(stderr,"Starting save fps...");
     infosave->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)SaveShowFPS, (gpointer*) service);
-    //fprintf(stderr,"done: id= %d\n",infosave->timeout_func_id);
   }
   service=GetService(camera, SERVICE_FTP);
   if (service!=NULL) {
     infoftp=(ftpthread_info_t*)service->data;
-    //fprintf(stderr,"Starting ftp fps...");
     infoftp->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)FtpShowFPS, (gpointer*) service);
-    //fprintf(stderr,"done: id= %d\n",infoftp->timeout_func_id);
   }
   service=GetService(camera, SERVICE_V4L);
   if (service!=NULL) {
     infov4l=(v4lthread_info_t*)service->data;
-    //fprintf(stderr,"Starting v4l fps...");
     infov4l->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)V4lShowFPS, (gpointer*) service);
-    //fprintf(stderr,"done: id= %d\n",infov4l->timeout_func_id);
   }
 }
 
@@ -709,7 +691,7 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation) {
   //fprintf(stderr,"Bus reset detected by gtk timeout. Generation: %d\n",generation);
 
   gtk_widget_set_sensitive(main_window,FALSE);
-  usleep(1000000); // sleep some time to allow the cam to warm-up
+  usleep(1000000); // sleep some time to allow the cam to warm-up/boot
 
   raw1394_update_generation(handle, generation);
   // Now we have to deal with this bus reset...
