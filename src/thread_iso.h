@@ -48,8 +48,8 @@ typedef struct
   raw1394handle_t         handle;
   receive_method_t        receive_method;
   dc1394_cameracapture    capture;
-
-
+  int video1394_dropframes;
+  char video1394_device[STRING_SIZE];
   // timing data:
   struct tms tms_buf;
   clock_t prev_time;

@@ -62,14 +62,23 @@ gint IsoStartThread(camera_t* cam)
     default: maxspeed=SPEED_100;break;
     }
     //fprintf(stderr,"    Setting up capture\n");
-    switch(preferences.receive_method) {
+
+    // copy params if we are the current camera
+    if (cam==camera) {
+      info->receive_method=preferences.receive_method;
+      strcpy(info->video1394_device, preferences.video1394_device);
+      info->capture.dma_device_file=info->video1394_device;
+      info->video1394_dropframes=preferences.video1394_dropframes;
+    }
+
+    switch(info->receive_method) {
     case RECEIVE_METHOD_VIDEO1394:
       if (cam->misc_info.format!=FORMAT_SCALABLE_IMAGE_SIZE)
 	if (dc1394_dma_setup_capture(cam->camera_info.handle, cam->camera_info.id, cam->misc_info.iso_channel, 
 				     cam->misc_info.format, cam->misc_info.mode, maxspeed,
 				     cam->misc_info.framerate, DMA_BUFFERS,
-				     preferences.video1394_dropframes,
-				     preferences.video1394_device, &info->capture)
+				     info->video1394_dropframes,
+				     info->capture.dma_device_file, &info->capture)
 	    == DC1394_SUCCESS) {
 	  info->receive_method=RECEIVE_METHOD_VIDEO1394;
 	}
@@ -80,7 +89,6 @@ gint IsoStartThread(camera_t* cam)
 	  return(-1);
 	}
       else {
-	info->capture.dma_device_file = preferences.video1394_device;
 	if (dc1394_dma_setup_format7_capture(cam->camera_info.handle, cam->camera_info.id, cam->misc_info.iso_channel, 
 					     cam->misc_info.mode, maxspeed, QUERY_FROM_CAMERA,
 					     QUERY_FROM_CAMERA, QUERY_FROM_CAMERA,

@@ -203,7 +203,7 @@ SaveThread(void* arg)
 	// check params
 	SaveThreadCheckParams(save_service);
 	if (save_service->current_buffer->width!=-1) {
-	  if (skip_counter==(info->period-1)) {
+	  if (skip_counter>=(info->period-1)) {
 	    skip_counter=0;
 	    // get filename
 	    switch (info->scratch) {

@@ -209,7 +209,7 @@ FtpThread(void* arg)
       if(RollBuffers(ftp_service)) { // have buffers been rolled?
 	FtpThreadCheckParams(ftp_service);
 	if (ftp_service->current_buffer->width!=-1) {
-	  if (skip_counter==(info->period-1)) {
+	  if (skip_counter>=(info->period-1)) {
 	    skip_counter=0;
 	    convert_to_rgb(ftp_service->current_buffer, info->buffer);
 	    switch (info->scratch) {

@@ -644,18 +644,32 @@ void
 on_prefs_display_period_changed        (GtkEditable     *editable,
                                         gpointer         user_data)
 {
+  displaythread_info_t* info;
+  chain_t* service;
   preferences.display_period=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(main_window,"prefs_display_period")));
   gnome_config_set_int("coriander/display/period",preferences.display_period);
   gnome_config_sync();
+  service=GetService(camera,SERVICE_DISPLAY);
+  if (service!=NULL) {
+    info=service->data;
+    info->period=preferences.display_period;
+  }
 }
 
 void
 on_prefs_save_period_changed           (GtkEditable     *editable,
                                         gpointer         user_data)
 {
+  savethread_info_t* info;
+  chain_t* service;
   preferences.save_period=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(main_window,"prefs_save_period")));
   gnome_config_set_int("coriander/save/period",preferences.save_period);
   gnome_config_sync();
+  service=GetService(camera,SERVICE_SAVE);
+  if (service!=NULL) {
+    info=service->data;
+    info->period=preferences.save_period;
+  }
 }
 
 
@@ -663,18 +677,32 @@ void
 on_prefs_v4l_period_changed            (GtkEditable     *editable,
                                         gpointer         user_data)
 {
+  v4lthread_info_t* info;
+  chain_t* service;
   preferences.v4l_period=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(main_window,"prefs_v4l_period")));
   gnome_config_set_int("coriander/v4l/period",preferences.v4l_period);
   gnome_config_sync();
+  service=GetService(camera,SERVICE_V4L);
+  if (service!=NULL) {
+    info=service->data;
+    info->period=preferences.v4l_period;
+  }
 }
 
 void
 on_prefs_ftp_period_changed            (GtkEditable     *editable,
                                         gpointer         user_data)
 {
+  ftpthread_info_t* info;
+  chain_t* service;
   preferences.ftp_period=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(main_window,"prefs_ftp_period")));
   gnome_config_set_int("coriander/ftp/period",preferences.ftp_period);
   gnome_config_sync();
+  service=GetService(camera,SERVICE_FTP);
+  if (service!=NULL) {
+    info=service->data;
+    info->period=preferences.ftp_period;
+  }
 }
 
 
@@ -753,11 +781,18 @@ void
 on_prefs_save_seq_toggled              (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
+  savethread_info_t* info;
+  chain_t* service;
   if (togglebutton->active)
     preferences.save_scratch=SAVE_SCRATCH_SEQUENTIAL;
   gnome_config_set_int("coriander/save/scratch",preferences.save_scratch);
   gnome_config_sync();
   UpdatePrefsSaveFrame();
+  service=GetService(camera,SERVICE_SAVE);
+  if (service!=NULL) {
+    info=service->data;
+    info->scratch=preferences.save_scratch;
+  }
 }
 
 
@@ -765,11 +800,18 @@ void
 on_prefs_save_scratch_toggled          (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
+  savethread_info_t* info;
+  chain_t* service;
   if (togglebutton->active)
     preferences.save_scratch=SAVE_SCRATCH_OVERWRITE;
   gnome_config_set_int("coriander/save/scratch",preferences.save_scratch);
   gnome_config_sync();
   UpdatePrefsSaveFrame();
+  service=GetService(camera,SERVICE_SAVE);
+  if (service!=NULL) {
+    info=service->data;
+    info->scratch=preferences.save_scratch;
+  }
 }
 
 
@@ -777,22 +819,36 @@ void
 on_prefs_save_video_toggled            (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
+  savethread_info_t* info;
+  chain_t* service;
   if (togglebutton->active)
     preferences.save_scratch=SAVE_SCRATCH_SEQUENCE;
   gnome_config_set_int("coriander/save/scratch",preferences.save_scratch);
   gnome_config_sync();
   UpdatePrefsSaveFrame();
+  service=GetService(camera,SERVICE_SAVE);
+  if (service!=NULL) {
+    info=service->data;
+    info->scratch=preferences.save_scratch;
+  }
 }
 
 void
 on_prefs_save_convert_toggled          (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
+  savethread_info_t* info;
+  chain_t* service;
   if (togglebutton->active)
     preferences.save_convert=SAVE_CONVERT_ON;
   gnome_config_set_int("coriander/save/convert",preferences.save_convert);
   gnome_config_sync();
   UpdatePrefsSaveFrame();
+  service=GetService(camera,SERVICE_SAVE);
+  if (service!=NULL) {
+    info=service->data;
+    info->rawdump=preferences.save_convert;
+  }
 }
 
 
@@ -800,11 +856,18 @@ void
 on_prefs_save_noconvert_toggled        (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
+  savethread_info_t* info;
+  chain_t* service;
   if (togglebutton->active)
     preferences.save_convert=SAVE_CONVERT_OFF;
   gnome_config_set_int("coriander/save/convert",preferences.save_convert);
   gnome_config_sync();
   UpdatePrefsSaveFrame();
+  service=GetService(camera,SERVICE_SAVE);
+  if (service!=NULL) {
+    info=service->data;
+    info->rawdump=preferences.save_convert;
+  }
 }
 
 
@@ -840,11 +903,18 @@ void
 on_prefs_ftp_seq_toggled               (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
+  ftpthread_info_t* info;
+  chain_t* service;
   if (togglebutton->active)
     preferences.ftp_scratch=FTP_SCRATCH_SEQUENTIAL;
   gnome_config_set_int("coriander/ftp/scratch",preferences.ftp_scratch);
   gnome_config_sync();
   UpdatePrefsFtpFrame();
+  service=GetService(camera,SERVICE_FTP);
+  if (service!=NULL) {
+    info=service->data;
+    info->scratch=preferences.ftp_scratch;
+  }
 }
 
 
@@ -852,11 +922,18 @@ void
 on_prefs_ftp_scratch_toggled           (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
+  ftpthread_info_t* info;
+  chain_t* service;
   if (togglebutton->active)
     preferences.ftp_scratch=FTP_SCRATCH_OVERWRITE;
   gnome_config_set_int("coriander/ftp/scratch",preferences.ftp_scratch);
   gnome_config_sync();
   UpdatePrefsFtpFrame();
+  service=GetService(camera,SERVICE_FTP);
+  if (service!=NULL) {
+    info=service->data;
+    info->scratch=preferences.ftp_scratch;
+  }
 }
 
 
@@ -1058,11 +1135,18 @@ void
 on_prefs_save_date_tag_toggled         (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
+  savethread_info_t* info;
+  chain_t* service;
   if (togglebutton->active)
     preferences.save_datenum=SAVE_TAG_DATE;
   gnome_config_set_int("coriander/save/datenum",preferences.save_datenum);
   gnome_config_sync();
   UpdatePrefsSaveFrame();
+  service=GetService(camera,SERVICE_SAVE);
+  if (service!=NULL) {
+    info=service->data;
+    info->datenum=preferences.save_datenum;
+  }
 }
 
 
@@ -1070,11 +1154,18 @@ void
 on_prefs_save_num_tag_toggled          (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
+  savethread_info_t* info;
+  chain_t* service;
   if (togglebutton->active)
     preferences.save_datenum=SAVE_TAG_NUMBER;
   gnome_config_set_int("coriander/save/datenum",preferences.save_datenum);
   gnome_config_sync();
   UpdatePrefsSaveFrame();
+  service=GetService(camera,SERVICE_SAVE);
+  if (service!=NULL) {
+    info=service->data;
+    info->datenum=preferences.save_datenum;
+  }
 }
 
 
@@ -1082,11 +1173,18 @@ void
 on_prefs_ftp_date_tag_toggled          (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
+  ftpthread_info_t* info;
+  chain_t* service;
   if (togglebutton->active)
     preferences.ftp_datenum=FTP_TAG_DATE;
   gnome_config_set_int("coriander/ftp/datenum",preferences.ftp_datenum);
   gnome_config_sync();
   UpdatePrefsFtpFrame();
+  service=GetService(camera,SERVICE_FTP);
+  if (service!=NULL) {
+    info=service->data;
+    info->datenum=preferences.ftp_datenum;
+  }
 }
 
 
@@ -1094,10 +1192,17 @@ void
 on_prefs_ftp_num_tag_toggled           (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
+  ftpthread_info_t* info;
+  chain_t* service;
   if (togglebutton->active)
     preferences.ftp_datenum=FTP_TAG_NUMBER;
   gnome_config_set_int("coriander/ftp/datenum",preferences.ftp_datenum);
   gnome_config_sync();
   UpdatePrefsFtpFrame();
+  service=GetService(camera,SERVICE_FTP);
+  if (service!=NULL) {
+    info=service->data;
+    info->datenum=preferences.ftp_datenum;
+  }
 }
 

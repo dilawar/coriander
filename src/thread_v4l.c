@@ -60,8 +60,6 @@ V4lStartThread(camera_t* cam)
 
     // COPY PREFERENCES HERE
     strcpy(info->v4l_dev_name,preferences.v4l_dev_name);
-    //info->v4l_scratch=preferences.v4l_scratch;
-    //info->rawdump=preferences.v4l_convert;
 
     // open V4L device
     info->v4l_dev=-1;
@@ -195,7 +193,7 @@ V4lThread(void* arg)
 	swap_rb(info->v4l_buffer, v4l_service->current_buffer->width*v4l_service->current_buffer->height*3);
 
 	if (v4l_service->current_buffer->width!=-1) {
-	  if (skip_counter==(info->period-1)) {
+	  if (skip_counter>=(info->period-1)) {
 	    skip_counter=0;
 	    write(info->v4l_dev,info->v4l_buffer,v4l_service->current_buffer->width*v4l_service->current_buffer->height*3);
 	    info->frames++;

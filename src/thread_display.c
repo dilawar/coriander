@@ -162,7 +162,7 @@ DisplayThread(void* arg)
 	// check params
 	DisplayThreadCheckParams(display_service);
 	if (display_service->current_buffer->width!=-1) {
-	  if (skip_counter==(info->period-1)) {
+	  if (skip_counter>=(info->period-1)) {
 	    skip_counter=0;
 #ifdef HAVE_SDLLIB
 	    if (SDL_LockYUVOverlay(info->SDL_overlay) == 0) {
