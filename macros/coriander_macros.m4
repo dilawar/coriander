@@ -230,7 +230,11 @@ AC_DEFUN([AC_CHECK_GDK_PIXBUF],[
 	  GDK_PIXBUF_CFLAGS=`gdk-pixbuf-config --cflags`
 	  AC_DEFINE(HAVE_GDK_PIXBUF,1,[defined if gdk-pixbuf is available])
 	else
-	  AC_MSG_RESULT([GDK-pixbuf is required for WM icons.])
+	  AC_MSG_RESULT([GDK-pixbuf is required for WM icons.
+**************************************************************************
+**   Install gdk-pixbuf libraries (including development files) to      **
+**   enjoy nice little icons in menus, tasklist,...                     **
+**************************************************************************])
 	fi
 ])
 

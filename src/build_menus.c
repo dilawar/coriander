@@ -289,12 +289,7 @@ BuildFormat7ColorMenu(void)
   gtk_option_menu_set_menu (GTK_OPTION_MENU (color_num), color_num_menu);
 
   // sets the active menu item:
-  //fprintf(stderr,"F7 mode: max: %d, default: %d\n",NUM_COLOR_FORMAT7,
-  //	  format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].color_coding_id);
-  //fprintf(stderr,"current mode: %d\n", format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].color_coding_id);
-  //fprintf(stderr,"history set to %d\n",index[format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].color_coding_id-COLOR_FORMAT7_MIN]);
-  gtk_option_menu_set_history (GTK_OPTION_MENU (color_num),
-			       index[camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].color_coding_id-COLOR_FORMAT7_MIN]);
+  gtk_option_menu_set_history (GTK_OPTION_MENU (color_num), index[camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].color_coding_id-COLOR_FORMAT7_MIN]);
 
 }
 

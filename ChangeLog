@@ -2,6 +2,12 @@ Coriander, (c) 2000-2004 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes since version 1.0.0
 
+   Dec 20, 2004, by Damien Douxchamps
+   - update pattern overlay
+	
+   Dec 17, 2004, by Damien Douxchamps
+   - removal of icons.h, which was somehow still lurking in the src directory
+	
    Dec 16, 2004, by Damien Douxchamps
    - pattern overlay is more or less OK now. There are problems with the YUYV block alignement
      when writing pattern on the screen. I will fix this later.

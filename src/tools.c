@@ -226,19 +226,6 @@ GetFormat7ModeInfo(camera_t* cam, int mode_id)
       mode->unit_pos_x=0;
       mode->unit_pos_y=0;
     }
-    /*
-    // --- the following code should not be necessary with latest libdc (14/1/2004)
-    if (!((mode->unit_pos_x>0)&&(mode->unit_pos_x<mode->max_size_x)&&
-	  (mode->unit_pos_y>0)&&(mode->unit_pos_y<mode->max_size_y))) {
-      //fprintf(stderr,"UNIT_POS [%d %d] disabled, using UNIT_SIZE instead\n",info->mode[i].unit_pos_x,info->mode[i].unit_pos_y);
-      mode->unit_pos_x=mode->unit_size_x;
-      mode->unit_pos_y=mode->unit_size_y;
-    }
-    else {
-      //fprintf(stderr,"UNIT_POS [%d %d] is valid and will be used\n",info->mode[i].unit_pos_x,info->mode[i].unit_pos_y);
-    }
-    // ---
-    */
     if (dc1394_query_format7_image_position(cam->camera_info.handle,cam->camera_info.id,mode_id,&mode->pos_x,&mode->pos_y)!=DC1394_SUCCESS)
       MainError("Got a problem querying format7 image position");
     if (dc1394_query_format7_image_size(cam->camera_info.handle,cam->camera_info.id,mode_id,&mode->size_x,&mode->size_y)!=DC1394_SUCCESS)
@@ -246,11 +233,14 @@ GetFormat7ModeInfo(camera_t* cam, int mode_id)
     if (dc1394_query_format7_byte_per_packet(cam->camera_info.handle,cam->camera_info.id,mode_id,&mode->bpp)!=DC1394_SUCCESS)
       MainError("Got a problem querying format7 bytes per packet");
     if (mode->bpp==0) {
+      // sometimes a camera will not set the bpp register until a valid image size has been set after boot. If BPP is zero, we therefor
+      // try again after setting the image size to the maximum size.
       MainError("Camera reported a BPP of ZERO. Trying to set maximum size to correct this.");
       if (dc1394_set_format7_image_position(cam->camera_info.handle,cam->camera_info.id,mode_id,0,0)!=DC1394_SUCCESS)
 	MainError("Got a problem setting format7 image position");
       if (dc1394_set_format7_image_size(cam->camera_info.handle,cam->camera_info.id,mode_id,mode->max_size_x,mode->max_size_y)!=DC1394_SUCCESS)
 	MainError("Got a problem setting format7 image size");
+      // maybe we should also force a color coding here.
       if (dc1394_query_format7_byte_per_packet(cam->camera_info.handle,cam->camera_info.id,mode_id,&mode->bpp)!=DC1394_SUCCESS)
 	MainError("Got a problem querying format7 bytes per packet");
       if (mode->bpp==0) {

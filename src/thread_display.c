@@ -482,7 +482,7 @@ SDLDisplayPattern(chain_t *display_service)
     break;
   }
 
-  //pthread_mutex_lock(&watchthread_info.mutex_area);
+  pthread_mutex_lock(&watchthread_info.mutex_area);
   pimage=info->sdloverlay->pixels[0];
   switch(display_service->camera->prefs.overlay_pattern) {
   case OVERLAY_PATTERN_OFF:
@@ -490,161 +490,158 @@ SDLDisplayPattern(chain_t *display_service)
   case OVERLAY_PATTERN_RECTANGLE:
     if (display_service->camera->prefs.overlay_type==OVERLAY_TYPE_INVERT) {
       j=(7*sy)/16;
+      j=j-j%4;
       for (i=(7*sx)/16;i<=(9*sx)/16;i+=2) {
-	pimage[(j*sx+i)*2]=255-pimage[(j*sx+i)*2];
-	pimage[(j*sx+i)*2+1]=255-pimage[(j*sx+i)*2+1];
-	pimage[(j*sx+i)*2+2]=255-pimage[(j*sx+i)*2+2];
-	pimage[(j*sx+i)*2+3]=255-pimage[(j*sx+i)*2+3];
+	INVPIX(pimage, (j*sx+i)*2);
+	INVPIX(pimage, ((j-1)*sx+i)*2);
       }
       j=(9*sy)/16;
+      j=j-j%4;
       for (i=(7*sx)/16;i<=(9*sx)/16;i+=2) {
-	pimage[(j*sx+i)*2]=255-pimage[(j*sx+i)*2];
-	pimage[(j*sx+i)*2+1]=255-pimage[(j*sx+i)*2+1];
-	pimage[(j*sx+i)*2+2]=255-pimage[(j*sx+i)*2+2];
-	pimage[(j*sx+i)*2+3]=255-pimage[(j*sx+i)*2+3];
+	INVPIX(pimage, (j*sx+i)*2);
+	INVPIX(pimage, ((j+1)*sx+i)*2);
       }
       j=(7*sx)/16;
-      for (i=(7*sy)/16;i<=(9*sy)/16;i+=2) {
-	pimage[(i*sx+j)*2]=255-pimage[(i*sx+j)*2];
-	pimage[(i*sx+j)*2+1]=255-pimage[(i*sx+j)*2+1];
-	pimage[(i*sx+j)*2+2]=255-pimage[(i*sx+j)*2+2];
-	pimage[(i*sx+j)*2+3]=255-pimage[(i*sx+j)*2+3];
+      j=j-j%4;
+      for (i=(7*sy)/16;i<=(9*sy)/16;i++) {
+	INVPIX(pimage, (i*sx+j)*2);
       }
       j=(9*sx)/16;
-      for (i=(7*sy)/16;i<=(9*sy)/16;i+=2) {
-	pimage[(i*sx+j)*2]=255-pimage[(i*sx+j)*2];
-	pimage[(i*sx+j)*2+1]=255-pimage[(i*sx+j)*2+1];
-	pimage[(i*sx+j)*2+2]=255-pimage[(i*sx+j)*2+2];
-	pimage[(i*sx+j)*2+3]=255-pimage[(i*sx+j)*2+3];
+      j=j-j%4;
+      for (i=(7*sy)/16;i<=(9*sy)/16;i++) {
+	INVPIX(pimage, (i*sx+j)*2);
       }
     }
     else {
       j=(7*sy)/16;
+      j=j-j%4;
       for (i=(7*sx)/16;i<=(9*sx)/16;i+=2) {
-	pimage[(j*sx+i)*2]=block[0];
-	pimage[(j*sx+i)*2+1]=block[1];
-	pimage[(j*sx+i)*2+2]=block[2];
-	pimage[(j*sx+i)*2+3]=block[3];
+	REPLPIX(pimage, block, (j*sx+i)*2);
+	REPLPIX(pimage, block, ((j-1)*sx+i)*2);
       }
       j=(9*sy)/16;
+      j=j-j%4;
       for (i=(7*sx)/16;i<=(9*sx)/16;i+=2) {
-	pimage[(j*sx+i)*2]=block[0];
-	pimage[(j*sx+i)*2+1]=block[1];
-	pimage[(j*sx+i)*2+2]=block[2];
-	pimage[(j*sx+i)*2+3]=block[3];
+	REPLPIX(pimage, block, (j*sx+i)*2);
+	REPLPIX(pimage, block, ((j+1)*sx+i)*2);
       }
       j=(7*sx)/16;
-      for (i=(7*sy)/16;i<=(9*sy)/16;i+=2) {
-	pimage[(i*sx+j)*2]=block[0];
-	pimage[(i*sx+j)*2+1]=block[1];
-	pimage[(i*sx+j)*2+2]=block[2];
-	pimage[(i*sx+j)*2+3]=block[3];
+      j=j-j%4;
+      for (i=(7*sy)/16;i<=(9*sy)/16;i++) {
+	REPLPIX(pimage, block, (i*sx+j)*2);
       }
       j=(9*sx)/16;
-      for (i=(7*sy)/16;i<=(9*sy)/16;i+=2) {
-	pimage[(i*sx+j)*2]=block[0];
-	pimage[(i*sx+j)*2+1]=block[1];
-	pimage[(i*sx+j)*2+2]=block[2];
-	pimage[(i*sx+j)*2+3]=block[3];
+      j=j-j%4;
+      for (i=(7*sy)/16;i<=(9*sy)/16;i++) {
+	REPLPIX(pimage, block, (i*sx+j)*2);
       }
     }
     break;
   case OVERLAY_PATTERN_SMALL_CROSS:
     if (display_service->camera->prefs.overlay_type==OVERLAY_TYPE_INVERT) {
       j=sy/2;
+      j=j-j%4;
       for (i=(7*sx)/16;i<=(9*sx)/16;i+=2) {
-	pimage[(j*sx+i)*2]=255-pimage[(j*sx+i)*2];
-	pimage[(j*sx+i)*2+1]=255-pimage[(j*sx+i+1)*2];
-	pimage[(j*sx+i)*2+2]=255-pimage[(j*sx+i+2)*2];
-	pimage[(j*sx+i)*2+3]=255-pimage[(j*sx+i+3)*2];
+	INVPIX(pimage, (j*sx+i)*2);
+	INVPIX(pimage, ((j-1)*sx+i)*2);
       }
       j=sx/2;
-      for (i=(7*sy)/16;i<=(9*sy)/16;i+=2) {
-	pimage[(i*sx+j)*2]=255-pimage[(i*sx+j)*2];
-	pimage[(i*sx+j)*2+1]=255-pimage[(i*sx+j+1)*2];
-	pimage[(i*sx+j)*2+2]=255-pimage[(i*sx+j+2)*2];
-	pimage[(i*sx+j)*2+3]=255-pimage[(i*sx+j+3)*2];
+      j=j-j%4;
+      for (i=(7*sy)/16;i<=(9*sy)/16;i++) {
+	INVPIX(pimage, (i*sx+j)*2);
       }
     }
     else {
       j=sy/2;
+      j=j-j%4;
       for (i=(7*sx)/16;i<=(9*sx)/16;i+=2) {
-	pimage[(j*sx+i)*2]=block[0];
-	pimage[(j*sx+i)*2+1]=block[1];
-	pimage[(j*sx+i)*2+2]=block[2];
-	pimage[(j*sx+i)*2+3]=block[3];
+	REPLPIX(pimage, block, (j*sx+i)*2);
+	REPLPIX(pimage, block, ((j-1)*sx+i)*2);
       }
       j=sx/2;
-      for (i=(7*sy)/16;i<=(9*sy)/16;i+=2) {
-	pimage[(i*sx+j)*2]=block[0];
-	pimage[(i*sx+j)*2+1]=block[1];
-	pimage[(i*sx+j)*2+2]=block[2];
-	pimage[(i*sx+j)*2+3]=block[3];
+      j=j-j%4;
+      for (i=(7*sy)/16;i<=(9*sy)/16;i++) {
+	REPLPIX(pimage, block, (i*sx+j)*2);
       }
     }
     break;
   case OVERLAY_PATTERN_LARGE_CROSS:
     if (display_service->camera->prefs.overlay_type==OVERLAY_TYPE_INVERT) {
       j=sy/2;
+      j=j-j%4;
       for (i=0;i<sx;i+=2) {
-	pimage[(j*sx+i)*2]=255-pimage[(j*sx+i)*2];
-	pimage[(j*sx+i)*2+1]=255-pimage[(j*sx+i+1)*2];
-	pimage[(j*sx+i)*2+2]=255-pimage[(j*sx+i+2)*2];
-	pimage[(j*sx+i)*2+3]=255-pimage[(j*sx+i+3)*2];
+	INVPIX(pimage, (j*sx+i)*2);
+	INVPIX(pimage, ((j-1)*sx+i)*2);
       }
       j=sx/2;
-      for (i=0;i<sy;i+=2) {
-	pimage[(i*sx+j)*2]=255-pimage[(i*sx+j)*2];
-	pimage[(i*sx+j)*2+1]=255-pimage[(i*sx+j+1)*2];
-	pimage[(i*sx+j)*2+2]=255-pimage[(i*sx+j+2)*2];
-	pimage[(i*sx+j)*2+3]=255-pimage[(i*sx+j+3)*2];
+      j=j-j%4;
+      for (i=0;i<sy;i++) {
+	INVPIX(pimage, (i*sx+j)*2);
       }
     }
     else {
       j=sy/2;
+      j=j-j%4;
       for (i=0;i<sx;i+=2) {
-	pimage[(j*sx+i)*2]=block[0];
-	pimage[(j*sx+i)*2+1]=block[1];
-	pimage[(j*sx+i)*2+2]=block[2];
-	pimage[(j*sx+i)*2+3]=block[3];
+	REPLPIX(pimage, block, (j*sx+i)*2);
+	REPLPIX(pimage, block, ((j-1)*sx+i)*2);
       }
       j=sx/2;
-      for (i=0;i<sy;i+=2) {
-	pimage[(i*sx+j)*2]=block[0];
-	pimage[(i*sx+j)*2+1]=block[1];
-	pimage[(i*sx+j)*2+2]=block[2];
-	pimage[(i*sx+j)*2+3]=block[3];
+      j=j-j%4;
+      for (i=0;i<sy;i++) {
+	REPLPIX(pimage, block, (i*sx+j)*2);
       }
     }
     break;
   case OVERLAY_PATTERN_GOLDEN_MEAN:
-    j=sy/3;
-    for (i=0;i<sx;i+=2) {
-      pimage[(j*sx+i)*2]=block[0];
-      pimage[(j*sx+i)*2+1]=block[1];
-      pimage[(j*sx+i)*2+2]=block[2];
-      pimage[(j*sx+i)*2+3]=block[3];
+    if (display_service->camera->prefs.overlay_type==OVERLAY_TYPE_INVERT) {
+      j=sy/3;
+      j=j-j%4;
+      for (i=0;i<sx;i+=2) {
+	INVPIX(pimage, (j*sx+i)*2);
+	INVPIX(pimage, ((j-1)*sx+i)*2);
+      }
+      j=2*sy/3;
+      j=j-j%4;
+      for (i=0;i<sx;i+=2) {
+	INVPIX(pimage, (j*sx+i)*2);
+	INVPIX(pimage, ((j-1)*sx+i)*2);
+      }
+      j=sx/3;
+      j=j-j%4;
+      for (i=0;i<sy;i++) {
+	INVPIX(pimage, (i*sx+j)*2);
+      }
+      j=2*sx/3;
+      j=j-j%4;
+      for (i=0;i<sy;i++) {
+	INVPIX(pimage, (i*sx+j)*2);
+      }
     }
-    j=2*sy/3;
-    for (i=0;i<sx;i+=2) {
-      pimage[(j*sx+i)*2]=block[0];
-      pimage[(j*sx+i)*2+1]=block[1];
-      pimage[(j*sx+i)*2+2]=block[2];
-      pimage[(j*sx+i)*2+3]=block[3];
-    }
-    j=sx/3;
-    for (i=0;i<sy;i+=2) {
-      pimage[(i*sx+j)*2]=block[0];
-      pimage[(i*sx+j)*2+1]=block[1];
-      pimage[(i*sx+j)*2+2]=block[2];
-      pimage[(i*sx+j)*2+3]=block[3];
-    }
-    j=2*sx/3;
-    for (i=0;i<sy;i+=2) {
-      pimage[(i*sx+j)*2]=block[0];
-      pimage[(i*sx+j)*2+1]=block[1];
-      pimage[(i*sx+j)*2+2]=block[2];
-      pimage[(i*sx+j)*2+3]=block[3];
+    else {
+      j=sy/3;
+      j=j-j%4;
+      for (i=0;i<sx;i+=2) {
+	REPLPIX(pimage, block, (j*sx+i)*2);
+	REPLPIX(pimage, block, ((j-1)*sx+i)*2);
+      }
+      j=2*sy/3;
+      j=j-j%4;
+      for (i=0;i<sx;i+=2) {
+	REPLPIX(pimage, block, (j*sx+i)*2);
+	REPLPIX(pimage, block, ((j-1)*sx+i)*2);
+      }
+      j=sx/3;
+      j=j-j%4;
+      for (i=0;i<sy;i++) {
+	REPLPIX(pimage, block, (i*sx+j)*2);
+      }
+      j=2*sx/3;
+      j=j-j%4;
+      for (i=0;i<sy;i++) {
+	REPLPIX(pimage, block, (i*sx+j)*2);
+      }
+      
     }
     break;
   case OVERLAY_PATTERN_IMAGE:
@@ -653,42 +650,7 @@ SDLDisplayPattern(chain_t *display_service)
     fprintf(stderr,"Wrong overlay pattern ID\n");
     break;
   }
-  /*
-  OVERLAY_TYPE_REPLACE=0,
-  OVERLAY_TYPE_RANDOM,
-  OVERLAY_TYPE_INVERT,
-  OVERLAY_TYPE_AVERAGE
-  */
-  /*
-  if (watchthread_info.draw==1) {
-    upper_left[0]=watchthread_info.pos[0];
-    upper_left[1]=watchthread_info.pos[1];
-    lower_right[0]=watchthread_info.pos[0]+watchthread_info.size[0]-1;
-    lower_right[1]=watchthread_info.pos[1]+watchthread_info.size[1]-1;
-    width=display_service->current_buffer->width;
-    pthread_mutex_unlock(&watchthread_info.mutex_area);
-    
-    if (lower_right[0]<upper_left[0]) {
-      tmp=lower_right[0];
-      lower_right[0]=upper_left[0];
-      upper_left[0]=tmp;
-    }
-    if (lower_right[1]<upper_left[1]) {
-      tmp=lower_right[1];
-      lower_right[1]=upper_left[1];
-      upper_left[1]=tmp;
-    }
-
-    for (i=upper_left[1];i<=lower_right[1];i++) {
-      pimage=info->sdloverlay->pixels[0]+i*info->sdloverlay->pitches[0];
-      for (j=upper_left[0];j<=lower_right[0];j++) {
-	pimage[j*2]=(unsigned char)(255-pimage[j*2]);
-      }
-    }
-  } else {
-    pthread_mutex_unlock(&watchthread_info.mutex_area);
-  }
-  */
+  pthread_mutex_unlock(&watchthread_info.mutex_area);
 }
 
 void
