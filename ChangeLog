@@ -1,5 +1,11 @@
 Coriander, (c) 2000-2002 Damien Douxchamps <douxchamps@ieee.org>
 
+Changes towards version 0.27
+
+   October 23, 2002, by Damien Douxchamps
+   - added an absolute setting functionality though a new
+     "Absolute Settings" window.
+	
 Changes in version 0.26
 
    October 16, 2002, by Damien Douxchamps

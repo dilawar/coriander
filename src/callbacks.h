@@ -416,3 +416,103 @@ on_trigger_count_changed               (GtkEditable     *editable,
 void
 on_mono16_bpp_changed                  (GtkEditable     *editable,
                                         gpointer         user_data);
+
+void
+on_absolute_settings_window_activate   (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_abs_autoexp_switch_toggled          (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_abs_iris_switch_toggled         (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_abs_shutter_switch_toggled          (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_abs_gain_switch_toggled             (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_abs_autoexp_entry_activate           (GtkEditable     *editable,
+                                        gpointer         user_data);
+
+void
+on_abs_iris_entry_activate              (GtkEditable     *editable,
+                                        gpointer         user_data);
+
+void
+on_abs_shutter_entry_activate           (GtkEditable     *editable,
+                                        gpointer         user_data);
+
+void
+on_abs_gain_entry_activate              (GtkEditable     *editable,
+                                        gpointer         user_data);
+
+void
+on_abs_hue_switch_toggled              (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_abs_saturation_switch_toggled       (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_abs_whitebal_switch_toggled         (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_abs_whitebal_entry_activate          (GtkEditable     *editable,
+                                        gpointer         user_data);
+
+void
+on_abs_saturation_entry_activate        (GtkEditable     *editable,
+                                        gpointer         user_data);
+
+void
+on_abs_hue_entry_activate               (GtkEditable     *editable,
+                                        gpointer         user_data);
+
+void
+on_abs_brightness_switch_toggled       (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_abs_brightness_entry_activate        (GtkEditable     *editable,
+                                        gpointer         user_data);
+
+void
+on_abs_zoom_switch_toggled             (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_abs_focus_switch_toggled            (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_abs_tilt_switch_toggled             (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_abs_pan_switch_toggled              (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_abs_zoom_entry_activate              (GtkEditable     *editable,
+                                        gpointer         user_data);
+
+void
+on_abs_focus_entry_activate             (GtkEditable     *editable,
+                                        gpointer         user_data);
+
+void
+on_abs_tilt_entry_activate              (GtkEditable     *editable,
+                                        gpointer         user_data);
+
+void
+on_abs_pan_entry_activate               (GtkEditable     *editable,
+                                        gpointer         user_data);

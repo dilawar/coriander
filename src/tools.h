@@ -82,4 +82,15 @@ GetRGBPix(int px, int py, chain_t *service, int* R, int* G, int* B);
 void*
 AutoWhiteBalance(void* arg);
 
+void
+SetAbsoluteControl(int feature, int power);
+
+dc1394bool_t
+BuildAbsControl(int feature);
+
+void
+GetAbsValue(int feature);
+
+
 #endif
+

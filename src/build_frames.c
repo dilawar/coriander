@@ -39,6 +39,7 @@
 
 extern GtkWidget *commander_window;
 extern GtkWidget *preferences_window;
+extern GtkWidget *absolute_settings_window;
 extern dc1394_feature_set *feature_set;
 extern dc1394_camerainfo *camera;
 extern dc1394_miscinfo *misc_info;
@@ -406,4 +407,48 @@ BuildOptionFrame(void)
 							  "mono16_bpp"),uiinfo->bpp);
   BuildBayerMenu();
   BuildBayerPatternMenu();
+}
+
+
+int
+BuildAbsApertureFrame(void)
+{
+  int present=0;
+  present+=BuildAbsControl(FEATURE_EXPOSURE);
+  present+=BuildAbsControl(FEATURE_IRIS);
+  present+=BuildAbsControl(FEATURE_SHUTTER);
+  present+=BuildAbsControl(FEATURE_GAIN);
+  return present;
+}
+
+
+int
+BuildAbsColorFrame(void)
+{
+  int present=0;
+  present+=BuildAbsControl(FEATURE_HUE);
+  present+=BuildAbsControl(FEATURE_SATURATION);
+  present+=BuildAbsControl(FEATURE_WHITE_BALANCE);
+  return present;
+}
+
+
+int
+BuildAbsLuminanceFrame(void)
+{  
+  int present=0;
+  present+=BuildAbsControl(FEATURE_BRIGHTNESS);
+  return present;
+}
+
+
+int
+BuildAbsPositioningFrame(void)
+{
+  int present=0;
+  present+=BuildAbsControl(FEATURE_ZOOM);
+  present+=BuildAbsControl(FEATURE_FOCUS);
+  present+=BuildAbsControl(FEATURE_TILT);
+  present+=BuildAbsControl(FEATURE_PAN);
+  return present;
 }

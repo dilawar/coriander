@@ -41,6 +41,7 @@
 #include <libraw1394/raw1394.h>
 
 GtkWidget *commander_window;
+GtkWidget *absolute_settings_window;
 GtkWidget *about_window;
 GtkWidget *help_window;
 GtkWidget *format7_window;
@@ -158,6 +159,7 @@ main (int argc, char *argv[])
 		    if (err<0) MainError("Could not get camera feature information!");
 		    //dc1394_print_feature_set(&feature_sets[index]);
 		    //dc1394_absolute_setting_on_off(cameras[index].handle, cameras[index].id, FEATURE_SHUTTER,0);
+		    //feature_sets[index].feature[FEATURE_SHUTTER-FEATURE_MIN].abs_control=0;
 		    //tmp=.00000001;
 		    //dc1394_set_absolute_feature_value(cameras[index].handle, cameras[index].id, FEATURE_SHUTTER, &tmp);
 		    //dc1394_query_absolute_feature_value(cameras[index].handle, cameras[index].id, FEATURE_SHUTTER, &tmp);
@@ -189,7 +191,8 @@ main (int argc, char *argv[])
 	  preferences_window= create_preferences_window();
 	  commander_window = create_commander_window();
 	  format7_window = create_format7_window();
-	  
+	  absolute_settings_window = create_absolute_settings_window();
+
 	  // Setup the GUI in accordance with the camera capabilities
 	  GetContextStatus();
 	  BuildAllWindows();

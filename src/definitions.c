@@ -113,6 +113,71 @@ const char * feature_frame_list[NUM_FEATURES] = {
   "capture_quality_frame"
 };
 
+const char *feature_abs_switch_list[NUM_FEATURES] = {
+  "abs_brightness_switch",
+  "abs_autoexp_switch",
+  "abs_sharpness_switch",
+  "abs_whitebal_switch",
+  "abs_hue_switch",
+  "abs_saturation_switch",
+  "abs_gamma_switch",
+  "abs_shutter_switch",
+  "abs_gain_switch",
+  "abs_iris_switch",
+  "abs_focus_switch",
+  "abs_temperature_switch",
+  "abs_trigger_switch",
+  "abs_zoom_switch",
+  "abs_pan_switch",
+  "abs_tilt_switch",
+  "abs_filter_switch",
+  "abs_capture_size_switch",
+  "abs_capture_quality_switch"
+};
+
+const char *feature_abs_entry_list[NUM_FEATURES] = {
+  "abs_brightness_entry",
+  "abs_autoexp_entry",
+  "abs_sharpness_entry",
+  "abs_whitebal_entry",
+  "abs_hue_entry",
+  "abs_saturation_entry",
+  "abs_gamma_entry",
+  "abs_shutter_entry",
+  "abs_gain_entry",
+  "abs_iris_entry",
+  "abs_focus_entry",
+  "abs_temperature_entry",
+  "abs_trigger_entry",
+  "abs_zoom_entry",
+  "abs_pan_entry",
+  "abs_tilt_entry",
+  "abs_filter_entry",
+  "abs_capture_size_entry",
+  "abs_capture_quality_entry"
+};
+
+const char *feature_abs_label_list[NUM_FEATURES] = {
+  "label134",
+  "label127",
+  "label",
+  "label132",
+  "label131",
+  "label133",
+  "label",
+  "label129",
+  "label130",
+  "label128",
+  "label136",
+  "label",
+  "label",
+  "label135",
+  "label138",
+  "label137",
+  "label",
+  "label"
+};
+
 const char * feature_menu_table_list[NUM_FEATURES] = {
   "table28",
   "table33",

@@ -134,6 +134,7 @@ BuildAllWindows(void)
   BuildTemperatureWindow();
   BuildFormat7Window();
   BuildStatusWindow();
+  BuildAbsoluteSettingsWindow();
 }
 
 void
@@ -158,4 +159,17 @@ BuildHelpWindow(void)
   gtk_clist_set_column_auto_resize(clist,1,1);
   free(text[0]);
   free(text[1]);
+}
+
+void
+BuildAbsoluteSettingsWindow(void)
+{
+  int abs_available=0;
+
+  abs_available+=BuildAbsApertureFrame();
+  abs_available+=BuildAbsColorFrame();
+  abs_available+=BuildAbsLuminanceFrame();
+  abs_available+=BuildAbsPositioningFrame();
+
+  gtk_widget_set_sensitive(lookup_widget(commander_window,"absolute_settings_window"), (abs_available>0) );
 }

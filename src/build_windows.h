@@ -52,4 +52,7 @@ BuildAllWindows(void);
 void
 BuildHelpWindow(void);
 
+void
+BuildAbsoluteSettingsWindow(void);
+
 #endif
