@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2002 Damien Douxchamps  <douxchamps@ieee.org>
+ * Copyright (C) 2000-2003 Damien Douxchamps  <ddouxchamps@users.sf.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -177,7 +177,7 @@ OnKeyPressed(chain_t *display_service, int key, int mod)
     {
     case SDLK_n:
       // set display to normal size
-      SDLResizeDisplay(display_service, display_service->width, display_service->height);
+      SDLResizeDisplay(display_service, display_service->current_buffer->width, display_service->current_buffer->height);
       break;
     case SDLK_f:
       // toggle fullscreen mode
@@ -231,25 +231,25 @@ OnMouseDown(chain_t *display_service, int button, int x, int y)
       watchthread_info.mouse_down=1;
       // there is some adaptation because the display size can be different
       // from the real image size. (i.e. the image can be resized)
-      watchthread_info.upper_left[0]= ((x*display_service->width /info->SDL_videoRect.w));
-      watchthread_info.upper_left[1]= ((y*display_service->height/info->SDL_videoRect.h));
-      watchthread_info.lower_right[0]=((x*display_service->width /info->SDL_videoRect.w));
-      watchthread_info.lower_right[1]=((y*display_service->height/info->SDL_videoRect.h));
+      watchthread_info.upper_left[0]= ((x*display_service->current_buffer->width /info->SDL_videoRect.w));
+      watchthread_info.upper_left[1]= ((y*display_service->current_buffer->height/info->SDL_videoRect.h));
+      watchthread_info.lower_right[0]=((x*display_service->current_buffer->width /info->SDL_videoRect.w));
+      watchthread_info.lower_right[1]=((y*display_service->current_buffer->height/info->SDL_videoRect.h));
       pthread_mutex_unlock(&watchthread_info.mutex_area);
       break;
     case SDL_BUTTON_MIDDLE:
-      x=x*display_service->width/info->SDL_videoRect.w; //rescaling
-      y=y*display_service->height/info->SDL_videoRect.h;
+      x=x*display_service->current_buffer->width/info->SDL_videoRect.w; //rescaling
+      y=y*display_service->current_buffer->height/info->SDL_videoRect.h;
       // THIS IS ONLY VALID FOR YUYV!!
-      col_y=info->SDL_overlay->pixels[0][(y*display_service->width+x)*2];
-      col_u=info->SDL_overlay->pixels[0][(((y*display_service->width+x)>>1)<<2)+1]-127;
-      col_v=info->SDL_overlay->pixels[0][(((y*display_service->width+x)>>1)<<2)+3]-127;
+      col_y=info->SDL_overlay->pixels[0][(y*display_service->current_buffer->width+x)*2];
+      col_u=info->SDL_overlay->pixels[0][(((y*display_service->current_buffer->width+x)>>1)<<2)+1]-127;
+      col_v=info->SDL_overlay->pixels[0][(((y*display_service->current_buffer->width+x)>>1)<<2)+3]-127;
       YUV2RGB(col_y, col_u, col_v, col_r, col_g, col_b);
       UpdateCursorFrame(x, y, col_r, col_g, col_b, col_y, col_u, col_v);
       break;
     case SDL_BUTTON_RIGHT:
-      //whitebal_data->x=x*display_service->width/info->SDL_videoRect.w; //rescaling
-      //whitebal_data->y=y*display_service->height/info->SDL_videoRect.h;
+      //whitebal_data->x=x*display_service->current_buffer->width/info->SDL_videoRect.w; //rescaling
+      //whitebal_data->y=y*display_service->current_buffer->height/info->SDL_videoRect.h;
       //whitebal_data->service=display_service;
       //pthread_create(&whitebal_data->thread, NULL, AutoWhiteBalance, (void*)&whitebal_data);
       break;
@@ -273,8 +273,8 @@ OnMouseUp(chain_t *display_service, int button, int x, int y)
       watchthread_info.mouse_down=0;
       // there is some adaptation because the display size can be different
       // from the real image size. (i.e. the image can be resized)
-      //info->lower_right[0]=x*display_service->width/info->SDL_videoRect.w;
-      //info->lower_right[1]=y*display_service->height/info->SDL_videoRect.h;
+      //info->lower_right[0]=x*display_service->current_buffer->width/info->SDL_videoRect.w;
+      //info->lower_right[1]=y*display_service->current_buffer->height/info->SDL_videoRect.h;
       pthread_mutex_unlock(&watchthread_info.mutex_area);
       break;
     case SDL_BUTTON_MIDDLE:
@@ -299,8 +299,8 @@ OnMouseMotion(chain_t *display_service, int x, int y)
     {
       // there is some adaptation because the display size can be different
       // from the real image size. (i.e. the image can be resized)
-      watchthread_info.lower_right[0]=x*display_service->width/info->SDL_videoRect.w;
-      watchthread_info.lower_right[1]=y*display_service->height/info->SDL_videoRect.h;
+      watchthread_info.lower_right[0]=x*display_service->current_buffer->width/info->SDL_videoRect.w;
+      watchthread_info.lower_right[1]=y*display_service->current_buffer->height/info->SDL_videoRect.h;
     }
   pthread_mutex_unlock(&watchthread_info.mutex_area);
 
@@ -319,12 +319,12 @@ SDLResizeDisplay(chain_t *display_service, int width, int height)
 	{
 	  // we changed the width, set height accordingly
 	  info->SDL_videoRect.w = width;
-	  info->SDL_videoRect.h = (width * display_service->height) / display_service->width;
+	  info->SDL_videoRect.h = (width * display_service->current_buffer->height) / display_service->current_buffer->width;
 	}
       else
 	{
 	  // we changed the hieght, set width accordingly
-	  info->SDL_videoRect.w = (height * display_service->width) / display_service->height;
+	  info->SDL_videoRect.w = (height * display_service->current_buffer->width) / display_service->current_buffer->height;
 	  info->SDL_videoRect.h = height;
 	}
     }
@@ -351,7 +351,7 @@ SDLResizeDisplay(chain_t *display_service, int width, int height)
     }
 
   // Create YUV Overlay
-  info->SDL_overlay = SDL_CreateYUVOverlay(display_service->width, display_service->height,
+  info->SDL_overlay = SDL_CreateYUVOverlay(display_service->current_buffer->width, display_service->current_buffer->height,
 					   SDL_YUY2_OVERLAY,info->SDL_video);
   if (info->SDL_overlay == NULL)
     {
@@ -367,7 +367,7 @@ SDLCropImage(chain_t *display_service)
   pthread_mutex_lock(&watchthread_info.mutex_area);
 
   watchthread_info.draw=0;
-  if (display_service->format==FORMAT_SCALABLE_IMAGE_SIZE)
+  if (display_service->current_buffer->format==FORMAT_SCALABLE_IMAGE_SIZE)
     watchthread_info.crop=1;
 
   pthread_mutex_unlock(&watchthread_info.mutex_area);
@@ -378,7 +378,7 @@ void
 SDLSetMaxSize(chain_t *display_service)
 {
   pthread_mutex_lock(&watchthread_info.mutex_area);
-  if (display_service->format==FORMAT_SCALABLE_IMAGE_SIZE)
+  if (display_service->current_buffer->format==FORMAT_SCALABLE_IMAGE_SIZE)
     {
       watchthread_info.crop=1;
       watchthread_info.upper_left[0]=0;

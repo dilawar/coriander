@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2002 Damien Douxchamps  <douxchamps@ieee.org>
+ * Copyright (C) 2000-2003 Damien Douxchamps  <ddouxchamps@users.sf.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@
 #include "build_ranges.h"
 #include "build_frames.h"
 #include "update_frames.h"
+#include "thread_base.h"
 #include "thread_ftp.h"
 #include "thread_save.h"
 #include "thread_display.h"
@@ -45,7 +46,7 @@ extern dc1394_camerainfo *camera;
 extern dc1394_miscinfo *misc_info;
 extern PrefsInfo preferences;
 extern int camera_num;
-extern UIInfo* uiinfo;
+extern uiinfo_t* uiinfo;
 
 void
 BuildCameraFrame(void)

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2002 Damien Douxchamps  <douxchamps@ieee.org>
+ * Copyright (C) 2000-2003 Damien Douxchamps  <ddouxchamps@users.sf.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,7 +39,7 @@
 #include <libdc1394/dc1394_control.h>
 #include "raw1394support.h"
 
-extern UIInfo *uiinfo;
+extern uiinfo_t *uiinfo;
 extern GtkWidget *commander_window;
 extern GtkWidget *preferences_window;
 extern dc1394_miscinfo *misc_info;

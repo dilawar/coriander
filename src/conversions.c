@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2000-2001 Dan Dennedy  <dan@dennedy.org>
- *               2001-2002 Damien Douxchamps <ddouxchamps@users.sf.net>
+ * Copyright (C) 2000-2003 Damien Douxchamps  <ddouxchamps@users.sf.net>
+ *                         Dan Dennedy  <dan@dennedy.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

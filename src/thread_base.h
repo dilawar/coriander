@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2002 Damien Douxchamps  <douxchamps@ieee.org>
+ * Copyright (C) 2000-2003 Damien Douxchamps  <ddouxchamps@users.sf.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,22 @@ typedef enum _Service_T
   SERVICE_REAL
 } service_t;
 
+typedef struct _Buffer_T
+{
+  unsigned char *image;
+  int width;
+  int height;
+  long int bytes_per_frame;
+  int mode;
+  int format;
+  int bpp;
+  bayer_decoding_t bayer;
+  bayer_pattern_t bayer_pattern;
+  stereo_decoding_t stereo_decoding;
+  int format7_color_mode;
+
+} buffer_t;
+
 typedef struct _Chain_T
 {
   pthread_mutex_t mutex_struct; // below is protected by mutex_struct
@@ -48,19 +64,10 @@ typedef struct _Chain_T
 
   pthread_mutex_t mutex_data; // below is protected by mutex_data
   pthread_t       thread;
-  unsigned char*  next_buffer;
-  unsigned char*  current_buffer;
+  buffer_t*       next_buffer;
+  buffer_t*       current_buffer;
   void*           data;
-  int             width;
-  int             height;
-  long int        bytes_per_frame;
-  int             mode;
-  int             format;
-  int             bpp;
-  bayer_decoding_t bayer;
-  bayer_pattern_t  bayer_pattern;
-  stereo_decoding_t  stereo_decoding;
-  int             format7_color_mode;
+  buffer_t        local_param_copy; // not pointer: it remains in the chain.
 } chain_t;
 
 
@@ -93,10 +100,15 @@ void
 FreeChain(chain_t* chain);
 
 void
-convert_to_rgb(unsigned char *src, unsigned char *dest, int mode,
-	       int width, int height, int f7_colormode, int bayer, int bits);
+convert_to_rgb(buffer_t *buffer, unsigned char *dest);
 
 void
 CleanThreads(clean_mode_t mode);
+
+void
+InitLocalParamCopy(chain_t* chain);
+
+void
+InitBuffer(buffer_t *buffer);
 
 #endif

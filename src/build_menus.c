@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2002 Damien Douxchamps  <douxchamps@ieee.org>
+ * Copyright (C) 2000-2003 Damien Douxchamps  <ddouxchamps@users.sf.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,7 +51,7 @@ extern dc1394_camerainfo *camera;
 extern dc1394_camerainfo *cameras;
 extern int current_camera;
 extern int camera_num;
-extern UIInfo *uiinfo;
+extern uiinfo_t *uiinfo;
 
 void
 BuildTriggerModeMenu(void)

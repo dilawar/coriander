@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2002 Damien Douxchamps  <douxchamps@ieee.org>
+ * Copyright (C) 2000-2003 Damien Douxchamps  <ddouxchamps@users.sf.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -87,9 +87,14 @@ RealStartThread(void)
       info->period=preferences.real_period;
 
       CommonChainSetup(real_service,SERVICE_REAL,current_camera);
-      RealSetup(info, real_service);
 
-      info->real_buffer=(unsigned char *)malloc(real_service->width*real_service->height*3*sizeof(unsigned char)); //RGB
+      InitBuffer(real_service->current_buffer);
+      InitBuffer(real_service->next_buffer);
+      InitBuffer(&real_service->local_param_copy);
+  
+      info->real_buffer=NULL;
+
+      RealSetup(info, real_service); // THIS SHOULD BE MOVED
 
       //fprintf(stderr,"SETUP FINISHED\n");
       pthread_mutex_unlock(&real_service->mutex_data);
@@ -215,20 +220,23 @@ RealThread(void* arg)
 	  //fprintf(stderr,"Rolling buffers\n");
 	  if(RollBuffers(real_service)) // have buffers been rolled?
 	    {
+
+	      RealThreadCheckParams(real_service);
+
 	      if (skip_counter==(info->period-1))
 		{
 		  skip_counter=0;
 		  // note that Real supports different video modes (RGB, YUVxxx)
 		  // so that it would be smarter to convert from IIDC mode to a
 		  // similar Real mode in order to avoid unecessary CPU load.
-		  convert_to_rgb(real_service->current_buffer,
-				 info->real_buffer, real_service->mode,
-				 real_service->width, real_service->height,
-				 real_service->format7_color_mode, real_service->bayer);// RGB
+		  convert_to_rgb(real_service->current_buffer->image,
+				 info->real_buffer, real_service->current_buffer->mode,
+				 real_service->current_buffer->width, real_service->current_buffer->height,
+				 real_service->current_buffer->format7_color_mode, real_service->current_buffer->bayer);// RGB
 
 		  //fprintf(stderr,"Setting pointer to sample\n");
 		  info->res = info->pSample->SetBuffer(info->real_buffer,
-						       real_service->width*real_service->height*3, 0 ,0); // RGB
+						       real_service->current_buffer->width*real_service->current_buffer->height*3, 0 ,0); // RGB
 		  
 	      
 		  if(SUCCEEDED(info->res))
@@ -315,7 +323,10 @@ RealStopThread(void)
       PN_RELEASE(info->pSample);
       PN_RELEASE(info->pBuildEngine);
 #endif
-      free(info->real_buffer);
+      if (info->real_buffer!=NULL) {
+	free(info->real_buffer);
+	info->real_buffer=NULL;
+      }
       
       /* Mendatory cleanups: */
       pthread_mutex_unlock(&real_service->mutex_struct);
@@ -328,6 +339,53 @@ RealStopThread(void)
   return (1);
 }
 
+
+void
+RealThreadCheckParams(chain_t *real_service)
+{
+
+  realthread_info_t *info;
+  info=(realthread_info_t*)real_service->data;
+
+  // copy harmless parameters anyway:
+  real_service->local_param_copy.bpp=real_service->current_buffer->bpp;
+  real_service->local_param_copy.bayer_pattern=real_service->current_buffer->bayer_pattern;
+
+  // if some parameters changed, we need to re-allocate the local buffers and restart the real
+  if ((real_service->current_buffer->width!=real_service->local_param_copy.width)||
+      (real_service->current_buffer->height!=real_service->local_param_copy.height)||
+      (real_service->current_buffer->bytes_per_frame!=real_service->local_param_copy.bytes_per_frame)||
+      (real_service->current_buffer->mode!=real_service->local_param_copy.mode)||
+      (real_service->current_buffer->format!=real_service->local_param_copy.format)||
+      // check F7 color mode change
+      ((real_service->current_buffer->format==FORMAT_SCALABLE_IMAGE_SIZE)&&
+       (real_service->current_buffer->format7_color_mode!=real_service->local_param_copy.format7_color_mode)
+       ) ||
+      // check bayer and stereo decoding
+      (real_service->current_buffer->stereo_decoding!=real_service->local_param_copy.stereo_decoding)||
+      (real_service->current_buffer->bayer!=real_service->local_param_copy.bayer)
+      )
+    {
+      // copy all new parameters:
+      real_service->local_param_copy.width=real_service->current_buffer->width;
+      real_service->local_param_copy.height=real_service->current_buffer->height;
+      real_service->local_param_copy.bytes_per_frame=real_service->current_buffer->bytes_per_frame;
+      real_service->local_param_copy.mode=real_service->current_buffer->mode;
+      real_service->local_param_copy.format=real_service->current_buffer->format;
+      real_service->local_param_copy.format7_color_mode=real_service->current_buffer->format7_color_mode;
+      real_service->local_param_copy.stereo_decoding=real_service->current_buffer->stereo_decoding;
+      real_service->local_param_copy.bayer=real_service->current_buffer->bayer;
+
+      // DO SOMETHING
+      if (info->real_buffer!=NULL) {
+	free(info->real_buffer);
+	info->real_buffer=NULL;
+      }
+      info->real_buffer=(unsigned char*)malloc(real_service->current_buffer->width*real_service->current_buffer->height*3
+						*sizeof(unsigned char));
+    }
+  
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////
 ////////////   THIS STUFF MOSTLY COMES FROM THE 'LIVE' SAMPLE OF THE SDK ////////////////

@@ -30,7 +30,7 @@
     <handler>on_commander_window_delete_event</handler>
     <last_modification_time>Tue, 26 Dec 2000 12:06:25 GMT</last_modification_time>
   </signal>
-  <title>Coriander 0.27.1</title>
+  <title>Coriander 0.28</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_NONE</position>
   <modal>False</modal>
@@ -4255,7 +4255,7 @@ GRBG
   <name>about_window</name>
   <modal>True</modal>
   <copyright>Copyright 2000-2002 Damien Douxchamps</copyright>
-  <authors>Damien Douxchamps &lt;douxchamps@ieee.org&gt;
+  <authors>Damien Douxchamps &lt;ddouxchamps@users.sf.net&gt;
 Dan Dennedy &lt;dan@dennedy.org&gt;
 See the AUTHORS file for more authors and contributors
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2002 Damien Douxchamps  <douxchamps@ieee.org>
+ * Copyright (C) 2000-2003 Damien Douxchamps  <ddouxchamps@users.sf.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,8 +60,8 @@ extern dc1394_cameracapture *capture;
 extern dc1394_cameracapture *captures;
 extern Format7Info *format7_info;
 extern Format7Info *format7_infos;
-extern UIInfo *uiinfo;
-extern UIInfo *uiinfos;
+extern uiinfo_t *uiinfo;
+extern uiinfo_t *uiinfos;
 extern int current_camera;
 extern PrefsInfo preferences; 
 extern int silent_ui_update;
@@ -1297,11 +1297,8 @@ on_mono16_bpp_changed                  (GtkEditable     *editable,
                                         gpointer         user_data)
 {
   int value;
-  int state[5];
   value=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(commander_window,"mono16_bpp")));
-  IsoFlowCheck(state);
   uiinfo->bpp=value;
-  IsoFlowResume(state);
   //fprintf(stderr,"uiinfo->bpp = %d\n",uiinfo->bpp);
 }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2002 Damien Douxchamps  <douxchamps@ieee.org>
+ * Copyright (C) 2000-2003 Damien Douxchamps  <ddouxchamps@users.sf.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -75,10 +75,12 @@ SaveStartThread(void)
 
       info->period=preferences.save_period;
       CommonChainSetup(save_service,SERVICE_SAVE,current_camera);
-  
-      info->save_buffer=(unsigned char*)malloc(save_service->width*save_service->height*3
-						*sizeof(unsigned char));
 
+      InitBuffer(save_service->current_buffer);
+      InitBuffer(save_service->next_buffer);
+      InitBuffer(&save_service->local_param_copy);
+  
+      info->save_buffer=NULL;
       info->counter=0;
       info->save_scratch=preferences.save_scratch;
       // if format extension is ".raw", we dump raw data on the file and perform no conversion
@@ -207,6 +209,9 @@ SaveThread(void* arg)
 	  pthread_mutex_lock(&save_service->mutex_data);
 	  if(RollBuffers(save_service)) // have buffers been rolled?
 	    {
+	      // check params
+	      SaveThreadCheckParams(save_service);
+
 	      if (skip_counter==(info->period-1))
 		{
 		  skip_counter=0;
@@ -227,18 +232,15 @@ SaveThread(void* arg)
 		  if (info->rawdump)
 		    {
 		      if (info->save_scratch==SAVE_SCRATCH_SEQUENCE)
-			fwrite(save_service->current_buffer, 1, save_service->bytes_per_frame, fd);
+			fwrite(save_service->current_buffer->image, 1, save_service->current_buffer->bytes_per_frame, fd);
 		      else
 			Dump2File(filename_out,save_service);
 		    }
 		  else
 		    {
-		      convert_to_rgb(save_service->current_buffer, info->save_buffer,
-				     save_service->mode, save_service->width,
-				     save_service->height, save_service->format7_color_mode,
-				     save_service->bayer, save_service->bpp);
+		      convert_to_rgb(save_service->current_buffer, info->save_buffer);
 		      im=gdk_imlib_create_image_from_data(info->save_buffer,NULL,
-							  save_service->width, save_service->height);
+							  save_service->current_buffer->width, save_service->current_buffer->height);
 		      gdk_imlib_save_image(im, filename_out, NULL);
 		      if (im != NULL) gdk_imlib_kill_image(im);
 		    }
@@ -295,7 +297,10 @@ SaveStopThread(void)
       RemoveChain(save_service,current_camera);
 
       /* Do custom cleanups here...*/
-      free(info->save_buffer);
+      if (info->save_buffer!=NULL) {
+	free(info->save_buffer);
+	info->save_buffer=NULL;
+      }
       
       /* Mendatory cleanups: */
       pthread_mutex_unlock(&save_service->mutex_struct);
@@ -317,7 +322,54 @@ Dump2File(char *name, chain_t *service)
     MainError("Can't open file for saving");
   else
     {
-      fwrite(service->current_buffer, 1, service->bytes_per_frame, fd);
+      fwrite(service->current_buffer->image, 1, service->current_buffer->bytes_per_frame, fd);
       fclose(fd);
     }
+}
+
+void
+SaveThreadCheckParams(chain_t *save_service)
+{
+
+  savethread_info_t *info;
+  info=(savethread_info_t*)save_service->data;
+
+  // copy harmless parameters anyway:
+  save_service->local_param_copy.bpp=save_service->current_buffer->bpp;
+  save_service->local_param_copy.bayer_pattern=save_service->current_buffer->bayer_pattern;
+
+  // if some parameters changed, we need to re-allocate the local buffers and restart the save
+  if ((save_service->current_buffer->width!=save_service->local_param_copy.width)||
+      (save_service->current_buffer->height!=save_service->local_param_copy.height)||
+      (save_service->current_buffer->bytes_per_frame!=save_service->local_param_copy.bytes_per_frame)||
+      (save_service->current_buffer->mode!=save_service->local_param_copy.mode)||
+      (save_service->current_buffer->format!=save_service->local_param_copy.format)||
+      // check F7 color mode change
+      ((save_service->current_buffer->format==FORMAT_SCALABLE_IMAGE_SIZE)&&
+       (save_service->current_buffer->format7_color_mode!=save_service->local_param_copy.format7_color_mode)
+       ) ||
+      // check bayer and stereo decoding
+      (save_service->current_buffer->stereo_decoding!=save_service->local_param_copy.stereo_decoding)||
+      (save_service->current_buffer->bayer!=save_service->local_param_copy.bayer)
+      )
+    {
+      // copy all new parameters:
+      save_service->local_param_copy.width=save_service->current_buffer->width;
+      save_service->local_param_copy.height=save_service->current_buffer->height;
+      save_service->local_param_copy.bytes_per_frame=save_service->current_buffer->bytes_per_frame;
+      save_service->local_param_copy.mode=save_service->current_buffer->mode;
+      save_service->local_param_copy.format=save_service->current_buffer->format;
+      save_service->local_param_copy.format7_color_mode=save_service->current_buffer->format7_color_mode;
+      save_service->local_param_copy.stereo_decoding=save_service->current_buffer->stereo_decoding;
+      save_service->local_param_copy.bayer=save_service->current_buffer->bayer;
+
+      // DO SOMETHING
+      if (info->save_buffer!=NULL) {
+	free(info->save_buffer);
+	info->save_buffer=NULL;
+      }
+      info->save_buffer=(unsigned char*)malloc(save_service->current_buffer->width*save_service->current_buffer->height*3
+						*sizeof(unsigned char));
+    }
+  
 }

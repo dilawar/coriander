@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2002 Damien Douxchamps  <douxchamps@ieee.org>
+ * Copyright (C) 2000-2003 Damien Douxchamps  <ddouxchamps@users.sf.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -87,14 +87,19 @@ DisplayStopThread(unsigned int camera);
 #ifdef HAVE_SDLLIB
 
 int
-sdlInit(chain_t *display_service);
+SDLInit(chain_t *display_service);
 
 void
-convert_to_yuv_for_SDL(unsigned char *src, unsigned char *dest, int mode,
-		       int width, int height, int f7_colormode, int bayer, int bits);
+convert_to_yuv_for_SDL(buffer_t *buffer, unsigned char *dest);
 
 void
 SDLDisplayArea(chain_t *display_service);
+
+void
+SDLQuit(chain_t *display_service);
+
+void
+DisplayThreadCheckParams(chain_t *display_service);
 
 #endif
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2002 Damien Douxchamps  <douxchamps@ieee.org>
+ * Copyright (C) 2000-2003 Damien Douxchamps  <ddouxchamps@users.sf.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ extern Format7Info *format7_info;
 extern dc1394_miscinfo* misc_info;
 extern GtkWidget* commander_window;
 extern int current_camera;
-extern UIInfo *uiinfo;
+extern uiinfo_t *uiinfo;
 
 chain_t*
 GetService(service_t service, unsigned int camera)
@@ -71,7 +71,7 @@ GetService(service_t service, unsigned int camera)
 int
 RollBuffers(chain_t* chain)
 {
-  unsigned char* tmp_buffer;
+  buffer_t* tmp_buffer;
   int new_current=0;
 
   if (chain->prev_chain==NULL)
@@ -118,11 +118,9 @@ void
 CommonChainSetup(chain_t* chain, service_t req_service, unsigned int camera)
 {
   chain_t* probe_chain;
-  isothread_info_t* info_iso;
-  long int buffer_size=0;
 
-  // no thread tries to acess this data before it is connected.
-  // It is thus safe not to use mutexes here (for local data only of course).
+  // no thread tries to access this data before it is connected.
+  // It is thus safe not to use mutex here (for local data only of course).
   
   chain->service=req_service;
   
@@ -146,76 +144,11 @@ CommonChainSetup(chain_t* chain, service_t req_service, unsigned int camera)
       chain->prev_chain=NULL;
     }
 
-  if (chain->service==SERVICE_ISO)
-    {
-      info_iso=(isothread_info_t*)chain->data;
-      buffer_size=info_iso->capture.quadlets_per_frame*4;
-      chain->width=info_iso->capture.frame_width;
-      chain->height=info_iso->capture.frame_height;
-      chain->bytes_per_frame=buffer_size;
-      chain->mode=misc_info->mode;
-      chain->bayer=uiinfo->bayer;
-      chain->bpp=uiinfo->bpp;
-      chain->bayer_pattern=uiinfo->bayer_pattern;
-      chain->stereo_decoding=uiinfo->stereo;
-      chain->format=misc_info->format;
-      if (misc_info->format==FORMAT_SCALABLE_IMAGE_SIZE)
-	chain->format7_color_mode=format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].color_coding_id;
-      else
-	chain->format7_color_mode=-1;
-      //fprintf(stderr,"color coding (master): %d\n",format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].color_coding_id);
-      //fprintf(stderr,"color coding (copy): %d\n",chain->format7_color_mode);
-      if (uiinfo->bayer==BAYER_DECODING_DOWNSAMPLE)
-	{
-	  chain->bytes_per_frame/=4;
-	  chain->width/=2;
-	  chain->height/=2;
-	  buffer_size/=4;
-	}
-      if (uiinfo->stereo==STEREO_DECODING)
-	chain->height*=2;
+  // allocate buffer structures, NOT IMAGE BUFFERS:
+  chain->current_buffer=(buffer_t*)malloc(sizeof(buffer_t));
+  chain->next_buffer=(buffer_t*)malloc(sizeof(buffer_t));
 
-    }
-  else
-    { // other type. First check for 'firstness'
-      if (probe_chain==NULL)
-	{
-	  chain->next_chain=NULL;
-	  chain->prev_chain=NULL;
-	  // we currently make an error here as ISO should be running
-	  fprintf(stderr,"ISO thread not running while mounting another thread!\n");
-	}
-      else
-	{ // inherit properties.
-	  chain->height=chain->prev_chain->height;
-	  chain->width=chain->prev_chain->width;
-	  chain->mode=chain->prev_chain->mode;
-	  chain->format=chain->prev_chain->format;
-	  chain->bytes_per_frame=chain->prev_chain->bytes_per_frame;
-	  buffer_size=chain->bytes_per_frame;
-	  chain->bpp=chain->prev_chain->bpp;
-	  chain->bayer=chain->prev_chain->bayer;
-	  chain->bayer_pattern=chain->prev_chain->bayer_pattern;
-	  chain->stereo_decoding=chain->prev_chain->stereo_decoding;
-	  chain->format7_color_mode=chain->prev_chain->format7_color_mode;
-	  //fprintf(stderr,"color coding (slave): %d\n",chain->format7_color_mode);
-	}
-    }
-
-  if (chain->bayer==NO_BAYER_DECODING)
-    {
-      chain->current_buffer=(unsigned char*)malloc(buffer_size*sizeof(unsigned char));
-      chain->next_buffer=(unsigned char*)malloc(buffer_size*sizeof(unsigned char));
-      //fprintf(stderr,"base size: %ld\n",buffer_size);
-    }
-  else // we must allocate a much larger buffer: sx*sy*3 (RGB)
-    {
-      chain->current_buffer=(unsigned char*)malloc(chain->width*chain->height*3*sizeof(unsigned char));
-      chain->next_buffer=(unsigned char*)malloc(chain->width*chain->height*3*sizeof(unsigned char));
-      //fprintf(stderr,"base size: %ld\n",chain->width*chain->height*3);
-    }
-  if ((chain->current_buffer==NULL)||(chain->current_buffer==NULL))
-    fprintf(stderr,"Empty buffers allocated!\n");
+  InitLocalParamCopy(chain);
 }
 
 
@@ -290,6 +223,10 @@ FreeChain(chain_t* chain)
     {
       if (chain->data!=NULL)
 	free(chain->data);
+      if (chain->current_buffer->image!=NULL)
+	free(chain->current_buffer->image);
+      if (chain->next_buffer->image!=NULL)
+	free(chain->next_buffer->image);
       if (chain->current_buffer!=NULL)
 	free(chain->current_buffer);
       if (chain->next_buffer!=NULL)
@@ -300,14 +237,14 @@ FreeChain(chain_t* chain)
 
 
 void
-convert_to_rgb(unsigned char *src, unsigned char *dest, int mode, int width, int height, int f7_colormode, int bayer, int bits)
+convert_to_rgb(buffer_t *buffer, unsigned char *dest)
 {
-  if (bayer==NO_BAYER_DECODING)
+  if (buffer->bayer==NO_BAYER_DECODING)
     {
-      switch(mode)
+      switch(buffer->mode)
 	{
 	case MODE_160x120_YUV444:
-	  uyv2rgb(src,dest,width*height);
+	  uyv2rgb(buffer->image,dest,buffer->width*buffer->height);
 	  break;
 	case MODE_320x240_YUV422:
 	case MODE_640x480_YUV422:
@@ -315,31 +252,31 @@ convert_to_rgb(unsigned char *src, unsigned char *dest, int mode, int width, int
 	case MODE_1024x768_YUV422:
 	case MODE_1280x960_YUV422:
 	case MODE_1600x1200_YUV422:
-	  uyvy2rgb(src,dest,width*height);
+	  uyvy2rgb(buffer->image,dest,buffer->width*buffer->height);
 	  break;
 	case MODE_640x480_YUV411:
-	  uyyvyy2rgb(src,dest,width*height);
+	  uyyvyy2rgb(buffer->image,dest,buffer->width*buffer->height);
 	  break;
 	case MODE_640x480_RGB:
 	case MODE_800x600_RGB:
 	case MODE_1024x768_RGB:
 	case MODE_1280x960_RGB:
 	case MODE_1600x1200_RGB:
-	  memcpy(dest,src,3*width*height);
+	  memcpy(dest,buffer->image,3*buffer->width*buffer->height);
 	  break;
 	case MODE_640x480_MONO:
 	case MODE_800x600_MONO:
 	case MODE_1024x768_MONO:
 	case MODE_1280x960_MONO:
 	case MODE_1600x1200_MONO:
-	  y2rgb(src,dest,width*height);
+	  y2rgb(buffer->image,dest,buffer->width*buffer->height);
 	  break;
 	case MODE_640x480_MONO16:
 	case MODE_800x600_MONO16:
 	case MODE_1024x768_MONO16:
 	case MODE_1280x960_MONO16:
 	case MODE_1600x1200_MONO16:
-	  y162rgb(src,dest,width*height,bits);
+	  y162rgb(buffer->image,dest,buffer->width*buffer->height,buffer->bpp);
 	  break;
 	case MODE_FORMAT7_0:
 	case MODE_FORMAT7_1:
@@ -349,35 +286,35 @@ convert_to_rgb(unsigned char *src, unsigned char *dest, int mode, int width, int
 	case MODE_FORMAT7_5:
 	case MODE_FORMAT7_6:
 	case MODE_FORMAT7_7:
-	  switch (f7_colormode)
+	  switch (buffer->format7_color_mode)
 	    {
 	    case COLOR_FORMAT7_MONO8:
-	      y2rgb(src,dest,width*height);
+	      y2rgb(buffer->image,dest,buffer->width*buffer->height);
 	      break;
 	    case COLOR_FORMAT7_YUV411:
-	      uyyvyy2rgb(src,dest,width*height);
+	      uyyvyy2rgb(buffer->image,dest,buffer->width*buffer->height);
 	      break;
 	    case COLOR_FORMAT7_YUV422:
-	      uyvy2rgb(src,dest,width*height);
+	      uyvy2rgb(buffer->image,dest,buffer->width*buffer->height);
 	      break;
 	    case COLOR_FORMAT7_YUV444:
-	      uyv2rgb(src,dest,width*height);
+	      uyv2rgb(buffer->image,dest,buffer->width*buffer->height);
 	      break;
 	    case COLOR_FORMAT7_RGB8:
-	      memcpy(dest,src,3*width*height);
+	      memcpy(dest,buffer->image,3*buffer->width*buffer->height);
 	      break;
 	    case COLOR_FORMAT7_MONO16:
-	      y162rgb(src,dest,width*height,bits);
+	      y162rgb(buffer->image,dest,buffer->width*buffer->height,buffer->bpp);
 	      break;
 	    case COLOR_FORMAT7_RGB16:
-	      rgb482rgb(src,dest,width*height);
+	      rgb482rgb(buffer->image,dest,buffer->width*buffer->height);
 	      break;
 	    }
 	  break;
 	}
     }
   else // we force RGB mode, thus use memcpy
-    memcpy(dest,src,3*width*height);
+    memcpy(dest,buffer->image,3*buffer->width*buffer->height);
     
 }
 
@@ -418,4 +355,37 @@ CleanThreads(clean_mode_t mode)
       break;
       
     }
+}
+
+void
+InitLocalParamCopy(chain_t* chain)
+{
+  chain->local_param_copy.height=0;
+  chain->local_param_copy.width=0;
+  chain->local_param_copy.mode=0;
+  chain->local_param_copy.format=0;
+  chain->local_param_copy.bytes_per_frame=0;
+  chain->local_param_copy.bpp=0;
+  chain->local_param_copy.bayer=0;
+  chain->local_param_copy.bayer_pattern=0;
+  chain->local_param_copy.stereo_decoding=0;
+  chain->local_param_copy.format7_color_mode=0;
+  
+}
+
+
+void
+InitBuffer(buffer_t *buffer)
+{
+  buffer->width=-1;
+  buffer->height=-1;
+  buffer->bytes_per_frame=-1;
+  buffer->mode=-1;
+  buffer->bayer=-1;
+  buffer->bpp=-1;
+  buffer->bayer_pattern=-1;
+  buffer->stereo_decoding=-1;
+  buffer->format=-1;
+  buffer->format7_color_mode=-1;
+  buffer->image=NULL;
 }

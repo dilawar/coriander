@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2002 Damien Douxchamps  <douxchamps@ieee.org>
+ * Copyright (C) 2000-2003 Damien Douxchamps  <ddouxchamps@users.sf.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,8 +57,8 @@ extern dc1394_feature_set *feature_set;
 extern dc1394_feature_set *feature_sets;
 extern Format7Info *format7_info;
 extern Format7Info *format7_infos;
-extern UIInfo *uiinfos;
-extern UIInfo *uiinfo;
+extern uiinfo_t *uiinfos;
+extern uiinfo_t *uiinfo;
 extern chain_t **image_pipes;
 extern chain_t *image_pipe;
 extern SelfIdPacket_t *selfid;
@@ -466,7 +466,7 @@ DisplayActiveServices(void)
     }
   fprintf(stderr,"\n");
 }
-
+/*
 void*
 AutoWhiteBalance(void* arg)
 {
@@ -599,7 +599,7 @@ GetRGBPix(int px, int py, chain_t *service, int* R, int* G, int* B)
   YUV2RGB(y,u,v,*R,*G,*B);
   fprintf(stderr,"YUV: %d %d %d RGB: %d %d %d\n",y,u,v,*R,*G,*B);
 }
-
+*/
 void
 SetAbsoluteControl(int feature, int power)
 {

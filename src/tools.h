@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2002 Damien Douxchamps  <douxchamps@ieee.org>
+ * Copyright (C) 2000-2003 Damien Douxchamps  <ddouxchamps@users.sf.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -78,10 +78,10 @@ DisplayActiveServices(void);
 
 void
 GetRGBPix(int px, int py, chain_t *service, int* R, int* G, int* B);
-
+/*
 void*
 AutoWhiteBalance(void* arg);
-
+*/
 void
 SetAbsoluteControl(int feature, int power);
 

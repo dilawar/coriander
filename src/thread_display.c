@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2002 Damien Douxchamps  <douxchamps@ieee.org>
+ * Copyright (C) 2000-2003 Damien Douxchamps  <ddouxchamps@users.sf.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -76,21 +76,9 @@ DisplayStartThread()
       info->period=preferences.display_period;
       CommonChainSetup(display_service,SERVICE_DISPLAY,current_camera);
 
-#ifdef HAVE_SDLLIB
-      if (!sdlInit(display_service))
-#endif
-	{
-	  MainError("SDL is not available for display. Try Xv or GDK.");
-	  
-#ifdef HAVE_SDLLIB
-	  SDL_FreeYUVOverlay(info->SDL_overlay);
-	  SDL_FreeSurface(info->SDL_video);
-	  SDL_QuitSubSystem(SDL_INIT_VIDEO);
-#endif
-	  pthread_mutex_unlock(&display_service->mutex_data);
-	  FreeChain(display_service);
-	  return(-1);
-	}
+      InitBuffer(display_service->current_buffer);
+      InitBuffer(display_service->next_buffer);
+      InitBuffer(&display_service->local_param_copy);
 
       pthread_mutex_unlock(&display_service->mutex_data);
 
@@ -183,6 +171,7 @@ DisplayThread(void* arg)
   while (1)
     {
       pthread_mutex_lock(&info->mutex_cancel_display);
+
       if (info->cancel_display_req>0)
 	{
 	  pthread_mutex_unlock(&info->mutex_cancel_display);
@@ -194,17 +183,16 @@ DisplayThread(void* arg)
 	  pthread_mutex_lock(&display_service->mutex_data);
 	  if(RollBuffers(display_service)) // have buffers been rolled?
 	    {
+	      // check params
+	      DisplayThreadCheckParams(display_service);
+
 	      if (skip_counter==(info->period-1))
 		{
 		  skip_counter=0;
 #ifdef HAVE_SDLLIB
 		  if (SDL_LockYUVOverlay(info->SDL_overlay) == 0)
 		    {
-		      convert_to_yuv_for_SDL(display_service->current_buffer,
-					     info->SDL_overlay->pixels[0], display_service->mode,
-					     display_service->width, display_service->height,
-					     display_service->format7_color_mode,
-					     display_service->bayer, display_service->bpp);
+		      convert_to_yuv_for_SDL(display_service->current_buffer, info->SDL_overlay->pixels[0]);
 		      SDLDisplayArea(display_service);
 		      SDL_UnlockYUVOverlay(info->SDL_overlay);
 		      SDL_DisplayYUVOverlay(info->SDL_overlay, &info->SDL_videoRect);
@@ -261,12 +249,9 @@ DisplayStopThread(unsigned int camera)
 					  ctxt.fps_display_ctxt, "");
 
       RemoveChain(display_service, camera);
-#ifdef HAVE_SDLLIB
-      SDLEventStopThread(display_service);
-      SDL_FreeYUVOverlay(info->SDL_overlay);
-      SDL_FreeSurface(info->SDL_video);
-      SDL_QuitSubSystem(SDL_INIT_VIDEO);
-#endif
+
+      SDLQuit(display_service);
+
       pthread_mutex_unlock(&display_service->mutex_struct);
       pthread_mutex_unlock(&display_service->mutex_data);
       FreeChain(display_service);
@@ -278,7 +263,7 @@ DisplayStopThread(unsigned int camera)
 #ifdef HAVE_SDLLIB
 
 int
-sdlInit(chain_t *display_service)
+SDLInit(chain_t *display_service)
 {
   displaythread_info_t *info;
   const SDL_VideoInfo *sdl_videoinfo;
@@ -299,7 +284,7 @@ sdlInit(chain_t *display_service)
     info->SDL_flags=info->SDL_flags | SDL_HWSURFACE;
 
   // Set requested video mode
-  info->SDL_bpp=SDL_VideoModeOK(display_service->width, display_service->height, 
+  info->SDL_bpp=SDL_VideoModeOK(display_service->current_buffer->width, display_service->current_buffer->height, 
 				info->SDL_bpp, info->SDL_flags);
   
   ////////////// BPP ////////////// 
@@ -309,7 +294,7 @@ sdlInit(chain_t *display_service)
   //  fprintf(stderr,"mode KO: %d bpp\n",info->SDL_bpp);
   /////////////////////////////////
 
-  info->SDL_video = SDL_SetVideoMode(display_service->width, display_service->height, 
+  info->SDL_video = SDL_SetVideoMode(display_service->current_buffer->width, display_service->current_buffer->height, 
 				     info->SDL_bpp, info->SDL_flags);
 
   if (info->SDL_video == NULL)
@@ -331,7 +316,7 @@ sdlInit(chain_t *display_service)
   SDL_WM_SetCaption(preferences.camera_names[current_camera],"");
 
   // Create YUV Overlay
-  info->SDL_overlay = SDL_CreateYUVOverlay(display_service->width, display_service->height, 
+  info->SDL_overlay = SDL_CreateYUVOverlay(display_service->current_buffer->width, display_service->current_buffer->height, 
 					   SDL_YUY2_OVERLAY,info->SDL_video);
 
   ////////////// HW SURFACE /////////////
@@ -354,14 +339,14 @@ sdlInit(chain_t *display_service)
 
   info->SDL_videoRect.x=0;
   info->SDL_videoRect.y=0;
-  info->SDL_videoRect.w=display_service->width;
-  info->SDL_videoRect.h=display_service->height;
+  info->SDL_videoRect.w=display_service->current_buffer->width;
+  info->SDL_videoRect.h=display_service->current_buffer->height;
 
-  watchthread_info.f7_step[0]=format7_info->mode[display_service->mode-MODE_FORMAT7_MIN].step_x;
-  watchthread_info.f7_step[1]=format7_info->mode[display_service->mode-MODE_FORMAT7_MIN].step_y;
-  watchthread_info.f7_step_pos[0]=format7_info->mode[display_service->mode-MODE_FORMAT7_MIN].step_pos_x;
-  watchthread_info.f7_step_pos[1]=format7_info->mode[display_service->mode-MODE_FORMAT7_MIN].step_pos_y;
-  watchthread_info.use_unit_pos=format7_info->mode[display_service->mode-MODE_FORMAT7_MIN].use_unit_pos;
+  watchthread_info.f7_step[0]=format7_info->mode[display_service->current_buffer->mode-MODE_FORMAT7_MIN].step_x;
+  watchthread_info.f7_step[1]=format7_info->mode[display_service->current_buffer->mode-MODE_FORMAT7_MIN].step_y;
+  watchthread_info.f7_step_pos[0]=format7_info->mode[display_service->current_buffer->mode-MODE_FORMAT7_MIN].step_pos_x;
+  watchthread_info.f7_step_pos[1]=format7_info->mode[display_service->current_buffer->mode-MODE_FORMAT7_MIN].step_pos_y;
+  watchthread_info.use_unit_pos=format7_info->mode[display_service->current_buffer->mode-MODE_FORMAT7_MIN].use_unit_pos;
 
   SDLEventStartThread(display_service);
 
@@ -370,16 +355,15 @@ sdlInit(chain_t *display_service)
 
 // we should optimize this for RGB too: RGB modes could use RGB-SDL instead of YUV overlay
 void
-convert_to_yuv_for_SDL(unsigned char *src, unsigned char *dest, int mode,
-		       int width, int height, int f7_colormode, int bayer, int bits)
+convert_to_yuv_for_SDL(buffer_t *buffer, unsigned char *dest)
 {
 
-  if (bayer==NO_BAYER_DECODING)
+  if (buffer->bayer==NO_BAYER_DECODING)
     {
-      switch(mode)
+      switch(buffer->mode)
 	{
 	case MODE_160x120_YUV444:
-	  uyv2uyvy(src,dest,width*height);
+	  uyv2uyvy(buffer->image,dest,buffer->width*buffer->height);
 	  break;
 	case MODE_320x240_YUV422:
 	case MODE_640x480_YUV422:
@@ -387,31 +371,31 @@ convert_to_yuv_for_SDL(unsigned char *src, unsigned char *dest, int mode,
 	case MODE_1024x768_YUV422:
 	case MODE_1280x960_YUV422:
 	case MODE_1600x1200_YUV422:
-	  yuyv2uyvy(src,dest,width*height);
+	  yuyv2uyvy(buffer->image,dest,buffer->width*buffer->height);
 	  break;
 	case MODE_640x480_YUV411:
-	  uyyvyy2uyvy(src,dest,width*height);
+	  uyyvyy2uyvy(buffer->image,dest,buffer->width*buffer->height);
 	  break;
 	case MODE_640x480_RGB:
 	case MODE_800x600_RGB:
 	case MODE_1024x768_RGB:
 	case MODE_1280x960_RGB:
 	case MODE_1600x1200_RGB:
-	  rgb2uyvy(src,dest,width*height);
+	  rgb2uyvy(buffer->image,dest,buffer->width*buffer->height);
 	  break;
 	case MODE_640x480_MONO16:
 	case MODE_800x600_MONO16:
 	case MODE_1024x768_MONO16:
 	case MODE_1280x960_MONO16:
 	case MODE_1600x1200_MONO16:
-	  y162uyvy(src,dest,width*height, bits);
+	  y162uyvy(buffer->image,dest,buffer->width*buffer->height, buffer->bpp);
 	  break;
 	case MODE_640x480_MONO:
 	case MODE_800x600_MONO:
 	case MODE_1024x768_MONO:
 	case MODE_1280x960_MONO:
 	case MODE_1600x1200_MONO:
-	  y2uyvy(src,dest,width*height);
+	  y2uyvy(buffer->image,dest,buffer->width*buffer->height);
 	  break;
 	case MODE_FORMAT7_0:
 	case MODE_FORMAT7_1:
@@ -421,37 +405,37 @@ convert_to_yuv_for_SDL(unsigned char *src, unsigned char *dest, int mode,
 	case MODE_FORMAT7_5:
 	case MODE_FORMAT7_6:
 	case MODE_FORMAT7_7:
-	  switch (f7_colormode)
+	  switch (buffer->format7_color_mode)
 	    {
 	    case COLOR_FORMAT7_MONO8:
-	      y2uyvy(src,dest,width*height);
+	      y2uyvy(buffer->image,dest,buffer->width*buffer->height);
 	      break;
 	    case COLOR_FORMAT7_YUV411:
-	      uyyvyy2uyvy(src,dest,width*height);
+	      uyyvyy2uyvy(buffer->image,dest,buffer->width*buffer->height);
 	      break;
 	    case COLOR_FORMAT7_YUV422:
-	      yuyv2uyvy(src,dest,width*height);
+	      yuyv2uyvy(buffer->image,dest,buffer->width*buffer->height);
 	      break;
 	    case COLOR_FORMAT7_YUV444:
-	      uyv2uyvy(src,dest,width*height);
+	      uyv2uyvy(buffer->image,dest,buffer->width*buffer->height);
 	      break;
 	    case COLOR_FORMAT7_RGB8:
-	      rgb2uyvy(src,dest,width*height);
+	      rgb2uyvy(buffer->image,dest,buffer->width*buffer->height);
 	      break;
 	    case COLOR_FORMAT7_MONO16:
-	      y162uyvy(src,dest,width*height,bits);
+	      y162uyvy(buffer->image,dest,buffer->width*buffer->height,buffer->bpp);
 	      break;
 	    case COLOR_FORMAT7_RGB16:
-	      rgb482uyvy(src,dest,width*height);
+	      rgb482uyvy(buffer->image,dest,buffer->width*buffer->height);
 	      break;
 	    default:
-	      fprintf(stderr,"Unknown color format: %d\n",f7_colormode);
+	      fprintf(stderr,"Unknown color format: %d\n",buffer->format7_color_mode);
 	    }
 	  break;
 	}
     }
   else // we force RGB mode
-    rgb2uyvy(src,dest,width*height);
+    rgb2uyvy(buffer->image,dest,buffer->width*buffer->height);
 }
 
 void
@@ -475,7 +459,7 @@ SDLDisplayArea(chain_t *display_service)
       lower_right[0]=watchthread_info.lower_right[0];
       lower_right[1]=watchthread_info.lower_right[1];
       pimage=info->SDL_overlay->pixels[0];
-      width=display_service->width;
+      width=display_service->current_buffer->width;
       pthread_mutex_unlock(&watchthread_info.mutex_area);
       
       if (lower_right[0]<upper_left[0])
@@ -500,5 +484,78 @@ SDLDisplayArea(chain_t *display_service)
     pthread_mutex_unlock(&watchthread_info.mutex_area);
     
 }
+
+void
+SDLQuit(chain_t *display_service)
+{
+  displaythread_info_t *info;
+  info=(displaythread_info_t*)display_service->data;
+
+#ifdef HAVE_SDLLIB
+  SDLEventStopThread(display_service);
+  SDL_FreeYUVOverlay(info->SDL_overlay);
+  SDL_FreeSurface(info->SDL_video);
+  SDL_QuitSubSystem(SDL_INIT_VIDEO);
+#endif
+}
+
+void
+DisplayThreadCheckParams(chain_t *display_service)
+{
+
+  displaythread_info_t *info;
+  info=(displaythread_info_t*)display_service->data;
+  int first_time=0;
+
+  // copy harmless parameters anyway:
+  display_service->local_param_copy.bpp=display_service->current_buffer->bpp;
+  display_service->local_param_copy.bayer_pattern=display_service->current_buffer->bayer_pattern;
+
+  // if some parameters changed, we need to re-allocate the local buffers and restart the display
+  if ((display_service->current_buffer->width!=display_service->local_param_copy.width)||
+      (display_service->current_buffer->height!=display_service->local_param_copy.height)||
+      (display_service->current_buffer->bytes_per_frame!=display_service->local_param_copy.bytes_per_frame)||
+      (display_service->current_buffer->mode!=display_service->local_param_copy.mode)||
+      (display_service->current_buffer->format!=display_service->local_param_copy.format)||
+      // check F7 color mode change
+      ((display_service->current_buffer->format==FORMAT_SCALABLE_IMAGE_SIZE)&&
+       (display_service->current_buffer->format7_color_mode!=display_service->local_param_copy.format7_color_mode)
+       ) ||
+      // check bayer and stereo decoding
+      (display_service->current_buffer->stereo_decoding!=display_service->local_param_copy.stereo_decoding)||
+      (display_service->current_buffer->bayer!=display_service->local_param_copy.bayer)
+      )
+    {
+      if ((display_service->local_param_copy.width==-1)&&(display_service->current_buffer->width!=-1)) {
+	first_time=1;
+      }
+      else {
+	first_time=0;
+      }
+
+      // copy all new parameters:
+      display_service->local_param_copy.width=display_service->current_buffer->width;
+      display_service->local_param_copy.height=display_service->current_buffer->height;
+      display_service->local_param_copy.bytes_per_frame=display_service->current_buffer->bytes_per_frame;
+      display_service->local_param_copy.mode=display_service->current_buffer->mode;
+      display_service->local_param_copy.format=display_service->current_buffer->format;
+      display_service->local_param_copy.format7_color_mode=display_service->current_buffer->format7_color_mode;
+      display_service->local_param_copy.stereo_decoding=display_service->current_buffer->stereo_decoding;
+      display_service->local_param_copy.bayer=display_service->current_buffer->bayer;
+
+      // DO SOMETHING
+      // if the width is not -1, that is if some image has already reached the thread
+      if (display_service->local_param_copy.width!=-1) {
+	if (!first_time) {
+	  //fprintf(stderr,"Not the first time, kill current SDL\n");
+	  SDLQuit(display_service);
+	}
+	//fprintf(stderr,"Init SDL\n");
+	SDLInit(display_service);
+      }
+    }
+
+}
+
 
 #endif

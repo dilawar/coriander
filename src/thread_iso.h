@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2002 Damien Douxchamps  <douxchamps@ieee.org>
+ * Copyright (C) 2000-2003 Damien Douxchamps  <ddouxchamps@users.sf.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,6 +47,9 @@ typedef struct
   int timeout_func_id;
 
   unsigned char *temp;
+  int temp_size;
+  int temp_allocated;
+
   int factor;
   int cond16bit;
 
@@ -66,5 +69,8 @@ IsoThread(void* arg);
 
 gint
 IsoStopThread(void);
+
+void
+IsoThreadCheckParams(chain_t *iso_service);
 
 #endif

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2002 Damien Douxchamps  <douxchamps@ieee.org>
+ * Copyright (C) 2000-2003 Damien Douxchamps  <ddouxchamps@users.sf.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,7 @@ extern PrefsInfo preferences;
 extern GtkWidget *commander_window;
 extern int current_camera;
 extern CtxtInfo ctxt;
+extern uiinfo_t *uiinfo;
 
 gint IsoStartThread(void)
 {
@@ -165,37 +166,12 @@ gint IsoStartThread(void)
       //fprintf(stderr," 1394 setup OK\n");
 
       CommonChainSetup(iso_service, SERVICE_ISO, current_camera);
-
-      if (iso_service->bayer==BAYER_DECODING_DOWNSAMPLE)
-	info->factor=2;
-      else
-	info->factor=1;
-      
-      if (iso_service->format!=FORMAT_SCALABLE_IMAGE_SIZE)
-	info->cond16bit=((iso_service->mode==MODE_640x480_MONO16)||
-			 (iso_service->mode==MODE_800x600_MONO16)||
-			 (iso_service->mode==MODE_1024x768_MONO16)||
-			 (iso_service->mode==MODE_1280x960_MONO16)||
-			 (iso_service->mode==MODE_1600x1200_MONO16));
-      else
-	info->cond16bit=(format7_info->mode[iso_service->mode-MODE_FORMAT7_MIN].color_coding_id==COLOR_FORMAT7_MONO16);
-      
-      if (iso_service->stereo_decoding==NO_STEREO_DECODING)
-	{
-	  if (info->cond16bit>0)
-	    {
-	      info->temp=(unsigned char*)malloc(iso_service->width*info->factor*iso_service->height*info->factor*sizeof(unsigned char));
-	      //fprintf(stderr,"tmp size: %ld\n",iso_service->width*info->factor*iso_service->height*info->factor);
-	    }
-	  else
-	    info->temp=(unsigned char *)info->capture.capture_buffer;
-	}
-      else
-	{
-	  info->temp=(unsigned char*)malloc(iso_service->width*info->factor*iso_service->height*info->factor*sizeof(unsigned char));
-	  //fprintf(stderr,"tmp size: %ld\n",iso_service->width*info->factor*iso_service->height*info->factor);
-	}
-      //fprintf(stderr,"0x%x\n",info->temp);
+      // init image buffers structs
+      InitBuffer(iso_service->current_buffer);
+      InitBuffer(iso_service->next_buffer);
+      info->temp=NULL;
+      info->temp_size=0;
+      info->temp_allocated=0;
 
       pthread_mutex_unlock(&iso_service->mutex_data);
       
@@ -220,7 +196,7 @@ gint IsoStartThread(void)
 	  pthread_mutex_unlock(&iso_service->mutex_struct);
 	  pthread_mutex_unlock(&iso_service->mutex_data);
 	}
-	//fprintf(stderr," ISO thread started\n");
+      //fprintf(stderr," ISO thread started\n");
     }
 
   return (1);
@@ -309,43 +285,49 @@ IsoThread(void* arg)
 
       pthread_mutex_lock(&iso_service->mutex_data);
       
-      if (iso_service->stereo_decoding==STEREO_DECODING)
+      // check current buffer status
+      IsoThreadCheckParams(iso_service);
+
+      // if buffer not of proper size, re-allocate and re-set parameters of the current buffer
+
+      if (iso_service->current_buffer->stereo_decoding==STEREO_DECODING)
 	{
 	  //fprintf(stderr,"decoding stereo image...");
 	  StereoDecode((unsigned char *)info->capture.capture_buffer,info->temp,
-		       iso_service->width*info->factor*iso_service->height*info->factor/2);
+		       iso_service->current_buffer->width*info->factor*iso_service->current_buffer->height*info->factor/2);
 	  //fprintf(stderr,"done\n");
 	}
       else
-	if (iso_service->bayer!=NO_BAYER_DECODING)
+	if (iso_service->current_buffer->bayer!=NO_BAYER_DECODING)
 	  if (info->cond16bit>0)
 	    y162y((unsigned char *)info->capture.capture_buffer,info->temp,
-		  iso_service->width*info->factor*iso_service->height*info->factor, iso_service->bpp);
+		  iso_service->current_buffer->width*info->factor*iso_service->current_buffer->height*info->factor, iso_service->current_buffer->bpp);
 
       //fprintf(stderr,"bayer decoding...");
-      switch (iso_service->bayer)
+      switch (iso_service->current_buffer->bayer)
 	{
 	case BAYER_DECODING_NEAREST:
-	  BayerNearestNeighbor(info->temp, iso_service->current_buffer,
-			       iso_service->width, iso_service->height, iso_service->bayer_pattern);
+	  BayerNearestNeighbor(info->temp, iso_service->current_buffer->image,
+			       iso_service->current_buffer->width, iso_service->current_buffer->height, iso_service->current_buffer->bayer_pattern);
 	  break;
 	case BAYER_DECODING_EDGE_SENSE:
-	  BayerEdgeSense(info->temp, iso_service->current_buffer,
-			 iso_service->width, iso_service->height, iso_service->bayer_pattern);
+	  BayerEdgeSense(info->temp, iso_service->current_buffer->image,
+			 iso_service->current_buffer->width, iso_service->current_buffer->height, iso_service->current_buffer->bayer_pattern);
 	  break;
 	case BAYER_DECODING_DOWNSAMPLE:
 	  //fprintf(stderr,"0x%x 0x%x w=%d, h=%d, \n",info->temp, iso_service->current_buffer,
 	  //		 iso_service->width*info->factor, iso_service->height*info->factor);
-	  BayerDownsample(info->temp, iso_service->current_buffer,
-			 iso_service->width*info->factor, iso_service->height*info->factor, iso_service->bayer_pattern);
+	  BayerDownsample(info->temp, iso_service->current_buffer->image,
+			 iso_service->current_buffer->width*info->factor, iso_service->current_buffer->height*info->factor, iso_service->current_buffer->bayer_pattern);
 	  break;
 	default:
-	  memcpy(iso_service->current_buffer,
+	  memcpy(iso_service->current_buffer->image,
 		 info->capture.capture_buffer,
-		 iso_service->bytes_per_frame);
+		 iso_service->current_buffer->bytes_per_frame);
 	  break;
 	}
       //fprintf(stderr,"done\n");
+
       // FPS computation:
       info->current_time=times(&info->tms_buf);
       info->frames++;
@@ -387,6 +369,14 @@ gint IsoStopThread(void)
 
       RemoveChain(iso_service,current_camera);
 
+      if ((info->temp!=NULL)&&(info->temp_allocated>0)) {
+	free(info->temp);
+	//fprintf(stderr,"temp freed\n");
+	info->temp=NULL;
+	info->temp_allocated=0;
+	info->temp_size=0;
+      }
+
       if (info->receive_method == RECEIVE_METHOD_VIDEO1394)
 	{
 	  dc1394_dma_unlisten(camera->handle, &info->capture);
@@ -397,9 +387,6 @@ gint IsoStopThread(void)
       
       dc1394_destroy_handle(info->handle);
       info->handle = NULL;
-
-      if (info->cond16bit>0)
-	free(info->temp);
       
       pthread_mutex_unlock(&iso_service->mutex_struct);
       pthread_mutex_unlock(&iso_service->mutex_data);
@@ -410,4 +397,145 @@ gint IsoStopThread(void)
     }
 
   return (1);
+}
+
+
+void
+IsoThreadCheckParams(chain_t *iso_service)
+{
+
+  isothread_info_t *info;
+  info=(isothread_info_t*)iso_service->data;
+  int change_detected=0;
+  int temp_requested_size=0;
+  // copy harmless parameters anyway:
+  iso_service->current_buffer->bpp=uiinfo->bpp;
+  iso_service->current_buffer->bayer_pattern=uiinfo->bayer_pattern;
+
+  // check sizes. This depends on Bayer decoding
+  if (iso_service->current_buffer->bayer==BAYER_DECODING_DOWNSAMPLE) {
+    
+    // allow size to differ, this is normal operation.
+    change_detected+=iso_service->current_buffer->width          !=(info->capture.frame_width)/2;
+    if (iso_service->current_buffer->stereo_decoding==STEREO_DECODING){
+      change_detected+=iso_service->current_buffer->height       !=(info->capture.frame_height)/2*2;
+    }
+    else {
+      change_detected+=iso_service->current_buffer->height       !=(info->capture.frame_height)/2;
+    }
+    change_detected+=iso_service->current_buffer->bytes_per_frame!=(info->capture.quadlets_per_frame*4)/4;
+  }
+  else {
+    // size should be equal, or a change occured.
+    change_detected+=iso_service->current_buffer->width          !=info->capture.frame_width;
+    if (iso_service->current_buffer->stereo_decoding==STEREO_DECODING) {
+      change_detected+=iso_service->current_buffer->height       !=info->capture.frame_height*2;
+    }
+    else {
+      change_detected+=iso_service->current_buffer->height       !=info->capture.frame_height;
+    }
+    change_detected+=iso_service->current_buffer->bytes_per_frame!=info->capture.quadlets_per_frame*4;
+  }
+  // check mode and format:
+  change_detected+=iso_service->current_buffer->mode!=misc_info->mode;
+  change_detected+=iso_service->current_buffer->format!=misc_info->format;
+  // check F7 color mode change
+  change_detected+=((iso_service->current_buffer->format==FORMAT_SCALABLE_IMAGE_SIZE)&&
+		    (iso_service->current_buffer->format7_color_mode!=format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].color_coding_id));
+  // check stereo decoding
+  change_detected+=iso_service->current_buffer->stereo_decoding!=uiinfo->stereo;
+  // check bayer decoding
+  change_detected+=iso_service->current_buffer->bayer!=uiinfo->bayer;
+
+  if (change_detected>0)
+    {
+      //fprintf(stderr,"Parameter change detected, updating... \n");
+      // copy all new parameters:
+      iso_service->current_buffer->width=info->capture.frame_width;
+      iso_service->current_buffer->height=info->capture.frame_height;
+      iso_service->current_buffer->bytes_per_frame=info->capture.quadlets_per_frame*4;
+      iso_service->current_buffer->mode=misc_info->mode;
+      iso_service->current_buffer->format=misc_info->format;
+      iso_service->current_buffer->format7_color_mode=format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].color_coding_id;
+      iso_service->current_buffer->stereo_decoding=uiinfo->stereo;
+      iso_service->current_buffer->bayer=uiinfo->bayer;
+
+      // buffer size changes due to bayer and stereo decoding
+      if (uiinfo->bayer==BAYER_DECODING_DOWNSAMPLE) {
+	iso_service->current_buffer->bytes_per_frame/=4;
+	iso_service->current_buffer->width/=2;
+	iso_service->current_buffer->height/=2;
+      }
+      if (uiinfo->stereo==STEREO_DECODING)
+	iso_service->current_buffer->height*=2;
+
+      // CHECK STANDARD BUFFER -------------------------
+
+      if (iso_service->current_buffer->image!=NULL) {
+	free(iso_service->current_buffer->image);
+	iso_service->current_buffer->image=NULL;
+      }
+
+      if (iso_service->current_buffer->bayer==NO_BAYER_DECODING) {
+	iso_service->current_buffer->image=(unsigned char*)malloc(iso_service->current_buffer->bytes_per_frame*sizeof(unsigned char));
+      }
+      else { // we must allocate a much larger buffer: sx*sy*3 (RGB)
+	iso_service->current_buffer->image=(unsigned char*)malloc(iso_service->current_buffer->width*iso_service->current_buffer->height*3*sizeof(unsigned char));
+      }
+
+      if ((iso_service->current_buffer->image==NULL)||(iso_service->current_buffer->image==NULL))
+	fprintf(stderr,"Can't allocate image buffers! Aiiie!\n");
+
+      // CHECK TEMP BUFFER -----------------------------
+      
+      if (iso_service->current_buffer->bayer==BAYER_DECODING_DOWNSAMPLE)
+	info->factor=2;
+      else
+	info->factor=1;
+      
+      if (iso_service->current_buffer->format!=FORMAT_SCALABLE_IMAGE_SIZE)
+	info->cond16bit=((iso_service->current_buffer->mode==MODE_640x480_MONO16)||
+			 (iso_service->current_buffer->mode==MODE_800x600_MONO16)||
+			 (iso_service->current_buffer->mode==MODE_1024x768_MONO16)||
+			 (iso_service->current_buffer->mode==MODE_1280x960_MONO16)||
+			 (iso_service->current_buffer->mode==MODE_1600x1200_MONO16));
+      else
+	info->cond16bit=(format7_info->mode[iso_service->current_buffer->mode-MODE_FORMAT7_MIN].color_coding_id==COLOR_FORMAT7_MONO16);
+      
+      if (iso_service->current_buffer->stereo_decoding==NO_STEREO_DECODING) {
+	if (info->cond16bit>0) {
+	  temp_requested_size=iso_service->current_buffer->width*info->factor*iso_service->current_buffer->height*info->factor*sizeof(unsigned char);
+	}
+	else {
+	  temp_requested_size=0;
+	}
+      }
+      else {
+	temp_requested_size=iso_service->current_buffer->width*info->factor*iso_service->current_buffer->height*info->factor*sizeof(unsigned char);
+      }
+
+      if (temp_requested_size==0) {
+	if (info->temp_allocated>0) {
+	  free(info->temp);
+	  //fprintf(stderr,"temp freed\n");
+	}
+	info->temp_allocated=0;
+	info->temp_size=0;
+	info->temp=(unsigned char *)info->capture.capture_buffer;
+	//fprintf(stderr,"dummy temp used, no malloc\n");
+      }
+      else { // some allocated space is required
+	if (temp_requested_size!=info->temp_size) { // req and actual size don't not match
+	  if (info->temp_allocated>0) {
+	    free(info->temp);
+	    //fprintf(stderr,"temp freed\n");
+	  }
+	  info->temp=(unsigned char *)malloc(temp_requested_size);
+	  info->temp_allocated=1;
+	  info->temp_size=temp_requested_size;
+	  //fprintf(stderr,"temp allocated with size %d\n",temp_requested_size);
+	}
+      }
+    }
+
 }

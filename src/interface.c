@@ -324,7 +324,7 @@ create_commander_window (void)
 
   commander_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_object_set_data (GTK_OBJECT (commander_window), "commander_window", commander_window);
-  gtk_window_set_title (GTK_WINDOW (commander_window), _("Coriander 0.27.1"));
+  gtk_window_set_title (GTK_WINDOW (commander_window), _("Coriander 0.28"));
   gtk_window_set_policy (GTK_WINDOW (commander_window), FALSE, TRUE, TRUE);
 
   vbox26 = gtk_vbox_new (FALSE, 0);

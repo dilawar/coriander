@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2002 Damien Douxchamps  <douxchamps@ieee.org>
+ * Copyright (C) 2000-2003 Damien Douxchamps  <ddouxchamps@users.sf.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -84,8 +84,13 @@ FtpStartThread(void)
       strcpy(info->filename_ext, strrchr(preferences.ftp_filename, '.'));
 
       CommonChainSetup(ftp_service,SERVICE_FTP,current_camera);
-      info->imlib_buffer_size=ftp_service->width*ftp_service->height*3;
-      info->ftp_buffer=(unsigned char*)malloc(info->imlib_buffer_size*sizeof(unsigned char));
+
+      InitBuffer(ftp_service->current_buffer);
+      InitBuffer(ftp_service->next_buffer);
+      InitBuffer(&ftp_service->local_param_copy);
+  
+      info->ftp_buffer=NULL;
+      info->imlib_buffer_size=0;
 
       info->ftp_scratch=preferences.ftp_scratch;
 
@@ -218,13 +223,12 @@ FtpThread(void* arg)
 	  pthread_mutex_lock(&ftp_service->mutex_data);
 	  if(RollBuffers(ftp_service)) // have buffers been rolled?
 	    {
+	      FtpThreadCheckParams(ftp_service);
+
 	      if (skip_counter==(info->period-1))
 		{
 		  skip_counter=0;
-		  convert_to_rgb(ftp_service->current_buffer, info->ftp_buffer,
-				 ftp_service->mode, ftp_service->width,
-				 ftp_service->height, ftp_service->format7_color_mode,
-				 ftp_service->bayer, ftp_service->bpp);
+		  convert_to_rgb(ftp_service->current_buffer, info->ftp_buffer);
 		  if (info->ftp_scratch == FTP_SCRATCH_OVERWRITE)
 		    {
 		      sprintf(filename_out, "%s%s", info->filename,info->filename_ext);
@@ -236,7 +240,7 @@ FtpThread(void* arg)
 				info->counter++, info->filename_ext);
 		      }
 
-		  im=gdk_imlib_create_image_from_data(info->ftp_buffer, NULL, ftp_service->width, ftp_service->height);
+		  im=gdk_imlib_create_image_from_data(info->ftp_buffer, NULL, ftp_service->current_buffer->width, ftp_service->current_buffer->height);
 #ifdef HAVE_FTPLIB
 		  if (!CheckFtpConnection(info))
 		    {
@@ -303,7 +307,10 @@ FtpStopThread(void)
       RemoveChain(ftp_service,current_camera);
 
       /* Do custom cleanups here...*/
-      free(info->ftp_buffer);
+      if (info->ftp_buffer!=NULL) {
+	free(info->ftp_buffer);
+	info->ftp_buffer=NULL;
+      }
 #ifdef HAVE_FTPLIB
       CloseFtpConnection(info->ftp_handle);
 #endif
@@ -315,6 +322,54 @@ FtpStopThread(void)
     }
 
   return (1);
+}
+
+void
+FtpThreadCheckParams(chain_t *ftp_service)
+{
+
+  ftpthread_info_t *info;
+  info=(ftpthread_info_t*)ftp_service->data;
+
+  // copy harmless parameters anyway:
+  ftp_service->local_param_copy.bpp=ftp_service->current_buffer->bpp;
+  ftp_service->local_param_copy.bayer_pattern=ftp_service->current_buffer->bayer_pattern;
+
+  // if some parameters changed, we need to re-allocate the local buffers and restart the ftp
+  if ((ftp_service->current_buffer->width!=ftp_service->local_param_copy.width)||
+      (ftp_service->current_buffer->height!=ftp_service->local_param_copy.height)||
+      (ftp_service->current_buffer->bytes_per_frame!=ftp_service->local_param_copy.bytes_per_frame)||
+      (ftp_service->current_buffer->mode!=ftp_service->local_param_copy.mode)||
+      (ftp_service->current_buffer->format!=ftp_service->local_param_copy.format)||
+      // check F7 color mode change
+      ((ftp_service->current_buffer->format==FORMAT_SCALABLE_IMAGE_SIZE)&&
+       (ftp_service->current_buffer->format7_color_mode!=ftp_service->local_param_copy.format7_color_mode)
+       ) ||
+      // check bayer and stereo decoding
+      (ftp_service->current_buffer->stereo_decoding!=ftp_service->local_param_copy.stereo_decoding)||
+      (ftp_service->current_buffer->bayer!=ftp_service->local_param_copy.bayer)
+      )
+    {
+      // copy all new parameters:
+      ftp_service->local_param_copy.width=ftp_service->current_buffer->width;
+      ftp_service->local_param_copy.height=ftp_service->current_buffer->height;
+      ftp_service->local_param_copy.bytes_per_frame=ftp_service->current_buffer->bytes_per_frame;
+      ftp_service->local_param_copy.mode=ftp_service->current_buffer->mode;
+      ftp_service->local_param_copy.format=ftp_service->current_buffer->format;
+      ftp_service->local_param_copy.format7_color_mode=ftp_service->current_buffer->format7_color_mode;
+      ftp_service->local_param_copy.stereo_decoding=ftp_service->current_buffer->stereo_decoding;
+      ftp_service->local_param_copy.bayer=ftp_service->current_buffer->bayer;
+
+      // DO SOMETHING
+      if (info->ftp_buffer!=NULL) {
+	free(info->ftp_buffer);
+	info->ftp_buffer=NULL;
+      }
+
+      info->imlib_buffer_size=ftp_service->current_buffer->width*ftp_service->current_buffer->height*3;
+      info->ftp_buffer=(unsigned char*)malloc(info->imlib_buffer_size*sizeof(unsigned char));
+    }
+  
 }
 
 #ifdef HAVE_FTPLIB

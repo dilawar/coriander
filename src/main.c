@@ -3,7 +3,7 @@
  *
  *            -- The IEEE-1394 Digital Camera controller --
  *
- * Copyright (C) 2000-2002 Damien Douxchamps  <douxchamps@ieee.org>
+ * Copyright (C) 2000-2003 Damien Douxchamps  <ddouxchamps@users.sf.net>
  *               Ftp and conversions by Dan Dennedy <ddennedy@coolsite.net>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -58,8 +58,8 @@ chain_t **image_pipes;
 chain_t *image_pipe;
 Format7Info *format7_infos;
 Format7Info *format7_info;
-UIInfo *uiinfos;
-UIInfo *uiinfo;
+uiinfo_t *uiinfos;
+uiinfo_t *uiinfo;
 StatusInfo *statusinfos;
 StatusInfo *statusinfo;
 CtxtInfo ctxt;
@@ -140,7 +140,7 @@ main (int argc, char *argv[])
 	  misc_infos=(dc1394_miscinfo*)calloc(camera_num,sizeof(dc1394_miscinfo));
 	  image_pipes=(chain_t**)calloc(camera_num,sizeof(chain_t*));
 	  format7_infos=(Format7Info*)calloc(camera_num,sizeof(Format7Info));
-	  uiinfos=(UIInfo*)calloc(camera_num,sizeof(UIInfo));
+	  uiinfos=(uiinfo_t*)calloc(camera_num,sizeof(uiinfo_t));
 	  selfids=(SelfIdPacket_t*)calloc(camera_num,sizeof(SelfIdPacket_t));
 	  preferences.camera_names=(char **)calloc(camera_num,sizeof(char*));
 

@@ -6,6 +6,12 @@ Changes towards version 0.28
    - an awful bug that makes bayer color decoding end with a beautful
      segfault has been corrected.
 	
+Changes in version 0.28
+
+   February 25, 2003, by Damien Douxchamps
+   - improved image buffer structure, allows to change some parameters
+     without restarting the thread.
+
 Changes in version 0.27.1
 
    November 27, 2002, by Damien Douxchamps
