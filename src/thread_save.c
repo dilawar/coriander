@@ -73,7 +73,7 @@ SaveStartThread(camera_t* cam)
     // if format extension is ".raw", we dump raw data on the file and perform no conversion
     info->rawdump=preferences.save_convert;
     info->use_ram_buffer=preferences.use_ram_buffer;
-    info->ram_buffer_size=preferences.ram_buffer_size*1024*1024;
+    info->ram_buffer_size=preferences.ram_buffer_size*1024*1024; // ram buffer size in MB
 
     info->bigbuffer=NULL;
 
