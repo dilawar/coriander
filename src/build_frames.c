@@ -410,6 +410,7 @@ BuildOptionFrame(void)
   pthread_mutex_unlock(&uiinfo->mutex);
   BuildBayerMenu();
   BuildBayerPatternMenu();
+  BuildStereoMenu();
 }
 
 

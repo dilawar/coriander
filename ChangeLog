@@ -1,6 +1,11 @@
 Coriander, (c) 2000-2002 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 0.29
+
+   March 31, 2003, by Damien Douxchamps
+   - added a stereo 'field' decoding format
+   - stereo decoding allowed for YUV422 too (compatibility with Videre
+     Design stereo heads)
 	
    March 10, 2003, by Damien Douxchamps
    - added missing 'fclose' in thread_save.c 

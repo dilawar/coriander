@@ -697,3 +697,58 @@ BuildBayerPatternMenu(void)
   pthread_mutex_unlock(&uiinfo->mutex);
       
 }
+
+
+void
+BuildStereoMenu(void)
+{
+  GtkWidget* new_option_menu;
+  GtkWidget* new_menu;
+  GtkWidget* glade_menuitem;
+
+  // build bayer option menu:
+  gtk_widget_destroy(GTK_WIDGET(lookup_widget(commander_window,"stereo_menu"))); // remove previous menu
+  
+  new_option_menu = gtk_option_menu_new ();
+  gtk_widget_ref (new_option_menu);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "stereo_menu", new_option_menu,
+			    (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (new_option_menu);
+  gtk_table_attach (GTK_TABLE (lookup_widget(commander_window,"table61")),
+		    new_option_menu, 0, 2, 2, 3,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (new_option_menu), 1);
+  
+  new_menu = gtk_menu_new ();
+
+  // add no stereo option
+  glade_menuitem = gtk_menu_item_new_with_label (_("No Stereo"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
+		      GTK_SIGNAL_FUNC (on_stereo_menu_activate),
+		      (int*)NO_STEREO_DECODING); 
+  // add interlaced option
+  glade_menuitem = gtk_menu_item_new_with_label (_("St. Interlaced"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
+		      GTK_SIGNAL_FUNC (on_stereo_menu_activate),
+		      (int*)STEREO_DECODING_INTERLACED); 
+  // add field option
+  glade_menuitem = gtk_menu_item_new_with_label (_("St. Field"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
+		      GTK_SIGNAL_FUNC (on_stereo_menu_activate),
+		      (int*)STEREO_DECODING_FIELD); 
+  
+  gtk_option_menu_set_menu (GTK_OPTION_MENU (new_option_menu), new_menu);
+
+  // menu history
+  pthread_mutex_lock(&uiinfo->mutex);
+  gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(commander_window, "stereo_menu")),uiinfo->stereo);
+  pthread_mutex_unlock(&uiinfo->mutex);
+      
+}

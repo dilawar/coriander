@@ -45,4 +45,7 @@ BuildBayerMenu(void);
 void
 BuildBayerPatternMenu(void);
 
+void
+BuildStereoMenu(void);
+
 #endif
