@@ -2,16 +2,21 @@ Coriander, (c) 2000-2002 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 0.28
 
-   December 2, 2002, by Damien Douxchamps
-   - an awful bug that makes bayer color decoding end with a beautful
-     segfault has been corrected.
+   February 27, 2003, by Damien Douxchamps
+   - image filenames for save and FTP have a date/time appened instead
+     of a long number. This date/time is the computer local time when
+     the ISO thread got the frame (it is thus NOT the true capture time)
+     The format is YEARMONTHDAY-HOURMINUTESECOND-MILLISECOND.
+   - fixed NaN fps display.
 	
-Changes in version 0.28
-
    February 25, 2003, by Damien Douxchamps
    - improved image buffer structure, allows to change some parameters
      without restarting the thread.
 
+   December 2, 2002, by Damien Douxchamps
+   - an awful bug that makes bayer color decoding end with a beautful
+     segfault has been corrected.
+	
 Changes in version 0.27.1
 
    November 27, 2002, by Damien Douxchamps

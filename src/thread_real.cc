@@ -154,13 +154,19 @@ RealShowFPS(gpointer *data)
   chain_t* real_service;
   realthread_info_t *info;
   char tmp_string[20];
+  float tmp, fps;
 
   real_service=(chain_t*)data;
   info=(realthread_info_t*)real_service->data;
-
-  sprintf(tmp_string," %.2f",(float)info->frames/((float)(info->current_time-info->prev_time)/sysconf(_SC_CLK_TCK)));
-  //fprintf(stderr,"receive: %s fps\n",tmp_string);
   
+  tmp=(float)(info->current_time-info->prev_time)/sysconf(_SC_CLK_TCK);
+  if (tmp==0)
+    fps=0;
+  else
+    fps=(float)info->frames/tmp;
+
+  sprintf(tmp_string," %.2f",fps);
+
   gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"fps_real"),
 		       ctxt.fps_real_ctxt, ctxt.fps_real_id);
   ctxt.fps_real_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"fps_real"),

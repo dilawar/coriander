@@ -140,13 +140,19 @@ SaveShowFPS(gpointer *data)
   chain_t* save_service;
   savethread_info_t *info;
   char tmp_string[20];
+  float tmp, fps;
 
   save_service=(chain_t*)data;
   info=(savethread_info_t*)save_service->data;
 
-  sprintf(tmp_string," %.2f",(float)info->frames/((float)(info->current_time-info->prev_time)/sysconf(_SC_CLK_TCK)));
-  //fprintf(stderr,"receive: %s fps\n",tmp_string);
+  tmp=(float)(info->current_time-info->prev_time)/sysconf(_SC_CLK_TCK);
+  if (tmp==0)
+    fps=0;
+  else
+    fps=(float)info->frames/tmp;
   
+  sprintf(tmp_string," %.2f",fps);
+
   gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"fps_save"),
 		       ctxt.fps_save_ctxt, ctxt.fps_save_id);
   ctxt.fps_save_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"fps_save"),
@@ -222,8 +228,8 @@ SaveThread(void* arg)
 		      sprintf(filename_out, "%s%s", info->filename,info->filename_ext);
 		      break;
 		    case SAVE_SCRATCH_SEQUENTIAL:
-		      sprintf(filename_out, "%s_%10.10li%s", info->filename,
-			      info->counter++, info->filename_ext);
+		      sprintf(filename_out, "%s-%s%s", info->filename,
+			      save_service->current_buffer->captime_string, info->filename_ext);
 		      break;
 		    default:
 		      break;

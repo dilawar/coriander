@@ -163,13 +163,19 @@ FtpShowFPS(gpointer *data)
   chain_t* ftp_service;
   ftpthread_info_t *info;
   char tmp_string[20];
+  float tmp, fps;
 
   ftp_service=(chain_t*)data;
   info=(ftpthread_info_t*)ftp_service->data;
 
-  sprintf(tmp_string," %.2f",(float)info->frames/((float)(info->current_time-info->prev_time)/sysconf(_SC_CLK_TCK)));
-  //fprintf(stderr,"receive: %s fps\n",tmp_string);
-  
+  tmp=(float)(info->current_time-info->prev_time)/sysconf(_SC_CLK_TCK);
+  if (tmp==0)
+    fps=0;
+  else
+    fps=(float)info->frames/tmp;
+
+  sprintf(tmp_string," %.2f",fps);
+
   gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"fps_ftp"),
 		       ctxt.fps_ftp_ctxt, ctxt.fps_ftp_id);
   ctxt.fps_ftp_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"fps_ftp"),
@@ -229,16 +235,18 @@ FtpThread(void* arg)
 		{
 		  skip_counter=0;
 		  convert_to_rgb(ftp_service->current_buffer, info->ftp_buffer);
-		  if (info->ftp_scratch == FTP_SCRATCH_OVERWRITE)
+		  switch (info->ftp_scratch)
 		    {
+		    case FTP_SCRATCH_OVERWRITE:
 		      sprintf(filename_out, "%s%s", info->filename,info->filename_ext);
+		      break;
+		    case FTP_SCRATCH_SEQUENTIAL:
+		      sprintf(filename_out, "%s-%s%s", info->filename,
+			      ftp_service->current_buffer->captime_string, info->filename_ext);
+		      break;
+		    default:
+		      break;
 		    }
-		  else
-		    if (info->ftp_scratch == FTP_SCRATCH_SEQUENTIAL)
-		      {
-			sprintf(filename_out, "%s_%10.10li%s", info->filename,
-				info->counter++, info->filename_ext);
-		      }
 
 		  im=gdk_imlib_create_image_from_data(info->ftp_buffer, NULL, ftp_service->current_buffer->width, ftp_service->current_buffer->height);
 #ifdef HAVE_FTPLIB

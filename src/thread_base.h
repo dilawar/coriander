@@ -23,6 +23,7 @@
 #include "thread_base.h"
 #include "conversions.h"
 #include <libdc1394/dc1394_control.h>
+#include <time.h>
 
 #define GUID_YUV12_PLANAR 0x32315659 
 #define GUID_YUY2_PACKED  0x32595559
@@ -38,6 +39,8 @@ typedef enum _Service_T
   SERVICE_REAL
 } service_t;
 
+//typedef struct tm tm_t;
+
 typedef struct _Buffer_T
 {
   unsigned char *image;
@@ -51,6 +54,11 @@ typedef struct _Buffer_T
   bayer_pattern_t bayer_pattern;
   stereo_decoding_t stereo_decoding;
   int format7_color_mode;
+
+  // information about the time the frame was captured by the ISO thread.
+  struct tm captime;
+  int captime_millisec;
+  char captime_string[19];
 
 } buffer_t;
 

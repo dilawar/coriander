@@ -23,6 +23,7 @@
 #include "conversions.h"
 #include <time.h>
 #include <sys/times.h>
+#include <sys/timeb.h>
 
 #define DMA_BUFFERS 4
 
@@ -52,6 +53,8 @@ typedef struct
 
   int factor;
   int cond16bit;
+
+  struct timeb rawtime;
 
 } isothread_info_t;
 

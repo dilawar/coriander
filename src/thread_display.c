@@ -126,13 +126,19 @@ DisplayShowFPS(gpointer *data)
   chain_t* display_service;
   displaythread_info_t *info;
   char tmp_string[20];
+  float tmp, fps;
 
   display_service=(chain_t*)data;
   info=(displaythread_info_t*)display_service->data;
 
-  sprintf(tmp_string," %.2f",(float)info->frames/((float)(info->current_time-info->prev_time)/sysconf(_SC_CLK_TCK)));
-  //fprintf(stderr,"receive: %s fps\n",tmp_string);
-  
+  tmp=(float)(info->current_time-info->prev_time)/sysconf(_SC_CLK_TCK);
+  if (tmp==0)
+    fps=0;
+  else
+    fps=(float)info->frames/tmp;
+
+  sprintf(tmp_string," %.2f",fps);
+
   gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"fps_display"),
 		       ctxt.fps_display_ctxt, ctxt.fps_display_id);
   ctxt.fps_display_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"fps_display"),

@@ -22,6 +22,8 @@
 
 #include <pthread.h>
 #include <libdc1394/dc1394_control.h>
+#include <time.h>
+#include <sys/timeb.h>
 #include "thread_base.h"
 #include "thread_iso.h"
 #include "preferences.h"
@@ -232,13 +234,18 @@ IsoShowFPS(gpointer *data)
   chain_t* iso_service;
   isothread_info_t *info;
   char tmp_string[20];
+  float tmp, fps;
 
   iso_service=(chain_t*)data;
   info=(isothread_info_t*)iso_service->data;
 
-  sprintf(tmp_string," %.2f",(float)info->frames/((float)(info->current_time-info->prev_time)/sysconf(_SC_CLK_TCK)));
-  //fprintf(stderr,"CLK_TCK: %d, CLOCKS_PER_SEC: %d\n", CLK_TCK, CLOCKS_PER_SEC);
-  //fprintf(stderr,"receive: %s fps\n",tmp_string);
+  tmp=(float)(info->current_time-info->prev_time)/sysconf(_SC_CLK_TCK);
+  if (tmp==0)
+    fps=0;
+  else
+    fps=(float)info->frames/tmp;
+  
+  sprintf(tmp_string," %.2f",fps);
   
   gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"fps_receive"),
 		       ctxt.fps_receive_ctxt, ctxt.fps_receive_id);
@@ -282,6 +289,21 @@ IsoThread(void* arg)
 	dc1394_single_capture(info->handle, &info->capture);
       else
 	dc1394_dma_single_capture(&info->capture);
+
+      ftime(&info->rawtime);
+      localtime_r(&info->rawtime.time, 
+		  &(iso_service->current_buffer->captime));
+      iso_service->current_buffer->captime.tm_year+=1900;
+      iso_service->current_buffer->captime.tm_mon+=1;
+      iso_service->current_buffer->captime_millisec=info->rawtime.millitm;
+      sprintf(iso_service->current_buffer->captime_string,"%04d%02d%02d-%02d%02d%02d-%03d",
+	      iso_service->current_buffer->captime.tm_year,
+	      iso_service->current_buffer->captime.tm_mon,
+	      iso_service->current_buffer->captime.tm_mday,
+	      iso_service->current_buffer->captime.tm_hour,
+	      iso_service->current_buffer->captime.tm_min,
+	      iso_service->current_buffer->captime.tm_sec,
+	      iso_service->current_buffer->captime_millisec);
 
       pthread_mutex_lock(&iso_service->mutex_data);
       
