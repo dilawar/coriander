@@ -26,7 +26,10 @@
 #include "callbacks.h"
 
 void
-BuildRange(GtkWidget* current_window, int feature);
+BuildRange(int feature);
+
+void
+BuildEmptyRange(int feature);
 
 void 
 BuildFormat7Ranges(void);

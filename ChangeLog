@@ -2,6 +2,10 @@ Coriander, (c) 2000-2003 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 0.33
 
+   May 21, 2003, by Damien Douxchamps
+   - new feature controls autogeneration. Still experimental, but seems to
+     work well.
+	
    May 17, 2003, by Damien Douxchamps
    - fixed F7 issue with non-F7 cameras. Thanks again to inet for spotting
      this.

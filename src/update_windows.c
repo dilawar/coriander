@@ -19,7 +19,7 @@
 #include "update_windows.h"
 
 extern GtkWidget *commander_window;
-
+extern dc1394_feature_set *feature_set;
 void
 UpdateFormat7Window(void)
 {
@@ -56,39 +56,16 @@ UpdateCommanderWindow(void)
 }
 
 void
-UpdatePositionWindow(void)
+UpdateFeatureWindow(void)
 {
-  UpdateRange(commander_window, FEATURE_FOCUS);
-  UpdateRange(commander_window, FEATURE_PAN);
-  UpdateRange(commander_window, FEATURE_TILT);
-  UpdateRange(commander_window, FEATURE_ZOOM);
-}
+  int i;
 
-void
-UpdateColorWindow(void)
-{
-  UpdateRange(commander_window, FEATURE_BRIGHTNESS);
-  UpdateRange(commander_window, FEATURE_GAMMA);
-  UpdateRange(commander_window, FEATURE_SATURATION);
-  UpdateRange(commander_window, FEATURE_HUE);
-  UpdateRange(commander_window, FEATURE_WHITE_BALANCE);
-  UpdateRange(commander_window, FEATURE_SHARPNESS);
-}
-
-void
-UpdateApertureWindow(void)
-{
-  UpdateRange(commander_window, FEATURE_EXPOSURE);
-  UpdateRange(commander_window, FEATURE_IRIS);
-  UpdateRange(commander_window, FEATURE_SHUTTER);
-  UpdateRange(commander_window, FEATURE_GAIN);
-  UpdateRange(commander_window, FEATURE_OPTICAL_FILTER);
-}
-
-void
-UpdateTemperatureWindow(void)
-{
-  UpdateRange(commander_window, FEATURE_TEMPERATURE);
+  for (i=FEATURE_MIN;i<=FEATURE_MAX;i++) {
+    if ((feature_set->feature[i-FEATURE_MIN].available>0)&&
+	(i!=FEATURE_TRIGGER)) {
+      UpdateRange(i);
+    }
+  }
 }
 
 void
@@ -99,22 +76,10 @@ UpdateStatusWindow(void)
 }
 
 void
-UpdateCaptureWindow(void)
-{
-  UpdateRange(commander_window, FEATURE_CAPTURE_SIZE);
-  UpdateRange(commander_window, FEATURE_CAPTURE_QUALITY);
-
-}
-
-void
 UpdateAllWindows(void)
 {
   UpdatePreferencesWindow();
-  UpdatePositionWindow();
-  UpdateColorWindow();
-  UpdateApertureWindow();
-  UpdateCaptureWindow();
-  UpdateTemperatureWindow();
+  UpdateFeatureWindow();
   UpdateStatusWindow();
   UpdateCommanderWindow();
 }

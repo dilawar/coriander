@@ -19,9 +19,7 @@
 #include "update_ranges.h"
 
 extern GtkWidget *format7_window;
-extern char* feature_scale_list[NUM_FEATURES];
-extern char* feature_frame_list[NUM_FEATURES];
-extern char* feature_menu_list[NUM_FEATURES];
+extern GtkWidget *commander_window;
 extern char* feature_menu_table_list[NUM_FEATURES]; 
 extern char* feature_menu_items_list[NUM_FEATURES];
 extern Format7Info *format7_info;
@@ -32,16 +30,17 @@ extern PrefsInfo preferences;
 
 
 void
-UpdateRange(GtkWidget* current_window, int feature)
+UpdateRange(int feature)
 {
   int index;
-
+  char stemp[256];
   // is feature available?
+  sprintf(stemp,"feature_%d_frame",feature);
   if (feature_set->feature[feature-FEATURE_MIN].available==0) { // feature not available: unsensitive the frame
-    gtk_widget_set_sensitive(lookup_widget(current_window, feature_frame_list[feature-FEATURE_MIN]),FALSE);
+    gtk_widget_set_sensitive(lookup_widget(commander_window, stemp),FALSE);
   }
   else { // sensitive the current frame:
-    gtk_widget_set_sensitive(lookup_widget(current_window, feature_frame_list[feature-FEATURE_MIN]),TRUE);
+    gtk_widget_set_sensitive(lookup_widget(commander_window, stemp),TRUE);
     
     // select the current menuitem:
     if ((!feature_set->feature[feature-FEATURE_MIN].is_on)&& // off
@@ -68,31 +67,37 @@ UpdateRange(GtkWidget* current_window, int feature)
     }
      
     // sets the active menu item:
-    gtk_option_menu_set_history (GTK_OPTION_MENU (lookup_widget(current_window,feature_menu_list[feature-FEATURE_MIN])), index);
+    sprintf(stemp,"feature_%d_menu",feature);
+    gtk_option_menu_set_history (GTK_OPTION_MENU (lookup_widget(commander_window,stemp)), index);
     
     
     switch(feature) {
     case FEATURE_WHITE_BALANCE:
-      gtk_widget_set_sensitive(lookup_widget(current_window, "white_balance_BU_scale"),
+      sprintf(stemp,"feature_%d_bu_scale",feature);
+      gtk_widget_set_sensitive(lookup_widget(commander_window, stemp),
 			       (!feature_set->feature[feature-FEATURE_MIN].auto_active)&&
 			       (!feature_set->feature[feature-FEATURE_MIN].one_push_active)&&
 			       (!(feature_set->feature[feature-FEATURE_MIN].on_off_capable&&
 				  !feature_set->feature[feature-FEATURE_MIN].is_on)));
-      gtk_widget_set_sensitive(lookup_widget(current_window, "white_balance_RV_scale"),
+      sprintf(stemp,"feature_%d_rv_scale",feature);
+      gtk_widget_set_sensitive(lookup_widget(commander_window, stemp),
 			       (!feature_set->feature[feature-FEATURE_MIN].auto_active)&&
 			       (!feature_set->feature[feature-FEATURE_MIN].one_push_active)&&
 			       (!(feature_set->feature[feature-FEATURE_MIN].on_off_capable&&
 				  !feature_set->feature[feature-FEATURE_MIN].is_on)));break;
     case FEATURE_TEMPERATURE:
       // the only changeable range is the target one, the other is just an indicator.
-      gtk_widget_set_sensitive(lookup_widget(current_window, "temperature_target_scale"),
+      sprintf(stemp,"feature_%d_target_scale",feature);
+      gtk_widget_set_sensitive(lookup_widget(commander_window, stemp),
 			       (!feature_set->feature[feature-FEATURE_MIN].auto_active)&&
 			       (!feature_set->feature[feature-FEATURE_MIN].one_push_active)&&
 			       (!(feature_set->feature[feature-FEATURE_MIN].on_off_capable&&
 				  !feature_set->feature[feature-FEATURE_MIN].is_on)));
-      gtk_widget_set_sensitive(lookup_widget(current_window, "temperature_current_scale"),FALSE);break;
+      sprintf(stemp,"feature_%d_current_scale",feature);
+      gtk_widget_set_sensitive(lookup_widget(commander_window, stemp),FALSE);break;
     default:
-      gtk_widget_set_sensitive(lookup_widget(current_window, feature_scale_list[feature-FEATURE_MIN]),
+      sprintf(stemp,"feature_%d_scale",feature);
+      gtk_widget_set_sensitive(lookup_widget(commander_window, stemp),
 			       (!feature_set->feature[feature-FEATURE_MIN].auto_active)&&
 			       (!feature_set->feature[feature-FEATURE_MIN].one_push_active)&&
 			       (!(feature_set->feature[feature-FEATURE_MIN].on_off_capable&&
@@ -100,7 +105,7 @@ UpdateRange(GtkWidget* current_window, int feature)
     }
     
       // grab&set range value if readable:
-    UpdateRangeValue(current_window,feature);
+    UpdateRangeValue(commander_window,feature);
   }
 }
 
@@ -114,6 +119,8 @@ UpdateRangeValue(GtkWidget* widget, int feature)
 
   int  err, value, valueBU, valueRV, valuegoal, valuecurrent;
   int stable, prec_value, prec_valuegoal, prec_valueBU, prec_valuecurrent, prec_valueRV;
+  char stemp[256];
+
   GtkAdjustment* adj;
   stable=0;
   err=0;
@@ -182,7 +189,8 @@ UpdateRangeValue(GtkWidget* widget, int feature)
       }
       if (err<0) MainError("Could not get feature value");
       else {
-	adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(widget, feature_scale_list[feature-FEATURE_MIN])));
+	sprintf(stemp,"feature_%d_scale",feature);
+	adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(widget, stemp)));
 	adj->value=value;
 	gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
 	

@@ -44,7 +44,6 @@ extern uiinfo_t *uiinfos;
 extern int current_camera;
 extern PrefsInfo preferences; 
 extern int silent_ui_update;
-extern char* feature_scale_list[NUM_FEATURES];
 extern int camera_num;
 gboolean
 on_commander_window_delete_event       (GtkWidget       *widget,
@@ -578,7 +577,7 @@ on_range_menu_activate             (GtkMenuItem     *menuitem,
       MainError("Could not set feature on/off");
     else {
       feature_set->feature[feature-FEATURE_MIN].is_on=FALSE;
-      UpdateRange(commander_window,feature);
+      UpdateRange(feature);
     }
     break;
   case RANGE_MENU_MAN : // ============================== MAN ==============================
@@ -594,7 +593,7 @@ on_range_menu_activate             (GtkMenuItem     *menuitem,
 	MainError("Could not set manual mode");
       else {
 	feature_set->feature[feature-FEATURE_MIN].auto_active=FALSE;
-	UpdateRange(commander_window,feature);
+	UpdateRange(feature);
       }
       break;
   case RANGE_MENU_AUTO : // ============================== AUTO ==============================
@@ -610,7 +609,7 @@ on_range_menu_activate             (GtkMenuItem     *menuitem,
       MainError("Could not set auto mode");
     else {
       feature_set->feature[feature-FEATURE_MIN].auto_active=TRUE;
-      UpdateRange(commander_window,feature);
+      UpdateRange(feature);
     }
     break;
     case RANGE_MENU_SINGLE : // ============================== SINGLE ==============================
@@ -632,11 +631,11 @@ on_range_menu_activate             (GtkMenuItem     *menuitem,
 	  if (dc1394_is_one_push_in_operation(camera->handle, camera->id, feature, &value)!=DC1394_SUCCESS)
 	    MainError("Could not query one-push operation");
 	  timeout_bin+=step;
-	  UpdateRange(commander_window,feature);
+	  UpdateRange(feature);
 	}
 	if (timeout_bin>=(unsigned long int)(preferences.op_timeout*1000000.0))
 	  MainStatus("One-Push function timed-out!");
-	UpdateRange(commander_window,feature);
+	UpdateRange(feature);
 	// should switch back to manual mode here. Maybe a recursive call??
 	// >> Not necessary because UpdateRange reloads the status which folds
 	// back to 'man' in the camera

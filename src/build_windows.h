@@ -30,22 +30,10 @@ void
 BuildPreferencesWindow(void);
 
 void
-BuildColorWindow(void);
-
-void
-BuildPositionWindow(void);
-
-void
-BuildApertureWindow(void);
-
-void
 BuildCommanderWindow(void);
 
 void
-BuildCaptureWindow(void);
-
-void
-BuildTemperatureWindow(void);
+BuildFeatureWindow(void);
 
 void
 BuildStatusWindow(void);

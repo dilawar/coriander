@@ -26,6 +26,7 @@ extern const char *help_key_bindings_keys[KEY_BINDINGS_NUM];
 extern const char *help_key_bindings_functions[KEY_BINDINGS_NUM];
 extern Format7Info* format7_info;
 extern dc1394_miscinfo* misc_info;
+dc1394_feature_set *feature_set;
 
 void
 BuildPreferencesWindow(void)
@@ -74,33 +75,27 @@ BuildFormat7Window(void)
 }
 
 void
-BuildColorWindow(void)
+BuildFeatureWindow(void)
 {
-  BuildRange(commander_window, FEATURE_BRIGHTNESS);
-  BuildRange(commander_window, FEATURE_GAMMA);
-  BuildRange(commander_window, FEATURE_SATURATION);
-  BuildRange(commander_window, FEATURE_HUE);
-  BuildRange(commander_window, FEATURE_WHITE_BALANCE);
-  BuildRange(commander_window, FEATURE_SHARPNESS);
-}
+  GtkWidget* vbox_features;
+  int i;
+  // destroy previous feature vbox
+  gtk_widget_destroy(lookup_widget(commander_window,"vbox_features"));
 
-void
-BuildPositionWindow(void)
-{
-  BuildRange(commander_window, FEATURE_FOCUS);
-  BuildRange(commander_window, FEATURE_PAN);
-  BuildRange(commander_window, FEATURE_TILT);
-  BuildRange(commander_window, FEATURE_ZOOM);
-}
+  // build new feature vbox
+  vbox_features = gtk_vbox_new (FALSE, 0);
+  gtk_widget_ref (vbox_features);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "vbox_features", vbox_features,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (vbox_features);
+  gtk_container_add (GTK_CONTAINER (lookup_widget(commander_window,"viewport1")), vbox_features);
 
-void
-BuildApertureWindow(void)
-{
-  BuildRange(commander_window, FEATURE_EXPOSURE);
-  BuildRange(commander_window, FEATURE_IRIS);
-  BuildRange(commander_window, FEATURE_SHUTTER);
-  BuildRange(commander_window, FEATURE_GAIN);
-  BuildRange(commander_window, FEATURE_OPTICAL_FILTER);
+  for (i=FEATURE_MIN;i<=FEATURE_MAX;i++) {
+    if ((feature_set->feature[i-FEATURE_MIN].available>0)&&
+	(i!=FEATURE_TRIGGER)) {
+      BuildRange(i);
+    }
+  }
 }
 
 void
@@ -118,19 +113,6 @@ BuildCommanderWindow(void)
 }
 
 void
-BuildCaptureWindow(void)
-{
-  BuildRange(commander_window, FEATURE_CAPTURE_SIZE);
-  BuildRange(commander_window, FEATURE_CAPTURE_QUALITY);
-}
-
-void
-BuildTemperatureWindow(void)
-{
-  BuildRange(commander_window, FEATURE_TEMPERATURE);
-}
-
-void
 BuildStatusWindow(void)
 {
   BuildCameraStatusFrame();
@@ -142,11 +124,7 @@ BuildAllWindows(void)
 {
   BuildPreferencesWindow();
   BuildCommanderWindow();
-  BuildPositionWindow();
-  BuildColorWindow();
-  BuildApertureWindow();
-  BuildCaptureWindow();
-  BuildTemperatureWindow();
+  BuildFeatureWindow();
   BuildFormat7Window();
   BuildStatusWindow();
   BuildAbsoluteSettingsWindow();

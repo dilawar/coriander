@@ -30,7 +30,7 @@
 #include "definitions.h"
 */
 void
-UpdateRange(GtkWidget* current_window, int feature);
+UpdateRange(int feature);
 
 void
 UpdateRangeValue(GtkWidget* widget, int feature);

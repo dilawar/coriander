@@ -18,93 +18,26 @@
 
 #include "definitions.h"
 
-const char * feature_list[NUM_FEATURES] = { 
-  "brightness",
-  "auto_exposure",
-  "sharpness",
-  "white_balance",
-  "hue",
-  "saturation",
-  "gamma",
-  "shutter",
-  "gain",
-  "iris",
-  "focus",
-  "temperature",
-  "trigger",
-  "zoom",
-  "pan",
-  "tilt",
-  "filter",
-  "capture_size",
-  "capture_quality"
-};
-
-const char * feature_menu_list[NUM_FEATURES] = {
-  "brightness_menu",
-  "auto_exposure_menu",
-  "sharpness_menu",
-  "white_balance_menu",
-  "hue_menu",
-  "saturation_menu",
-  "gamma_menu",
-  "shutter_menu",
-  "gain_menu",
-  "iris_menu",
-  "focus_menu",
-  "temperature_menu",
-  "trigger_menu",
-  "zoom_menu",
-  "pan_menu",
-  "tilt_menu",
-  "filter_menu",
-  "capture_size_menu",
-  "capture_quality_menu"
-};
-
-
-const char * feature_scale_list[NUM_FEATURES] = {
-  "brightness_scale",
-  "auto_exposure_scale",
-  "sharpness_scale",
-  "white_balance_scale",
-  "hue_scale",
-  "saturation_scale",
-  "gamma_scale",
-  "shutter_scale",
-  "gain_scale",
-  "iris_scale",
-  "focus_scale",
-  "temperature_scale",
-  "trigger_count",
-  "zoom_scale",
-  "pan_scale",
-  "tilt_scale",
-  "filter_scale",
-  "capture_size_scale",
-  "capture_quality_scale"
-};
-
-const char * feature_frame_list[NUM_FEATURES] = {
-  "brightness_frame",
-  "auto_exposure_frame",
-  "sharpness_frame",
-  "white_balance_frame",
-  "hue_frame",
-  "saturation_frame",
-  "gamma_frame",
-  "shutter_frame",
-  "gain_frame",
-  "iris_frame",
-  "focus_frame",
-  "temperature_frame",
-  "trigger_frame",
-  "zoom_frame",
-  "pan_frame",
-  "tilt_frame",
-  "filter_frame",
-  "capture_size_frame",
-  "capture_quality_frame"
+const char * feature_name_list[NUM_FEATURES] = {
+  "Brightness",
+  "Auto exposure",
+  "Sharpness",
+  "White Balance",
+  "Hue",
+  "Saturation",
+  "Gamma",
+  "Shutter",
+  "Gain",
+  "Iris",
+  "Focus",
+  "Temperature",
+  "Trigger",
+  "Zoom",
+  "Pan",
+  "Tilt",
+  "Filter",
+  "Capture Size",
+  "Capture Quality"
 };
 
 const char *feature_abs_switch_list[NUM_FEATURES] = {
@@ -170,28 +103,6 @@ const char *feature_abs_label_list[NUM_FEATURES] = {
   "label137",
   "label",
   "label"
-};
-
-const char * feature_menu_table_list[NUM_FEATURES] = {
-  "table28",
-  "table33",
-  "table30",
-  "table38",
-  "table26",
-  "table27",
-  "table29",
-  "table35",
-  "table36",
-  "table34",
-  "table41",
-  "table39",
-  "table17",
-  "table40",
-  "table43",
-  "table42",
-  "table37",
-  "table32",
-  "table31"
 };
 
 const char * trigger_mode_list[NUM_TRIGGER_MODE] = {

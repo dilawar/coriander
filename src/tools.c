@@ -45,9 +45,6 @@ extern chain_t **image_pipes;
 extern chain_t *image_pipe;
 extern SelfIdPacket_t *selfid;
 extern SelfIdPacket_t *selfids;
-extern char* feature_list[NUM_FEATURES];
-extern char* feature_frame_list[NUM_FEATURES];
-extern char* feature_scale_list[NUM_FEATURES];
 extern char* feature_abs_entry_list[NUM_FEATURES];
 extern char* feature_abs_switch_list[NUM_FEATURES];
 extern char* feature_abs_label_list[NUM_FEATURES];
@@ -388,16 +385,22 @@ void MessageBox( gchar *message)
 void
 SetScaleSensitivity(GtkWidget* widget, int feature, dc1394bool_t sense)
 { 
+  char stemp[256];
+
   switch (feature) {
   case FEATURE_WHITE_BALANCE:
-    gtk_widget_set_sensitive(GTK_WIDGET (lookup_widget(GTK_WIDGET (widget), "white_balance_RV_scale")),sense);
-    gtk_widget_set_sensitive(GTK_WIDGET (lookup_widget(GTK_WIDGET (widget), "white_balance_BU_scale")),sense);
+    sprintf(stemp,"feature_%d_bu_scale",feature);
+    gtk_widget_set_sensitive(GTK_WIDGET (lookup_widget(GTK_WIDGET (widget), stemp)),sense);
+    sprintf(stemp,"feature_%d_rv_scale",feature);
+    gtk_widget_set_sensitive(GTK_WIDGET (lookup_widget(GTK_WIDGET (widget), stemp)),sense);
     break;
   case FEATURE_TEMPERATURE:
-    gtk_widget_set_sensitive(GTK_WIDGET (lookup_widget(GTK_WIDGET (widget), "temperature_target_scale")),sense);
+    sprintf(stemp,"feature_%d_target_scale",feature);
+    gtk_widget_set_sensitive(GTK_WIDGET (lookup_widget(GTK_WIDGET (widget), stemp)),sense);
     break;
   default:
-    gtk_widget_set_sensitive(GTK_WIDGET (lookup_widget(GTK_WIDGET (widget), feature_scale_list[feature-FEATURE_MIN])),sense);
+    sprintf(stemp,"feature_%d_scale",feature);
+    gtk_widget_set_sensitive(GTK_WIDGET (lookup_widget(GTK_WIDGET (widget), stemp)),sense);
     break;
   }
 }
@@ -555,6 +558,7 @@ GetRGBPix(int px, int py, chain_t *service, int* R, int* G, int* B)
   fprintf(stderr,"YUV: %d %d %d RGB: %d %d %d\n",y,u,v,*R,*G,*B);
 }
 */
+
 void
 SetAbsoluteControl(int feature, int power)
 {
@@ -564,7 +568,8 @@ SetAbsoluteControl(int feature, int power)
     MainError("Could not activate absolute setting\n");
   else {
     feature_set->feature[feature-FEATURE_MIN].abs_control=power;
-    gtk_widget_set_sensitive(lookup_widget(commander_window, feature_frame_list[feature-FEATURE_MIN]), !power);
+    sprintf(string,"feature_%d_frame",feature);
+    gtk_widget_set_sensitive(lookup_widget(commander_window, string), !power);
     gtk_widget_set_sensitive(lookup_widget(absolute_settings_window,feature_abs_entry_list[feature-FEATURE_MIN]),power);
     gtk_widget_set_sensitive(lookup_widget(absolute_settings_window,feature_abs_label_list[feature-FEATURE_MIN]),power);
     if (power>0) {
@@ -576,7 +581,7 @@ SetAbsoluteControl(int feature, int power)
     }
     else {
       // update range
-      UpdateRange(commander_window, feature);
+      UpdateRange(feature);
     }
   }
   

@@ -35,22 +35,10 @@ void
 UpdatePreferencesWindow(void);
 
 void
-UpdatePositionWindow(void);
-
-void
-UpdateColorWindow(void);
-
-void
-UpdateApertureWindow(void);
-
-void
-UpdateTemperatureWindow(void);
+UpdateFeatureWindow(void);
 
 void
 UpdateStatusWindow(void);
-
-void
-UpdateCaptureWindow(void);
 
 void
 UpdateAllWindows(void);
