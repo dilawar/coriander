@@ -438,15 +438,17 @@ UpdateFormat7InfoFrame(void)
     break;
   default:
     bpp=1;
-    MainError("Wrong forlat_7 color coding ID!");
+    MainError("Wrong format_7 color coding ID!");
     break;
   }
   bytesize=(int) ((float)mode->size_x*(float)mode->size_y*bpp);
-
+  /*
+  // this appears to be meaningless as some cameras take padding into account
   if (bytesize!=mode->total_bytes) {
+    fprintf(stderr,"bytesize: %d, total_bytes: %d\n",bytesize, (int)mode->total_bytes);
     MainStatus("The camera has a strange TOTAL_BYTES value.");
   }
-
+  */
   // if there is packet padding, take it into account
   if (mode->total_bytes%mode->bpp!=0) {
     grandtotal=(mode->total_bytes/mode->bpp+1)*mode->bpp;
