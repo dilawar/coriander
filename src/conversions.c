@@ -185,13 +185,13 @@ y162uyvy (unsigned char *src, unsigned char *dest, int NumPixels, int bits) {
   register int i = (NumPixels << 1)-1;
   register int j = (NumPixels << 1)-1;
   register int y0, y1;
-
+  //fprintf(stderr,"bpp:%d\n",bits);
   while (i > 0)
     {
       y1 = src[i--];
-      y1 = (y1 + (src[i--]<<8))>>(16-bits);
+      y1 = (y1 + (((int)src[i--])<<8))>>(bits-8);
       y0 = src[i--];
-      y0 = (y0 + (src[i--]<<8))>>(16-bits);
+      y0 = (y0 + (((int)src[i--])<<8))>>(bits-8);
 #ifdef YUYV
       dest[j--] = 128;
       dest[j--] = y1;
@@ -215,7 +215,7 @@ y162y (unsigned char *src, unsigned char *dest, int NumPixels, int bits) {
   while (i > 0)
     {
       y = src[i--];
-      dest[j--] = (y + (src[i--]<<8))>>(16-bits);
+      dest[j--] = (y + (src[i--]<<8))>>(bits-8);
     }
 }
 
@@ -414,8 +414,9 @@ y162rgb (unsigned char *src, unsigned char *dest, int NumPixels, int bits) {
 
   while (i > 0)
     {
+      
       y = src[i--];
-      y = (y + (src[i--]<<8))>>(16-bits);
+      y = (y + (src[i--]<<8))>>(bits-8);
       dest[j--] = y;
       dest[j--] = y;
       dest[j--] = y;

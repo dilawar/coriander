@@ -75,10 +75,6 @@ on_trigger_mode_activate               (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
 void
-on_trigger_value_changed               (GtkAdjustment    *adj,
-                                        gpointer         user_data);
-
-void
 on_memory_channel_activate             (GtkMenuItem     *menuitem,
 					gpointer         user_data);
 
@@ -414,5 +410,9 @@ on_stereo_button_toggled               (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
 
 void
-on_mono16_bpp_value_changed               (GtkAdjustment    *adj,
-					   gpointer         user_data);
+on_trigger_count_changed               (GtkEditable     *editable,
+                                        gpointer         user_data);
+
+void
+on_mono16_bpp_changed                  (GtkEditable     *editable,
+                                        gpointer         user_data);

@@ -408,5 +408,7 @@ UpdateOptionFrame(void)
   gtk_widget_set_sensitive(lookup_widget(commander_window,"stereo_button"),cond16);
   gtk_widget_set_sensitive(lookup_widget(commander_window,"mono16_bpp"),cond16&&
 			   (uiinfo->stereo==NO_STEREO_DECODING)&&(uiinfo->bayer==NO_BAYER_DECODING));
+  gtk_widget_set_sensitive(lookup_widget(commander_window,"label114"),cond16&&
+			   (uiinfo->stereo==NO_STEREO_DECODING)&&(uiinfo->bayer==NO_BAYER_DECODING));
   
 }

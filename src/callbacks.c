@@ -177,23 +177,6 @@ on_trigger_external_toggled            (GtkToggleButton *togglebutton,
   UpdateTriggerFrame();
 }
 
-void
-on_trigger_value_changed               (GtkAdjustment    *adj,
-                                        gpointer         user_data)
-{
-  if (!dc1394_set_feature_value(camera->handle, camera->id, FEATURE_TRIGGER, adj->value))
-    MainError("Could not set external trigger count");
-  else
-    feature_set->feature[FEATURE_TRIGGER-FEATURE_MIN].value=adj->value;
-}
-
-void
-on_mono16_bpp_value_changed               (GtkAdjustment    *adj,
-                                        gpointer         user_data)
-{
-  uiinfo->bpp=adj->value;
-}
-
 
 void
 on_memory_channel_activate              (GtkMenuItem     *menuitem,
@@ -1273,5 +1256,31 @@ on_stereo_button_toggled               (GtkToggleButton *togglebutton,
 
   UpdateOptionFrame();
 
+}
+
+
+void
+on_trigger_count_changed               (GtkEditable     *editable,
+                                        gpointer         user_data)
+{
+  int value;
+  value=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(commander_window,"trigger_count")));
+
+  if (!dc1394_set_feature_value(camera->handle, camera->id, FEATURE_TRIGGER, value))
+    MainError("Could not set external trigger count");
+  else
+    feature_set->feature[FEATURE_TRIGGER-FEATURE_MIN].value=value;
+}
+
+
+void
+on_mono16_bpp_changed                  (GtkEditable     *editable,
+                                        gpointer         user_data)
+{
+  int value;
+  value=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(commander_window,"mono16_bpp")));
+
+  uiinfo->bpp=value;
+  //fprintf(stderr,"uiinfo->bpp = %d\n",uiinfo->bpp);
 }
 

@@ -162,6 +162,7 @@ main (int argc, char *argv[])
 		    uiinfos[index].want_to_display=0;
 		    uiinfos[index].bayer=NO_BAYER_DECODING;
 		    uiinfos[index].stereo=NO_STEREO_DECODING;
+		    uiinfos[index].bpp=8;
 		    index++;
 		  }
 	    }
