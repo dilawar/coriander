@@ -29,8 +29,11 @@
 #endif
 
 #include <math.h>
+#include "support.h"
+#include "definitions.h"
 #include "thread_base.h"
 #include "watch_thread.h"
+#include "preferences.h"
 
 typedef struct
 {

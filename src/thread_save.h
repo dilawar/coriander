@@ -25,6 +25,7 @@
 #include "support.h"
 #include "thread_base.h"
 #include "preferences.h"
+#include "definitions.h"
 #include "tools.h"
 
 typedef enum

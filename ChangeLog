@@ -2,6 +2,10 @@ Coriander, (c) 2000-2003 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 0.33
 
+   May 28, 2003, by Damien Douxchamps
+   - fixed missing #includes in thread_display.h. Thanks to Marc Leconte
+     for spotting this.
+	
    May 27, 2003, by Damien Douxchamps
    - misc updates in the save service.
    - added warning window for V4L service.
