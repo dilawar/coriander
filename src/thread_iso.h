@@ -69,7 +69,7 @@ void
 AllocImageBuffer(chain_t* iso_service);
 
 void
-SetColorMode(buffer_t *buffer);
+SetColorMode(int mode, buffer_t *buffer, int f7_color);
 
 #endif // __THREAD_ISO_H__
 

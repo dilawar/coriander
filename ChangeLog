@@ -2,6 +2,10 @@ Coriander, (c) 2000-2005 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 2.0.0
 	
+   Apr 6, 2005, by Damien Douxchamps
+   - services cleanup: removed mode, format and f7 members from the buffer_t
+     structure
+	
    Apr 5, 2005, by Damien Douxchamps
    - first port to Gnome 2.x. Still on the todo list:
 	+ remove the two pango warnings at startup

@@ -367,13 +367,16 @@ ChangeModeAndFormat         (GtkMenuItem     *menuitem,
 
 void IsoFlowCheck(int *state)
 { 
+  fprintf(stderr,"Checking ISO... ");
   if (dc1394_get_iso_status(camera->camera_info.handle, camera->camera_info.id, &camera->misc_info.is_iso_on)!=DC1394_SUCCESS)
     MainError("Could not get ISO status");
   else {
     if (camera->misc_info.is_iso_on>0) {
-      if (dc1394_stop_iso_transmission(camera->camera_info.handle, camera->camera_info.id)!=DC1394_SUCCESS)
+      fprintf(stderr,"Stopping... ");
+      if (dc1394_stop_iso_transmission(camera->camera_info.handle, camera->camera_info.id)!=DC1394_SUCCESS) {
 	// ... (if not done, restarting is no more possible)
 	MainError("Could not stop ISO transmission");
+      }
     }
   }
   // memorize state:
@@ -381,6 +384,7 @@ void IsoFlowCheck(int *state)
   if (*state!=0) {
     gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(main_window,"service_iso"),FALSE);
   }
+  fprintf(stderr,"done\n");
 }
 
 void IsoFlowResume(int *state)
@@ -388,11 +392,14 @@ void IsoFlowResume(int *state)
   int was_on;
   int timeout;
 
+  fprintf(stderr,"Resuming ISO... ");
   was_on=camera->misc_info.is_iso_on;
   if (was_on>0) { // restart if it was 'on' before the changes
     usleep(DELAY); // necessary to avoid desynchronized ISO flow.
-    if (dc1394_start_iso_transmission(camera->camera_info.handle, camera->camera_info.id)!=DC1394_SUCCESS)
+    fprintf(stderr,"Starting ... ");
+    if (dc1394_start_iso_transmission(camera->camera_info.handle, camera->camera_info.id)!=DC1394_SUCCESS) {
       MainError("Could not start ISO transmission");
+    }
   }
 
   if (*state!=0) {
@@ -423,6 +430,7 @@ void IsoFlowResume(int *state)
     }
     UpdateIsoFrame();
   }
+  fprintf(stderr,"done\n");
 }
 
 void GetContextStatus()
@@ -1195,5 +1203,41 @@ GetXvInfo(xvinfo_t *xvinfo) {
 #endif
 
   //fprintf(stderr,"%d %d\n", xvinfo->max_height, xvinfo->max_width);
+}
+
+void
+IsOptionAvailableWithFormat(int* bayer, int* stereo, int* bpp16)
+{
+  int cond8, cond16, cond422;
+
+  if (camera->misc_info.format!=FORMAT_SCALABLE_IMAGE_SIZE) {
+    cond8=((camera->misc_info.mode==MODE_640x480_MONO)||
+	   (camera->misc_info.mode==MODE_800x600_MONO)||
+	   (camera->misc_info.mode==MODE_1024x768_MONO)||
+	   (camera->misc_info.mode==MODE_1280x960_MONO)||
+	   (camera->misc_info.mode==MODE_1600x1200_MONO));
+    cond16=((camera->misc_info.mode==MODE_640x480_MONO16)||
+	    (camera->misc_info.mode==MODE_800x600_MONO16)||
+	    (camera->misc_info.mode==MODE_1024x768_MONO16)||
+	    (camera->misc_info.mode==MODE_1280x960_MONO16)||
+	    (camera->misc_info.mode==MODE_1600x1200_MONO16));
+    cond422=((camera->misc_info.mode==MODE_320x240_YUV422)||
+	     (camera->misc_info.mode==MODE_640x480_YUV422)||
+	     (camera->misc_info.mode==MODE_800x600_YUV422)||
+	     (camera->misc_info.mode==MODE_1024x768_YUV422)||
+	     (camera->misc_info.mode==MODE_1280x960_YUV422)||
+	     (camera->misc_info.mode==MODE_1600x1200_YUV422));
+  }
+  else {
+    cond16=((camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN].color_coding_id==COLOR_FORMAT7_MONO16)||
+	    (camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN].color_coding_id==COLOR_FORMAT7_RAW16));
+    cond8=((camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN].color_coding_id==COLOR_FORMAT7_MONO8)||
+	   (camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN].color_coding_id==COLOR_FORMAT7_RAW8));
+    cond422=(camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN].color_coding_id==COLOR_FORMAT7_YUV422);
+  }
+  
+  *bayer = (cond8||cond16||(cond422 && (camera->stereo!=NO_STEREO_DECODING)));
+  *stereo = (cond16||cond422);
+  *bpp16 = cond16;
 }
 

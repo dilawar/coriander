@@ -364,7 +364,12 @@ void
 convert_to_yuv_for_SDL(buffer_t *buffer, SDL_Overlay *sdloverlay, int overlay_byte_order)
 {
   unsigned char *dest=sdloverlay->pixels[0];
-
+  /*
+  fprintf(stderr,"C:[%d %d] BPF:%lli ColMode:%d\n",
+	  buffer->width, buffer->height,
+	  buffer->bytes_per_frame,
+	  buffer->buffer_color_mode);
+  */
   switch(buffer->buffer_color_mode) {
   case COLOR_FORMAT7_MONO8:
   case COLOR_FORMAT7_RAW8:
@@ -690,17 +695,18 @@ DisplayThreadCheckParams(chain_t *display_service)
     fprintf(stderr,"Error: display size: %dx%d\n",
 	    display_service->current_buffer->width,
 	    display_service->current_buffer->height);
-
+  /*
+  fprintf(stderr,"D:[%d %d] BPF:%lli ColMode:%d\n",
+	  display_service->current_buffer->width,
+	  display_service->current_buffer->height,
+	  display_service->current_buffer->bytes_per_frame,
+	  display_service->current_buffer->buffer_color_mode);
+  */
   // if some parameters changed, we need to re-allocate the local buffers and restart the display
   if ((display_service->current_buffer->width!=display_service->local_param_copy.width)||
       (display_service->current_buffer->height!=display_service->local_param_copy.height)||
       (display_service->current_buffer->bytes_per_frame!=display_service->local_param_copy.bytes_per_frame)||
-      (display_service->current_buffer->mode!=display_service->local_param_copy.mode)||
-      (display_service->current_buffer->format!=display_service->local_param_copy.format)||
-      // check F7 color mode change
-      ((display_service->current_buffer->format==FORMAT_SCALABLE_IMAGE_SIZE)&&
-       (display_service->current_buffer->format7_color_mode!=display_service->local_param_copy.format7_color_mode)
-       ) ||
+      (display_service->current_buffer->buffer_color_mode!=display_service->local_param_copy.buffer_color_mode)||
       // check bayer and stereo decoding
       (display_service->current_buffer->stereo_decoding!=display_service->local_param_copy.stereo_decoding)||
       (display_service->current_buffer->bayer!=display_service->local_param_copy.bayer)
@@ -717,11 +723,9 @@ DisplayThreadCheckParams(chain_t *display_service)
     display_service->local_param_copy.width=display_service->current_buffer->width;
     display_service->local_param_copy.height=display_service->current_buffer->height;
     display_service->local_param_copy.bytes_per_frame=display_service->current_buffer->bytes_per_frame;
-    display_service->local_param_copy.mode=display_service->current_buffer->mode;
-    display_service->local_param_copy.format=display_service->current_buffer->format;
-    display_service->local_param_copy.format7_color_mode=display_service->current_buffer->format7_color_mode;
     display_service->local_param_copy.stereo_decoding=display_service->current_buffer->stereo_decoding;
     display_service->local_param_copy.bayer=display_service->current_buffer->bayer;
+    display_service->local_param_copy.buffer_color_mode=display_service->current_buffer->buffer_color_mode;
     display_service->local_param_copy.buffer_image_bytes=display_service->current_buffer->buffer_image_bytes;
     
     // DO SOMETHING

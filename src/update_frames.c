@@ -350,44 +350,22 @@ UpdateCursorFrame(void)
 void
 UpdateOptionFrame(void)
 {
-  int cond16, cond8, cond422;
+  int bayer_ok, stereo_ok, bpp16_ok;
 
   pthread_mutex_lock(&camera->uimutex);
   gtk_widget_set_sensitive(lookup_widget(main_window,"pattern_menu"),
 			   camera->bayer!=NO_BAYER_DECODING);
   pthread_mutex_unlock(&camera->uimutex);
-  if (camera->misc_info.format!=FORMAT_SCALABLE_IMAGE_SIZE) {
-    cond8=((camera->misc_info.mode==MODE_640x480_MONO)||
-	   (camera->misc_info.mode==MODE_800x600_MONO)||
-	   (camera->misc_info.mode==MODE_1024x768_MONO)||
-	   (camera->misc_info.mode==MODE_1280x960_MONO)||
-	   (camera->misc_info.mode==MODE_1600x1200_MONO));
-    cond16=((camera->misc_info.mode==MODE_640x480_MONO16)||
-	    (camera->misc_info.mode==MODE_800x600_MONO16)||
-	    (camera->misc_info.mode==MODE_1024x768_MONO16)||
-	    (camera->misc_info.mode==MODE_1280x960_MONO16)||
-	    (camera->misc_info.mode==MODE_1600x1200_MONO16));
-    cond422=((camera->misc_info.mode==MODE_320x240_YUV422)||
-	     (camera->misc_info.mode==MODE_640x480_YUV422)||
-	     (camera->misc_info.mode==MODE_800x600_YUV422)||
-	     (camera->misc_info.mode==MODE_1024x768_YUV422)||
-	     (camera->misc_info.mode==MODE_1280x960_YUV422)||
-	     (camera->misc_info.mode==MODE_1600x1200_YUV422));
-  }
-  else {
-    cond16=((camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN].color_coding_id==COLOR_FORMAT7_MONO16)||
-	    (camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN].color_coding_id==COLOR_FORMAT7_RAW16));
-    cond8=((camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN].color_coding_id==COLOR_FORMAT7_MONO8)||
-	   (camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN].color_coding_id==COLOR_FORMAT7_RAW8));
-    cond422=(camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN].color_coding_id==COLOR_FORMAT7_YUV422);
-  }
-  gtk_widget_set_sensitive(lookup_widget(main_window,"pattern_menu"),(cond8||cond16||cond422));
-  gtk_widget_set_sensitive(lookup_widget(main_window,"bayer_menu"),(cond8||cond16||cond422));
-  gtk_widget_set_sensitive(lookup_widget(main_window,"stereo_menu"),cond16||cond422);
+  IsOptionAvailableWithFormat(&bayer_ok, &stereo_ok, &bpp16_ok);
+
+  gtk_widget_set_sensitive(lookup_widget(main_window,"pattern_menu"), bayer_ok);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"bayer_menu"), bayer_ok);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"stereo_menu"), stereo_ok);
+
   pthread_mutex_lock(&camera->uimutex);
-  gtk_widget_set_sensitive(lookup_widget(main_window,"mono16_bpp"),cond16&&
+  gtk_widget_set_sensitive(lookup_widget(main_window,"mono16_bpp"),bpp16_ok &&
 			   (camera->stereo==NO_STEREO_DECODING)&&(camera->bayer==NO_BAYER_DECODING));
-  gtk_widget_set_sensitive(lookup_widget(main_window,"label114"),cond16&&
+  gtk_widget_set_sensitive(lookup_widget(main_window,"label114"),bpp16_ok &&
 			   (camera->stereo==NO_STEREO_DECODING)&&(camera->bayer==NO_BAYER_DECODING));
   pthread_mutex_unlock(&camera->uimutex);
   

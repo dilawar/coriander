@@ -376,7 +376,8 @@ gint IsoStopThread(camera_t* cam)
 void
 IsoThreadCheckParams(chain_t *iso_service)
 {
-
+  int bayer_ok, stereo_ok;
+  int temp;
   isothread_info_t *info;
   info=(isothread_info_t*)iso_service->data;
   // copy harmless parameters anyway:
@@ -387,25 +388,18 @@ IsoThreadCheckParams(chain_t *iso_service)
   iso_service->current_buffer->width=info->capture.frame_width;
   iso_service->current_buffer->height=info->capture.frame_height;
   iso_service->current_buffer->bytes_per_frame=info->capture.quadlets_per_frame*4;
-  iso_service->current_buffer->mode=iso_service->camera->misc_info.mode;
-  iso_service->current_buffer->format=iso_service->camera->misc_info.format;
-  iso_service->current_buffer->format7_color_mode=iso_service->camera->format7_info.mode[iso_service->camera->misc_info.mode-MODE_FORMAT7_MIN].color_coding_id;
   iso_service->current_buffer->stereo_decoding=iso_service->camera->stereo;
   iso_service->current_buffer->bayer=iso_service->camera->bayer;
   info->orig_sizex=iso_service->current_buffer->width;
   info->orig_sizey=iso_service->current_buffer->height;
 
-  if (iso_service->current_buffer->format!=FORMAT_SCALABLE_IMAGE_SIZE) {
-    info->cond16bit=((iso_service->current_buffer->mode==MODE_640x480_MONO16)||
-		     (iso_service->current_buffer->mode==MODE_800x600_MONO16)||
-		     (iso_service->current_buffer->mode==MODE_1024x768_MONO16)||
-		     (iso_service->current_buffer->mode==MODE_1280x960_MONO16)||
-		     (iso_service->current_buffer->mode==MODE_1600x1200_MONO16));
+  IsOptionAvailableWithFormat(&bayer_ok, &stereo_ok, &info->cond16bit);
+
+  if (bayer_ok==0) {
+    iso_service->current_buffer->bayer=NO_BAYER_DECODING;
   }
-  else {
-    // warning: little change, might have big effect
-    info->cond16bit=((iso_service->camera->format7_info.mode[iso_service->current_buffer->mode-MODE_FORMAT7_MIN].color_coding_id==COLOR_FORMAT7_MONO16)||
-		     (iso_service->camera->format7_info.mode[iso_service->current_buffer->mode-MODE_FORMAT7_MIN].color_coding_id==COLOR_FORMAT7_RAW16));
+  if (stereo_ok==0) {
+    iso_service->current_buffer->stereo_decoding=NO_STEREO_DECODING;
   }
 
   // the buffer sizes. If a size is not good, re-allocate.
@@ -477,8 +471,22 @@ IsoThreadCheckParams(chain_t *iso_service)
     }
     break;
   }
-  SetColorMode(iso_service->current_buffer);
-  
+
+
+  if (iso_service->camera->misc_info.format==FORMAT_SCALABLE_IMAGE_SIZE) {
+    temp=iso_service->camera->format7_info.mode[iso_service->camera->misc_info.mode-MODE_FORMAT7_MIN].color_coding_id;
+  }
+  else {
+    temp=-1;
+  }
+  SetColorMode(iso_service->camera->misc_info.mode,iso_service->current_buffer,temp);
+
+  /*
+  fprintf(stderr,"S:[%d %d] BPF:%lli ColMode:%d\n",
+	  iso_service->current_buffer->width, iso_service->current_buffer->height,
+	  iso_service->current_buffer->bytes_per_frame,
+	  iso_service->current_buffer->buffer_color_mode);
+  */
   pthread_mutex_unlock(&iso_service->camera->uimutex);
 
 }
@@ -521,12 +529,12 @@ AllocImageBuffer(chain_t* iso_service)
 }
 
 void
-SetColorMode(buffer_t *buffer)
+SetColorMode(int mode, buffer_t *buffer, int f7_color)
 {
   float bpp=-1;
 
   if (buffer->bayer==NO_BAYER_DECODING) {
-    switch(buffer->mode) {
+    switch(mode) {
     case MODE_160x120_YUV444:
       buffer->buffer_color_mode=COLOR_FORMAT7_YUV444;
       bpp=3;
@@ -588,13 +596,15 @@ SetColorMode(buffer_t *buffer)
     case MODE_FORMAT7_5:
     case MODE_FORMAT7_6:
     case MODE_FORMAT7_7:
-      if ((buffer->format7_color_mode==COLOR_FORMAT7_MONO16)&&(buffer->stereo_decoding!=NO_STEREO_DECODING)) {
+      if (f7_color==-1)
+	fprintf(stderr,"ERROR: format7 asked but color mode is -1\n");
+      if ((f7_color==COLOR_FORMAT7_MONO16)&&(buffer->stereo_decoding!=NO_STEREO_DECODING)) {
 	buffer->buffer_color_mode=COLOR_FORMAT7_MONO8;
 	bpp=1;
       }
       else {
-	buffer->buffer_color_mode=buffer->format7_color_mode;
-	switch (buffer->format7_color_mode) {
+	buffer->buffer_color_mode=f7_color;
+	switch (buffer->buffer_color_mode) {
 	case COLOR_FORMAT7_MONO8:
 	case COLOR_FORMAT7_RAW8:
 	  bpp=1;
@@ -631,4 +641,5 @@ SetColorMode(buffer_t *buffer)
 
   buffer->buffer_image_bytes=(int)((float)(buffer->width*buffer->height)*bpp);
 
+  //fprintf(stderr,"%d\n",buffer->buffer_color_mode);
 }

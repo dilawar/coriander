@@ -1063,12 +1063,7 @@ SaveThreadCheckParams(chain_t *save_service)
   if ((save_service->current_buffer->width!=save_service->local_param_copy.width)||
       (save_service->current_buffer->height!=save_service->local_param_copy.height)||
       (save_service->current_buffer->bytes_per_frame!=save_service->local_param_copy.bytes_per_frame)||
-      (save_service->current_buffer->mode!=save_service->local_param_copy.mode)||
-      (save_service->current_buffer->format!=save_service->local_param_copy.format)||
-      // check F7 color mode change
-      ((save_service->current_buffer->format==FORMAT_SCALABLE_IMAGE_SIZE)&&
-       (save_service->current_buffer->format7_color_mode!=save_service->local_param_copy.format7_color_mode)
-       ) ||
+      (save_service->current_buffer->buffer_color_mode!=save_service->local_param_copy.buffer_color_mode)||
       // check bayer and stereo decoding
       (save_service->current_buffer->stereo_decoding!=save_service->local_param_copy.stereo_decoding)||
       (save_service->current_buffer->bayer!=save_service->local_param_copy.bayer)
@@ -1085,11 +1080,9 @@ SaveThreadCheckParams(chain_t *save_service)
     save_service->local_param_copy.width=save_service->current_buffer->width;
     save_service->local_param_copy.height=save_service->current_buffer->height;
     save_service->local_param_copy.bytes_per_frame=save_service->current_buffer->bytes_per_frame;
-    save_service->local_param_copy.mode=save_service->current_buffer->mode;
-    save_service->local_param_copy.format=save_service->current_buffer->format;
-    save_service->local_param_copy.format7_color_mode=save_service->current_buffer->format7_color_mode;
     save_service->local_param_copy.stereo_decoding=save_service->current_buffer->stereo_decoding;
     save_service->local_param_copy.bayer=save_service->current_buffer->bayer;
+    save_service->local_param_copy.buffer_color_mode=save_service->current_buffer->buffer_color_mode;
     save_service->local_param_copy.buffer_image_bytes=save_service->current_buffer->buffer_image_bytes;
     
     // DO SOMETHING

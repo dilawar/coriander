@@ -289,12 +289,7 @@ FtpThreadCheckParams(chain_t *ftp_service)
   if ((ftp_service->current_buffer->width!=ftp_service->local_param_copy.width)||
       (ftp_service->current_buffer->height!=ftp_service->local_param_copy.height)||
       (ftp_service->current_buffer->bytes_per_frame!=ftp_service->local_param_copy.bytes_per_frame)||
-      (ftp_service->current_buffer->mode!=ftp_service->local_param_copy.mode)||
-      (ftp_service->current_buffer->format!=ftp_service->local_param_copy.format)||
-      // check F7 color mode change
-      ((ftp_service->current_buffer->format==FORMAT_SCALABLE_IMAGE_SIZE)&&
-       (ftp_service->current_buffer->format7_color_mode!=ftp_service->local_param_copy.format7_color_mode)
-       ) ||
+      (ftp_service->current_buffer->buffer_color_mode!=ftp_service->local_param_copy.buffer_color_mode)||
       // check bayer and stereo decoding
       (ftp_service->current_buffer->stereo_decoding!=ftp_service->local_param_copy.stereo_decoding)||
       (ftp_service->current_buffer->bayer!=ftp_service->local_param_copy.bayer)
@@ -311,11 +306,9 @@ FtpThreadCheckParams(chain_t *ftp_service)
     ftp_service->local_param_copy.width=ftp_service->current_buffer->width;
     ftp_service->local_param_copy.height=ftp_service->current_buffer->height;
     ftp_service->local_param_copy.bytes_per_frame=ftp_service->current_buffer->bytes_per_frame;
-    ftp_service->local_param_copy.mode=ftp_service->current_buffer->mode;
-    ftp_service->local_param_copy.format=ftp_service->current_buffer->format;
-    ftp_service->local_param_copy.format7_color_mode=ftp_service->current_buffer->format7_color_mode;
     ftp_service->local_param_copy.stereo_decoding=ftp_service->current_buffer->stereo_decoding;
     ftp_service->local_param_copy.bayer=ftp_service->current_buffer->bayer;
+    ftp_service->local_param_copy.buffer_color_mode=ftp_service->current_buffer->buffer_color_mode;
     ftp_service->local_param_copy.buffer_image_bytes=ftp_service->current_buffer->buffer_image_bytes;
     
     // DO SOMETHING

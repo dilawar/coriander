@@ -201,14 +201,11 @@ typedef struct _Buffer_T
   int width;
   int height;
   unsigned long long int bytes_per_frame; // this is the bytes per frame, including padding.
-  int mode;
-  int format;
   int bpp; // this bpp is used for 16bit camera that only have e.g. 12 bits.
   unsigned long long int image_bytes;
   bayer_decoding_t bayer;
   int bayer_pattern;
   stereo_decoding_t stereo_decoding;
-  int format7_color_mode;
 
   int buffer_color_mode;
   unsigned long long int buffer_image_bytes; // this is the true size of the image, without padding.

@@ -260,13 +260,10 @@ InitBuffer(buffer_t *buffer)
   buffer->width=-1;
   buffer->height=-1;
   buffer->bytes_per_frame=-1;
-  buffer->mode=-1;
   buffer->bayer=-1;
   buffer->bpp=-1;
   buffer->bayer_pattern=-1; //COLOR_FILTER_FORMAT7_BGGR
   buffer->stereo_decoding=-1;
-  buffer->format=-1;
-  buffer->format7_color_mode=-1;
   buffer->buffer_color_mode=-1;
   buffer->image=NULL;
   buffer->buffer_image_bytes=-1;

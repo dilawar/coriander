@@ -261,12 +261,7 @@ V4lThreadCheckParams(chain_t *v4l_service)
   if ((v4l_service->current_buffer->width!=v4l_service->local_param_copy.width)||
       (v4l_service->current_buffer->height!=v4l_service->local_param_copy.height)||
       (v4l_service->current_buffer->bytes_per_frame!=v4l_service->local_param_copy.bytes_per_frame)||
-      (v4l_service->current_buffer->mode!=v4l_service->local_param_copy.mode)||
-      (v4l_service->current_buffer->format!=v4l_service->local_param_copy.format)||
-      // check F7 color mode change
-      ((v4l_service->current_buffer->format==FORMAT_SCALABLE_IMAGE_SIZE)&&
-       (v4l_service->current_buffer->format7_color_mode!=v4l_service->local_param_copy.format7_color_mode)
-       ) ||
+      (v4l_service->current_buffer->buffer_color_mode!=v4l_service->local_param_copy.buffer_color_mode)||
       // check bayer and stereo decoding
       (v4l_service->current_buffer->stereo_decoding!=v4l_service->local_param_copy.stereo_decoding)||
       (v4l_service->current_buffer->bayer!=v4l_service->local_param_copy.bayer)
@@ -283,11 +278,9 @@ V4lThreadCheckParams(chain_t *v4l_service)
     v4l_service->local_param_copy.width=v4l_service->current_buffer->width;
     v4l_service->local_param_copy.height=v4l_service->current_buffer->height;
     v4l_service->local_param_copy.bytes_per_frame=v4l_service->current_buffer->bytes_per_frame;
-    v4l_service->local_param_copy.mode=v4l_service->current_buffer->mode;
-    v4l_service->local_param_copy.format=v4l_service->current_buffer->format;
-    v4l_service->local_param_copy.format7_color_mode=v4l_service->current_buffer->format7_color_mode;
     v4l_service->local_param_copy.stereo_decoding=v4l_service->current_buffer->stereo_decoding;
     v4l_service->local_param_copy.bayer=v4l_service->current_buffer->bayer;
+    v4l_service->local_param_copy.buffer_color_mode=v4l_service->current_buffer->buffer_color_mode;
     v4l_service->local_param_copy.buffer_image_bytes=v4l_service->current_buffer->buffer_image_bytes;
     
     // DO SOMETHING
