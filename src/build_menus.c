@@ -47,7 +47,7 @@ BuildTriggerModeMenu(void)
 
   if (dc1394_query_feature_characteristics(camera->camera_info.handle,camera->camera_info.id,FEATURE_TRIGGER,&value)!=DC1394_SUCCESS)
     MainError("Could not query trigger feature characteristics");
-  modes=( (value & (0xF << 12))>>12 );
+  modes=( (value & (0xF << 12)) >>12 );
   gtk_widget_destroy(GTK_WIDGET (lookup_widget(main_window,"trigger_mode"))); // remove previous menu
 
   trigger_mode = gtk_option_menu_new ();
@@ -59,8 +59,9 @@ BuildTriggerModeMenu(void)
   gtk_container_set_border_width (GTK_CONTAINER (trigger_mode), 1);
 
   trigger_mode_menu = gtk_menu_new ();
-
-  if (modes) { // at least one mode present
+  //modes=0xa;
+  //fprintf(stderr,"Trigger modes: 0x%x\n",modes);
+  if (modes!=0) { // at least one mode present
     // external trigger available:
     for (f=TRIGGER_MODE_MIN,i=0;f<=TRIGGER_MODE_MAX;i++,f++) {
       if (modes & (0x1<<(TRIGGER_MODE_MAX-f))) {
@@ -69,9 +70,7 @@ BuildTriggerModeMenu(void)
 	glade_menuitem = gtk_menu_item_new_with_label (_(trigger_mode_list[i]));
 	gtk_widget_show (glade_menuitem);
 	gtk_menu_append (GTK_MENU (trigger_mode_menu), glade_menuitem);
-	gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-			    GTK_SIGNAL_FUNC (on_trigger_mode_activate),
-			    (int*)f);
+	gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate", GTK_SIGNAL_FUNC (on_trigger_mode_activate), (int*)f);
       }
       else
 	index[i]=0;
@@ -82,7 +81,7 @@ BuildTriggerModeMenu(void)
     // sets the active menu item:
     //fprintf(stderr,"trig: max: %d, default: %d\n",NUM_TRIGGER_MODE,
     //	  feature_set->feature[FEATURE_TRIGGER-FEATURE_MIN].trigger_mode);
-    gtk_option_menu_set_history (GTK_OPTION_MENU (trigger_mode), 
+    gtk_option_menu_set_history (GTK_OPTION_MENU (trigger_mode),
 				 index[camera->feature_set.feature[FEATURE_TRIGGER-FEATURE_MIN].trigger_mode]);
     
   }
@@ -91,6 +90,7 @@ BuildTriggerModeMenu(void)
     glade_menuitem = gtk_menu_item_new_with_label (_("N/A"));
     gtk_widget_show (glade_menuitem);
     gtk_menu_append (GTK_MENU (trigger_mode_menu), glade_menuitem);
+    gtk_option_menu_set_menu (GTK_OPTION_MENU (trigger_mode), trigger_mode_menu);
     gtk_option_menu_set_history (GTK_OPTION_MENU (trigger_mode), 0);
   }
 }

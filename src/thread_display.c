@@ -165,13 +165,13 @@ DisplayThread(void* arg)
 	    skip_counter=0;
 #ifdef HAVE_SDLLIB
 	    if (SDL_LockYUVOverlay(info->sdloverlay) == 0) {
-	      //fprintf(stderr,"Converting... ");
 	      convert_to_yuv_for_SDL(display_service->current_buffer, info->sdloverlay->pixels[0]);
-	      //fprintf(stderr,"Done\n");
+
 	      SDLDisplayArea(display_service);
+
 	      SDL_UnlockYUVOverlay(info->sdloverlay);
 	      SDL_DisplayYUVOverlay(info->sdloverlay, &info->sdlvideorect);
-	      //fprintf(stderr,"Displayed\n");
+
 	      info->redraw_prev_time=times(&info->redraw_tms_buf);
 	    }
 #endif
@@ -274,8 +274,8 @@ int
 SDLInit(chain_t *display_service)
 {
   displaythread_info_t *info;
-  SDL_Rect **modes;
   const SDL_VideoInfo *sdl_videoinfo;
+  SDL_Rect** modes;
   info=(displaythread_info_t*)display_service->data;
 
   info->sdlbpp=16;
@@ -283,28 +283,31 @@ SDLInit(chain_t *display_service)
 
   // Initialize the SDL library (video subsystem)
   if ( SDL_Init(SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE) == -1) {
-    MainError(SDL_GetError());
+    MainError("Couldn't initialize SDL video subsystem");
     return(0);
   }
-
+  
   sdl_videoinfo = SDL_GetVideoInfo();
 
   if (sdl_videoinfo->hw_available) {
+    //fprintf(stderr,"Using HW surface\n");
     info->sdlflags|= SDL_HWSURFACE;
     info->sdlflags|= SDL_HWACCEL;
     info->sdlflags&= ~SDL_SWSURFACE;
   }
   else {
+    //fprintf(stderr,"Using SW surface\n");
     info->sdlflags|= SDL_SWSURFACE;
     info->sdlflags&= ~SDL_HWSURFACE;
     info->sdlflags&= ~SDL_HWACCEL;
   }
-  
+
   modes=SDL_ListModes(NULL,info->sdlflags);
   if (modes!=(SDL_Rect**)-1) {
     // not all resolutions are OK for this video card. For safety we switch to software accel
     MainError("No SDL mode available with hardware accel. Trying without HWSURFACE");
     info->sdlflags&= ~SDL_HWSURFACE;
+    info->sdlflags&= ~SDL_HWACCEL;
     modes=SDL_ListModes(NULL,info->sdlflags);
     if (modes!=(SDL_Rect**)-1) {
       MainError("Still no modes available. Can't start SDL!");
@@ -312,13 +315,12 @@ SDLInit(chain_t *display_service)
       return(0);
     }
   }
-  
-  // Set requested video mode
+    // Set requested video mode
   info->sdlbpp=SDL_VideoModeOK(display_service->current_buffer->width, display_service->current_buffer->height, 
-				info->sdlbpp, info->sdlflags);
+			       info->sdlbpp, info->sdlflags);
   
   info->sdlvideo = SDL_SetVideoMode(display_service->current_buffer->width, display_service->current_buffer->height, 
-				     info->sdlbpp, info->sdlflags);
+				    info->sdlbpp, info->sdlflags);
 
   if (info->sdlvideo == NULL) {
     MainError(SDL_GetError());
@@ -336,9 +338,13 @@ SDLInit(chain_t *display_service)
   // set window title:
   SDL_WM_SetCaption(camera->name,"");
 
-  info->sdlvideo->format->BytesPerPixel=2;
+  // this line broke everything for unknown reasons so I just rmove it.
+  //info->sdlvideo->format->BytesPerPixel=2;
+
   // Create YUV Overlay
-  info->sdloverlay = SDL_CreateYUVOverlay(display_service->current_buffer->width, display_service->current_buffer->height, SDL_YUY2_OVERLAY,info->sdlvideo);
+  info->sdloverlay = SDL_CreateYUVOverlay(display_service->current_buffer->width,
+					  display_service->current_buffer->height,
+					  SDL_YUY2_OVERLAY,info->sdlvideo);
   if (info->sdloverlay==NULL) {
     MainError(SDL_GetError());
     SDL_Quit();

@@ -302,7 +302,7 @@ SDLResizeDisplay(chain_t *display_service, int width, int height)
       info->sdlvideorect.h = (width * display_service->current_buffer->height) / display_service->current_buffer->width;
     }
     else {
-      // we changed the hieght, set width accordingly
+      // we changed the height, set width accordingly
       info->sdlvideorect.w = (height * display_service->current_buffer->width) / display_service->current_buffer->height;
       info->sdlvideorect.h = height;
     }
@@ -312,28 +312,46 @@ SDLResizeDisplay(chain_t *display_service, int width, int height)
     info->sdlvideorect.w = width;
     info->sdlvideorect.h = height;
   }
-  
+
+  //fprintf(stderr,"Changing display size:\n");
+
   // Free overlay & video surface
   SDL_FreeYUVOverlay(info->sdloverlay);
-  SDL_FreeSurface(info->sdlvideo);
   
-  // Set requested video mode
-  info->sdlvideo = SDL_SetVideoMode(info->sdlvideorect.w,
-				     info->sdlvideorect.h,
-				     info->sdlbpp,
-				     info->sdlflags);
-  if (info->sdlvideo == NULL) {
-    SDL_Quit();
-    MainError("Error realocating video overlay after resize");
-  }
+  //fprintf(stderr,"\tFreed YUV overlay\n");
+  SDL_FreeSurface(info->sdlvideo);
+  //fprintf(stderr,"\tFreed surface\n");
 
-  // Create YUV Overlay
-  info->sdloverlay = SDL_CreateYUVOverlay(display_service->current_buffer->width, display_service->current_buffer->height,
-					   SDL_YUY2_OVERLAY,info->sdlvideo);
-  if (info->sdloverlay == NULL) {
+  // Set requested video mode
+  //info->sdlbpp   = SDL_VideoModeOK (info->sdlvideorect.w, info->sdlvideorect.h,
+  //				    info->sdlbpp, info->sdlflags);
+  info->sdlvideo = SDL_SetVideoMode(info->sdlvideorect.w, info->sdlvideorect.h,
+				    info->sdlbpp, info->sdlflags);
+  
+  if (info->sdlvideo == NULL) {
+    MainError(SDL_GetError());
     SDL_Quit();
-    MainError("Error creating video overlay after resize");
+    return;
   }
+  /*
+  if (SDL_SetColorKey(info->sdlvideo, SDL_SRCCOLORKEY, 0x0) < 0 ) {
+    MainError(SDL_GetError());
+  }
+  */
+  //info->sdlvideo->format->BytesPerPixel=2;
+  
+  // Create YUV Overlay
+  
+  info->sdloverlay = SDL_CreateYUVOverlay(display_service->current_buffer->width,
+					  display_service->current_buffer->height,
+					  SDL_YUY2_OVERLAY, info->sdlvideo);
+  if (info->sdloverlay==NULL) {
+    MainError(SDL_GetError());
+    SDL_Quit();
+    return;
+  }
+  
+  //fprintf(stderr,"\tOverlay created\n");
 }
 
 
