@@ -75,118 +75,6 @@ on_commander_window_delete_event       (GtkWidget       *widget,
                                         gpointer         user_data);
 
 void
-on_f0_mode0_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_f0_mode1_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_f0_mode2_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_f0_mode3_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_f0_mode4_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_f0_mode5_ativate                    (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_f1_mode0_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_f1_mode1_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_f1_mode2_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_f1_mode3_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_f1_mode4_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_f1_mode5_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_f2_mode0_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_f2_mode1_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_f2_mode2_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_f2_mode3_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_f2_mode4_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_f2_mode5_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_f6_mode0_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_f7_mode0_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_f7_mode1_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_f7_mode2_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_f7_mode3_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_f7_mode4_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_f7_mode5_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_f7_mode6_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_f7_mode7_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_f7_mode7_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
 on_fps_menu_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
@@ -251,26 +139,6 @@ on_camera_select_activate              (GtkMenuItem     *menuitem,
 					gpointer         user_data);
 
 void
-on_f0_mode6_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_f1_mode6_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_f1_mode7_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_f2_mode6_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_f2_mode7_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
 on_format7_window_activate             (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
@@ -299,8 +167,8 @@ on_format6_window_activate             (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
 void
-on_test_pattern_activate               (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
+on_test_pattern_toggled               (GtkToggleButton *togglebutton,
+                                        gpointer        user_data);
 
 void
 on_prefs_update_power_toggled          (GtkToggleButton *togglebutton,

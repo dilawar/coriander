@@ -98,6 +98,7 @@ BuildCommanderWindow(void)
   BuildIsoFrame();
   BuildCameraFrame();
   BuildMemoryFrame();
+  BuildFormatMenu();
 }
 
 void

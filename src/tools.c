@@ -121,9 +121,31 @@ GetFormat7Capabilities(raw1394handle_t handle, nodeid_t node, Format7Info *info)
 }
 
 void
-ChangeModeAndFormat(int mode, int format)
+ChangeModeAndFormat         (GtkMenuItem     *menuitem,
+			     gpointer         user_data)
 {
   int state[5];
+  int format;
+
+  int mode;
+  
+  mode=(int)user_data;
+
+  //fprintf(stderr,"Mode: %d\n",mode);
+
+  if ((mode>=MODE_FORMAT0_MIN)&&(mode<=MODE_FORMAT0_MAX))
+    format=FORMAT_VGA_NONCOMPRESSED;
+  else
+    if ((mode>=MODE_FORMAT1_MIN)&&(mode<=MODE_FORMAT1_MAX))
+      format=FORMAT_SVGA_NONCOMPRESSED_1;
+    else
+      if ((mode>=MODE_FORMAT2_MIN)&&(mode<=MODE_FORMAT2_MAX))
+	format=FORMAT_SVGA_NONCOMPRESSED_2;
+      else
+	if ((mode>=MODE_FORMAT6_MIN)&&(mode<=MODE_FORMAT6_MAX))
+	  format=FORMAT_STILL_IMAGE;
+	else
+	  format=FORMAT_SCALABLE_IMAGE_SIZE;
 
   IsoFlowCheck(state);
 

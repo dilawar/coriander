@@ -25,10 +25,13 @@
 
 void
 GetFormat7Capabilities(raw1394handle_t handle, nodeid_t node, Format7Info *info);
-
+/*
 void
-ChangeModeAndFormat(int mode, int format);
-
+ChangeModeAndFormat(int* pmode);
+*/
+void
+ChangeModeAndFormat         (GtkMenuItem     *menuitem,
+			     gpointer         user_data);
 void
 IsoFlowCheck(int *state); 
 

@@ -218,59 +218,60 @@ const char * phy_delay_list[4] = {
 
 
 const char * format_list[5]= {
-  "format_0",
-  "format_1",
-  "format_2",
-  "format_6",
-  "format_7"
+  "Format_0",
+  "Format_1",
+  "Format_2",
+  "Format_6",
+  "Format_7"
 };
 
-const char * format0_list[7]= {
-  "f0_mode0",
-  "f0_mode1",
-  "f0_mode2",
-  "f0_mode3",
-  "f0_mode4",
-  "f0_mode5",
-  "f0_mode6"
+const char * format0_list[NUM_FORMAT0_MODES]= {
+  "Mode_0: 160x120 YUV (4:4:4)",
+  "Mode_1: 320x240 YUV (4:2:2)",
+  "Mode_2: 640x480 YUV (4:1:1)",
+  "Mode_3: 640x480 YUV (4:2:2)",
+  "Mode_4: 640x480 RGB 24bpp",
+  "Mode_5: 640x480 Mono 8bpp",
+  "Mode_6: 640x480 Mono 16bpp"
 };
 
-const char * format1_list[8]= {
-  "f1_mode0",
-  "f1_mode1",
-  "f1_mode2",
-  "f1_mode3",
-  "f1_mode4",
-  "f1_mode5",
-  "f1_mode6",
-  "f1_mode7"
+const char * format1_list[NUM_FORMAT1_MODES]= {
+  "Mode_0: 800x600 YUV (4:2:2)",
+  "Mode_1: 800x600 RGB 24bpp",
+  "Mode_2: 800x600 Mono 8bpp",
+  "Mode_3: 1024x768 YUV (4:2:2)",
+  "Mode_4: 1024x768 RGB 24bpp",
+  "Mode_5: 1024x768 Mono 8bpp",
+  "Mode_6: 800x600 Mono 16bpp",
+  "Mode_7: 1024x768 Mono 16bpp"
 };
 
-const char * format2_list[8]= {
-  "f2_mode0",
-  "f2_mode1",
-  "f2_mode2",
-  "f2_mode3",
-  "f2_mode4",
-  "f2_mode5",
-  "f2_mode6",
-  "f2_mode7"
+const char * format2_list[NUM_FORMAT2_MODES]= {
+  "Mode_0: 1280x960 YUV (4:2:2)",
+  "Mode_1: 1280x960 RGB 24bpp",
+  "Mode_2: 1280x960 Mono 8bpp",
+  "Mode_3: 1600x1200 YUV (4:2:2)",
+  "Mode_4: 1600x1200 RGB 24bpp",
+  "Mode_5: 1600x1200 Mono 8bpp",
+  "Mode_6: 1280x960 Mono 16bpp",
+  "Mode_7: 1600x1200 Mono 16bpp"
 };
 
-const char * format6_list[1]= {
-  "f6_mode0"
+const char * format6_list[NUM_FORMAT6_MODES]= {
+  "Mode_0: EXIF"
 };
 
-const char * format7_list[8]= {
-  "f7_mode0",
-  "f7_mode1",
-  "f7_mode2",
-  "f7_mode3",
-  "f7_mode4",
-  "f7_mode5",
-  "f7_mode6",
-  "f7_mode7"
+const char * format7_list[NUM_MODE_FORMAT7]= {
+  "Mode_0",
+  "Mode_1",
+  "Mode_2",
+  "Mode_3",
+  "Mode_4",
+  "Mode_5",
+  "Mode_6",
+  "Mode_7"
 };
+
 
 const char *feature_menu_items_list[5]= {
   "OFF",

@@ -2,9 +2,15 @@ Coriander, (c) 2000-2002 Damien Douxchamps <douxchamps@ieee.org>
 
 Changes towards version 0.26
 
+   August 12, 2002, by Damien Douxchamps
+   - New layout: more compact
+   - New format selection menu: now you can see the current format (!)
+   - removed all images in pixmap directory: we don't use these anymore.
+     (This is partly because I don't want to advertise Sony anymore)
+	
    August 9, 2002, by Damien Douxchamps
-   - Added another function to descramble Bayer pattern. Not linked,
-     currently for testing/devel only.
+   - Added another function to descramble Bayer pattern (Edge Sense 2).
+     Not linked, currently for testing/devel only.
 	
    August 6, 2002, by Damien Douxchamps
    - more fixes for initial segfault when no card/modules are present

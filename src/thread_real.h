@@ -16,11 +16,11 @@
  * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <gnome.h>
 
 #ifndef __THREAD_REAL_H__
 #define __THREAD_REAL_H__
 
+#include <gnome.h>
 #include "thread_base.h"
 #include "definitions.h"
  
