@@ -1,0 +1,21 @@
+Some remarks about the new experimental live display.
+
+We have to deal with five rectangles:
+
+a - The image received from the camera. It's size and depth can be changed from 
+    the control panel or by cropping, in which case b and c should adapt.
+
+b - The imaginairy SDL rectangle where the source image would be splashed using current 
+    camera and zoom settings. Don't worry :), it's visable area is c, so it's 
+    "content" will only be splashed using those limits.
+
+c - The display window is a viewport to b (could be larger or smaller) using current 
+    pan settings. It can be changed by resizing the window.
+
+d - The selection can be made inside the display window
+
+e - The crop area is d adapted to the camera's capabilities
+
+Thats it for now. Most of the "TODO" marks will either be explaned here or dealt with.
+
+/JK
