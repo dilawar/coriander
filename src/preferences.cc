@@ -94,49 +94,11 @@ LoadConfigFile(void)
   preferences.real_compatibility = gnome_config_get_int("coriander/real/compatibility=0");
   preferences.real_period = gnome_config_get_int("coriander/real/period=1");
 
-  // fprintf(stderr,"starting to grab camera names\n");
   for (i=0;i<camera_num;i++)
     {
       sprintf(tmp,"%s%llx=Node %d: %s %s",camera_name_str, cameras[i].euid_64,cameras[i].id, cameras[i].vendor, cameras[i].model);
       preferences.camera_names[i] = gnome_config_get_string(tmp);
-      //fprintf(stderr,"Node %d: %s\n",cameras[i].id,preferences.camera_names[i]);
     }
-  //fprintf(stderr,"   ...names grabbed");
 }
-
-void
-WriteConfigFile(void)
-{
-  gnome_config_set_int("coriander/display/period",preferences.display_period);
-  gnome_config_set_int("coriander/receive/method",preferences.receive_method);
-  gnome_config_set_string("coriander/receive/video1394_device",preferences.video1394_device);
-  gnome_config_set_string("coriander/save/filename",preferences.save_filename);
-  gnome_config_set_int("coriander/save/scratch",preferences.save_scratch);
-  gnome_config_set_int("coriander/save/period",preferences.save_period);
-  gnome_config_set_int("coriander/save/convert",preferences.save_convert);
-  gnome_config_set_string("coriander/ftp/address",preferences.ftp_address);
-  gnome_config_set_string("coriander/ftp/user",preferences.ftp_user);
-  gnome_config_set_string("coriander/ftp/password",preferences.ftp_password);
-  gnome_config_set_string("coriander/ftp/filename",preferences.ftp_filename);
-  gnome_config_set_string("coriander/ftp/path",preferences.ftp_path);
-  gnome_config_set_int("coriander/ftp/scratch",preferences.ftp_scratch);
-  gnome_config_set_int("coriander/ftp/period",preferences.ftp_period);
-  gnome_config_set_string("coriander/real/address",preferences.real_address);
-  gnome_config_set_string("coriander/real/user",preferences.real_user);
-  gnome_config_set_string("coriander/real/password",preferences.real_password);
-  gnome_config_set_string("coriander/real/filename",preferences.real_filename);
-  gnome_config_set_int("coriander/real/port",preferences.real_port);
-  gnome_config_set_string("coriander/real/title",preferences.real_title);
-  gnome_config_set_string("coriander/real/author",preferences.real_author);
-  gnome_config_set_string("coriander/real/copyright",preferences.real_copyright);
-  gnome_config_set_int("coriander/real/recordable",preferences.real_recordable);
-  gnome_config_set_int("coriander/real/audience",preferences.real_audience);
-  gnome_config_set_int("coriander/real/quality",preferences.real_quality);
-  gnome_config_set_int("coriander/real/compatibility",preferences.real_compatibility);
-  gnome_config_set_int("coriander/real/period",preferences.real_period);
-
-  gnome_config_sync();// ??? is necessary, but don't know why...
-}
-
 
 }
