@@ -309,16 +309,22 @@ IsoThread(void* arg)
       IsoThreadCheckParams(iso_service);
 
       // Stereo decoding
-      if (iso_service->current_buffer->stereo_decoding==STEREO_DECODING) {
-	StereoDecode((unsigned char *)info->capture.capture_buffer,info->temp,
-		     info->orig_sizex*info->orig_sizey*2);
-      }
-      else {
-	if ((iso_service->current_buffer->bayer!=NO_BAYER_DECODING)&&(info->cond16bit!=0)) {
-	  y162y((unsigned char *)info->capture.capture_buffer,info->temp,
-		info->orig_sizex*info->orig_sizey, iso_service->current_buffer->bpp);
+      switch (iso_service->current_buffer->stereo_decoding)
+	{
+	case STEREO_DECODING_INTERLACED:
+	  StereoDecode((unsigned char *)info->capture.capture_buffer,info->temp,
+		       info->orig_sizex*info->orig_sizey*2);
+	  break;
+	case STEREO_DECODING_FIELD:
+	  memcpy(info->temp,(unsigned char *)info->capture.capture_buffer,info->orig_sizex*info->orig_sizey*2);
+	  break;
+	case NO_STEREO_DECODING:
+	  if ((iso_service->current_buffer->bayer!=NO_BAYER_DECODING)&&(info->cond16bit!=0)) {
+	    y162y((unsigned char *)info->capture.capture_buffer,info->temp,
+		  info->orig_sizex*info->orig_sizey, iso_service->current_buffer->bpp);
+	  }
+	  break;
 	}
-      }
       //fprintf(stderr,"0x%x\n",info->capture.capture_buffer);
       // Bayer decoding
       switch (iso_service->current_buffer->bayer)
@@ -437,7 +443,7 @@ IsoThreadCheckParams(chain_t *iso_service)
     
     // allow size to differ, this is normal operation.
     change_detected+=iso_service->current_buffer->width          !=(info->capture.frame_width)/2;
-    if (iso_service->current_buffer->stereo_decoding==STEREO_DECODING){
+    if (iso_service->current_buffer->stereo_decoding!=NO_STEREO_DECODING){
       change_detected+=iso_service->current_buffer->height       !=(info->capture.frame_height);
     }
     else {
@@ -447,7 +453,7 @@ IsoThreadCheckParams(chain_t *iso_service)
   else {
     // size should be equal, or a change occured.
     change_detected+=iso_service->current_buffer->width          !=info->capture.frame_width;
-    if (iso_service->current_buffer->stereo_decoding==STEREO_DECODING) {
+    if (iso_service->current_buffer->stereo_decoding!=NO_STEREO_DECODING) {
       change_detected+=iso_service->current_buffer->height       !=info->capture.frame_height*2;
     }
     else {
@@ -493,7 +499,7 @@ IsoThreadCheckParams(chain_t *iso_service)
       else
 	info->cond16bit=(format7_info->mode[iso_service->current_buffer->mode-MODE_FORMAT7_MIN].color_coding_id==COLOR_FORMAT7_MONO16);
       
-      if (iso_service->current_buffer->stereo_decoding==STEREO_DECODING)
+      if (iso_service->current_buffer->stereo_decoding!=NO_STEREO_DECODING)
 	temp_requested_size=iso_service->current_buffer->width*iso_service->current_buffer->height*2*sizeof(unsigned char);
       else {
 	if ((info->cond16bit!=0)&&(iso_service->current_buffer->bayer!=NO_BAYER_DECODING)) {
@@ -540,7 +546,7 @@ IsoThreadCheckParams(chain_t *iso_service)
 	iso_service->current_buffer->bytes_per_frame/=4;
       }
       // if it's stereo decoding, height is multiplied by 2
-      if (iso_service->current_buffer->stereo_decoding==STEREO_DECODING) {
+      if (iso_service->current_buffer->stereo_decoding!=NO_STEREO_DECODING) {
 	iso_service->current_buffer->height*=2;
 	// if we are no more in raw 16bit mode, we should *2. Otherwise, the factor is already in bytes_per_frame.
 	if (iso_service->current_buffer->bayer!=NO_BAYER_DECODING) {
@@ -594,7 +600,10 @@ SetColorMode(buffer_t *buffer)
 	case MODE_1024x768_YUV422:
 	case MODE_1280x960_YUV422:
 	case MODE_1600x1200_YUV422:
-	  buffer->buffer_color_mode=COLOR_FORMAT7_YUV422;
+	  if (buffer->stereo_decoding!=NO_STEREO_DECODING)
+	    buffer->buffer_color_mode=COLOR_FORMAT7_MONO8;
+	  else
+	    buffer->buffer_color_mode=COLOR_FORMAT7_YUV422;
 	  break;
 	case MODE_640x480_YUV411:
 	  buffer->buffer_color_mode=COLOR_FORMAT7_YUV411;

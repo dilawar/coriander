@@ -856,7 +856,7 @@ BayerDownsample(unsigned char *src, unsigned char *dest, int sx, int sy, bayer_p
 // change a 16bit stereo image (8bit/channel) into two 8bit images on top
 // of each other
 void
-StereoDecode (unsigned char *src, unsigned char *dest, int NumPixels)
+StereoDecode(unsigned char *src, unsigned char *dest, int NumPixels)
 {
   register int i = NumPixels-1;
   register int j = (NumPixels>>1)-1;
@@ -868,4 +868,3 @@ StereoDecode (unsigned char *src, unsigned char *dest, int NumPixels)
       dest[j--] = src[i--];
     }
 }
-

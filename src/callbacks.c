@@ -507,7 +507,8 @@ on_service_iso_toggled                 (GtkToggleButton *togglebutton,
       if (togglebutton->active)
 	IsoStartThread();
       else
-	CleanThreads(CLEAN_MODE_UI_UPDATE_NOT_ISO);
+	IsoStopThread();
+        //CleanThreads(CLEAN_MODE_UI_UPDATE_NOT_ISO);
     }
 
 }
@@ -521,8 +522,8 @@ on_service_display_toggled             (GtkToggleButton *togglebutton,
     {
       if (togglebutton->active)
 	{
-	  if (GetService(SERVICE_ISO,current_camera)==NULL)
-	    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"service_iso")), TRUE);
+	  //if (GetService(SERVICE_ISO,current_camera)==NULL)
+	  //  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"service_iso")), TRUE);
 	  pthread_mutex_lock(&uiinfo->mutex);
 	  uiinfo->want_to_display=1;
 	  pthread_mutex_unlock(&uiinfo->mutex);
@@ -547,8 +548,8 @@ on_service_save_toggled                (GtkToggleButton *togglebutton,
     {
       if (togglebutton->active)
 	{
-	  if (GetService(SERVICE_ISO,current_camera)==NULL)
-	    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"service_iso")), TRUE);
+	  //if (GetService(SERVICE_ISO,current_camera)==NULL)
+	  //  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"service_iso")), TRUE);
 	  SaveStartThread();
 	}
       else
@@ -565,8 +566,8 @@ on_service_ftp_toggled                 (GtkToggleButton *togglebutton,
     {
       if (togglebutton->active)
 	{
-	  if (GetService(SERVICE_ISO,current_camera)==NULL)
-	    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"service_iso")), TRUE);
+	  //if (GetService(SERVICE_ISO,current_camera)==NULL)
+	  //  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"service_iso")), TRUE);
 	  FtpStartThread();
 	}
       else
@@ -583,8 +584,8 @@ on_service_real_toggled                (GtkToggleButton *togglebutton,
     {
       if (togglebutton->active)
 	{
-	  if (GetService(SERVICE_ISO,current_camera)==NULL)
-	    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"service_iso")), TRUE);
+	  //if (GetService(SERVICE_ISO,current_camera)==NULL)
+	  //  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"service_iso")), TRUE);
 	  RealStartThread();
 	}
       else
@@ -1245,17 +1246,21 @@ on_bayer_pattern_menu_activate           (GtkMenuItem     *menuitem,
 }
 
 void
-on_stereo_menu_activate               (GtkToggleButton *menuitem,
-                                       gpointer         user_data)
+on_stereo_button_toggled               (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
 {
-  int tmp;
-  tmp=(int)user_data;
-  
-  pthread_mutex_unlock(&uiinfo->mutex);
-  uiinfo->stereo=tmp;
-  pthread_mutex_unlock(&uiinfo->mutex);
-
+  if (togglebutton->active>0) {
+    pthread_mutex_lock(&uiinfo->mutex);
+    uiinfo->stereo=STEREO_DECODING;
+    pthread_mutex_unlock(&uiinfo->mutex);
+  }
+  else {
+    pthread_mutex_lock(&uiinfo->mutex);
+    uiinfo->stereo=NO_STEREO_DECODING;
+    pthread_mutex_unlock(&uiinfo->mutex);
+  }
   UpdateOptionFrame();
+
 }
 
 

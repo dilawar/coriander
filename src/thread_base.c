@@ -45,25 +45,23 @@ GetService(service_t service, unsigned int camera)
 
   chain=image_pipes[camera];
 
-  if (chain==NULL)
-    {
-      return(NULL);
-    }
-  else
-    while(chain!=NULL)
-      { 
-	pthread_mutex_lock(&chain->mutex_struct); // WARNING: see callbacks.c, on_service_iso_toggled
-	if (service==chain->service)
-	  {
-	    pthread_mutex_unlock(&chain->mutex_struct); // WARNING: see callbacks.c, on_service_iso_toggled
-	    return(chain);
-	  }
-	else
-	  {
-	    pthread_mutex_unlock(&chain->mutex_struct); // WARNING: see callbacks.c, on_service_iso_toggled
-	    chain=chain->next_chain;
-	  }
+  if (chain==NULL) {
+    return(NULL);
+  }
+  else {
+    while(chain!=NULL) { 
+      pthread_mutex_lock(&chain->mutex_struct); // WARNING: see callbacks.c, on_service_iso_toggled
+      if (service==chain->service) {
+	pthread_mutex_unlock(&chain->mutex_struct); // WARNING: see callbacks.c, on_service_iso_toggled
+	return(chain);
       }
+      else {
+	pthread_mutex_unlock(&chain->mutex_struct); // WARNING: see callbacks.c, on_service_iso_toggled
+	chain=chain->next_chain;
+      }
+    }
+  }
+
   return(NULL);
 }
 
@@ -73,42 +71,40 @@ RollBuffers(chain_t* chain)
 {
   buffer_t* tmp_buffer;
   int new_current=0;
-
-  if (chain->prev_chain==NULL)
-    {
-      // 1 - 2 - 3 -> 1 - 3 - 2 (publish for next service)
-      //pthread_mutex_lock(&chain->prev_chain->mutex_data);
-      tmp_buffer=chain->current_buffer;
-      chain->current_buffer=chain->next_buffer;
-      chain->next_buffer=tmp_buffer;
-      chain->updated=1;
-      //pthread_mutex_unlock(&chain->prev_chain->mutex_data);
-    }
-  else
-    {
-      // 1 - 3 - 2 -> 3 - 1 - 2 (get from previous service)
+  //fprintf(stderr,"rolling buffers...");
+  if (chain->service==SERVICE_ISO) {
+    // 1 - 2 - 3 -> 1 - 3 - 2 (publish for next service, ISO only)
+    tmp_buffer=chain->current_buffer;
+    chain->current_buffer=chain->next_buffer;
+    chain->next_buffer=tmp_buffer;
+    chain->updated=1;
+  }
+  else {
+    // 1 - 3 - 2 -> 3 - 1 - 2 (get from previous service, other services)
+    if (chain->prev_chain!=NULL) { // look for previous chain existance
       pthread_mutex_lock(&chain->prev_chain->mutex_data);
-      if (chain->prev_chain->updated>0)
-	{
-	  // publish current one to the next chain:
-	  tmp_buffer=chain->current_buffer;
-	  chain->current_buffer=chain->next_buffer;
-	  chain->next_buffer=tmp_buffer;
-	  chain->updated=1;
-
-	  // get previous chain image
-	  tmp_buffer=chain->current_buffer;
-	  chain->current_buffer=chain->prev_chain->next_buffer;
-	  chain->prev_chain->next_buffer=tmp_buffer;
-	  chain->prev_chain->updated=0;
-	  new_current=1;
-	}
+      if (chain->prev_chain->updated>0) { // look for updated picture
+	// publish current one to the next chain:
+	tmp_buffer=chain->current_buffer;
+	chain->current_buffer=chain->next_buffer;
+	chain->next_buffer=tmp_buffer;
+	chain->updated=1;
+	
+	// get previous chain image
+	tmp_buffer=chain->current_buffer;
+	chain->current_buffer=chain->prev_chain->next_buffer;
+	chain->prev_chain->next_buffer=tmp_buffer;
+	chain->prev_chain->updated=0;
+	new_current=1;
+      }
       else
 	new_current=0;
-
+    
       pthread_mutex_unlock(&chain->prev_chain->mutex_data);
     }
+  }
 
+  //fprintf(stderr,"done: %d\n",new_current);
   return(new_current);
   
 }
@@ -125,24 +121,27 @@ CommonChainSetup(chain_t* chain, service_t req_service, unsigned int camera)
   chain->service=req_service;
   
   probe_chain=image_pipes[camera]; // set the begin point for search
-  if (probe_chain!=NULL)
-    {
+  if (req_service==SERVICE_ISO) {
+    chain->next_chain=probe_chain;// the chain is inserted BEFORE probe_chain
+    chain->prev_chain=NULL;
+  }
+  else {
+    if (probe_chain!=NULL) {
       pthread_mutex_lock(&probe_chain->mutex_struct);
-      while ((probe_chain->next_chain!=NULL)&&(probe_chain->service<req_service))
-	{
-	  pthread_mutex_unlock(&probe_chain->mutex_struct);
-	  probe_chain=probe_chain->next_chain;
-	  pthread_mutex_lock(&probe_chain->mutex_struct);
-	}
+      while ((probe_chain->next_chain!=NULL)&&(probe_chain->service<req_service)) {
+	pthread_mutex_unlock(&probe_chain->mutex_struct);
+	probe_chain=probe_chain->next_chain;
+	pthread_mutex_lock(&probe_chain->mutex_struct);
+      }
       chain->next_chain=probe_chain->next_chain;// the chain is inserted AFTER probe_chain
       chain->prev_chain=probe_chain;
       pthread_mutex_unlock(&probe_chain->mutex_struct);
     }
-  else // chain is the first one
-    {
+    else { // chain is the first one
       chain->next_chain=NULL;
       chain->prev_chain=NULL;
     }
+  }
 
   // allocate buffer structures, NOT IMAGE BUFFERS:
   chain->current_buffer=(buffer_t*)malloc(sizeof(buffer_t));
@@ -160,29 +159,25 @@ InsertChain(chain_t* chain, unsigned int camera)
 
   // we should only use mutex_struct in this function
 
-  if ((chain->next_chain==NULL)&&(chain->prev_chain==NULL))
-    {
-      // the pipe is empty
-      image_pipes[camera]=chain;
-    }
-  else
-    { // we should now effectively make the break in the pipe:
-      if (chain->next_chain!=NULL)
-	pthread_mutex_lock(&chain->next_chain->mutex_struct);
-      if (chain->prev_chain!=NULL)
-	pthread_mutex_lock(&chain->prev_chain->mutex_struct);
-      
-      if (chain->prev_chain!=NULL)
-	chain->prev_chain->next_chain=chain;
-      if (chain->next_chain!=NULL)
-	chain->next_chain->prev_chain=chain;
-      
-      if (chain->prev_chain!=NULL)
-	pthread_mutex_unlock(&chain->prev_chain->mutex_struct);
-      if (chain->next_chain!=NULL)
-	pthread_mutex_unlock(&chain->next_chain->mutex_struct);
+  // we should now effectively make the break in the pipe:
+  if (chain->next_chain!=NULL)
+    pthread_mutex_lock(&chain->next_chain->mutex_struct);
+  if (chain->prev_chain!=NULL)
+    pthread_mutex_lock(&chain->prev_chain->mutex_struct);
   
-    }
+  if (chain->prev_chain!=NULL)
+    chain->prev_chain->next_chain=chain;
+  else // we have a new first chain
+    image_pipes[camera]=chain;
+
+  if (chain->next_chain!=NULL)
+    chain->next_chain->prev_chain=chain;
+  
+  if (chain->prev_chain!=NULL)
+    pthread_mutex_unlock(&chain->prev_chain->mutex_struct);
+  if (chain->next_chain!=NULL)
+    pthread_mutex_unlock(&chain->next_chain->mutex_struct);   
+
 }
 
 
@@ -203,18 +198,19 @@ RemoveChain(chain_t* chain, unsigned int camera)
   
   if (chain->prev_chain!=NULL)// lock prev_mutex if we are not the first in the line
     chain->prev_chain->next_chain=chain->next_chain;
+  else // it was the first chain
+    image_pipes[camera]=chain->next_chain;
+
   if (chain->next_chain!=NULL)// lock next_mutex if we are not the last in the line
     chain->next_chain->prev_chain=chain->prev_chain;
-  if ((chain->prev_chain==NULL)&&(chain->next_chain==NULL)) // we are the only element
-    {
-      image_pipes[camera]=NULL;
-    }
   
   // UNLOCK
   if (chain->prev_chain!=NULL)// lock prev_mutex if we are not the first in the line
     pthread_mutex_unlock(&chain->prev_chain->mutex_struct);
   if (chain->next_chain!=NULL)// lock next_mutex if we are not the last in the line
     pthread_mutex_unlock(&chain->next_chain->mutex_struct);
+
+  fprintf(stderr,"pipe: 0x%x\n",image_pipes[camera]);
 
 }
 

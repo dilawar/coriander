@@ -37,7 +37,8 @@ typedef enum
 typedef enum
 {
   NO_STEREO_DECODING,
-  STEREO_DECODING
+  STEREO_DECODING_INTERLACED,
+  STEREO_DECODING_FIELD
 } stereo_decoding_t;
 
 typedef enum

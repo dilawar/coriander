@@ -339,8 +339,8 @@ UpdateCursorFrame(int posx, int posy, int r, int g, int b, int y, int u, int v)
 void
 UpdateOptionFrame(void)
 {
-  int cond16;
-  int cond8;
+  int cond16, cond8, cond422;
+
   pthread_mutex_lock(&uiinfo->mutex);
   gtk_widget_set_sensitive(lookup_widget(commander_window,"pattern_menu"),
 			   uiinfo->bayer!=NO_BAYER_DECODING);
@@ -357,15 +357,22 @@ UpdateOptionFrame(void)
 	      (misc_info->mode==MODE_1024x768_MONO16)||
 	      (misc_info->mode==MODE_1280x960_MONO16)||
 	      (misc_info->mode==MODE_1600x1200_MONO16));
+      cond422=((misc_info->mode==MODE_320x240_YUV422)||
+	       (misc_info->mode==MODE_640x480_YUV422)||
+	       (misc_info->mode==MODE_800x600_YUV422)||
+	       (misc_info->mode==MODE_1024x768_YUV422)||
+	       (misc_info->mode==MODE_1280x960_YUV422)||
+	       (misc_info->mode==MODE_1600x1200_YUV422));
     }
   else
     {
       cond16=(format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].color_coding_id==COLOR_FORMAT7_MONO16);
       cond8=(format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].color_coding_id==COLOR_FORMAT7_MONO8);
+      cond422=(format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].color_coding_id==COLOR_FORMAT7_YUV422);
     }
   gtk_widget_set_sensitive(lookup_widget(commander_window,"pattern_menu"),(cond8||cond16));
   gtk_widget_set_sensitive(lookup_widget(commander_window,"bayer_menu"),(cond8||cond16));
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"stereo_button"),cond16);
+  gtk_widget_set_sensitive(lookup_widget(commander_window,"stereo_menu"),cond16||cond422);
   pthread_mutex_lock(&uiinfo->mutex);
   gtk_widget_set_sensitive(lookup_widget(commander_window,"mono16_bpp"),cond16&&
 			   (uiinfo->stereo==NO_STEREO_DECODING)&&(uiinfo->bayer==NO_BAYER_DECODING));
