@@ -99,45 +99,45 @@ NewCamera(void) {
 }
 
 void
-GetCameraData(raw1394handle_t handle, nodeid_t node, camera_t* camera) {
+GetCameraData(raw1394handle_t handle, nodeid_t node, camera_t* cam) {
 
-  if (dc1394_get_camera_info(handle, node, &camera->camera_info)!=DC1394_SUCCESS)
+  if (dc1394_get_camera_info(handle, node, &cam->camera_info)!=DC1394_SUCCESS)
     MainError("Could not get camera basic information!");
-  if (dc1394_get_camera_misc_info(handle, camera->camera_info.id, &camera->misc_info)!=DC1394_SUCCESS)
+  if (dc1394_get_camera_misc_info(handle, cam->camera_info.id, &cam->misc_info)!=DC1394_SUCCESS)
     MainError("Could not get camera misc information!");
-  if (dc1394_get_camera_feature_set(handle, camera->camera_info.id, &camera->feature_set)!=DC1394_SUCCESS)
+  if (dc1394_get_camera_feature_set(handle, cam->camera_info.id, &cam->feature_set)!=DC1394_SUCCESS)
     MainError("Could not get camera feature information!");
-  GetFormat7Capabilities(handle, camera->camera_info.id, &camera->format7_info);
-  camera->image_pipe=NULL;
-  pthread_mutex_lock(&camera->uimutex);
-  camera->want_to_display=0;
-  camera->bayer=NO_BAYER_DECODING;
-  camera->stereo=NO_STEREO_DECODING;
-  camera->bpp=8;
+  GetFormat7Capabilities(handle, cam->camera_info.id, &cam->format7_info);
+  cam->image_pipe=NULL;
+  pthread_mutex_lock(&cam->uimutex);
+  cam->want_to_display=0;
+  cam->bayer=NO_BAYER_DECODING;
+  cam->stereo=NO_STEREO_DECODING;
+  cam->bpp=8;
   //fprintf(stderr,"Got camera data\n");
-  pthread_mutex_unlock(&camera->uimutex);
+  pthread_mutex_unlock(&cam->uimutex);
 
 }
 
 void
-AppendCamera(camera_t* camera) {
+AppendCamera(camera_t* cam) {
 
   camera_t* ptr;
 
   // if first camera:
   if (cameras==NULL) {
-    cameras=camera;
-    camera->prev=NULL;
-    camera->next=NULL;
+    cameras=cam;
+    cam->prev=NULL;
+    cam->next=NULL;
   }
   else {
     ptr=cameras; 
     while(ptr->next!=NULL) {
       ptr=ptr->next;
     }
-    ptr->next=camera;
-    camera->prev=ptr;
-    camera->next=NULL;
+    ptr->next=cam;
+    cam->prev=ptr;
+    cam->next=NULL;
   }
 }
 
@@ -197,9 +197,36 @@ RemoveCamera(u_int64_t guid) {
 }
 
 void
-FreeCamera(camera_t* camera) {
+FreeCamera(camera_t* cam) {
 
-  free(camera);
-  camera=NULL;
+  free(cam);
+  cam=NULL;
 
 }
+/*
+int GetCameraBusUsage(camera_t* cam) {
+
+  dc1394bool_t iso;
+  unsigned long int bps;
+  // upadte iso status
+  
+  if (dc1394_get_iso_status(camera->camera_info.handle, camera->camera_info.id, &iso)!=DC1394_SUCCESS) {
+    MainError("Could not read camera iso status");
+  }
+  else {
+    camera->misc_info.is_iso_on = iso;
+    if (camera==cam) {
+      UpdateIsoFrame();
+    }
+  }
+
+  // if ISO is off, return zero immediately
+  if (camera->misc_info.is_iso_on==DC1394_FALSE) {
+    return(0);
+  }
+
+  // ISO is ON, let's see what we use.
+
+
+}
+*/

@@ -111,7 +111,7 @@ WatchStopThread(watchthread_info_t* info)
 void
 GetValidF7Crop(watchthread_info_t *wtinfo, chain_t* display_service) {
 
-  Format7ModeInfo* f7info;
+  Format7ModeInfo_t* f7info;
   int mov[2];
   
   if (camera->misc_info.format==FORMAT_SCALABLE_IMAGE_SIZE) {

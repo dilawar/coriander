@@ -50,7 +50,7 @@ GtkWidget *about_window;
 GtkWidget *help_window;
 GtkWidget *preferences_window;
 GtkWidget *waiting_camera_window;
-CtxtInfo ctxt;
+CtxtInfo_t ctxt;
 PrefsInfo preferences;
 int silent_ui_update;
 camera_t* camera;

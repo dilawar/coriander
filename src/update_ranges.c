@@ -225,7 +225,7 @@ void
 UpdateFormat7BppRange(void)
 {
   GtkAdjustment* adj;
-  Format7ModeInfo *info;
+  Format7ModeInfo_t *info;
   info=&camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN];
 
   if (dc1394_query_format7_byte_per_packet(camera->camera_info.handle,camera->camera_info.id,camera->format7_info.edit_mode, &info->bpp)==DC1394_SUCCESS) {
@@ -254,7 +254,7 @@ void
 UpdateFormat7Ranges(void)
 {
   GtkAdjustment  *adj;
-  Format7ModeInfo *info;
+  Format7ModeInfo_t *info;
   info=&camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN];
 
   //fprintf(stderr,"size: %d %d\n",info->max_size_x,info->max_size_y);

@@ -99,32 +99,32 @@ typedef struct _Format7ModeInfo
 
   unsigned long long int total_bytes;
 
-} Format7ModeInfo;
+} Format7ModeInfo_t;
 
 typedef struct _Format7Info
 {
-  Format7ModeInfo mode[NUM_MODE_FORMAT7];
+  Format7ModeInfo_t mode[NUM_MODE_FORMAT7];
   int edit_mode;
-
+  
   int scale_posx_handle;
   int scale_posy_handle;
   int scale_sizex_handle;
   int scale_sizey_handle;
-
-} Format7Info;
+  
+} Format7Info_t;
 
 typedef struct _CameraInfo_T {
   dc1394_camerainfo camera_info;
   dc1394_feature_set feature_set;
   dc1394_miscinfo misc_info;
   struct _Chain_T* image_pipe;
-  Format7Info format7_info;
+  Format7Info_t format7_info;
   SelfIdPacket_t selfid;
   char* name;
 
   // F7 data
-  Format7ModeInfo mode[NUM_MODE_FORMAT7];
-  int edit_mode;
+  Format7ModeInfo_t mode[NUM_MODE_FORMAT7];
+  //int edit_mode;
 
   // old uiinfo
   pthread_mutex_t uimutex;
@@ -200,7 +200,7 @@ typedef struct _StatusInfo
   char name[STRING_SIZE];
   quadlet_t guid;
   
-} StatusInfo;
+} StatusInfo_t;
 
 typedef struct _CtxtInfo
 {
@@ -249,7 +249,16 @@ typedef struct _CtxtInfo
   int fps_v4l_ctxt;
   int fps_v4l_id;
 
-} CtxtInfo;
+  int format7_imagebytes_id;
+  int format7_totalbytes_id;
+  int format7_imagepixels_id;
+  int format7_padding_id;
+  int format7_imagebytes_ctxt;
+  int format7_totalbytes_ctxt;
+  int format7_imagepixels_ctxt;
+  int format7_padding_ctxt;
+
+} CtxtInfo_t;
 
 #endif
 

@@ -89,6 +89,30 @@ create_main_window (void)
   GtkWidget *global_iso_stop;
   GtkWidget *global_iso_restart;
   GtkWidget *global_iso_start;
+  GtkWidget *frame2;
+  GtkWidget *table48;
+  GtkWidget *label1;
+  GtkWidget *label2;
+  GtkWidget *camera_model_status;
+  GtkWidget *camera_vendor_status;
+  GtkWidget *camera_dc_status;
+  GtkWidget *camera_maxiso_status;
+  GtkWidget *camera_handle_status;
+  GtkWidget *camera_pwclass_status;
+  GtkWidget *camera_delay_status;
+  GtkWidget *camera_node_status;
+  GtkWidget *label31;
+  GtkWidget *label93;
+  GtkWidget *camera_name_text;
+  GtkWidget *iso_channel_status;
+  GtkWidget *label34;
+  GtkWidget *label32;
+  GtkWidget *label3;
+  GtkWidget *label18;
+  GtkWidget *label35;
+  GtkWidget *label33;
+  GtkWidget *label17;
+  GtkWidget *camera_guid_status;
   GtkWidget *label56;
   GtkWidget *handlebox4;
   GtkWidget *vbox75;
@@ -285,12 +309,6 @@ create_main_window (void)
   GtkWidget *format7_packet_frame;
   GtkWidget *hbox57;
   GtkWidget *format7_packet_size;
-  GtkWidget *format7_frame_info_frame;
-  GtkWidget *table15;
-  GtkWidget *label14;
-  GtkWidget *label15;
-  GtkWidget *format7_byteperframe;
-  GtkWidget *format7_pixperframe;
   GtkWidget *format7_horizontal_frame;
   GtkWidget *table70;
   GtkWidget *label139;
@@ -303,33 +321,27 @@ create_main_window (void)
   GtkWidget *label142;
   GtkWidget *format7_vsize_scale;
   GtkWidget *format7_vposition_scale;
+  GtkWidget *format7_frame_info_frame;
+  GtkWidget *table15;
+  GtkWidget *label14;
+  GtkWidget *label15;
+  GtkWidget *format7_imagebytes;
+  GtkWidget *format7_imagepixels;
+  GtkWidget *label159;
+  GtkWidget *label160;
+  GtkWidget *format7_padding;
+  GtkWidget *format7_totalbytes;
   GtkWidget *label59;
   GtkWidget *handlebox5;
   GtkWidget *vbox72;
-  GtkWidget *frame2;
-  GtkWidget *table48;
-  GtkWidget *label1;
-  GtkWidget *label2;
-  GtkWidget *camera_model_status;
-  GtkWidget *camera_vendor_status;
-  GtkWidget *camera_dc_status;
-  GtkWidget *camera_maxiso_status;
-  GtkWidget *camera_handle_status;
-  GtkWidget *camera_pwclass_status;
-  GtkWidget *camera_delay_status;
-  GtkWidget *camera_node_status;
-  GtkWidget *label31;
-  GtkWidget *label93;
-  GtkWidget *camera_name_text;
-  GtkWidget *iso_channel_status;
-  GtkWidget *label34;
-  GtkWidget *label32;
-  GtkWidget *label3;
-  GtkWidget *label18;
-  GtkWidget *label35;
-  GtkWidget *label33;
-  GtkWidget *label17;
-  GtkWidget *camera_guid_status;
+  GtkWidget *frame10;
+  GtkWidget *table77;
+  GtkWidget *label157;
+  GtkWidget *label158;
+  GtkWidget *label156;
+  GtkWidget *ProgressBus1;
+  GtkWidget *ProgressBus2;
+  GtkWidget *ProgressBus3;
   GtkWidget *frame4;
   GtkWidget *hbox62;
   GtkWidget *table64;
@@ -427,7 +439,7 @@ create_main_window (void)
   gtk_widget_show (vbox74);
   gtk_container_add (GTK_CONTAINER (handlebox3), vbox74);
 
-  table58 = gtk_table_new (2, 2, FALSE);
+  table58 = gtk_table_new (3, 2, FALSE);
   gtk_widget_ref (table58);
   gtk_object_set_data_full (GTK_OBJECT (main_window), "table58", table58,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -619,6 +631,254 @@ create_main_window (void)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (global_iso_start), 2);
   gtk_widget_set_sensitive (global_iso_start, FALSE);
+
+  frame2 = gtk_frame_new (_("Camera information"));
+  gtk_widget_ref (frame2);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "frame2", frame2,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (frame2);
+  gtk_table_attach (GTK_TABLE (table58), frame2, 0, 2, 2, 3,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (frame2), 5);
+
+  table48 = gtk_table_new (8, 4, TRUE);
+  gtk_widget_ref (table48);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "table48", table48,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (table48);
+  gtk_container_add (GTK_CONTAINER (frame2), table48);
+  gtk_table_set_col_spacings (GTK_TABLE (table48), 2);
+
+  label1 = gtk_label_new (_("Vendor:"));
+  gtk_widget_ref (label1);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "label1", label1,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label1);
+  gtk_table_attach (GTK_TABLE (table48), label1, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_label_set_justify (GTK_LABEL (label1), GTK_JUSTIFY_LEFT);
+  gtk_misc_set_padding (GTK_MISC (label1), 2, 2);
+
+  label2 = gtk_label_new (_("Model:"));
+  gtk_widget_ref (label2);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "label2", label2,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label2);
+  gtk_table_attach (GTK_TABLE (table48), label2, 0, 1, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_label_set_justify (GTK_LABEL (label2), GTK_JUSTIFY_LEFT);
+  gtk_misc_set_padding (GTK_MISC (label2), 2, 2);
+
+  camera_model_status = gtk_statusbar_new ();
+  gtk_widget_ref (camera_model_status);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "camera_model_status", camera_model_status,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (camera_model_status);
+  gtk_table_attach (GTK_TABLE (table48), camera_model_status, 1, 4, 1, 2,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (camera_model_status), 2);
+
+  camera_vendor_status = gtk_statusbar_new ();
+  gtk_widget_ref (camera_vendor_status);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "camera_vendor_status", camera_vendor_status,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (camera_vendor_status);
+  gtk_table_attach (GTK_TABLE (table48), camera_vendor_status, 1, 4, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (camera_vendor_status), 2);
+
+  camera_dc_status = gtk_statusbar_new ();
+  gtk_widget_ref (camera_dc_status);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "camera_dc_status", camera_dc_status,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (camera_dc_status);
+  gtk_table_attach (GTK_TABLE (table48), camera_dc_status, 1, 2, 6, 7,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (camera_dc_status), 2);
+
+  camera_maxiso_status = gtk_statusbar_new ();
+  gtk_widget_ref (camera_maxiso_status);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "camera_maxiso_status", camera_maxiso_status,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (camera_maxiso_status);
+  gtk_table_attach (GTK_TABLE (table48), camera_maxiso_status, 1, 2, 5, 6,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (camera_maxiso_status), 2);
+
+  camera_handle_status = gtk_statusbar_new ();
+  gtk_widget_ref (camera_handle_status);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "camera_handle_status", camera_handle_status,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (camera_handle_status);
+  gtk_table_attach (GTK_TABLE (table48), camera_handle_status, 1, 2, 4, 5,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (camera_handle_status), 2);
+
+  camera_pwclass_status = gtk_statusbar_new ();
+  gtk_widget_ref (camera_pwclass_status);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "camera_pwclass_status", camera_pwclass_status,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (camera_pwclass_status);
+  gtk_table_attach (GTK_TABLE (table48), camera_pwclass_status, 3, 4, 6, 7,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (camera_pwclass_status), 2);
+
+  camera_delay_status = gtk_statusbar_new ();
+  gtk_widget_ref (camera_delay_status);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "camera_delay_status", camera_delay_status,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (camera_delay_status);
+  gtk_table_attach (GTK_TABLE (table48), camera_delay_status, 3, 4, 5, 6,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (camera_delay_status), 2);
+
+  camera_node_status = gtk_statusbar_new ();
+  gtk_widget_ref (camera_node_status);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "camera_node_status", camera_node_status,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (camera_node_status);
+  gtk_table_attach (GTK_TABLE (table48), camera_node_status, 3, 4, 4, 5,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (camera_node_status), 2);
+
+  label31 = gtk_label_new (_("GUID:"));
+  gtk_widget_ref (label31);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "label31", label31,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label31);
+  gtk_table_attach (GTK_TABLE (table48), label31, 0, 1, 2, 3,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_label_set_justify (GTK_LABEL (label31), GTK_JUSTIFY_LEFT);
+  gtk_misc_set_padding (GTK_MISC (label31), 2, 2);
+
+  label93 = gtk_label_new (_("Name:"));
+  gtk_widget_ref (label93);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "label93", label93,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label93);
+  gtk_table_attach (GTK_TABLE (table48), label93, 0, 1, 3, 4,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_label_set_justify (GTK_LABEL (label93), GTK_JUSTIFY_LEFT);
+  gtk_misc_set_padding (GTK_MISC (label93), 2, 2);
+
+  camera_name_text = gtk_entry_new_with_max_length (2048);
+  gtk_widget_ref (camera_name_text);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "camera_name_text", camera_name_text,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (camera_name_text);
+  gtk_table_attach (GTK_TABLE (table48), camera_name_text, 1, 4, 3, 4,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 2, 0);
+
+  iso_channel_status = gtk_statusbar_new ();
+  gtk_widget_ref (iso_channel_status);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "iso_channel_status", iso_channel_status,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (iso_channel_status);
+  gtk_table_attach (GTK_TABLE (table48), iso_channel_status, 1, 2, 7, 8,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (iso_channel_status), 2);
+
+  label34 = gtk_label_new (_("IIDC specs:"));
+  gtk_widget_ref (label34);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "label34", label34,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label34);
+  gtk_table_attach (GTK_TABLE (table48), label34, 0, 1, 6, 7,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_label_set_justify (GTK_LABEL (label34), GTK_JUSTIFY_LEFT);
+  gtk_misc_set_padding (GTK_MISC (label34), 2, 2);
+
+  label32 = gtk_label_new (_("PHY speed:"));
+  gtk_widget_ref (label32);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "label32", label32,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label32);
+  gtk_table_attach (GTK_TABLE (table48), label32, 0, 1, 5, 6,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_label_set_justify (GTK_LABEL (label32), GTK_JUSTIFY_LEFT);
+  gtk_misc_set_padding (GTK_MISC (label32), 2, 2);
+
+  label3 = gtk_label_new (_("Handle:"));
+  gtk_widget_ref (label3);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "label3", label3,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label3);
+  gtk_table_attach (GTK_TABLE (table48), label3, 0, 1, 4, 5,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_label_set_justify (GTK_LABEL (label3), GTK_JUSTIFY_LEFT);
+  gtk_misc_set_padding (GTK_MISC (label3), 2, 2);
+
+  label18 = gtk_label_new (_("ISO Channel:"));
+  gtk_widget_ref (label18);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "label18", label18,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label18);
+  gtk_table_attach (GTK_TABLE (table48), label18, 0, 1, 7, 8,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_label_set_justify (GTK_LABEL (label18), GTK_JUSTIFY_LEFT);
+  gtk_misc_set_padding (GTK_MISC (label18), 2, 2);
+
+  label35 = gtk_label_new (_("Power:"));
+  gtk_widget_ref (label35);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "label35", label35,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label35);
+  gtk_table_attach (GTK_TABLE (table48), label35, 2, 3, 6, 7,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_label_set_justify (GTK_LABEL (label35), GTK_JUSTIFY_LEFT);
+  gtk_misc_set_padding (GTK_MISC (label35), 2, 2);
+
+  label33 = gtk_label_new (_("PHY delay:"));
+  gtk_widget_ref (label33);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "label33", label33,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label33);
+  gtk_table_attach (GTK_TABLE (table48), label33, 2, 3, 5, 6,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_label_set_justify (GTK_LABEL (label33), GTK_JUSTIFY_LEFT);
+  gtk_misc_set_padding (GTK_MISC (label33), 2, 2);
+
+  label17 = gtk_label_new (_("Node:"));
+  gtk_widget_ref (label17);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "label17", label17,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label17);
+  gtk_table_attach (GTK_TABLE (table48), label17, 2, 3, 4, 5,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_label_set_justify (GTK_LABEL (label17), GTK_JUSTIFY_LEFT);
+  gtk_misc_set_padding (GTK_MISC (label17), 2, 2);
+
+  camera_guid_status = gtk_statusbar_new ();
+  gtk_widget_ref (camera_guid_status);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "camera_guid_status", camera_guid_status,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (camera_guid_status);
+  gtk_table_attach (GTK_TABLE (table48), camera_guid_status, 1, 4, 2, 3,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (camera_guid_status), 2);
 
   label56 = gtk_label_new (_("Camera"));
   gtk_widget_ref (label56);
@@ -2185,59 +2445,6 @@ create_main_window (void)
   gtk_box_pack_start (GTK_BOX (hbox57), format7_packet_size, TRUE, TRUE, 0);
   gtk_scale_set_digits (GTK_SCALE (format7_packet_size), 0);
 
-  format7_frame_info_frame = gtk_frame_new (_("Frame info"));
-  gtk_widget_ref (format7_frame_info_frame);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "format7_frame_info_frame", format7_frame_info_frame,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (format7_frame_info_frame);
-  gtk_box_pack_start (GTK_BOX (vbox34), format7_frame_info_frame, FALSE, TRUE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (format7_frame_info_frame), 5);
-
-  table15 = gtk_table_new (2, 2, FALSE);
-  gtk_widget_ref (table15);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "table15", table15,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (table15);
-  gtk_container_add (GTK_CONTAINER (format7_frame_info_frame), table15);
-
-  label14 = gtk_label_new (_("Pixels per frame :  "));
-  gtk_widget_ref (label14);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "label14", label14,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label14);
-  gtk_table_attach (GTK_TABLE (table15), label14, 0, 1, 0, 1,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_misc_set_padding (GTK_MISC (label14), 2, 2);
-
-  label15 = gtk_label_new (_("Bytes per frame :  "));
-  gtk_widget_ref (label15);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "label15", label15,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label15);
-  gtk_table_attach (GTK_TABLE (table15), label15, 0, 1, 1, 2,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_misc_set_padding (GTK_MISC (label15), 2, 2);
-
-  format7_byteperframe = gtk_statusbar_new ();
-  gtk_widget_ref (format7_byteperframe);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "format7_byteperframe", format7_byteperframe,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (format7_byteperframe);
-  gtk_table_attach (GTK_TABLE (table15), format7_byteperframe, 1, 2, 1, 2,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (GTK_FILL), 2, 2);
-
-  format7_pixperframe = gtk_statusbar_new ();
-  gtk_widget_ref (format7_pixperframe);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "format7_pixperframe", format7_pixperframe,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (format7_pixperframe);
-  gtk_table_attach (GTK_TABLE (table15), format7_pixperframe, 1, 2, 0, 1,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 2, 2);
-
   format7_horizontal_frame = gtk_frame_new (_("Horizontal setup"));
   gtk_widget_ref (format7_horizontal_frame);
   gtk_object_set_data_full (GTK_OBJECT (main_window), "format7_horizontal_frame", format7_horizontal_frame,
@@ -2352,6 +2559,97 @@ create_main_window (void)
                     (GtkAttachOptions) (GTK_FILL), 0, 0);
   gtk_scale_set_digits (GTK_SCALE (format7_vposition_scale), 0);
 
+  format7_frame_info_frame = gtk_frame_new (_("Frame info [bytes]"));
+  gtk_widget_ref (format7_frame_info_frame);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "format7_frame_info_frame", format7_frame_info_frame,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (format7_frame_info_frame);
+  gtk_box_pack_start (GTK_BOX (vbox34), format7_frame_info_frame, FALSE, TRUE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (format7_frame_info_frame), 5);
+
+  table15 = gtk_table_new (2, 4, TRUE);
+  gtk_widget_ref (table15);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "table15", table15,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (table15);
+  gtk_container_add (GTK_CONTAINER (format7_frame_info_frame), table15);
+
+  label14 = gtk_label_new (_("Image pixels :  "));
+  gtk_widget_ref (label14);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "label14", label14,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label14);
+  gtk_table_attach (GTK_TABLE (table15), label14, 0, 1, 0, 1,
+                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_padding (GTK_MISC (label14), 2, 2);
+
+  label15 = gtk_label_new (_("Image size :  "));
+  gtk_widget_ref (label15);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "label15", label15,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label15);
+  gtk_table_attach (GTK_TABLE (table15), label15, 0, 1, 1, 2,
+                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_padding (GTK_MISC (label15), 2, 2);
+
+  format7_imagebytes = gtk_statusbar_new ();
+  gtk_widget_ref (format7_imagebytes);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "format7_imagebytes", format7_imagebytes,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (format7_imagebytes);
+  gtk_table_attach (GTK_TABLE (table15), format7_imagebytes, 1, 2, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 2, 2);
+
+  format7_imagepixels = gtk_statusbar_new ();
+  gtk_widget_ref (format7_imagepixels);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "format7_imagepixels", format7_imagepixels,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (format7_imagepixels);
+  gtk_table_attach (GTK_TABLE (table15), format7_imagepixels, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 2, 2);
+
+  label159 = gtk_label_new (_("Padding :  "));
+  gtk_widget_ref (label159);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "label159", label159,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label159);
+  gtk_table_attach (GTK_TABLE (table15), label159, 2, 3, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_padding (GTK_MISC (label159), 2, 2);
+
+  label160 = gtk_label_new (_("Total size:  "));
+  gtk_widget_ref (label160);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "label160", label160,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label160);
+  gtk_table_attach (GTK_TABLE (table15), label160, 2, 3, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_padding (GTK_MISC (label160), 2, 2);
+
+  format7_padding = gtk_statusbar_new ();
+  gtk_widget_ref (format7_padding);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "format7_padding", format7_padding,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (format7_padding);
+  gtk_table_attach (GTK_TABLE (table15), format7_padding, 3, 4, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  format7_totalbytes = gtk_statusbar_new ();
+  gtk_widget_ref (format7_totalbytes);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "format7_totalbytes", format7_totalbytes,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (format7_totalbytes);
+  gtk_table_attach (GTK_TABLE (table15), format7_totalbytes, 3, 4, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
   label59 = gtk_label_new (_("Format 7"));
   gtk_widget_ref (label59);
   gtk_object_set_data_full (GTK_OBJECT (main_window), "label59", label59,
@@ -2373,251 +2671,78 @@ create_main_window (void)
   gtk_widget_show (vbox72);
   gtk_container_add (GTK_CONTAINER (handlebox5), vbox72);
 
-  frame2 = gtk_frame_new (_("Status"));
-  gtk_widget_ref (frame2);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "frame2", frame2,
+  frame10 = gtk_frame_new (_("Camera bandwidth usage"));
+  gtk_widget_ref (frame10);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "frame10", frame10,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (frame2);
-  gtk_box_pack_start (GTK_BOX (vbox72), frame2, FALSE, FALSE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (frame2), 5);
+  gtk_widget_show (frame10);
+  gtk_box_pack_start (GTK_BOX (vbox72), frame10, FALSE, FALSE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (frame10), 5);
 
-  table48 = gtk_table_new (8, 4, TRUE);
-  gtk_widget_ref (table48);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "table48", table48,
+  table77 = gtk_table_new (3, 5, TRUE);
+  gtk_widget_ref (table77);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "table77", table77,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (table48);
-  gtk_container_add (GTK_CONTAINER (frame2), table48);
-  gtk_table_set_col_spacings (GTK_TABLE (table48), 2);
+  gtk_widget_show (table77);
+  gtk_container_add (GTK_CONTAINER (frame10), table77);
+  gtk_table_set_col_spacings (GTK_TABLE (table77), 2);
 
-  label1 = gtk_label_new (_("Vendor:"));
-  gtk_widget_ref (label1);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "label1", label1,
+  label157 = gtk_label_new (_("Bus 2:"));
+  gtk_widget_ref (label157);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "label157", label157,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label1);
-  gtk_table_attach (GTK_TABLE (table48), label1, 0, 1, 0, 1,
+  gtk_widget_show (label157);
+  gtk_table_attach (GTK_TABLE (table77), label157, 0, 1, 1, 2,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_label_set_justify (GTK_LABEL (label1), GTK_JUSTIFY_LEFT);
-  gtk_misc_set_padding (GTK_MISC (label1), 2, 2);
+  gtk_misc_set_padding (GTK_MISC (label157), 2, 2);
 
-  label2 = gtk_label_new (_("Model:"));
-  gtk_widget_ref (label2);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "label2", label2,
+  label158 = gtk_label_new (_("Bus 3:"));
+  gtk_widget_ref (label158);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "label158", label158,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label2);
-  gtk_table_attach (GTK_TABLE (table48), label2, 0, 1, 1, 2,
+  gtk_widget_show (label158);
+  gtk_table_attach (GTK_TABLE (table77), label158, 0, 1, 2, 3,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_label_set_justify (GTK_LABEL (label2), GTK_JUSTIFY_LEFT);
-  gtk_misc_set_padding (GTK_MISC (label2), 2, 2);
+  gtk_misc_set_padding (GTK_MISC (label158), 2, 2);
 
-  camera_model_status = gtk_statusbar_new ();
-  gtk_widget_ref (camera_model_status);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "camera_model_status", camera_model_status,
+  label156 = gtk_label_new (_("Bus 1:"));
+  gtk_widget_ref (label156);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "label156", label156,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (camera_model_status);
-  gtk_table_attach (GTK_TABLE (table48), camera_model_status, 1, 4, 1, 2,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (camera_model_status), 2);
-
-  camera_vendor_status = gtk_statusbar_new ();
-  gtk_widget_ref (camera_vendor_status);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "camera_vendor_status", camera_vendor_status,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (camera_vendor_status);
-  gtk_table_attach (GTK_TABLE (table48), camera_vendor_status, 1, 4, 0, 1,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (camera_vendor_status), 2);
-
-  camera_dc_status = gtk_statusbar_new ();
-  gtk_widget_ref (camera_dc_status);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "camera_dc_status", camera_dc_status,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (camera_dc_status);
-  gtk_table_attach (GTK_TABLE (table48), camera_dc_status, 1, 2, 6, 7,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (camera_dc_status), 2);
-
-  camera_maxiso_status = gtk_statusbar_new ();
-  gtk_widget_ref (camera_maxiso_status);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "camera_maxiso_status", camera_maxiso_status,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (camera_maxiso_status);
-  gtk_table_attach (GTK_TABLE (table48), camera_maxiso_status, 1, 2, 5, 6,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (camera_maxiso_status), 2);
-
-  camera_handle_status = gtk_statusbar_new ();
-  gtk_widget_ref (camera_handle_status);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "camera_handle_status", camera_handle_status,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (camera_handle_status);
-  gtk_table_attach (GTK_TABLE (table48), camera_handle_status, 1, 2, 4, 5,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (camera_handle_status), 2);
-
-  camera_pwclass_status = gtk_statusbar_new ();
-  gtk_widget_ref (camera_pwclass_status);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "camera_pwclass_status", camera_pwclass_status,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (camera_pwclass_status);
-  gtk_table_attach (GTK_TABLE (table48), camera_pwclass_status, 3, 4, 6, 7,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (camera_pwclass_status), 2);
-
-  camera_delay_status = gtk_statusbar_new ();
-  gtk_widget_ref (camera_delay_status);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "camera_delay_status", camera_delay_status,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (camera_delay_status);
-  gtk_table_attach (GTK_TABLE (table48), camera_delay_status, 3, 4, 5, 6,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (camera_delay_status), 2);
-
-  camera_node_status = gtk_statusbar_new ();
-  gtk_widget_ref (camera_node_status);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "camera_node_status", camera_node_status,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (camera_node_status);
-  gtk_table_attach (GTK_TABLE (table48), camera_node_status, 3, 4, 4, 5,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (camera_node_status), 2);
-
-  label31 = gtk_label_new (_("GUID:"));
-  gtk_widget_ref (label31);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "label31", label31,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label31);
-  gtk_table_attach (GTK_TABLE (table48), label31, 0, 1, 2, 3,
+  gtk_widget_show (label156);
+  gtk_table_attach (GTK_TABLE (table77), label156, 0, 1, 0, 1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_label_set_justify (GTK_LABEL (label31), GTK_JUSTIFY_LEFT);
-  gtk_misc_set_padding (GTK_MISC (label31), 2, 2);
+  gtk_misc_set_padding (GTK_MISC (label156), 2, 2);
 
-  label93 = gtk_label_new (_("Name:"));
-  gtk_widget_ref (label93);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "label93", label93,
+  ProgressBus1 = gtk_progress_bar_new ();
+  gtk_widget_ref (ProgressBus1);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "ProgressBus1", ProgressBus1,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label93);
-  gtk_table_attach (GTK_TABLE (table48), label93, 0, 1, 3, 4,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_label_set_justify (GTK_LABEL (label93), GTK_JUSTIFY_LEFT);
-  gtk_misc_set_padding (GTK_MISC (label93), 2, 2);
-
-  camera_name_text = gtk_entry_new_with_max_length (2048);
-  gtk_widget_ref (camera_name_text);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "camera_name_text", camera_name_text,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (camera_name_text);
-  gtk_table_attach (GTK_TABLE (table48), camera_name_text, 1, 4, 3, 4,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 2, 0);
-
-  iso_channel_status = gtk_statusbar_new ();
-  gtk_widget_ref (iso_channel_status);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "iso_channel_status", iso_channel_status,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (iso_channel_status);
-  gtk_table_attach (GTK_TABLE (table48), iso_channel_status, 1, 2, 7, 8,
+  gtk_widget_show (ProgressBus1);
+  gtk_table_attach (GTK_TABLE (table77), ProgressBus1, 1, 5, 0, 1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (iso_channel_status), 2);
 
-  label34 = gtk_label_new (_("IIDC specs:"));
-  gtk_widget_ref (label34);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "label34", label34,
+  ProgressBus2 = gtk_progress_bar_new ();
+  gtk_widget_ref (ProgressBus2);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "ProgressBus2", ProgressBus2,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label34);
-  gtk_table_attach (GTK_TABLE (table48), label34, 0, 1, 6, 7,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_label_set_justify (GTK_LABEL (label34), GTK_JUSTIFY_LEFT);
-  gtk_misc_set_padding (GTK_MISC (label34), 2, 2);
-
-  label32 = gtk_label_new (_("PHY speed:"));
-  gtk_widget_ref (label32);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "label32", label32,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label32);
-  gtk_table_attach (GTK_TABLE (table48), label32, 0, 1, 5, 6,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_label_set_justify (GTK_LABEL (label32), GTK_JUSTIFY_LEFT);
-  gtk_misc_set_padding (GTK_MISC (label32), 2, 2);
-
-  label3 = gtk_label_new (_("Handle:"));
-  gtk_widget_ref (label3);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "label3", label3,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label3);
-  gtk_table_attach (GTK_TABLE (table48), label3, 0, 1, 4, 5,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_label_set_justify (GTK_LABEL (label3), GTK_JUSTIFY_LEFT);
-  gtk_misc_set_padding (GTK_MISC (label3), 2, 2);
-
-  label18 = gtk_label_new (_("ISO Channel:"));
-  gtk_widget_ref (label18);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "label18", label18,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label18);
-  gtk_table_attach (GTK_TABLE (table48), label18, 0, 1, 7, 8,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_label_set_justify (GTK_LABEL (label18), GTK_JUSTIFY_LEFT);
-  gtk_misc_set_padding (GTK_MISC (label18), 2, 2);
-
-  label35 = gtk_label_new (_("Power:"));
-  gtk_widget_ref (label35);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "label35", label35,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label35);
-  gtk_table_attach (GTK_TABLE (table48), label35, 2, 3, 6, 7,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_label_set_justify (GTK_LABEL (label35), GTK_JUSTIFY_LEFT);
-  gtk_misc_set_padding (GTK_MISC (label35), 2, 2);
-
-  label33 = gtk_label_new (_("PHY delay:"));
-  gtk_widget_ref (label33);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "label33", label33,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label33);
-  gtk_table_attach (GTK_TABLE (table48), label33, 2, 3, 5, 6,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_label_set_justify (GTK_LABEL (label33), GTK_JUSTIFY_LEFT);
-  gtk_misc_set_padding (GTK_MISC (label33), 2, 2);
-
-  label17 = gtk_label_new (_("Node:"));
-  gtk_widget_ref (label17);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "label17", label17,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label17);
-  gtk_table_attach (GTK_TABLE (table48), label17, 2, 3, 4, 5,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_label_set_justify (GTK_LABEL (label17), GTK_JUSTIFY_LEFT);
-  gtk_misc_set_padding (GTK_MISC (label17), 2, 2);
-
-  camera_guid_status = gtk_statusbar_new ();
-  gtk_widget_ref (camera_guid_status);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "camera_guid_status", camera_guid_status,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (camera_guid_status);
-  gtk_table_attach (GTK_TABLE (table48), camera_guid_status, 1, 4, 2, 3,
+  gtk_widget_show (ProgressBus2);
+  gtk_table_attach (GTK_TABLE (table77), ProgressBus2, 1, 5, 1, 2,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (camera_guid_status), 2);
+
+  ProgressBus3 = gtk_progress_bar_new ();
+  gtk_widget_ref (ProgressBus3);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "ProgressBus3", ProgressBus3,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (ProgressBus3);
+  gtk_table_attach (GTK_TABLE (table77), ProgressBus3, 1, 5, 2, 3,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
 
   frame4 = gtk_frame_new (_("Cursor"));
   gtk_widget_ref (frame4);
@@ -2780,6 +2905,9 @@ create_main_window (void)
   gtk_signal_connect (GTK_OBJECT (global_iso_start), "clicked",
                       GTK_SIGNAL_FUNC (on_global_iso_start_clicked),
                       NULL);
+  gtk_signal_connect (GTK_OBJECT (camera_name_text), "changed",
+                      GTK_SIGNAL_FUNC (on_camera_name_text_changed),
+                      NULL);
   gtk_signal_connect (GTK_OBJECT (service_iso), "toggled",
                       GTK_SIGNAL_FUNC (on_service_iso_toggled),
                       NULL);
@@ -2911,9 +3039,6 @@ create_main_window (void)
                       NULL);
   gtk_signal_connect (GTK_OBJECT (prefs_ftp_num_tag), "toggled",
                       GTK_SIGNAL_FUNC (on_prefs_ftp_num_tag_toggled),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (camera_name_text), "changed",
-                      GTK_SIGNAL_FUNC (on_camera_name_text_changed),
                       NULL);
 
   gtk_object_set_data (GTK_OBJECT (main_window), "tooltips", tooltips);

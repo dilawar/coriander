@@ -17,8 +17,7 @@ _______________________________________________________________________________
 
 - features:
 	- add FORMAT_6 capabilities
-	- add auto-lock, man-lock and current-setup-lock functions
-	- some status window features missing
+	- add auto-lock, man-lock and current-setup-lock function
 
 - misc stuff:
 	- add some artwork in the buttons for clearer presentation

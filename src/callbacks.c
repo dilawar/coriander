@@ -318,6 +318,8 @@ on_format7_packet_size_changed               (GtkAdjustment    *adj,
       usleep(50e3);
     }
 
+    GetFormat7ModeInfo(camera->camera_info.handle, camera->camera_info.id, camera->format7_info.edit_mode, &camera->format7_info);
+    UpdateFormat7InfoFrame();
     IsoFlowResume(&state);
     
   }
@@ -328,6 +330,7 @@ on_edit_format7_mode_activate             (GtkMenuItem     *menuitem,
 					   gpointer         user_data)
 {
   camera->format7_info.edit_mode=(int)user_data;
+  GetFormat7ModeInfo(camera->camera_info.handle, camera->camera_info.id, camera->format7_info.edit_mode, &camera->format7_info);
   UpdateFormat7Window();
 }
 
@@ -348,9 +351,11 @@ on_edit_format7_color_activate             (GtkMenuItem     *menuitem,
 
   // if the mode is the 'live' mode:
   if (camera->format7_info.edit_mode==camera->misc_info.mode) {
+    GetFormat7ModeInfo(camera->camera_info.handle, camera->camera_info.id, camera->format7_info.edit_mode, &camera->format7_info);
     UpdateOptionFrame();
     UpdateFormat7BppRange();
     UpdateFormat7Ranges();
+    UpdateFormat7InfoFrame();
     IsoFlowResume(&state);
   }
 
@@ -407,7 +412,7 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
 				       gpointer         user_data)
 {
   int sx, sy, px, py;
-  Format7ModeInfo* info;
+  Format7ModeInfo_t* info;
   //fprintf(stderr,"%d\n",camera->format7_info.edit_mode);
   if (camera->format7_info.edit_mode>=0) { // check if F7 is supported
     info=&camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN];
@@ -448,7 +453,9 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
     
     //fprintf(stderr,"Size: %d %d  Position: %d %d\n",info->size_x, info->size_y, info->pos_x, info->pos_y);
     // update bpp range here.
+    GetFormat7ModeInfo(camera->camera_info.handle, camera->camera_info.id, camera->format7_info.edit_mode, &camera->format7_info);
     UpdateFormat7BppRange();
+    UpdateFormat7InfoFrame();
   }
 }
 

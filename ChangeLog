@@ -2,6 +2,10 @@ Coriander, (c) 2000-2003 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 1.0.0
 
+   December 21, 2003, by Damien Douxchamps
+   - the information about the format7 frame is now updated
+   - little change in layout: camera info is now on first tab.
+	
    December 16, 2003, by Damien Douxchamps
    - properly restart ISO after camera removal
    - fix problem when switching images sizes with 'm' key

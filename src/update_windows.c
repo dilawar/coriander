@@ -27,9 +27,8 @@ UpdateFormat7Window(void)
   UpdateFormat7Ranges();
   UpdateFormat7BppRange();
   BuildFormat7ColorMenu();
+  UpdateFormat7InfoFrame();
 
-  // TODO:
-  // update values in data fields
 }
 
 void
@@ -83,4 +82,5 @@ UpdateAllWindows(void)
   UpdateFeatureWindow();
   UpdateStatusWindow();
   UpdateCommanderWindow();
+  UpdateFormat7Window();
 }

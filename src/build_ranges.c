@@ -376,7 +376,7 @@ BuildFormat7Ranges(void)
 {
   
   GtkAdjustment  *adjustment_px, *adjustment_py, *adjustment_sx, *adjustment_sy;
-  Format7ModeInfo *info;
+  Format7ModeInfo_t *info;
   
   info=&camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN];
 
@@ -427,7 +427,7 @@ void
 BuildFormat7BppRange(void)
 { 
   GtkAdjustment *adjustment_packet;
-  Format7ModeInfo *info;
+  Format7ModeInfo_t *info;
   info=&camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN];
   // define adjustment for packet size:
   adjustment_packet=(GtkAdjustment*)gtk_adjustment_new(info->bpp,info->min_bpp,info->max_bpp,1,(info->max_bpp-info->min_bpp)/16,0);

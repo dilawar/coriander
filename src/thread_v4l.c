@@ -21,7 +21,7 @@
 
 extern PrefsInfo preferences;
 extern GtkWidget *main_window;
-extern CtxtInfo ctxt;
+extern CtxtInfo_t ctxt;
 extern camera_t* camera;
 
 gint

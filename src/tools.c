@@ -39,7 +39,7 @@ extern char* fps_label_list[NUM_FRAMERATES];
 extern camera_t* camera;
 extern camera_t* cameras;
 extern int camera_num;
-extern CtxtInfo ctxt;
+extern CtxtInfo_t ctxt;
 extern raw1394handle_t* handles;
 extern unsigned int main_timeout_ticker;
 extern int WM_cancel_display;
@@ -48,7 +48,7 @@ extern BusInfo_t* businfo;
 extern GtkWidget *waiting_camera_window;
 
 void
-GetFormat7Capabilities(raw1394handle_t handle, nodeid_t node, Format7Info *info)
+GetFormat7Capabilities(raw1394handle_t handle, nodeid_t node, Format7Info_t *info)
 {
   int i, f;
   quadlet_t value;
@@ -61,43 +61,9 @@ GetFormat7Capabilities(raw1394handle_t handle, nodeid_t node, Format7Info *info)
 	MainError("Could not query Format7 supported modes");
       }
       else {
-	for (i=0,f=MODE_FORMAT7_MIN;f<=MODE_FORMAT7_MAX;f++,i++) {
-	  info->mode[i].present= (value & (0x1<<(31-i)) );
-	  if (info->mode[i].present>0) { // check for mode presence before query
-	    if (dc1394_query_format7_max_image_size(handle,node,f,&info->mode[i].max_size_x,&info->mode[i].max_size_y)!=DC1394_SUCCESS)
-	      MainError("Got a problem querying format7 max image size");
-	    if (dc1394_query_format7_unit_size(handle,node,f,&info->mode[i].step_x,&info->mode[i].step_y)!=DC1394_SUCCESS)
-	      MainError("Got a problem querying format7 unit size");
-	    // quick hack to keep size/position even. If pos/size is ODD, strange color/distorsions occur on some cams
-	    // (e.g. Basler cams). This will have to really fixed later.
-	    // REM: this is fixed by using the unit_position:
-	    // fprintf(stderr,"Using pos units = %d %d\n",info->mode[i].step_pos_x,info->mode[i].step_pos_y);
-	    if (dc1394_query_format7_unit_position(handle,node,f,&info->mode[i].step_pos_x,&info->mode[i].step_pos_y)!=DC1394_SUCCESS)
-	      MainError("Got a problem querying format7 unit position");
-	    info->mode[i].use_unit_pos=((info->mode[i].step_pos_x>0)&&(info->mode[i].step_pos_x<info->mode[i].max_size_x)&&
-					(info->mode[i].step_pos_y>0)&&(info->mode[i].step_pos_y<info->mode[i].max_size_y));
-	    
-	    if (dc1394_query_format7_image_position(handle,node,f,&info->mode[i].pos_x,&info->mode[i].pos_y)!=DC1394_SUCCESS)
-	      MainError("Got a problem querying format7 image position");
-	    if (dc1394_query_format7_image_size(handle,node,f,&info->mode[i].size_x,&info->mode[i].size_y)!=DC1394_SUCCESS)
-	      MainError("Got a problem querying format7 image size");
-	    if (dc1394_query_format7_pixel_number(handle,node,f,&info->mode[i].pixnum)!=DC1394_SUCCESS)
-	      MainError("Got a problem querying format7 pixel number");
-	    if (dc1394_query_format7_byte_per_packet(handle,node,f,&info->mode[i].bpp)!=DC1394_SUCCESS)
-	      MainError("Got a problem querying format7 bytes per packet");
-	    if (dc1394_query_format7_packet_para(handle,node,f,&info->mode[i].min_bpp,&info->mode[i].max_bpp)!=DC1394_SUCCESS)
-	      MainError("Got a problem querying format7 packet parameters");
-	    if (dc1394_query_format7_total_bytes(handle,node,f,&info->mode[i].total_bytes)!=DC1394_SUCCESS)
-	      MainError("Got a problem querying format7 total bytes per frame");
-	    if (dc1394_query_format7_color_coding_id(handle,node,f,&info->mode[i].color_coding_id)!=DC1394_SUCCESS)
-	      MainError("Got a problem querying format7 color coding ID");
-	    if (dc1394_query_format7_color_coding(handle,node,f,&info->mode[i].color_coding)!=DC1394_SUCCESS)
-	      MainError("Got a problem querying format7 color coding");
-	    
-	    //fprintf(stderr,"color coding for mode %d: 0x%x, current: %d\n", i,
-	    //	      info->mode[i].color_coding, info->mode[i].color_coding_id);
-	    
-	  }
+	for (f=MODE_FORMAT7_MIN;f<=MODE_FORMAT7_MAX;f++) {
+	  info->mode[f-MODE_FORMAT7_MIN].present= (value & (0x1<<(31-(f-MODE_FORMAT7_MIN))) );
+	  GetFormat7ModeInfo(handle, node, f, info);
 	}
       }
     }
@@ -113,6 +79,48 @@ GetFormat7Capabilities(raw1394handle_t handle, nodeid_t node, Format7Info *info)
   //info->edit_mode = MODE_FORMAT7_MIN;
 }
 
+void
+GetFormat7ModeInfo(raw1394handle_t handle, nodeid_t node, int mode, Format7Info_t* info) 
+{
+  int i;
+  i=mode-MODE_FORMAT7_MIN;
+
+  if (info->mode[i].present>0) { // check for mode presence before query
+    if (dc1394_query_format7_max_image_size(handle,node,mode,&info->mode[i].max_size_x,&info->mode[i].max_size_y)!=DC1394_SUCCESS)
+      MainError("Got a problem querying format7 max image size");
+    if (dc1394_query_format7_unit_size(handle,node,mode,&info->mode[i].step_x,&info->mode[i].step_y)!=DC1394_SUCCESS)
+      MainError("Got a problem querying format7 unit size");
+    // quick hack to keep size/position even. If pos/size is ODD, strange color/distorsions occur on some cams
+    // (e.g. Basler cams). This will have to really fixed later.
+    // REM: this is fixed by using the unit_position:
+    // fprintf(stderr,"Using pos units = %d %d\n",info->mode[i].step_pos_x,info->mode[i].step_pos_y);
+    if (dc1394_query_format7_unit_position(handle,node,mode,&info->mode[i].step_pos_x,&info->mode[i].step_pos_y)!=DC1394_SUCCESS)
+      MainError("Got a problem querying format7 unit position");
+    info->mode[i].use_unit_pos=((info->mode[i].step_pos_x>0)&&(info->mode[i].step_pos_x<info->mode[i].max_size_x)&&
+				(info->mode[i].step_pos_y>0)&&(info->mode[i].step_pos_y<info->mode[i].max_size_y));
+    
+    if (dc1394_query_format7_image_position(handle,node,mode,&info->mode[i].pos_x,&info->mode[i].pos_y)!=DC1394_SUCCESS)
+      MainError("Got a problem querying format7 image position");
+    if (dc1394_query_format7_image_size(handle,node,mode,&info->mode[i].size_x,&info->mode[i].size_y)!=DC1394_SUCCESS)
+      MainError("Got a problem querying format7 image size");
+    if (dc1394_query_format7_byte_per_packet(handle,node,mode,&info->mode[i].bpp)!=DC1394_SUCCESS)
+      MainError("Got a problem querying format7 bytes per packet");
+    if (dc1394_query_format7_packet_para(handle,node,mode,&info->mode[i].min_bpp,&info->mode[i].max_bpp)!=DC1394_SUCCESS)
+      MainError("Got a problem querying format7 packet parameters");
+    if (dc1394_query_format7_pixel_number(handle,node,mode,&info->mode[i].pixnum)!=DC1394_SUCCESS)
+      MainError("Got a problem querying format7 pixel number");
+    if (dc1394_query_format7_total_bytes(handle,node,mode,&info->mode[i].total_bytes)!=DC1394_SUCCESS)
+      MainError("Got a problem querying format7 total bytes per frame");
+    if (dc1394_query_format7_color_coding_id(handle,node,mode,&info->mode[i].color_coding_id)!=DC1394_SUCCESS)
+      MainError("Got a problem querying format7 color coding ID");
+    if (dc1394_query_format7_color_coding(handle,node,mode,&info->mode[i].color_coding)!=DC1394_SUCCESS)
+      MainError("Got a problem querying format7 color coding");
+    
+    //fprintf(stderr,"color coding for mode %d: 0x%x, current: %d\n", i,
+    //	      info->mode[i].color_coding, info->mode[i].color_coding_id);
+    
+  }
+}
 void
 SwitchToNearestFPS(quadlet_t compat, int current) {
   int i;
@@ -327,7 +335,18 @@ void GetContextStatus()
   ctxt.fps_save_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(main_window,"fps_save"), ctxt.fps_save_ctxt, "");
   ctxt.fps_ftp_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(main_window,"fps_ftp"), ctxt.fps_ftp_ctxt, "");
   ctxt.fps_v4l_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(main_window,"fps_v4l"), ctxt.fps_v4l_ctxt, "");
-  
+
+
+  // format7:
+  ctxt.format7_imagebytes_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(main_window,"format7_imagebytes"),"");
+  ctxt.format7_totalbytes_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(main_window,"format7_totalbytes"),"");
+  ctxt.format7_padding_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(main_window,"format7_padding"),"");
+  ctxt.format7_imagepixels_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(main_window,"format7_imagepixels"),"");
+
+  ctxt.format7_imagebytes_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(main_window,"format7_imagebytes"), ctxt.format7_imagebytes_ctxt, "");
+  ctxt.format7_imagepixels_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(main_window,"format7_imagepixels"), ctxt.format7_imagepixels_ctxt, "");
+  ctxt.format7_totalbytes_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(main_window,"format7_totalbytes"), ctxt.format7_totalbytes_ctxt, "");
+  ctxt.format7_padding_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(main_window,"format7_padding"), ctxt.format7_padding_ctxt, "");
 }
 
 void GrabSelfIds(raw1394handle_t* handles, int portmax)
@@ -1047,7 +1066,7 @@ void
 SetFormat7Crop(int sx, int sy, int px, int py, int mode) {
 	
   int state;
-  Format7ModeInfo *info;
+  Format7ModeInfo_t *info;
   GtkAdjustment *adjsx, *adjsy, *adjpx, *adjpy;
 
   info=&camera->format7_info.mode[mode-MODE_FORMAT7_MIN];

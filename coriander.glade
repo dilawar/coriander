@@ -170,7 +170,7 @@
 	  <widget>
 	    <class>GtkTable</class>
 	    <name>table58</name>
-	    <rows>2</rows>
+	    <rows>3</rows>
 	    <columns>2</columns>
 	    <homogeneous>False</homogeneous>
 	    <row_spacing>0</row_spacing>
@@ -559,10 +559,554 @@
 		</widget>
 	      </widget>
 	    </widget>
-	  </widget>
 
-	  <widget>
-	    <class>Placeholder</class>
+	    <widget>
+	      <class>GtkFrame</class>
+	      <name>frame2</name>
+	      <border_width>5</border_width>
+	      <label>Camera information</label>
+	      <label_xalign>0</label_xalign>
+	      <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+	      <child>
+		<left_attach>0</left_attach>
+		<right_attach>2</right_attach>
+		<top_attach>2</top_attach>
+		<bottom_attach>3</bottom_attach>
+		<xpad>0</xpad>
+		<ypad>0</ypad>
+		<xexpand>False</xexpand>
+		<yexpand>True</yexpand>
+		<xshrink>False</xshrink>
+		<yshrink>False</yshrink>
+		<xfill>True</xfill>
+		<yfill>True</yfill>
+	      </child>
+
+	      <widget>
+		<class>GtkTable</class>
+		<name>table48</name>
+		<rows>8</rows>
+		<columns>4</columns>
+		<homogeneous>True</homogeneous>
+		<row_spacing>0</row_spacing>
+		<column_spacing>2</column_spacing>
+
+		<widget>
+		  <class>GtkLabel</class>
+		  <name>label1</name>
+		  <label>Vendor:</label>
+		  <justify>GTK_JUSTIFY_LEFT</justify>
+		  <wrap>False</wrap>
+		  <xalign>0.5</xalign>
+		  <yalign>0.5</yalign>
+		  <xpad>2</xpad>
+		  <ypad>2</ypad>
+		  <child>
+		    <left_attach>0</left_attach>
+		    <right_attach>1</right_attach>
+		    <top_attach>0</top_attach>
+		    <bottom_attach>1</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>False</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>True</xfill>
+		    <yfill>False</yfill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkLabel</class>
+		  <name>label2</name>
+		  <label>Model:</label>
+		  <justify>GTK_JUSTIFY_LEFT</justify>
+		  <wrap>False</wrap>
+		  <xalign>0.5</xalign>
+		  <yalign>0.5</yalign>
+		  <xpad>2</xpad>
+		  <ypad>2</ypad>
+		  <child>
+		    <left_attach>0</left_attach>
+		    <right_attach>1</right_attach>
+		    <top_attach>1</top_attach>
+		    <bottom_attach>2</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>False</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>True</xfill>
+		    <yfill>False</yfill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkStatusbar</class>
+		  <name>camera_model_status</name>
+		  <border_width>2</border_width>
+		  <child>
+		    <left_attach>1</left_attach>
+		    <right_attach>4</right_attach>
+		    <top_attach>1</top_attach>
+		    <bottom_attach>2</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>True</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>True</xfill>
+		    <yfill>False</yfill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkStatusbar</class>
+		  <name>camera_vendor_status</name>
+		  <border_width>2</border_width>
+		  <child>
+		    <left_attach>1</left_attach>
+		    <right_attach>4</right_attach>
+		    <top_attach>0</top_attach>
+		    <bottom_attach>1</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>True</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>True</xfill>
+		    <yfill>False</yfill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkStatusbar</class>
+		  <name>camera_dc_status</name>
+		  <border_width>2</border_width>
+		  <child>
+		    <left_attach>1</left_attach>
+		    <right_attach>2</right_attach>
+		    <top_attach>6</top_attach>
+		    <bottom_attach>7</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>True</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>True</xfill>
+		    <yfill>False</yfill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkStatusbar</class>
+		  <name>camera_maxiso_status</name>
+		  <border_width>2</border_width>
+		  <child>
+		    <left_attach>1</left_attach>
+		    <right_attach>2</right_attach>
+		    <top_attach>5</top_attach>
+		    <bottom_attach>6</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>True</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>True</xfill>
+		    <yfill>False</yfill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkStatusbar</class>
+		  <name>camera_handle_status</name>
+		  <border_width>2</border_width>
+		  <child>
+		    <left_attach>1</left_attach>
+		    <right_attach>2</right_attach>
+		    <top_attach>4</top_attach>
+		    <bottom_attach>5</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>True</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>True</xfill>
+		    <yfill>False</yfill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkStatusbar</class>
+		  <name>camera_pwclass_status</name>
+		  <border_width>2</border_width>
+		  <child>
+		    <left_attach>3</left_attach>
+		    <right_attach>4</right_attach>
+		    <top_attach>6</top_attach>
+		    <bottom_attach>7</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>True</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>True</xfill>
+		    <yfill>False</yfill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkStatusbar</class>
+		  <name>camera_delay_status</name>
+		  <border_width>2</border_width>
+		  <child>
+		    <left_attach>3</left_attach>
+		    <right_attach>4</right_attach>
+		    <top_attach>5</top_attach>
+		    <bottom_attach>6</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>True</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>True</xfill>
+		    <yfill>False</yfill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkStatusbar</class>
+		  <name>camera_node_status</name>
+		  <border_width>2</border_width>
+		  <child>
+		    <left_attach>3</left_attach>
+		    <right_attach>4</right_attach>
+		    <top_attach>4</top_attach>
+		    <bottom_attach>5</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>True</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>True</xfill>
+		    <yfill>False</yfill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkLabel</class>
+		  <name>label31</name>
+		  <label>GUID:</label>
+		  <justify>GTK_JUSTIFY_LEFT</justify>
+		  <wrap>False</wrap>
+		  <xalign>0.5</xalign>
+		  <yalign>0.5</yalign>
+		  <xpad>2</xpad>
+		  <ypad>2</ypad>
+		  <child>
+		    <left_attach>0</left_attach>
+		    <right_attach>1</right_attach>
+		    <top_attach>2</top_attach>
+		    <bottom_attach>3</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>False</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>True</xfill>
+		    <yfill>False</yfill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkLabel</class>
+		  <name>label93</name>
+		  <label>Name:</label>
+		  <justify>GTK_JUSTIFY_LEFT</justify>
+		  <wrap>False</wrap>
+		  <xalign>0.5</xalign>
+		  <yalign>0.5</yalign>
+		  <xpad>2</xpad>
+		  <ypad>2</ypad>
+		  <child>
+		    <left_attach>0</left_attach>
+		    <right_attach>1</right_attach>
+		    <top_attach>3</top_attach>
+		    <bottom_attach>4</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>False</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>True</xfill>
+		    <yfill>False</yfill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkEntry</class>
+		  <name>camera_name_text</name>
+		  <can_focus>True</can_focus>
+		  <signal>
+		    <name>changed</name>
+		    <handler>on_camera_name_text_changed</handler>
+		    <last_modification_time>Thu, 04 Jul 2002 10:07:17 GMT</last_modification_time>
+		  </signal>
+		  <editable>True</editable>
+		  <text_visible>True</text_visible>
+		  <text_max_length>2048</text_max_length>
+		  <text></text>
+		  <child>
+		    <left_attach>1</left_attach>
+		    <right_attach>4</right_attach>
+		    <top_attach>3</top_attach>
+		    <bottom_attach>4</bottom_attach>
+		    <xpad>2</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>True</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>True</xfill>
+		    <yfill>False</yfill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkStatusbar</class>
+		  <name>iso_channel_status</name>
+		  <border_width>2</border_width>
+		  <child>
+		    <left_attach>1</left_attach>
+		    <right_attach>2</right_attach>
+		    <top_attach>7</top_attach>
+		    <bottom_attach>8</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>True</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>True</xfill>
+		    <yfill>False</yfill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkLabel</class>
+		  <name>label34</name>
+		  <label>IIDC specs:</label>
+		  <justify>GTK_JUSTIFY_LEFT</justify>
+		  <wrap>False</wrap>
+		  <xalign>0.5</xalign>
+		  <yalign>0.5</yalign>
+		  <xpad>2</xpad>
+		  <ypad>2</ypad>
+		  <child>
+		    <left_attach>0</left_attach>
+		    <right_attach>1</right_attach>
+		    <top_attach>6</top_attach>
+		    <bottom_attach>7</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>False</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>True</xfill>
+		    <yfill>False</yfill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkLabel</class>
+		  <name>label32</name>
+		  <label>PHY speed:</label>
+		  <justify>GTK_JUSTIFY_LEFT</justify>
+		  <wrap>False</wrap>
+		  <xalign>0.5</xalign>
+		  <yalign>0.5</yalign>
+		  <xpad>2</xpad>
+		  <ypad>2</ypad>
+		  <child>
+		    <left_attach>0</left_attach>
+		    <right_attach>1</right_attach>
+		    <top_attach>5</top_attach>
+		    <bottom_attach>6</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>False</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>True</xfill>
+		    <yfill>False</yfill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkLabel</class>
+		  <name>label3</name>
+		  <label>Handle:</label>
+		  <justify>GTK_JUSTIFY_LEFT</justify>
+		  <wrap>False</wrap>
+		  <xalign>0.5</xalign>
+		  <yalign>0.5</yalign>
+		  <xpad>2</xpad>
+		  <ypad>2</ypad>
+		  <child>
+		    <left_attach>0</left_attach>
+		    <right_attach>1</right_attach>
+		    <top_attach>4</top_attach>
+		    <bottom_attach>5</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>False</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>True</xfill>
+		    <yfill>False</yfill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkLabel</class>
+		  <name>label18</name>
+		  <label>ISO Channel:</label>
+		  <justify>GTK_JUSTIFY_LEFT</justify>
+		  <wrap>False</wrap>
+		  <xalign>0.5</xalign>
+		  <yalign>0.5</yalign>
+		  <xpad>2</xpad>
+		  <ypad>2</ypad>
+		  <child>
+		    <left_attach>0</left_attach>
+		    <right_attach>1</right_attach>
+		    <top_attach>7</top_attach>
+		    <bottom_attach>8</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>False</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>True</xfill>
+		    <yfill>False</yfill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkLabel</class>
+		  <name>label35</name>
+		  <label>Power:</label>
+		  <justify>GTK_JUSTIFY_LEFT</justify>
+		  <wrap>False</wrap>
+		  <xalign>0.5</xalign>
+		  <yalign>0.5</yalign>
+		  <xpad>2</xpad>
+		  <ypad>2</ypad>
+		  <child>
+		    <left_attach>2</left_attach>
+		    <right_attach>3</right_attach>
+		    <top_attach>6</top_attach>
+		    <bottom_attach>7</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>False</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>True</xfill>
+		    <yfill>False</yfill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkLabel</class>
+		  <name>label33</name>
+		  <label>PHY delay:</label>
+		  <justify>GTK_JUSTIFY_LEFT</justify>
+		  <wrap>False</wrap>
+		  <xalign>0.5</xalign>
+		  <yalign>0.5</yalign>
+		  <xpad>2</xpad>
+		  <ypad>2</ypad>
+		  <child>
+		    <left_attach>2</left_attach>
+		    <right_attach>3</right_attach>
+		    <top_attach>5</top_attach>
+		    <bottom_attach>6</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>False</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>True</xfill>
+		    <yfill>False</yfill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkLabel</class>
+		  <name>label17</name>
+		  <label>Node:</label>
+		  <justify>GTK_JUSTIFY_LEFT</justify>
+		  <wrap>False</wrap>
+		  <xalign>0.5</xalign>
+		  <yalign>0.5</yalign>
+		  <xpad>2</xpad>
+		  <ypad>2</ypad>
+		  <child>
+		    <left_attach>2</left_attach>
+		    <right_attach>3</right_attach>
+		    <top_attach>4</top_attach>
+		    <bottom_attach>5</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>False</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>True</xfill>
+		    <yfill>False</yfill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkStatusbar</class>
+		  <name>camera_guid_status</name>
+		  <border_width>2</border_width>
+		  <child>
+		    <left_attach>1</left_attach>
+		    <right_attach>4</right_attach>
+		    <top_attach>2</top_attach>
+		    <bottom_attach>3</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>True</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>True</xfill>
+		    <yfill>False</yfill>
+		  </child>
+		</widget>
+	      </widget>
+	    </widget>
 	  </widget>
 	</widget>
       </widget>
@@ -3834,120 +4378,6 @@ anything in the GUI at all...</label>
 
 	  <widget>
 	    <class>GtkFrame</class>
-	    <name>format7_frame_info_frame</name>
-	    <border_width>5</border_width>
-	    <label>Frame info</label>
-	    <label_xalign>0</label_xalign>
-	    <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>True</fill>
-	    </child>
-
-	    <widget>
-	      <class>GtkTable</class>
-	      <name>table15</name>
-	      <rows>2</rows>
-	      <columns>2</columns>
-	      <homogeneous>False</homogeneous>
-	      <row_spacing>0</row_spacing>
-	      <column_spacing>0</column_spacing>
-
-	      <widget>
-		<class>GtkLabel</class>
-		<name>label14</name>
-		<label>Pixels per frame :  </label>
-		<justify>GTK_JUSTIFY_CENTER</justify>
-		<wrap>False</wrap>
-		<xalign>0.5</xalign>
-		<yalign>0.5</yalign>
-		<xpad>2</xpad>
-		<ypad>2</ypad>
-		<child>
-		  <left_attach>0</left_attach>
-		  <right_attach>1</right_attach>
-		  <top_attach>0</top_attach>
-		  <bottom_attach>1</bottom_attach>
-		  <xpad>0</xpad>
-		  <ypad>0</ypad>
-		  <xexpand>False</xexpand>
-		  <yexpand>False</yexpand>
-		  <xshrink>False</xshrink>
-		  <yshrink>False</yshrink>
-		  <xfill>False</xfill>
-		  <yfill>False</yfill>
-		</child>
-	      </widget>
-
-	      <widget>
-		<class>GtkLabel</class>
-		<name>label15</name>
-		<label>Bytes per frame :  </label>
-		<justify>GTK_JUSTIFY_CENTER</justify>
-		<wrap>False</wrap>
-		<xalign>0.5</xalign>
-		<yalign>0.5</yalign>
-		<xpad>2</xpad>
-		<ypad>2</ypad>
-		<child>
-		  <left_attach>0</left_attach>
-		  <right_attach>1</right_attach>
-		  <top_attach>1</top_attach>
-		  <bottom_attach>2</bottom_attach>
-		  <xpad>0</xpad>
-		  <ypad>0</ypad>
-		  <xexpand>False</xexpand>
-		  <yexpand>False</yexpand>
-		  <xshrink>False</xshrink>
-		  <yshrink>False</yshrink>
-		  <xfill>False</xfill>
-		  <yfill>False</yfill>
-		</child>
-	      </widget>
-
-	      <widget>
-		<class>GtkStatusbar</class>
-		<name>format7_byteperframe</name>
-		<child>
-		  <left_attach>1</left_attach>
-		  <right_attach>2</right_attach>
-		  <top_attach>1</top_attach>
-		  <bottom_attach>2</bottom_attach>
-		  <xpad>2</xpad>
-		  <ypad>2</ypad>
-		  <xexpand>False</xexpand>
-		  <yexpand>False</yexpand>
-		  <xshrink>False</xshrink>
-		  <yshrink>False</yshrink>
-		  <xfill>True</xfill>
-		  <yfill>True</yfill>
-		</child>
-	      </widget>
-
-	      <widget>
-		<class>GtkStatusbar</class>
-		<name>format7_pixperframe</name>
-		<child>
-		  <left_attach>1</left_attach>
-		  <right_attach>2</right_attach>
-		  <top_attach>0</top_attach>
-		  <bottom_attach>1</bottom_attach>
-		  <xpad>2</xpad>
-		  <ypad>2</ypad>
-		  <xexpand>True</xexpand>
-		  <yexpand>True</yexpand>
-		  <xshrink>False</xshrink>
-		  <yshrink>False</yshrink>
-		  <xfill>True</xfill>
-		  <yfill>True</yfill>
-		</child>
-	      </widget>
-	    </widget>
-	  </widget>
-
-	  <widget>
-	    <class>GtkFrame</class>
 	    <name>format7_horizontal_frame</name>
 	    <border_width>5</border_width>
 	    <label>Horizontal setup</label>
@@ -4217,6 +4647,210 @@ anything in the GUI at all...</label>
 	      </widget>
 	    </widget>
 	  </widget>
+
+	  <widget>
+	    <class>GtkFrame</class>
+	    <name>format7_frame_info_frame</name>
+	    <border_width>5</border_width>
+	    <label>Frame info [bytes]</label>
+	    <label_xalign>0</label_xalign>
+	    <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>True</fill>
+	    </child>
+
+	    <widget>
+	      <class>GtkTable</class>
+	      <name>table15</name>
+	      <rows>2</rows>
+	      <columns>4</columns>
+	      <homogeneous>True</homogeneous>
+	      <row_spacing>0</row_spacing>
+	      <column_spacing>0</column_spacing>
+
+	      <widget>
+		<class>GtkLabel</class>
+		<name>label14</name>
+		<label>Image pixels :  </label>
+		<justify>GTK_JUSTIFY_CENTER</justify>
+		<wrap>False</wrap>
+		<xalign>0.5</xalign>
+		<yalign>0.5</yalign>
+		<xpad>2</xpad>
+		<ypad>2</ypad>
+		<child>
+		  <left_attach>0</left_attach>
+		  <right_attach>1</right_attach>
+		  <top_attach>0</top_attach>
+		  <bottom_attach>1</bottom_attach>
+		  <xpad>0</xpad>
+		  <ypad>0</ypad>
+		  <xexpand>False</xexpand>
+		  <yexpand>False</yexpand>
+		  <xshrink>False</xshrink>
+		  <yshrink>False</yshrink>
+		  <xfill>False</xfill>
+		  <yfill>False</yfill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkLabel</class>
+		<name>label15</name>
+		<label>Image size :  </label>
+		<justify>GTK_JUSTIFY_CENTER</justify>
+		<wrap>False</wrap>
+		<xalign>0.5</xalign>
+		<yalign>0.5</yalign>
+		<xpad>2</xpad>
+		<ypad>2</ypad>
+		<child>
+		  <left_attach>0</left_attach>
+		  <right_attach>1</right_attach>
+		  <top_attach>1</top_attach>
+		  <bottom_attach>2</bottom_attach>
+		  <xpad>0</xpad>
+		  <ypad>0</ypad>
+		  <xexpand>False</xexpand>
+		  <yexpand>False</yexpand>
+		  <xshrink>False</xshrink>
+		  <yshrink>False</yshrink>
+		  <xfill>False</xfill>
+		  <yfill>False</yfill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkStatusbar</class>
+		<name>format7_imagebytes</name>
+		<child>
+		  <left_attach>1</left_attach>
+		  <right_attach>2</right_attach>
+		  <top_attach>1</top_attach>
+		  <bottom_attach>2</bottom_attach>
+		  <xpad>2</xpad>
+		  <ypad>2</ypad>
+		  <xexpand>False</xexpand>
+		  <yexpand>False</yexpand>
+		  <xshrink>False</xshrink>
+		  <yshrink>False</yshrink>
+		  <xfill>True</xfill>
+		  <yfill>True</yfill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkStatusbar</class>
+		<name>format7_imagepixels</name>
+		<child>
+		  <left_attach>1</left_attach>
+		  <right_attach>2</right_attach>
+		  <top_attach>0</top_attach>
+		  <bottom_attach>1</bottom_attach>
+		  <xpad>2</xpad>
+		  <ypad>2</ypad>
+		  <xexpand>True</xexpand>
+		  <yexpand>True</yexpand>
+		  <xshrink>False</xshrink>
+		  <yshrink>False</yshrink>
+		  <xfill>True</xfill>
+		  <yfill>True</yfill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkLabel</class>
+		<name>label159</name>
+		<label>Padding :  </label>
+		<justify>GTK_JUSTIFY_CENTER</justify>
+		<wrap>False</wrap>
+		<xalign>0.5</xalign>
+		<yalign>0.5</yalign>
+		<xpad>2</xpad>
+		<ypad>2</ypad>
+		<child>
+		  <left_attach>2</left_attach>
+		  <right_attach>3</right_attach>
+		  <top_attach>0</top_attach>
+		  <bottom_attach>1</bottom_attach>
+		  <xpad>0</xpad>
+		  <ypad>0</ypad>
+		  <xexpand>False</xexpand>
+		  <yexpand>False</yexpand>
+		  <xshrink>False</xshrink>
+		  <yshrink>False</yshrink>
+		  <xfill>True</xfill>
+		  <yfill>False</yfill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkLabel</class>
+		<name>label160</name>
+		<label>Total size:  </label>
+		<justify>GTK_JUSTIFY_CENTER</justify>
+		<wrap>False</wrap>
+		<xalign>0.5</xalign>
+		<yalign>0.5</yalign>
+		<xpad>2</xpad>
+		<ypad>2</ypad>
+		<child>
+		  <left_attach>2</left_attach>
+		  <right_attach>3</right_attach>
+		  <top_attach>1</top_attach>
+		  <bottom_attach>2</bottom_attach>
+		  <xpad>0</xpad>
+		  <ypad>0</ypad>
+		  <xexpand>False</xexpand>
+		  <yexpand>False</yexpand>
+		  <xshrink>False</xshrink>
+		  <yshrink>False</yshrink>
+		  <xfill>True</xfill>
+		  <yfill>False</yfill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkStatusbar</class>
+		<name>format7_padding</name>
+		<child>
+		  <left_attach>3</left_attach>
+		  <right_attach>4</right_attach>
+		  <top_attach>0</top_attach>
+		  <bottom_attach>1</bottom_attach>
+		  <xpad>0</xpad>
+		  <ypad>0</ypad>
+		  <xexpand>False</xexpand>
+		  <yexpand>False</yexpand>
+		  <xshrink>False</xshrink>
+		  <yshrink>False</yshrink>
+		  <xfill>True</xfill>
+		  <yfill>False</yfill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkStatusbar</class>
+		<name>format7_totalbytes</name>
+		<child>
+		  <left_attach>3</left_attach>
+		  <right_attach>4</right_attach>
+		  <top_attach>1</top_attach>
+		  <bottom_attach>2</bottom_attach>
+		  <xpad>0</xpad>
+		  <ypad>0</ypad>
+		  <xexpand>False</xexpand>
+		  <yexpand>False</yexpand>
+		  <xshrink>False</xshrink>
+		  <yshrink>False</yshrink>
+		  <xfill>True</xfill>
+		  <yfill>False</yfill>
+		</child>
+	      </widget>
+	    </widget>
+	  </widget>
 	</widget>
       </widget>
 
@@ -4248,9 +4882,9 @@ anything in the GUI at all...</label>
 
 	  <widget>
 	    <class>GtkFrame</class>
-	    <name>frame2</name>
+	    <name>frame10</name>
 	    <border_width>5</border_width>
-	    <label>Status</label>
+	    <label>Camera bandwidth usage</label>
 	    <label_xalign>0</label_xalign>
 	    <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
 	    <child>
@@ -4261,44 +4895,18 @@ anything in the GUI at all...</label>
 
 	    <widget>
 	      <class>GtkTable</class>
-	      <name>table48</name>
-	      <rows>8</rows>
-	      <columns>4</columns>
+	      <name>table77</name>
+	      <rows>3</rows>
+	      <columns>5</columns>
 	      <homogeneous>True</homogeneous>
 	      <row_spacing>0</row_spacing>
 	      <column_spacing>2</column_spacing>
 
 	      <widget>
 		<class>GtkLabel</class>
-		<name>label1</name>
-		<label>Vendor:</label>
-		<justify>GTK_JUSTIFY_LEFT</justify>
-		<wrap>False</wrap>
-		<xalign>0.5</xalign>
-		<yalign>0.5</yalign>
-		<xpad>2</xpad>
-		<ypad>2</ypad>
-		<child>
-		  <left_attach>0</left_attach>
-		  <right_attach>1</right_attach>
-		  <top_attach>0</top_attach>
-		  <bottom_attach>1</bottom_attach>
-		  <xpad>0</xpad>
-		  <ypad>0</ypad>
-		  <xexpand>False</xexpand>
-		  <yexpand>False</yexpand>
-		  <xshrink>False</xshrink>
-		  <yshrink>False</yshrink>
-		  <xfill>True</xfill>
-		  <yfill>False</yfill>
-		</child>
-	      </widget>
-
-	      <widget>
-		<class>GtkLabel</class>
-		<name>label2</name>
-		<label>Model:</label>
-		<justify>GTK_JUSTIFY_LEFT</justify>
+		<name>label157</name>
+		<label>Bus 2:</label>
+		<justify>GTK_JUSTIFY_CENTER</justify>
 		<wrap>False</wrap>
 		<xalign>0.5</xalign>
 		<yalign>0.5</yalign>
@@ -4321,170 +4929,10 @@ anything in the GUI at all...</label>
 	      </widget>
 
 	      <widget>
-		<class>GtkStatusbar</class>
-		<name>camera_model_status</name>
-		<border_width>2</border_width>
-		<child>
-		  <left_attach>1</left_attach>
-		  <right_attach>4</right_attach>
-		  <top_attach>1</top_attach>
-		  <bottom_attach>2</bottom_attach>
-		  <xpad>0</xpad>
-		  <ypad>0</ypad>
-		  <xexpand>True</xexpand>
-		  <yexpand>False</yexpand>
-		  <xshrink>False</xshrink>
-		  <yshrink>False</yshrink>
-		  <xfill>True</xfill>
-		  <yfill>False</yfill>
-		</child>
-	      </widget>
-
-	      <widget>
-		<class>GtkStatusbar</class>
-		<name>camera_vendor_status</name>
-		<border_width>2</border_width>
-		<child>
-		  <left_attach>1</left_attach>
-		  <right_attach>4</right_attach>
-		  <top_attach>0</top_attach>
-		  <bottom_attach>1</bottom_attach>
-		  <xpad>0</xpad>
-		  <ypad>0</ypad>
-		  <xexpand>True</xexpand>
-		  <yexpand>False</yexpand>
-		  <xshrink>False</xshrink>
-		  <yshrink>False</yshrink>
-		  <xfill>True</xfill>
-		  <yfill>False</yfill>
-		</child>
-	      </widget>
-
-	      <widget>
-		<class>GtkStatusbar</class>
-		<name>camera_dc_status</name>
-		<border_width>2</border_width>
-		<child>
-		  <left_attach>1</left_attach>
-		  <right_attach>2</right_attach>
-		  <top_attach>6</top_attach>
-		  <bottom_attach>7</bottom_attach>
-		  <xpad>0</xpad>
-		  <ypad>0</ypad>
-		  <xexpand>True</xexpand>
-		  <yexpand>False</yexpand>
-		  <xshrink>False</xshrink>
-		  <yshrink>False</yshrink>
-		  <xfill>True</xfill>
-		  <yfill>False</yfill>
-		</child>
-	      </widget>
-
-	      <widget>
-		<class>GtkStatusbar</class>
-		<name>camera_maxiso_status</name>
-		<border_width>2</border_width>
-		<child>
-		  <left_attach>1</left_attach>
-		  <right_attach>2</right_attach>
-		  <top_attach>5</top_attach>
-		  <bottom_attach>6</bottom_attach>
-		  <xpad>0</xpad>
-		  <ypad>0</ypad>
-		  <xexpand>True</xexpand>
-		  <yexpand>False</yexpand>
-		  <xshrink>False</xshrink>
-		  <yshrink>False</yshrink>
-		  <xfill>True</xfill>
-		  <yfill>False</yfill>
-		</child>
-	      </widget>
-
-	      <widget>
-		<class>GtkStatusbar</class>
-		<name>camera_handle_status</name>
-		<border_width>2</border_width>
-		<child>
-		  <left_attach>1</left_attach>
-		  <right_attach>2</right_attach>
-		  <top_attach>4</top_attach>
-		  <bottom_attach>5</bottom_attach>
-		  <xpad>0</xpad>
-		  <ypad>0</ypad>
-		  <xexpand>True</xexpand>
-		  <yexpand>False</yexpand>
-		  <xshrink>False</xshrink>
-		  <yshrink>False</yshrink>
-		  <xfill>True</xfill>
-		  <yfill>False</yfill>
-		</child>
-	      </widget>
-
-	      <widget>
-		<class>GtkStatusbar</class>
-		<name>camera_pwclass_status</name>
-		<border_width>2</border_width>
-		<child>
-		  <left_attach>3</left_attach>
-		  <right_attach>4</right_attach>
-		  <top_attach>6</top_attach>
-		  <bottom_attach>7</bottom_attach>
-		  <xpad>0</xpad>
-		  <ypad>0</ypad>
-		  <xexpand>True</xexpand>
-		  <yexpand>False</yexpand>
-		  <xshrink>False</xshrink>
-		  <yshrink>False</yshrink>
-		  <xfill>True</xfill>
-		  <yfill>False</yfill>
-		</child>
-	      </widget>
-
-	      <widget>
-		<class>GtkStatusbar</class>
-		<name>camera_delay_status</name>
-		<border_width>2</border_width>
-		<child>
-		  <left_attach>3</left_attach>
-		  <right_attach>4</right_attach>
-		  <top_attach>5</top_attach>
-		  <bottom_attach>6</bottom_attach>
-		  <xpad>0</xpad>
-		  <ypad>0</ypad>
-		  <xexpand>True</xexpand>
-		  <yexpand>False</yexpand>
-		  <xshrink>False</xshrink>
-		  <yshrink>False</yshrink>
-		  <xfill>True</xfill>
-		  <yfill>False</yfill>
-		</child>
-	      </widget>
-
-	      <widget>
-		<class>GtkStatusbar</class>
-		<name>camera_node_status</name>
-		<border_width>2</border_width>
-		<child>
-		  <left_attach>3</left_attach>
-		  <right_attach>4</right_attach>
-		  <top_attach>4</top_attach>
-		  <bottom_attach>5</bottom_attach>
-		  <xpad>0</xpad>
-		  <ypad>0</ypad>
-		  <xexpand>True</xexpand>
-		  <yexpand>False</yexpand>
-		  <xshrink>False</xshrink>
-		  <yshrink>False</yshrink>
-		  <xfill>True</xfill>
-		  <yfill>False</yfill>
-		</child>
-	      </widget>
-
-	      <widget>
 		<class>GtkLabel</class>
-		<name>label31</name>
-		<label>GUID:</label>
-		<justify>GTK_JUSTIFY_LEFT</justify>
+		<name>label158</name>
+		<label>Bus 3:</label>
+		<justify>GTK_JUSTIFY_CENTER</justify>
 		<wrap>False</wrap>
 		<xalign>0.5</xalign>
 		<yalign>0.5</yalign>
@@ -4508,9 +4956,9 @@ anything in the GUI at all...</label>
 
 	      <widget>
 		<class>GtkLabel</class>
-		<name>label93</name>
-		<label>Name:</label>
-		<justify>GTK_JUSTIFY_LEFT</justify>
+		<name>label156</name>
+		<label>Bus 1:</label>
+		<justify>GTK_JUSTIFY_CENTER</justify>
 		<wrap>False</wrap>
 		<xalign>0.5</xalign>
 		<yalign>0.5</yalign>
@@ -4519,8 +4967,8 @@ anything in the GUI at all...</label>
 		<child>
 		  <left_attach>0</left_attach>
 		  <right_attach>1</right_attach>
-		  <top_attach>3</top_attach>
-		  <bottom_attach>4</bottom_attach>
+		  <top_attach>0</top_attach>
+		  <bottom_attach>1</bottom_attach>
 		  <xpad>0</xpad>
 		  <ypad>0</ypad>
 		  <xexpand>False</xexpand>
@@ -4533,43 +4981,23 @@ anything in the GUI at all...</label>
 	      </widget>
 
 	      <widget>
-		<class>GtkEntry</class>
-		<name>camera_name_text</name>
-		<can_focus>True</can_focus>
-		<signal>
-		  <name>changed</name>
-		  <handler>on_camera_name_text_changed</handler>
-		  <last_modification_time>Thu, 04 Jul 2002 10:07:17 GMT</last_modification_time>
-		</signal>
-		<editable>True</editable>
-		<text_visible>True</text_visible>
-		<text_max_length>2048</text_max_length>
-		<text></text>
+		<class>GtkProgressBar</class>
+		<name>ProgressBus1</name>
+		<value>0</value>
+		<lower>0</lower>
+		<upper>100</upper>
+		<bar_style>GTK_PROGRESS_CONTINUOUS</bar_style>
+		<orientation>GTK_PROGRESS_LEFT_TO_RIGHT</orientation>
+		<activity_mode>False</activity_mode>
+		<show_text>False</show_text>
+		<format>%P %%</format>
+		<text_xalign>0.5</text_xalign>
+		<text_yalign>0.5</text_yalign>
 		<child>
 		  <left_attach>1</left_attach>
-		  <right_attach>4</right_attach>
-		  <top_attach>3</top_attach>
-		  <bottom_attach>4</bottom_attach>
-		  <xpad>2</xpad>
-		  <ypad>0</ypad>
-		  <xexpand>True</xexpand>
-		  <yexpand>False</yexpand>
-		  <xshrink>False</xshrink>
-		  <yshrink>False</yshrink>
-		  <xfill>True</xfill>
-		  <yfill>False</yfill>
-		</child>
-	      </widget>
-
-	      <widget>
-		<class>GtkStatusbar</class>
-		<name>iso_channel_status</name>
-		<border_width>2</border_width>
-		<child>
-		  <left_attach>1</left_attach>
-		  <right_attach>2</right_attach>
-		  <top_attach>7</top_attach>
-		  <bottom_attach>8</bottom_attach>
+		  <right_attach>5</right_attach>
+		  <top_attach>0</top_attach>
+		  <bottom_attach>1</bottom_attach>
 		  <xpad>0</xpad>
 		  <ypad>0</ypad>
 		  <xexpand>True</xexpand>
@@ -4582,194 +5010,50 @@ anything in the GUI at all...</label>
 	      </widget>
 
 	      <widget>
-		<class>GtkLabel</class>
-		<name>label34</name>
-		<label>IIDC specs:</label>
-		<justify>GTK_JUSTIFY_LEFT</justify>
-		<wrap>False</wrap>
-		<xalign>0.5</xalign>
-		<yalign>0.5</yalign>
-		<xpad>2</xpad>
-		<ypad>2</ypad>
-		<child>
-		  <left_attach>0</left_attach>
-		  <right_attach>1</right_attach>
-		  <top_attach>6</top_attach>
-		  <bottom_attach>7</bottom_attach>
-		  <xpad>0</xpad>
-		  <ypad>0</ypad>
-		  <xexpand>False</xexpand>
-		  <yexpand>False</yexpand>
-		  <xshrink>False</xshrink>
-		  <yshrink>False</yshrink>
-		  <xfill>True</xfill>
-		  <yfill>False</yfill>
-		</child>
-	      </widget>
-
-	      <widget>
-		<class>GtkLabel</class>
-		<name>label32</name>
-		<label>PHY speed:</label>
-		<justify>GTK_JUSTIFY_LEFT</justify>
-		<wrap>False</wrap>
-		<xalign>0.5</xalign>
-		<yalign>0.5</yalign>
-		<xpad>2</xpad>
-		<ypad>2</ypad>
-		<child>
-		  <left_attach>0</left_attach>
-		  <right_attach>1</right_attach>
-		  <top_attach>5</top_attach>
-		  <bottom_attach>6</bottom_attach>
-		  <xpad>0</xpad>
-		  <ypad>0</ypad>
-		  <xexpand>False</xexpand>
-		  <yexpand>False</yexpand>
-		  <xshrink>False</xshrink>
-		  <yshrink>False</yshrink>
-		  <xfill>True</xfill>
-		  <yfill>False</yfill>
-		</child>
-	      </widget>
-
-	      <widget>
-		<class>GtkLabel</class>
-		<name>label3</name>
-		<label>Handle:</label>
-		<justify>GTK_JUSTIFY_LEFT</justify>
-		<wrap>False</wrap>
-		<xalign>0.5</xalign>
-		<yalign>0.5</yalign>
-		<xpad>2</xpad>
-		<ypad>2</ypad>
-		<child>
-		  <left_attach>0</left_attach>
-		  <right_attach>1</right_attach>
-		  <top_attach>4</top_attach>
-		  <bottom_attach>5</bottom_attach>
-		  <xpad>0</xpad>
-		  <ypad>0</ypad>
-		  <xexpand>False</xexpand>
-		  <yexpand>False</yexpand>
-		  <xshrink>False</xshrink>
-		  <yshrink>False</yshrink>
-		  <xfill>True</xfill>
-		  <yfill>False</yfill>
-		</child>
-	      </widget>
-
-	      <widget>
-		<class>GtkLabel</class>
-		<name>label18</name>
-		<label>ISO Channel:</label>
-		<justify>GTK_JUSTIFY_LEFT</justify>
-		<wrap>False</wrap>
-		<xalign>0.5</xalign>
-		<yalign>0.5</yalign>
-		<xpad>2</xpad>
-		<ypad>2</ypad>
-		<child>
-		  <left_attach>0</left_attach>
-		  <right_attach>1</right_attach>
-		  <top_attach>7</top_attach>
-		  <bottom_attach>8</bottom_attach>
-		  <xpad>0</xpad>
-		  <ypad>0</ypad>
-		  <xexpand>False</xexpand>
-		  <yexpand>False</yexpand>
-		  <xshrink>False</xshrink>
-		  <yshrink>False</yshrink>
-		  <xfill>True</xfill>
-		  <yfill>False</yfill>
-		</child>
-	      </widget>
-
-	      <widget>
-		<class>GtkLabel</class>
-		<name>label35</name>
-		<label>Power:</label>
-		<justify>GTK_JUSTIFY_LEFT</justify>
-		<wrap>False</wrap>
-		<xalign>0.5</xalign>
-		<yalign>0.5</yalign>
-		<xpad>2</xpad>
-		<ypad>2</ypad>
-		<child>
-		  <left_attach>2</left_attach>
-		  <right_attach>3</right_attach>
-		  <top_attach>6</top_attach>
-		  <bottom_attach>7</bottom_attach>
-		  <xpad>0</xpad>
-		  <ypad>0</ypad>
-		  <xexpand>False</xexpand>
-		  <yexpand>False</yexpand>
-		  <xshrink>False</xshrink>
-		  <yshrink>False</yshrink>
-		  <xfill>True</xfill>
-		  <yfill>False</yfill>
-		</child>
-	      </widget>
-
-	      <widget>
-		<class>GtkLabel</class>
-		<name>label33</name>
-		<label>PHY delay:</label>
-		<justify>GTK_JUSTIFY_LEFT</justify>
-		<wrap>False</wrap>
-		<xalign>0.5</xalign>
-		<yalign>0.5</yalign>
-		<xpad>2</xpad>
-		<ypad>2</ypad>
-		<child>
-		  <left_attach>2</left_attach>
-		  <right_attach>3</right_attach>
-		  <top_attach>5</top_attach>
-		  <bottom_attach>6</bottom_attach>
-		  <xpad>0</xpad>
-		  <ypad>0</ypad>
-		  <xexpand>False</xexpand>
-		  <yexpand>False</yexpand>
-		  <xshrink>False</xshrink>
-		  <yshrink>False</yshrink>
-		  <xfill>True</xfill>
-		  <yfill>False</yfill>
-		</child>
-	      </widget>
-
-	      <widget>
-		<class>GtkLabel</class>
-		<name>label17</name>
-		<label>Node:</label>
-		<justify>GTK_JUSTIFY_LEFT</justify>
-		<wrap>False</wrap>
-		<xalign>0.5</xalign>
-		<yalign>0.5</yalign>
-		<xpad>2</xpad>
-		<ypad>2</ypad>
-		<child>
-		  <left_attach>2</left_attach>
-		  <right_attach>3</right_attach>
-		  <top_attach>4</top_attach>
-		  <bottom_attach>5</bottom_attach>
-		  <xpad>0</xpad>
-		  <ypad>0</ypad>
-		  <xexpand>False</xexpand>
-		  <yexpand>False</yexpand>
-		  <xshrink>False</xshrink>
-		  <yshrink>False</yshrink>
-		  <xfill>True</xfill>
-		  <yfill>False</yfill>
-		</child>
-	      </widget>
-
-	      <widget>
-		<class>GtkStatusbar</class>
-		<name>camera_guid_status</name>
-		<border_width>2</border_width>
+		<class>GtkProgressBar</class>
+		<name>ProgressBus2</name>
+		<value>0</value>
+		<lower>0</lower>
+		<upper>100</upper>
+		<bar_style>GTK_PROGRESS_CONTINUOUS</bar_style>
+		<orientation>GTK_PROGRESS_LEFT_TO_RIGHT</orientation>
+		<activity_mode>False</activity_mode>
+		<show_text>False</show_text>
+		<format>%P %%</format>
+		<text_xalign>0.5</text_xalign>
+		<text_yalign>0.5</text_yalign>
 		<child>
 		  <left_attach>1</left_attach>
-		  <right_attach>4</right_attach>
+		  <right_attach>5</right_attach>
+		  <top_attach>1</top_attach>
+		  <bottom_attach>2</bottom_attach>
+		  <xpad>0</xpad>
+		  <ypad>0</ypad>
+		  <xexpand>True</xexpand>
+		  <yexpand>False</yexpand>
+		  <xshrink>False</xshrink>
+		  <yshrink>False</yshrink>
+		  <xfill>True</xfill>
+		  <yfill>False</yfill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkProgressBar</class>
+		<name>ProgressBus3</name>
+		<value>0</value>
+		<lower>0</lower>
+		<upper>100</upper>
+		<bar_style>GTK_PROGRESS_CONTINUOUS</bar_style>
+		<orientation>GTK_PROGRESS_LEFT_TO_RIGHT</orientation>
+		<activity_mode>False</activity_mode>
+		<show_text>False</show_text>
+		<format>%P %%</format>
+		<text_xalign>0.5</text_xalign>
+		<text_yalign>0.5</text_yalign>
+		<child>
+		  <left_attach>1</left_attach>
+		  <right_attach>5</right_attach>
 		  <top_attach>2</top_attach>
 		  <bottom_attach>3</bottom_attach>
 		  <xpad>0</xpad>

@@ -20,7 +20,7 @@
 
 extern GtkWidget *main_window;
 extern GtkWidget *preferences_window;
-extern CtxtInfo ctxt;
+extern CtxtInfo_t ctxt;
 extern char* phy_speed_list[4];
 extern char* phy_delay_list[4];
 extern char* power_class_list[8];
@@ -399,3 +399,80 @@ UpdateServiceFrame(void)
 			       GetService(camera,SERVICE_V4L)!=NULL);
 
 }
+
+
+void
+UpdateFormat7InfoFrame(void)
+{
+
+  char *temp;
+  Format7ModeInfo_t *mode;
+  float bpp;
+  int bytesize, grandtotal;
+
+  temp=(char*)malloc(STRING_SIZE*sizeof(char));
+
+  mode = &camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN];
+ 
+  switch (mode->color_coding_id) {
+  case COLOR_FORMAT7_MONO8:
+    bpp=1;
+    break;
+  case COLOR_FORMAT7_MONO16:
+    bpp=2;
+    break;
+  case COLOR_FORMAT7_RGB8:
+    bpp=3;
+    break;
+  case COLOR_FORMAT7_RGB16:
+    bpp=6;
+    break;
+  case COLOR_FORMAT7_YUV444:
+    bpp=3;
+    break;
+  case COLOR_FORMAT7_YUV422:
+    bpp=2;
+    break;
+  case COLOR_FORMAT7_YUV411:
+    bpp=1.5;
+    break;
+  default:
+    bpp=1;
+    MainError("Wrong forlat_7 color coding ID!");
+    break;
+  }
+  bytesize=(int) ((float)mode->size_x*(float)mode->size_y*bpp);
+
+  if (bytesize!=mode->total_bytes) {
+    MainStatus("The camera has a strange TOTAL_BYTES value.");
+  }
+
+  // if there is packet padding, take it into account
+  if (mode->total_bytes%mode->bpp!=0) {
+    grandtotal=(mode->total_bytes/mode->bpp+1)*mode->bpp;
+  }
+  else {
+    grandtotal=mode->total_bytes;
+  }
+
+  sprintf(temp," %d", bytesize);
+  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"format7_imagebytes"), ctxt.format7_imagebytes_ctxt, ctxt.format7_imagebytes_id);
+  ctxt.format7_imagebytes_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"format7_imagebytes"), ctxt.format7_imagebytes_ctxt,temp);
+
+  sprintf(temp," %d", mode->size_x*mode->size_y);
+  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"format7_imagepixels"), ctxt.format7_imagepixels_ctxt, ctxt.format7_imagepixels_id);
+  ctxt.format7_imagepixels_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"format7_imagepixels"), ctxt.format7_imagepixels_ctxt,temp);
+
+  sprintf(temp," %d", grandtotal);
+  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"format7_totalbytes"), ctxt.format7_totalbytes_ctxt, ctxt.format7_totalbytes_id);
+  ctxt.format7_totalbytes_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"format7_totalbytes"), ctxt.format7_totalbytes_ctxt,temp);
+
+  sprintf(temp," %d", grandtotal - bytesize);
+  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"format7_padding"), ctxt.format7_padding_ctxt, ctxt.format7_padding_id);
+  ctxt.format7_padding_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"format7_padding"), ctxt.format7_padding_ctxt,temp);
+
+
+  free(temp);
+
+}
+

@@ -86,4 +86,7 @@ UpdateOptionFrame(void);
 void
 UpdateServiceFrame(void);
 
+void
+UpdateFormat7InfoFrame(void);
+
 #endif
