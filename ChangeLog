@@ -2,6 +2,11 @@ Coriander, (c) 2000-2002 Damien Douxchamps <douxchamps@ieee.org>
 
 Changes towards version 0.27
 
+   October 31, 2002, by Damien Douxchamps
+   - misc code beautification in thread_iso.c
+   - replaced all 'if (!dc1394_xxx)' by 'if (dc1394_xxx!=DC1394SUCCESS)
+   - changed format7 window ranges layout
+	
    October 24, 2002, by Damien Douxchamps
    - updates to take unit_position into account.
 	

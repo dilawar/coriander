@@ -164,6 +164,36 @@ gint IsoStartThread(void)
 	}
       //fprintf(stderr," 1394 setup OK\n");
 
+      if (iso_service->bayer==BAYER_DECODING_DOWNSAMPLE)
+	info->factor=2;
+      else
+	info->factor=1;
+      
+      if (iso_service->format!=FORMAT_SCALABLE_IMAGE_SIZE)
+	info->cond16bit=((iso_service->mode==MODE_640x480_MONO16)||
+			 (iso_service->mode==MODE_800x600_MONO16)||
+			 (iso_service->mode==MODE_1024x768_MONO16)||
+			 (iso_service->mode==MODE_1280x960_MONO16)||
+			 (iso_service->mode==MODE_1600x1200_MONO16));
+      else
+	info->cond16bit=(format7_info->mode[iso_service->mode-MODE_FORMAT7_MIN].color_coding_id==COLOR_FORMAT7_MONO16);
+      
+      if (iso_service->stereo_decoding==NO_STEREO_DECODING)
+	{
+	  if (info->cond16bit>0)
+	    {
+	      info->temp=(unsigned char*)malloc(iso_service->width*info->factor*iso_service->height*info->factor*sizeof(unsigned char));
+	      //fprintf(stderr,"tmp size: %ld\n",iso_service->width*factor*iso_service->height*factor);
+	    }
+	  else
+	    info->temp=(unsigned char *)info->capture.capture_buffer;
+	}
+      else
+	{
+	  info->temp=(unsigned char*)malloc(iso_service->width*info->factor*iso_service->height*info->factor*sizeof(unsigned char));
+	  //fprintf(stderr,"tmp size: %ld\n",iso_service->width*factor*iso_service->height*factor);
+	}
+
       CommonChainSetup(iso_service, SERVICE_ISO, current_camera);
       pthread_mutex_unlock(&iso_service->mutex_data);
       
@@ -223,9 +253,6 @@ IsoThread(void* arg)
 {
   chain_t *iso_service;
   isothread_info_t *info;
-  unsigned char *temp;
-  int cond16bit;
-  int factor;
   char tmp_string[20];
   float delay;
 
@@ -238,36 +265,6 @@ IsoThread(void* arg)
   pthread_setcancelstate(PTHREAD_CANCEL_ENABLE,NULL);
   pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS,NULL);
   pthread_mutex_unlock(&iso_service->mutex_data);
-
-  if (iso_service->bayer==BAYER_DECODING_DOWNSAMPLE)
-    factor=2;
-  else
-    factor=1;
-
-  if (iso_service->format!=FORMAT_SCALABLE_IMAGE_SIZE)
-    cond16bit=((iso_service->mode==MODE_640x480_MONO16)||
-	       (iso_service->mode==MODE_800x600_MONO16)||
-	       (iso_service->mode==MODE_1024x768_MONO16)||
-	       (iso_service->mode==MODE_1280x960_MONO16)||
-	       (iso_service->mode==MODE_1600x1200_MONO16));
-  else
-    cond16bit=(format7_info->mode[iso_service->mode-MODE_FORMAT7_MIN].color_coding_id==COLOR_FORMAT7_MONO16);
-  
-  if (iso_service->stereo_decoding==NO_STEREO_DECODING)
-    {
-      if (cond16bit>0)
-	{
-	  temp=(unsigned char*)malloc(iso_service->width*factor*iso_service->height*factor*sizeof(unsigned char));
-	  //fprintf(stderr,"tmp size: %ld\n",iso_service->width*factor*iso_service->height*factor);
-	}
-      else
-	temp=(unsigned char *)info->capture.capture_buffer;
-    }
-  else
-    {
-      temp=(unsigned char*)malloc(iso_service->width*factor*iso_service->height*factor*sizeof(unsigned char));
-      //fprintf(stderr,"tmp size: %ld\n",iso_service->width*factor*iso_service->height*factor);
-    }
 
   // time inits:
   info->prev_time = times(&info->tms_buf);
@@ -288,30 +285,30 @@ IsoThread(void* arg)
       if (iso_service->stereo_decoding==STEREO_DECODING)
 	{
 	  //fprintf(stderr,"decoding stereo image...");
-	  StereoDecode((unsigned char *)info->capture.capture_buffer,temp,
-		       iso_service->width*factor*iso_service->height*factor/2);
+	  StereoDecode((unsigned char *)info->capture.capture_buffer,info->temp,
+		       iso_service->width*info->factor*iso_service->height*info->factor/2);
 	  //fprintf(stderr,"done\n");
 	}
       else
 	if (iso_service->bayer!=NO_BAYER_DECODING)
-	  if (cond16bit>0)
-	    y162y((unsigned char *)info->capture.capture_buffer,temp,
-		  iso_service->width*factor*iso_service->height*factor, iso_service->bpp);
+	  if (info->cond16bit>0)
+	    y162y((unsigned char *)info->capture.capture_buffer,info->temp,
+		  iso_service->width*info->factor*iso_service->height*info->factor, iso_service->bpp);
 
       //fprintf(stderr,"bayer decoding...");
       switch (iso_service->bayer)
 	{
 	case BAYER_DECODING_NEAREST:
-	  BayerNearestNeighbor(temp, iso_service->current_buffer,
+	  BayerNearestNeighbor(info->temp, iso_service->current_buffer,
 			       iso_service->width, iso_service->height, iso_service->bayer_pattern);
 	  break;
 	case BAYER_DECODING_EDGE_SENSE:
-	  BayerEdgeSense(temp, iso_service->current_buffer,
+	  BayerEdgeSense(info->temp, iso_service->current_buffer,
 			 iso_service->width, iso_service->height, iso_service->bayer_pattern);
 	  break;
 	case BAYER_DECODING_DOWNSAMPLE:
-	  BayerDownsample(temp, iso_service->current_buffer,
-			 iso_service->width*factor, iso_service->height*factor, iso_service->bayer_pattern);
+	  BayerDownsample(info->temp, iso_service->current_buffer,
+			 iso_service->width*info->factor, iso_service->height*info->factor, iso_service->bayer_pattern);
 	  break;
 	default:
 	  memcpy(iso_service->current_buffer,
@@ -348,9 +345,6 @@ IsoThread(void* arg)
       pthread_cleanup_pop(0);
     }
 
-  if (cond16bit>0)
-    free(temp);
-
 }
 
 
@@ -381,6 +375,9 @@ gint IsoStopThread(void)
       dc1394_destroy_handle(info->handle);
       info->handle = NULL;
 
+      if (info->cond16bit>0)
+	free(info->temp);
+      
       pthread_mutex_unlock(&iso_service->mutex_struct);
       pthread_mutex_unlock(&iso_service->mutex_data);
 

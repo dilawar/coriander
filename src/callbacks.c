@@ -110,7 +110,7 @@ on_fps_activate                    (GtkMenuItem     *menuitem,
   
   IsoFlowCheck(state);
     
-  if(!dc1394_set_video_framerate(camera->handle, camera->id, (int)user_data))
+  if(dc1394_set_video_framerate(camera->handle, camera->id, (int)user_data)!=DC1394_SUCCESS)
     MainError("Could not set framerate");
   else
     misc_info->framerate=(int)user_data;
@@ -123,7 +123,7 @@ void
 on_power_on_clicked                    (GtkButton       *button,
                                         gpointer         user_data)
 {
-  if(!dc1394_camera_on(camera->handle, camera->id))
+  if(dc1394_camera_on(camera->handle, camera->id)!=DC1394_SUCCESS)
     MainError("Could not set camera 'on'");
 }
 
@@ -132,7 +132,7 @@ void
 on_power_off_clicked                   (GtkButton       *button,
                                         gpointer         user_data)
 {
-  if(!dc1394_camera_off(camera->handle, camera->id))
+  if(dc1394_camera_off(camera->handle, camera->id)!=DC1394_SUCCESS)
     MainError("Could not set camera 'off'");
 }
 
@@ -141,7 +141,7 @@ void
 on_power_reset_clicked                 (GtkButton       *button,
                                         gpointer         user_data)
 {
-  if (!dc1394_init_camera(camera->handle, camera->id))
+  if (dc1394_init_camera(camera->handle, camera->id)!=DC1394_SUCCESS)
     MainError("Could not initilize camera");
 }
 
@@ -149,7 +149,7 @@ void
 on_trigger_polarity_toggled            (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-  if (!dc1394_set_trigger_polarity(camera->handle,camera->id,togglebutton->active))
+  if (dc1394_set_trigger_polarity(camera->handle,camera->id,togglebutton->active)!=DC1394_SUCCESS)
     MainError("Cannot set trigger polarity");
   else
     feature_set->feature[FEATURE_TRIGGER-FEATURE_MIN].trigger_polarity=(int)togglebutton->active;
@@ -160,7 +160,7 @@ void
 on_trigger_mode_activate              (GtkMenuItem     *menuitem,
 				       gpointer         user_data)
 {
-  if (!dc1394_set_trigger_mode(camera->handle, camera->id, (int)user_data))
+  if (dc1394_set_trigger_mode(camera->handle, camera->id, (int)user_data)!=DC1394_SUCCESS)
     MainError("Could not set trigger mode");
   else
     feature_set->feature[FEATURE_TRIGGER-FEATURE_MIN].trigger_mode=(int)user_data;
@@ -171,7 +171,7 @@ void
 on_trigger_external_toggled            (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-  if (!dc1394_feature_on_off(camera->handle, camera->id, FEATURE_TRIGGER, togglebutton->active))
+  if (dc1394_feature_on_off(camera->handle, camera->id, FEATURE_TRIGGER, togglebutton->active)!=DC1394_SUCCESS)
     MainError("Could not set external trigger source");
   else
     feature_set->feature[FEATURE_TRIGGER-FEATURE_MIN].is_on=togglebutton->active;
@@ -194,7 +194,7 @@ void
 on_load_mem_clicked                    (GtkButton       *button,
                                         gpointer         user_data)
 {
-  if (!dc1394_memory_load(camera->handle,camera->id, misc_info->load_channel))
+  if (dc1394_memory_load(camera->handle,camera->id, misc_info->load_channel)!=DC1394_SUCCESS)
     MainError("Cannot load memory channel");
   UpdateAllWindows();
 
@@ -209,11 +209,11 @@ on_save_mem_clicked                    (GtkButton       *button,
   dc1394bool_t value=TRUE;
   step=(unsigned long int)(1000000.0/preferences.auto_update_frequency);
 
-  if (!dc1394_set_memory_save_ch(camera->handle,camera->id, misc_info->save_channel))
+  if (dc1394_set_memory_save_ch(camera->handle,camera->id, misc_info->save_channel)!=DC1394_SUCCESS)
     MainError("Could not set memory save channel");
   else
     { 
-      if (!dc1394_memory_save(camera->handle,camera->id))
+      if (dc1394_memory_save(camera->handle,camera->id)!=DC1394_SUCCESS)
 	MainError("Could not save setup to memory channel");
       else
 	{
@@ -221,7 +221,7 @@ on_save_mem_clicked                    (GtkButton       *button,
 		 &&(timeout_bin<(unsigned long int)(preferences.op_timeout*1000000.0)) )
 	    {
 	      usleep(step);
-	      if (!dc1394_is_memory_save_in_operation(camera->handle,camera->id, &value))
+	      if (dc1394_is_memory_save_in_operation(camera->handle,camera->id, &value)!=DC1394_SUCCESS)
 		MainError("Could not query if memory save is in operation");
 	      timeout_bin+=step;
 	    }
@@ -235,7 +235,7 @@ void
 on_iso_start_clicked                   (GtkButton       *button,
                                         gpointer         user_data)
 {
-  if (!dc1394_start_iso_transmission(camera->handle,camera->id))
+  if (dc1394_start_iso_transmission(camera->handle,camera->id)!=DC1394_SUCCESS)
     MainError("Could not start ISO transmission");
   else
     {
@@ -250,7 +250,7 @@ void
 on_iso_stop_clicked                    (GtkButton       *button,
                                         gpointer         user_data)
 {
-  if (!dc1394_stop_iso_transmission(camera->handle,camera->id))
+  if (dc1394_stop_iso_transmission(camera->handle,camera->id)!=DC1394_SUCCESS)
     MainError("Could not stop ISO transmission");
   else
     {
@@ -314,6 +314,7 @@ on_edit_format7_mode_activate             (GtkMenuItem     *menuitem,
 {
   format7_info->edit_mode=(int)user_data;
   BuildFormat7Window();
+  UpdateFormat7Window();
 }
 
 void
@@ -357,25 +358,25 @@ on_scale_value_changed             ( GtkAdjustment    *adj,
   switch((int)user_data)
     {
       case FEATURE_TEMPERATURE:
-	if (!dc1394_set_temperature(camera->handle,camera->id,adj->value))
+	if (dc1394_set_temperature(camera->handle,camera->id,adj->value)!=DC1394_SUCCESS)
 	  MainError("Could not set temperature");
 	else
 	  feature_set->feature[FEATURE_TEMPERATURE-FEATURE_MIN].target_value=adj->value;
 	break;
       case FEATURE_WHITE_BALANCE+BU*4: // why oh why is there a *4?
-	if (!dc1394_set_white_balance(camera->handle,camera->id,adj->value, feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].RV_value))
+	if (dc1394_set_white_balance(camera->handle,camera->id,adj->value, feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].RV_value)!=DC1394_SUCCESS)
 	  MainError("Could not set B/U white balance");
 	else
 	  feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].BU_value=adj->value;
 	break;
       case FEATURE_WHITE_BALANCE+RV*4: // why oh why is there a *4?
-	if (!dc1394_set_white_balance(camera->handle,camera->id,feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].BU_value, adj->value))
+	if (dc1394_set_white_balance(camera->handle,camera->id,feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].BU_value, adj->value)!=DC1394_SUCCESS)
 	  MainError("Could not set R/V white balance");
 	else
 	  feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].RV_value=adj->value;
 	break;
       default: // includes trigger_count
-	if (!dc1394_set_feature_value(camera->handle,camera->id,(int)user_data,adj->value))
+	if (dc1394_set_feature_value(camera->handle,camera->id,(int)user_data,adj->value)!=DC1394_SUCCESS)
 	  MainError("Could not set feature");
 	else
 	  feature_set->feature[(int)user_data-FEATURE_MIN].value=adj->value;
@@ -397,7 +398,7 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
 	if (format7_info->edit_mode==misc_info->mode) IsoFlowCheck(state);
 	step=info.step_x;
 	adj->value=(((int)adj->value+0)/step)*step;
-	if (!dc1394_set_format7_image_size(camera->handle,camera->id, format7_info->edit_mode, adj->value, info.size_y))
+	if (dc1394_set_format7_image_size(camera->handle,camera->id, format7_info->edit_mode, adj->value, info.size_y)!=DC1394_SUCCESS)
 	  MainError("Could not set Format7 image size");
 	else 
 	  {
@@ -415,7 +416,7 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
 	if (format7_info->edit_mode==misc_info->mode) IsoFlowCheck(state);
 	step=info.step_y;
 	adj->value=(((int)adj->value+0)/step)*step;
-	if (!dc1394_set_format7_image_size(camera->handle,camera->id, format7_info->edit_mode, info.size_x, adj->value))
+	if (dc1394_set_format7_image_size(camera->handle,camera->id, format7_info->edit_mode, info.size_x, adj->value)!=DC1394_SUCCESS)
 	  MainError("Could not set Format7 image size");
 	else
 	  {
@@ -436,7 +437,7 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
 	else
 	  step=info.step_x;
 	adj->value=(((int)adj->value+0)/step)*step;
-	if (!dc1394_set_format7_image_position(camera->handle,camera->id, format7_info->edit_mode, adj->value, info.pos_y))
+	if (dc1394_set_format7_image_position(camera->handle,camera->id, format7_info->edit_mode, adj->value, info.pos_y)!=DC1394_SUCCESS)
 	  MainError("Could not set Format7 image position");
 	else
 	  {
@@ -457,7 +458,7 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
 	else
 	  step=info.step_y;
 	adj->value=(((int)adj->value+0)/step)*step;
-	if (!dc1394_set_format7_image_position(camera->handle,camera->id, format7_info->edit_mode, info.pos_x, adj->value))
+	if (dc1394_set_format7_image_position(camera->handle,camera->id, format7_info->edit_mode, info.pos_x, adj->value)!=DC1394_SUCCESS)
 	  MainError("Cannot set Format7 image position");
 	else
 	  {
@@ -635,7 +636,7 @@ on_range_menu_activate             (GtkMenuItem     *menuitem,
   switch (action)
     {
     case RANGE_MENU_OFF : // ============================== OFF ==============================
-      if (!dc1394_feature_on_off(camera->handle, camera->id, feature, FALSE))
+      if (dc1394_feature_on_off(camera->handle, camera->id, feature, FALSE)!=DC1394_SUCCESS)
 	MainError("Could not set feature on/off");
       else
 	{
@@ -646,7 +647,7 @@ on_range_menu_activate             (GtkMenuItem     *menuitem,
     case RANGE_MENU_MAN : // ============================== MAN ==============================
       if (feature_set->feature[feature-FEATURE_MIN].on_off_capable)
 	{
-	  if (!dc1394_feature_on_off(camera->handle, camera->id, feature, TRUE))
+	  if (dc1394_feature_on_off(camera->handle, camera->id, feature, TRUE)!=DC1394_SUCCESS)
 	    {
 	      MainError("Could not set feature on");
 	      break;
@@ -654,7 +655,7 @@ on_range_menu_activate             (GtkMenuItem     *menuitem,
 	  else
 	    feature_set->feature[feature-FEATURE_MIN].is_on=TRUE;
 	}
-      if (!dc1394_auto_on_off(camera->handle, camera->id, feature, FALSE))
+      if (dc1394_auto_on_off(camera->handle, camera->id, feature, FALSE)!=DC1394_SUCCESS)
 	MainError("Could not set manual mode");
       else
 	{
@@ -665,7 +666,7 @@ on_range_menu_activate             (GtkMenuItem     *menuitem,
     case RANGE_MENU_AUTO : // ============================== AUTO ==============================
       if (feature_set->feature[feature-FEATURE_MIN].on_off_capable)
 	{
-	  if (!dc1394_feature_on_off(camera->handle, camera->id, feature, TRUE))
+	  if (dc1394_feature_on_off(camera->handle, camera->id, feature, TRUE)!=DC1394_SUCCESS)
 	    {
 	      MainError("Could not set feature on");
 	      break;
@@ -673,7 +674,7 @@ on_range_menu_activate             (GtkMenuItem     *menuitem,
 	  else
 	    feature_set->feature[feature-FEATURE_MIN].is_on=TRUE;
 	}
-      if (!dc1394_auto_on_off(camera->handle, camera->id, feature, TRUE))
+      if (dc1394_auto_on_off(camera->handle, camera->id, feature, TRUE)!=DC1394_SUCCESS)
 	MainError("Could not set auto mode");
       else
 	{
@@ -684,7 +685,7 @@ on_range_menu_activate             (GtkMenuItem     *menuitem,
     case RANGE_MENU_SINGLE : // ============================== SINGLE ==============================
       if (feature_set->feature[feature-FEATURE_MIN].on_off_capable)
 	{
-	  if (!dc1394_feature_on_off(camera->handle, camera->id, feature, TRUE))
+	  if (dc1394_feature_on_off(camera->handle, camera->id, feature, TRUE)!=DC1394_SUCCESS)
 	    {
 	      MainError("Could not set feature on");
 	      break;
@@ -693,7 +694,7 @@ on_range_menu_activate             (GtkMenuItem     *menuitem,
 	    feature_set->feature[feature-FEATURE_MIN].is_on=TRUE;
 	}
       step=(unsigned long int)(1000000.0/preferences.auto_update_frequency);
-      if (!dc1394_start_one_push_operation(camera->handle, camera->id, feature))
+      if (dc1394_start_one_push_operation(camera->handle, camera->id, feature)!=DC1394_SUCCESS)
 	MainError("Could not start one-push operation");
       else
 	{
@@ -702,7 +703,7 @@ on_range_menu_activate             (GtkMenuItem     *menuitem,
 		 && (timeout_bin<(unsigned long int)(preferences.op_timeout*1000000.0)) )
 	    {
 	      usleep(step);
-	      if (!dc1394_is_one_push_in_operation(camera->handle, camera->id, feature, &value))
+	      if (dc1394_is_one_push_in_operation(camera->handle, camera->id, feature, &value)!=DC1394_SUCCESS)
 		MainError("Could not query one-push operation");
 	      timeout_bin+=step;
 	      UpdateRange(commander_window,feature);
@@ -1282,7 +1283,7 @@ on_trigger_count_changed               (GtkEditable     *editable,
   int value;
   value=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(commander_window,"trigger_count")));
 
-  if (!dc1394_set_feature_value(camera->handle, camera->id, FEATURE_TRIGGER, value))
+  if (dc1394_set_feature_value(camera->handle, camera->id, FEATURE_TRIGGER, value)!=DC1394_SUCCESS)
     MainError("Could not set external trigger count");
   else
     feature_set->feature[FEATURE_TRIGGER-FEATURE_MIN].value=value;

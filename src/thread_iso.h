@@ -45,6 +45,10 @@ typedef struct
   clock_t current_time;
   int frames;
   
+  unsigned char *temp;
+  int factor;
+  int cond16bit;
+
 } isothread_info_t;
 
 gint

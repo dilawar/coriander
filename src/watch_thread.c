@@ -135,8 +135,8 @@ WatchThread(void *arg)
 	      */
 	      IsoFlowCheck(state);
 	      //fprintf(stderr,"ISO check completed\n");
-	      if ((!dc1394_set_format7_image_size(camera->handle,camera->id, misc_info->mode, size[0], size[1]))||
-		  (!dc1394_set_format7_image_position(camera->handle,camera->id, misc_info->mode, pos[0], pos[1])))
+	      if ((dc1394_set_format7_image_size(camera->handle,camera->id, misc_info->mode, size[0], size[1])!=DC1394_SUCCESS)||
+		  (dc1394_set_format7_image_position(camera->handle,camera->id, misc_info->mode, pos[0], pos[1])!=DC1394_SUCCESS))
 		MainError("Could not set Format7 image size and position");
 		//fprintf(stderr,"error setting size/pos.\n");
 	      else

@@ -2485,7 +2485,6 @@ GtkWidget*
 create_format7_window (void)
 {
   GtkWidget *format7_window;
-  GtkWidget *hbox30;
   GtkWidget *vbox34;
   GtkWidget *format7_mode_frame;
   GtkWidget *table19;
@@ -2495,7 +2494,6 @@ create_format7_window (void)
   GtkWidget *label13;
   GtkWidget *format7_color;
   GtkWidget *format7_color_menu;
-  GtkWidget *vbox36;
   GtkWidget *format7_packet_frame;
   GtkWidget *hbox57;
   GtkWidget *format7_packet_size;
@@ -2506,11 +2504,15 @@ create_format7_window (void)
   GtkWidget *format7_byteperframe;
   GtkWidget *format7_pixperframe;
   GtkWidget *format7_horizontal_frame;
-  GtkWidget *vbox35;
+  GtkWidget *table70;
+  GtkWidget *label139;
+  GtkWidget *label140;
   GtkWidget *format7_hsize_scale;
   GtkWidget *format7_hposition_scale;
   GtkWidget *format7_vertical_frame;
-  GtkWidget *hbox31;
+  GtkWidget *table71;
+  GtkWidget *label141;
+  GtkWidget *label142;
   GtkWidget *format7_vsize_scale;
   GtkWidget *format7_vposition_scale;
 
@@ -2519,19 +2521,12 @@ create_format7_window (void)
   gtk_window_set_title (GTK_WINDOW (format7_window), _("Format_7 Editor"));
   gtk_window_set_policy (GTK_WINDOW (format7_window), FALSE, FALSE, TRUE);
 
-  hbox30 = gtk_hbox_new (FALSE, 0);
-  gtk_widget_ref (hbox30);
-  gtk_object_set_data_full (GTK_OBJECT (format7_window), "hbox30", hbox30,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (hbox30);
-  gtk_container_add (GTK_CONTAINER (format7_window), hbox30);
-
   vbox34 = gtk_vbox_new (FALSE, 0);
   gtk_widget_ref (vbox34);
   gtk_object_set_data_full (GTK_OBJECT (format7_window), "vbox34", vbox34,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (vbox34);
-  gtk_box_pack_start (GTK_BOX (hbox30), vbox34, TRUE, TRUE, 0);
+  gtk_container_add (GTK_CONTAINER (format7_window), vbox34);
 
   format7_mode_frame = gtk_frame_new (_("Current mode"));
   gtk_widget_ref (format7_mode_frame);
@@ -2589,19 +2584,12 @@ create_format7_window (void)
   gtk_menu_append (GTK_MENU (format7_color_menu), glade_menuitem);
   gtk_option_menu_set_menu (GTK_OPTION_MENU (format7_color), format7_color_menu);
 
-  vbox36 = gtk_vbox_new (FALSE, 0);
-  gtk_widget_ref (vbox36);
-  gtk_object_set_data_full (GTK_OBJECT (format7_window), "vbox36", vbox36,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (vbox36);
-  gtk_box_pack_start (GTK_BOX (vbox34), vbox36, TRUE, TRUE, 0);
-
   format7_packet_frame = gtk_frame_new (_("Packet size"));
   gtk_widget_ref (format7_packet_frame);
   gtk_object_set_data_full (GTK_OBJECT (format7_window), "format7_packet_frame", format7_packet_frame,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (format7_packet_frame);
-  gtk_box_pack_start (GTK_BOX (vbox36), format7_packet_frame, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox34), format7_packet_frame, TRUE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (format7_packet_frame), 5);
 
   hbox57 = gtk_hbox_new (FALSE, 0);
@@ -2624,7 +2612,7 @@ create_format7_window (void)
   gtk_object_set_data_full (GTK_OBJECT (format7_window), "format7_frame_info_frame", format7_frame_info_frame,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (format7_frame_info_frame);
-  gtk_box_pack_start (GTK_BOX (vbox36), format7_frame_info_frame, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox34), format7_frame_info_frame, TRUE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (format7_frame_info_frame), 5);
 
   table15 = gtk_table_new (2, 2, FALSE);
@@ -2680,19 +2668,43 @@ create_format7_window (void)
   gtk_box_pack_start (GTK_BOX (vbox34), format7_horizontal_frame, FALSE, FALSE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (format7_horizontal_frame), 5);
 
-  vbox35 = gtk_vbox_new (TRUE, 0);
-  gtk_widget_ref (vbox35);
-  gtk_object_set_data_full (GTK_OBJECT (format7_window), "vbox35", vbox35,
+  table70 = gtk_table_new (2, 2, FALSE);
+  gtk_widget_ref (table70);
+  gtk_object_set_data_full (GTK_OBJECT (format7_window), "table70", table70,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (vbox35);
-  gtk_container_add (GTK_CONTAINER (format7_horizontal_frame), vbox35);
+  gtk_widget_show (table70);
+  gtk_container_add (GTK_CONTAINER (format7_horizontal_frame), table70);
+
+  label139 = gtk_label_new (_("Size"));
+  gtk_widget_ref (label139);
+  gtk_object_set_data_full (GTK_OBJECT (format7_window), "label139", label139,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label139);
+  gtk_table_attach (GTK_TABLE (table70), label139, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_label_set_justify (GTK_LABEL (label139), GTK_JUSTIFY_LEFT);
+  gtk_misc_set_padding (GTK_MISC (label139), 2, 2);
+
+  label140 = gtk_label_new (_("Position"));
+  gtk_widget_ref (label140);
+  gtk_object_set_data_full (GTK_OBJECT (format7_window), "label140", label140,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label140);
+  gtk_table_attach (GTK_TABLE (table70), label140, 0, 1, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_label_set_justify (GTK_LABEL (label140), GTK_JUSTIFY_LEFT);
+  gtk_misc_set_padding (GTK_MISC (label140), 2, 2);
 
   format7_hsize_scale = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (1, 1, 255, 10, 0, 0)));
   gtk_widget_ref (format7_hsize_scale);
   gtk_object_set_data_full (GTK_OBJECT (format7_window), "format7_hsize_scale", format7_hsize_scale,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (format7_hsize_scale);
-  gtk_box_pack_start (GTK_BOX (vbox35), format7_hsize_scale, TRUE, TRUE, 0);
+  gtk_table_attach (GTK_TABLE (table70), format7_hsize_scale, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
   gtk_scale_set_digits (GTK_SCALE (format7_hsize_scale), 0);
 
   format7_hposition_scale = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (1, 1, 255, 10, 0, 0)));
@@ -2700,7 +2712,9 @@ create_format7_window (void)
   gtk_object_set_data_full (GTK_OBJECT (format7_window), "format7_hposition_scale", format7_hposition_scale,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (format7_hposition_scale);
-  gtk_box_pack_start (GTK_BOX (vbox35), format7_hposition_scale, TRUE, TRUE, 0);
+  gtk_table_attach (GTK_TABLE (table70), format7_hposition_scale, 1, 2, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
   gtk_scale_set_digits (GTK_SCALE (format7_hposition_scale), 0);
 
   format7_vertical_frame = gtk_frame_new (_("Vertical setup"));
@@ -2708,32 +2722,56 @@ create_format7_window (void)
   gtk_object_set_data_full (GTK_OBJECT (format7_window), "format7_vertical_frame", format7_vertical_frame,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (format7_vertical_frame);
-  gtk_box_pack_start (GTK_BOX (hbox30), format7_vertical_frame, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox34), format7_vertical_frame, TRUE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (format7_vertical_frame), 5);
 
-  hbox31 = gtk_hbox_new (TRUE, 0);
-  gtk_widget_ref (hbox31);
-  gtk_object_set_data_full (GTK_OBJECT (format7_window), "hbox31", hbox31,
+  table71 = gtk_table_new (2, 2, FALSE);
+  gtk_widget_ref (table71);
+  gtk_object_set_data_full (GTK_OBJECT (format7_window), "table71", table71,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (hbox31);
-  gtk_container_add (GTK_CONTAINER (format7_vertical_frame), hbox31);
+  gtk_widget_show (table71);
+  gtk_container_add (GTK_CONTAINER (format7_vertical_frame), table71);
 
-  format7_vsize_scale = gtk_vscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (1, 1, 255, 10, 0, 0)));
+  label141 = gtk_label_new (_("Size"));
+  gtk_widget_ref (label141);
+  gtk_object_set_data_full (GTK_OBJECT (format7_window), "label141", label141,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label141);
+  gtk_table_attach (GTK_TABLE (table71), label141, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_label_set_justify (GTK_LABEL (label141), GTK_JUSTIFY_LEFT);
+  gtk_misc_set_padding (GTK_MISC (label141), 2, 2);
+
+  label142 = gtk_label_new (_("Position"));
+  gtk_widget_ref (label142);
+  gtk_object_set_data_full (GTK_OBJECT (format7_window), "label142", label142,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label142);
+  gtk_table_attach (GTK_TABLE (table71), label142, 0, 1, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_label_set_justify (GTK_LABEL (label142), GTK_JUSTIFY_LEFT);
+  gtk_misc_set_padding (GTK_MISC (label142), 2, 2);
+
+  format7_vsize_scale = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (1, 1, 255, 10, 0, 0)));
   gtk_widget_ref (format7_vsize_scale);
   gtk_object_set_data_full (GTK_OBJECT (format7_window), "format7_vsize_scale", format7_vsize_scale,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (format7_vsize_scale);
-  gtk_box_pack_start (GTK_BOX (hbox31), format7_vsize_scale, TRUE, TRUE, 0);
-  gtk_scale_set_value_pos (GTK_SCALE (format7_vsize_scale), GTK_POS_LEFT);
+  gtk_table_attach (GTK_TABLE (table71), format7_vsize_scale, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
   gtk_scale_set_digits (GTK_SCALE (format7_vsize_scale), 0);
 
-  format7_vposition_scale = gtk_vscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (1, 1, 255, 10, 0, 0)));
+  format7_vposition_scale = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (1, 1, 255, 10, 0, 0)));
   gtk_widget_ref (format7_vposition_scale);
   gtk_object_set_data_full (GTK_OBJECT (format7_window), "format7_vposition_scale", format7_vposition_scale,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (format7_vposition_scale);
-  gtk_box_pack_start (GTK_BOX (hbox31), format7_vposition_scale, TRUE, TRUE, 0);
-  gtk_scale_set_value_pos (GTK_SCALE (format7_vposition_scale), GTK_POS_LEFT);
+  gtk_table_attach (GTK_TABLE (table71), format7_vposition_scale, 1, 2, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
   gtk_scale_set_digits (GTK_SCALE (format7_vposition_scale), 0);
 
   gtk_signal_connect (GTK_OBJECT (format7_window), "delete_event",

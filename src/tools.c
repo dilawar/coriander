@@ -80,11 +80,11 @@ extern CtxtInfo ctxt;
 void
 GetFormat7Capabilities(raw1394handle_t handle, nodeid_t node, Format7Info *info)
 {
-  int i, f, err;
+  int i, f;
   quadlet_t value;
   
-  err=dc1394_query_supported_modes(handle, node, FORMAT_SCALABLE_IMAGE_SIZE, &value);
-  if (err<0) MainError("Could not query Format7 supported modes");
+  if (dc1394_query_supported_modes(handle, node, FORMAT_SCALABLE_IMAGE_SIZE, &value)!=DC1394_SUCCESS)
+    MainError("Could not query Format7 supported modes");
   else
     {
       for (i=0,f=MODE_FORMAT7_MIN;f<MODE_FORMAT7_MAX;f++,i++)
@@ -92,37 +92,35 @@ GetFormat7Capabilities(raw1394handle_t handle, nodeid_t node, Format7Info *info)
 	  info->mode[i].present= (value & (0x1<<(31-i)) );
 	  if (info->mode[i].present) // check for mode presence before query
 	    {
-	      err=dc1394_query_format7_max_image_size(handle,node,f,&info->mode[i].max_size_x,&info->mode[i].max_size_y);
-	      if (err<0) MainError("Got a problem querying format7 max image size");
-	      err=dc1394_query_format7_unit_size(handle,node,f,&info->mode[i].step_x,&info->mode[i].step_y);
-	      if (err<0) MainError("Got a problem querying format7 unit size");
+	      if (dc1394_query_format7_max_image_size(handle,node,f,&info->mode[i].max_size_x,&info->mode[i].max_size_y)!=DC1394_SUCCESS)
+		MainError("Got a problem querying format7 max image size");
+	      if (dc1394_query_format7_unit_size(handle,node,f,&info->mode[i].step_x,&info->mode[i].step_y)!=DC1394_SUCCESS)
+		MainError("Got a problem querying format7 unit size");
 	      // quick hack to keep size/position even. If pos/size is ODD, strange color/distorsions occur on some cams
 	      // (e.g. Basler cams). This will have to really fixed later.
 	      // REM: this is fixed by using the unit_position:
-	      err=dc1394_query_format7_unit_position(handle,node,f,&info->mode[i].step_pos_x,&info->mode[i].step_pos_y);
 	      //fprintf(stderr,"Using pos units = %d %d\n",info->mode[i].step_pos_x,info->mode[i].step_pos_y);
-	      if (err<0) MainError("Got a problem querying format7 unit position");
+	      if (dc1394_query_format7_unit_position(handle,node,f,&info->mode[i].step_pos_x,&info->mode[i].step_pos_y)!=DC1394_SUCCESS)
+		MainError("Got a problem querying format7 unit position");
 	      info->mode[i].use_unit_pos=((info->mode[i].step_pos_x>0)&&(info->mode[i].step_pos_x<info->mode[i].max_size_x)&&
 					  (info->mode[i].step_pos_y>0)&&(info->mode[i].step_pos_y<info->mode[i].max_size_y));
 
-	      err=dc1394_query_format7_image_position(handle,node,f,&info->mode[i].pos_x,&info->mode[i].pos_y);
-	      if (err<0) MainError("Got a problem querying format7 image position");
-	      err=dc1394_query_format7_image_size(handle,node,f,&info->mode[i].size_x,&info->mode[i].size_y);
-	      if (err<0) MainError("Got a problem querying format7 image size");
-	      
-	      err=dc1394_query_format7_pixel_number(handle,node,f,&info->mode[i].pixnum);
-	      if (err<0) MainError("Got a problem querying format7 pixel number");
-	      err=dc1394_query_format7_byte_per_packet(handle,node,f,&info->mode[i].bpp);
-	      if (err<0) MainError("Got a problem querying format7 bytes per packet");
-	      err=dc1394_query_format7_packet_para(handle,node,f,&info->mode[i].min_bpp,&info->mode[i].max_bpp);
-	      if (err<0) MainError("Got a problem querying format7 packet parameters");
-	      err=dc1394_query_format7_total_bytes(handle,node,f,&info->mode[i].total_bytes);
-	      if (err<0) MainError("Got a problem querying format7 total bytes per frame");
-
-	      err=dc1394_query_format7_color_coding_id(handle,node,f,&info->mode[i].color_coding_id);
-	      if (err<0) MainError("Got a problem querying format7 color coding ID");
-	      err=dc1394_query_format7_color_coding(handle,node,f,&info->mode[i].color_coding);
-	      if (err<0) MainError("Got a problem querying format7 color coding");
+	      if (dc1394_query_format7_image_position(handle,node,f,&info->mode[i].pos_x,&info->mode[i].pos_y)!=DC1394_SUCCESS)
+		MainError("Got a problem querying format7 image position");
+	      if (dc1394_query_format7_image_size(handle,node,f,&info->mode[i].size_x,&info->mode[i].size_y)!=DC1394_SUCCESS)
+		MainError("Got a problem querying format7 image size");
+	      if (dc1394_query_format7_pixel_number(handle,node,f,&info->mode[i].pixnum)!=DC1394_SUCCESS)
+		MainError("Got a problem querying format7 pixel number");
+	      if (dc1394_query_format7_byte_per_packet(handle,node,f,&info->mode[i].bpp)!=DC1394_SUCCESS)
+		MainError("Got a problem querying format7 bytes per packet");
+	      if (dc1394_query_format7_packet_para(handle,node,f,&info->mode[i].min_bpp,&info->mode[i].max_bpp)!=DC1394_SUCCESS)
+		MainError("Got a problem querying format7 packet parameters");
+	      if (dc1394_query_format7_total_bytes(handle,node,f,&info->mode[i].total_bytes)!=DC1394_SUCCESS)
+		MainError("Got a problem querying format7 total bytes per frame");
+	      if (dc1394_query_format7_color_coding_id(handle,node,f,&info->mode[i].color_coding_id)!=DC1394_SUCCESS)
+		MainError("Got a problem querying format7 color coding ID");
+	      if (dc1394_query_format7_color_coding(handle,node,f,&info->mode[i].color_coding)!=DC1394_SUCCESS)
+		MainError("Got a problem querying format7 color coding");
 
 
 	      //fprintf(stderr,"color coding for mode %d: 0x%x, current: %d\n", i,
@@ -164,12 +162,12 @@ ChangeModeAndFormat         (GtkMenuItem     *menuitem,
 
   IsoFlowCheck(state);
 
-  if (!dc1394_set_video_format(camera->handle,camera->id,format))
+  if (dc1394_set_video_format(camera->handle,camera->id,format)!=DC1394_SUCCESS)
     MainError("Could not set video format");
   else
     misc_info->format=format;
 
-  if (!dc1394_set_video_mode(camera->handle,camera->id,mode))
+  if (dc1394_set_video_mode(camera->handle,camera->id,mode)!=DC1394_SUCCESS)
     MainError("Could not set video mode");
   else
     misc_info->mode=mode;
@@ -184,12 +182,12 @@ ChangeModeAndFormat         (GtkMenuItem     *menuitem,
 
 void IsoFlowCheck(int *state)
 { 
-  if (!dc1394_get_iso_status(camera->handle, camera->id, &misc_info->is_iso_on))
+  if (dc1394_get_iso_status(camera->handle, camera->id, &misc_info->is_iso_on)!=DC1394_SUCCESS)
     MainError("Could not get ISO status");
   else
     if (misc_info->is_iso_on>0)
       {
-	if (!dc1394_stop_iso_transmission(camera->handle, camera->id))
+	if (dc1394_stop_iso_transmission(camera->handle, camera->id)!=DC1394_SUCCESS)
 	  // ... (if not done, restarting is no more possible)
 	  MainError("Could not stop ISO transmission");
       }
@@ -213,7 +211,7 @@ void IsoFlowResume(int *state)
 
   if (was_on)// restart if it was 'on' before the changes
     {
-      if (!dc1394_start_iso_transmission(camera->handle, camera->id))
+      if (dc1394_start_iso_transmission(camera->handle, camera->id)!=DC1394_SUCCESS)
 	MainError("Could not start ISO transmission");
     }
 
@@ -225,17 +223,17 @@ void IsoFlowResume(int *state)
 
   if (was_on)
     {
-      if (!dc1394_get_iso_status(camera->handle, camera->id,&misc_info->is_iso_on))
+      if (dc1394_get_iso_status(camera->handle, camera->id,&misc_info->is_iso_on)!=DC1394_SUCCESS)
 	MainError("Could not get ISO status");
       else
 	if (!misc_info->is_iso_on)
 	  {
 	    MainError("ISO not properly restarted. Trying again");
-	    if (!dc1394_start_iso_transmission(camera->handle, camera->id))
+	    if (dc1394_start_iso_transmission(camera->handle, camera->id)!=DC1394_SUCCESS)
 	      // ... (if not done, restarting is no more possible)
 	      MainError("Could not start ISO transmission");
 	    else
-	      if (!dc1394_get_iso_status(camera->handle, camera->id,&misc_info->is_iso_on))
+	      if (dc1394_get_iso_status(camera->handle, camera->id,&misc_info->is_iso_on)!=DC1394_SUCCESS)
 		MainError("Could not get ISO status");
 	      else
 		if (!misc_info->is_iso_on)
@@ -593,7 +591,7 @@ SetAbsoluteControl(int feature, int power)
 {
   char string[256];
 
-  if (!dc1394_absolute_setting_on_off(camera->handle, camera->id, feature, power))
+  if (dc1394_absolute_setting_on_off(camera->handle, camera->id, feature, power)!=DC1394_SUCCESS)
     MainError("Could not activate absolute setting\n");
   else
     {
@@ -648,11 +646,11 @@ GetAbsValue(int feature)
  
   stringp=gtk_entry_get_text(GTK_ENTRY(lookup_widget(absolute_settings_window,feature_abs_entry_list[feature-FEATURE_MIN])));
   value=atof(stringp);
-  if (!dc1394_set_absolute_feature_value(camera->handle, camera->id, feature, value)) {
+  if (dc1394_set_absolute_feature_value(camera->handle, camera->id, feature, value)!=DC1394_SUCCESS) {
     MainError("Can't set absolute value!");
   }
   else {
-    if (!dc1394_query_absolute_feature_value(camera->handle, camera->id, feature, &value)) {
+    if (dc1394_query_absolute_feature_value(camera->handle, camera->id, feature, &value)!=DC1394_SUCCESS) {
       MainError("Can't get absolute value!");
     }
     else
