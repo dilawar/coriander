@@ -85,6 +85,11 @@ typedef struct _PrefsInfo
   int real_compatibility;
   int real_period;
 
+  //int display_index2method[3];// display[menu_index]=DISPLAY_METHOD_XX
+  //int receive_index2method[2];
+  int display_method2index[3];// display[METHOD]=index
+  int receive_method2index[2];
+
 } PrefsInfo;
 
 #ifdef __cplusplus

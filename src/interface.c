@@ -25,7 +25,7 @@ static GnomeUIInfo file_menu_uiinfo[] =
     GNOME_APP_UI_ITEM, N_("E_xit"),
     NULL,
     (gpointer) on_exit_activate, NULL, NULL,
-    GNOME_APP_PIXMAP_STOCK, GNOME_STOCK_MENU_EXIT, 
+    GNOME_APP_PIXMAP_STOCK, GNOME_STOCK_MENU_EXIT,
     GDK_Q, (GdkModifierType) GDK_CONTROL_MASK, NULL
   },
   GNOMEUIINFO_END
@@ -3304,12 +3304,11 @@ create_preferences_window (void)
   GtkWidget *label80;
   GtkWidget *label49;
   GtkWidget *vbox52;
-  GtkWidget *capture_method_frame;
-  GtkWidget *vbox48;
-  GSList *cap_method_group = NULL;
-  GtkWidget *prefs_capture_raw1394;
-  GtkWidget *prefs_capture_video1394;
-  GtkWidget *prefs_capture_auto;
+  GtkWidget *prefs_receive_frame;
+  GtkWidget *table45;
+  GtkWidget *prefs_receive_method_menu;
+  GtkWidget *prefs_receive_method_menu_menu;
+  GtkWidget *glade_menuitem;
   GtkWidget *label50;
   GtkWidget *vbox53;
   GtkWidget *prefs_display_framedrop;
@@ -3318,12 +3317,10 @@ create_preferences_window (void)
   GtkObject *prefs_display_period_adj;
   GtkWidget *prefs_display_period;
   GtkWidget *label74;
-  GtkWidget *display_method_frame;
-  GtkWidget *vbox49;
-  GSList *disp_method_group = NULL;
-  GtkWidget *prefs_display_gdk;
-  GtkWidget *prefs_display_xv;
-  GtkWidget *prefs_display_auto;
+  GtkWidget *prefs_display_method_frame;
+  GtkWidget *table44;
+  GtkWidget *prefs_display_method_menu;
+  GtkWidget *prefs_display_method_menu_menu;
   GtkWidget *label51;
   GtkWidget *vbox54;
   GtkWidget *prefs_save_framedrop;
@@ -3397,7 +3394,6 @@ create_preferences_window (void)
   GtkWidget *label73;
   GtkWidget *prefs_real_audience;
   GtkWidget *prefs_real_audience_menu;
-  GtkWidget *glade_menuitem;
   GtkWidget *prefs_real_quality;
   GtkWidget *prefs_real_quality_menu;
   GtkWidget *prefs_real_compatibility;
@@ -3537,44 +3533,41 @@ create_preferences_window (void)
   gtk_widget_show (vbox52);
   gtk_container_add (GTK_CONTAINER (prefs_notebook), vbox52);
 
-  capture_method_frame = gtk_frame_new (_("Method"));
-  gtk_widget_ref (capture_method_frame);
-  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "capture_method_frame", capture_method_frame,
+  prefs_receive_frame = gtk_frame_new (_("Method"));
+  gtk_widget_ref (prefs_receive_frame);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "prefs_receive_frame", prefs_receive_frame,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (capture_method_frame);
-  gtk_box_pack_start (GTK_BOX (vbox52), capture_method_frame, FALSE, TRUE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (capture_method_frame), 5);
+  gtk_widget_show (prefs_receive_frame);
+  gtk_box_pack_start (GTK_BOX (vbox52), prefs_receive_frame, FALSE, TRUE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (prefs_receive_frame), 5);
 
-  vbox48 = gtk_vbox_new (TRUE, 0);
-  gtk_widget_ref (vbox48);
-  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "vbox48", vbox48,
+  table45 = gtk_table_new (1, 1, FALSE);
+  gtk_widget_ref (table45);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "table45", table45,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (vbox48);
-  gtk_container_add (GTK_CONTAINER (capture_method_frame), vbox48);
+  gtk_widget_show (table45);
+  gtk_container_add (GTK_CONTAINER (prefs_receive_frame), table45);
 
-  prefs_capture_raw1394 = gtk_radio_button_new_with_label (cap_method_group, _("raw1394"));
-  cap_method_group = gtk_radio_button_group (GTK_RADIO_BUTTON (prefs_capture_raw1394));
-  gtk_widget_ref (prefs_capture_raw1394);
-  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "prefs_capture_raw1394", prefs_capture_raw1394,
+  prefs_receive_method_menu = gtk_option_menu_new ();
+  gtk_widget_ref (prefs_receive_method_menu);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "prefs_receive_method_menu", prefs_receive_method_menu,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (prefs_capture_raw1394);
-  gtk_box_pack_start (GTK_BOX (vbox48), prefs_capture_raw1394, FALSE, FALSE, 0);
-
-  prefs_capture_video1394 = gtk_radio_button_new_with_label (cap_method_group, _("video1394 (DMA)"));
-  cap_method_group = gtk_radio_button_group (GTK_RADIO_BUTTON (prefs_capture_video1394));
-  gtk_widget_ref (prefs_capture_video1394);
-  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "prefs_capture_video1394", prefs_capture_video1394,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (prefs_capture_video1394);
-  gtk_box_pack_start (GTK_BOX (vbox48), prefs_capture_video1394, FALSE, FALSE, 0);
-
-  prefs_capture_auto = gtk_radio_button_new_with_label (cap_method_group, _("AUTO"));
-  cap_method_group = gtk_radio_button_group (GTK_RADIO_BUTTON (prefs_capture_auto));
-  gtk_widget_ref (prefs_capture_auto);
-  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "prefs_capture_auto", prefs_capture_auto,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (prefs_capture_auto);
-  gtk_box_pack_start (GTK_BOX (vbox48), prefs_capture_auto, FALSE, FALSE, 0);
+  gtk_widget_show (prefs_receive_method_menu);
+  gtk_table_attach (GTK_TABLE (table45), prefs_receive_method_menu, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_EXPAND), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (prefs_receive_method_menu), 1);
+  prefs_receive_method_menu_menu = gtk_menu_new ();
+  glade_menuitem = gtk_menu_item_new_with_label (_("raw1394"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (prefs_receive_method_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("video1394 (DMA)"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (prefs_receive_method_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("AUTO"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (prefs_receive_method_menu_menu), glade_menuitem);
+  gtk_option_menu_set_menu (GTK_OPTION_MENU (prefs_receive_method_menu), prefs_receive_method_menu_menu);
 
   label50 = gtk_label_new (_("Receive"));
   gtk_widget_ref (label50);
@@ -3632,44 +3625,44 @@ create_preferences_window (void)
   gtk_box_pack_start (GTK_BOX (hbox55), label74, FALSE, FALSE, 2);
   gtk_misc_set_padding (GTK_MISC (label74), 5, 8);
 
-  display_method_frame = gtk_frame_new (_("Method"));
-  gtk_widget_ref (display_method_frame);
-  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "display_method_frame", display_method_frame,
+  prefs_display_method_frame = gtk_frame_new (_("Method"));
+  gtk_widget_ref (prefs_display_method_frame);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "prefs_display_method_frame", prefs_display_method_frame,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (display_method_frame);
-  gtk_box_pack_start (GTK_BOX (vbox53), display_method_frame, FALSE, TRUE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (display_method_frame), 5);
+  gtk_widget_show (prefs_display_method_frame);
+  gtk_box_pack_start (GTK_BOX (vbox53), prefs_display_method_frame, FALSE, TRUE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (prefs_display_method_frame), 5);
 
-  vbox49 = gtk_vbox_new (TRUE, 0);
-  gtk_widget_ref (vbox49);
-  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "vbox49", vbox49,
+  table44 = gtk_table_new (1, 1, FALSE);
+  gtk_widget_ref (table44);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "table44", table44,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (vbox49);
-  gtk_container_add (GTK_CONTAINER (display_method_frame), vbox49);
+  gtk_widget_show (table44);
+  gtk_container_add (GTK_CONTAINER (prefs_display_method_frame), table44);
 
-  prefs_display_gdk = gtk_radio_button_new_with_label (disp_method_group, _("GDK"));
-  disp_method_group = gtk_radio_button_group (GTK_RADIO_BUTTON (prefs_display_gdk));
-  gtk_widget_ref (prefs_display_gdk);
-  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "prefs_display_gdk", prefs_display_gdk,
+  prefs_display_method_menu = gtk_option_menu_new ();
+  gtk_widget_ref (prefs_display_method_menu);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "prefs_display_method_menu", prefs_display_method_menu,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (prefs_display_gdk);
-  gtk_box_pack_start (GTK_BOX (vbox49), prefs_display_gdk, FALSE, FALSE, 0);
-
-  prefs_display_xv = gtk_radio_button_new_with_label (disp_method_group, _("Xv"));
-  disp_method_group = gtk_radio_button_group (GTK_RADIO_BUTTON (prefs_display_xv));
-  gtk_widget_ref (prefs_display_xv);
-  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "prefs_display_xv", prefs_display_xv,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (prefs_display_xv);
-  gtk_box_pack_start (GTK_BOX (vbox49), prefs_display_xv, FALSE, FALSE, 0);
-
-  prefs_display_auto = gtk_radio_button_new_with_label (disp_method_group, _("AUTO"));
-  disp_method_group = gtk_radio_button_group (GTK_RADIO_BUTTON (prefs_display_auto));
-  gtk_widget_ref (prefs_display_auto);
-  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "prefs_display_auto", prefs_display_auto,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (prefs_display_auto);
-  gtk_box_pack_start (GTK_BOX (vbox49), prefs_display_auto, FALSE, FALSE, 0);
+  gtk_widget_show (prefs_display_method_menu);
+  gtk_table_attach (GTK_TABLE (table44), prefs_display_method_menu, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_EXPAND), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (prefs_display_method_menu), 1);
+  prefs_display_method_menu_menu = gtk_menu_new ();
+  glade_menuitem = gtk_menu_item_new_with_label (_("GDK"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (prefs_display_method_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("Xv (single camera only)"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (prefs_display_method_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("SDL"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (prefs_display_method_menu_menu), glade_menuitem);
+  glade_menuitem = gtk_menu_item_new_with_label (_("AUTO"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (prefs_display_method_menu_menu), glade_menuitem);
+  gtk_option_menu_set_menu (GTK_OPTION_MENU (prefs_display_method_menu), prefs_display_method_menu_menu);
 
   label51 = gtk_label_new (_("Display"));
   gtk_widget_ref (label51);
@@ -4441,24 +4434,6 @@ create_preferences_window (void)
                       NULL);
   gtk_signal_connect (GTK_OBJECT (prefs_update_power), "toggled",
                       GTK_SIGNAL_FUNC (on_prefs_update_power_toggled),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (prefs_capture_raw1394), "toggled",
-                      GTK_SIGNAL_FUNC (on_prefs_capture_raw1394_toggled),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (prefs_capture_video1394), "toggled",
-                      GTK_SIGNAL_FUNC (on_prefs_capture_video1394_toggled),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (prefs_capture_auto), "toggled",
-                      GTK_SIGNAL_FUNC (on_prefs_capture_auto_toggled),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (prefs_display_gdk), "toggled",
-                      GTK_SIGNAL_FUNC (on_prefs_display_gdk_toggled),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (prefs_display_xv), "toggled",
-                      GTK_SIGNAL_FUNC (on_prefs_display_xv_toggled),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (prefs_display_auto), "toggled",
-                      GTK_SIGNAL_FUNC (on_prefs_display_auto_toggled),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (prefs_save_seq), "toggled",
                       GTK_SIGNAL_FUNC (on_prefs_save_seq_toggled),

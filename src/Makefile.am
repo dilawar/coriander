@@ -6,6 +6,7 @@ INCLUDES = \
 	-I$(top_srcdir)/intl \
 	$(GNOME_INCLUDEDIR) \
 	$(REAL_INCLUDEDIR) \
+	$(SDL_INCLUDEDIR) \
 	-I/usr/include/gnome-xml
 
 
@@ -40,6 +41,6 @@ coriander_SOURCES = \
 LDFLAGS += -Xlinker --export-dynamic
 
 coriander_LDADD = $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(INTLLIBS) $(PTHREAD_LIB) \
-	$(XV_LIB) $(FTP_LIB) $(REAL_LIB) -ldc1394_control -lraw1394 -lgthread
+	$(XV_LIB) $(FTP_LIB) $(REAL_LIB) $(SDL_LIB) -ldc1394_control -lraw1394 -lgthread
 
 

@@ -86,7 +86,7 @@ RealStartThread(void)
       info->recordable=preferences.real_recordable;
       info->audienceFlags=preferences.real_audience;
       info->videoQuality=preferences.real_quality;
-      info->realPlayerCompatibility=6;//preferences.real_compatibility;//////////////////////////////////////////////////////////
+      info->realPlayerCompatibility=6;/////////////////////////
       info->period=preferences.real_period;
 
       CommonChainSetup(real_service,SERVICE_REAL,current_camera);

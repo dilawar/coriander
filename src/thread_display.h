@@ -20,13 +20,15 @@
 #define __THREAD_DISPLAY_H__
 
 #ifdef HAVE_X11_EXTENSIONS_XVLIB_H
-
 #include <X11/Xlib.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #include <X11/extensions/XShm.h>
 #include <X11/extensions/Xvlib.h>
+#endif
 
+#ifdef HAVE_SDLLIB
+#include "SDL.h"
 #endif
 
 #include <gdk/gdk.h>
@@ -36,9 +38,10 @@
 
 typedef enum
 {
-  DISPLAY_METHOD_AUTO=0,
-  DISPLAY_METHOD_XV,
-  DISPLAY_METHOD_GDK
+  DISPLAY_METHOD_XV=0,
+  DISPLAY_METHOD_GDK,
+  //DISPLAY_METHOD_AUTO,
+  DISPLAY_METHOD_SDL
 } display_method_t;
 
 typedef struct
@@ -59,6 +62,22 @@ typedef struct
   char                   *gdk_buffer;
   pthread_mutex_t         mutex_cancel_display;
   int                     cancel_display_req;
+
+  int SDL_flags;
+  //  SDL flags
+
+#ifdef HAVE_SDLLIB
+  SDL_Surface *SDL_video;
+  // video surface
+
+  SDL_Overlay *SDL_overlay;
+  // video overlay surface
+
+  SDL_Rect SDL_videoRect;
+  // video rectangle for overlay surface blitting to video surface
+ 
+#endif
+
 } displaythread_info_t;
 
 gint
@@ -82,12 +101,22 @@ void
 xvPut(chain_t *display_service);
 
 void
-convert_to_yuv_for_xv(unsigned char *src, unsigned char *dest, int mode, int width, int height, long int bytes_per_frame, int xv_format);
+convert_to_yuv_for_xv(unsigned char *src, unsigned char *dest, int mode, int width, int height, int xv_format);
 
 #endif
 
 void
 gdkPut(chain_t *display_service);
 
+#ifdef HAVE_SDLLIB
+int
+sdlInit(chain_t *display_service);
+
+int
+GetSDLVideoMode(int mode);
+
+void
+convert_to_yuv_for_SDL(unsigned char *src, unsigned char *dest, int mode, int width, int height);
+#endif
 
 #endif

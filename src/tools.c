@@ -233,7 +233,6 @@ void GetContextStatus()
 
 void GrabSelfIds(raw1394handle_t handle)
 {
-
   RAW1394topologyMap *topomap;
   SelfIdPacket_t packet;
   unsigned int* pselfid_int;
@@ -255,16 +254,20 @@ void GrabSelfIds(raw1394handle_t handle)
 
 void SelectCamera(int i)
 {
-  image_pipes[current_camera]=image_pipe;
   current_camera=i;
-  camera=&cameras[i];
-  feature_set=&feature_sets[i];
-  misc_info=&misc_infos[i];
-  format7_info=&format7_infos[i];
-  uiinfo=&uiinfos[i];
-  selfid=&selfids[i];
-  image_pipe=image_pipes[i];
-  porthole_window=porthole_windows[i];
+  //fprintf(stderr,"select_camera in:\n");
+  //DisplayActiveServices();//////////
+  image_pipe=image_pipes[current_camera];
+  camera=&cameras[current_camera];
+  feature_set=&feature_sets[current_camera];
+  misc_info=&misc_infos[current_camera];
+  format7_info=&format7_infos[current_camera];
+  uiinfo=&uiinfos[current_camera];
+  selfid=&selfids[current_camera];
+  image_pipe=image_pipes[current_camera];
+  porthole_window=porthole_windows[current_camera];
+  //fprintf(stderr,"select_camera out:\n");
+  //DisplayActiveServices();//////////
 }
 
 void
@@ -374,4 +377,26 @@ SetScaleSensitivity(GtkWidget* widget, int feature, dc1394bool_t sense)
       gtk_widget_set_sensitive(GTK_WIDGET (lookup_widget(GTK_WIDGET (widget), feature_scale_list[feature-FEATURE_MIN])),sense);
       break;
     }
+}
+
+void
+DisplayActiveServices(void)
+{
+  int i;
+  for (i=0;i<camera_num;i++)
+    {
+      fprintf(stderr,"Camera %d : ",i);
+      if (GetService(SERVICE_ISO,i)!=NULL)
+	fprintf(stderr, "ISO ");
+      if (GetService(SERVICE_DISPLAY,i)!=NULL)
+	fprintf(stderr, "DISPLAY ");
+      if (GetService(SERVICE_FTP,i)!=NULL)
+	fprintf(stderr, "FTP ");
+      if (GetService(SERVICE_SAVE,i)!=NULL)
+	fprintf(stderr, "SAVE ");
+      if (GetService(SERVICE_REAL,i)!=NULL)
+	fprintf(stderr, "REAL ");
+      fprintf(stderr,"\n");
+    }
+  fprintf(stderr,"\n");
 }

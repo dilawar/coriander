@@ -106,6 +106,7 @@ main (int argc, char *argv[])
   else
     {
   
+      //fprintf(stderr,"%d\n",camera_num);
   // allocate memory space for all camera infos & download all infos:
   cameras=(dc1394_camerainfo*)calloc(camera_num,sizeof(dc1394_camerainfo));
   feature_sets=(dc1394_feature_set*)calloc(camera_num,sizeof(dc1394_feature_set));
@@ -126,6 +127,7 @@ main (int argc, char *argv[])
       GetFormat7Capabilities(handle, cameras[i].id, &format7_infos[i]);
       image_pipes[i]=NULL;
       uiinfos[i].test_pattern=0;
+      uiinfos[i].want_to_display=0;
       // multiple porthole windows:
       porthole_windows[i] = create_porthole_window();
       sprintf(tmp,"Node %d: %s",cameras[i].id,cameras[i].model);

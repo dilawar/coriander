@@ -1,7 +1,13 @@
 Coriander, (c) 2000-2001 Damien Douxchamps <douxchamps@ieee.org>
 
-Changes towards version 0.20:
+Changes in version 0.20:
 
+    Dec 21, by Damien Douxchamps
+    - A lot of debugging...
+    - first implementation of an SDL display. No fullscreen or other
+      fancy things: just a display. The rest will come later. 
+    - added the name of the camera as porthole window title
+	
     Dec 19, by Damien Douxchamps
     - Some compilation problems with gcc 2.91 cleaned after some input
       from Rick Philbrick.

@@ -308,30 +308,6 @@ on_prefs_update_power_toggled          (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
 
 void
-on_prefs_capture_raw1394_toggled       (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
-
-void
-on_prefs_capture_video1394_toggled     (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
-
-void
-on_prefs_capture_auto_toggled          (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
-
-void
-on_prefs_display_gdk_toggled           (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
-
-void
-on_prefs_display_xv_toggled            (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
-
-void
-on_prefs_display_auto_toggled          (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
-
-void
 on_preferences_window_activate         (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
@@ -414,22 +390,31 @@ on_service_real_toggled                (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
 
 void
-on_prefs_real_audience_activate        (GtkMenuItem     *menuitem,
-					gpointer         user_data);
-
-void
-on_prefs_real_quality_activate         (GtkMenuItem     *menuitem,
-					gpointer         user_data);
-
-void
-on_prefs_real_compatibility_activate   (GtkMenuItem     *menuitem,
-					gpointer         user_data);
-
-void
 on_prefs_real_record_yes_toggled       (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
 
 void
 on_range_menu_activate                 (GtkMenuItem     *menuitem,
 				        gpointer         user_data);
+
+void
+on_prefs_real_audience_activate        (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_prefs_real_quality_activate         (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_prefs_real_compatibility_activate   (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_prefs_display_method_activate       (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_prefs_receive_method_activate       (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
 #endif

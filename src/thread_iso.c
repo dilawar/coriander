@@ -121,7 +121,7 @@ gint IsoStartThread(void)
 	      return(-1);
 	    }
 	  break;
-	case RECEIVE_METHOD_AUTO:
+	  /*	case RECEIVE_METHOD_AUTO:
 	  if (dc1394_dma_setup_capture(camera->handle, camera->id, misc_info->iso_channel, 
 					misc_info->format, misc_info->mode, maxspeed,
 					misc_info->framerate, DMA_BUFFERS, &info->capture)
@@ -148,6 +148,7 @@ gint IsoStartThread(void)
 		//fprintf(stderr," Could not start ISO\n");
 		return(-1);
 	      }
+	  */
 	}
       //fprintf(stderr," 1394 setup OK\n");
 
@@ -228,7 +229,7 @@ IsoThread(void* arg)
     {
       pthread_testcancel();
       pthread_cleanup_push((void*)IsoCleanupThread, (void*)iso_service);
-      //fprintf(stderr,"ISO: trying to lock mutex\n");
+      //fprintf(stderr,"capture...\n");
       if (info->receive_method == RECEIVE_METHOD_RAW1394)
 	dc1394_single_capture(info->handle, &info->capture);
       else

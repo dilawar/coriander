@@ -101,9 +101,10 @@ on_porthole_window_close       (GtkWidget       *widget,
 {
 
   // this should be done for cam i only...
-  fprintf(stderr,"%d\n",(int)user_data);
+  //fprintf(stderr,"%d\n",(int)user_data);
   DisplayStopThread((int)user_data);
   gtk_widget_hide(widget);
+  uiinfo->want_to_display=0;
   if (((int)user_data)==current_camera)
     UpdateServicesFrame();
   return TRUE;
@@ -179,7 +180,7 @@ on_f0_mode0_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
   ChangeModeAndFormat(MODE_160x120_YUV444,FORMAT_VGA_NONCOMPRESSED);
-  }
+}
 
 
 void
@@ -573,17 +574,19 @@ on_camera_select_activate              (GtkMenuItem     *menuitem,
 					gpointer         user_data)
 {
   // close current display (we don't want this thread to be executed twice at the same time)
-  //  DisplayStopThread();
-  
+
+  DisplayStopThread(current_camera);
+
   // set current camera pointers: 
   SelectCamera((int)user_data);
 
-  //  if (uiinfo->want_display>0)
-  //  DisplayStartThread();
+  if (uiinfo->want_to_display>0)
+    DisplayStartThread();
 
   // redraw all:
   BuildAllWindows();
   UpdateAllWindows();
+
 
 }
 
@@ -805,61 +808,6 @@ on_prefs_update_power_toggled          (GtkToggleButton *togglebutton,
   preferences.auto_update=togglebutton->active;
 }
 
-
-void
-on_prefs_capture_raw1394_toggled       (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-  if (togglebutton->active)
-    preferences.receive_method=RECEIVE_METHOD_RAW1394;
-}
-
-
-void
-on_prefs_capture_video1394_toggled     (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-  if (togglebutton->active)
-    preferences.receive_method=RECEIVE_METHOD_VIDEO1394;
-}
-
-
-void
-on_prefs_capture_auto_toggled          (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-  if (togglebutton->active)
-    preferences.receive_method=RECEIVE_METHOD_AUTO;
-}
-
-
-void
-on_prefs_display_gdk_toggled           (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-  if (togglebutton->active)
-    preferences.display_method=DISPLAY_METHOD_GDK;
-}
-
-
-void
-on_prefs_display_xv_toggled            (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-  if (togglebutton->active)
-    preferences.display_method=DISPLAY_METHOD_XV;
-}
-
-
-void
-on_prefs_display_auto_toggled          (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-  if (togglebutton->active)
-    preferences.display_method=DISPLAY_METHOD_AUTO;
-}
-
-
 void
 on_preferences_window_activate         (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
@@ -873,6 +821,7 @@ on_prefs_save_button_clicked           (GtkButton       *button,
                                         gpointer         user_data)
 {
   gchar *tmp;
+
   tmp=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_ftp_address")));
   strcpy(preferences.ftp_address,tmp);
   tmp=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_ftp_filename")));
@@ -900,15 +849,12 @@ on_prefs_save_button_clicked           (GtkButton       *button,
   tmp=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_copyright")));
   strcpy(preferences.real_copyright,tmp);
 
-  preferences.op_timeout = gtk_spin_button_get_value_as_int( GTK_SPIN_BUTTON(lookup_widget( GTK_WIDGET(preferences_window), "prefs_op_timeout_scale")));
-  preferences.auto_update_frequency = gtk_spin_button_get_value_as_int( GTK_SPIN_BUTTON(lookup_widget( GTK_WIDGET(preferences_window), "prefs_update_scale")));
-
-  preferences.display_period = gtk_spin_button_get_value_as_int( GTK_SPIN_BUTTON(lookup_widget( GTK_WIDGET(preferences_window), "prefs_display_period")));
-
-  preferences.save_period = gtk_spin_button_get_value_as_int( GTK_SPIN_BUTTON(lookup_widget( GTK_WIDGET(preferences_window), "prefs_save_period")));
-
-  preferences.ftp_period = gtk_spin_button_get_value_as_int( GTK_SPIN_BUTTON(lookup_widget( GTK_WIDGET(preferences_window), "prefs_ftp_period")));
-  preferences.real_port = gtk_spin_button_get_value_as_int( GTK_SPIN_BUTTON(lookup_widget( GTK_WIDGET(preferences_window), "prefs_real_port")));
+  preferences.op_timeout = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(preferences_window), "prefs_op_timeout_scale")));
+  preferences.auto_update_frequency = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(preferences_window), "prefs_update_scale")));
+  preferences.display_period = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(preferences_window), "prefs_display_period")));
+  preferences.save_period = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(preferences_window), "prefs_save_period")));
+  preferences.ftp_period = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(preferences_window), "prefs_ftp_period")));
+  preferences.real_port = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(preferences_window), "prefs_real_port")));
 
   WriteConfigFile();
 }
@@ -961,13 +907,17 @@ on_service_display_toggled             (GtkToggleButton *togglebutton,
 	{
 	  if (GetService(SERVICE_ISO,current_camera)==NULL)
 	    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"service_iso")), TRUE);
-	  gtk_widget_show(porthole_window);
+	  if (preferences.display_method!=DISPLAY_METHOD_SDL)
+	    gtk_widget_show(porthole_window);
+	  uiinfo->want_to_display=1;
 	  DisplayStartThread();
 	} 
       else
 	{
 	  DisplayStopThread(current_camera);
-	  gtk_widget_hide(porthole_window);
+	  if (preferences.display_method!=DISPLAY_METHOD_SDL)
+	    gtk_widget_hide(porthole_window);
+	  uiinfo->want_to_display=0;
 	} 
     }
 }
@@ -1093,28 +1043,6 @@ on_prefs_ftp_scratch_toggled           (GtkToggleButton *togglebutton,
 
 
 void
-on_prefs_real_audience_activate              (GtkMenuItem     *menuitem,
-					      gpointer         user_data)
-{
-  preferences.real_audience=(int)user_data;
-}
-
-void
-on_prefs_real_quality_activate              (GtkMenuItem     *menuitem,
-					     gpointer         user_data)
-{
-  preferences.real_quality=(int)user_data;
-}
-
-void
-on_prefs_real_compatibility_activate              (GtkMenuItem     *menuitem,
-						   gpointer         user_data)
-{
-  preferences.real_compatibility=(int)user_data;
-}
-
-
-void
 on_prefs_real_record_yes_toggled       (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
@@ -1137,57 +1065,68 @@ on_range_menu_activate             (GtkMenuItem     *menuitem,
   action=((int)user_data)%1000;
   feature=(((int)user_data)-action)/1000;
 
+  //fprintf(stderr,"data: %d feature: %d, action: %d\n",(int)user_data,feature-FEATURE_MIN, action);
+
   switch (action)
     {
     case RANGE_MENU_OFF : // ============================== OFF ==============================
-      UpdateRange(commander_window,feature);
       if (!dc1394_feature_on_off(camera->handle, camera->id, feature, FALSE))
 	MainError("Could not set feature on/off");
       else
 	{
 	  feature_set->feature[feature-FEATURE_MIN].is_on=FALSE;
-	  SetScaleSensitivity(GTK_WIDGET(menuitem),feature,FALSE);
+	  UpdateRange(commander_window,feature);
 	}
       break;
     case RANGE_MENU_MAN : // ============================== MAN ==============================
       if (feature_set->feature[feature-FEATURE_MIN].on_off_capable)
-	if (!dc1394_feature_on_off(camera->handle, camera->id, feature, TRUE))
-	  {
-	    MainError("Could not set feature on");
-	    break;
-	  }
+	{
+	  if (!dc1394_feature_on_off(camera->handle, camera->id, feature, TRUE))
+	    {
+	      MainError("Could not set feature on");
+	      break;
+	    }
+	  else
+	    feature_set->feature[feature-FEATURE_MIN].is_on=TRUE;
+	}
       if (!dc1394_auto_on_off(camera->handle, camera->id, feature, FALSE))
 	MainError("Could not set manual mode");
       else
 	{
 	  feature_set->feature[feature-FEATURE_MIN].auto_active=FALSE;
 	  UpdateRange(commander_window,feature);
-	  SetScaleSensitivity(GTK_WIDGET(menuitem),feature,TRUE);
 	}
       break;
     case RANGE_MENU_AUTO : // ============================== AUTO ==============================
       if (feature_set->feature[feature-FEATURE_MIN].on_off_capable)
-	if (!dc1394_feature_on_off(camera->handle, camera->id, feature, TRUE))
-	  {
-	    MainError("Could not set feature on");
-	    break;
-	  }
+	{
+	  if (!dc1394_feature_on_off(camera->handle, camera->id, feature, TRUE))
+	    {
+	      MainError("Could not set feature on");
+	      break;
+	    }
+	  else
+	    feature_set->feature[feature-FEATURE_MIN].is_on=TRUE;
+	}
       if (!dc1394_auto_on_off(camera->handle, camera->id, feature, TRUE))
 	MainError("Could not set auto mode");
       else
 	{
 	  feature_set->feature[feature-FEATURE_MIN].auto_active=TRUE;
-	  SetScaleSensitivity(GTK_WIDGET(menuitem),feature,FALSE);
 	  UpdateRange(commander_window,feature);
 	}
       break;
     case RANGE_MENU_SINGLE : // ============================== SINGLE ==============================
       if (feature_set->feature[feature-FEATURE_MIN].on_off_capable)
-	if (!dc1394_feature_on_off(camera->handle, camera->id, feature, TRUE))
-	  {
-	    MainError("Could not set feature on");
-	    break;
-	  }
+	{
+	  if (!dc1394_feature_on_off(camera->handle, camera->id, feature, TRUE))
+	    {
+	      MainError("Could not set feature on");
+	      break;
+	    }
+	  else
+	    feature_set->feature[feature-FEATURE_MIN].is_on=TRUE;
+	}
       step=(unsigned long int)(1000000.0/preferences.auto_update_frequency);
       if (!dc1394_start_one_push_operation(camera->handle, camera->id, feature))
 	MainError("Could not start one-push operation");
@@ -1205,7 +1144,6 @@ on_range_menu_activate             (GtkMenuItem     *menuitem,
 	  if (timeout_bin>=(unsigned long int)(preferences.op_timeout*1000000.0))
 	    MainStatus("One-Push function timed-out!\n");
 	  UpdateRange(commander_window,feature);
-	  SetScaleSensitivity(GTK_WIDGET(menuitem),feature,TRUE);
 	  // should switch back to manual mode here. Maybe a recursive call??
 	  // >> Not necessary because UpdateRange reloads the status which folds
 	  // back to 'man' in the camera
@@ -1214,3 +1152,37 @@ on_range_menu_activate             (GtkMenuItem     *menuitem,
     }
 }
 
+void
+on_prefs_real_audience_activate        (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  preferences.real_audience=(int)user_data;
+}
+
+void 
+on_prefs_real_quality_activate         (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  preferences.real_quality=(int)user_data;
+}
+
+void
+on_prefs_real_compatibility_activate   (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  preferences.real_compatibility=(int)user_data;
+}
+
+void
+on_prefs_display_method_activate       (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  preferences.display_method=(int)user_data;
+}
+
+void
+on_prefs_receive_method_activate      (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  preferences.receive_method=(int)user_data;
+}

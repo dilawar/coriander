@@ -46,9 +46,9 @@ SetPreferencesDefaults(void)
   preferences.op_timeout=10;
   preferences.auto_update=0;
   preferences.auto_update_frequency=10;
-  preferences.display_method=DISPLAY_METHOD_AUTO;
+  preferences.display_method=DISPLAY_METHOD_SDL;
   preferences.display_period=1;
-  preferences.receive_method=RECEIVE_METHOD_AUTO;
+  preferences.receive_method=RECEIVE_METHOD_RAW1394;
   strcpy(preferences.save_filename,"test.jpg");
   preferences.save_scratch=SAVE_SCRATCH_SEQUENTIAL;
   preferences.save_period=1;
@@ -77,7 +77,6 @@ SetPreferencesDefaults(void)
   preferences.real_quality=0;
   preferences.real_compatibility=0;
   preferences.real_period=1;
-
 #endif
 }
 
@@ -127,71 +126,19 @@ WriteConfigFile(void)
     fprintf(fd,"%s NO\n",preferences_features[1]);
 
   fprintf(fd,"%s %f\n",preferences_features[2],preferences.auto_update_frequency);
-
-  switch (preferences.display_method)
-    {
-    case DISPLAY_METHOD_GDK:
-	fprintf(fd,"%s GDK\n",preferences_features[3]);
-	break;
-    case DISPLAY_METHOD_XV:
-	fprintf(fd,"%s XV\n",preferences_features[3]);
-	break;
-    case DISPLAY_METHOD_AUTO:
-    default:
-	fprintf(fd,"%s AUTO\n",preferences_features[3]);
-	break;
-    }
-
+  fprintf(fd,"%s %d\n",preferences_features[3],preferences.display_method);
   fprintf(fd,"%s %d\n",preferences_features[4],preferences.display_period);
-
-  switch (preferences.receive_method)
-    {
-    case RECEIVE_METHOD_RAW1394:
-	fprintf(fd,"%s RAW1394\n",preferences_features[5]);
-	break;
-    case RECEIVE_METHOD_VIDEO1394:
-	fprintf(fd,"%s VIDEO1394\n",preferences_features[5]);
-	break;
-    case RECEIVE_METHOD_AUTO:
-    default:
-	fprintf(fd,"%s AUTO\n",preferences_features[5]);
-	break;
-    }
-
+  fprintf(fd,"%s %d\n",preferences_features[5],preferences.receive_method);
   fprintf(fd,"%s %s\n",preferences_features[6],preferences.save_filename);
-
-  switch (preferences.save_scratch)
-    {
-    case SAVE_SCRATCH_OVERWRITE:
-      fprintf(fd,"%s SAVE_SCRATCH_OVERWRITE\n",preferences_features[7]);
-      break;
-    case SAVE_SCRATCH_SEQUENTIAL:
-    default:
-      fprintf(fd,"%s SAVE_SCRATCH_SEQUENTIAL\n",preferences_features[7]);
-      break;
-    }
-      
+  fprintf(fd,"%s %d\n",preferences_features[7],preferences.save_scratch);
   fprintf(fd,"%s %d\n",preferences_features[8],preferences.save_period);
-
   fprintf(fd,"%s %s\n",preferences_features[9],preferences.ftp_address);
   fprintf(fd,"%s %s\n",preferences_features[10],preferences.ftp_user);
   fprintf(fd,"%s %s\n",preferences_features[11],preferences.ftp_password);
   fprintf(fd,"%s %s\n",preferences_features[12],preferences.ftp_filename);
   fprintf(fd,"%s %s\n",preferences_features[13],preferences.ftp_path);
-
-  switch (preferences.ftp_scratch)
-    {
-    case FTP_SCRATCH_OVERWRITE:
-      fprintf(fd,"%s FTP_SCRATCH_OVERWRITE\n",preferences_features[14]);
-      break;
-    case FTP_SCRATCH_SEQUENTIAL:
-    default:
-      fprintf(fd,"%s FTP_SCRATCH_SEQUENTIAL\n",preferences_features[14]);
-      break;
-    }
-      
+  fprintf(fd,"%s %d\n",preferences_features[14],preferences.ftp_scratch);
   fprintf(fd,"%s %d\n",preferences_features[15],preferences.ftp_period);
-
   fprintf(fd,"%s %s\n",preferences_features[16],preferences.real_address);
   fprintf(fd,"%s %s\n",preferences_features[17],preferences.real_user);
   fprintf(fd,"%s %s\n",preferences_features[18],preferences.real_password);
@@ -210,7 +157,7 @@ WriteConfigFile(void)
   fprintf(fd,"%s %d\n",preferences_features[26],preferences.real_quality);
   fprintf(fd,"%s %d\n",preferences_features[27],preferences.real_compatibility);
 
-  fprintf(fd,"%s %d\n",preferences_features[28],preferences.real_period);
+  //fprintf(fd,"%s %d\n",preferences_features[28],preferences.real_period);
 
   fclose(fd);
 }
@@ -252,46 +199,23 @@ ParseConfigFile(FILE* fd)
 	      preferences.auto_update_frequency=atof(feature_value);
 	      break;
 	    case DISPLAY_METHOD:
-	      if(strstr(feature_value,"AUTO")!=NULL)
-		preferences.display_method=DISPLAY_METHOD_AUTO;
-	      else
-		if(strstr(feature_value,"GDK")!=NULL)
-		  preferences.display_method=DISPLAY_METHOD_GDK;
-		else
-		  if(strstr(feature_value,"XV")!=NULL)
-		    preferences.display_method=DISPLAY_METHOD_XV;
-		  else
-		    MainError("Invalid display_method");
+	      preferences.display_method=atoi(feature_value);
 	      break;
 	    case DISPLAY_PERIOD:
 	      preferences.display_period=atoi(feature_value);
-
+	      break;
 	    case RECEIVE_METHOD:
-	      if(strstr(feature_value,"AUTO")!=NULL)
-		preferences.receive_method=RECEIVE_METHOD_AUTO;
-	      else
-		if(strstr(feature_value,"RAW1394")!=NULL)
-		  preferences.receive_method=RECEIVE_METHOD_RAW1394;
-		else
-		  if(strstr(feature_value,"VIDEO1394")!=NULL)
-		    preferences.receive_method=RECEIVE_METHOD_VIDEO1394;
-		  else
-		    MainError("Invalid receive_method");
+	      preferences.receive_method=atoi(feature_value);
 	      break;
 	    case SAVE_FILENAME:
 	      strcpy(preferences.save_filename,feature_value);
 	      break;
 	    case SAVE_SCRATCH:
-	      if(strstr(feature_value,"SAVE_SCRATCH_OVERWRITE")!=NULL)
-		preferences.save_scratch=SAVE_SCRATCH_OVERWRITE;
-	      else
-		if(strstr(feature_value,"SAVE_SCRATCH_SEQUENTIAL")!=NULL)
-		  preferences.save_scratch=SAVE_SCRATCH_SEQUENTIAL;
-		else
-		  MainError("Invalid save_scratch option");
+	      preferences.save_scratch=atoi(feature_value);
 	      break;
 	    case SAVE_PERIOD:
 	      preferences.save_period=atoi(feature_value);
+	      break;
 	    case FTP_ADDRESS:
 	      strcpy(preferences.ftp_address,feature_value);
 	      break;
@@ -308,18 +232,11 @@ ParseConfigFile(FILE* fd)
 	      strcpy(preferences.ftp_path,feature_value);
 	      break;
 	    case FTP_SCRATCH:
-	      if(strstr(feature_value,"FTP_SCRATCH_OVERWRITE")!=NULL)
-		preferences.ftp_scratch=FTP_SCRATCH_OVERWRITE;
-	      else
-		if(strstr(feature_value,"FTP_SCRATCH_SEQUENTIAL")!=NULL)
-		  preferences.ftp_scratch=FTP_SCRATCH_SEQUENTIAL;
-		  else
-		    MainError("Invalid ftp_scratch option");
+	      preferences.ftp_scratch=atoi(feature_value);
 	      break;
 	    case FTP_PERIOD:
 	      preferences.ftp_period=atoi(feature_value);
 	      break;
-	      
 	    case REAL_ADDRESS:
 	      strcpy(preferences.real_address,feature_value);
 	      break;
@@ -360,7 +277,8 @@ ParseConfigFile(FILE* fd)
 	    case REAL_PERIOD:
 	      preferences.real_period=atoi(feature_value);
 	    default:
-	      MainError("Invalid config item");
+	      MainError("Invalid config item id");
+	      //fprintf(stderr,"feature_id: %d\n",feature_id);
 	      break;
 	    }
 	}

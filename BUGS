@@ -1,4 +1,4 @@
-Known bugs:
+Known bugs for version 0.20:
 
 - The Sony DFW-VL500 has several bugs in its early software versions. This is
   mentionned in the camera user's manual (which is not supplied with the
@@ -11,3 +11,5 @@ Known bugs:
 - The new thread mechanism is working but needs more testing.
 - The REAL service is untested and only runs with some distros. It does not
   work on RH-7.2
+- Display is a little bit bugged but I think it's due to my 1394 subsystem
+  version.

@@ -22,7 +22,6 @@
 
 #include <gnome.h>
 #include <sys/types.h>
-#include <sys/stat.h>
 #include <unistd.h>
 #include <string.h>
 #include "update_frames.h"
@@ -53,6 +52,7 @@ extern SelfIdPacket_t *selfid;
 extern PrefsInfo preferences; 
 extern int silent_ui_update;
 extern int current_camera;
+
 void
 UpdatePrefsUpdateFrame(void)
 {
@@ -60,8 +60,46 @@ UpdatePrefsUpdateFrame(void)
 }
 
 void
+UpdatePrefsDisplayFrame(void)
+{
+  // frame drop
+  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(preferences_window,"prefs_display_period"),
+			    preferences.display_period);
+
+  // menu history
+  gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(preferences_window, "prefs_display_method_menu")),
+			      preferences.display_method2index[preferences.display_method]);
+}
+
+void
+UpdatePrefsReceiveFrame(void)
+{
+  // menu history
+  gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(preferences_window, "prefs_receive_method_menu")),
+			      preferences.receive_method2index[preferences.receive_method]);
+
+}
+
+void
 UpdatePrefsSaveFrame(void)
 {
+  // frame drop
+  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(preferences_window,
+							  "prefs_save_period"), preferences.save_period);
+  // scratch
+  switch(preferences.save_scratch)
+    {
+    case SAVE_SCRATCH_OVERWRITE:
+      gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(preferences_window,
+								   "prefs_save_scratch"),TRUE);
+      break;
+    case SAVE_SCRATCH_SEQUENTIAL:
+      gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(preferences_window,
+								   "prefs_save_seq"),TRUE);
+      break;
+    }
+
+  //filename
   gtk_entry_set_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_save_filename")),
 		     preferences.save_filename);
 }
@@ -71,7 +109,22 @@ void
 UpdatePrefsFtpFrame(void)
 {
 #ifdef HAVE_FTPLIB
-
+  // frame drop
+  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(preferences_window,
+							  "prefs_ftp_period"), preferences.ftp_period);
+  // scratch
+  switch(preferences.ftp_scratch)
+    {
+    case FTP_SCRATCH_OVERWRITE:
+      gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(preferences_window,
+								   "prefs_ftp_scratch"),TRUE);
+      break;
+    case FTP_SCRATCH_SEQUENTIAL:
+      gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(preferences_window,
+								   "prefs_ftp_seq"),TRUE);
+      break;
+    }
+  // file,... names
   gtk_entry_set_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_ftp_filename")),
 		     preferences.ftp_filename);
   gtk_entry_set_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_ftp_address")),
@@ -82,6 +135,7 @@ UpdatePrefsFtpFrame(void)
 		     preferences.ftp_path);
   gtk_entry_set_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_ftp_user")),
 		     preferences.ftp_user);
+
 #else
 
   gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_ftp_framedrop_frame"),FALSE);
@@ -96,6 +150,12 @@ void
 UpdatePrefsRealFrame(void)
 {
 
+#ifdef HAVE_REALLIB
+  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_real_server_frame"),TRUE);
+  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_real_infos_frame"),TRUE);
+  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_real_stream_frame"),TRUE);
+
+  // names
   gtk_entry_set_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_filename")),
 		     preferences.real_filename);
   gtk_entry_set_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_address")),
@@ -110,85 +170,31 @@ UpdatePrefsRealFrame(void)
 		     preferences.real_author);
   gtk_entry_set_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_copyright")),
 		     preferences.real_copyright);
-  gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(preferences_window, "prefs_real_audience")),preferences.real_audience);
-  //fprintf(stderr,"quality: %d\n",preferences.real_quality);
-  gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(preferences_window, "prefs_real_quality")),preferences.real_quality);
-  gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(preferences_window, "prefs_real_compatibility")),preferences.real_compatibility);
-  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(preferences_window, "prefs_real_record_yes")),preferences.real_recordable);
 
-}
+  // port
+  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(preferences_window, "prefs_real_port"),
+			    preferences.real_port);
 
+  // menu history
+  gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(preferences_window, "prefs_real_audience")),
+			      preferences.real_audience);
+  gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(preferences_window, "prefs_real_quality")),
+			      preferences.real_quality);
+  gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(preferences_window, "prefs_real_compatibility")),
+			      preferences.real_compatibility);
 
-void
-UpdatePrefsDisplayFrame(void)
-{
-  // DISPLAY =====
+  // recordable?
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(preferences_window, "prefs_real_record_yes")),
+			       preferences.real_recordable);
 
-  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_display_gdk"),TRUE);// GDK always available  
-#ifdef HAVE_X11_EXTENSIONS_XVLIB_H
-  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_display_xv"),TRUE);
-  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_display_auto"),TRUE);
-  switch (preferences.display_method)
-    {
-    case DISPLAY_METHOD_GDK:
-      gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(preferences_window,"prefs_display_gdk"),TRUE);
-      break;
-    case DISPLAY_METHOD_XV:
-      gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(preferences_window,"prefs_display_xv"),TRUE);
-      break;
-    case DISPLAY_METHOD_AUTO:
-      gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(preferences_window,"prefs_display_auto"),TRUE);
-      break;
-    }
 #else
-  // XV is not available. we force the use of GDK.
-  preferences.display_method=DISPLAY_METHOD_GDK;
-  gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(preferences_window,"prefs_display_gdk"), TRUE);
-  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_display_auto"),FALSE);
-  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_display_xv"),FALSE);
+  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_real_server_frame"),FALSE);
+  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_real_infos_frame"),FALSE);
+  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_real_stream_frame"),FALSE);
 #endif
 
 }
 
-
-void
-UpdatePrefsReceiveFrame(void)
-{
-  int video_ok=0;
-  struct stat statstruct;
-
-  // blank sensitiveness
-  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_capture_raw1394"),TRUE);// RAW1394 always available
-
-  if(stat("/dev/video1394",&statstruct)==0)
-    {
-      // the device is there, check RW permissions
-      if ((statstruct.st_mode&&S_IRUSR)&&(statstruct.st_mode&&S_IWUSR))
-	{
-	  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_capture_video1394"),TRUE);
-	  video_ok=1;
-	}
-      else
-	preferences.receive_method=RECEIVE_METHOD_RAW1394;
-    }
-
-  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_capture_video1394"),video_ok);
-  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_capture_auto"),video_ok);
-
-  switch (preferences.receive_method)
-    {
-    case RECEIVE_METHOD_VIDEO1394:
-      gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(preferences_window,"prefs_capture_video1394"),TRUE);
-      break;
-    case RECEIVE_METHOD_RAW1394:
-      gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(preferences_window,"prefs_capture_raw1394"),TRUE);
-      break;
-    case RECEIVE_METHOD_AUTO:
-      gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(preferences_window,"prefs_capture_auto"),TRUE);
-      break;
-    }
-
-}
 
 void
 UpdateCameraFrame(void)

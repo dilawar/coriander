@@ -161,6 +161,7 @@ BuildCameraMenu(void)
 
   camera_id_menu = gtk_menu_new ();
 
+  //fprintf(stderr,"%d\n",camera_num);
   for (i=0;i<camera_num;i++)
     {
       glade_menuitem = gtk_menu_item_new_with_label (_(cameras[i].model));

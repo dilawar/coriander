@@ -61,7 +61,14 @@ void BuildRange(GtkWidget* current_window, int feature)
   gtk_container_set_border_width (GTK_CONTAINER (new_option_menu), 1);
   
   new_menu = gtk_menu_new ();
-
+  /*
+  fprintf(stderr,"feature %d: avail: %d, onoff: %d, man: %d, auto: %d, op: %d\n",feature-FEATURE_MIN,
+	  feature_set->feature[feature-FEATURE_MIN].available,
+	  feature_set->feature[feature-FEATURE_MIN].on_off_capable,
+	  feature_set->feature[feature-FEATURE_MIN].manual_capable,
+	  feature_set->feature[feature-FEATURE_MIN].auto_capable,
+	  feature_set->feature[feature-FEATURE_MIN].one_push);
+  */
   if (feature_set->feature[feature-FEATURE_MIN].available)
     {
       // BUILD MENU ITEMS ====================================================================================

@@ -34,7 +34,7 @@ dnl Subst PACKAGE_PIXMAPS_DIR.
 PACKAGE_PIXMAPS_DIR="`gnome-config --datadir`/pixmaps/${PACKAGE}"
 AC_SUBST(PACKAGE_PIXMAPS_DIR)
 
-AC_MSG_CHECKING(for XFree86 XvImage support)
+AC_MSG_CHECKING(for XFree86 XvImage support) ##################################
  video_x11_xv=no
  AC_TRY_COMPILE([
   #include <X11/Xlib.h>
@@ -54,14 +54,14 @@ AC_MSG_CHECKING(for XFree86 XvImage support)
 
 AC_SUBST(XV_LIB)
 
-# Check for ftplib
+# Check for ftplib ###########################################################
 AC_CHECK_LIB(ftp, FtpInit,
              AC_DEFINE(HAVE_FTPLIB)
              FTP_LIB="-lftp",
              AC_MSG_RESULT(ftplib is required for ftp support, disabled))
 AC_SUBST(FTP_LIB)
 
-# Check for realproducersdk
+# Check for realproducersdk ##################################################
 AC_MSG_CHECKING(for Real Producer SDK)
  real_sdk=no
  AC_TRY_COMPILE([
@@ -84,9 +84,17 @@ AC_MSG_CHECKING(for Real Producer SDK)
   REAL_LIB="-L/usr/local/lib/realproducersdk -lenceng -ldl"
   REAL_INCLUDEDIR="-I/usr/local/include/realproducersdk"
  fi
-
 AC_SUBST(REAL_LIB)
 AC_SUBST(REAL_INCLUDEDIR)
+
+# Check for SDL ###########################################################
+AC_CHECK_LIB(SDL, SDL_Init,
+             AC_DEFINE(HAVE_SDLLIB)
+             SDL_LIB="-lSDL"
+	     SDL_INCLUDEDIR="-I/usr/include/SDL",
+             AC_MSG_RESULT(SDL libs required for SDL display. Disabled.))
+AC_SUBST(SDL_LIB)
+AC_SUBST(SDL_INCLUDEDIR)
 
 dnl temporarily removed intl/Makefile and po/Makefile.in
 AC_OUTPUT([

@@ -23,6 +23,11 @@
 #include <gdk/gdkprivate.h>
 #include <libdc1394/dc1394_control.h>
 #include <pthread.h>
+
+#ifdef HAVE_SDLLIB
+#  include "SDL.h"
+#endif
+
 #include "support.h"
 #include "definitions.h"
 #include "tools.h"
@@ -36,6 +41,7 @@ extern PrefsInfo preferences;
 extern dc1394_miscinfo *misc_info;
 extern GtkWidget *porthole_window;
 extern int current_camera;
+extern dc1394_camerainfo *camera;
 
 gint
 DisplayStartThread()
@@ -62,31 +68,50 @@ DisplayStartThread()
       pthread_mutex_lock(&display_service->mutex_data);
       info->gdk_buffer = NULL;
       info->drawable = (GtkWidget*)lookup_widget(porthole_window, "camera_scope");
-
+      info->display_method=preferences.display_method;
       info->period=preferences.display_period;
       CommonChainSetup(display_service,SERVICE_DISPLAY,current_camera);
 
+      //fprintf(stderr,"display method: %d\n",preferences.display_method);
       switch(preferences.display_method)
 	{
 	case DISPLAY_METHOD_XV:
 #ifdef HAVE_X11_EXTENSIONS_XVLIB_H
-	  if (xvInit(display_service))
-	    info->display_method=DISPLAY_METHOD_XV;
-	  else
+	  //fprintf(stderr,"setting up XV\n");
+	  if (!xvInit(display_service))
 #endif
 	    {
-	      MainError("Xv is not available for display. Try GDK or AUTO.");
+	      MainError("Xv is not available for display. Try GDK or SDL.");
 	      pthread_mutex_unlock(&display_service->mutex_data);
 	      FreeChain(display_service);
 	      return(-1);
 	    }
-	  
 	  break;
 	case DISPLAY_METHOD_GDK:
-	    info->display_method=DISPLAY_METHOD_GDK;
-	    gdk_rgb_init();
-	    info->gdk_buffer=malloc(display_service->width*display_service->height *3);
-	    break;
+	  //fprintf(stderr,"setting up GDK\n");
+	  info->display_method=DISPLAY_METHOD_GDK;
+	  gdk_rgb_init();
+	  info->gdk_buffer=malloc(display_service->width*display_service->height *3);
+	  break;
+	case DISPLAY_METHOD_SDL:
+#ifdef HAVE_SDLLIB
+	  //fprintf(stderr,"setting up SDL\n");
+	  if (!sdlInit(display_service))
+	    {
+#endif
+	      //fprintf(stderr,"SDL setup failed\n");
+	      MainError("SDL is not available for display. Try Xv or GDK.");
+#ifdef HAVE_SDLLIB
+	      SDL_FreeYUVOverlay(info->SDL_overlay);
+	      SDL_FreeSurface(info->SDL_video);
+	      SDL_QuitSubSystem(SDL_INIT_VIDEO);
+#endif
+	      pthread_mutex_unlock(&display_service->mutex_data);
+	      FreeChain(display_service);
+	      return(-1);
+	    }
+	  break;
+	  /*
 	case DISPLAY_METHOD_AUTO:
 #ifdef HAVE_X11_EXTENSIONS_XVLIB_H
 	  if (xvInit(display_service))
@@ -98,6 +123,7 @@ DisplayStartThread()
 	      gdk_rgb_init();
 	      info->gdk_buffer=malloc(display_service->width*display_service->height *3);
 	    }
+	  */
 	}      
       gtk_widget_set_usize(info->drawable,display_service->width,display_service->height);
       pthread_mutex_unlock(&display_service->mutex_data);
@@ -122,7 +148,6 @@ DisplayStartThread()
       //fprintf(stderr," DISPLAY service started\n");
       
     }
-  
   return (1);
 }
 
@@ -146,6 +171,9 @@ DisplayThread(void* arg)
   chain_t* display_service=NULL;
   displaythread_info_t *info=NULL;
   long int skip_counter;
+  unsigned long int lumBufferSize, chromBufferSize;
+  lumBufferSize = display_service->width*display_service->height; 
+  chromBufferSize = lumBufferSize/4;
 
   // we should only use mutex_data in this function
 
@@ -158,7 +186,6 @@ DisplayThread(void* arg)
   pthread_mutex_unlock(&display_service->mutex_data);
   //fprintf(stderr,"Outside loop, mutex unlocked\n");
   skip_counter=0;
-
 
   while (1)
     {
@@ -181,24 +208,45 @@ DisplayThread(void* arg)
 	      if (skip_counter==(info->period-1))
 		{
 		  skip_counter=0;
-		  //frintf(stderr," --- display frame\n");
-#ifdef HAVE_X11_EXTENSIONS_XVLIB_H
-		  if (info->display_method == DISPLAY_METHOD_XV)
+		  //fprintf(stderr,"ready to display: mode %d\n",info->display_method);
+		  switch (info->display_method)
 		    {
+#ifdef HAVE_X11_EXTENSIONS_XVLIB_H
+		    case DISPLAY_METHOD_XV:
+		      //fprintf(stderr,"Auugh!\n");
 		      convert_to_yuv_for_xv(display_service->current_buffer,
 					    info->xv_image->data, display_service->mode,
 					    display_service->width, display_service->height,
-					    display_service->bytes_per_frame,info->xv_format);
+					    info->xv_format);
 		      xvPut(display_service);
-		    }
-		  else
+		      break;
 #endif
-		    { //DISPLAY_METHOD_GDK
+		    case DISPLAY_METHOD_GDK:
+		      //fprintf(stderr,"Auugh!\n");
 		      convert_to_rgb(display_service->current_buffer,
 				     info->gdk_buffer, display_service->mode,
 				     display_service->width, display_service->height,
 				     display_service->bytes_per_frame);
 		      gdkPut(display_service);
+		      break;
+		    case DISPLAY_METHOD_SDL:
+#ifdef HAVE_SDLLIB
+		      //fprintf(stderr,"locking\n");
+		      if (SDL_LockYUVOverlay(info->SDL_overlay) == 0)
+			{
+			  //fprintf(stderr,"converting\n");
+			  convert_to_yuv_for_SDL(display_service->current_buffer,
+						 info->SDL_overlay->pixels[0], display_service->mode,
+						 display_service->width, display_service->height);
+			  
+			  //fprintf(stderr,"unlocking\n");
+			  SDL_UnlockYUVOverlay(info->SDL_overlay);
+			  //fprintf(stderr,"displaying\n");
+			  SDL_DisplayYUVOverlay(info->SDL_overlay, &info->SDL_videoRect);
+			  //fprintf(stderr,"   Done!\n");
+			}
+#endif
+		      break;
 		    }
 		}
 	      else
@@ -238,20 +286,32 @@ DisplayStopThread(unsigned int camera)
       pthread_mutex_lock(&display_service->mutex_data);
       pthread_mutex_lock(&display_service->mutex_struct);
       RemoveChain(display_service, camera);
+      switch (info->display_method)
+	{
 #ifdef HAVE_X11_EXTENSIONS_XVLIB_H
-      if ((info->display_method==DISPLAY_METHOD_XV)&&(info->xv_image != NULL))
-	{ 
-	  XvStopVideo(info->display, info->xv_port, info->window);
-	  XShmDetach(info->display, &info->xv_shm_info);
-	  shmdt(info->xv_shm_info.shmaddr);
-	  shmctl(info->xv_shm_info.shmid, IPC_RMID, 0);
- 	  XFree(info->xv_image);
-	}
-      else
+	case DISPLAY_METHOD_XV:
+	  if (info->xv_image != NULL)
+	    { 
+	      XvStopVideo(info->display, info->xv_port, info->window);
+	      XShmDetach(info->display, &info->xv_shm_info);
+	      shmdt(info->xv_shm_info.shmaddr);
+	      shmctl(info->xv_shm_info.shmid, IPC_RMID, 0);
+	      XFree(info->xv_image);
+	    }
+	  break;
 #endif
-	if ((info->display_method==DISPLAY_METHOD_GDK)
-	    &&(info->gdk_buffer != NULL))
-	  free(info->gdk_buffer);
+	case DISPLAY_METHOD_GDK:
+	  if (info->gdk_buffer != NULL)
+	    free(info->gdk_buffer);
+	  break;
+	case DISPLAY_METHOD_SDL:
+#ifdef HAVE_SDLLIB
+	  SDL_FreeYUVOverlay(info->SDL_overlay);
+	  SDL_FreeSurface(info->SDL_video);
+	  SDL_QuitSubSystem(SDL_INIT_VIDEO);
+#endif
+	  break;
+	}
 
       pthread_mutex_unlock(&display_service->mutex_struct);
       pthread_mutex_unlock(&display_service->mutex_data);
@@ -348,7 +408,7 @@ void xvPut(chain_t *display_service)
 }
 
 void
-convert_to_yuv_for_xv(unsigned char *src, unsigned char *dest, int mode, int width, int height, long int bytes_per_frame, int xv_format)
+convert_to_yuv_for_xv(unsigned char *src, unsigned char *dest, int mode, int width, int height, int xv_format)
 {
   switch(mode)
     {
@@ -362,7 +422,7 @@ convert_to_yuv_for_xv(unsigned char *src, unsigned char *dest, int mode, int wid
     case MODE_1280x960_YUV422:
     case MODE_1600x1200_YUV422:
       if (xv_format == GUID_UYVY_PACKED)
-	memcpy(dest,src,bytes_per_frame);
+	memcpy(dest,src,width*height*2);
       else
 	uyvy2yuy2(src,dest,width*height);
       break;
@@ -409,3 +469,143 @@ void gdkPut(chain_t *display_service)
   //fprintf(stderr," done.\n");
 }
 
+#ifdef HAVE_SDLLIB
+
+int
+sdlInit(chain_t *display_service)
+{
+  char tmp[256];
+  displaythread_info_t *info;
+  info=(displaythread_info_t*)display_service->data;
+
+  // Initialize the SDL library (video subsystem)
+  if ( SDL_Init(SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE) == -1)
+    {
+      fprintf(stderr,"Couldn't initialize SDL video subsystem\n");
+      return(0);
+    }
+
+  // Set requested video mode
+  info->SDL_video = SDL_SetVideoMode(display_service->width, display_service->height, 0, info->SDL_flags);
+  // (0 is bpp)
+  if (info->SDL_video == NULL)
+    {
+      SDL_Quit();
+      fprintf(stderr,"Error while getting video surface\n");
+      return(0);
+    }
+
+  // Hide cursor
+  SDL_ShowCursor(1);
+  
+  // set window title:
+  sprintf(tmp,"Node %d: %s %s",camera->id,camera->vendor,camera->model);
+  SDL_WM_SetCaption(tmp,"");
+  
+
+  // Create YUV Overlay
+  info->SDL_overlay = SDL_CreateYUVOverlay(display_service->width, display_service->height, 
+					   GetSDLVideoMode(display_service->mode),
+					   info->SDL_video);
+  if (info->SDL_overlay == NULL)
+    {
+      SDL_Quit();
+      fprintf(stderr,"Error while creating yuv overlay\n");
+      return(0);
+    }
+
+  info->SDL_videoRect.x=0;
+  info->SDL_videoRect.y=0;
+  info->SDL_videoRect.w=display_service->width;
+  info->SDL_videoRect.h=display_service->height;
+
+  return(1);
+}
+
+int
+GetSDLVideoMode(int mode)
+{
+  switch(mode)
+    {
+    case MODE_320x240_YUV422:
+    case MODE_640x480_YUV422:
+    case MODE_800x600_YUV422:
+    case MODE_1024x768_YUV422:
+    case MODE_1280x960_YUV422:
+    case MODE_1600x1200_YUV422:
+      return(SDL_UYVY_OVERLAY);
+      break;
+    case MODE_160x120_YUV444:
+    case MODE_640x480_YUV411:
+    case MODE_640x480_RGB:
+    case MODE_800x600_RGB:
+    case MODE_1024x768_RGB:
+    case MODE_1280x960_RGB:
+    case MODE_1600x1200_RGB:
+    case MODE_640x480_MONO:
+    case MODE_800x600_MONO:
+    case MODE_1024x768_MONO:
+    case MODE_1280x960_MONO:
+    case MODE_1600x1200_MONO:
+    case MODE_FORMAT7_0:
+    case MODE_FORMAT7_1:
+    case MODE_FORMAT7_2:
+    case MODE_FORMAT7_3:
+    case MODE_FORMAT7_4:
+    case MODE_FORMAT7_5:
+    case MODE_FORMAT7_6:
+    case MODE_FORMAT7_7:
+      return(SDL_YUY2_OVERLAY);
+      break;
+    }
+
+  return(-1);
+}
+
+// we should optimize this for RGB too...
+void
+convert_to_yuv_for_SDL(unsigned char *src, unsigned char *dest, int mode, int width, int height)
+{
+  switch(mode)
+    {
+    case MODE_160x120_YUV444:
+      iyu22yuy2(src,dest,width*height);
+      break;
+    case MODE_320x240_YUV422:
+    case MODE_640x480_YUV422:
+    case MODE_800x600_YUV422:
+    case MODE_1024x768_YUV422:
+    case MODE_1280x960_YUV422:
+    case MODE_1600x1200_YUV422:
+      uyvy2yuy2(src,dest,width*height);
+      //memcpy(dest,src,width*height*2);
+      break;
+    case MODE_640x480_YUV411:
+      iyu12yuy2(src,dest,width*height);
+      break;
+    case MODE_640x480_RGB:
+    case MODE_800x600_RGB:
+    case MODE_1024x768_RGB:
+    case MODE_1280x960_RGB:
+    case MODE_1600x1200_RGB:
+      rgb2yuy2(src,dest,width*height);
+      break;
+    case MODE_640x480_MONO:
+    case MODE_800x600_MONO:
+    case MODE_1024x768_MONO:
+    case MODE_1280x960_MONO:
+    case MODE_1600x1200_MONO:
+    case MODE_FORMAT7_0:
+    case MODE_FORMAT7_1:
+    case MODE_FORMAT7_2:
+    case MODE_FORMAT7_3:
+    case MODE_FORMAT7_4:
+    case MODE_FORMAT7_5:
+    case MODE_FORMAT7_6:
+    case MODE_FORMAT7_7:
+      y2yuy2(src,dest,width*height);
+      break;
+    }
+}
+
+#endif

@@ -83,7 +83,7 @@ typedef struct _Format7Info
 
 typedef struct _UIInfo
 {
-  //int want_display;
+  int want_to_display;
   int test_pattern;
   //  int porthole_is_open;
   int all_auto;

@@ -9,3 +9,4 @@
 #undef PACKAGE_SOURCE_DIR
 #undef HAVE_FTPLIB
 #undef HAVE_REALLIB
+#undef HAVE_SDLLIB

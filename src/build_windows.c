@@ -36,11 +36,13 @@ extern GtkWidget *porthole_window;
 extern GtkWidget *preferences_window;
 extern GtkWidget *commander_window;
 extern UIInfo *uiinfo;
-
+extern int camera_num;
 void
 BuildPreferencesWindow(void)
 {
   LoadConfigFile();
+  BuildPrefsDisplayFrame();
+  BuildPrefsReceiveFrame();
   BuildPrefsSaveFrame();
   BuildPrefsFtpFrame();
   BuildPrefsRealFrame();

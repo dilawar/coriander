@@ -62,4 +62,10 @@ BuildPrefsFtpFrame(void);
 void
 BuildPrefsRealFrame(void);
 
+void
+BuildPrefsDisplayFrame(void);
+
+void
+BuildPrefsReceiveFrame(void);
+
 #endif

@@ -50,8 +50,8 @@ UpdateFormat7Window(void)
 void
 UpdatePreferencesWindow(void)
 {
+  UpdatePrefsReceiveFrame();    
   UpdatePrefsDisplayFrame();
-  UpdatePrefsReceiveFrame();
   UpdatePrefsUpdateFrame();    
   UpdatePrefsSaveFrame();
   UpdatePrefsFtpFrame();
@@ -133,5 +133,3 @@ UpdateAllWindows(void)
   UpdateStatusWindow();
   UpdateCommanderWindow();
 }
-
-

@@ -56,21 +56,33 @@ UpdateRange(GtkWidget* current_window, int feature)
       // select the current menuitem:
       if ((!feature_set->feature[feature-FEATURE_MIN].is_on)&& // off
 	  (feature_set->feature[feature-FEATURE_MIN].on_off_capable))
-	index=0;
+	{
+	  //fprintf(stderr,"off position detected\n");
+	  index=0;
+	}
       else
 	if ((!feature_set->feature[feature-FEATURE_MIN].auto_active)&& // man
 	    (feature_set->feature[feature-FEATURE_MIN].manual_capable))
-	  index=1*(feature_set->feature[feature-FEATURE_MIN].on_off_capable>0);
+	  {
+	    //fprintf(stderr,"man position detected\n");
+	    index=1*(feature_set->feature[feature-FEATURE_MIN].on_off_capable>0);
+	  }
         else
 	  if ((feature_set->feature[feature-FEATURE_MIN].auto_active)&& // auto
 	      (feature_set->feature[feature-FEATURE_MIN].auto_capable))
-	    index=1*(feature_set->feature[feature-FEATURE_MIN].on_off_capable)+
-	          1*(feature_set->feature[feature-FEATURE_MIN].manual_capable);
+	    {
+	      //fprintf(stderr,"auto position detected\n");
+	      index=1*(feature_set->feature[feature-FEATURE_MIN].on_off_capable)+
+		1*(feature_set->feature[feature-FEATURE_MIN].manual_capable);
+	    }
 	  else
-	    index=1*(feature_set->feature[feature-FEATURE_MIN].on_off_capable)+// single
- 	          1*(feature_set->feature[feature-FEATURE_MIN].manual_capable)+
-	          1*(feature_set->feature[feature-FEATURE_MIN].auto_capable);
-	
+	    {
+	      //fprintf(stderr,"op position detected\n");
+	      index=1*(feature_set->feature[feature-FEATURE_MIN].on_off_capable)+// single
+		1*(feature_set->feature[feature-FEATURE_MIN].manual_capable)+
+		1*(feature_set->feature[feature-FEATURE_MIN].auto_capable);
+	    }
+      //fprintf(stderr,"feature: %d index:%d\n",feature-FEATURE_MIN,index);
       
       // sets the active menu item:
       gtk_option_menu_set_history (GTK_OPTION_MENU (lookup_widget(current_window,feature_menu_list[feature-FEATURE_MIN])), index);
@@ -81,20 +93,28 @@ UpdateRange(GtkWidget* current_window, int feature)
 	case FEATURE_WHITE_BALANCE:
 	  gtk_widget_set_sensitive(lookup_widget(current_window, "white_balance_BU_scale"),
 				   (!feature_set->feature[feature-FEATURE_MIN].auto_active)&&
-				   (!feature_set->feature[feature-FEATURE_MIN].one_push_active));
+				   (!feature_set->feature[feature-FEATURE_MIN].one_push_active)&&
+				   (!(feature_set->feature[feature-FEATURE_MIN].on_off_capable&&
+				      !feature_set->feature[feature-FEATURE_MIN].is_on)));
 	  gtk_widget_set_sensitive(lookup_widget(current_window, "white_balance_RV_scale"),
 				   (!feature_set->feature[feature-FEATURE_MIN].auto_active)&&
-				   (!feature_set->feature[feature-FEATURE_MIN].one_push_active));break;
+				   (!feature_set->feature[feature-FEATURE_MIN].one_push_active)&&
+				   (!(feature_set->feature[feature-FEATURE_MIN].on_off_capable&&
+				      !feature_set->feature[feature-FEATURE_MIN].is_on)));break;
 	case FEATURE_TEMPERATURE:
 	  // the only changeable range is the target one, the other is just an indicator.
 	  gtk_widget_set_sensitive(lookup_widget(current_window, "temperature_target_scale"),
 				   (!feature_set->feature[feature-FEATURE_MIN].auto_active)&&
-				   (!feature_set->feature[feature-FEATURE_MIN].one_push_active));
+				   (!feature_set->feature[feature-FEATURE_MIN].one_push_active)&&
+				   (!(feature_set->feature[feature-FEATURE_MIN].on_off_capable&&
+				      !feature_set->feature[feature-FEATURE_MIN].is_on)));
 	  gtk_widget_set_sensitive(lookup_widget(current_window, "temperature_current_scale"),FALSE);break;
 	default:
 	  gtk_widget_set_sensitive(lookup_widget(current_window, feature_scale_list[feature-FEATURE_MIN]),
 				   (!feature_set->feature[feature-FEATURE_MIN].auto_active)&&
-				   (!feature_set->feature[feature-FEATURE_MIN].one_push_active));break;
+				   (!feature_set->feature[feature-FEATURE_MIN].one_push_active)&&
+				   (!(feature_set->feature[feature-FEATURE_MIN].on_off_capable&&
+				      !feature_set->feature[feature-FEATURE_MIN].is_on)));break;
 	}
 
       // grab&set range value if readable:
@@ -155,6 +175,7 @@ UpdateRangeValue(GtkWidget* widget, int feature)
 	      //printf("value: %d\n",value);
 	      feature_set->feature[feature-FEATURE_MIN].value=value;
 	    }
+	  break;
       }
     }
 

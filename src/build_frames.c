@@ -23,6 +23,7 @@
 #include <gnome.h>
 #include "callbacks.h"
 #include "support.h"
+#include <sys/stat.h>
 #include "definitions.h"
 #include "build_menus.h"
 #include "build_ranges.h"
@@ -30,6 +31,8 @@
 #include "update_frames.h"
 #include "thread_ftp.h"
 #include "thread_save.h"
+#include "thread_display.h"
+#include "thread_iso.h"
 #include "preferences.h"
 #include "tools.h"
 #include <libdc1394/dc1394_control.h>
@@ -40,6 +43,7 @@ extern dc1394_feature_set *feature_set;
 extern dc1394_camerainfo *camera;
 extern dc1394_miscinfo *misc_info;
 extern PrefsInfo preferences;
+extern int camera_num;
 
 void
 BuildCameraFrame(void)
@@ -139,94 +143,28 @@ BuildCameraStatusFrame(void)
 { 
 }
 
-
 void
 BuildTransferStatusFrame(void)
 {
 }
 
-
 void
 BuildPrefsSaveFrame(void)
 {
-  GtkAdjustment *adjustment;
-
-  switch(preferences.save_scratch)
-    {
-    case SAVE_SCRATCH_OVERWRITE:
-      gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(preferences_window,
-								   "prefs_save_scratch"),TRUE);
-      break;
-    case SAVE_SCRATCH_SEQUENTIAL:
-      gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(preferences_window,
-								   "prefs_save_seq"),TRUE);
-      break;
-    }
-  // set the  adjustment for spin buttons:
-  adjustment=(GtkAdjustment*)gtk_adjustment_new(1,1,999999,1,100,0);
-  gtk_spin_button_set_adjustment((GtkSpinButton*)lookup_widget(preferences_window,
-							       "prefs_save_period"),adjustment);
-  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(preferences_window,
-							  "prefs_save_period"), preferences.save_period);
-
 }
 
 void
 BuildPrefsFtpFrame(void)
 {
-
-  //fprintf(stderr,"Entering buildframe\n");
-#ifdef HAVE_FTPLIB
-
-  GtkAdjustment *adjustment;
-
-  switch(preferences.ftp_scratch)
-    {
-    case FTP_SCRATCH_OVERWRITE:
-      gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(preferences_window,
-								   "prefs_ftp_scratch"),TRUE);
-      break;
-    case FTP_SCRATCH_SEQUENTIAL:
-      gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(preferences_window,
-								   "prefs_ftp_seq"),TRUE);
-      break;
-    }
-  // set the  adjustment for spin button:
-  adjustment=(GtkAdjustment*)gtk_adjustment_new(1,1,999999,1,100,0);
-  gtk_spin_button_set_adjustment((GtkSpinButton*)lookup_widget(preferences_window,
-							       "prefs_ftp_period"),adjustment);
-  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(preferences_window,
-							  "prefs_ftp_period"), preferences.ftp_period);
-
-#else
-
-  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_ftp_framedrop_frame"),FALSE);
-  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_ftp_scratch_frame"),FALSE);
-  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_ftp_server_frame"),FALSE);
-
-#endif
-  //fprintf(stderr,"Exiting buildframe\n");
-
 }
 
 void
 BuildPrefsRealFrame(void)
 {
-
-  GtkAdjustment *adjustment;
   GtkMenuItem* menuitem;
   GtkMenu* menu;
   GtkOptionMenu* option_menu;
   int i;
-#ifdef HAVE_REALLIB
-  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_real_server_frame"),TRUE);
-  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_real_infos_frame"),TRUE);
-  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_real_stream_frame"),TRUE);
-#else
-  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_real_server_frame"),FALSE);
-  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_real_infos_frame"),FALSE);
-  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_real_stream_frame"),FALSE);
-#endif
 
   option_menu=(GtkOptionMenu*)lookup_widget(preferences_window, "prefs_real_audience");
   menu=(GtkMenu*)gtk_option_menu_get_menu(option_menu);
@@ -236,7 +174,7 @@ BuildPrefsRealFrame(void)
       menuitem=(GtkMenuItem*)gtk_menu_get_active(menu);
       gtk_signal_connect (GTK_OBJECT (menuitem), "activate",
 			  GTK_SIGNAL_FUNC (on_prefs_real_audience_activate),
-			  (int*)i);
+			  (int*)i); 
     }
 
   option_menu=(GtkOptionMenu*)lookup_widget(preferences_window, "prefs_real_quality");
@@ -247,7 +185,7 @@ BuildPrefsRealFrame(void)
       menuitem=(GtkMenuItem*)gtk_menu_get_active(menu);
       gtk_signal_connect (GTK_OBJECT (menuitem), "activate",
 			  GTK_SIGNAL_FUNC (on_prefs_real_quality_activate),
-			  (int*)i);
+			  (int*)i); 
     }
 
   option_menu=(GtkOptionMenu*)lookup_widget(preferences_window, "prefs_real_compatibility");
@@ -258,16 +196,134 @@ BuildPrefsRealFrame(void)
       menuitem=(GtkMenuItem*)gtk_menu_get_active(menu);
       gtk_signal_connect (GTK_OBJECT (menuitem), "activate",
 			  GTK_SIGNAL_FUNC (on_prefs_real_compatibility_activate),
-			  (int*)i);
+			  (int*)i); 
     }
 
-  //fprintf(stderr,"Exiting buildframe\n");
+}
 
-  adjustment=(GtkAdjustment*)gtk_adjustment_new(1,1,9999,1,10,0);
-  gtk_spin_button_set_adjustment((GtkSpinButton*)lookup_widget(preferences_window,
-							       "prefs_real_port"),adjustment);
-  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(preferences_window,
-							  "prefs_real_port"), preferences.real_port);
+void
+BuildPrefsDisplayFrame(void)
+{
+  GtkWidget* new_option_menu;
+  GtkWidget* new_menu;
+  GtkWidget* glade_menuitem;
+  int k=0;
 
+  // BUILD A NEW  OPTION_MENU:
+  gtk_widget_destroy(GTK_WIDGET(lookup_widget(preferences_window,"prefs_display_method_menu"))); // remove previous menu
+  
+  new_option_menu = gtk_option_menu_new ();
+  gtk_widget_ref (new_option_menu);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "prefs_display_method_menu", new_option_menu,
+			    (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (new_option_menu);
+  gtk_table_attach (GTK_TABLE (lookup_widget(preferences_window, "table44")),
+		    new_option_menu, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (new_option_menu), 1);
+  
+  new_menu = gtk_menu_new ();
 
+  // always add a GDK item
+  glade_menuitem = gtk_menu_item_new_with_label (_("GDK"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
+		      GTK_SIGNAL_FUNC (on_prefs_display_method_activate),
+		      (int*)DISPLAY_METHOD_GDK); 
+  //preferences.display_index2method[k]=DISPLAY_METHOD_GDK;
+  preferences.display_method2index[DISPLAY_METHOD_GDK]=k;
+  k++;
+
+#ifdef HAVE_X11_EXTENSIONS_XVLIB_H
+  // 'xv' menuitem optional addition:
+  glade_menuitem = gtk_menu_item_new_with_label (_("Xv (single camera only)"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
+		      GTK_SIGNAL_FUNC (on_prefs_display_method_activate),
+		      (int*)DISPLAY_METHOD_XV); 
+  //preferences.display_index2method[k]=DISPLAY_METHOD_XV;
+  preferences.display_method2index[DISPLAY_METHOD_XV]=k;
+  k++;
+#endif
+
+#ifdef HAVE_SDLLIB
+  // 'sdl' menuitem optional addition:
+  glade_menuitem = gtk_menu_item_new_with_label (_("SDL"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
+		      GTK_SIGNAL_FUNC (on_prefs_display_method_activate),
+		      (int*)DISPLAY_METHOD_SDL); 
+  //preferences.display_index2method[k]=DISPLAY_METHOD_SDL;
+  preferences.display_method2index[DISPLAY_METHOD_SDL]=k;
+  k++;
+#endif
+
+  gtk_option_menu_set_menu (GTK_OPTION_MENU (new_option_menu), new_menu);
+
+}
+
+void
+BuildPrefsReceiveFrame(void)
+{
+  GtkWidget* new_option_menu;
+  GtkWidget* new_menu;
+  GtkWidget* glade_menuitem;
+  int video_ok=0;
+  int k=0;
+  struct stat statstruct;
+
+  if(stat("/dev/video1394",&statstruct)==0)
+    // the device is there, check RW permissions
+    if ((statstruct.st_mode&&S_IRUSR)&&(statstruct.st_mode&&S_IWUSR))
+      video_ok=1;
+
+  // BUILD A NEW  OPTION_MENU:
+  gtk_widget_destroy(GTK_WIDGET(lookup_widget(preferences_window,"prefs_receive_method_menu"))); // remove previous menu
+  
+  new_option_menu = gtk_option_menu_new ();
+  gtk_widget_ref (new_option_menu);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "prefs_receive_method_menu", new_option_menu,
+			    (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (new_option_menu);
+  gtk_table_attach (GTK_TABLE (lookup_widget(preferences_window,"table45")),
+		    new_option_menu, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (new_option_menu), 1);
+  
+  new_menu = gtk_menu_new ();
+
+  // always add a raw1394 item
+  glade_menuitem = gtk_menu_item_new_with_label (_("RAW1394"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
+		      GTK_SIGNAL_FUNC (on_prefs_receive_method_activate),
+		      (int*)RECEIVE_METHOD_RAW1394); 
+  //preferences.receive_index2method[k]=RECEIVE_METHOD_RAW1394;
+  preferences.receive_method2index[RECEIVE_METHOD_RAW1394]=k;
+  k++;
+
+  //fprintf(stderr,"%d\n",camera_num);
+  if (video_ok==1)
+    {
+      // 'xv' menuitem optional addition:
+      glade_menuitem = gtk_menu_item_new_with_label (_("VIDEO1394"));
+      gtk_widget_show (glade_menuitem);
+      gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+      gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
+			  GTK_SIGNAL_FUNC (on_prefs_receive_method_activate),
+			  (int*)RECEIVE_METHOD_VIDEO1394); 
+      //preferences.receive_index2method[k]=RECEIVE_METHOD_VIDEO1394;
+      preferences.receive_method2index[RECEIVE_METHOD_VIDEO1394]=k;
+      k++;
+    }
+  
+  gtk_option_menu_set_menu (GTK_OPTION_MENU (new_option_menu), new_menu);
+
+  //fprintf(stderr,"%d\n",camera_num);
 }

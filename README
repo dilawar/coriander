@@ -96,6 +96,7 @@ _______________________
 - libraw1394 installed (version 0.9) [5]
 - libdc1394 installed (version 0.8.3 or later) [2]
 - ftplib installed for FTP support [9]
+- SDL installed for SDL support [11]
 - Glade (for development only)
 - automake 1.4
 - autoconf 2.13
@@ -120,3 +121,4 @@ _______________________
 [8] linux1394 HOWTO,...	: http://linux1394.sourceforge.net
 [9] ftplib 	: http://www.eclipse.net/~pfau/ftplib
 [10] Nvidia	: http://www.nvidia.com
+[10] SDL	: http://www.libsdl.org
