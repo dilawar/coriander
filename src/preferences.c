@@ -62,6 +62,7 @@ LoadConfigFile(void)
   preferences.op_timeout             = gnome_config_get_float("coriander/global/one_push_timeout=10.0");
   preferences.auto_update            = gnome_config_get_int("coriander/global/auto_update=1");
   preferences.auto_update_frequency  = gnome_config_get_float("coriander/global/auto_update_frequency=2.0");
+  preferences.sync_control           = gnome_config_get_float("coriander/global/sync_control=0");
 }
 
 void

@@ -70,7 +70,7 @@ UpdatePrefsReceiveFrame(void)
   gtk_widget_set_sensitive(lookup_widget(main_window,"dma_buffer_size"),
 			   camera->prefs.receive_method==RECEIVE_METHOD_VIDEO1394);
 
-  // thread presence balnking:
+  // thread presence blanking:
   if (GetService(camera,SERVICE_ISO)!=NULL)
     gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_receive_frame"), FALSE);
 }

@@ -85,9 +85,10 @@ create_main_window (void)
   GtkWidget *save_mem;
   GtkWidget *global_iso_frame;
   GtkWidget *table72;
+  GtkWidget *global_iso_start;
   GtkWidget *global_iso_stop;
   GtkWidget *global_iso_restart;
-  GtkWidget *global_iso_start;
+  GtkWidget *sync_control_button;
   GtkWidget *frame2;
   GtkWidget *table48;
   GtkWidget *label1;
@@ -597,12 +598,23 @@ create_main_window (void)
   gtk_widget_show (table72);
   gtk_container_add (GTK_CONTAINER (global_iso_frame), table72);
 
+  global_iso_start = gtk_button_new_with_label (_("START"));
+  gtk_widget_ref (global_iso_start);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "global_iso_start", global_iso_start,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (global_iso_start);
+  gtk_table_attach (GTK_TABLE (table72), global_iso_start, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (global_iso_start), 2);
+  gtk_widget_set_sensitive (global_iso_start, FALSE);
+
   global_iso_stop = gtk_button_new_with_label (_("STOP"));
   gtk_widget_ref (global_iso_stop);
   gtk_object_set_data_full (GTK_OBJECT (main_window), "global_iso_stop", global_iso_stop,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (global_iso_stop);
-  gtk_table_attach (GTK_TABLE (table72), global_iso_stop, 0, 2, 1, 2,
+  gtk_table_attach (GTK_TABLE (table72), global_iso_stop, 1, 2, 0, 1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (global_iso_stop), 2);
@@ -613,22 +625,21 @@ create_main_window (void)
   gtk_object_set_data_full (GTK_OBJECT (main_window), "global_iso_restart", global_iso_restart,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (global_iso_restart);
-  gtk_table_attach (GTK_TABLE (table72), global_iso_restart, 0, 2, 2, 3,
+  gtk_table_attach (GTK_TABLE (table72), global_iso_restart, 0, 2, 1, 2,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (global_iso_restart), 2);
   gtk_widget_set_sensitive (global_iso_restart, FALSE);
 
-  global_iso_start = gtk_button_new_with_label (_("START"));
-  gtk_widget_ref (global_iso_start);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "global_iso_start", global_iso_start,
+  sync_control_button = gtk_check_button_new_with_label (_("Sync control"));
+  gtk_widget_ref (sync_control_button);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "sync_control_button", sync_control_button,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (global_iso_start);
-  gtk_table_attach (GTK_TABLE (table72), global_iso_start, 0, 2, 0, 1,
+  gtk_widget_show (sync_control_button);
+  gtk_table_attach (GTK_TABLE (table72), sync_control_button, 0, 2, 2, 3,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (global_iso_start), 2);
-  gtk_widget_set_sensitive (global_iso_start, FALSE);
+  gtk_container_set_border_width (GTK_CONTAINER (sync_control_button), 2);
 
   frame2 = gtk_frame_new (_("Camera information"));
   gtk_widget_ref (frame2);
@@ -1121,7 +1132,7 @@ create_main_window (void)
   gtk_box_pack_start (GTK_BOX (hbox68), label153, FALSE, FALSE, 0);
   gtk_misc_set_padding (GTK_MISC (label153), 5, 0);
 
-  dma_buffer_size_adj = gtk_adjustment_new (10, 4, 999999, 1, 10, 10);
+  dma_buffer_size_adj = gtk_adjustment_new (10, 2, 999999, 1, 10, 10);
   dma_buffer_size = gtk_spin_button_new (GTK_ADJUSTMENT (dma_buffer_size_adj), 1, 0);
   gtk_widget_ref (dma_buffer_size);
   gtk_object_set_data_full (GTK_OBJECT (main_window), "dma_buffer_size", dma_buffer_size,
@@ -2954,14 +2965,17 @@ create_main_window (void)
   gtk_signal_connect (GTK_OBJECT (save_mem), "clicked",
                       GTK_SIGNAL_FUNC (on_save_mem_clicked),
                       NULL);
+  gtk_signal_connect (GTK_OBJECT (global_iso_start), "clicked",
+                      GTK_SIGNAL_FUNC (on_global_iso_start_clicked),
+                      NULL);
   gtk_signal_connect (GTK_OBJECT (global_iso_stop), "clicked",
                       GTK_SIGNAL_FUNC (on_global_iso_stop_clicked),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (global_iso_restart), "clicked",
                       GTK_SIGNAL_FUNC (on_global_iso_restart_clicked),
                       NULL);
-  gtk_signal_connect (GTK_OBJECT (global_iso_start), "clicked",
-                      GTK_SIGNAL_FUNC (on_global_iso_start_clicked),
+  gtk_signal_connect (GTK_OBJECT (sync_control_button), "toggled",
+                      GTK_SIGNAL_FUNC (on_sync_control_button_toggled),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (camera_name_text), "changed",
                       GTK_SIGNAL_FUNC (on_camera_name_text_changed),

@@ -1198,25 +1198,55 @@ void
 on_global_iso_stop_clicked             (GtkButton       *button,
                                         gpointer         user_data)
 {
+  dc1394bool_t status;
   camera_t* camera_ptr;
   camera_ptr=cameras;
-  while (camera_ptr!=NULL) {
-    if (camera_ptr->misc_info.is_iso_on==DC1394_TRUE) {
-      if (dc1394_stop_iso_transmission(camera_ptr->camera_info.handle,camera_ptr->camera_info.id)!=DC1394_SUCCESS) {
-	MainError("Could not stop ISO transmission");
-      }
-      else {
-	camera_ptr->misc_info.is_iso_on=DC1394_FALSE;
-      } 
-      if (camera_ptr==camera) {
-	UpdateIsoFrame();
-	UpdateTransferStatusFrame();
-      } 
-      usleep(DELAY);
-    }
-    camera_ptr=camera_ptr->next;
-  } 
 
+  if (preferences.sync_control==1) {
+    if (dc1394_stop_iso_transmission(camera_ptr->camera_info.handle,63)!=DC1394_SUCCESS) {
+      MainError("Could not perform broadcast ISO command");
+    }
+    usleep(DELAY);
+    while (camera_ptr!=NULL) {
+      if (dc1394_get_iso_status(camera_ptr->camera_info.handle, camera_ptr->camera_info.id, &status)!=DC1394_SUCCESS)
+	MainError("Could not get ISO status");
+      else {
+	if (status==DC1394_TRUE) 
+	  MainError("Broacast ISO stop failed for a camera");
+	else 
+	  camera_ptr->misc_info.is_iso_on=DC1394_FALSE;
+	if (camera_ptr==camera) {
+	  UpdateIsoFrame();
+	  UpdateTransferStatusFrame();
+	} 
+      }
+      camera_ptr=camera_ptr->next;
+    } 
+  }
+  else {
+    while (camera_ptr!=NULL) {
+      if (camera_ptr->misc_info.is_iso_on==DC1394_TRUE) {
+	if (dc1394_stop_iso_transmission(camera_ptr->camera_info.handle,camera_ptr->camera_info.id)!=DC1394_SUCCESS) {
+	  MainError("Could not stop ISO transmission");
+	}
+	else {
+	  if (dc1394_get_iso_status(camera_ptr->camera_info.handle, camera_ptr->camera_info.id, &status)!=DC1394_SUCCESS)
+	    MainError("Could not get ISO status");
+	  else {
+	    if (status==DC1394_TRUE)
+	      MainError("Broacast ISO stop failed for a camera");
+	    else
+	      camera_ptr->misc_info.is_iso_on=DC1394_FALSE;
+	  }
+	} 
+	if (camera_ptr==camera) {
+	  UpdateIsoFrame();
+	  UpdateTransferStatusFrame();
+	} 
+      }
+      camera_ptr=camera_ptr->next;
+    } 
+  }
 }
 
 
@@ -1232,24 +1262,55 @@ on_global_iso_restart_clicked          (GtkButton       *button,
 void
 on_global_iso_start_clicked            (GtkButton       *button,
                                         gpointer         user_data)
-{
+{  
+  dc1394bool_t status;
   camera_t* camera_ptr;
   camera_ptr=cameras;
-  while (camera_ptr!=NULL) {
-    if (camera_ptr->misc_info.is_iso_on==DC1394_FALSE) {
-      if (dc1394_start_iso_transmission(camera_ptr->camera_info.handle,camera_ptr->camera_info.id)!=DC1394_SUCCESS) {
-	MainError("Could not stop ISO transmission");
-      }
-      else {
-	camera_ptr->misc_info.is_iso_on=DC1394_TRUE;
-      } 
-      if (camera_ptr==camera) {
-	UpdateIsoFrame();
-	UpdateTransferStatusFrame();
-      } 
-      usleep(DELAY);
+
+  if (preferences.sync_control==1) {
+    if (dc1394_start_iso_transmission(camera_ptr->camera_info.handle,63)!=DC1394_SUCCESS) {
+      MainError("Could not perform broadcast ISO command");
     }
-    camera_ptr=camera_ptr->next;
+    usleep(DELAY);
+    while (camera_ptr!=NULL) {
+      if (dc1394_get_iso_status(camera_ptr->camera_info.handle, camera_ptr->camera_info.id, &status)!=DC1394_SUCCESS)
+	MainError("Could not get ISO status");
+      else {
+	if (status==DC1394_FALSE) 
+	  MainError("Broacast ISO start failed for a camera");
+	else 
+	  camera_ptr->misc_info.is_iso_on=DC1394_TRUE;
+	if (camera_ptr==camera) {
+	  UpdateIsoFrame();
+	  UpdateTransferStatusFrame();
+	} 
+      }
+      camera_ptr=camera_ptr->next;
+    } 
+  }
+  else { // no sync:
+    while (camera_ptr!=NULL) {
+      if (camera_ptr->misc_info.is_iso_on==DC1394_FALSE) {
+	if (dc1394_start_iso_transmission(camera_ptr->camera_info.handle,camera_ptr->camera_info.id)!=DC1394_SUCCESS) {
+	  MainError("Could not stop ISO transmission");
+	}
+	else {
+	  if (dc1394_get_iso_status(camera_ptr->camera_info.handle, camera_ptr->camera_info.id, &status)!=DC1394_SUCCESS)
+	    MainError("Could not get ISO status");
+	  else {
+	    if (status==DC1394_FALSE)
+	      MainError("Broacast ISO stop failed for a camera");
+	    else
+	      camera_ptr->misc_info.is_iso_on=DC1394_TRUE;
+	  }
+	} 
+	if (camera_ptr==camera) {
+	  UpdateIsoFrame();
+	  UpdateTransferStatusFrame();
+	} 
+      }
+      camera_ptr=camera_ptr->next;
+    } 
   }
 }
 
@@ -1409,6 +1470,16 @@ on_display_redraw_rate_changed         (GtkEditable     *editable,
   gnome_config_set_float("coriander/display/redraw_rate",camera->prefs.display_redraw_rate);
   gnome_config_sync();
   UpdatePrefsDisplayFrame();
+}
+
+
+void
+on_sync_control_button_toggled        (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  preferences.sync_control=togglebutton->active;
+  gnome_config_set_int("coriander/global/sync_control",preferences.sync_control);
+  gnome_config_sync();
 }
 
 

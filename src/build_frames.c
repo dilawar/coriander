@@ -101,10 +101,12 @@ BuildIsoFrame(void)
   // TODO: only if ISO capable
   if (dc1394_get_iso_status(camera->camera_info.handle,camera->camera_info.id, &camera->misc_info.is_iso_on)!=DC1394_SUCCESS)
     MainError("Can't get ISO status");
+  //fprintf(stderr,"sync: %d\n",preferences.sync_control);
   gtk_widget_set_sensitive(lookup_widget(main_window,"iso_frame"),TRUE);
   gtk_widget_set_sensitive(lookup_widget(main_window,"iso_start"),!camera->misc_info.is_iso_on);
   gtk_widget_set_sensitive(lookup_widget(main_window,"iso_restart"),camera->misc_info.is_iso_on);
   gtk_widget_set_sensitive(lookup_widget(main_window,"iso_stop"),camera->misc_info.is_iso_on);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window,"sync_control_button")),preferences.sync_control);
 
 }
 

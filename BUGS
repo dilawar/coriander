@@ -1,5 +1,4 @@
 Known bugs/limiations for version 1.0.0:
 
-- filenames saved with tag (date, number) after extension??
 - fps display is zero for all cams that are not the one selected
-  (normal, the fps display is not activated)
+  (normal, the fps display is not activated. Doh!)

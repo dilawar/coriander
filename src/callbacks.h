@@ -423,4 +423,8 @@ on_prefs_display_scale_changed         (GtkEditable     *editable,
                                         gpointer         user_data);
 */
 
+void
+on_sync_control_button_toggled        (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
 #endif

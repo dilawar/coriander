@@ -2,6 +2,9 @@ Coriander, (c) 2000-2004 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 1.0.0
 	
+   Sep 10, 2004, by Damien Douxchamps
+   - add sync control of ISO
+	
    Aug 10, 2004, by Damien Douxchamps
    - removed extra argument for extra buffering, as this is now obsolete.
    - move all version numbers to 1.0.0, as unless something ugly pops up this will
