@@ -172,11 +172,15 @@ create_main_window (void)
   GtkWidget *prefs_save_period;
   GtkWidget *label42;
   GtkWidget *prefs_save_scratch_frame;
-  GtkWidget *vbox_capture_mode;
+  GtkWidget *table74;
   GSList *save_mode_group = NULL;
   GtkWidget *prefs_save_seq;
   GtkWidget *prefs_save_scratch;
   GtkWidget *prefs_save_video;
+  GtkWidget *hbox66;
+  GSList *save_datenum_group = NULL;
+  GtkWidget *prefs_save_date_tag;
+  GtkWidget *prefs_save_num_tag;
   GtkWidget *prefs_save_convert_frame;
   GtkWidget *vbox71;
   GSList *save_convert_group = NULL;
@@ -214,10 +218,14 @@ create_main_window (void)
   GtkWidget *prefs_ftp_period;
   GtkWidget *label55;
   GtkWidget *prefs_ftp_scratch_frame;
-  GtkWidget *vbox57;
+  GtkWidget *table73;
   GSList *ftp_mode_group = NULL;
   GtkWidget *prefs_ftp_seq;
   GtkWidget *prefs_ftp_scratch;
+  GtkWidget *hbox65;
+  GSList *ftp_datenum_group = NULL;
+  GtkWidget *prefs_ftp_date_tag;
+  GtkWidget *prefs_ftp_num_tag;
   GtkWidget *label148;
   GtkWidget *label57;
   GtkWidget *handlebox2;
@@ -1276,12 +1284,12 @@ create_main_window (void)
   gtk_box_pack_start (GTK_BOX (vbox54), prefs_save_scratch_frame, FALSE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (prefs_save_scratch_frame), 5);
 
-  vbox_capture_mode = gtk_vbox_new (FALSE, 0);
-  gtk_widget_ref (vbox_capture_mode);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "vbox_capture_mode", vbox_capture_mode,
+  table74 = gtk_table_new (3, 2, FALSE);
+  gtk_widget_ref (table74);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "table74", table74,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (vbox_capture_mode);
-  gtk_container_add (GTK_CONTAINER (prefs_save_scratch_frame), vbox_capture_mode);
+  gtk_widget_show (table74);
+  gtk_container_add (GTK_CONTAINER (prefs_save_scratch_frame), table74);
 
   prefs_save_seq = gtk_radio_button_new_with_label (save_mode_group, _("Sequentially number files"));
   save_mode_group = gtk_radio_button_group (GTK_RADIO_BUTTON (prefs_save_seq));
@@ -1289,7 +1297,9 @@ create_main_window (void)
   gtk_object_set_data_full (GTK_OBJECT (main_window), "prefs_save_seq", prefs_save_seq,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (prefs_save_seq);
-  gtk_box_pack_start (GTK_BOX (vbox_capture_mode), prefs_save_seq, FALSE, FALSE, 0);
+  gtk_table_attach (GTK_TABLE (table74), prefs_save_seq, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (prefs_save_seq), TRUE);
 
   prefs_save_scratch = gtk_radio_button_new_with_label (save_mode_group, _("Continually overwrite file"));
@@ -1298,7 +1308,9 @@ create_main_window (void)
   gtk_object_set_data_full (GTK_OBJECT (main_window), "prefs_save_scratch", prefs_save_scratch,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (prefs_save_scratch);
-  gtk_box_pack_start (GTK_BOX (vbox_capture_mode), prefs_save_scratch, FALSE, FALSE, 0);
+  gtk_table_attach (GTK_TABLE (table74), prefs_save_scratch, 0, 1, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
 
   prefs_save_video = gtk_radio_button_new_with_label (save_mode_group, _("Write a video sequence"));
   save_mode_group = gtk_radio_button_group (GTK_RADIO_BUTTON (prefs_save_video));
@@ -1306,7 +1318,34 @@ create_main_window (void)
   gtk_object_set_data_full (GTK_OBJECT (main_window), "prefs_save_video", prefs_save_video,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (prefs_save_video);
-  gtk_box_pack_start (GTK_BOX (vbox_capture_mode), prefs_save_video, FALSE, FALSE, 0);
+  gtk_table_attach (GTK_TABLE (table74), prefs_save_video, 0, 1, 2, 3,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  hbox66 = gtk_hbox_new (TRUE, 0);
+  gtk_widget_ref (hbox66);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "hbox66", hbox66,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (hbox66);
+  gtk_table_attach (GTK_TABLE (table74), hbox66, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+
+  prefs_save_date_tag = gtk_radio_button_new_with_label (save_datenum_group, _("with date"));
+  save_datenum_group = gtk_radio_button_group (GTK_RADIO_BUTTON (prefs_save_date_tag));
+  gtk_widget_ref (prefs_save_date_tag);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "prefs_save_date_tag", prefs_save_date_tag,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (prefs_save_date_tag);
+  gtk_box_pack_start (GTK_BOX (hbox66), prefs_save_date_tag, TRUE, TRUE, 0);
+
+  prefs_save_num_tag = gtk_radio_button_new_with_label (save_datenum_group, _("with numbers"));
+  save_datenum_group = gtk_radio_button_group (GTK_RADIO_BUTTON (prefs_save_num_tag));
+  gtk_widget_ref (prefs_save_num_tag);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "prefs_save_num_tag", prefs_save_num_tag,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (prefs_save_num_tag);
+  gtk_box_pack_start (GTK_BOX (hbox66), prefs_save_num_tag, TRUE, TRUE, 0);
 
   prefs_save_convert_frame = gtk_frame_new (_("Conversions"));
   gtk_widget_ref (prefs_save_convert_frame);
@@ -1608,12 +1647,12 @@ create_main_window (void)
   gtk_box_pack_start (GTK_BOX (vbox55), prefs_ftp_scratch_frame, FALSE, FALSE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (prefs_ftp_scratch_frame), 5);
 
-  vbox57 = gtk_vbox_new (FALSE, 0);
-  gtk_widget_ref (vbox57);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "vbox57", vbox57,
+  table73 = gtk_table_new (2, 2, FALSE);
+  gtk_widget_ref (table73);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "table73", table73,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (vbox57);
-  gtk_container_add (GTK_CONTAINER (prefs_ftp_scratch_frame), vbox57);
+  gtk_widget_show (table73);
+  gtk_container_add (GTK_CONTAINER (prefs_ftp_scratch_frame), table73);
 
   prefs_ftp_seq = gtk_radio_button_new_with_label (ftp_mode_group, _("Sequentially number files"));
   ftp_mode_group = gtk_radio_button_group (GTK_RADIO_BUTTON (prefs_ftp_seq));
@@ -1621,7 +1660,9 @@ create_main_window (void)
   gtk_object_set_data_full (GTK_OBJECT (main_window), "prefs_ftp_seq", prefs_ftp_seq,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (prefs_ftp_seq);
-  gtk_box_pack_start (GTK_BOX (vbox57), prefs_ftp_seq, FALSE, FALSE, 0);
+  gtk_table_attach (GTK_TABLE (table73), prefs_ftp_seq, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (prefs_ftp_seq), TRUE);
 
   prefs_ftp_scratch = gtk_radio_button_new_with_label (ftp_mode_group, _("Continually overwrite file"));
@@ -1630,7 +1671,34 @@ create_main_window (void)
   gtk_object_set_data_full (GTK_OBJECT (main_window), "prefs_ftp_scratch", prefs_ftp_scratch,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (prefs_ftp_scratch);
-  gtk_box_pack_start (GTK_BOX (vbox57), prefs_ftp_scratch, FALSE, FALSE, 0);
+  gtk_table_attach (GTK_TABLE (table73), prefs_ftp_scratch, 0, 1, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  hbox65 = gtk_hbox_new (TRUE, 0);
+  gtk_widget_ref (hbox65);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "hbox65", hbox65,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (hbox65);
+  gtk_table_attach (GTK_TABLE (table73), hbox65, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+
+  prefs_ftp_date_tag = gtk_radio_button_new_with_label (ftp_datenum_group, _("with date"));
+  ftp_datenum_group = gtk_radio_button_group (GTK_RADIO_BUTTON (prefs_ftp_date_tag));
+  gtk_widget_ref (prefs_ftp_date_tag);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "prefs_ftp_date_tag", prefs_ftp_date_tag,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (prefs_ftp_date_tag);
+  gtk_box_pack_start (GTK_BOX (hbox65), prefs_ftp_date_tag, TRUE, TRUE, 0);
+
+  prefs_ftp_num_tag = gtk_radio_button_new_with_label (ftp_datenum_group, _("with numbers"));
+  ftp_datenum_group = gtk_radio_button_group (GTK_RADIO_BUTTON (prefs_ftp_num_tag));
+  gtk_widget_ref (prefs_ftp_num_tag);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "prefs_ftp_num_tag", prefs_ftp_num_tag,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (prefs_ftp_num_tag);
+  gtk_box_pack_start (GTK_BOX (hbox65), prefs_ftp_num_tag, TRUE, TRUE, 0);
 
   label148 = gtk_label_new (_("FTP"));
   gtk_widget_ref (label148);
@@ -2633,6 +2701,12 @@ create_main_window (void)
   gtk_signal_connect (GTK_OBJECT (prefs_save_video), "toggled",
                       GTK_SIGNAL_FUNC (on_prefs_save_video_toggled),
                       NULL);
+  gtk_signal_connect (GTK_OBJECT (prefs_save_date_tag), "toggled",
+                      GTK_SIGNAL_FUNC (on_prefs_save_date_tag_toggled),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (prefs_save_num_tag), "toggled",
+                      GTK_SIGNAL_FUNC (on_prefs_save_num_tag_toggled),
+                      NULL);
   gtk_signal_connect (GTK_OBJECT (prefs_save_convert), "toggled",
                       GTK_SIGNAL_FUNC (on_prefs_save_convert_toggled),
                       NULL);
@@ -2668,6 +2742,12 @@ create_main_window (void)
                       NULL);
   gtk_signal_connect (GTK_OBJECT (prefs_ftp_scratch), "toggled",
                       GTK_SIGNAL_FUNC (on_prefs_ftp_scratch_toggled),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (prefs_ftp_date_tag), "toggled",
+                      GTK_SIGNAL_FUNC (on_prefs_ftp_date_tag_toggled),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (prefs_ftp_num_tag), "toggled",
+                      GTK_SIGNAL_FUNC (on_prefs_ftp_num_tag_toggled),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (camera_name_text), "changed",
                       GTK_SIGNAL_FUNC (on_camera_name_text_changed),

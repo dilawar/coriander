@@ -2,6 +2,9 @@ Coriander, (c) 2000-2003 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 0.99
 
+   June 11, 2003, by Damien Douxchamps
+   - added a choice between date and numbers tags for sequential save/ftp.
+	
    June 5, 2003, by Damien Douxchamps
    - fixed segfault when no card/modules were present
 	

@@ -1946,10 +1946,13 @@ St. Field
 		  </child>
 
 		  <widget>
-		    <class>GtkVBox</class>
-		    <name>vbox_capture_mode</name>
+		    <class>GtkTable</class>
+		    <name>table74</name>
+		    <rows>3</rows>
+		    <columns>2</columns>
 		    <homogeneous>False</homogeneous>
-		    <spacing>0</spacing>
+		    <row_spacing>0</row_spacing>
+		    <column_spacing>0</column_spacing>
 
 		    <widget>
 		      <class>GtkRadioButton</class>
@@ -1965,9 +1968,18 @@ St. Field
 		      <draw_indicator>True</draw_indicator>
 		      <group>save_mode</group>
 		      <child>
-			<padding>0</padding>
-			<expand>False</expand>
-			<fill>False</fill>
+			<left_attach>0</left_attach>
+			<right_attach>1</right_attach>
+			<top_attach>0</top_attach>
+			<bottom_attach>1</bottom_attach>
+			<xpad>0</xpad>
+			<ypad>0</ypad>
+			<xexpand>False</xexpand>
+			<yexpand>False</yexpand>
+			<xshrink>False</xshrink>
+			<yshrink>False</yshrink>
+			<xfill>True</xfill>
+			<yfill>False</yfill>
 		      </child>
 		    </widget>
 
@@ -1985,9 +1997,18 @@ St. Field
 		      <draw_indicator>True</draw_indicator>
 		      <group>save_mode</group>
 		      <child>
-			<padding>0</padding>
-			<expand>False</expand>
-			<fill>False</fill>
+			<left_attach>0</left_attach>
+			<right_attach>1</right_attach>
+			<top_attach>1</top_attach>
+			<bottom_attach>2</bottom_attach>
+			<xpad>0</xpad>
+			<ypad>0</ypad>
+			<xexpand>False</xexpand>
+			<yexpand>False</yexpand>
+			<xshrink>False</xshrink>
+			<yshrink>False</yshrink>
+			<xfill>True</xfill>
+			<yfill>False</yfill>
 		      </child>
 		    </widget>
 
@@ -2005,10 +2026,80 @@ St. Field
 		      <draw_indicator>True</draw_indicator>
 		      <group>save_mode</group>
 		      <child>
-			<padding>0</padding>
-			<expand>False</expand>
-			<fill>False</fill>
+			<left_attach>0</left_attach>
+			<right_attach>1</right_attach>
+			<top_attach>2</top_attach>
+			<bottom_attach>3</bottom_attach>
+			<xpad>0</xpad>
+			<ypad>0</ypad>
+			<xexpand>False</xexpand>
+			<yexpand>False</yexpand>
+			<xshrink>False</xshrink>
+			<yshrink>False</yshrink>
+			<xfill>True</xfill>
+			<yfill>False</yfill>
 		      </child>
+		    </widget>
+
+		    <widget>
+		      <class>GtkHBox</class>
+		      <name>hbox66</name>
+		      <homogeneous>True</homogeneous>
+		      <spacing>0</spacing>
+		      <child>
+			<left_attach>1</left_attach>
+			<right_attach>2</right_attach>
+			<top_attach>0</top_attach>
+			<bottom_attach>1</bottom_attach>
+			<xpad>0</xpad>
+			<ypad>0</ypad>
+			<xexpand>True</xexpand>
+			<yexpand>False</yexpand>
+			<xshrink>False</xshrink>
+			<yshrink>False</yshrink>
+			<xfill>True</xfill>
+			<yfill>True</yfill>
+		      </child>
+
+		      <widget>
+			<class>GtkRadioButton</class>
+			<name>prefs_save_date_tag</name>
+			<can_focus>True</can_focus>
+			<signal>
+			  <name>toggled</name>
+			  <handler>on_prefs_save_date_tag_toggled</handler>
+			  <last_modification_time>Wed, 11 Jun 2003 10:11:08 GMT</last_modification_time>
+			</signal>
+			<label>with date</label>
+			<active>False</active>
+			<draw_indicator>True</draw_indicator>
+			<group>save_datenum</group>
+			<child>
+			  <padding>0</padding>
+			  <expand>True</expand>
+			  <fill>True</fill>
+			</child>
+		      </widget>
+
+		      <widget>
+			<class>GtkRadioButton</class>
+			<name>prefs_save_num_tag</name>
+			<can_focus>True</can_focus>
+			<signal>
+			  <name>toggled</name>
+			  <handler>on_prefs_save_num_tag_toggled</handler>
+			  <last_modification_time>Wed, 11 Jun 2003 10:12:18 GMT</last_modification_time>
+			</signal>
+			<label>with numbers</label>
+			<active>False</active>
+			<draw_indicator>True</draw_indicator>
+			<group>save_datenum</group>
+			<child>
+			  <padding>0</padding>
+			  <expand>True</expand>
+			  <fill>True</fill>
+			</child>
+		      </widget>
 		    </widget>
 		  </widget>
 		</widget>
@@ -2647,10 +2738,13 @@ St. Field
 		  </child>
 
 		  <widget>
-		    <class>GtkVBox</class>
-		    <name>vbox57</name>
+		    <class>GtkTable</class>
+		    <name>table73</name>
+		    <rows>2</rows>
+		    <columns>2</columns>
 		    <homogeneous>False</homogeneous>
-		    <spacing>0</spacing>
+		    <row_spacing>0</row_spacing>
+		    <column_spacing>0</column_spacing>
 
 		    <widget>
 		      <class>GtkRadioButton</class>
@@ -2666,9 +2760,18 @@ St. Field
 		      <draw_indicator>True</draw_indicator>
 		      <group>ftp_mode</group>
 		      <child>
-			<padding>0</padding>
-			<expand>False</expand>
-			<fill>False</fill>
+			<left_attach>0</left_attach>
+			<right_attach>1</right_attach>
+			<top_attach>0</top_attach>
+			<bottom_attach>1</bottom_attach>
+			<xpad>0</xpad>
+			<ypad>0</ypad>
+			<xexpand>False</xexpand>
+			<yexpand>False</yexpand>
+			<xshrink>False</xshrink>
+			<yshrink>False</yshrink>
+			<xfill>True</xfill>
+			<yfill>False</yfill>
 		      </child>
 		    </widget>
 
@@ -2686,10 +2789,80 @@ St. Field
 		      <draw_indicator>True</draw_indicator>
 		      <group>ftp_mode</group>
 		      <child>
-			<padding>0</padding>
-			<expand>False</expand>
-			<fill>False</fill>
+			<left_attach>0</left_attach>
+			<right_attach>1</right_attach>
+			<top_attach>1</top_attach>
+			<bottom_attach>2</bottom_attach>
+			<xpad>0</xpad>
+			<ypad>0</ypad>
+			<xexpand>False</xexpand>
+			<yexpand>False</yexpand>
+			<xshrink>False</xshrink>
+			<yshrink>False</yshrink>
+			<xfill>True</xfill>
+			<yfill>False</yfill>
 		      </child>
+		    </widget>
+
+		    <widget>
+		      <class>GtkHBox</class>
+		      <name>hbox65</name>
+		      <homogeneous>True</homogeneous>
+		      <spacing>0</spacing>
+		      <child>
+			<left_attach>1</left_attach>
+			<right_attach>2</right_attach>
+			<top_attach>0</top_attach>
+			<bottom_attach>1</bottom_attach>
+			<xpad>0</xpad>
+			<ypad>0</ypad>
+			<xexpand>True</xexpand>
+			<yexpand>False</yexpand>
+			<xshrink>False</xshrink>
+			<yshrink>False</yshrink>
+			<xfill>True</xfill>
+			<yfill>True</yfill>
+		      </child>
+
+		      <widget>
+			<class>GtkRadioButton</class>
+			<name>prefs_ftp_date_tag</name>
+			<can_focus>True</can_focus>
+			<signal>
+			  <name>toggled</name>
+			  <handler>on_prefs_ftp_date_tag_toggled</handler>
+			  <last_modification_time>Wed, 11 Jun 2003 10:08:15 GMT</last_modification_time>
+			</signal>
+			<label>with date</label>
+			<active>False</active>
+			<draw_indicator>True</draw_indicator>
+			<group>ftp_datenum</group>
+			<child>
+			  <padding>0</padding>
+			  <expand>True</expand>
+			  <fill>True</fill>
+			</child>
+		      </widget>
+
+		      <widget>
+			<class>GtkRadioButton</class>
+			<name>prefs_ftp_num_tag</name>
+			<can_focus>True</can_focus>
+			<signal>
+			  <name>toggled</name>
+			  <handler>on_prefs_ftp_num_tag_toggled</handler>
+			  <last_modification_time>Wed, 11 Jun 2003 10:08:40 GMT</last_modification_time>
+			</signal>
+			<label>with numbers</label>
+			<active>False</active>
+			<draw_indicator>True</draw_indicator>
+			<group>ftp_datenum</group>
+			<child>
+			  <padding>0</padding>
+			  <expand>True</expand>
+			  <fill>True</fill>
+			</child>
+		      </widget>
 		    </widget>
 		  </widget>
 		</widget>

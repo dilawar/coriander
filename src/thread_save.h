@@ -35,6 +35,12 @@ typedef enum
   SAVE_SCRATCH_SEQUENCE
 } save_scratch_t;
 
+typedef enum
+{
+  SAVE_TAG_DATE,
+  SAVE_TAG_NUMBER
+} save_tag_t;
+ 
 
 typedef enum
 {

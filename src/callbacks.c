@@ -844,6 +844,7 @@ on_prefs_ftp_seq_toggled               (GtkToggleButton *togglebutton,
     preferences.ftp_scratch=FTP_SCRATCH_SEQUENTIAL;
   gnome_config_set_int("coriander/ftp/scratch",preferences.ftp_scratch);
   gnome_config_sync();
+  UpdatePrefsFtpFrame();
 }
 
 
@@ -855,6 +856,7 @@ on_prefs_ftp_scratch_toggled           (GtkToggleButton *togglebutton,
     preferences.ftp_scratch=FTP_SCRATCH_OVERWRITE;
   gnome_config_set_int("coriander/ftp/scratch",preferences.ftp_scratch);
   gnome_config_sync();
+  UpdatePrefsFtpFrame();
 }
 
 
@@ -1049,5 +1051,53 @@ on_global_iso_start_clicked            (GtkButton       *button,
     }
     camera_ptr=camera_ptr->next;
   }
+}
+
+
+void
+on_prefs_save_date_tag_toggled         (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  if (togglebutton->active)
+    preferences.save_datenum=SAVE_TAG_DATE;
+  gnome_config_set_int("coriander/save/datenum",preferences.save_datenum);
+  gnome_config_sync();
+  UpdatePrefsSaveFrame();
+}
+
+
+void
+on_prefs_save_num_tag_toggled          (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  if (togglebutton->active)
+    preferences.save_datenum=SAVE_TAG_NUMBER;
+  gnome_config_set_int("coriander/save/datenum",preferences.save_datenum);
+  gnome_config_sync();
+  UpdatePrefsSaveFrame();
+}
+
+
+void
+on_prefs_ftp_date_tag_toggled          (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  if (togglebutton->active)
+    preferences.ftp_datenum=FTP_TAG_DATE;
+  gnome_config_set_int("coriander/ftp/datenum",preferences.ftp_datenum);
+  gnome_config_sync();
+  UpdatePrefsFtpFrame();
+}
+
+
+void
+on_prefs_ftp_num_tag_toggled           (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  if (togglebutton->active)
+    preferences.ftp_datenum=FTP_TAG_NUMBER;
+  gnome_config_set_int("coriander/ftp/datenum",preferences.ftp_datenum);
+  gnome_config_sync();
+  UpdatePrefsFtpFrame();
 }
 

@@ -28,6 +28,7 @@
 #include "build_menus.h"
 #include "thread_base.h"
 #include "thread_save.h"
+#include "thread_ftp.h"
 #include "thread_iso.h"
 #include "build_ranges.h"
 

@@ -44,6 +44,12 @@ typedef enum
   FTP_SCRATCH_OVERWRITE
 } ftp_scratch_t;
  
+typedef enum
+{
+  FTP_TAG_DATE,
+  FTP_TAG_NUMBER
+} ftp_tag_t;
+ 
 typedef struct
 { 
   /* Define thread variables here.

@@ -56,15 +56,23 @@ void
 UpdatePrefsSaveFrame(void)
 {
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (lookup_widget(main_window,"prefs_save_noconvert")),
-			       preferences.save_scratch==SAVE_SCRATCH_SEQUENCE);
+			       preferences.save_scratch==SAVE_SCRATCH_SEQUENTIAL);
   gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_save_convert"),
-			   preferences.save_scratch!=SAVE_SCRATCH_SEQUENCE);
+			   preferences.save_scratch!=SAVE_SCRATCH_SEQUENTIAL);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_save_date_tag"),
+			   preferences.save_scratch==SAVE_SCRATCH_SEQUENTIAL);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_save_num_tag"),
+			   preferences.save_scratch==SAVE_SCRATCH_SEQUENTIAL);
 }
 
 
 void
 UpdatePrefsFtpFrame(void)
 {
+  gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_ftp_date_tag"),
+			   preferences.ftp_scratch==FTP_SCRATCH_SEQUENTIAL);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_save_num_tag"),
+			   preferences.ftp_scratch==FTP_SCRATCH_SEQUENTIAL);
 }
 
 void

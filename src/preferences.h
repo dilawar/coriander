@@ -37,6 +37,7 @@ typedef struct _PrefsInfo
   int save_scratch;
   int save_period;
   int save_convert;
+  int save_datenum;
   char *ftp_address;
   char *ftp_user;
   char *ftp_password;
@@ -44,6 +45,7 @@ typedef struct _PrefsInfo
   char *ftp_path;
   int ftp_scratch;
   int ftp_period;
+  int ftp_datenum;
 
   int v4l_period;
   char *v4l_dev_name;

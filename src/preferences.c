@@ -41,6 +41,7 @@ LoadConfigFile(void)
   preferences.save_scratch = gnome_config_get_int("coriander/save/scratch=0");
   preferences.save_period = gnome_config_get_int("coriander/save/period=1");
   preferences.save_convert = gnome_config_get_int("coriander/save/convert=1");
+  preferences.save_datenum = gnome_config_get_int("coriander/save/datenum=1");
   preferences.ftp_address = gnome_config_get_string("coriander/ftp/address=");
   preferences.ftp_user = gnome_config_get_string("coriander/ftp/user=username");
   preferences.ftp_password = gnome_config_get_string("coriander/ftp/password=");
@@ -48,6 +49,7 @@ LoadConfigFile(void)
   preferences.ftp_path = gnome_config_get_string("coriander/ftp/path=");
   preferences.ftp_scratch = gnome_config_get_int("coriander/ftp/scratch=0");
   preferences.ftp_period = gnome_config_get_int("coriander/ftp/period=1");
+  preferences.ftp_datenum = gnome_config_get_int("coriander/ftp/datenum=1");
   preferences.v4l_period = gnome_config_get_int("coriander/v4l/period=1");
   preferences.v4l_dev_name = gnome_config_get_string("coriander/v4l/v4l_dev_name=/dev/video0");
 

@@ -378,4 +378,20 @@ void
 on_prefs_v4l_dev_name_changed      (GtkEditable     *editable,
                                     gpointer         user_data);
 
+void
+on_prefs_save_date_tag_toggled         (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_prefs_save_num_tag_toggled          (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_prefs_ftp_date_tag_toggled          (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_prefs_ftp_num_tag_toggled           (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
 #endif

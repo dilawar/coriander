@@ -158,6 +158,10 @@ BuildPrefsSaveFrame(void)
   
   //filename
   gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window, "prefs_save_filename")), preferences.save_filename);
+
+  // file sequence tags
+  gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(main_window, "prefs_save_date_tag"),preferences.save_datenum==SAVE_TAG_DATE);
+  gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(main_window, "prefs_save_num_tag"),preferences.save_datenum==SAVE_TAG_NUMBER);
 }
 
 void
@@ -208,6 +212,9 @@ BuildPrefsFtpFrame(void)
 
 #endif
 
+  // file sequence tags
+  gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(main_window, "prefs_ftp_date_tag"),preferences.ftp_datenum==FTP_TAG_DATE);
+  gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(main_window, "prefs_ftp_num_tag"),preferences.ftp_datenum==FTP_TAG_NUMBER);
 }
 
 void
