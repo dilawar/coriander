@@ -44,6 +44,8 @@ extern camera_t* cameras;
 extern int camera_num;
 extern CtxtInfo ctxt;
 extern raw1394handle_t* handles;
+extern unsigned int main_timeout_ticker;
+extern int WM_cancel_display;
 
 void
 GetFormat7Capabilities(raw1394handle_t handle, nodeid_t node, Format7Info *info)
@@ -745,12 +747,28 @@ main_timeout_handler(gpointer* port_num) {
   int ports=(int)port_num;
   quadlet_t quadlet;
 
-  //fprintf(stderr,"Main timeout triggered\n");
+  // the main timeout performs tasks every ms. In order to have less repeated tasks
+  // the main_timeout_ticker can be consulted.
+  main_timeout_ticker=(main_timeout_ticker+10)%1000;
+
+  // cancel display thread if asked by the SDL/WM
+  // We must do this here because it is not allowed to call a GTK function from a thread. At least if we do
+  // so the program progressively breaks with strange GUI behavior/look.
+  if (!(main_timeout_ticker%100)) { // every 100ms
+    if (WM_cancel_display>0) {
+      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (lookup_widget(commander_window,"service_display")), FALSE);
+      WM_cancel_display=0;
+    }
+    //fprintf(stderr,"check display cancel\n");
+  }
   // performs a dummy read on all handles
-  for (i=0;i<ports;i++) {
-	cooked1394_read(handles[i], 0xffc0 | raw1394_get_local_id(handles[i]),
-		CSR_REGISTER_BASE + CSR_CYCLE_TIME, 4,
-		(quadlet_t *) &quadlet);
+  if (!(main_timeout_ticker%1000)) { // every second
+    for (i=0;i<ports;i++) {
+      cooked1394_read(handles[i], 0xffc0 | raw1394_get_local_id(handles[i]),
+		      CSR_REGISTER_BASE + CSR_CYCLE_TIME, 4,
+		      (quadlet_t *) &quadlet);
+    }
+    //fprintf(stderr,"dummy read\n");
   }
   return(1);
 }

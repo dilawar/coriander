@@ -22,9 +22,11 @@
 
 extern PrefsInfo preferences;
 extern GtkWidget *format7_window;
+extern GtkWidget *commander_window;
 extern watchthread_info_t watchthread_info;
-//extern whitebal_data_t* whitebal_data;
 extern camera_t* camera;
+extern int WM_cancel_display;
+//extern whitebal_data_t* whitebal_data;
 
 #define YUV2RGB(y, u, v, r, g, b)\
   r = y + ((v*1436) >>10);\
@@ -36,7 +38,7 @@ extern camera_t* camera;
   r = r > 255 ? 255 : r;\
   g = g > 255 ? 255 : g;\
   b = b > 255 ? 255 : b
-  
+
 int
 SDLEventStartThread(chain_t *display_service)
 {
@@ -76,9 +78,14 @@ SDLEventThread(void *arg)
     }
     else {
       pthread_mutex_unlock(&info->mutex_cancel_event);
+
       pthread_mutex_lock(&info->mutex_event);
       if (!SDLHandleEvent(display_service)) {
 	pthread_mutex_unlock(&info->mutex_event);
+	// SDL_QUIT called, close display thread
+	DisplayStopThread();
+	// the following is only for the display_service button to be updated.
+	WM_cancel_display=1;
 	break;
       }
       else {
@@ -133,6 +140,10 @@ SDLHandleEvent(chain_t *display_service)
       break;
     case SDL_MOUSEMOTION:
       OnMouseMotion(display_service, event.motion.x, event.motion.y);
+      break;
+    case SDL_QUIT:
+      pthread_mutex_unlock(&display_service->mutex_data);
+      return(0);
       break;
     }
     pthread_mutex_unlock(&display_service->mutex_data);

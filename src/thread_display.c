@@ -224,7 +224,6 @@ DisplayStopThread(void)
 					   ctxt.fps_display_ctxt, "");
     
     RemoveChain(display_service);
-    
     SDLQuit(display_service);
     
     pthread_mutex_unlock(&display_service->mutex_struct);
@@ -249,7 +248,7 @@ SDLInit(chain_t *display_service)
 
   // Initialize the SDL library (video subsystem)
   if ( SDL_Init(SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE) == -1) {
-    fprintf(stderr,"Couldn't initialize SDL video subsystem\n");
+    MainError("Couldn't initialize SDL video subsystem");
     return(0);
   }
   
@@ -405,6 +404,7 @@ SDLQuit(chain_t *display_service)
   info=(displaythread_info_t*)display_service->data;
 
 #ifdef HAVE_SDLLIB
+  //fprintf(stderr,"about to shutdown SDL stuff\n");
   SDLEventStopThread(display_service);
   SDL_FreeYUVOverlay(info->SDL_overlay);
   SDL_FreeSurface(info->SDL_video);

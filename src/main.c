@@ -59,6 +59,9 @@ camera_t* cameras;
 raw1394handle_t *handles;
 //whitebal_data_t *whitebal_data;
 
+unsigned int main_timeout_ticker;
+unsigned int WM_cancel_display;
+
 #ifdef HAVE_SDLLIB
   watchthread_info_t watchthread_info;
 #endif
@@ -78,6 +81,8 @@ main (int argc, char *argv[])
   int main_timeout;
   camera_t* camera_ptr;
   
+  main_timeout_ticker=0;
+  WM_cancel_display=0;
   handles=NULL;
   camera_num=0;
   cameras=NULL;
@@ -158,7 +163,7 @@ main (int argc, char *argv[])
       MainStatus("Welcome to Coriander...");
       gtk_widget_show (commander_window); // this is the only window shown at boot-time
       
-      main_timeout=gtk_timeout_add(1000, (GtkFunction)main_timeout_handler, (gpointer*)portmax);
+      main_timeout=gtk_timeout_add(10, (GtkFunction)main_timeout_handler, (gpointer*)portmax);
       //gdk_threads_enter();
       gtk_main();
       //gdk_threads_leave();
