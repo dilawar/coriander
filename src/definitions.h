@@ -125,15 +125,5 @@ typedef struct _CtxtInfo
 
 } CtxtInfo;
 
-typedef struct _PrefsInfo
-{
-  float op_timeout;
-  int auto_update;
-  float auto_update_frequency;
-  int display_method;
-  int receive_method;
-
-} PrefsInfo;
-
 #endif
 

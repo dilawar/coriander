@@ -20,11 +20,13 @@
 // but it is necessary for the use of this interface...
 
 // the following lists are all the 'standard' controls available through the interface
+
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
 
 #include "definitions.h"
+#include "preferences.h"
 #include <libdc1394/dc1394_control.h>
 
 const char * feature_list[NUM_FEATURES] = {
@@ -318,18 +320,23 @@ const char * format7_list[8]= {
   "f7_mode7"
 };
 
-const char * preferences_features[5]= {
+const char *preferences_features[PREFERENCE_ITEMS]= {
   "ONE_PUSH_TIMEOUT",
   "AUTO_UPDATE",
   "AUTO_UPDATE_FREQUENCY",
   "DISPLAY_METHOD",
-  "RECEIVE_METHOD"
+  "RECEIVE_METHOD",
+  "SAVE_FILENAME",
+  "SAVE_MODE",
+  "SAVE_SCRATCH",
+  "SAVE_PERIOD",
+  "FTP_ADDRESS",
+  "FTP_USER",
+  "FTP_PASSWORD",
+  "FTP_FILENAME",
+  "FTP_PATH",
+  "FTP_MODE",
+  "FTP_SCRATCH",
+  "FTP_PERIOD"
 };
 
-const char * preferences_defaults[5]= {
-  "10",
-  "NO",
-  "10",
-  "AUTO",
-  "AUTO"
-};

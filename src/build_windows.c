@@ -46,6 +46,8 @@ BuildPreferencesWindow(void)
 {
   LoadConfigFile();
   BuildPrefsRanges();
+  BuildPrefsSaveFrame();
+  BuildPrefsFtpFrame();
 }
 
 void
@@ -99,7 +101,6 @@ BuildCommanderWindow(void)
 void
 BuildCaptureWindow(void)
 {
-  BuildCaptureFrame();
   BuildRange(capture_window, FEATURE_CAPTURE_SIZE);
   BuildRange(capture_window, FEATURE_CAPTURE_QUALITY);
 }

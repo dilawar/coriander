@@ -1,2 +1,1 @@
-emacs src/build*.c src/build*.h src/update*.c src/update*.h src/callback*.c src/callback*.h src/conversions.h src/conversions.c src/definitions.h src/definitions.c src/main.c src/tools.c src/tools.h src/capture.h src/capture.c src/topology.c src/topology.h src/raw1394support.h src/preferences.h src/preferences.c&
-
+emacs src/*.c src/*.h&

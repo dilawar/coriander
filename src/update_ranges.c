@@ -25,6 +25,7 @@
 #include "update_ranges.h"
 #include "definitions.h"
 #include "tools.h"
+#include "preferences.h"
 #include <libdc1394/dc1394_control.h>
 
 extern char* feature_scale_list[NUM_FEATURES];

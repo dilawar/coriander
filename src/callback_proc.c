@@ -27,8 +27,9 @@
 #include "support.h"
 #include "update_ranges.h"
 #include "definitions.h"
-#include "capture.h"
 #include "tools.h"
+#include "preferences.h"
+#include "thread_display.h"
 #include <libdc1394/dc1394_control.h>
 #include <string.h>
 
@@ -38,7 +39,6 @@ extern char* feature_scale_list[NUM_FEATURES];
 extern dc1394_camerainfo *camera;
 extern dc1394_feature_set *feature_set;
 extern dc1394_miscinfo *misc_info;
-extern porthole_info pi;
 extern guint gIdleID;
 
 extern unsigned char g_rgb_buffer[640*480*3];

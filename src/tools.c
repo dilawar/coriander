@@ -21,17 +21,21 @@
 #endif
 
 #include <gnome.h>
+#include <libdc1394/dc1394_control.h>
+#include <string.h>
 #include "callbacks.h"
 #include "support.h"
 #include "definitions.h"
-#include "capture.h"
 #include "tools.h"
 #include "build_menus.h"
 #include "update_frames.h"
 #include "raw1394support.h"
 #include "topology.h"
-#include <libdc1394/dc1394_control.h>
-#include <string.h>
+#include "thread_iso.h"
+#include "thread_display.h"
+#include "thread_ftp.h"
+#include "thread_save.h"
+#include "thread_base.h"
 
 extern GtkWidget *commander_window;
 extern GtkWidget *porthole_window;
@@ -69,9 +73,7 @@ extern char* phy_delay_list[4];
 extern char* power_class_list[8];
 extern int camera_num;
 extern int current_camera;
-extern porthole_info pi;
-extern capture_info ci;
-extern isothread_info it;
+//extern capture_info ci;
 extern CtxtInfo ctxt;
 
 
@@ -116,7 +118,9 @@ void
 ChangeModeAndFormat(int mode, int format)
 {
   int err;
-  IsoFlowCheck();
+  int state[4];
+
+  IsoFlowCheck(state);
   err=dc1394_set_video_format(camera->handle,camera->id,format);
   if (!err) MainError("Could not set video format");
   else misc_info->format=format;
@@ -125,36 +129,32 @@ ChangeModeAndFormat(int mode, int format)
   else misc_info->mode=mode;
   BuildFpsMenu();
   UpdateTriggerFrame();
-  IsoFlowResume();
+  IsoFlowResume(state);
 }
 
-void IsoFlowCheck()
+void IsoFlowCheck(int* state)
 { 
   int err;
 
-  if ( (pi.is_open = (it.handle != NULL)) )
-    {
-      PortholeStopThread();
-      IsoStopThread();
-    }
-  err=dc1394_get_iso_channel_and_speed(camera->handle, camera->id, &misc_info->iso_channel, &misc_info->iso_speed);
-  if (!err) MainError("Could not get ISO channel and speed");
+  state[0]=(GetService(SERVICE_ISO)!=NULL);
+  state[1]=(GetService(SERVICE_DISPLAY)!=NULL);
+  state[2]=(GetService(SERVICE_SAVE)!=NULL);
+  state[3]=(GetService(SERVICE_FTP)!=NULL);
+
+  CleanThreads(CLEAN_MODE_NO_UI_UPDATE);
+
+  err=dc1394_get_iso_status(camera->handle, camera->id, &misc_info->is_iso_on);
+  if (!err) MainError("Could not get ISO status");
   else
-    {
-      err=dc1394_get_iso_status(camera->handle, camera->id, &misc_info->is_iso_on);
-      if (!err) MainError("Could not get ISO status");
-      else
-	{
-	  if (misc_info->is_iso_on)
-	    {
-	      err=dc1394_stop_iso_transmission(camera->handle, camera->id);// if not done, restarting is no more possible
-	      if (!err) MainError("Could not stop ISO transmission");
-	    }
-	}
-    }
+    if (misc_info->is_iso_on)
+      {
+	err=dc1394_stop_iso_transmission(camera->handle, camera->id);
+	// ... (if not done, restarting is no more possible)
+	if (!err) MainError("Could not stop ISO transmission");
+      }
 }
 
-void IsoFlowResume()
+void IsoFlowResume(int* state)
 {
   int err;
 
@@ -165,14 +165,16 @@ void IsoFlowResume()
       else 
 	{
           err=dc1394_start_iso_transmission(camera->handle, camera->id);
-	  if (!err) MainError("Could not start ISO transmission");
-	  else
-	    {
-	      if (pi.is_open && (IsoStartThread()>0) )
-		PortholeStartThread();
-	    }
+	  if (!err)
+	    MainError("Could not start ISO transmission");
 	}
     }
+
+  if (state[0]) IsoStartThread();
+  if (state[1]) DisplayStartThread();
+  if (state[2]) SaveStartThread();
+  if (state[3]) FtpStartThread();
+
 }
 
 void GetContextStatus()

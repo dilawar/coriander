@@ -32,6 +32,7 @@
 #include "update_windows.h"
 #include "definitions.h"
 #include "tools.h"
+#include "preferences.h"
 #include "raw1394support.h"
 #include <libdc1394/dc1394_control.h>
 #include <libraw1394/raw1394.h>
@@ -65,6 +66,7 @@ CtxtInfo ctxt;
 SelfIdPacket_t *selfid;
 SelfIdPacket_t *selfids;
 PrefsInfo preferences;
+int porthole_is_open;
 
 int camera_num;
 int current_camera;

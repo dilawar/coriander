@@ -28,9 +28,6 @@ void
 UpdateCameraFrame(void);
 
 void
-UpdateLockFrame(void);
-
-void
 UpdateTriggerFrame(void);
 
 void
@@ -55,5 +52,9 @@ void
 UpdateTransferStatusFrame(void);
 
 void
-UpdateFTPFrame(void);
+UpdatePrefsSaveFrame(void);
+
+void
+UpdatePrefsFtpFrame(void);
+
 #endif

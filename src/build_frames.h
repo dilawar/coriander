@@ -50,4 +50,9 @@ BuildCameraStatusFrame(void);
 void
 BuildTransferStatusFrame(void);
 
+void
+BuildPrefsSaveFrame(void);
+
+void
+BuildPrefsFtpFrame(void);
 #endif

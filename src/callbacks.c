@@ -32,9 +32,13 @@
 #include "update_windows.h"
 #include "definitions.h"
 #include "preferences.h"
-#include "capture.h"
 #include "callback_proc.h"
 #include "tools.h"
+#include "thread_iso.h"
+#include "thread_display.h"
+#include "thread_save.h"
+#include "thread_ftp.h"
+#include "thread_base.h"
 #include <libdc1394/dc1394_control.h>
 
 #define EEPROM_CNFG       0xF00U
@@ -64,11 +68,10 @@ extern Format7Info *format7_infos;
 extern UIInfo *uiinfo;
 extern UIInfo *uiinfos;
 extern int current_camera;
-extern porthole_info pi;
-extern capture_info ci;
-extern isothread_info it;
+//extern capture_info ci;
 extern guint gCaptureIdleID;
 extern PrefsInfo preferences; 
+extern int porthole_is_open;
 
 gboolean
 on_commander_window_delete_event       (GtkWidget       *widget,
@@ -100,11 +103,11 @@ void
 on_porthole_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-
   gtk_widget_show (porthole_window);
-  pi.is_open=TRUE;
-  if (uiinfo->overlay_power==1)
-    PortholeStartThread();
+  porthole_is_open=TRUE;
+  if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,
+								   "service_display"))))
+    DisplayStartThread();
 }
 
 gboolean
@@ -112,8 +115,9 @@ on_porthole_window_delete_event       (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data)
 {
-  PortholeStopThread();
-  pi.is_open = FALSE;
+  
+  DisplayStopThread();
+  porthole_is_open=FALSE;
   gtk_widget_hide(porthole_window);
   return TRUE;
 }
@@ -436,12 +440,13 @@ on_fps_activate                    (GtkMenuItem     *menuitem,
 				    gpointer         user_data)
 {
   int err;
-  IsoFlowCheck();
+  int state[4];
+  IsoFlowCheck(state);
   err=dc1394_set_video_framerate(camera->handle, camera->id, (int)user_data+FRAMERATE_MIN);
   if (!err) MainError("Could not set framerate");
   else
     misc_info->framerate=(int)user_data;
-  IsoFlowResume();
+  IsoFlowResume(state);
 }
 
 
@@ -941,37 +946,6 @@ on_capsize_power_toggled               (GtkToggleButton *togglebutton,
 }
 
 void
-on_capture_start_clicked               (GtkButton       *button,
-                                        gpointer         user_data)
-{
-    GtkWidget *dialog = create_capture_multi_dialog();
-    gtk_widget_show(dialog);
-}
-
-
-void
-on_capture_stop_clicked                (GtkButton       *button,
-                                        gpointer         user_data)
-{
-  gtk_idle_remove(gCaptureIdleID);
-  capture_multi_stop();
-  gtk_widget_set_sensitive( GTK_WIDGET(lookup_widget( GTK_WIDGET(button), "capture_start")), TRUE);
-  gtk_widget_set_sensitive( GTK_WIDGET(lookup_widget( GTK_WIDGET(button), "capture_stop")), FALSE);
-  gtk_widget_set_sensitive( GTK_WIDGET(lookup_widget( GTK_WIDGET(button), "capture_single")), TRUE);
-}
-
-
-void
-on_capture_single_clicked              (GtkButton       *button,
-                                        gpointer         user_data)
-{
-  if (capture_single_frame()) {
-    GtkWidget *dialog = create_save_single_dialog();
-    gtk_widget_show(dialog);
-  }
-}
-
-void
 on_temp_power_toggled                  (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
@@ -1054,23 +1028,16 @@ void
 on_iso_start_clicked                   (GtkButton       *button,
                                         gpointer         user_data)
 {
-  //int err;
+  int err;
 
-  if (!IsoStartThread())
-  //err=dc1394_start_iso_transmission(camera->handle,camera->id);
-    //if (!err)
+  err=dc1394_start_iso_transmission(camera->handle,camera->id);
+  if (!err)
     MainError("Could not start ISO transmission");
   else
     {
       misc_info->is_iso_on=DC1394_TRUE;
-      gtk_widget_set_sensitive( GTK_WIDGET(lookup_widget(capture_window, "capture_start")), TRUE);
-      gtk_widget_set_sensitive( GTK_WIDGET(lookup_widget(capture_window, "capture_single")), TRUE);
       UpdateIsoFrame();
     }
-  
-  if ((uiinfo->overlay_power>0)&&pi.is_open)
-    PortholeStartThread();
-
   UpdateTransferStatusFrame();
 }
 
@@ -1081,20 +1048,14 @@ on_iso_stop_clicked                    (GtkButton       *button,
 {
   int err;
 
-  PortholeStopThread();
-  IsoStopThread();
-
   err=dc1394_stop_iso_transmission(camera->handle,camera->id);
   if (!err)
     MainError("Could not stop ISO transmission");
   else
     {
       misc_info->is_iso_on=DC1394_FALSE;
-      gtk_widget_set_sensitive( lookup_widget(capture_window, "capture_start"), FALSE); // added by DDouxchamps
-      gtk_widget_set_sensitive( lookup_widget(capture_window, "capture_single"), FALSE);//
       UpdateIsoFrame();
     }
-  //fprintf(stderr,"ISO stopped\n");
   UpdateTransferStatusFrame();
 }
 
@@ -1296,121 +1257,6 @@ on_format6_window_activate             (GtkMenuItem     *menuitem,
 }
 
 
-gboolean
-on_save_single_dialog_delete_event     (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data)
-{
-    GtkWidget *dialog = gtk_widget_get_toplevel(widget);
-    gtk_widget_destroy(dialog);
-
-    return FALSE;
-}
-
-
-void
-on_save_single_dialog_ok_clicked       (GtkButton       *button,
-                                        gpointer         user_data)
-{
-    GtkWidget *dialog = gtk_widget_get_toplevel(GTK_WIDGET(button));
-    GtkWidget *window = lookup_widget(capture_window, "capture_window");
-    gchar *filename = gtk_file_selection_get_filename(GTK_FILE_SELECTION(dialog));
-    gtk_widget_hide(dialog);
-    save_single_frame(filename);
-    
-    if (ci.ftp_enable) 
-    {
-      ci.ftp_address = gtk_entry_get_text( GTK_ENTRY(lookup_widget(window, "entry_capture_ftp_address")));
-      ci.ftp_path = gtk_entry_get_text( GTK_ENTRY(lookup_widget(window, "entry_capture_ftp_path")));
-      ci.ftp_user = gtk_entry_get_text( GTK_ENTRY(lookup_widget(window, "entry_capture_ftp_user")));
-      ci.ftp_passwd = gtk_entry_get_text( GTK_ENTRY(lookup_widget(window, "entry_capture_ftp_passwd")));
-      ftp_single_frame(filename, ci.ftp_address, ci.ftp_path, filename, ci.ftp_user, ci.ftp_passwd);
-    }
-    gtk_widget_destroy(dialog);
-}
-
-
-void
-on_save_single_dialog_cancel_clicked   (GtkButton       *button,
-                                        gpointer         user_data)
-{
-    GtkWidget *dialog = gtk_widget_get_toplevel(GTK_WIDGET(button));
-    gtk_widget_destroy(dialog);
-}
-
-
-gboolean
-on_capture_multi_dialog_delete_event   (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data)
-{
-    GtkWidget *dialog = gtk_widget_get_toplevel(widget);
-    gtk_widget_destroy(dialog);
-
-     return FALSE;
-}
-
-
-void
-on_capture_multi_dialog_ok_clicked     (GtkButton       *button,
-                                        gpointer         user_data)
-{
-    gchar *filename;
-    GtkWidget *window = lookup_widget(capture_window, "capture_window");
-    GtkWidget *dialog = gtk_widget_get_toplevel(GTK_WIDGET(button));
-    filename = gtk_file_selection_get_filename(GTK_FILE_SELECTION(dialog));
-    gtk_widget_hide(dialog);
-    if (capture_multi_start(filename)) {
-      gtk_widget_set_sensitive( GTK_WIDGET(lookup_widget( GTK_WIDGET(window), "capture_start")), FALSE);
-      gtk_widget_set_sensitive( GTK_WIDGET(lookup_widget( GTK_WIDGET(window), "capture_stop")), TRUE);
-      gtk_widget_set_sensitive( GTK_WIDGET(lookup_widget( GTK_WIDGET(window), "capture_single")), FALSE);
-
-      if (ci.ftp_enable) 
-      {
-        ci.ftp_address = gtk_entry_get_text( GTK_ENTRY(lookup_widget(window, "entry_capture_ftp_address")));
-        ci.ftp_path = gtk_entry_get_text( GTK_ENTRY(lookup_widget(window, "entry_capture_ftp_path")));
-        ci.ftp_user = gtk_entry_get_text( GTK_ENTRY(lookup_widget(window, "entry_capture_ftp_user")));
-        ci.ftp_passwd = gtk_entry_get_text( GTK_ENTRY(lookup_widget(window, "entry_capture_ftp_passwd")));
-        ftp_single_frame(filename, ci.ftp_address, ci.ftp_path, filename, ci.ftp_user, ci.ftp_passwd);
-      }
-
-      if (ci.frequency == CAPTURE_FREQ_IMMEDIATE)
-        gCaptureIdleID = gtk_idle_add( capture_idler, NULL);
-      else
-        {
-          ci.period = gtk_spin_button_get_value_as_int( GTK_SPIN_BUTTON(lookup_widget( GTK_WIDGET(window), "spinbutton_capture_freq_periodic")));
-          gCaptureIdleID = gtk_timeout_add( ci.period * 1000, capture_idler, NULL);
-        }
-    }
-    gtk_widget_destroy(dialog);
-}
-
-
-void
-on_capture_multi_dialog_cancel_clicked (GtkButton       *button,
-                                        gpointer         user_data)
-{
-    GtkWidget *dialog = gtk_widget_get_toplevel(GTK_WIDGET(button));
-    gtk_widget_destroy(dialog);
-}
-
-
-void
-on_overlay_button_toggled              (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-
-  uiinfo->overlay_power=togglebutton->active;
-  if (uiinfo->overlay_power>0)
-    {
-      IsoStartThread();
-      PortholeStartThread();
-      UpdateIsoFrame();
-    }
-  else
-    PortholeStopThread();
-}
-
 
 void
 on_test_pattern_activate               (GtkMenuItem     *menuitem,
@@ -1419,7 +1265,9 @@ on_test_pattern_activate               (GtkMenuItem     *menuitem,
 
     int err;
     quadlet_t value;
-    IsoFlowCheck();
+    int state[4];
+
+    IsoFlowCheck(state);
     
     value= htonl(0x12345678ULL);
     err= raw1394_write(camera->handle, 0xffc0 | camera->id, CCR_BASE + EEPROM_CNFG, 4, &value);
@@ -1442,53 +1290,7 @@ on_test_pattern_activate               (GtkMenuItem     *menuitem,
 
     BuildFpsMenu();
     UpdateTriggerFrame();
-    IsoFlowResume();  
-}
-
-
-void
-on_radiobutton_capture_freq_immediate_clicked(GtkButton       *button,
-					      gpointer         user_data)
-{
-  ci.frequency = CAPTURE_FREQ_IMMEDIATE;
-}
-
-
-void
-on_radiobutton_capture_freq_periodioc_clicked(GtkButton       *button,
-					      gpointer         user_data)
-{
-  ci.frequency = CAPTURE_FREQ_PERIODIC;
-}
-
-
-void
-on_radiobutton_capture_mode_seq_clicked(GtkButton       *button,
-                                        gpointer         user_data)
-{
-  ci.mode = CAPTURE_MODE_SEQUENTIAL;
-}
-
-
-void
-on_radiobutton_capture_mode_over_clicked(GtkButton       *button,
-					 gpointer         user_data)
-{
-  ci.mode = CAPTURE_MODE_OVERWRITE;
-}
-
-
-void
-on_checkbutton_capture_ftp_toggled     (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-
-#ifdef HAVE_FTPLIB
-  UpdateFTPFrame();
-#else
-  if (gtk_toggle_button_get_active(togglebutton)) MessageBox("You must have FtpLib to use FTP!");
-  gtk_toggle_button_set_active( togglebutton, FALSE);
-#endif
+    IsoFlowResume(state);  
 }
 
 
@@ -1567,6 +1369,22 @@ void
 on_prefs_save_button_clicked           (GtkButton       *button,
                                         gpointer         user_data)
 {
+  gchar *tmp;
+  tmp=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_ftp_address")));
+  strcpy(preferences.ftp_address,tmp);
+  tmp=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_ftp_filename")));
+  strcpy(preferences.ftp_filename,tmp);
+  tmp=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_ftp_path")));
+  strcpy(preferences.ftp_path,tmp);
+  tmp=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_ftp_password")));
+  strcpy(preferences.ftp_password,tmp);
+  tmp=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_ftp_user")));
+  strcpy(preferences.ftp_user,tmp);
+  tmp=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_save_filename")));
+  strcpy(preferences.save_filename,tmp);
+
+  preferences.save_period = gtk_spin_button_get_value_as_int( GTK_SPIN_BUTTON(lookup_widget( GTK_WIDGET(preferences_window), "prefs_save_period")));
+
   WriteConfigFile();
 }
 
@@ -1592,3 +1410,272 @@ on_prefs_timeout_value_changed( GtkAdjustment    *adj,
 {
   preferences.op_timeout=adj->value;
 }
+
+void
+on_service_iso_toggled                 (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+
+  if (togglebutton->active)
+    IsoStartThread();
+  else
+    {
+      // BUG: ISO service cannot be stopped if ISO transmission is OFF. This is because we
+      // probe the service list for ISO service presence (GetService in IsoStopThread),
+      // while the ISO service thread is locked up waiting for data. The thread can't
+      // release its mutex, and prevent GetService from completing his job.
+      // THUS: GetService should be able to run WITHOUT locking mutexes! I have thus
+      // removed the mutex lock in GetService, BUT THIS COULD YIELD UNSTABLE SITUATIONS.
+
+      // cleanup services (start with slowest, as defined in thread_base.h, service_t):);
+      CleanThreads(CLEAN_MODE_UI_UPDATE_NOT_ISO);
+    }
+
+}
+
+
+void
+on_service_display_toggled             (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  if (!togglebutton->active)
+    DisplayStopThread();
+  else
+    {
+      if (GetService(SERVICE_ISO)==NULL) // start ISO if not started yet
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,
+								     "service_iso")),TRUE);
+      if (porthole_is_open)
+	DisplayStartThread();
+    } 
+}
+
+
+void
+on_service_save_toggled                (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+
+  if (togglebutton->active)
+    {
+      if (GetService(SERVICE_ISO)==NULL) // start ISO if not started yet
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,
+								     "service_iso")),TRUE);
+      SaveStartThread();
+    }
+  else
+    SaveStopThread();
+}
+
+
+void
+on_service_ftp_toggled                 (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+
+  if (togglebutton->active)
+    {
+      if (GetService(SERVICE_ISO)==NULL) // start ISO if not started yet
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,
+								     "service_iso")),TRUE);
+      FtpStartThread();
+    }
+  else
+    FtpStopThread();
+    
+  
+}
+
+
+void
+on_prefs_save_afap_toggled             (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  preferences.save_mode=SAVE_MODE_IMMEDIATE;
+  UpdatePrefsSaveFrame();
+}
+
+
+void
+on_prefs_save_every_toggled            (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  preferences.save_mode=SAVE_MODE_PERIODIC;
+  UpdatePrefsSaveFrame();
+}
+
+
+void
+on_prefs_save_seq_toggled              (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  preferences.save_scratch=SAVE_SCRATCH_SEQUENTIAL;
+  UpdatePrefsSaveFrame();
+}
+
+
+void
+on_prefs_save_scratch_toggled          (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  preferences.save_scratch=SAVE_SCRATCH_OVERWRITE;
+  UpdatePrefsSaveFrame();
+}
+
+
+void
+on_prefs_save_choose_clicked           (GtkButton       *button,
+                                        gpointer         user_data)
+{
+  GtkWidget *dialog = create_get_filename_dialog();
+  gtk_widget_show(dialog);
+}
+
+/*
+void
+on_capture_single_clicked              (GtkButton       *button,
+                                        gpointer         user_data)
+{
+  if (capture_single_frame()) {
+    GtkWidget *dialog = create_save_single_dialog();
+    gtk_widget_show(dialog);
+  }
+  
+}
+
+gboolean
+on_save_single_dialog_delete_event     (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data)
+{
+    GtkWidget *dialog = gtk_widget_get_toplevel(widget);
+    gtk_widget_destroy(dialog);
+
+    return FALSE;
+}
+
+
+void
+on_save_single_dialog_ok_clicked       (GtkButton       *button,
+                                        gpointer         user_data)
+{
+  
+    GtkWidget *dialog = gtk_widget_get_toplevel(GTK_WIDGET(button));
+    GtkWidget *window = lookup_widget(capture_window, "capture_window");
+    gchar *filename = gtk_file_selection_get_filename(GTK_FILE_SELECTION(dialog));
+    gtk_widget_hide(dialog);
+    save_single_frame(filename);
+    
+    if (ci.ftp_enable) 
+    {
+      ci.ftp_address = gtk_entry_get_text( GTK_ENTRY(lookup_widget(window, "entry_capture_ftp_address")));
+      ci.ftp_path = gtk_entry_get_text( GTK_ENTRY(lookup_widget(window, "entry_capture_ftp_path")));
+      ci.ftp_user = gtk_entry_get_text( GTK_ENTRY(lookup_widget(window, "entry_capture_ftp_user")));
+      ci.ftp_passwd = gtk_entry_get_text( GTK_ENTRY(lookup_widget(window, "entry_capture_ftp_passwd")));
+      ftp_single_frame(filename, ci.ftp_address, ci.ftp_path, filename, ci.ftp_user, ci.ftp_passwd);
+    }
+    gtk_widget_destroy(dialog);
+  
+}
+
+void
+on_save_single_dialog_cancel_clicked   (GtkButton       *button,
+                                        gpointer         user_data)
+{
+    GtkWidget *dialog = gtk_widget_get_toplevel(GTK_WIDGET(button));
+    gtk_widget_destroy(dialog);
+}
+
+
+void
+on_capture_multi_dialog_ok_clicked     (GtkButton       *button,
+                                        gpointer         user_data)
+{
+    gchar *filename;
+    GtkWidget *window = lookup_widget(capture_window, "preferences_window");
+    GtkWidget *dialog = gtk_widget_get_toplevel(GTK_WIDGET(button));
+    filename = gtk_file_selection_get_filename(GTK_FILE_SELECTION(dialog));
+    gtk_widget_hide(dialog);
+    if (capture_multi_start(filename)) {
+      gtk_widget_set_sensitive( GTK_WIDGET(lookup_widget( GTK_WIDGET(window), "capture_start")), FALSE);
+      gtk_widget_set_sensitive( GTK_WIDGET(lookup_widget( GTK_WIDGET(window), "capture_stop")), TRUE);
+      gtk_widget_set_sensitive( GTK_WIDGET(lookup_widget( GTK_WIDGET(window), "capture_single")), FALSE);
+
+      if (ci.ftp_enable) 
+      {
+        ci.ftp_address = gtk_entry_get_text( GTK_ENTRY(lookup_widget(window, "entry_capture_ftp_address")));
+        ci.ftp_path = gtk_entry_get_text( GTK_ENTRY(lookup_widget(window, "entry_capture_ftp_path")));
+        ci.ftp_user = gtk_entry_get_text( GTK_ENTRY(lookup_widget(window, "entry_capture_ftp_user")));
+        ci.ftp_passwd = gtk_entry_get_text( GTK_ENTRY(lookup_widget(window, "entry_capture_ftp_passwd")));
+        ftp_single_frame(filename, ci.ftp_address, ci.ftp_path, filename, ci.ftp_user, ci.ftp_passwd);
+      }
+
+      if (ci.frequency == CAPTURE_FREQ_IMMEDIATE)
+        gCaptureIdleID = gtk_idle_add( capture_idler, NULL);
+      else
+        {
+          ci.period = gtk_spin_button_get_value_as_int( GTK_SPIN_BUTTON(lookup_widget( GTK_WIDGET(window), "spinbutton_capture_freq_periodic")));
+          gCaptureIdleID = gtk_timeout_add( ci.period * 1000, capture_idler, NULL);
+        }
+    }
+    gtk_widget_destroy(dialog);
+  
+}
+
+*/
+void
+on_get_filename_dialog_ok_clicked      (GtkButton       *button,
+                                        gpointer         user_data)
+{
+  GtkWidget *dialog = gtk_widget_get_toplevel(GTK_WIDGET(button));
+  gchar *filename = gtk_file_selection_get_filename(GTK_FILE_SELECTION(dialog));
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_save_filename")),filename);
+  gtk_widget_destroy(dialog);
+}
+
+
+void
+on_get_filename_dialog_cancel_clicked  (GtkButton       *button,
+                                        gpointer         user_data)
+{
+    GtkWidget *dialog = gtk_widget_get_toplevel(GTK_WIDGET(button));
+    gtk_widget_destroy(dialog);
+}
+
+
+void
+on_prefs_ftp_afap_toggled              (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+
+  preferences.ftp_mode=FTP_MODE_IMMEDIATE;
+  UpdatePrefsFtpFrame();
+}
+
+
+void
+on_prefs_ftp_every_toggled             (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+ preferences.ftp_mode=FTP_MODE_PERIODIC;
+  UpdatePrefsFtpFrame();
+}
+
+
+void
+on_prefs_ftp_seq_toggled               (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  preferences.ftp_scratch=FTP_SCRATCH_SEQUENTIAL;
+  UpdatePrefsFtpFrame();
+}
+
+
+void
+on_prefs_ftp_scratch_toggled           (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  preferences.ftp_scratch=FTP_SCRATCH_OVERWRITE;
+  UpdatePrefsFtpFrame();
+}
+

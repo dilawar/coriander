@@ -57,17 +57,19 @@ UpdatePreferencesWindow(void)
   UpdatePrefsDisplayFrame();
   UpdatePrefsUpdateFrame();     
   UpdatePrefsRanges();
+  UpdatePrefsSaveFrame();
+  UpdatePrefsFtpFrame();
 }
 
 void
 UpdateCommanderWindow(void)
 {
   UpdateCameraFrame();
-  UpdateLockFrame();
   UpdateTriggerFrame();
   UpdatePowerFrame();
   UpdateMemoryFrame();
   UpdateFormatMenu();
+  UpdateIsoFrame();
 }
 
 void
@@ -119,9 +121,6 @@ UpdateCaptureWindow(void)
   UpdateRange(capture_window, FEATURE_CAPTURE_SIZE);
   UpdateRange(capture_window, FEATURE_CAPTURE_QUALITY);
 
-  UpdateCaptureFrame();
-  UpdateIsoFrame();
-  UpdateFTPFrame();
 }
 
 void

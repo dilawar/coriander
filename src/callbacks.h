@@ -260,18 +260,6 @@ on_power_reset_clicked                 (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_capture_start_clicked               (GtkButton       *button,
-                                        gpointer         user_data);
-
-void
-on_capture_stop_clicked                (GtkButton       *button,
-                                        gpointer         user_data);
-
-void
-on_capture_single_clicked              (GtkButton       *button,
-                                        gpointer         user_data);
-
-void
 on_trigger_polarity_toggled            (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
 
@@ -548,16 +536,6 @@ on_porthole_window_delete_event        (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data);
 
-gboolean
-on_porthole_window_delete_event        (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data);
-
-gboolean
-on_porthole_window_delete_event        (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data);
-
 void
 on_f0_mode6_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
@@ -606,70 +584,9 @@ void
 on_format6_window_activate             (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
-gboolean
-on_save_single_dialog_delete_event     (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data);
-
-void
-on_save_single_dialog_ok_clicked       (GtkButton       *button,
-                                        gpointer         user_data);
-
-void
-on_save_single_dialog_cancel_clicked   (GtkButton       *button,
-                                        gpointer         user_data);
-
-gboolean
-on_capture_multi_dialog_delete_event   (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data);
-
-void
-on_capture_multi_dialog_ok_clicked     (GtkButton       *button,
-                                        gpointer         user_data);
-
-void
-on_capture_multi_dialog_cancel_clicked (GtkButton       *button,
-                                        gpointer         user_data);
-
-gboolean
-on_save_single_dialog_delete_event     (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data);
-
-gboolean
-on_capture_multi_dialog_delete_event   (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data);
-
-void
-on_overlay_button_toggled              (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
 
 void
 on_test_pattern_activate               (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-#endif
-
-void
-on_radiobutton_capture_freq_immediate_clicked
-                                        (GtkButton       *button,
-                                        gpointer         user_data);
-
-void
-on_radiobutton_capture_freq_periodioc_clicked
-                                        (GtkButton       *button,
-                                        gpointer         user_data);
-
-void
-on_radiobutton_capture_mode_seq_clicked
-                                        (GtkButton       *button,
-                                        gpointer         user_data);
-
-void
-on_radiobutton_capture_mode_over_clicked
-                                        (GtkButton       *button,
                                         gpointer         user_data);
 
 void
@@ -722,3 +639,78 @@ on_prefs_update_value_changed          (GtkAdjustment    *adj,
 void
 on_prefs_timeout_value_changed         (GtkAdjustment    *adj,
 					gpointer         user_data);
+
+void
+on_service_iso_toggled                 (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_service_display_toggled             (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_service_save_toggled                (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_service_ftp_toggled                 (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_prefs_save_afap_toggled             (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_prefs_save_every_toggled            (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_prefs_save_seq_toggled              (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_prefs_save_scratch_toggled          (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_prefs_save_choose_clicked           (GtkButton       *button,
+                                        gpointer         user_data);
+
+gboolean
+on_get_filename_dialog_delete_event    (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data);
+
+gboolean
+on_get_filename_dialog_destroy_event   (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data);
+
+void
+on_get_filename_dialog_destroy         (GtkObject       *object,
+                                        gpointer         user_data);
+
+void
+on_get_filename_dialog_ok_clicked      (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_get_filename_dialog_cancel_clicked  (GtkButton       *button,
+                                        gpointer         user_data);
+#endif
+
+void
+on_prefs_ftp_afap_toggled              (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_prefs_ftp_every_toggled             (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_prefs_ftp_seq_toggled               (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_prefs_ftp_scratch_toggled           (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);

@@ -28,14 +28,19 @@
 #include "build_ranges.h"
 #include "build_frames.h"
 #include "update_frames.h"
+#include "thread_ftp.h"
+#include "thread_save.h"
+#include "preferences.h"
 #include "tools.h"
 #include <libdc1394/dc1394_control.h>
 
 extern GtkWidget *commander_window;
+extern GtkWidget *preferences_window;
 extern dc1394_feature_set *feature_set;
 extern dc1394_camerainfo *camera;
 extern GtkWidget *capture_window;
 extern dc1394_miscinfo *misc_info;
+extern PrefsInfo preferences;
 
 void
 BuildCameraFrame(void)
@@ -93,12 +98,6 @@ BuildMemoryFrame(void)
 }
 
 void
-BuildCaptureFrame(void)
-{
-  gtk_widget_set_sensitive(lookup_widget(capture_window,"capture_frame"),TRUE);
-}
-
-void
 BuildIsoFrame(void)
 {
   int err;
@@ -133,4 +132,94 @@ BuildTransferStatusFrame(void)
 }
 
 
+void
+BuildPrefsSaveFrame(void)
+{
+  GtkAdjustment *adjustment;
 
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_save_filename"))
+  		     ,preferences.save_filename);
+  switch(preferences.save_mode)
+    {
+    case SAVE_MODE_IMMEDIATE:
+      gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(preferences_window,
+								   "prefs_save_afap"), TRUE);
+      break;
+    case SAVE_MODE_PERIODIC:
+      gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(preferences_window,
+								   "prefs_save_every"), TRUE);
+      break;
+    }
+
+  switch(preferences.save_scratch)
+    {
+    case SAVE_SCRATCH_OVERWRITE:
+      gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(preferences_window,
+								   "prefs_save_scratch"),TRUE);
+      break;
+    case SAVE_SCRATCH_SEQUENTIAL:
+      gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(preferences_window,
+								   "prefs_save_seq"),TRUE);
+      break;
+    }
+  // set the  adjustment for spin button:
+  adjustment=(GtkAdjustment*)gtk_adjustment_new(1,1,999999,1,100,0);
+  gtk_spin_button_set_adjustment((GtkSpinButton*)lookup_widget(preferences_window,
+							       "prefs_save_period"),adjustment);
+  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(preferences_window,
+							  "prefs_save_period"), preferences.save_period);
+  // TODO: connect signal
+}
+
+void
+BuildPrefsFtpFrame(void)
+{
+
+  //fprintf(stderr,"Entering buildframe\n");
+#ifdef HAVE_FTPLIB
+
+  GtkAdjustment *adjustment;
+
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_ftp_filename"))
+  		     ,preferences.ftp_filename);
+  switch(preferences.ftp_mode)
+    {
+    case FTP_MODE_IMMEDIATE:
+      gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(preferences_window,
+								   "prefs_ftp_afap"), TRUE);
+      break;
+    case FTP_MODE_PERIODIC:
+      gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(preferences_window,
+								   "prefs_ftp_every"), TRUE);
+      break;
+    }
+
+  switch(preferences.ftp_scratch)
+    {
+    case FTP_SCRATCH_OVERWRITE:
+      gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(preferences_window,
+								   "prefs_ftp_scratch"),TRUE);
+      break;
+    case FTP_SCRATCH_SEQUENTIAL:
+      gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(preferences_window,
+								   "prefs_ftp_seq"),TRUE);
+      break;
+    }
+  // set the  adjustment for spin button:
+  adjustment=(GtkAdjustment*)gtk_adjustment_new(1,1,999999,1,100,0);
+  gtk_spin_button_set_adjustment((GtkSpinButton*)lookup_widget(preferences_window,
+							       "prefs_ftp_period"),adjustment);
+  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(preferences_window,
+							  "prefs_ftp_period"), preferences.ftp_period);
+  // TODO: connect signal
+
+#else
+
+  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_ftp_framedrop_frame"),FALSE);
+  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_ftp_scratch_frame"),FALSE);
+  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_ftp_server_frame"),FALSE);
+
+#endif
+  //fprintf(stderr,"Exiting buildframe\n");
+
+}

@@ -1,6 +1,22 @@
 Coriander, (c) 2000-2001 Damien Douxchamps <douxchamps@ieee.org>
 
-Changes towards version 0.19:
+Changes in version 0.19:
+
+    Nov 6, by Damien Douxchamps:
+    - MASSIVE code update/cleanup for threads. A little bit beta, but
+      probably worth a try... I have designed a new structure as image
+      pipe: images walk along this pipe and are successively used by
+      different processes (threads). These threads currently are:
+	iso: produces images at the beginning of the pipe (server)
+	display: displays images on the screen (client)
+	save: saves an image to a local file (client)
+	ftp: sends an image on a ftp site (client)
+	(a Real streaming client will be added in the future)
+      About 30% of the code has been changed: you bet there'll be bugs
+      lurking around! Please send some feedback about those... :*)
+    - FTP is now working.
+    - Due to the massive change in threads, some features have been moved
+      to the preferences window. The capture window is now rather small...
 	
     Oct 29, by Damien Douxchamps:
     - little cleanup/update of threads

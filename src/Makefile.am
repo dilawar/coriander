@@ -14,6 +14,11 @@ coriander_SOURCES = \
 	support.c support.h \
 	interface.c interface.h \
 	definitions.c definitions.h \
+	thread_base.c thread_base.h \
+	thread_iso.c thread_iso.h \
+	thread_display.c thread_display.h \
+	thread_ftp.c thread_ftp.h \
+	thread_save.c thread_save.h \
 	tools.c tools.h \
 	callbacks.c callbacks.h \
 	update_frames.c update_frames.h \
@@ -26,7 +31,6 @@ coriander_SOURCES = \
 	build_ranges.c build_ranges.h \
 	callback_proc.c callback_proc.h \
 	conversions.c conversions.h \
-	capture.c capture.h \
 	topology.c topology.h \
 	preferences.c preferences.h
 

@@ -9,7 +9,7 @@
 ==========================================================================
 		
 
-(This README is for version 0.18)
+(This README is for version 0.19)
 
 Hello world!
 
@@ -91,7 +91,7 @@ _______________________
 - a kernel with 1394 support [3], preferably at least a 2.4.1
   WITH latest CVS for ieee1394 (very important). Kernel modules to be compiled:
   ieee1394, ohci1394, raw1394 and video1394
-- XFree 3.3.6 (XFree 4.0.3 recommended for video overlay)
+- XFree 3.3.6 (XFree 4.1.0 recommended for video overlay)
 - Gtk 1.2 & Gtk-devel
 - libraw1394 installed (version 0.9) [5]
 - libdc1394 installed (version 0.8.3 or later) [2]

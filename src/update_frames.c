@@ -31,7 +31,11 @@
 #include "definitions.h"
 #include "preferences.h"
 #include "tools.h"
-#include "capture.h"
+#include "thread_iso.h"
+#include "thread_display.h"
+#include "thread_save.h"
+#include "thread_ftp.h"
+#include "thread_base.h"
 #include "build_ranges.h"
 #include <libdc1394/dc1394_control.h>
 #include "raw1394support.h"
@@ -48,12 +52,54 @@ extern char* phy_speed_list[4];
 extern char* phy_delay_list[4];
 extern char* power_class_list[8];
 extern SelfIdPacket_t *selfid;
-extern capture_info ci;
+//extern capture_info ci;
 extern PrefsInfo preferences; 
 
 void
 UpdatePrefsUpdateFrame(void)
 {
+  // nothing yet. should update ranges
+}
+
+void
+UpdatePrefsSaveFrame(void)
+{
+  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_save_period"),
+			   (preferences.save_mode==SAVE_MODE_PERIODIC));
+  gtk_widget_set_sensitive(lookup_widget(preferences_window,"label42"),
+			   (preferences.save_mode==SAVE_MODE_PERIODIC));
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_save_filename")),
+		     preferences.save_filename);
+}
+
+
+void
+UpdatePrefsFtpFrame(void)
+{
+#ifdef HAVE_FTPLIB
+
+  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_ftp_period"),
+			   (preferences.ftp_mode==FTP_MODE_PERIODIC));
+  gtk_widget_set_sensitive(lookup_widget(preferences_window,"label55"),
+			   (preferences.ftp_mode==FTP_MODE_PERIODIC));
+  
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_ftp_filename")),
+		     preferences.ftp_filename);
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_ftp_address")),
+		     preferences.ftp_address);
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_ftp_password")),
+		     preferences.ftp_password);
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_ftp_path")),
+		     preferences.ftp_path);
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_ftp_user")),
+		     preferences.ftp_user);
+#else
+
+  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_ftp_framedrop_frame"),FALSE);
+  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_ftp_scratch_frame"),FALSE);
+  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_ftp_server_frame"),FALSE);
+
+#endif
 
 }
 
@@ -135,12 +181,6 @@ UpdateCameraFrame(void)
 }
 
 void
-UpdateLockFrame(void)
-{
-  // nothing to update yet
-}
-
-void
 UpdateTriggerFrame(void)
 {
   // always set the trigger frame on (because it contains the fps menu):
@@ -192,12 +232,6 @@ UpdateMemoryFrame(void)
   gtk_widget_set_sensitive(lookup_widget(commander_window,"load_mem"),TRUE);
 }
 
-void
-UpdateCaptureFrame(void)
-{
-  gtk_widget_set_sensitive( GTK_WIDGET(lookup_widget( capture_window, "capture_start")), misc_info->is_iso_on); // added by DDouxchamps
-  gtk_widget_set_sensitive( GTK_WIDGET(lookup_widget( capture_window, "capture_single")), misc_info->is_iso_on);
-}
 
 void
 UpdateIsoFrame(void)
@@ -326,33 +360,4 @@ UpdateTransferStatusFrame(void)
 
 }
 
-void
-UpdateFTPFrame(void)
-{
-
-  GtkWidget *window = gtk_widget_get_toplevel(lookup_widget(capture_window,"checkbutton_capture_ftp"));
-
-
-#ifdef HAVE_FTPLIB
-
-  ci.ftp_enable = gtk_toggle_button_get_active((GtkToggleButton *)(lookup_widget(window,"checkbutton_capture_ftp")));
-
-#else
-
-  ci.ftp_enable = 0;
-  gtk_widget_set_sensitive( lookup_widget(window, "checkbutton_capture_ftp"), 0);
-
-#endif
-
-  gtk_widget_set_sensitive( lookup_widget(window, "entry_capture_ftp_address"), ci.ftp_enable);
-  gtk_widget_set_sensitive( lookup_widget(window, "entry_capture_ftp_path"), ci.ftp_enable);
-  gtk_widget_set_sensitive( lookup_widget(window, "entry_capture_ftp_user"), ci.ftp_enable);
-  gtk_widget_set_sensitive( lookup_widget(window, "entry_capture_ftp_passwd"), ci.ftp_enable);
-  gtk_widget_set_sensitive( lookup_widget(window, "label_capture_ftp_address"), ci.ftp_enable);
-  gtk_widget_set_sensitive( lookup_widget(window, "label_capture_ftp_path"), ci.ftp_enable);
-  gtk_widget_set_sensitive( lookup_widget(window, "label_capture_ftp_user"), ci.ftp_enable);
-  gtk_widget_set_sensitive( lookup_widget(window, "label_capture_ftp_passwd"), ci.ftp_enable);
-
-
-}
 

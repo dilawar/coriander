@@ -30,10 +30,10 @@ void
 ChangeModeAndFormat(int mode, int format);
 
 void
-IsoFlowCheck(void);
+IsoFlowCheck(int* state);
 
 void
-IsoFlowResume(void);
+IsoFlowResume(int* state);
 
 void
 GetContextStatus(void);
