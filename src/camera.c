@@ -115,7 +115,9 @@ NewCamera(void) {
   cam->prefs.ftp_path =(char*)malloc(STRING_SIZE*sizeof(char));
   cam->prefs.v4l_dev_name =(char*)malloc(STRING_SIZE*sizeof(char));
   cam->prefs.name = (char*)malloc(STRING_SIZE*sizeof(char));
-  cam->prefs.save_basedir = (char*)malloc(STRING_SIZE*sizeof(char));
+  cam->prefs.save_filename = (char*)malloc(STRING_SIZE*sizeof(char));
+  cam->prefs.save_filename_ext = (char*)malloc(STRING_SIZE*sizeof(char));
+  cam->prefs.save_filename_base = (char*)malloc(STRING_SIZE*sizeof(char));
   cam->prefs.overlay_filename = (char*)malloc(STRING_SIZE*sizeof(char));
   cam->bayer_pattern=COLOR_FILTER_FORMAT7_BGGR;
   pthread_mutex_init(&cam->uimutex, NULL);
@@ -225,7 +227,9 @@ FreeCamera(camera_t* cam) {
   free(cam->prefs.ftp_path); 
   free(cam->prefs.v4l_dev_name); 
   free(cam->prefs.name);
-  free(cam->prefs.save_basedir);
+  free(cam->prefs.save_filename);
+  free(cam->prefs.save_filename_ext);
+  free(cam->prefs.save_filename_base);
   free(cam->prefs.overlay_filename);
   free(cam);
   cam=NULL;

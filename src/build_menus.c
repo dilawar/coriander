@@ -870,11 +870,11 @@ BuildSaveModeMenu(void)
   GtkWidget* glade_menuitem;
 
   // build bayer option menu:
-  gtk_widget_destroy(GTK_WIDGET(lookup_widget(main_window,"save_mode_menu"))); // remove previous menu
+  gtk_widget_destroy(GTK_WIDGET(lookup_widget(main_window,"prefs_save_mode_menu"))); // remove previous menu
   
   new_option_menu = gtk_option_menu_new ();
   gtk_widget_ref (new_option_menu);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "save_mode_menu", new_option_menu,
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "prefs_save_mode_menu", new_option_menu,
 			    (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (new_option_menu);
   gtk_table_attach (GTK_TABLE (lookup_widget(main_window,"table74")),
@@ -911,7 +911,7 @@ BuildSaveModeMenu(void)
 
   // menu history
   pthread_mutex_lock(&camera->uimutex);
-  gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(main_window, "save_mode_menu")),camera->prefs.save_mode);
+  gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(main_window, "prefs_save_mode_menu")),camera->prefs.save_mode);
   pthread_mutex_unlock(&camera->uimutex);
       
 }

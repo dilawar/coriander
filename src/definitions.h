@@ -55,7 +55,10 @@ typedef struct _CamPrefs
   char *video1394_device;
   int video1394_dropframes;
   int dma_buffer_size;
-  char *save_basedir;
+  char *save_filename;
+  char *save_filename_ext;
+  char *save_filename_base;
+  int save_format;
   int save_mode;
   int save_period;
   int save_convert;
@@ -242,6 +245,7 @@ typedef struct _Chain_T
   camera_t*       camera; // the camera that uses this thread    
 } chain_t;
 
+/*
 typedef struct _UIInfo
 {
   pthread_mutex_t mutex;
@@ -252,6 +256,7 @@ typedef struct _UIInfo
   int bpp;
 
 } uiinfo_t;
+*/
 
 typedef struct _StatusInfo
 {

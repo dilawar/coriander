@@ -1507,15 +1507,54 @@ on_overlay_file_subentry_changed       (GtkEditable     *editable,
 
 
 void
-on_save_basedir_subentry_changed      (GtkEditable     *editable,
+on_save_filename_subentry_changed      (GtkEditable     *editable,
                                         gpointer         user_data)
 {
   char *tmp_ptr;
-  tmp_ptr=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"save_basedir_subentry")));
-  strcpy(camera->prefs.save_basedir,tmp_ptr);
-  // FORMAT DETECTION SHOULD GO HERE, NOT IN SaveThreadStart() IN ORDER TO ADAPT THE GUI ACCORDING TO FILE FORMAT
-  gnome_config_set_string("coriander/save/filename",camera->prefs.save_basedir);
+  gchar *tmp;
+
+  tmp_ptr=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"save_filename_subentry")));
+  strcpy(camera->prefs.save_filename,tmp_ptr);
+  strcpy(camera->prefs.save_filename_base,tmp_ptr);
+  gnome_config_set_string("coriander/save/filename",camera->prefs.save_filename);
   gnome_config_sync();
+
+  // strip extension
+  tmp = strrchr(camera->prefs.save_filename_base, '.');
+  if(tmp != NULL) {
+    // PROBLEM HERE: 
+    tmp[0] = '\0';// cut filename before point
+    strcpy(camera->prefs.save_filename_ext, strrchr(camera->prefs.save_filename, '.'));
+  }
+  else {
+    // error: no extension provided
+    MainError("You should provide an extension for the save filename");
+  }
+
+  //fprintf(stderr,"%s\n",camera->prefs.save_filename);
+  //fprintf(stderr,"%s\n",camera->prefs.save_filename_ext);
+  //fprintf(stderr,"%s\n",camera->prefs.save_filename_base);
+
+  // detect file format
+  if (strncasecmp(camera->prefs.save_filename_ext, ".pvn",4)==0) {
+    camera->prefs.save_format=SAVE_FORMAT_PVN;
+    camera->prefs.save_mode=SAVE_MODE_VIDEO;
+  }
+  else if ((strncasecmp(camera->prefs.save_filename_ext, ".jpg",4)==0)||(strncasecmp(camera->prefs.save_filename_ext, ".jpeg",5)==0)) {
+    camera->prefs.save_format=SAVE_FORMAT_JPEG;
+    if (camera->prefs.save_mode==SAVE_MODE_VIDEO)
+      camera->prefs.save_mode=SAVE_MODE_SEQUENTIAL;
+  }
+  else if (strncasecmp(camera->prefs.save_filename_ext, ".raw",4)==0) {
+    camera->prefs.save_format=SAVE_FORMAT_RAW;
+  }
+  else {
+    camera->prefs.save_format=SAVE_FORMAT_OTHER;
+    if (camera->prefs.save_mode==SAVE_MODE_VIDEO)
+      camera->prefs.save_mode=SAVE_MODE_SEQUENTIAL;
+  }
+
+  BuildSaveModeMenu();
   UpdatePrefsSaveFrame();
 }
 

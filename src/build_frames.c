@@ -137,7 +137,7 @@ BuildPrefsSaveFrame(void)
   gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(main_window, "prefs_save_period"), camera->prefs.save_period);
 
   //filename
-  gtk_entry_set_text(GTK_ENTRY(gnome_file_entry_gtk_entry(GNOME_FILE_ENTRY(lookup_widget(main_window, "save_basedir_entry")))), camera->prefs.save_basedir);
+  gtk_entry_set_text(GTK_ENTRY(gnome_file_entry_gtk_entry(GNOME_FILE_ENTRY(lookup_widget(main_window, "save_filename_entry")))), camera->prefs.save_filename);
 
   // mode
   BuildSaveModeMenu();

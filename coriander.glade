@@ -2657,7 +2657,7 @@ Average
 
 	      <widget>
 		<class>GtkFrame</class>
-		<name>prefs_save_basedir_frame</name>
+		<name>prefs_save_filename_frame</name>
 		<border_width>5</border_width>
 		<label>Base directory or filename</label>
 		<label_xalign>0</label_xalign>
@@ -2670,7 +2670,7 @@ Average
 
 		<widget>
 		  <class>GnomeFileEntry</class>
-		  <name>save_basedir_entry</name>
+		  <name>save_filename_entry</name>
 		  <border_width>3</border_width>
 		  <max_saved>30</max_saved>
 		  <title>Choose a base directory</title>
@@ -2680,17 +2680,17 @@ Average
 		  <widget>
 		    <class>GtkEntry</class>
 		    <child_name>GnomeEntry:entry</child_name>
-		    <name>save_basedir_subentry</name>
+		    <name>save_filename_subentry</name>
 		    <can_focus>True</can_focus>
 		    <signal>
 		      <name>changed</name>
-		      <handler>on_save_basedir_subentry_changed</handler>
+		      <handler>on_save_filename_subentry_changed</handler>
 		      <last_modification_time>Mon, 13 Dec 2004 07:05:05 GMT</last_modification_time>
 		    </signal>
 		    <editable>True</editable>
 		    <text_visible>True</text_visible>
 		    <text_max_length>0</text_max_length>
-		    <text>/home/ddouxcha/ieee1394/ISG/</text>
+		    <text></text>
 		  </widget>
 		</widget>
 	      </widget>
@@ -2792,7 +2792,7 @@ Average
 
 		<widget>
 		  <class>GtkFrame</class>
-		  <name>frame12</name>
+		  <name>grab_now_frame</name>
 		  <border_width>5</border_width>
 		  <label>Grab single image</label>
 		  <label_xalign>0</label_xalign>
@@ -2901,7 +2901,7 @@ Average
 
 		  <widget>
 		    <class>GtkOptionMenu</class>
-		    <name>save_mode_menu</name>
+		    <name>prefs_save_mode_menu</name>
 		    <border_width>1</border_width>
 		    <can_focus>True</can_focus>
 		    <items>Save files sequentially

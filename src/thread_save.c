@@ -25,7 +25,6 @@ SaveStartThread(camera_t* cam)
 {
   chain_t* save_service=NULL;
   savethread_info_t *info=NULL;
-  gchar *tmp;
 
   save_service=GetService(camera, SERVICE_SAVE);
 
@@ -46,19 +45,10 @@ SaveStartThread(camera_t* cam)
     
     /* setup save_thread: handles, ...*/
     pthread_mutex_lock(&save_service->mutex_data);
-    strcpy(info->filename, cam->prefs.save_basedir);
+    strcpy(info->filename, cam->prefs.save_filename);
+    strcpy(info->filename_ext, cam->prefs.save_filename_ext);
 
-    // (JG) we should save the extension regardless of whether ImLib is doing conversion
-    tmp = strrchr(info->filename, '.');
-    if(tmp != NULL)
-    {
-      tmp[0] = '\0';// cut filename before point
-      strcpy(info->filename_ext, strrchr(cam->prefs.save_basedir, '.'));
-    }
-    else { // no conversion
-      strcpy(info->filename_ext, "");
-    }
-
+    /*
     // if we use conversion, look for the extension.
     if (cam->prefs.save_convert==SAVE_CONVERT_ON) {    
       if (tmp==NULL) {
@@ -67,28 +57,20 @@ SaveStartThread(camera_t* cam)
 	FreeChain(save_service);
 	return(-1);
       }
-      else { //detect file format
-	if (strncasecmp(info->filename_ext, ".pvn",4)==0) {
-	  info->format=SAVE_FORMAT_PVN;
-	}
-	else if ((strncasecmp(info->filename_ext, ".jpg",4)==0)||(strncasecmp(info->filename_ext, ".jpeg",5)==0)) {
-	  info->format=SAVE_FORMAT_JPEG;
-	}
-	else if (strncasecmp(info->filename_ext, ".raw",4)==0) {
-	  info->format=SAVE_FORMAT_RAW;
-	}
-	else {
-	  info->format=SAVE_FORMAT_OTHER;
-	}
-
-      }
     }
+    */
 
     info->period=cam->prefs.save_period;
     CommonChainSetup(cam, save_service,SERVICE_SAVE);
     
+
+    ////////////////////////// REMOVE THESE COPIES ///////////////////////
+    /// we freeze the gui controls to avoid any changes instead //////////
+    /// cleanup to be performed on every service /////////////////////////
+
     info->buffer=NULL;
     info->mode=cam->prefs.save_mode;
+    info->format=cam->prefs.save_format;
     info->datenum=cam->prefs.save_datenum;
     // if format extension is ".raw", we dump raw data on the file and perform no conversion
     info->rawdump=cam->prefs.save_convert;

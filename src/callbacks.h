@@ -247,10 +247,6 @@ on_prefs_save_period_changed           (GtkEditable     *editable,
                                         gpointer         user_data);
 
 void
-on_prefs_save_basedir_changed         (GtkEditable     *editable,
-                                        gpointer         user_data);
-
-void
 on_prefs_ftp_period_changed            (GtkEditable     *editable,
                                         gpointer         user_data);
 
@@ -413,7 +409,7 @@ on_overlay_file_subentry_changed       (GtkEditable     *editable,
                                         gpointer         user_data);
 
 void
-on_save_basedir_subentry_changed      (GtkEditable     *editable,
+on_save_filename_subentry_changed      (GtkEditable     *editable,
                                         gpointer         user_data);
 
 void
