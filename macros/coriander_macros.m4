@@ -39,9 +39,13 @@ AC_DEFUN([AC_CHECK_LIBDC_VERSION],[
         dc1394_camerainfo info;
 	dc1394_cameracapture capture;
 	int value;
+	const char *dmafile="/dev/video1394";
   	dc1394_get_sw_version(info.handle, info.id, &value);
 	capture.dma_device_file=NULL;
 	dc1394_destroy_handle(info.handle);
+        dc1394_dma_setup_capture(info.handle, info.id,
+                         1, 1, 1, 1, 1, 1, 1,
+                         dmafile, &capture);
  	],[
  	libdc1394=ok
  	],[
@@ -53,7 +57,7 @@ AC_DEFUN([AC_CHECK_LIBDC_VERSION],[
            LIBDC_CFLAGS=""
 	else
           AC_ERROR(**      libdc1394 is too old.
-**      Please update at least to CVS of 2002-03-28.
+**      Please update at least to CVS of 2002-07-28.
 **      Source tarballs and CVS available on the SourceForge website:
 **      http://www.sf.net/projects/libdc1394)
  	fi
