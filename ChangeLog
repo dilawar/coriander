@@ -2,6 +2,10 @@ Coriander, (c) 2000-2002 Damien Douxchamps <douxchamps@ieee.org>
 
 Changes towards version 0.25
 
+   Apr 08, 2002, by Damien Douxchamps
+   - Fixed a serious bug in propagation of images within the image
+     pipe. This leaded to duplicate images in file saving,...
+	
    Mar 28, 2002, by Damien Douxchamps
    - updated version check macro for libdc1394.
 	

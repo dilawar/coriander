@@ -73,19 +73,29 @@ RollBuffers(chain_t* chain)
   unsigned char* tmp_buffer;
   int new_current=0;
 
-  // 1 - 2 - 3 -> 1 - 3 - 2 (publish for next service)
-  // no locking necessary, only dealing with own data
-  tmp_buffer=chain->current_buffer;
-  chain->current_buffer=chain->next_buffer;
-  chain->next_buffer=tmp_buffer;
-  chain->updated=1;
-  // 1 - 3 - 2 -> 3 - 1 - 2 (get from previous service)
-  // locking necessary: we mess with prev. chain data
-  if (chain->prev_chain!=NULL)
+  if (chain->prev_chain==NULL)
     {
+      // 1 - 2 - 3 -> 1 - 3 - 2 (publish for next service)
+      pthread_mutex_lock(&chain->prev_chain->mutex_data);
+      tmp_buffer=chain->current_buffer;
+      chain->current_buffer=chain->next_buffer;
+      chain->next_buffer=tmp_buffer;
+      chain->updated=1;
+      pthread_mutex_unlock(&chain->prev_chain->mutex_data);
+    }
+  else
+    {
+      // 1 - 3 - 2 -> 3 - 1 - 2 (get from previous service)
       pthread_mutex_lock(&chain->prev_chain->mutex_data);
       if (chain->prev_chain->updated>0)
 	{
+	  // publish current one to the next chain:
+	  tmp_buffer=chain->current_buffer;
+	  chain->current_buffer=chain->next_buffer;
+	  chain->next_buffer=tmp_buffer;
+	  chain->updated=1;
+
+	  // get previous chain image
 	  tmp_buffer=chain->current_buffer;
 	  chain->current_buffer=chain->prev_chain->next_buffer;
 	  chain->prev_chain->next_buffer=tmp_buffer;
@@ -93,12 +103,11 @@ RollBuffers(chain_t* chain)
 	  new_current=1;
 	}
       else
-	{
-	  new_current=0;
-	  //fprintf(stderr,"client too fast!\n");
-	}
+	new_current=0;
+
       pthread_mutex_unlock(&chain->prev_chain->mutex_data);
     }
+
   return(new_current);
   
 }

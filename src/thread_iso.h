@@ -25,7 +25,6 @@
 
 typedef enum
 {
-  //RECEIVE_METHOD_AUTO=0,
   RECEIVE_METHOD_RAW1394=0, 
   RECEIVE_METHOD_VIDEO1394
 } receive_method_t;
