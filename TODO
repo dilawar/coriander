@@ -1,7 +1,7 @@
 _______________________________________________________________________________
 
 	                    Open issues for Coriander 0.19 ...
-	   Damien Douxchamps <douxchamps@ieee.org> , November 6, 2001
+	   Damien Douxchamps <douxchamps@ieee.org> , November 12, 2001
 _______________________________________________________________________________
 
 - video:
@@ -15,7 +15,6 @@ _______________________________________________________________________________
 	- indicate node number in menu (else you can't distinguish two cameras
 	  of the same model) When GUID will be there, a custom name could be
 	  attached to each cam.
-	- give a different channel number to each camera.
 - features:
 	- add FORMAT_6 capabilities
 	- add auto-lock, man-lock and current-setup-lock functions
@@ -27,6 +26,7 @@ _______________________________________________________________________________
 	- Real streaming thread
 	- failsafe thread manipulation: some checks should be performed
 	  (typically during operation).
+	- port to C++
 - long term:
 	- add advanced features capability. This would probably require a
 	  DB of the supported cameras (Is there any cam supporting this
