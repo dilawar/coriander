@@ -385,7 +385,7 @@ CreateSettingsFile(char *destdir)
 
 
 void
-GetSaveFD(chain_t *save_service, FILE *fd, char *filename_out)
+GetSaveFD(chain_t *save_service, FILE **fd, char *filename_out)
 {
   savethread_info_t *info=save_service->data;
 
@@ -421,6 +421,7 @@ GetSaveFD(chain_t *save_service, FILE *fd, char *filename_out)
 	if (mkdir(info->destdir,0755)) {
 	  MainError("Could not create directory");
 	  info->cancel_req = 1; // not threadsafe, but should be ok
+	  return;
 	}
 	// Create a file with camera settings
 	CreateSettingsFile(info->destdir);
@@ -449,14 +450,16 @@ GetSaveFD(chain_t *save_service, FILE *fd, char *filename_out)
 
   if ( ((info->mode==SAVE_MODE_VIDEO)&&(save_service->processed_frames==0)) ||
        ((info->mode!=SAVE_MODE_VIDEO)&&(info->format!=SAVE_FORMAT_OTHER)&&(info->format!=SAVE_FORMAT_JPEG) ) ) { // <<<<<<< FFMPEG PATCH
-    fd=fopen(filename_out,"w");
-    if (fd==NULL) {
+    *fd=fopen(filename_out,"w");
+    if (*fd==NULL) {
       MainError("Can't create sequence file for saving");
+      info->cancel_req = 1;
       return;
     }
   }
   else {
     // don't touch FD...
+    // fprintf(stderr,"mode: %d, proc frames: %d\n",info->mode,(int)save_service->processed_frames);
   }
   
 }
@@ -471,6 +474,7 @@ InitVideoFile(chain_t *save_service, FILE *fd)
 
   // (JG) if extension is PVN, write PVN header here
   if ((info->format==SAVE_FORMAT_PVN) && (info->use_ram_buffer==FALSE)) {
+    fprintf(stderr,"pvn header write\n");
     writePVNHeader(fd, save_service->current_buffer->buffer_color_mode,
 		   save_service->current_buffer->height,
 		   save_service->current_buffer->width,
@@ -550,7 +554,7 @@ SaveThread(void* arg)
 	    skip_counter=0;
 
 	    // get file descriptor
-	    GetSaveFD(save_service, fd, filename_out);
+	    GetSaveFD(save_service, &fd, filename_out);
 
 	    // write initial data for video (header,...)
 	    if ((info->mode==SAVE_MODE_VIDEO)&&(save_service->processed_frames==0)) {
@@ -578,7 +582,8 @@ SaveThread(void* arg)
 	      case SAVE_FORMAT_PVN:
 		if (needsConversionForPVN(save_service->current_buffer->buffer_color_mode)>0) {
 		  // we assume that if it needs conversion, the output of the conversion is an 8bpp RGB
-		  dest = (unsigned char*)malloc(3*save_service->current_buffer->width*save_service->current_buffer->height*sizeof(unsigned char));
+		  if (dest==NULL)
+		    dest = (unsigned char*)malloc(3*save_service->current_buffer->width*save_service->current_buffer->height*sizeof(unsigned char));
 		  convert_for_pvn(save_service->current_buffer->image, save_service->current_buffer->width,
 				  save_service->current_buffer->height, 0, save_service->current_buffer->buffer_color_mode, dest);
 		  fwrite(dest, 1, 3*save_service->current_buffer->width*save_service->current_buffer->height, fd);
@@ -649,7 +654,8 @@ SaveThread(void* arg)
     }
     else {
       // we assume that if it needs conversion, the output of the conversion is an 8bpp RGB
-      dest = (unsigned char*)malloc(3*save_service->current_buffer->width*save_service->current_buffer->height*sizeof(unsigned char));
+      if (dest==NULL)
+	dest = (unsigned char*)malloc(3*save_service->current_buffer->width*save_service->current_buffer->height*sizeof(unsigned char));
       
       for (i = 0; i < getDepth(info->bigbuffer_position, save_service->current_buffer->buffer_color_mode,
 			       save_service->current_buffer->height, save_service->current_buffer->width); i++) {

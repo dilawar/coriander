@@ -121,8 +121,8 @@ void
 writePVNHeader(FILE *fd, unsigned int mode, unsigned int height, unsigned int width,
 	       unsigned int depth, unsigned int bpp, double framerate);
 
-void
-GetSaveFD(chain_t *save_service, FILE *fd, char *filename_out);
+
+GetSaveFD(chain_t *save_service, FILE **fd, char *filename_out);
 
 void
 FillRamBuffer(chain_t *save_service);

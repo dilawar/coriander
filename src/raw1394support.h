@@ -16,7 +16,7 @@
  * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/* $Id: raw1394support.h,v 1.6 2005-01-31 14:47:51 ddouxchamps Exp $
+/* $Id: raw1394support.h,v 1.7 2005-02-01 02:42:28 ddouxchamps Exp $
  *
  * raw1394.h - Linux IEEE-1394 Subsystem RAW 1394 support library
  * for some compatibility with older library
@@ -37,7 +37,7 @@ typedef union {
 	unsigned ZeroOrMore :1;
 	unsigned linkActive :1;
 	unsigned gapCount   :6;
-        unsigned phySpeed   :2;// THIS FILE NEEDS AN UPDATE HERE: PHY SHOULD BE ON AT LEAST 3bits
+        unsigned phySpeed   :2;// THIS FILE NEEDS AN UPDATE HERE: PHY SHOULD BE ON AT LEAST 3bits ???
 	unsigned phyDelay   :2;
 	unsigned contender  :1;
 	unsigned powerClass :3;

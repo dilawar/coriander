@@ -2,7 +2,10 @@ Coriander, (c) 2000-2005 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 1.0.2
 
-   Jan 29, 2005, by Damien Douxchamps
+   Feb 1, 2005, by Damien Douxchamps
+   - fixed save-to-PVN
+	
+   Jan 31, 2005, by Damien Douxchamps
    - little optimization of the Edge Sense bayer decoding
    - added a few benchmarks in the bayer.c file
    - stupid automatic insertion of march/mcpu compilation flags (it is currently

@@ -21,9 +21,8 @@ _______________________________________________________________________________
 	  timed commands)
 	- record and recall camera setup files
 	- command line capability
-	- add compilation flags such as -march=i686 and -mcpu=i686.
 	- invert the two size args of function fwrite
-	- avoid buttons that thave the same name (save setup/power)
+	- avoid buttons that have the same name (save setup/power)
 	- update phy speed detection with raw1394 (currently it does not work
 	  with 1394b)
 	- check that libdc1394 version is correctly probed.
@@ -42,7 +41,6 @@ _______________________________________________________________________________
 	- add service/ISO autostart in the preferences. Warn in status window if
 	  services not started in the 'normal' order.
 	- handle the case where no extension is provided
-	- debug PVN saving (currently broken)
 
 - long term:
 	- add advanced features capability. This would probably require a

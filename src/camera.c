@@ -133,7 +133,7 @@ GetCameraData(int port, nodeid_t node, camera_t* cam) {
     MainError("Could not get camera basic information!");
   if (dc1394_get_camera_misc_info(cam->camera_info.handle, cam->camera_info.id, &cam->misc_info)!=DC1394_SUCCESS)
     MainError("Could not get camera misc information!");
-  if (cam->misc_info->bmode_capable>0) {
+  if (cam->misc_info.bmode_capable>0) {
     // set b-mode and reprobe modes,... (higher fps formats might not be reported as available in legacy mode)
     dc1394_set_operation_mode(cam->camera_info.handle, cam->camera_info.id, OPERATION_MODE_1394B);
     if (dc1394_get_camera_misc_info(cam->camera_info.handle, cam->camera_info.id, &cam->misc_info)!=DC1394_SUCCESS)
