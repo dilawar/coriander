@@ -1,7 +1,7 @@
 _______________________________________________________________________________
 
-	                    Open issues for Coriander 0.26 ...
-	   Damien Douxchamps <douxchamps@ieee.org> , October 21, 2002
+	                    Open issues for Coriander 0.27 ...
+	   Damien Douxchamps <ddouxchamps@users.sf.net> , November 20, 2002
 _______________________________________________________________________________
 
 - video:
@@ -16,7 +16,6 @@ _______________________________________________________________________________
 	- add auto-lock, man-lock and current-setup-lock functions
 	- hot plug capability (detect and handle bus reset)
 	- some status window features missing
-	- absolute feature control
 - misc stuff:
 	- add some artwork in the buttons for clearer presentation
 - services:
