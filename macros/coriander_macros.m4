@@ -27,7 +27,9 @@ AC_DEFUN([AC_CHECK_LIBDC],[
            LIBDC_LIBS="-ldc1394_control"
            LIBDC_CFLAGS=""
 	else
-          AC_ERROR(libdc1394 is not installed or is too old. Please update at least to CVS 2002-02-01)
+          AC_ERROR(**      libdc1394 is not installed or is too old.
+**      Please update at least to CVS of 2002-02-01.
+**      Source tarballs and CVS at http://www.sf.net/projects/libdc1394)
  	fi
 dnl	AC_CHECK_LIB(dc1394_control, dc1394_get_sw_version,
 dnl          LIBDC_LIBS="-ldc1394_control"
@@ -41,7 +43,9 @@ AC_DEFUN([AC_CHECK_LIBRAW],[
 	AC_CHECK_LIB(raw1394, raw1394_new_handle,
           LIBRAW_LIBS="-lraw1394"
           LIBRAW_CFLAGS="",
-          AC_ERROR(libraw1394 is not installed or is too old.))
+          AC_ERROR(**      libraw1394 is not installed or is too old.
+**      Please update at least to version 0.9.0.
+**      Source tarballs and CVS at http://www.sf.net/projects/libraw1394))
 ])
 
 AC_DEFUN([AC_CHECK_FTPLIB],[
@@ -51,7 +55,9 @@ AC_DEFUN([AC_CHECK_FTPLIB],[
           AC_DEFINE(HAVE_FTPLIB)
           FTPLIB_LIBS="-lftp"
           FTPLIB_CFLAGS="",
-          AC_MSG_RESULT(ftplib is required for ftp support. FTP SERVICE WILL NOT BE AVAILABLE))
+          AC_MSG_RESULT(**      ftplib is required for FTP support.
+**      Source tarball available at http://www.eclipse.net/~pfau/ftplib
+**      FTP SERVICE DISABLED))
 ])
 
 AC_DEFUN([AC_CHECK_SDLLIB],[
@@ -63,7 +69,9 @@ AC_DEFUN([AC_CHECK_SDLLIB],[
 	  SDLLIB_CFLAGS=`sdl-config --cflags`
 	  AC_DEFINE(HAVE_SDLLIB)
 	else
-	  AC_MSG_RESULT(SDL required for display support. DISPLAY SERVICE WILL NOT BE AVAILABLE.)
+	  AC_MSG_RESULT(**      SDL required for display support.
+**      SDL can be downloaded in various formats at http://www.libsdl.org
+**      DISPLAY SERVICE DISABLED)
 	fi
 ])
 
@@ -92,7 +100,9 @@ AC_DEFUN([AC_CHECK_REALLIB],[
   	   REALLIB_LIBS="-L/usr/local/lib/realproducersdk -lenceng -ldl"
   	   REALLIB_CFLAGS="-I/usr/local/include/realproducersdk -D_REENTRANT -D_LINUX -D_LITTLE_ENDIAN -D_UNIX"
 	else
-	  AC_MSG_RESULT(RealProducerSDK required for Real streaming support. REAL SERVICE WILL NOT BE AVAILABLE.) 
+	  AC_MSG_RESULT(**      RealNetworks 'RealProducerSDK' and 'RealServer' required for streaming
+**	support. Please have a look at the README.REAL file if you want to
+**      enable streaming. REAL SERVICE DISABLED) 
  	fi
 
 ])

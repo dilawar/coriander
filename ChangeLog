@@ -3,6 +3,10 @@ Coriander, (c) 2000-2002 Damien Douxchamps <douxchamps@ieee.org>
 Changes towards version 0.23:
 
    Feb 6, 2002, by Damien Douxchamps
+   - small changes to configure macros.
+   - changed some GUI layout in the references window
+	
+   Feb 6, 2002, by Damien Douxchamps
    - added the shading of the audience frame (real preferences)
    - added the shading of the video device field (receive preferences)
    - upgraded the preferences parser to gnome-config, as suggested by Dan.
