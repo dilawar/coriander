@@ -94,7 +94,9 @@ gint IsoStartThread(camera_t* cam)
 					     cam->misc_info.mode, maxspeed, QUERY_FROM_CAMERA,
 					     QUERY_FROM_CAMERA, QUERY_FROM_CAMERA,
 					     QUERY_FROM_CAMERA, QUERY_FROM_CAMERA, 
-					     info->dma_buffer_size, &info->capture)
+					     info->dma_buffer_size, 
+					     info->video1394_dropframes,
+					     info->capture.dma_device_file, &info->capture)
 	    == DC1394_SUCCESS) {
 	  info->receive_method=RECEIVE_METHOD_VIDEO1394;
 	}

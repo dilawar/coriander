@@ -48,9 +48,9 @@ AC_DEFUN([AC_CHECK_LIBDC_VERSION],[
   	dc1394_get_sw_version(info.handle, info.id, &value);
 	capture.dma_device_file=NULL;
 	dc1394_destroy_handle(info.handle);
-        dc1394_dma_setup_capture(info.handle, info.id,
-                         1, 1, 1, 1, 1, 1, 1,
-                         dmafile, &capture);
+        dc1394_format7_dma_setup_capture(info.handle, info.id,
+                         	1, 1, 1, 1, 1, 1, 1,
+                         	dmafile, &capture);
 	dc1394_query_absolute_feature_value(info.handle, info.id, 1,&value);
 	features.feature[0].abs_control=0;
 	features.feature[0].abs_value=0.0;
@@ -68,7 +68,7 @@ AC_DEFUN([AC_CHECK_LIBDC_VERSION],[
 
 **************************************************************************
 **   libdc1394 is too old.                                              **
-**   Please update to at least version 0.9.1                            **
+**   Please update to the current CVS                                   **
 **   Source tarball and CVS at:  http://www.sf.net/projects/libdc1394   **
 **************************************************************************)
  	fi
