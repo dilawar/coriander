@@ -1,7 +1,7 @@
 _______________________________________________________________________________
 
 	                    Open issues for Coriander 0.32 ...
-	   Damien Douxchamps <ddouxchamps@users.sf.net> , May 26, 2003
+	   Damien Douxchamps <ddouxchamps@users.sf.net> , June 1, 2003
 _______________________________________________________________________________
 
 - video:
@@ -19,8 +19,6 @@ _______________________________________________________________________________
 - features:
 	- add FORMAT_6 capabilities
 	- add auto-lock, man-lock and current-setup-lock functions
-	- hot plug capability (detect and handle bus reset). I'm working on
-	  this...
 	- some status window features missing
 
 - misc stuff:
