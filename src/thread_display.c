@@ -69,7 +69,8 @@ DisplayStartThread(camera_t* cam)
       FreeChain(display_service);
       return(-1);
     }
-    if (cam==camera) {
+    info->timeout_func_id=-1;
+    if ((cam==camera)&&(info->timeout_func_id==-1)) {
       info->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)DisplayShowFPS, (gpointer*) display_service);
     }
     pthread_mutex_unlock(&display_service->mutex_struct);
@@ -257,13 +258,17 @@ DisplayStopThread(camera_t* cam)
     
     pthread_mutex_lock(&display_service->mutex_data);
     pthread_mutex_lock(&display_service->mutex_struct);
-    if (cam==camera) {
+    if ((cam==camera)&&(info->timeout_func_id!=-1)) {
+      //fprintf(stderr,"remove fps display\n");
       gtk_timeout_remove(info->timeout_func_id);
       gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_display"), ctxt.fps_display_ctxt, ctxt.fps_display_id);
       ctxt.fps_display_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_display"), ctxt.fps_display_ctxt, "");
+      info->timeout_func_id=-1;
     }
     RemoveChain(cam,display_service);
+    //fprintf(stderr,"chain removed\n");
     SDLQuit(display_service);
+    //fprintf(stderr,"SDL closed\n");
     
     pthread_mutex_unlock(&display_service->mutex_struct);
     pthread_mutex_unlock(&display_service->mutex_data);
@@ -459,10 +464,10 @@ SDLQuit(chain_t *display_service)
 
 #ifdef HAVE_SDLLIB
   //fprintf(stderr,"about to shutdown SDL stuff\n");
-  SDLEventStopThread(display_service);
   // if width==-1, SDL was never initialized so we do nothing
   if (display_service->current_buffer->width!=-1) {
     //fprintf(stderr,"event stopped\n");
+    SDLEventStopThread(display_service);
     SDL_FreeYUVOverlay(info->sdloverlay);
     SDL_FreeSurface(info->sdlvideo);
     SDL_QuitSubSystem(SDL_INIT_VIDEO);

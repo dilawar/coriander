@@ -465,20 +465,28 @@ UpdateFormat7InfoFrame(void)
     }
     
     sprintf(temp," %d", bytesize);
-    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"format7_imagebytes"), ctxt.format7_imagebytes_ctxt, ctxt.format7_imagebytes_id);
-    ctxt.format7_imagebytes_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"format7_imagebytes"), ctxt.format7_imagebytes_ctxt,temp);
+    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"format7_imagebytes"), 
+			 ctxt.format7_imagebytes_ctxt, ctxt.format7_imagebytes_id);
+    ctxt.format7_imagebytes_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"format7_imagebytes"), 
+						  ctxt.format7_imagebytes_ctxt,temp);
     
     sprintf(temp," %d", mode->size_x*mode->size_y);
-    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"format7_imagepixels"), ctxt.format7_imagepixels_ctxt, ctxt.format7_imagepixels_id);
-    ctxt.format7_imagepixels_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"format7_imagepixels"), ctxt.format7_imagepixels_ctxt,temp);
+    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"format7_imagepixels"), 
+			 ctxt.format7_imagepixels_ctxt, ctxt.format7_imagepixels_id);
+    ctxt.format7_imagepixels_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"format7_imagepixels"), 
+						   ctxt.format7_imagepixels_ctxt,temp);
     
     sprintf(temp," %d", grandtotal);
-    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"format7_totalbytes"), ctxt.format7_totalbytes_ctxt, ctxt.format7_totalbytes_id);
-    ctxt.format7_totalbytes_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"format7_totalbytes"), ctxt.format7_totalbytes_ctxt,temp);
+    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"format7_totalbytes"), 
+			 ctxt.format7_totalbytes_ctxt, ctxt.format7_totalbytes_id);
+    ctxt.format7_totalbytes_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"format7_totalbytes"), 
+						  ctxt.format7_totalbytes_ctxt,temp);
     
     sprintf(temp," %d", grandtotal - bytesize);
-    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"format7_padding"), ctxt.format7_padding_ctxt, ctxt.format7_padding_id);
-    ctxt.format7_padding_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"format7_padding"), ctxt.format7_padding_ctxt,temp);
+    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"format7_padding"), 
+			 ctxt.format7_padding_ctxt, ctxt.format7_padding_id);
+    ctxt.format7_padding_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"format7_padding"), 
+					       ctxt.format7_padding_ctxt,temp);
     
   }
   free(temp);

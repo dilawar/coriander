@@ -256,8 +256,12 @@ on_camera_select_activate              (GtkMenuItem     *menuitem,
 {
   camera_t* camera_ptr;
   
+  //fprintf(stderr,"Changing camera\n");
+
   // close current display (we don't want display to be used by 2 threads at the same time 'cause SDL forbids it)
   DisplayStopThread(camera);
+
+  //fprintf(stderr,"Display stopped\n");
 
   // stop all FPS displays:
   StopFPSDisplay();
@@ -271,6 +275,7 @@ on_camera_select_activate              (GtkMenuItem     *menuitem,
   watchthread_info.mouse_down=0;
   watchthread_info.crop=0;
 
+  //fprintf(stderr,"Want to display: %d\n",camera->want_to_display);
   if (camera->want_to_display>0)
     DisplayStartThread(camera);
 
@@ -493,8 +498,10 @@ on_service_display_toggled             (GtkToggleButton *togglebutton,
       pthread_mutex_lock(&camera->uimutex);
       camera->want_to_display=1;
       pthread_mutex_unlock(&camera->uimutex);
-      if (DisplayStartThread(camera)==-1)
+      if (DisplayStartThread(camera)==-1) {
 	gtk_toggle_button_set_active(togglebutton,0);
+	camera->want_to_display=0;
+      }
     } 
     else {
       DisplayStopThread(camera);

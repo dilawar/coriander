@@ -47,6 +47,10 @@ extern cursor_info_t cursor_info;
 extern BusInfo_t* businfo;
 extern GtkWidget *waiting_camera_window;
 
+#ifdef HAVE_SDLLIB
+extern watchthread_info_t watchthread_info;
+#endif
+
 void
 GetFormat7Capabilities(raw1394handle_t handle, nodeid_t node, Format7Info_t *info)
 {
@@ -478,141 +482,6 @@ SetScaleSensitivity(GtkWidget* widget, int feature, dc1394bool_t sense)
   free(stemp);
 }
 
-/*
-void*
-AutoWhiteBalance(void* arg)
-{
-  whitebal_data_t *info;
-  int currentB=0, currentR=0;
-  int span,center;
-  int prevB, prevR;
-  int pixB, pixR;
-  int prevpixB, prevpixR;
-  float kB, kR, oB, oR;
-  unsigned char *prev_ptr;
-  int target;
-  int progressB=1, progressR=1;
-  int px, py;
-  chain_t *service;
-
-  info=(whitebal_data_t*)arg;
-
-  service=info->service;
-  px=info->x;
-  py=info->y;
-
-  fprintf(stderr,"Entering Auto White Balance...\n");
-
-  prevB=feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].BU_value;
-  prevR=feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].RV_value;
-
-  fprintf(stderr,"grabbing RGB...\n");
-
-  GetRGBPix(px, py, service, &prevpixR, &target, &prevpixB);
-
-  fprintf(stderr,"RGB initial value: %d %d %d\n",prevpixR, target, prevpixB);
-
-  span=(feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].max-
-	feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].min);
-  center=((feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].max-
-	   feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].min)/2+
-	  feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].min);
-
-  fprintf(stderr,"span: %d, center: %d\n",span,center);
-  fprintf(stderr,"current whitebal: %d %d\n",prevB, prevR);
-
-  // move 10%*range from current value towards center.
-  if (prevB>center)
-    currentB=prevB-span/10;
-  else
-    currentB=prevB+span/10;
-
-  if (prevR>center)
-    currentR=prevR-span/10;
-  else
-    currentR=prevR+span/10;
-  fprintf(stderr,"first whitebal shift: %d %d\n",currentB, currentR);
-
-  while (progressB||progressR)
-    {
-      fprintf(stderr,"Set whitebal to %d %d\n",currentB, currentR);
-      // get pixel 'color' value (R and B for RGB, U and V for YUV)
-      if (dc1394_set_white_balance(camera->handle,camera->id,currentB,currentR)!=DC1394_SUCCESS)
-	{
-	  MainError("Can't set whitebal parameters in auto white balance proc");
-	  return(0);
-	}
-
-      // wait for buffer pointer to change
-      prev_ptr=service->current_buffer;
-      //fprintf(stderr,"prev buffer: 0x%x\n",prev_ptr);
-      while (prev_ptr==service->current_buffer)
-	usleep(10000);// .01 sec
-      
-      // re-grab pixel value (and average with 3x3 mask??)
-      GetRGBPix(px,py,service, &pixR, &target, &pixB);
-      fprintf(stderr,"New RGB values: %d %d %d\n",pixR,target,pixB);
-     
-      // estimate linear law:
-      kB=(pixB-prevpixB)/(currentB-prevB);
-      kR=(pixR-prevpixR)/(currentR-prevR);
-      oB=pixB-kB*currentB;
-      oR=pixR-kR*currentR;
-      
-      // memorize data as old
-      prevpixB=pixB;
-      prevpixR=pixR;
-      prevB=currentB;
-      prevR=currentR;
-
-      // make an prediction:
-      currentB=(target-oB)/kB;
-      currentR=(target-oR)/kR;
-
-      // clamp values in range limit:
-      if (currentB>feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].max)
-	currentB=feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].max;
-      if (currentB<feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].min)
-	currentB=feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].min;
-      if (currentR>feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].max)
-	currentR=feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].max;
-      if (currentR<feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].min)
-	currentR=feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].min;
-
-      // update condition
-      progressB=(abs(pixB-target)<abs(prevpixB-target));
-      progressR=(abs(pixR-target)<abs(prevpixR-target));
-    }
-
-  fprintf(stderr,"Leaving Auto White Balance\n");
-
-  return(0);
-}
-
-
-void
-GetRGBPix(int px, int py, chain_t *service, int* R, int* G, int* B)
-{
-  int u, y, v;
-  displaythread_info_t *info=NULL;
-  info=(displaythread_info_t*)service->data;
-
-  //pthread_mutex_lock(&service->mutex_struct);
-  //pthread_mutex_lock(&service->mutex_data);
-
-  // we work in display thread, therefor the format is always YUYV
-  y=0;//info->SDL_overlay->pixels[0][(py*service->width+px)*2];
-  u=0;//info->SDL_overlay->pixels[0][(((py*service->width+px)>>1)<<2)+1]-127;
-  v=0;//info->SDL_overlay->pixels[0][(((py*service->width+px)>>1)<<2)+3]-127;
-
-  //pthread_mutex_unlock(&service->mutex_data);
-  //pthread_mutex_unlock(&service->mutex_struct);
-
-  YUV2RGB(y,u,v,*R,*G,*B);
-  fprintf(stderr,"YUV: %d %d %d RGB: %d %d %d\n",y,u,v,*R,*G,*B);
-}
-*/
-
 void
 SetAbsoluteControl(int feature, int power)
 {
@@ -694,47 +563,62 @@ StopFPSDisplay(void)
   service=GetService(camera, SERVICE_ISO);
   if (service!=NULL) {
     infoiso=(isothread_info_t*)service->data;
-    gtk_timeout_remove(infoiso->timeout_func_id);
-    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_receive"),
-			 ctxt.fps_receive_ctxt, ctxt.fps_receive_id);
-    ctxt.fps_receive_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_receive"),
-					   ctxt.fps_receive_ctxt, "");
-  }  
+    if (infoiso->timeout_func_id!=-1) {
+      gtk_timeout_remove(infoiso->timeout_func_id);
+      gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_receive"),
+			   ctxt.fps_receive_ctxt, ctxt.fps_receive_id);
+      ctxt.fps_receive_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_receive"),
+					     ctxt.fps_receive_ctxt, "");
+      infoiso->timeout_func_id=-1;
+    }  
+  }
   service=GetService(camera, SERVICE_DISPLAY);
   if (service!=NULL) {
     infodisplay=(displaythread_info_t*)service->data;
-    gtk_timeout_remove(infodisplay->timeout_func_id);
-    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_display"),
-			 ctxt.fps_display_ctxt, ctxt.fps_display_id);
-    ctxt.fps_display_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_display"),
-					   ctxt.fps_display_ctxt, "");
+    if (infodisplay->timeout_func_id!=-1) {
+      gtk_timeout_remove(infodisplay->timeout_func_id);
+      gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_display"),
+			   ctxt.fps_display_ctxt, ctxt.fps_display_id);
+      ctxt.fps_display_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_display"),
+					     ctxt.fps_display_ctxt, "");
+      infodisplay->timeout_func_id=-1;
+    }
   }
   service=GetService(camera, SERVICE_SAVE);
   if (service!=NULL) {
     infosave=(savethread_info_t*)service->data;
-    gtk_timeout_remove(infosave->timeout_func_id);
-    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_save"),
-			 ctxt.fps_save_ctxt, ctxt.fps_save_id);
-    ctxt.fps_save_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_save"),
-					   ctxt.fps_save_ctxt, "");
+    if (infosave->timeout_func_id!=-1) {
+      gtk_timeout_remove(infosave->timeout_func_id);
+      gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_save"),
+			   ctxt.fps_save_ctxt, ctxt.fps_save_id);
+      ctxt.fps_save_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_save"),
+					  ctxt.fps_save_ctxt, "");
+      infosave->timeout_func_id=-1;
+    }
   }
   service=GetService(camera, SERVICE_FTP);
   if (service!=NULL) {
     infoftp=(ftpthread_info_t*)service->data;
-    gtk_timeout_remove(infoftp->timeout_func_id);
-    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_ftp"),
-			 ctxt.fps_ftp_ctxt, ctxt.fps_ftp_id);
-    ctxt.fps_ftp_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_ftp"),
-					   ctxt.fps_ftp_ctxt, "");
+    if (infoftp->timeout_func_id!=-1) {
+      gtk_timeout_remove(infoftp->timeout_func_id);
+      gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_ftp"),
+			   ctxt.fps_ftp_ctxt, ctxt.fps_ftp_id);
+      ctxt.fps_ftp_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_ftp"),
+					 ctxt.fps_ftp_ctxt, "");
+      infoftp->timeout_func_id=-1;
+    }
   }
   service=GetService(camera, SERVICE_V4L);
   if (service!=NULL) {
     infov4l=(v4lthread_info_t*)service->data;
-    gtk_timeout_remove(infov4l->timeout_func_id);
-    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_v4l"),
-			 ctxt.fps_v4l_ctxt, ctxt.fps_v4l_id);
-    ctxt.fps_v4l_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_v4l"),
-					   ctxt.fps_v4l_ctxt, "");
+    if (infov4l->timeout_func_id!=-1) {
+      gtk_timeout_remove(infov4l->timeout_func_id);
+      gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_v4l"),
+			   ctxt.fps_v4l_ctxt, ctxt.fps_v4l_id);
+      ctxt.fps_v4l_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_v4l"),
+					 ctxt.fps_v4l_ctxt, "");
+      infov4l->timeout_func_id=-1;
+    }
   }
 }
 
@@ -751,31 +635,41 @@ ResumeFPSDisplay(void)
   service=GetService(camera, SERVICE_ISO);
   if (service!=NULL) {
     infoiso=(isothread_info_t*)service->data;
-    gtk_timeout_remove(infoiso->timeout_func_id);
+    if (infoiso->timeout_func_id!=-1) {
+      gtk_timeout_remove(infoiso->timeout_func_id);
+    }
     infoiso->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)IsoShowFPS, (gpointer*) service);
-  } 
+  }
   service=GetService(camera, SERVICE_DISPLAY);
   if (service!=NULL) {
     infodisplay=(displaythread_info_t*)service->data;
-    gtk_timeout_remove(infodisplay->timeout_func_id);
-    infodisplay->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)DisplayShowFPS, (gpointer*) service);
-  } 
+    if (infodisplay->timeout_func_id!=-1) {
+      gtk_timeout_remove(infodisplay->timeout_func_id);
+    }
+    infodisplay->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)DisplayShowFPS, (gpointer*) service); 
+  }
   service=GetService(camera, SERVICE_SAVE);
   if (service!=NULL) {
     infosave=(savethread_info_t*)service->data;
-    gtk_timeout_remove(infosave->timeout_func_id);
+    if (infosave->timeout_func_id!=-1) {
+      gtk_timeout_remove(infosave->timeout_func_id);
+    }
     infosave->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)SaveShowFPS, (gpointer*) service);
   }
   service=GetService(camera, SERVICE_FTP);
   if (service!=NULL) {
     infoftp=(ftpthread_info_t*)service->data;
-    gtk_timeout_remove(infoftp->timeout_func_id);
+    if (infoftp->timeout_func_id!=-1) {
+      gtk_timeout_remove(infoftp->timeout_func_id);
+    }
     infoftp->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)FtpShowFPS, (gpointer*) service);
   }
   service=GetService(camera, SERVICE_V4L);
   if (service!=NULL) {
     infov4l=(v4lthread_info_t*)service->data;
-    gtk_timeout_remove(infov4l->timeout_func_id);
+    if (infov4l->timeout_func_id!=-1) {
+      gtk_timeout_remove(infov4l->timeout_func_id);
+    }
     infov4l->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)V4lShowFPS, (gpointer*) service);
   }
 }
@@ -803,9 +697,11 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation) {
   bi.camera_nodes=NULL;
   MainStatus("Bus reset detected");
 
+  StopFPSDisplay();
+
   gtk_widget_set_sensitive(main_window,FALSE);
 
-  usleep(100000); // sleep some time (100ms) to allow the cam to warm-up/boot
+  usleep(50000); // sleep some time (50ms) to allow the cam to warm-up/boot
 
   raw1394_update_generation(handle, generation);
   // Now we have to deal with this bus reset...
@@ -974,15 +870,18 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation) {
       //fprintf(stderr," destroyed win\n");
     }
 
+    watchthread_info.draw=0;
+    watchthread_info.mouse_down=0;
+    watchthread_info.crop=0;
+
+    //fprintf(stderr,"Want to display: %d\n",camera->want_to_display);
+    if (camera->want_to_display>0)
+      DisplayStartThread(camera);
+
     BuildAllWindows();
     //fprintf(stderr,"finished building GUI\n");
     UpdateAllWindows();
     //fprintf(stderr,"finished updating GUI\n");
-
-    if (camera->want_to_display>0)
-      DisplayStartThread(camera);
-    
-    ResumeFPSDisplay();
 
     gtk_widget_set_sensitive(main_window,TRUE);
   }
@@ -1011,6 +910,10 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation) {
   free(bi.camera_nodes);
 
   
+  ResumeFPSDisplay();
+    
+  //fprintf(stderr,"resumed fps display\n");
+
   //fprintf(stderr,"Finished handling bus reset\n");
 
   return(1);
@@ -1154,3 +1057,138 @@ NearestValue(int value, int step, int min, int max) {
   else
     return high;
 }
+
+/*
+void*
+AutoWhiteBalance(void* arg)
+{
+  whitebal_data_t *info;
+  int currentB=0, currentR=0;
+  int span,center;
+  int prevB, prevR;
+  int pixB, pixR;
+  int prevpixB, prevpixR;
+  float kB, kR, oB, oR;
+  unsigned char *prev_ptr;
+  int target;
+  int progressB=1, progressR=1;
+  int px, py;
+  chain_t *service;
+
+  info=(whitebal_data_t*)arg;
+
+  service=info->service;
+  px=info->x;
+  py=info->y;
+
+  fprintf(stderr,"Entering Auto White Balance...\n");
+
+  prevB=feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].BU_value;
+  prevR=feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].RV_value;
+
+  fprintf(stderr,"grabbing RGB...\n");
+
+  GetRGBPix(px, py, service, &prevpixR, &target, &prevpixB);
+
+  fprintf(stderr,"RGB initial value: %d %d %d\n",prevpixR, target, prevpixB);
+
+  span=(feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].max-
+	feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].min);
+  center=((feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].max-
+	   feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].min)/2+
+	  feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].min);
+
+  fprintf(stderr,"span: %d, center: %d\n",span,center);
+  fprintf(stderr,"current whitebal: %d %d\n",prevB, prevR);
+
+  // move 10%*range from current value towards center.
+  if (prevB>center)
+    currentB=prevB-span/10;
+  else
+    currentB=prevB+span/10;
+
+  if (prevR>center)
+    currentR=prevR-span/10;
+  else
+    currentR=prevR+span/10;
+  fprintf(stderr,"first whitebal shift: %d %d\n",currentB, currentR);
+
+  while (progressB||progressR)
+    {
+      fprintf(stderr,"Set whitebal to %d %d\n",currentB, currentR);
+      // get pixel 'color' value (R and B for RGB, U and V for YUV)
+      if (dc1394_set_white_balance(camera->handle,camera->id,currentB,currentR)!=DC1394_SUCCESS)
+	{
+	  MainError("Can't set whitebal parameters in auto white balance proc");
+	  return(0);
+	}
+
+      // wait for buffer pointer to change
+      prev_ptr=service->current_buffer;
+      //fprintf(stderr,"prev buffer: 0x%x\n",prev_ptr);
+      while (prev_ptr==service->current_buffer)
+	usleep(10000);// .01 sec
+      
+      // re-grab pixel value (and average with 3x3 mask??)
+      GetRGBPix(px,py,service, &pixR, &target, &pixB);
+      fprintf(stderr,"New RGB values: %d %d %d\n",pixR,target,pixB);
+     
+      // estimate linear law:
+      kB=(pixB-prevpixB)/(currentB-prevB);
+      kR=(pixR-prevpixR)/(currentR-prevR);
+      oB=pixB-kB*currentB;
+      oR=pixR-kR*currentR;
+      
+      // memorize data as old
+      prevpixB=pixB;
+      prevpixR=pixR;
+      prevB=currentB;
+      prevR=currentR;
+
+      // make an prediction:
+      currentB=(target-oB)/kB;
+      currentR=(target-oR)/kR;
+
+      // clamp values in range limit:
+      if (currentB>feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].max)
+	currentB=feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].max;
+      if (currentB<feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].min)
+	currentB=feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].min;
+      if (currentR>feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].max)
+	currentR=feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].max;
+      if (currentR<feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].min)
+	currentR=feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].min;
+
+      // update condition
+      progressB=(abs(pixB-target)<abs(prevpixB-target));
+      progressR=(abs(pixR-target)<abs(prevpixR-target));
+    }
+
+  fprintf(stderr,"Leaving Auto White Balance\n");
+
+  return(0);
+}
+
+
+void
+GetRGBPix(int px, int py, chain_t *service, int* R, int* G, int* B)
+{
+  int u, y, v;
+  displaythread_info_t *info=NULL;
+  info=(displaythread_info_t*)service->data;
+
+  //pthread_mutex_lock(&service->mutex_struct);
+  //pthread_mutex_lock(&service->mutex_data);
+
+  // we work in display thread, therefor the format is always YUYV
+  y=0;//info->SDL_overlay->pixels[0][(py*service->width+px)*2];
+  u=0;//info->SDL_overlay->pixels[0][(((py*service->width+px)>>1)<<2)+1]-127;
+  v=0;//info->SDL_overlay->pixels[0][(((py*service->width+px)>>1)<<2)+3]-127;
+
+  //pthread_mutex_unlock(&service->mutex_data);
+  //pthread_mutex_unlock(&service->mutex_struct);
+
+  YUV2RGB(y,u,v,*R,*G,*B);
+  fprintf(stderr,"YUV: %d %d %d RGB: %d %d %d\n",y,u,v,*R,*G,*B);
+}
+*/

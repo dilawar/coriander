@@ -158,6 +158,7 @@ gint IsoStartThread(camera_t* cam)
     
     //pthread_mutex_lock(&iso_service->mutex_data);
     //pthread_mutex_lock(&iso_service->mutex_struct);
+    info->timeout_func_id=-1;
     if (pthread_create(&iso_service->thread, NULL, IsoThread,(void*) iso_service)) {
       RemoveChain(cam, iso_service);
       pthread_mutex_unlock(&iso_service->mutex_struct);
@@ -166,7 +167,7 @@ gint IsoStartThread(camera_t* cam)
       return(-1);
     }
     else {
-      if (cam==camera) {
+      if ((cam==camera)&&(info->timeout_func_id==-1)) {
 	info->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)IsoShowFPS, (gpointer*) iso_service);
       }
       pthread_mutex_unlock(&iso_service->mutex_struct);
@@ -366,7 +367,7 @@ gint IsoStopThread(camera_t* cam)
     pthread_join(iso_service->thread, NULL);
     pthread_mutex_lock(&iso_service->mutex_data);
     pthread_mutex_lock(&iso_service->mutex_struct);
-    if (cam==camera) {
+    if ((cam==camera)&&(info->timeout_func_id!=-1)) {
       gtk_timeout_remove(info->timeout_func_id);
       gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_receive"), ctxt.fps_receive_ctxt, ctxt.fps_receive_id);
       ctxt.fps_receive_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_receive"), ctxt.fps_receive_ctxt, "");
@@ -384,6 +385,7 @@ gint IsoStopThread(camera_t* cam)
     if (info->receive_method == RECEIVE_METHOD_VIDEO1394) {
       dc1394_dma_unlisten(cam->camera_info.handle, &info->capture);
       dc1394_dma_release_camera(info->handle, &info->capture);
+      info->timeout_func_id=-1;
     }
     else 
       dc1394_release_camera(cam->camera_info.handle, &info->capture);
