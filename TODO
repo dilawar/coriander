@@ -40,7 +40,7 @@ _______________________________________________________________________________
 	  services not started in the 'normal' order.
 	- handle the case where no extension is provided
 	- thread_save button should self-reset after finishing to write the
-	  RAM buffer to disk
+	  RAM buffer to disk, or if the thread self-terminate (error,...)
 	- filename preview should be updated
 	- for video, check previously written files to set the number to append
 	- confirm overwrite files
@@ -49,7 +49,7 @@ _______________________________________________________________________________
 	- integrate MPEG patch
 	- verify the compilation flags originally used for mpeg (-mmx,...)
 	- add options to MPEG service (codec, basic params?)
-	- FTP seems to be broken. To be checked.
+	- FTP should be upgraded when the save service is completed and tested
 
 - long term:
 	- add advanced features capability. This would probably require a

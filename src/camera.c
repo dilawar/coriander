@@ -111,6 +111,7 @@ NewCamera(void) {
   cam->prefs.video1394_device=(char*)malloc(STRING_SIZE*sizeof(char));
   cam->prefs.ftp_user = (char*)malloc(STRING_SIZE*sizeof(char));
   cam->prefs.ftp_address = (char*)malloc(STRING_SIZE*sizeof(char));
+  cam->prefs.ftp_password = (char*)malloc(STRING_SIZE*sizeof(char));
   cam->prefs.ftp_filename =(char*)malloc(STRING_SIZE*sizeof(char));
   cam->prefs.ftp_path =(char*)malloc(STRING_SIZE*sizeof(char));
   cam->prefs.v4l_dev_name =(char*)malloc(STRING_SIZE*sizeof(char));
@@ -230,6 +231,7 @@ FreeCamera(camera_t* cam) {
   free(cam->prefs.ftp_user);
   free(cam->prefs.ftp_address);
   free(cam->prefs.ftp_filename); 
+  free(cam->prefs.ftp_password); 
   free(cam->prefs.ftp_path); 
   free(cam->prefs.v4l_dev_name); 
   free(cam->prefs.name);

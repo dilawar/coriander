@@ -387,7 +387,7 @@ CreateSettingsFile(char *destdir)
 }
 
 
-void
+int
 GetSaveFD(chain_t *save_service, FILE **fd, char *filename_out)
 {
   savethread_info_t *info=save_service->data;
@@ -429,8 +429,7 @@ GetSaveFD(chain_t *save_service, FILE **fd, char *filename_out)
 	
 	if (mkdir(info->destdir,0755)) {
 	  MainError("Could not create directory");
-	  info->cancel_req = 1; // not threadsafe, but should be ok
-	  return;
+	  return DC1394_FAILURE;
 	}
 	// Create a file with camera settings
 	CreateSettingsFile(info->destdir);
@@ -440,8 +439,7 @@ GetSaveFD(chain_t *save_service, FILE **fd, char *filename_out)
       switch (info->append) {
       case SAVE_APPEND_NONE: 
 	fprintf(stderr,"time or number should have been selected\n");
-	info->cancel_req = 1;
-	return;
+	return DC1394_FAILURE;
 	break;
       case SAVE_APPEND_DATE_TIME:
 	sprintf(filename_out, "%s/%s%s", info->destdir, save_service->current_buffer->captime_string, info->filename_ext);
@@ -480,8 +478,7 @@ GetSaveFD(chain_t *save_service, FILE **fd, char *filename_out)
       *fd=fopen(filename_out,"w");
       if (*fd==NULL) {
 	MainError("Can't create sequence file for saving");
-	info->cancel_req = 1;
-	return;
+	return DC1394_FAILURE;
       }
     }
     break;
@@ -489,8 +486,7 @@ GetSaveFD(chain_t *save_service, FILE **fd, char *filename_out)
     *fd=fopen(filename_out,"w");
     if (*fd==NULL) {
       MainError("Can't create sequence file for saving");
-      info->cancel_req = 1;
-      return;
+      return DC1394_FAILURE;
     }
   case SAVE_FORMAT_PNG:
   case SAVE_FORMAT_JPEG:
@@ -501,6 +497,8 @@ GetSaveFD(chain_t *save_service, FILE **fd, char *filename_out)
     // do nothing
     break;
   }
+
+  return DC1394_SUCCESS;
 }
 
 
@@ -678,13 +676,16 @@ SaveThread(void* arg)
 	    skip_counter=0;
 
 	    // get file descriptor
-	    GetSaveFD(save_service, &fd, filename_out);
+
+	    if (GetSaveFD(save_service, &fd, filename_out)!=DC1394_SUCCESS)
+	      break;
 
 	    // write initial data for video (header,...)
 	    if ((save_service->processed_frames==0)&&
 		((info->format==SAVE_FORMAT_RAW_VIDEO)||
 		 (info->format==SAVE_FORMAT_MPEG)||
 		 (info->format==SAVE_FORMAT_PVN))) {
+	      //fprintf(stderr,"fd: %x\n",fd);
 	      InitVideoFile(save_service, fd, filename_out);
 	    }
 

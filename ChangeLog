@@ -8,6 +8,8 @@ Changes towards version 1.0.2
    - updated macros to use mmx, sse amd sse2 flags
    - reverted the application of Olaf Hering's patch as this slows down everything.
    - small fixes.
+   - fixes hang when the file to save can't be opened
+   - fix the password field in FTP service which was not allocated (Duh!)
 	
    Feb 3, 2005, by Damien Douxchamps
    - MPEG integration. Not working yet, but compile. Note that there is NO autodetection
