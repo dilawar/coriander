@@ -56,7 +56,7 @@ BuildFormat7Window(void)
 	break;
     }
     
-    if (camera->format7_info.mode[f].present==0) {
+    if (camera->format7_info.mode[f-MODE_FORMAT7_MIN].present==0) {
       // F7 not supported. don't build anything
       camera->format7_info.edit_mode=-1;
     }
