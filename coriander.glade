@@ -4258,7 +4258,10 @@ GRBG
   <authors>Damien Douxchamps &lt;douxchamps@ieee.org&gt;
 Dan Dennedy &lt;dan@dennedy.org&gt;
 See the AUTHORS file for more authors and contributors
-Special thanks to Yasutoshi Onishi of Hamamatsu Corp.
+
+Special thanks to Yasutoshi Onishi (Hamamatsu), Franck Meschberger (Sony)
+and Masato Tsujie (Sony) for lenting cameras to test Format_7 and v1.30
+advanced features.
 </authors>
   <comments>The Gnome IEEE1394 Digital Camera Controller website is
 http://sourceforge.net/projects/coriander</comments>
@@ -4832,8 +4835,8 @@ http://sourceforge.net/projects/coriander</comments>
 
 Please check that:
 - the card is present
-- the IEEE1394 modules are loaded
-- you have read/write permissions on the raw1394 and video1394 devices.</message>
+- the IEEE1394 modules (ieee1394, ohci1394, raw1394 and video1394) are loaded
+- you have read/write permissions on the /dev/raw1394 and /dev/video1394 devices.</message>
   <title>Coriander Warning</title>
   <position>GTK_WIN_POS_NONE</position>
   <modal>False</modal>
@@ -4897,14 +4900,13 @@ Please check that:
 
 Please check that:
 - the cables are properly set
-- the bus and/or camera are powered
-- the repeaters/hubs are powered
-- your camera is compliant with the Digital Camera specs v1.20 or later (see http://www.1394ta.org).
+- the devices on the bus are properly powered
+- your camera is compliant with the Digital Camera specs (see http://www.1394ta.org).
 
 NOTICE:
 All consumer grade cameras in which you can insert a video tape are NOT compliant with the above-
-mentionned specifications and therefor cannot be controlled with Coriander. (These cameras can be
-controlled with the AV/C protocol, please refer to http://linux1394.sourceforge.net)</message>
+mentionned specifications and therefor cannot be controlled with Coriander. These cameras can be
+controlled with the AV/C protocol, please refer to http://linux1394.sourceforge.net</message>
   <title>Coriander Warning</title>
   <position>GTK_WIN_POS_NONE</position>
   <modal>False</modal>

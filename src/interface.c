@@ -2465,7 +2465,10 @@ create_about_window (void)
     "Damien Douxchamps <douxchamps@ieee.org>",
     "Dan Dennedy <dan@dennedy.org>",
     "See the AUTHORS file for more authors and contributors",
-    "Special thanks to Yasutoshi Onishi of Hamamatsu Corp.",
+    "",
+    "Special thanks to Yasutoshi Onishi (Hamamatsu), Franck Meschberger (Sony)",
+    "and Masato Tsujie (Sony) for lenting cameras to test Format_7 and v1.30",
+    "advanced features.",
     NULL
   };
   GtkWidget *about_window;
@@ -2797,7 +2800,7 @@ create_no_handle_window (void)
 
   /* We create it with an OK button, and then remove the button, to work
      around a bug in gnome-libs. */
-  no_handle_window = gnome_message_box_new (_("Warning: could not get a handle to your IEEE1394 card.\n\nPlease check that:\n- the card is present\n- the IEEE1394 modules are loaded\n- you have read/write permissions on the raw1394 and video1394 devices."),
+  no_handle_window = gnome_message_box_new (_("Warning: could not get a handle to your IEEE1394 card.\n\nPlease check that:\n- the card is present\n- the IEEE1394 modules (ieee1394, ohci1394, raw1394 and video1394) are loaded\n- you have read/write permissions on the /dev/raw1394 and /dev/video1394 devices."),
                               GNOME_MESSAGE_BOX_WARNING,
                               GNOME_STOCK_BUTTON_OK, NULL);
   gtk_container_remove (GTK_CONTAINER (GNOME_DIALOG (no_handle_window)->action_area), GNOME_DIALOG (no_handle_window)->buttons->data);
@@ -2841,7 +2844,7 @@ create_no_camera_window (void)
 
   /* We create it with an OK button, and then remove the button, to work
      around a bug in gnome-libs. */
-  no_camera_window = gnome_message_box_new (_("Warning: could not find a Digital Camera on the bus.\n\nPlease check that:\n- the cables are properly set\n- the bus and/or camera are powered\n- the repeaters/hubs are powered\n- your camera is compliant with the Digital Camera specs v1.20 or later (see http://www.1394ta.org).\n\nNOTICE:\nAll consumer grade cameras in which you can insert a video tape are NOT compliant with the above-\nmentionned specifications and therefor cannot be controlled with Coriander. (These cameras can be\ncontrolled with the AV/C protocol, please refer to http://linux1394.sourceforge.net)"),
+  no_camera_window = gnome_message_box_new (_("Warning: could not find a Digital Camera on the bus.\n\nPlease check that:\n- the cables are properly set\n- the devices on the bus are properly powered\n- your camera is compliant with the Digital Camera specs (see http://www.1394ta.org).\n\nNOTICE:\nAll consumer grade cameras in which you can insert a video tape are NOT compliant with the above-\nmentionned specifications and therefor cannot be controlled with Coriander. These cameras can be\ncontrolled with the AV/C protocol, please refer to http://linux1394.sourceforge.net"),
                               GNOME_MESSAGE_BOX_WARNING,
                               GNOME_STOCK_BUTTON_OK, NULL);
   gtk_container_remove (GTK_CONTAINER (GNOME_DIALOG (no_camera_window)->action_area), GNOME_DIALOG (no_camera_window)->buttons->data);
