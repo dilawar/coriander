@@ -21,7 +21,6 @@
 #ifdef HAVE_SDLLIB
 
 extern PrefsInfo preferences;
-extern GtkWidget *format7_window;
 extern GtkWidget *main_window;
 extern watchthread_info_t watchthread_info;
 extern camera_t* camera;

@@ -4,7 +4,6 @@
 
 GtkWidget* create_main_window (void);
 GtkWidget* create_about_window (void);
-GtkWidget* create_format7_window (void);
 GtkWidget* create_no_handle_window (void);
 GtkWidget* create_no_camera_window (void);
 GtkWidget* create_get_filename_dialog (void);

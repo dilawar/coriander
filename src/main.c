@@ -49,7 +49,6 @@ GtkWidget *main_window;
 GtkWidget *absolute_settings_window;
 GtkWidget *about_window;
 GtkWidget *help_window;
-GtkWidget *format7_window;
 GtkWidget *preferences_window;
 CtxtInfo ctxt;
 PrefsInfo preferences;
@@ -152,7 +151,6 @@ main (int argc, char *argv[])
       
       preferences_window= create_preferences_window();
       main_window = create_main_window();
-      format7_window = create_format7_window();
       absolute_settings_window = create_absolute_settings_window();
       
       // Setup the GUI in accordance with the camera capabilities

@@ -20,8 +20,8 @@
 
 #ifdef HAVE_SDLLIB
 
+extern GtkWidget *main_window;
 extern PrefsInfo preferences;
-extern GtkWidget *format7_window;
 extern camera_t* camera;
 
 int
@@ -129,19 +129,19 @@ WatchThread(void *arg)
 	  camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN].pos_y=pos[1];
 	  //fprintf(stderr,"size/pos buffered.\n");
 	  
-	  adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(format7_window, "format7_hposition_scale")));
+	  adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_hposition_scale")));
 	  adj->upper=camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN].max_size_x-size[0];
 	  adj->value=pos[0];
 	  gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
-	  adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(format7_window, "format7_vposition_scale")));
+	  adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_vposition_scale")));
 	  adj->upper=camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN].max_size_y-size[1];
 	  adj->value=pos[1];
 	  gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
-	  adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(format7_window, "format7_hsize_scale")));
+	  adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_hsize_scale")));
 	  adj->upper=camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN].max_size_x-pos[0];
 	  adj->value=size[0];
 	  gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
-	  adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(format7_window, "format7_vsize_scale")));
+	  adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_vsize_scale")));
 	  adj->upper=camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN].max_size_y-pos[1];
 	  adj->value=size[1];
 	  gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");

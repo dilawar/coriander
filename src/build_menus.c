@@ -19,7 +19,6 @@
 #include "build_menus.h"
 
 extern GtkWidget *main_window;
-extern GtkWidget *format7_window;
 extern PrefsInfo preferences; 
 extern camera_t* camera;
 extern camera_t* cameras;
@@ -187,14 +186,14 @@ BuildFormat7ModeMenu(void)
   GtkWidget* mode_num_menu;
   GtkWidget* glade_menuitem;
 
-  gtk_widget_destroy(GTK_WIDGET (lookup_widget(format7_window,"format7_mode"))); // remove previous menu
+  gtk_widget_destroy(GTK_WIDGET (lookup_widget(main_window,"format7_mode"))); // remove previous menu
 
   mode_num = gtk_option_menu_new ();
   gtk_widget_ref (mode_num);
-  gtk_object_set_data_full (GTK_OBJECT (format7_window), "format7_mode", mode_num,
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "format7_mode", mode_num,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (mode_num);
-  gtk_table_attach_defaults (GTK_TABLE (lookup_widget(format7_window,"table19")), mode_num, 0, 1, 0, 1);
+  gtk_table_attach_defaults (GTK_TABLE (lookup_widget(main_window,"table19")), mode_num, 0, 1, 0, 1);
   gtk_container_set_border_width (GTK_CONTAINER (mode_num), 1);
 
   mode_num_menu = gtk_menu_new ();
@@ -238,14 +237,14 @@ BuildFormat7ColorMenu(void)
   GtkWidget* color_num_menu;
   GtkWidget* glade_menuitem;
 
-  gtk_widget_destroy(GTK_WIDGET (lookup_widget(format7_window,"format7_color"))); // remove previous menu
+  gtk_widget_destroy(GTK_WIDGET (lookup_widget(main_window,"format7_color"))); // remove previous menu
 
   color_num = gtk_option_menu_new ();
   gtk_widget_ref (color_num);
-  gtk_object_set_data_full (GTK_OBJECT (format7_window), "format7_color", color_num,
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "format7_color", color_num,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (color_num);
-  gtk_table_attach_defaults (GTK_TABLE (lookup_widget(format7_window,"table19")), color_num, 2, 3, 0, 1);
+  gtk_table_attach_defaults (GTK_TABLE (lookup_widget(main_window,"table19")), color_num, 2, 3, 0, 1);
   gtk_container_set_border_width (GTK_CONTAINER (color_num), 1);
 
   color_num_menu = gtk_menu_new ();

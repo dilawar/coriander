@@ -22,7 +22,6 @@
 #define TEST_CNFG         0xF04U
 #define CCR_BASE          0xFFFFF0F00000ULL
 
-extern GtkWidget *format7_window;
 extern GtkWidget *about_window;
 extern GtkWidget *absolute_settings_window;
 extern GtkWidget *help_window;
@@ -315,13 +314,6 @@ on_edit_format7_color_activate             (GtkMenuItem     *menuitem,
 
 
 void
-on_format7_window_activate             (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-  gtk_widget_show (format7_window);
-}
-
-void
 on_scale_value_changed             ( GtkAdjustment    *adj,
 				     gpointer         user_data)
 {
@@ -388,7 +380,7 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
 	else  {
 	  info->size_x=adj->value;
 	  // adjust the pos_x adjustment so that (size_x+pos_x)<=max_size_x:
-	  adj2=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(format7_window, "format7_hposition_scale")));
+	  adj2=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_hposition_scale")));
 	  adj2->upper=info->max_size_x-adj->value;
 	  gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
 	  gtk_signal_emit_by_name(GTK_OBJECT (adj2), "changed");
@@ -405,7 +397,7 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
 	else {
 	  info->size_y=adj->value;
 	  // adjust the pos_y adjustment so that (size_y+pos_y)<=max_size_y:
-	  adj2=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(format7_window, "format7_vposition_scale")));
+	  adj2=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_vposition_scale")));
 	  adj2->upper=info->max_size_y-adj->value;
 	  gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
 	  gtk_signal_emit_by_name(GTK_OBJECT (adj2), "changed");
@@ -425,7 +417,7 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
 	else {
 	  info->pos_x=adj->value;
 	  // adjust the size_x adjustment so that (size_x+pos_x)<=max_size_x:
-	  adj2=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(format7_window, "format7_hsize_scale")));
+	  adj2=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_hsize_scale")));
 	  adj2->upper=info->max_size_x-adj->value;
 	  gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
 	  gtk_signal_emit_by_name(GTK_OBJECT (adj2), "changed");
@@ -445,7 +437,7 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
 	else {
 	  info->pos_y=adj->value;
 	  // adjust the size_y adjustment so that (size_y+pos_y)<=max_size_y:
-	  adj2=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(format7_window, "format7_vsize_scale")));
+	  adj2=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_vsize_scale")));
 	  adj2->upper=info->max_size_y-adj->value;
 	  gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
 	  gtk_signal_emit_by_name(GTK_OBJECT (adj2), "changed");

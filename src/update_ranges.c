@@ -18,7 +18,6 @@
 
 #include "update_ranges.h"
 
-extern GtkWidget *format7_window;
 extern GtkWidget *main_window;
 extern char* feature_menu_table_list[NUM_FEATURES]; 
 extern char* feature_menu_items_list[NUM_FEATURES];
@@ -208,7 +207,7 @@ UpdateFormat7BppRange(void)
 
   if (dc1394_query_format7_byte_per_packet(camera->camera_info.handle,camera->camera_info.id,camera->format7_info.edit_mode, &info->bpp)==DC1394_SUCCESS) {
     if (dc1394_query_format7_packet_para(camera->camera_info.handle,camera->camera_info.id,camera->format7_info.edit_mode, &info->min_bpp,&info->max_bpp)==DC1394_SUCCESS) {
-      adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(format7_window, "format7_packet_size")));
+      adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_packet_size")));
       adj->upper=info->max_bpp;
       adj->lower=info->min_bpp;
       adj->value=info->bpp;
@@ -238,7 +237,7 @@ UpdateFormat7Ranges(void)
   // define the adjustments for the 4 format7 controls. Note that (pos_x+size_x)<=max_size_x which yields some inter-dependencies
 
   // define adjustement for X-position
-  adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(format7_window, "format7_hposition_scale")));
+  adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_hposition_scale")));
   adj->value=info->pos_x;
   adj->upper=info->max_size_x-info->size_x;
   adj->lower=0;
@@ -250,7 +249,7 @@ UpdateFormat7Ranges(void)
   gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
 
   // define adjustement for Y-position 
-  adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(format7_window, "format7_vposition_scale")));
+  adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_vposition_scale")));
   adj->value=info->pos_y;
   adj->upper=info->max_size_y-info->size_y;
   adj->lower=0;
@@ -262,7 +261,7 @@ UpdateFormat7Ranges(void)
   gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
 
   // define adjustement for X-size
-  adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(format7_window, "format7_hsize_scale")));
+  adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_hsize_scale")));
   adj->value=info->size_x;
   adj->upper=info->max_size_x-info->pos_x;
   adj->lower=info->step_x;
@@ -271,7 +270,7 @@ UpdateFormat7Ranges(void)
   gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
 
   // define adjustement for X-size
-  adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(format7_window, "format7_vsize_scale")));
+  adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_vsize_scale")));
   adj->value=info->size_y;
   adj->upper=info->max_size_y-info->pos_y;
   adj->lower=info->step_y;
