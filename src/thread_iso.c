@@ -164,6 +164,8 @@ gint IsoStartThread(void)
 	}
       //fprintf(stderr," 1394 setup OK\n");
 
+      CommonChainSetup(iso_service, SERVICE_ISO, current_camera);
+
       if (iso_service->bayer==BAYER_DECODING_DOWNSAMPLE)
 	info->factor=2;
       else
@@ -183,7 +185,7 @@ gint IsoStartThread(void)
 	  if (info->cond16bit>0)
 	    {
 	      info->temp=(unsigned char*)malloc(iso_service->width*info->factor*iso_service->height*info->factor*sizeof(unsigned char));
-	      //fprintf(stderr,"tmp size: %ld\n",iso_service->width*factor*iso_service->height*factor);
+	      //fprintf(stderr,"tmp size: %ld\n",iso_service->width*info->factor*iso_service->height*info->factor);
 	    }
 	  else
 	    info->temp=(unsigned char *)info->capture.capture_buffer;
@@ -191,10 +193,10 @@ gint IsoStartThread(void)
       else
 	{
 	  info->temp=(unsigned char*)malloc(iso_service->width*info->factor*iso_service->height*info->factor*sizeof(unsigned char));
-	  //fprintf(stderr,"tmp size: %ld\n",iso_service->width*factor*iso_service->height*factor);
+	  //fprintf(stderr,"tmp size: %ld\n",iso_service->width*info->factor*iso_service->height*info->factor);
 	}
+      //fprintf(stderr,"0x%x\n",info->temp);
 
-      CommonChainSetup(iso_service, SERVICE_ISO, current_camera);
       pthread_mutex_unlock(&iso_service->mutex_data);
       
       pthread_mutex_lock(&iso_service->mutex_struct);
@@ -332,6 +334,8 @@ IsoThread(void* arg)
 			 iso_service->width, iso_service->height, iso_service->bayer_pattern);
 	  break;
 	case BAYER_DECODING_DOWNSAMPLE:
+	  //fprintf(stderr,"0x%x 0x%x w=%d, h=%d, \n",info->temp, iso_service->current_buffer,
+	  //		 iso_service->width*info->factor, iso_service->height*info->factor);
 	  BayerDownsample(info->temp, iso_service->current_buffer,
 			 iso_service->width*info->factor, iso_service->height*info->factor, iso_service->bayer_pattern);
 	  break;
