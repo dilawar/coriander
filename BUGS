@@ -8,4 +8,4 @@ Known bugs:
         - the RESET function is not working
 	- saving setups is not fully working
 - The test pattern generation is only working with some cameras.
-- FTP was reported not to be working. 'Have to do more testing on that.
+- The new thread mechanism is working but needs nore testing.
