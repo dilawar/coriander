@@ -225,7 +225,7 @@ void
 UpdateCameraStatusFrame(void)
 {
   char *temp;
-  quadlet_t sw_version;
+  int sw_version;
   quadlet_t value[3];
 
   temp=(char*)malloc(STRING_SIZE*sizeof(char));
@@ -276,11 +276,20 @@ UpdateCameraStatusFrame(void)
     sw_version=0x0;
   }
   switch (sw_version) {
-  case 0x100: sprintf(temp," 1.04 ");break;
-  case 0x101: sprintf(temp," 1.20 ");break;
-  case 0x102: sprintf(temp," 1.30 ");break;
-  case 0x114: sprintf(temp," Point Grey 114 ");break;
-  default: sprintf(temp," ?? 0x%x ",sw_version);
+  case IIDC_VERSION_1_04: sprintf(temp," 1.04 ");break;
+  case IIDC_VERSION_1_20: sprintf(temp," 1.20 ");break;
+  case IIDC_VERSION_1_30: sprintf(temp," 1.30 ");break;
+  case IIDC_VERSION_PTGREY: sprintf(temp," Pt Grey 114 ");break;
+  case IIDC_VERSION_1_31: sprintf(temp," 1.31 ");break;
+  case IIDC_VERSION_1_32: sprintf(temp," 1.32 ");break;
+  case IIDC_VERSION_1_33: sprintf(temp," 1.33 ");break;
+  case IIDC_VERSION_1_34: sprintf(temp," 1.34 ");break;
+  case IIDC_VERSION_1_35: sprintf(temp," 1.35 ");break;
+  case IIDC_VERSION_1_36: sprintf(temp," 1.36 ");break;
+  case IIDC_VERSION_1_37: sprintf(temp," 1.37 ");break;
+  case IIDC_VERSION_1_38: sprintf(temp," 1.38 ");break;
+  case IIDC_VERSION_1_39: sprintf(temp," 1.39 ");break;
+  default: sprintf(temp," ?? %d ",sw_version);
   }
   gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"camera_dc_status"), ctxt.dc_ctxt, ctxt.dc_id);
   ctxt.dc_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"camera_dc_status"), ctxt.dc_ctxt, temp);
