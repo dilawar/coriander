@@ -82,9 +82,7 @@ main (int argc, char *argv[])
 
   gnome_init ("coriander", VERSION, argc, argv);
 
-      fprintf(stderr,"test0\n");
   handle=dc1394_create_handle(port);
-      fprintf(stderr,"testa\n");
   // probe the IEEE1394 bus for DC camera:
   if (handle==0)
     {
