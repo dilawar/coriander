@@ -77,7 +77,7 @@ SaveStartThread(camera_t* cam)
 
     info->bigbuffer=NULL;
 
-    if (info->use_ram_buffer==TRUE) {
+    if ((info->use_ram_buffer==TRUE)&&(info->scratch==SAVE_SCRATCH_SEQUENCE)) {
       info->bigbuffer_position=0;
       info->bigbuffer=(unsigned char*)malloc(info->ram_buffer_size*sizeof(unsigned char));
       if (info->bigbuffer==NULL) {
@@ -197,7 +197,7 @@ SaveThread(void* arg)
     sprintf(filename_out, "%s%s", info->filename,info->filename_ext);
     fd=fopen(filename_out,"w");
     if (fd==NULL)
-      MainError("Can't open file for saving");
+      MainError("Can't create sequence file for saving");
     /*
     if (info->use_ram_buffer>0) {
       pthread_cleanup_push((void*)SaveCleanupThread, (void*) save_service);
@@ -230,7 +230,7 @@ SaveThread(void* arg)
 	      sprintf(filename_out, "%s%s", info->filename,info->filename_ext);
 	      fd=fopen(filename_out,"w");
 	      if (fd==NULL)
-		MainError("Can't open file for saving");
+		MainError("Can't create/open image file for saving");
 	      break;
 	    case SAVE_SCRATCH_SEQUENTIAL:
 	      switch (info->datenum) {
@@ -243,14 +243,14 @@ SaveThread(void* arg)
 	      }
 	      fd=fopen(filename_out,"w");
 	      if (fd==NULL)
-		MainError("Can't open file for saving");
+		MainError("Can't create/open image file for saving");
 	      break;
 	    default:
 	      break;
 	    }
 	    
 	    // rambuffer operation
-	    if (info->use_ram_buffer>0) {
+	    if ((info->use_ram_buffer==TRUE)&&(info->scratch==SAVE_SCRATCH_SEQUENCE)) {
 	      if (info->ram_buffer_size-info->bigbuffer_position>=save_service->current_buffer->buffer_image_bytes) {
 		memcpy(&info->bigbuffer[info->bigbuffer_position], save_service->current_buffer->image, save_service->current_buffer->buffer_image_bytes);
 		info->bigbuffer_position+=save_service->current_buffer->buffer_image_bytes;
@@ -302,11 +302,8 @@ SaveThread(void* arg)
       }
     }
   }
-  //fprintf(stderr,"cancel requested\n");
-  if (info->use_ram_buffer>0) {
-    //fprintf(stderr,"writing to file\n");
+  if ((info->use_ram_buffer==TRUE)&&(info->scratch==SAVE_SCRATCH_SEQUENCE)) {
     fwrite(info->bigbuffer, 1, info->bigbuffer_position, fd);
-    //fprintf(stderr,"wrote %ld bytes to file\n",info->bigbuffer_position);
   }
 
   if ((info->scratch==SAVE_SCRATCH_SEQUENCE)&&(fd!=NULL)) {
@@ -314,9 +311,7 @@ SaveThread(void* arg)
   }
 
   if (info->bigbuffer!=NULL) {
-    //fprintf(stderr,"freeing bigbuffer\n");
     free(info->bigbuffer);
-    //fprintf(stderr,"freed\n");
   }
   pthread_mutex_unlock(&info->mutex_cancel);
   return ((void*)1);

@@ -787,8 +787,10 @@ on_prefs_save_seq_toggled              (GtkToggleButton *togglebutton,
 {
   savethread_info_t* info;
   chain_t* service;
-  if (togglebutton->active)
+  if (togglebutton->active) {
     preferences.save_scratch=SAVE_SCRATCH_SEQUENTIAL;
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window,"use_ram_buffer")),0);
+  }
   gnome_config_set_int("coriander/save/scratch",preferences.save_scratch);
   gnome_config_sync();
   UpdatePrefsSaveFrame();
@@ -806,8 +808,10 @@ on_prefs_save_scratch_toggled          (GtkToggleButton *togglebutton,
 {
   savethread_info_t* info;
   chain_t* service;
-  if (togglebutton->active)
+  if (togglebutton->active) {
     preferences.save_scratch=SAVE_SCRATCH_OVERWRITE;
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window,"use_ram_buffer")),0);
+  }
   gnome_config_set_int("coriander/save/scratch",preferences.save_scratch);
   gnome_config_sync();
   UpdatePrefsSaveFrame();
@@ -825,8 +829,9 @@ on_prefs_save_video_toggled            (GtkToggleButton *togglebutton,
 {
   savethread_info_t* info;
   chain_t* service;
-  if (togglebutton->active)
+  if (togglebutton->active) {
     preferences.save_scratch=SAVE_SCRATCH_SEQUENCE;
+  }
   gnome_config_set_int("coriander/save/scratch",preferences.save_scratch);
   gnome_config_sync();
   UpdatePrefsSaveFrame();

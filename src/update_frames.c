@@ -83,7 +83,7 @@ UpdatePrefsSaveFrame(void)
   gtk_widget_set_sensitive(lookup_widget(main_window,"ram_buffer_frame"), preferences.use_ram_buffer && (preferences.save_scratch==SAVE_SCRATCH_SEQUENCE));
   gtk_widget_set_sensitive(lookup_widget(main_window,"use_ram_buffer"), preferences.save_scratch==SAVE_SCRATCH_SEQUENCE);
 
-  // thread presence balnking:
+  // thread presence blanking:
   if (GetService(camera,SERVICE_SAVE)!=NULL) {
     gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_save_file_frame"), FALSE);
     gtk_widget_set_sensitive(lookup_widget(main_window,"ram_buffer_frame"), FALSE);

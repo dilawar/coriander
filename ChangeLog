@@ -6,6 +6,8 @@ Changes towards version 1.00
    - fixed the difference between bytes per image (w*h*bpp) and
      byte_per_frame. This caused incorrect sizes to be used whe saving in
      RAW mode.
+   - fixed use_ram_buffer field that was not set 'off' when another save
+     mode was selected.
 	
 Changes in version 0.99
 
