@@ -472,7 +472,6 @@ GetSaveFD(chain_t *save_service, FILE **fd, char *filename_out)
   // OR it's in picture saving mode AND it's not using imlib (which creates the fd from the filename itself)
   switch (info->format) {
   case SAVE_FORMAT_RAW_VIDEO:
-  case SAVE_FORMAT_MPEG:
   case SAVE_FORMAT_PVN:
     if (save_service->processed_frames==0) {
       *fd=fopen(filename_out,"w");
@@ -488,6 +487,7 @@ GetSaveFD(chain_t *save_service, FILE **fd, char *filename_out)
       MainError("Can't create sequence file for saving");
       return DC1394_FAILURE;
     }
+  case SAVE_FORMAT_MPEG:
   case SAVE_FORMAT_PNG:
   case SAVE_FORMAT_JPEG:
   case SAVE_FORMAT_TIFF:
@@ -502,7 +502,7 @@ GetSaveFD(chain_t *save_service, FILE **fd, char *filename_out)
 }
 
 
-void
+int
 InitVideoFile(chain_t *save_service, FILE *fd, char *filename_out)
 {
   savethread_info_t *info;
@@ -512,13 +512,12 @@ InitVideoFile(chain_t *save_service, FILE *fd, char *filename_out)
   info->oc = NULL;
   info->video_st = NULL;
   info->picture = NULL;
-  info->tmp_picture_yuv411 = NULL;
-  info->tmp_picture_yuv422 = NULL;
+  info->tmp_picture = NULL;
   
   info->fdts = 0;///////////////////////////
 
   // (JG) if extension is PVN, write PVN header here
-  if ((info->format==SAVE_FORMAT_PVN) && (info->use_ram_buffer==FALSE)) {
+  if ((info->format==SAVE_FORMAT_PVN) && (info->use_ram_buffer==FALSE)) {//-----------------------------------
     //fprintf(stderr,"pvn header write\n");
     writePVNHeader(fd, save_service->current_buffer->buffer_color_mode,
 		   save_service->current_buffer->height,
@@ -527,10 +526,24 @@ InitVideoFile(chain_t *save_service, FILE *fd, char *filename_out)
 		   framerateAsDouble(camera->misc_info.framerate));
   }
 
-  if ((info->format==SAVE_FORMAT_MPEG) && (info->use_ram_buffer==FALSE)) {
+  if ((info->format==SAVE_FORMAT_MPEG) && (info->use_ram_buffer==FALSE)) {//-----------------------------------
     // MPEG
+    fprintf(stderr,"setting up mpeg codec\n");
     //video_encode_init(save_service->current_buffer->width,
     //		      save_service->current_buffer->height, CODEC_ID_MPEG1VIDEO);
+
+    /* auto detect the output format from the name. default is mpeg. */
+    info->fmt = guess_format(NULL, filename_out, NULL);
+    if (!info->fmt) {
+      fprintf(stderr,"Could not deduce output format from file extension: using MPEG.\n");
+      info->fmt = guess_format("mpeg", NULL, NULL);
+    }
+    
+    if (!info->fmt) {
+      fprintf(stderr, "Could not find suitable output format\n");
+      return DC1394_FAILURE;
+    }
+
     /* allocate the output media context */
     info->oc = av_alloc_format_context();
     if (!info->oc) {
@@ -547,7 +560,6 @@ InitVideoFile(chain_t *save_service, FILE *fd, char *filename_out)
       info->video_st = add_video_stream(info->oc, CODEC_ID_MJPEG, 
 					save_service->current_buffer->width,
 					save_service->current_buffer->height);
-      //fprintf(stderr, "Using MJPEG...");
     }
     
     /* set the output parameters (must be done even if no
@@ -579,13 +591,31 @@ InitVideoFile(chain_t *save_service, FILE *fd, char *filename_out)
       fprintf(stderr, "Could not allocate picture\n");
     }
     
-    info->tmp_picture_yuv411 = alloc_picture(PIX_FMT_YUV411P, info->video_st->codec.width, info->video_st->codec.height);
-    if (!info->tmp_picture_yuv411) {
-      fprintf(stderr, "Could not allocate temporary picture\n");
+    info->mpeg_color_mode=0;
+    switch (save_service->current_buffer->buffer_color_mode) {
+    case COLOR_FORMAT7_MONO8:
+    case COLOR_FORMAT7_RAW8:
+      info->mpeg_color_mode=PIX_FMT_GRAY8;
+      break;
+    case COLOR_FORMAT7_YUV411:
+      info->mpeg_color_mode=PIX_FMT_YUV411P;
+      break;
+    case COLOR_FORMAT7_YUV422:
+      info->mpeg_color_mode=PIX_FMT_YUV422P;
+      break;
+    case COLOR_FORMAT7_YUV444:
+      info->mpeg_color_mode=PIX_FMT_YUV444P;
+      break;
+    case COLOR_FORMAT7_RGB8:
+      info->mpeg_color_mode=PIX_FMT_RGB24;
+      break;
+    default:
+      fprintf(stderr, "This format is not supported for MPEG save\n");
+      break;
     }
-    
-    info->tmp_picture_yuv422 = alloc_picture(PIX_FMT_YUV422P, info->video_st->codec.width, info->video_st->codec.height);
-    if (!info->tmp_picture_yuv422) {
+
+    info->tmp_picture = alloc_picture(info->mpeg_color_mode, info->video_st->codec.width, info->video_st->codec.height);
+    if (!info->tmp_picture) {
       fprintf(stderr, "Could not allocate temporary picture\n");
     }
     
@@ -594,14 +624,14 @@ InitVideoFile(chain_t *save_service, FILE *fd, char *filename_out)
     fprintf(stderr, "Recording frame timestamps to: %s\n", info->subtitle);
     info->fdts = open(info->subtitle, O_CREAT | O_WRONLY | O_SYNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
     
-    fprintf(stderr, "Video encode: Video encode initiated...\n");
-    
     // END MPEG
   }
 
-  // other inits for other video formats come here...
+  // other inits for other video formats come here...          ----------------------------------
   // ...
   
+
+  return DC1394_SUCCESS;
 }
 
 void
@@ -652,8 +682,6 @@ SaveThread(void* arg)
   pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED,NULL);
   pthread_mutex_unlock(&save_service->mutex_data);
 
-  av_register_all();////////////////////////////////////////////
-
   // time inits:
   save_service->prev_time = times(&save_service->tms_buf);
   save_service->fps_frames=0;
@@ -680,13 +708,20 @@ SaveThread(void* arg)
 	    if (GetSaveFD(save_service, &fd, filename_out)!=DC1394_SUCCESS)
 	      break;
 
+	    if ((save_service->processed_frames==0)&&
+		((info->format==SAVE_FORMAT_MPEG)||
+		 (info->format==SAVE_FORMAT_JPEG))) {
+	      av_register_all();
+	    }
+
 	    // write initial data for video (header,...)
 	    if ((save_service->processed_frames==0)&&
 		((info->format==SAVE_FORMAT_RAW_VIDEO)||
 		 (info->format==SAVE_FORMAT_MPEG)||
 		 (info->format==SAVE_FORMAT_PVN))) {
-	      //fprintf(stderr,"fd: %x\n",fd);
-	      InitVideoFile(save_service, fd, filename_out);
+	      if (InitVideoFile(save_service, fd, filename_out)!=DC1394_SUCCESS) {
+		break;
+	      }
 	    }
 
 	    // rambuffer operation
@@ -709,7 +744,8 @@ SaveThread(void* arg)
 		if (needsConversionForPVN(save_service->current_buffer->buffer_color_mode)>0) {
 		  // we assume that if it needs conversion, the output of the conversion is an 8bpp RGB
 		  if (dest==NULL)
-		    dest = (unsigned char*)malloc(3*save_service->current_buffer->width*save_service->current_buffer->height*sizeof(unsigned char));
+		    dest = (unsigned char*)malloc(3*save_service->current_buffer->width*save_service->current_buffer->height*
+						  sizeof(unsigned char));
 		  convert_for_pvn(save_service->current_buffer->image, save_service->current_buffer->width,
 				  save_service->current_buffer->height, 0, save_service->current_buffer->buffer_color_mode, dest);
 		  fwrite(dest, 3*save_service->current_buffer->width*save_service->current_buffer->height, 1, fd);
@@ -721,27 +757,22 @@ SaveThread(void* arg)
 		break;
 	      case SAVE_FORMAT_MPEG:
 		// video saving mode
+		//fprintf(stderr,"entering MPEG save and convert section\n");
 		switch(save_service->current_buffer->buffer_color_mode) {
 		case COLOR_FORMAT7_YUV411:
-		  uyvy411_yuv411p(save_service->current_buffer->image, 
-				  info->tmp_picture_yuv411, 
-				  save_service->current_buffer->width, 
-				  save_service->current_buffer->height);
+		  uyvy411_yuv411p(save_service->current_buffer->image, info->tmp_picture, 
+				  save_service->current_buffer->width, save_service->current_buffer->height);
 		  img_convert((AVPicture *)info->picture, info->video_st->codec.pix_fmt, 
-			      (AVPicture *)info->tmp_picture_yuv411, PIX_FMT_YUV411P,
-			      save_service->current_buffer->width, 
-			      save_service->current_buffer->height);
+			      (AVPicture *)info->tmp_picture, PIX_FMT_YUV411P,
+			      save_service->current_buffer->width, save_service->current_buffer->height);
 		  write_video_frame(info->oc, info->video_st, info->picture);
 		  break;
 		case COLOR_FORMAT7_YUV422:
-		  uyvy422_yuv422p(save_service->current_buffer->image, 
-				  info->tmp_picture_yuv422, 
-				  save_service->current_buffer->width, 
-				  save_service->current_buffer->height);
+		  uyvy422_yuv422p(save_service->current_buffer->image, info->tmp_picture, 
+				  save_service->current_buffer->width, save_service->current_buffer->height);
 		  img_convert((AVPicture *)info->picture, info->video_st->codec.pix_fmt, 
-			      (AVPicture *)info->tmp_picture_yuv422, PIX_FMT_YUV422P,
-			      save_service->current_buffer->width, 
-			      save_service->current_buffer->height);
+			      (AVPicture *)info->tmp_picture, PIX_FMT_YUV422P,
+			      save_service->current_buffer->width, save_service->current_buffer->height);
 		  write_video_frame(info->oc, info->video_st, info->picture);
 		  break;
 		default:
@@ -749,12 +780,13 @@ SaveThread(void* arg)
 		}
 		
 		/* Save time stamp */
-		new_subtitle(save_service->processed_frames, save_service->fps, save_service->current_buffer->captime_string, info->subtitle);
+		new_subtitle(save_service->processed_frames, save_service->fps,
+			     save_service->current_buffer->captime_string, info->subtitle);
 		printf("%s", info->subtitle);
 		write(info->fdts, info->subtitle, strlen(info->subtitle));
 		
 		break;
-	      case SAVE_FORMAT_JPEG: // <<<<<<<<<<<<< to be updated by jpeg/ffmpeg patch
+	      case SAVE_FORMAT_JPEG:
 		/* Save JPEG file using LibJPEG-MMX */
 		/*
 		convert_to_rgb(save_service->current_buffer, info->buffer);
@@ -762,64 +794,49 @@ SaveThread(void* arg)
 				 save_service->current_buffer->width, 
 				 save_service->current_buffer->height, 
 				 filename_out, 
-				 "Created using LibJPEG-MMX");
+				 "Created using Coriander and LibJPEG-MMX");
 		*/
 		/* Save JPEG file using FFMPEG... Much, much faster... There is no need for YUV->RGB color space conversions */
 		info->picture = alloc_picture(PIX_FMT_YUV420P, 
-					save_service->current_buffer->width, 
-					save_service->current_buffer->height);
+				 save_service->current_buffer->width, save_service->current_buffer->height);
 		if (!info->picture) {
 		  fprintf(stderr, "Could not allocate picture\n");
 		}
 		switch(save_service->current_buffer->buffer_color_mode) {
 		case COLOR_FORMAT7_YUV411:
-		  info->tmp_picture_yuv411 = alloc_picture(PIX_FMT_YUV411P, 
-						     save_service->current_buffer->width, 
-						     save_service->current_buffer->height);
-		  uyvy411_yuv411p(save_service->current_buffer->image, 
-				  info->tmp_picture_yuv411, 
-				  save_service->current_buffer->width, 
-				  save_service->current_buffer->height);
+		  info->tmp_picture = alloc_picture(PIX_FMT_YUV411P, 
+				  save_service->current_buffer->width, save_service->current_buffer->height);
+		  uyvy411_yuv411p(save_service->current_buffer->image, info->tmp_picture, 
+				  save_service->current_buffer->width, save_service->current_buffer->height);
 		  img_convert((AVPicture *)info->picture, PIX_FMT_YUV420P, 
-			      (AVPicture *)info->tmp_picture_yuv411, PIX_FMT_YUV411P,
-			      save_service->current_buffer->width, 
-			      save_service->current_buffer->height);
+			      (AVPicture *)info->tmp_picture, PIX_FMT_YUV411P,
+			      save_service->current_buffer->width, save_service->current_buffer->height);
+		  jpeg_write(info->picture, save_service->current_buffer->width, save_service->current_buffer->height,
+			     PIX_FMT_YUV420P, filename_out, 90.0, "Created using Coriander and FFMPEG");
 		  
 		  break;
 		case COLOR_FORMAT7_YUV422: 
-		  info->tmp_picture_yuv422 = alloc_picture(PIX_FMT_YUV422P, 
-						     save_service->current_buffer->width, 
-						     save_service->current_buffer->height);
-		  uyvy422_yuv422p(save_service->current_buffer->image, 
-				  info->tmp_picture_yuv422, 
-				  save_service->current_buffer->width, 
-				  save_service->current_buffer->height);
+		  info->tmp_picture = alloc_picture(PIX_FMT_YUV422P, 
+				  save_service->current_buffer->width, save_service->current_buffer->height);
+		  uyvy422_yuv422p(save_service->current_buffer->image, info->tmp_picture, 
+				  save_service->current_buffer->width, save_service->current_buffer->height);
 		  img_convert((AVPicture *)info->picture, PIX_FMT_YUV420P, 
-			      (AVPicture *)info->tmp_picture_yuv422, PIX_FMT_YUV422P,
-			      save_service->current_buffer->width, 
-			      save_service->current_buffer->height);
+			      (AVPicture *)info->tmp_picture, PIX_FMT_YUV422P,
+			      save_service->current_buffer->width, save_service->current_buffer->height);
+		  jpeg_write(info->picture, save_service->current_buffer->width, save_service->current_buffer->height,
+			     PIX_FMT_YUV420P, filename_out, 90.0, "Created using Coriander and FFMPEG");
 		  break;
 		default:
 		  break;
 		}	 
-		jpeg_write(info->picture, 
-			   save_service->current_buffer->width,
-			   save_service->current_buffer->height,
-			   PIX_FMT_YUV420P,
-			   filename_out, 
-			   90.0,
-			   "Created using FFMPEG-JPEG");
+
 		if (info->picture) {
 		  av_free(info->picture->data[0]);
 		  av_free(info->picture);
 		}
-		if (info->tmp_picture_yuv411) {
-		  av_free(info->tmp_picture_yuv411->data[0]);
-		  av_free(info->tmp_picture_yuv411);
-		}
-		if (info->tmp_picture_yuv422) {
-		  av_free(info->tmp_picture_yuv422->data[0]);
-		  av_free(info->tmp_picture_yuv422);
+		if (info->tmp_picture) {
+		  av_free(info->tmp_picture->data[0]);
+		  av_free(info->tmp_picture);
 		}
 		break;
 	      case SAVE_FORMAT_PNG:
@@ -905,22 +922,16 @@ SaveThread(void* arg)
     }
   }
   
-  if ((fd!=NULL) &&
-      ((info->format==SAVE_FORMAT_RAW_VIDEO)||
-       (info->format==SAVE_FORMAT_PVN))) {
+  if (fd!=NULL) {
     fclose(fd);
-    //video_encode_close(fd); //////////////////////////////////////////
   }
 
   if (info->format==SAVE_FORMAT_MPEG) {
     av_free(info->picture->data[0]);
     av_free(info->picture);
     
-    av_free(info->tmp_picture_yuv411->data[0]);
-    av_free(info->tmp_picture_yuv411);
-
-    av_free(info->tmp_picture_yuv422->data[0]);
-    av_free(info->tmp_picture_yuv422);
+    av_free(info->tmp_picture->data[0]);
+    av_free(info->tmp_picture);
 
     //video_encode_finish();
     /* close each codec */

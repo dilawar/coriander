@@ -47,7 +47,8 @@ void uyvy411_yuv411p(const unsigned char *frame, AVFrame *picture, const unsigne
   return;
 }
 
-void uyvy422_yuv422p(const unsigned char *frame, AVFrame *picture, const unsigned int width, const unsigned int height) {
+void uyvy422_yuv422p(const unsigned char *frame, AVFrame *picture, const unsigned int width, const unsigned int height)
+{
   const register unsigned char *src = frame;
   register unsigned char *y = picture->data[0], 
     *u = picture->data[1], 
@@ -63,44 +64,45 @@ void uyvy422_yuv422p(const unsigned char *frame, AVFrame *picture, const unsigne
 }
 
 /* add a video output stream */
-AVStream *add_video_stream(AVFormatContext *oc, int codec_id, int width, int height) {
-    AVCodecContext *c;
-    AVStream *st;
-
-    st = av_new_stream(oc, 0);
-    if (!st) {
-        fprintf(stderr, "Could not alloc stream\n");
-        exit(1);
-    }
-    
-    c = &st->codec;
-    c->codec_id = codec_id;
-    c->codec_type = CODEC_TYPE_VIDEO;
-
-    /* put sample parameters */
-    c->bit_rate = 4000000;
-    /* resolution must be a multiple of two */
-    c->width = width;  
-    c->height = height;
-    //c->pix_fmt = PIX_FMT_YUV422P;
-    //c->dct_algo = FF_DCT_AUTO;
-    //c->idct_algo = FF_IDCT_AUTO;
-    //c->me_method = ME_ZERO;
-    /* frames per second */
-    c->frame_rate = STREAM_FRAME_RATE;  
-    c->frame_rate_base = 1;
-    c->gop_size = 0; /* emit one intra frame every n frames at most */
-    /* just for testing, we also add B frames */
-    /*
+AVStream *add_video_stream(AVFormatContext *oc, int codec_id, int width, int height)
+{
+  AVCodecContext *c;
+  AVStream *st;
+  
+  st = av_new_stream(oc, 0);
+  if (!st) {
+    fprintf(stderr, "Could not alloc stream\n");
+    exit(1);
+  }
+  
+  c = &st->codec;
+  c->codec_id = codec_id;
+  c->codec_type = CODEC_TYPE_VIDEO;
+  
+  /* put sample parameters */
+  c->bit_rate = 4000000;
+  /* resolution must be a multiple of two */
+  c->width = width;  
+  c->height = height;
+  //c->pix_fmt = PIX_FMT_YUV422P;
+  //c->dct_algo = FF_DCT_AUTO;
+  //c->idct_algo = FF_IDCT_AUTO;
+  //c->me_method = ME_ZERO;
+  /* frames per second */
+  c->frame_rate = STREAM_FRAME_RATE;  
+  c->frame_rate_base = 1;
+  c->gop_size = 0; /* emit one intra frame every n frames at most */
+  /* just for testing, we also add B frames */
+  /*
     if (c->codec_id == CODEC_ID_MPEG2VIDEO) {
-        c->max_b_frames = 2;
+    c->max_b_frames = 2;
     }
-    */
-    // some formats want stream headers to be seperate
-    if(!strcmp(oc->oformat->name, "mp4") || !strcmp(oc->oformat->name, "mov") || !strcmp(oc->oformat->name, "3gp"))
-        c->flags |= CODEC_FLAG_GLOBAL_HEADER;
-    
-    return st;
+  */
+  // some formats want stream headers to be seperate
+  if(!strcmp(oc->oformat->name, "mp4") || !strcmp(oc->oformat->name, "mov") || !strcmp(oc->oformat->name, "3gp"))
+    c->flags |= CODEC_FLAG_GLOBAL_HEADER;
+  
+  return st;
 }
 
 AVFrame *alloc_picture(int pix_fmt, int width, int height) {

@@ -20,7 +20,7 @@
 #define __CORIANDER_H__
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h>
+#include <config.h>
 #endif 
 
 #include <gnome.h>
@@ -29,8 +29,8 @@
 #include <libdc1394/dc1394_control.h>
 
 #ifdef HAVE_GDK_PIXBUF
-#  include <gdk/gdk.h>
-#  include <gdk-pixbuf/gdk-pixbuf.h>
+#include <gdk/gdk.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gdk-pixbuf/gdk-pixbuf-loader.h>
 #endif
 
