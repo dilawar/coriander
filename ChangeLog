@@ -2,6 +2,9 @@ Coriander, (c) 2000-2004 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 1.0.2
 
+   Jan 5, 2005, by Damien Douxchamps
+   - merged the patch for PVN saving capability from Jacob Gryn
+	
    Dec 27, 2004, by Damien Douxchamps
    - little optimization of pattern overlay
    - add [ and ] keys as controls for the image zoom

@@ -149,4 +149,5 @@ BayerSimple(unsigned char *src, unsigned char *dest, int sx, int sy, int type);
 void
 StereoDecode(unsigned char *src, unsigned char *dest, unsigned long long int NumPixels);
 
+
 #endif // __CONVERSIONS_H__
