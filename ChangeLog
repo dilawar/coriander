@@ -2,9 +2,20 @@ Coriander, (c) 2000-2001 Damien Douxchamps <douxchamps@ieee.org>
 
 Changes towards version 0.20:
 
-    Dec 19, by Damien Douxchamps
-    - Some compilation problems with gcc 2.91 cleaned after some input
-      from Rick Philbrick.
+    Dec 16, by Damien Douxchamps
+    - changed all ranges look: replaced (radio-) buttons by a
+      option_menu. A lot of code was updated.
+    - moved the zoom, focus, tilt and pan functions to the main window
+      notebook (a tab has been added). This will allow SDL display (in
+      a distant future) and also multi-display (several cams and
+      several displays handled by a single coriander program).
+    - removed a lot of unsused callbacks.
+    - added a period function to display and real threads, make the
+      ones of save and ftp functionnal. Every image service can now run
+      with its own framerate. The latter is a multiple of the receive
+      service framerate (= camera framerate): 1/1, 1/2, 1/3, 1/4,... 
+    - removed immediate/periodic modes because immmediate is the same
+      as a period of 1.
 	
     Dec 14, by Damien Douxchamps
     - make Real preference dialogs available only if Real is available
@@ -22,7 +33,7 @@ Changes towards version 0.20:
     - updated the thread mechanism to allow multi-camera. Yeah, that
       feature had disappeared...
     - new small procedure to allow cameras to use different channels.
-      This allows the use of several cameras with threads at the same
+      This allows the use of several cameras threads at the same
       time. There is no support for multi-display at this time (i.e.
       running several coriander on several cams on one linux box).
     - change of formats and fps now works.

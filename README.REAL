@@ -1,5 +1,5 @@
-This README is for an untested version of Coriander. It explains how to
-install and use the Real streaming capabilities of Coriander. 
+This README is for an untested feature of Coriander. It explains how to
+install and use the Real streaming capability.
 
 ****************** WARNING ******************
 
@@ -56,6 +56,6 @@ In order to check your Real installation, you can compile some test programs
 of the realproducer SDK. Just don't forget to run the server before executing
 the sample program. You can view the real content by running a RealPlayer
 with the location:
- my.server.machine.domain.xxx:8080/ramgen/encoder/your_filename.rm
+ my.server.machine.xxx:8080/ramgen/encoder/my_filename.rm
 
 

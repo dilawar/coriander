@@ -25,6 +25,7 @@
 #include <ftplib.h>
 #endif 
 
+#include <pthread.h>
 typedef enum
 {
   FTP_SCRATCH_SEQUENTIAL,

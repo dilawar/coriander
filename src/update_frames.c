@@ -154,7 +154,7 @@ UpdatePrefsDisplayFrame(void)
     }
 #else
   // XV is not available. we force the use of GDK.
-  preferences.display_method==DISPLAY_METHOD_GDK;
+  preferences.display_method=DISPLAY_METHOD_GDK;
   gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(preferences_window,"prefs_display_gdk"), TRUE);
   gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_display_auto"),FALSE);
   gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_display_xv"),FALSE);

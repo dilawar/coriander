@@ -22,6 +22,7 @@
 #define __THREAD_SAVE_H__
 
 
+#include <pthread.h>
 typedef enum
 {
   SAVE_SCRATCH_SEQUENTIAL,

@@ -33,7 +33,6 @@ coriander_SOURCES = \
 	build_menus.c build_menus.h \
 	update_ranges.c update_ranges.h \
 	build_ranges.c build_ranges.h \
-	callback_proc.c callback_proc.h \
 	conversions.c conversions.h \
 	topology.c topology.h \
 	preferences.cc preferences.h

@@ -1,11 +1,10 @@
 _______________________________________________________________________________
 
-	                    Open issues for Coriander 0.19b ...
-	   Damien Douxchamps <douxchamps@ieee.org> , November 26, 2001
+	                    Open issues for Coriander 0.20 ...
+	   Damien Douxchamps <douxchamps@ieee.org> , December 15, 2001
 _______________________________________________________________________________
 
 - video:
-	- overlay update rate different from camera rate
     	- I will add a button in the porthole window to quickly capture a file
       	  and save it to disk (this was previously called "capture single").
 - refresh/update:
@@ -23,10 +22,9 @@ _______________________________________________________________________________
 - misc stuff:
 	- add some artwork in the buttons for clearer presentation
 - threads:
-	- Real streaming thread
+	- Real streaming thread testing
 	- failsafe thread manipulation: some checks should be performed
 	  (typically during operation).
-	- port to C++
 - long term:
 	- add advanced features capability. This would probably require a
 	  DB of the supported cameras (Is there any cam supporting this

@@ -9,9 +9,7 @@
 ==========================================================================
 		
 
-(This README is for version 0.19b. Please also check 0.19: it is the same
-except for the layout. Got to www.sf.net/projects/coriander and answer the
-poll about which layout should be used in later versions!)
+(This README is for version 0.20.)
 
 Hello world!
 
@@ -101,6 +99,8 @@ _______________________
 - Glade (for development only)
 - automake 1.4
 - autoconf 2.13
+- RealServer and RealProducerSDK for REAL support (please read the README.REAL
+  file)
 
 In order to have Xv support you will maybe need some custom drivers, e.g. for
 Nvidia chipsets [10] or for ATI Rage chipsets [6].
