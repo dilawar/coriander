@@ -293,9 +293,9 @@ SaveThread(void* arg)
       }
       else {
 	pthread_mutex_unlock(&save_service->mutex_data);
-	usleep(0);
       }
     }
+    usleep(0);
   }
   if ((info->use_ram_buffer==TRUE)&&(info->scratch==SAVE_SCRATCH_VIDEO)) {
     fwrite(info->bigbuffer, 1, info->bigbuffer_position, fd);

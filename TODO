@@ -1,7 +1,7 @@
 _______________________________________________________________________________
 
 	                    Open issues for Coriander 0.99 ...
-	   Damien Douxchamps <ddouxchamps@users.sf.net> , June 13, 2003
+	   Damien Douxchamps <ddouxchamps@users.sf.net> , June 19, 2003
 _______________________________________________________________________________
 
 - video:
@@ -10,8 +10,6 @@ _______________________________________________________________________________
 
 - refresh/update:
 	- regularly update ranges in auto-mode
-	- position of video overaly does not follow window position when not
-	  receiving any frame.
 
 - multi-camera:
 	- control-lock function for stereo cameras

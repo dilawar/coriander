@@ -190,9 +190,9 @@ DisplayThread(void* arg)
       else { //
 	ConditionalTimeoutRedraw(display_service);
 	pthread_mutex_unlock(&display_service->mutex_data);
-	usleep(0);
       }
     }
+    usleep(0);
   }
   
   pthread_mutex_unlock(&info->mutex_cancel);
@@ -205,19 +205,23 @@ void
 ConditionalTimeoutRedraw(chain_t* service)
 {
   displaythread_info_t *info=NULL;
-
+  float interval;
   info=(displaythread_info_t*)service->data;
 
-  info->redraw_current_time=times(&info->redraw_tms_buf);
-  if ((float)(info->current_time-info->prev_time)/sysconf(_SC_CLK_TCK)>.5) { // redraw twice per second
+  if (service->current_buffer->width!=-1) {
+    info->redraw_current_time=times(&info->redraw_tms_buf);
+    interval=fabs((float)(info->redraw_current_time-info->redraw_prev_time)/sysconf(_SC_CLK_TCK));
+    if (interval>.25) { // redraw a minimal 4 times per second
 #ifdef HAVE_SDLLIB
-    if (SDL_LockYUVOverlay(info->SDL_overlay) == 0) {
-      SDLDisplayArea(service);
-      SDL_UnlockYUVOverlay(info->SDL_overlay);
-      SDL_DisplayYUVOverlay(info->SDL_overlay, &info->SDL_videoRect);
-    }
+      if (SDL_LockYUVOverlay(info->SDL_overlay) == 0) {
+	SDLDisplayArea(service);
+	SDL_UnlockYUVOverlay(info->SDL_overlay);
+	SDL_DisplayYUVOverlay(info->SDL_overlay, &info->SDL_videoRect);
+      }
 #endif
-    info->redraw_prev_time=times(&info->redraw_tms_buf);
+      //fprintf(stderr,"Display redrawn with time interval of %.3f sec\n",interval);
+      info->redraw_prev_time=times(&info->redraw_tms_buf);
+    }
   }
 }
 

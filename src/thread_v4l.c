@@ -207,9 +207,9 @@ V4lThread(void* arg)
       }
       else {
 	pthread_mutex_unlock(&v4l_service->mutex_data);
-	usleep(0);
       }
     }
+    usleep(0);
   }
 
   pthread_mutex_unlock(&info->mutex_cancel);
