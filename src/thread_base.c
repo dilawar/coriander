@@ -56,6 +56,7 @@ RollBuffers(chain_t* chain)
     tmp_buffer=chain->current_buffer;
     chain->current_buffer=chain->next_buffer;
     chain->next_buffer=tmp_buffer;
+    chain->next_buffer->used=0;
     chain->updated=1;
   }
   else {
@@ -69,6 +70,10 @@ RollBuffers(chain_t* chain)
 	chain->next_buffer=tmp_buffer;
 	chain->updated=1;
 	
+	if (chain->next_chain==NULL) { // if we are the last buffer, set used to 1
+	  chain->current_buffer->used=1;
+	}
+
 	// get previous chain image
 	tmp_buffer=chain->current_buffer;
 	chain->current_buffer=chain->prev_chain->next_buffer;
@@ -256,7 +261,7 @@ InitBuffer(buffer_t *buffer)
   buffer->mode=-1;
   buffer->bayer=-1;
   buffer->bpp=-1;
-  buffer->bayer_pattern=-1;//COLOR_FILTER_FORMAT7_BGGR
+  buffer->bayer_pattern=-1; //COLOR_FILTER_FORMAT7_BGGR
   buffer->stereo_decoding=-1;
   buffer->format=-1;
   buffer->format7_color_mode=-1;
@@ -264,4 +269,5 @@ InitBuffer(buffer_t *buffer)
   buffer->image=NULL;
   buffer->buffer_image_bytes=-1;
   buffer->buffer_size=0;
+  buffer->used=1;
 }

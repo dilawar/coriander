@@ -151,10 +151,10 @@ create_main_window (void)
   GtkWidget *hbox59;
   GtkWidget *iso_frame;
   GtkWidget *table62;
-  GtkWidget *label116;
+  GtkWidget *iso_start;
   GtkWidget *iso_stop;
   GtkWidget *iso_restart;
-  GtkWidget *iso_start;
+  GtkWidget *iso_nodrop;
   GtkWidget *trigger_frame;
   GtkWidget *table17;
   GtkWidget *trigger_mode;
@@ -1209,22 +1209,23 @@ create_main_window (void)
   gtk_widget_show (table62);
   gtk_container_add (GTK_CONTAINER (iso_frame), table62);
 
-  label116 = gtk_label_new ("");
-  gtk_widget_ref (label116);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "label116", label116,
+  iso_start = gtk_button_new_with_label (_("START"));
+  gtk_widget_ref (iso_start);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "iso_start", iso_start,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label116);
-  gtk_table_attach (GTK_TABLE (table62), label116, 0, 1, 3, 4,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_misc_set_alignment (GTK_MISC (label116), 0, 0.5);
+  gtk_widget_show (iso_start);
+  gtk_table_attach (GTK_TABLE (table62), iso_start, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (iso_start), 2);
+  gtk_widget_set_sensitive (iso_start, FALSE);
 
   iso_stop = gtk_button_new_with_label (_("STOP"));
   gtk_widget_ref (iso_stop);
   gtk_object_set_data_full (GTK_OBJECT (main_window), "iso_stop", iso_stop,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (iso_stop);
-  gtk_table_attach (GTK_TABLE (table62), iso_stop, 0, 2, 1, 2,
+  gtk_table_attach (GTK_TABLE (table62), iso_stop, 1, 2, 0, 1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (iso_stop), 2);
@@ -1235,22 +1236,21 @@ create_main_window (void)
   gtk_object_set_data_full (GTK_OBJECT (main_window), "iso_restart", iso_restart,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (iso_restart);
-  gtk_table_attach (GTK_TABLE (table62), iso_restart, 0, 2, 2, 3,
+  gtk_table_attach (GTK_TABLE (table62), iso_restart, 0, 2, 1, 2,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (iso_restart), 2);
   gtk_widget_set_sensitive (iso_restart, FALSE);
 
-  iso_start = gtk_button_new_with_label (_("START"));
-  gtk_widget_ref (iso_start);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "iso_start", iso_start,
+  iso_nodrop = gtk_check_button_new_with_label (_("No frame drop"));
+  gtk_widget_ref (iso_nodrop);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "iso_nodrop", iso_nodrop,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (iso_start);
-  gtk_table_attach (GTK_TABLE (table62), iso_start, 0, 2, 0, 1,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (iso_start), 2);
-  gtk_widget_set_sensitive (iso_start, FALSE);
+  gtk_widget_show (iso_nodrop);
+  gtk_table_attach (GTK_TABLE (table62), iso_nodrop, 0, 2, 2, 3,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (iso_nodrop), 2);
 
   trigger_frame = gtk_frame_new (_("Trigger"));
   gtk_widget_ref (trigger_frame);
@@ -3164,14 +3164,17 @@ create_main_window (void)
   gtk_signal_connect (GTK_OBJECT (prefs_video1394_device), "changed",
                       GTK_SIGNAL_FUNC (on_prefs_video1394_device_changed),
                       NULL);
+  gtk_signal_connect (GTK_OBJECT (iso_start), "clicked",
+                      GTK_SIGNAL_FUNC (on_iso_start_clicked),
+                      NULL);
   gtk_signal_connect (GTK_OBJECT (iso_stop), "clicked",
                       GTK_SIGNAL_FUNC (on_iso_stop_clicked),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (iso_restart), "clicked",
                       GTK_SIGNAL_FUNC (on_iso_restart_clicked),
                       NULL);
-  gtk_signal_connect (GTK_OBJECT (iso_start), "clicked",
-                      GTK_SIGNAL_FUNC (on_iso_start_clicked),
+  gtk_signal_connect (GTK_OBJECT (iso_nodrop), "toggled",
+                      GTK_SIGNAL_FUNC (on_iso_nodrop_toggled),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (trigger_count), "changed",
                       GTK_SIGNAL_FUNC (on_trigger_count_changed),

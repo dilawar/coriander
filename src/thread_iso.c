@@ -52,11 +52,17 @@ gint IsoStartThread(camera_t* cam)
       FreeChain(iso_service);
       return(-1);
     }
-    
-    switch (cam->selfid.packetZero.phySpeed) {
-    case 1: maxspeed=SPEED_200;break;
-    case 2: maxspeed=SPEED_400;break;
-    default: maxspeed=SPEED_100;break;
+
+    // ONLY IF LEGACY. OTHERWISE S800.
+    if (cam->misc_info.bmode_capable==0) {
+      switch (cam->selfid.packetZero.phySpeed) {
+      case 1: maxspeed=SPEED_200;break;
+      case 2: maxspeed=SPEED_400;break;
+      default: maxspeed=SPEED_100;break;
+      }
+    }
+    else {
+      maxspeed=SPEED_800;
     }
 
     // copy params if we are the current camera
@@ -212,102 +218,106 @@ IsoThread(void* arg)
   while (1) {
     pthread_testcancel();
     pthread_cleanup_push((void*)IsoCleanupThread, (void*)iso_service);
-    
-    if (info->receive_method == RECEIVE_METHOD_RAW1394)
-      dc1394_single_capture(info->handle, &info->capture);
-    else
-      dma_ok=dc1394_dma_single_capture(&info->capture);
-    
-    gettimeofday(&info->rawtime, NULL);
-    localtime_r(&info->rawtime.tv_sec, &(iso_service->current_buffer->captime));
-    iso_service->current_buffer->captime_usec=info->rawtime.tv_usec;
-    sprintf(iso_service->current_buffer->captime_string,"%04d%02d%02d-%02d%02d%02d-%03d",
-	    iso_service->current_buffer->captime.tm_year+1900,
-	    iso_service->current_buffer->captime.tm_mon+1,
-	    iso_service->current_buffer->captime.tm_mday,
-	    iso_service->current_buffer->captime.tm_hour,
-	    iso_service->current_buffer->captime.tm_min,
-	    iso_service->current_buffer->captime.tm_sec,
-	    iso_service->current_buffer->captime_usec/1000);
 
-    pthread_mutex_lock(&iso_service->mutex_data);
+    // IF FRAME USED (and we use no-drop mode)
+    if (((iso_service->current_buffer->used==1)&&(iso_service->camera->prefs.iso_nodrop==1))||
+	(iso_service->camera->prefs.iso_nodrop==0)) {
     
-    // check current buffer status
-    IsoThreadCheckParams(iso_service);
-    
-    // Stereo decoding
-    switch (iso_service->current_buffer->stereo_decoding) {
-    case STEREO_DECODING_INTERLACED:
-      StereoDecode((unsigned char *)info->capture.capture_buffer,info->temp,
-		   info->orig_sizex*info->orig_sizey*2);
-      break;
-    case STEREO_DECODING_FIELD:
-      memcpy(info->temp,(unsigned char *)info->capture.capture_buffer,info->orig_sizex*info->orig_sizey*2);
-      break;
-    case NO_STEREO_DECODING:
-      if ((iso_service->current_buffer->bayer!=NO_BAYER_DECODING)&&(info->cond16bit!=0)) {
-	y162y((unsigned char *)info->capture.capture_buffer,info->temp,
-	      info->orig_sizex*info->orig_sizey, iso_service->current_buffer->bpp);
+      if (info->receive_method == RECEIVE_METHOD_RAW1394)
+	dc1394_single_capture(info->handle, &info->capture);
+      else
+	dma_ok=dc1394_dma_single_capture(&info->capture);
+      
+      gettimeofday(&info->rawtime, NULL);
+      localtime_r(&info->rawtime.tv_sec, &(iso_service->current_buffer->captime));
+      iso_service->current_buffer->captime_usec=info->rawtime.tv_usec;
+      sprintf(iso_service->current_buffer->captime_string,"%04d%02d%02d-%02d%02d%02d-%03d",
+	      iso_service->current_buffer->captime.tm_year+1900,
+	      iso_service->current_buffer->captime.tm_mon+1,
+	      iso_service->current_buffer->captime.tm_mday,
+	      iso_service->current_buffer->captime.tm_hour,
+	      iso_service->current_buffer->captime.tm_min,
+	      iso_service->current_buffer->captime.tm_sec,
+	      iso_service->current_buffer->captime_usec/1000);
+      
+      pthread_mutex_lock(&iso_service->mutex_data);
+      
+      // check current buffer status
+      IsoThreadCheckParams(iso_service);
+      
+      // Stereo decoding
+      switch (iso_service->current_buffer->stereo_decoding) {
+      case STEREO_DECODING_INTERLACED:
+	StereoDecode((unsigned char *)info->capture.capture_buffer,info->temp,
+		     info->orig_sizex*info->orig_sizey*2);
+	break;
+      case STEREO_DECODING_FIELD:
+	memcpy(info->temp,(unsigned char *)info->capture.capture_buffer,info->orig_sizex*info->orig_sizey*2);
+	break;
+      case NO_STEREO_DECODING:
+	if ((iso_service->current_buffer->bayer!=NO_BAYER_DECODING)&&(info->cond16bit!=0)) {
+	  y162y((unsigned char *)info->capture.capture_buffer,info->temp,
+		info->orig_sizex*info->orig_sizey, iso_service->current_buffer->bpp);
+	}
+	else {
+	  // it is necessary to put this here and not in the thread init or IsoThreadCheckParams function because
+	  // the buffer might change at every capture (typically when capture is too slow and buffering is performed)
+	  info->temp=(unsigned char*)info->capture.capture_buffer;
+	}
+	break;
       }
-      else {
-	// it is necessary to put this here and not in the thread init or IsoThreadCheckParams function because
-	// the buffer might change at every capture (typically when capture is too slow and buffering is performed)
-	info->temp=(unsigned char*)info->capture.capture_buffer;
-      }
-      break;
-    }
-
-    // Bayer decoding
-    switch (iso_service->current_buffer->bayer) {
-    case BAYER_DECODING_NEAREST:
-      BayerNearestNeighbor(info->temp, iso_service->current_buffer->image,
-			   iso_service->current_buffer->width, iso_service->current_buffer->height, iso_service->current_buffer->bayer_pattern);
-      break;
-    case BAYER_DECODING_EDGE_SENSE:
-      BayerEdgeSense(info->temp, iso_service->current_buffer->image,
-		     iso_service->current_buffer->width, iso_service->current_buffer->height, iso_service->current_buffer->bayer_pattern);
-      break;
-    case BAYER_DECODING_SIMPLE:
-      BayerSimple(info->temp, iso_service->current_buffer->image,
-		  iso_service->current_buffer->width, iso_service->current_buffer->height, iso_service->current_buffer->bayer_pattern);
-      break;
-    case BAYER_DECODING_DOWNSAMPLE:
-      BayerDownsample(info->temp, iso_service->current_buffer->image,
+      
+      // Bayer decoding
+      switch (iso_service->current_buffer->bayer) {
+      case BAYER_DECODING_NEAREST:
+	BayerNearestNeighbor(info->temp, iso_service->current_buffer->image,
+			     iso_service->current_buffer->width, iso_service->current_buffer->height, iso_service->current_buffer->bayer_pattern);
+	break;
+      case BAYER_DECODING_EDGE_SENSE:
+	BayerEdgeSense(info->temp, iso_service->current_buffer->image,
+		       iso_service->current_buffer->width, iso_service->current_buffer->height, iso_service->current_buffer->bayer_pattern);
+	break;
+      case BAYER_DECODING_SIMPLE:
+	BayerSimple(info->temp, iso_service->current_buffer->image,
+		    iso_service->current_buffer->width, iso_service->current_buffer->height, iso_service->current_buffer->bayer_pattern);
+	break;
+      case BAYER_DECODING_DOWNSAMPLE:
+	BayerDownsample(info->temp, iso_service->current_buffer->image,
+			iso_service->current_buffer->width, iso_service->current_buffer->height, iso_service->current_buffer->bayer_pattern);
+	break;
+      case BAYER_DECODING_BILINEAR:
+	BayerBilinear(info->temp, iso_service->current_buffer->image,
 		      iso_service->current_buffer->width, iso_service->current_buffer->height, iso_service->current_buffer->bayer_pattern);
-      break;
-    case BAYER_DECODING_BILINEAR:
-      BayerBilinear(info->temp, iso_service->current_buffer->image,
-		    iso_service->current_buffer->width, iso_service->current_buffer->height, iso_service->current_buffer->bayer_pattern);
-      break;
-    case BAYER_DECODING_HQLINEAR:
-      BayerHQLinear(info->temp, iso_service->current_buffer->image,
-		    iso_service->current_buffer->width, iso_service->current_buffer->height, iso_service->current_buffer->bayer_pattern);
-      break;
-    case NO_BAYER_DECODING:
-      // this is only necessary if no stereo was performed
-      if (iso_service->current_buffer->stereo_decoding==NO_STEREO_DECODING) {
-	memcpy(iso_service->current_buffer->image, info->temp,
-	       iso_service->current_buffer->bytes_per_frame);
+	break;
+      case BAYER_DECODING_HQLINEAR:
+	BayerHQLinear(info->temp, iso_service->current_buffer->image,
+		      iso_service->current_buffer->width, iso_service->current_buffer->height, iso_service->current_buffer->bayer_pattern);
+	break;
+      case NO_BAYER_DECODING:
+	// this is only necessary if no stereo was performed
+	if (iso_service->current_buffer->stereo_decoding==NO_STEREO_DECODING) {
+	  memcpy(iso_service->current_buffer->image, info->temp,
+		 iso_service->current_buffer->bytes_per_frame);
+	}
+	break;
       }
-      break;
+      
+      // FPS computation:
+      iso_service->current_time=times(&iso_service->tms_buf);
+      iso_service->fps_frames++;
+      iso_service->processed_frames++;
+      
+      tmp=(float)(iso_service->current_time-iso_service->prev_time)/sysconf(_SC_CLK_TCK);
+      if (tmp==0)
+	iso_service->fps=fabs(0.0);
+      else
+	iso_service->fps=fabs((float)iso_service->fps_frames/tmp);
+      
+      if ((info->receive_method == RECEIVE_METHOD_VIDEO1394)&&(dma_ok==DC1394_SUCCESS))
+	dc1394_dma_done_with_buffer(&info->capture);
+    
+      pthread_mutex_unlock(&iso_service->mutex_data);
     }
-    
-    // FPS computation:
-    iso_service->current_time=times(&iso_service->tms_buf);
-    iso_service->fps_frames++;
-    iso_service->processed_frames++;
-    
-    tmp=(float)(iso_service->current_time-iso_service->prev_time)/sysconf(_SC_CLK_TCK);
-    if (tmp==0)
-      iso_service->fps=fabs(0.0);
-    else
-      iso_service->fps=fabs((float)iso_service->fps_frames/tmp);
-
-    if ((info->receive_method == RECEIVE_METHOD_VIDEO1394)&&(dma_ok==DC1394_SUCCESS))
-      dc1394_dma_done_with_buffer(&info->capture);
-    
-    pthread_mutex_unlock(&iso_service->mutex_data);
-    
     pthread_mutex_lock(&iso_service->mutex_data);
     RollBuffers(iso_service);
     pthread_mutex_unlock(&iso_service->mutex_data);

@@ -34,6 +34,7 @@ LoadConfigFile(void)
   preferences.camprefs.receive_method       = gnome_config_get_int("coriander/receive/method=0");
   preferences.camprefs.dma_buffer_size      = gnome_config_get_int("coriander/receive/dma_buffer_size=10");
   preferences.camprefs.video1394_dropframes = gnome_config_get_int("coriander/receive/video1394_dropframes=0");
+  preferences.camprefs.iso_nodrop           = gnome_config_get_int("coriander/receive/iso_nodrop=0");
   preferences.camprefs.save_format          = gnome_config_get_int("coriander/save/format=0");
   preferences.camprefs.save_period          = gnome_config_get_int("coriander/save/period=1");
   preferences.camprefs.save_append          = gnome_config_get_int("coriander/save/append=0");
@@ -83,6 +84,7 @@ CopyCameraPrefs(camera_t* cam) {
   cam->prefs.overlay_pattern        = preferences.camprefs.overlay_pattern;
   cam->prefs.receive_method         = preferences.camprefs.receive_method;
   cam->prefs.video1394_dropframes   = preferences.camprefs.video1394_dropframes;
+  cam->prefs.iso_nodrop             = preferences.camprefs.iso_nodrop;
   cam->prefs.dma_buffer_size        = preferences.camprefs.dma_buffer_size;
   cam->prefs.save_format            = preferences.camprefs.save_format;
   cam->prefs.save_period            = preferences.camprefs.save_period;

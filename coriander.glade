@@ -1795,28 +1795,31 @@
 		      <column_spacing>0</column_spacing>
 
 		      <widget>
-			<class>GtkLabel</class>
-			<name>label116</name>
-			<label></label>
-			<justify>GTK_JUSTIFY_CENTER</justify>
-			<wrap>False</wrap>
-			<xalign>0</xalign>
-			<yalign>0.5</yalign>
-			<xpad>0</xpad>
-			<ypad>0</ypad>
+			<class>GtkButton</class>
+			<name>iso_start</name>
+			<border_width>2</border_width>
+			<sensitive>False</sensitive>
+			<can_focus>True</can_focus>
+			<signal>
+			  <name>clicked</name>
+			  <handler>on_iso_start_clicked</handler>
+			  <last_modification_time>Mon, 08 Jan 2001 13:26:20 GMT</last_modification_time>
+			</signal>
+			<label>START</label>
+			<relief>GTK_RELIEF_NORMAL</relief>
 			<child>
 			  <left_attach>0</left_attach>
 			  <right_attach>1</right_attach>
-			  <top_attach>3</top_attach>
-			  <bottom_attach>4</bottom_attach>
+			  <top_attach>0</top_attach>
+			  <bottom_attach>1</bottom_attach>
 			  <xpad>0</xpad>
 			  <ypad>0</ypad>
-			  <xexpand>False</xexpand>
-			  <yexpand>False</yexpand>
+			  <xexpand>True</xexpand>
+			  <yexpand>True</yexpand>
 			  <xshrink>False</xshrink>
 			  <yshrink>False</yshrink>
 			  <xfill>True</xfill>
-			  <yfill>False</yfill>
+			  <yfill>True</yfill>
 			</child>
 		      </widget>
 
@@ -1834,10 +1837,10 @@
 			<label>STOP</label>
 			<relief>GTK_RELIEF_NORMAL</relief>
 			<child>
-			  <left_attach>0</left_attach>
+			  <left_attach>1</left_attach>
 			  <right_attach>2</right_attach>
-			  <top_attach>1</top_attach>
-			  <bottom_attach>2</bottom_attach>
+			  <top_attach>0</top_attach>
+			  <bottom_attach>1</bottom_attach>
 			  <xpad>0</xpad>
 			  <ypad>0</ypad>
 			  <xexpand>True</xexpand>
@@ -1865,8 +1868,8 @@
 			<child>
 			  <left_attach>0</left_attach>
 			  <right_attach>2</right_attach>
-			  <top_attach>2</top_attach>
-			  <bottom_attach>3</bottom_attach>
+			  <top_attach>1</top_attach>
+			  <bottom_attach>2</bottom_attach>
 			  <xpad>0</xpad>
 			  <ypad>0</ypad>
 			  <xexpand>True</xexpand>
@@ -1879,31 +1882,31 @@
 		      </widget>
 
 		      <widget>
-			<class>GtkButton</class>
-			<name>iso_start</name>
+			<class>GtkCheckButton</class>
+			<name>iso_nodrop</name>
 			<border_width>2</border_width>
-			<sensitive>False</sensitive>
 			<can_focus>True</can_focus>
 			<signal>
-			  <name>clicked</name>
-			  <handler>on_iso_start_clicked</handler>
-			  <last_modification_time>Mon, 08 Jan 2001 13:26:20 GMT</last_modification_time>
+			  <name>toggled</name>
+			  <handler>on_iso_nodrop_toggled</handler>
+			  <last_modification_time>Mon, 07 Feb 2005 05:42:37 GMT</last_modification_time>
 			</signal>
-			<label>START</label>
-			<relief>GTK_RELIEF_NORMAL</relief>
+			<label>No frame drop</label>
+			<active>False</active>
+			<draw_indicator>True</draw_indicator>
 			<child>
 			  <left_attach>0</left_attach>
 			  <right_attach>2</right_attach>
-			  <top_attach>0</top_attach>
-			  <bottom_attach>1</bottom_attach>
+			  <top_attach>2</top_attach>
+			  <bottom_attach>3</bottom_attach>
 			  <xpad>0</xpad>
 			  <ypad>0</ypad>
-			  <xexpand>True</xexpand>
-			  <yexpand>True</yexpand>
+			  <xexpand>False</xexpand>
+			  <yexpand>False</yexpand>
 			  <xshrink>False</xshrink>
 			  <yshrink>False</yshrink>
 			  <xfill>True</xfill>
-			  <yfill>True</yfill>
+			  <yfill>False</yfill>
 			</child>
 		      </widget>
 		    </widget>

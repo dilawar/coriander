@@ -2,6 +2,10 @@ Coriander, (c) 2000-2005 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 1.0.2
 
+   Feb 7, 2005, by Damien Douxchamps
+   - detect speed_800 in thread_iso
+   - optional 'no frame drop' behaviour for the image pipe
+	
    Feb 4, 2005, by Damien Douxchamps
    - fixed wrong bytes per pixel in getDepth() (thread_save.c)
    - updated the AUTHOR file

@@ -432,4 +432,8 @@ void
 on_save_append_menu_activate             (GtkEditable     *editable,
 					  gpointer         user_data);
 
+void
+on_iso_nodrop_toggled                  (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
 #endif // __CALLBACKS_H__

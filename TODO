@@ -50,6 +50,13 @@ _______________________________________________________________________________
 	- verify the compilation flags originally used for mpeg (-mmx,...)
 	- add options to MPEG service (codec, basic params?)
 	- FTP should be upgraded when the save service is completed and tested
+	- errors should be sent to dialogs, not in the status window which is only
+	  good for warnings/status messages
+	- option for the RECEIVE service to get frames from the DMA buffer only if
+	  the frames have been used by the following service. Previously, the advantage
+	  of the DMA buffer were lost after the ISO thread, which could typically lead
+	  to dropped frames in the save service
+	- report frames that were dropped by the kernel drivers
 
 - long term:
 	- add advanced features capability. This would probably require a

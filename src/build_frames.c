@@ -99,6 +99,7 @@ BuildIsoFrame(void)
   gtk_widget_set_sensitive(lookup_widget(main_window,"iso_restart"),camera->misc_info.is_iso_on);
   gtk_widget_set_sensitive(lookup_widget(main_window,"iso_stop"),camera->misc_info.is_iso_on);
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window,"sync_control_button")),preferences.sync_control);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window,"iso_nodrop")),camera->prefs.iso_nodrop);
 
 }
 

@@ -53,6 +53,7 @@ typedef struct _CamPrefs
   float display_redraw_rate;
   int receive_method;
   char *video1394_device;
+  int iso_nodrop;
   int video1394_dropframes;
   int dma_buffer_size;
   char *save_filename;
@@ -216,6 +217,10 @@ typedef struct _Buffer_T
   struct tm captime;
   int captime_usec;
   char captime_string[19];
+
+  int used; // set to 1 if the buffer has already been used by a service. Only the last thread can do
+            // this change. The ISO thread can be set to take that flag into account or not. EFFECT:
+            // avoids framedrop in association with a sufficiently large DMA buffer
 
 } buffer_t;
 

@@ -1598,3 +1598,13 @@ on_save_to_dir_toggled                 (GtkToggleButton *togglebutton,
   UpdatePrefsSaveFrame();
 }
 
+
+void
+on_iso_nodrop_toggled                  (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  camera->prefs.iso_nodrop=togglebutton->active;
+  gnome_config_set_int("coriander/receive/iso_nodrop",camera->prefs.iso_nodrop);
+  gnome_config_sync();
+}
+
