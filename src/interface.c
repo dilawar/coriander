@@ -1121,7 +1121,7 @@ create_main_window (void)
   gtk_box_pack_start (GTK_BOX (hbox68), label153, FALSE, FALSE, 0);
   gtk_misc_set_padding (GTK_MISC (label153), 5, 0);
 
-  dma_buffer_size_adj = gtk_adjustment_new (10, 2, 999999, 1, 10, 10);
+  dma_buffer_size_adj = gtk_adjustment_new (10, 4, 999999, 1, 10, 10);
   dma_buffer_size = gtk_spin_button_new (GTK_ADJUSTMENT (dma_buffer_size_adj), 1, 0);
   gtk_widget_ref (dma_buffer_size);
   gtk_object_set_data_full (GTK_OBJECT (main_window), "dma_buffer_size", dma_buffer_size,

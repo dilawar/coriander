@@ -2,6 +2,9 @@ Coriander, (c) 2000-2004 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 1.0.0
 	
+   Jul 7, 2004, by Damien Douxchamps
+   - minimum DMA buffer size set to 4. 2 obviously leads to problems.
+	
    Jun 2nd, 2004, by Damien Douxchamps
    - fixed a nasty bug spotted by greying (see SF bugsite for details)
 	
