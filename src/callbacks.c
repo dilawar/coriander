@@ -325,7 +325,7 @@ on_edit_format7_color_activate             (GtkMenuItem     *menuitem,
     format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].color_coding_id=(int)user_data;
 
   UpdateOptionFrame();
-  // update bpp range here.
+  UpdateFormat7BppRange();
 
 }
 

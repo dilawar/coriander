@@ -4,7 +4,8 @@ Changes towards version 0.26
 
    September 11, 2002, by Damien Douxchamps
    - added 'format_7' to f7 modes string in format menu.
-   - little bpp sensitiveness correction
+   - little bit-per-pixel sensitiveness correction
+   - update byte-per-packet when changing F7 mode
 	
    September 10, 2002, by Damien Douxchamps
    - added a bpp setting to get nice pictures from 16bpp modes used
