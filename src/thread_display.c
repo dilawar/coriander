@@ -277,7 +277,7 @@ sdlInit(chain_t *display_service)
   return(1);
 }
 
-// we should optimize this for RGB too...
+// we should optimize this for RGB too: RGB modes could use RGB-SDL instead of YUV overlay
 void
 convert_to_yuv_for_SDL(unsigned char *src, unsigned char *dest, int mode, int width, int height)
 {

@@ -97,7 +97,8 @@ toolboxes and SDL libs are checked.
   Kernel modules to be compiled: ieee1394, ohci1394, raw1394 and video1394
 - XFree 3.3.6 (XFree 4.1.0 recommended for video overlay)
 - Gtk 1.2 & Gtk-devel
-- libraw1394 [5] and libdc1394 [2] installed
+- libraw1394 [5] and libdc1394 [2] installed. A CVS version of libdc1394 later
+  than 2002-02-01 is required. 
 - ftplib installed for FTP support [9]
 - SDL installed for display support [11]
 - Glade (for development only)
