@@ -2,6 +2,9 @@ Coriander, (c) 2000-2002 Damien Douxchamps <douxchamps@ieee.org>
 
 Changes towards version 0.26
 
+   September 27, 2002, by Damien Douxchamps
+   - swapped dma_release and dma_unlisten functions in thread_iso.c
+	
    September 24, 2002, by Damien Douxchamps
    - first implementation of an live fps display. Nothing is shown
      right now because I can't get it to work with GTK. You can 

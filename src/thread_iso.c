@@ -370,8 +370,8 @@ gint IsoStopThread(void)
 
       if (info->receive_method == RECEIVE_METHOD_VIDEO1394)
 	{
-	  dc1394_dma_release_camera(info->handle, &info->capture);
 	  dc1394_dma_unlisten(camera->handle, &info->capture);
+	  dc1394_dma_release_camera(info->handle, &info->capture);
 	}
       else 
 	dc1394_release_camera(camera->handle, &info->capture);
