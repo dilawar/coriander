@@ -112,17 +112,16 @@ UpdateMemoryFrame(void)
 void
 UpdateCaptureFrame(void)
 {
-  if (misc_info->is_iso_on>0)
-    {
-      gtk_widget_set_sensitive( GTK_WIDGET(lookup_widget( capture_window, "capture_start")), TRUE); // added by DDouxchamps
-      gtk_widget_set_sensitive( GTK_WIDGET(lookup_widget( capture_window, "capture_single")), TRUE);//
-    }
+  gtk_widget_set_sensitive( GTK_WIDGET(lookup_widget( capture_window, "capture_start")), misc_info->is_iso_on); // added by DDouxchamps
+  gtk_widget_set_sensitive( GTK_WIDGET(lookup_widget( capture_window, "capture_single")), misc_info->is_iso_on);
 }
 
 void
 UpdateIsoFrame(void)
 {
-  
+  gtk_widget_set_sensitive(lookup_widget(commander_window,"iso_start"),!misc_info->is_iso_on);
+  gtk_widget_set_sensitive(lookup_widget(commander_window,"iso_restart"),misc_info->is_iso_on);
+  gtk_widget_set_sensitive(lookup_widget(commander_window,"iso_stop"),misc_info->is_iso_on);
 }
 
 void

@@ -35,6 +35,7 @@ extern GtkWidget *commander_window;
 extern dc1394_feature_set *feature_set;
 extern dc1394_camerainfo *camera;
 extern GtkWidget *capture_window;
+extern dc1394_miscinfo *misc_info;
 
 void
 BuildCameraFrame(void)
@@ -100,11 +101,13 @@ BuildCaptureFrame(void)
 void
 BuildIsoFrame(void)
 {
+  int err;
   // TODO: only if ISO capable
+  err=dc1394_get_iso_status(camera->handle,camera->id,&misc_info->is_iso_on);
   gtk_widget_set_sensitive(lookup_widget(commander_window,"iso_frame"),TRUE);
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"iso_start"),TRUE);
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"iso_restart"),TRUE);
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"iso_stop"),TRUE);
+  gtk_widget_set_sensitive(lookup_widget(commander_window,"iso_start"),!misc_info->is_iso_on);
+  gtk_widget_set_sensitive(lookup_widget(commander_window,"iso_restart"),misc_info->is_iso_on);
+  gtk_widget_set_sensitive(lookup_widget(commander_window,"iso_stop"),misc_info->is_iso_on);
 
 }
 

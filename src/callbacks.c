@@ -44,6 +44,7 @@ extern GtkWidget *format7_window;
 extern GtkWidget *status_window;
 extern GtkWidget *temperature_window;
 extern GtkWidget *about_window;
+extern GtkWidget *commander_window;
 extern GtkWidget *aperture_window;
 extern GtkWidget *color_window;
 extern GtkWidget *porthole_window;
@@ -1098,8 +1099,9 @@ on_iso_start_clicked                   (GtkButton       *button,
   else
     {
       misc_info->is_iso_on=DC1394_TRUE;
-      gtk_widget_set_sensitive( GTK_WIDGET(lookup_widget( GTK_WIDGET(button), "capture_start")), TRUE);
-      gtk_widget_set_sensitive( GTK_WIDGET(lookup_widget( GTK_WIDGET(button), "capture_single")), TRUE);
+      gtk_widget_set_sensitive( GTK_WIDGET(lookup_widget(capture_window, "capture_start")), TRUE);
+      gtk_widget_set_sensitive( GTK_WIDGET(lookup_widget(capture_window, "capture_single")), TRUE);
+      UpdateIsoFrame();
     }
   if (pi.is_open && (pi.handle == NULL) && (IsoStartThread(window)>0) )
     gIdleID = gtk_idle_add( porthole_idler, NULL);
@@ -1125,8 +1127,9 @@ on_iso_stop_clicked                    (GtkButton       *button,
   else
     {
       misc_info->is_iso_on=DC1394_FALSE;
-      gtk_widget_set_sensitive( lookup_widget( GTK_WIDGET(button), "capture_start"), FALSE); // added by DDouxchamps
-      gtk_widget_set_sensitive( lookup_widget( GTK_WIDGET(button), "capture_single"), FALSE);//
+      gtk_widget_set_sensitive( lookup_widget(capture_window, "capture_start"), FALSE); // added by DDouxchamps
+      gtk_widget_set_sensitive( lookup_widget(capture_window, "capture_single"), FALSE);//
+      UpdateIsoFrame();
     }
   UpdateTransferStatusFrame();
 }
@@ -1136,9 +1139,16 @@ void
 on_iso_restart_clicked                 (GtkButton       *button,
                                         gpointer         user_data)
 {
-  int err, channel, speed;
+  on_iso_stop_clicked(GTK_BUTTON(lookup_widget(commander_window,"iso_stop")),NULL);
+  on_iso_start_clicked(GTK_BUTTON(lookup_widget(commander_window,"iso_start")),NULL);
+  /*  int err, channel, speed;
   GtkWidget *window = lookup_widget(porthole_window, "camera_scope");
 
+  if ( (pi.is_open = (pi.handle != NULL)) )
+    {
+      gtk_idle_remove(gIdleID);
+      IsoStopThread();
+    }
   if ( (pi.is_open = (pi.handle != NULL)) ) IsoStopThread();
   err=dc1394_stop_iso_transmission(camera->handle,camera->id);
   if (!err) MainError("Could not stop ISO transmission");
@@ -1151,10 +1161,11 @@ on_iso_restart_clicked                 (GtkButton       *button,
     {
       misc_info->is_iso_on=DC1394_TRUE;
       if (pi.is_open) IsoStartThread(window);
-      gtk_widget_set_sensitive( lookup_widget( GTK_WIDGET(button), "capture_start"), TRUE);
-      gtk_widget_set_sensitive( lookup_widget( GTK_WIDGET(button), "capture_stop"), TRUE);
-      gtk_widget_set_sensitive( lookup_widget( GTK_WIDGET(button), "capture_single"), TRUE);
+      gtk_widget_set_sensitive( lookup_widget(capture_window, "capture_start"), TRUE);
+      gtk_widget_set_sensitive( lookup_widget(capture_window, "capture_stop"), TRUE);
+      gtk_widget_set_sensitive( lookup_widget(capture_window, "capture_single"), TRUE);
     }
+  */
   UpdateTransferStatusFrame();
 }
 

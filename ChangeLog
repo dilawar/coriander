@@ -4,6 +4,7 @@ Changes towards version 0.18:
 
     Sept 26, by Damien Douxchamps:
     - corrected a bug concerning the camera select frame: table 9 was missing.
+    - cleaned the ISO button callbacks and added proper button activation.
 	
     Sept 25, by Damien Douxchamps:
     - I removed some unfinalized things that were not making Coriander look
