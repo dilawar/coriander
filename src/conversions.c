@@ -457,6 +457,7 @@ BayerNearestNeighbor(unsigned char *src, unsigned char *dest, int sx, int sy, ba
   switch (type)
     {
     case BAYER_PATTERN_GRBG: //-------------------------------------------
+    case BAYER_PATTERN_GBRG:
       // copy original RGB data to output images
       for (i=0;i<sy;i+=2)
 	for (j=0;j<sx;j+=2)
@@ -502,6 +503,7 @@ BayerNearestNeighbor(unsigned char *src, unsigned char *dest, int sx, int sy, ba
       
       break;
     case BAYER_PATTERN_BGGR: //-------------------------------------------
+    case BAYER_PATTERN_RGGB:
       // copy original data
       for (i=0;i<sy;i+=2)
 	for (j=0;j<sx;j+=2)
@@ -585,6 +587,7 @@ BayerEdgeSense(unsigned char *src, unsigned char *dest, int sx, int sy, bayer_pa
   switch (type)
     {
     case BAYER_PATTERN_GRBG://---------------------------------------------------------
+    case BAYER_PATTERN_GBRG:
       // copy original RGB data to output images
       for (i=0;i<sy;i+=2)
 	for (j=0;j<sx;j+=2)
@@ -681,6 +684,7 @@ BayerEdgeSense(unsigned char *src, unsigned char *dest, int sx, int sy, bayer_pa
       break;
 
     case BAYER_PATTERN_BGGR: //---------------------------------------------------------
+    case BAYER_PATTERN_RGGB:
       // copy original RGB data to output images
       for (i=0;i<sy;i+=2)
 	for (j=0;j<sx;j+=2)
@@ -812,6 +816,7 @@ BayerDownsample(unsigned char *src, unsigned char *dest, int sx, int sy, bayer_p
   switch (type)
     {
     case BAYER_PATTERN_GRBG://---------------------------------------------------------
+    case BAYER_PATTERN_GBRG:
       for (i=0;i<sy;i+=2)
 	for (j=0;j<sx;j+=2)
 	  {
@@ -824,6 +829,7 @@ BayerDownsample(unsigned char *src, unsigned char *dest, int sx, int sy, bayer_p
 	  }
       break;
     case BAYER_PATTERN_BGGR://---------------------------------------------------------
+    case BAYER_PATTERN_RGGB:
       for (i=0;i<sy;i+=2)
 	for (j=0;j<sx;j+=2)
 	  {
