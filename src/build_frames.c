@@ -137,8 +137,7 @@ void
 BuildPrefsSaveFrame(void)
 {
   // frame drop
-  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(main_window,
-							  "prefs_save_period"), preferences.save_period);
+  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(main_window, "prefs_save_period"), preferences.save_period);
   // scratch
   switch(preferences.save_scratch) {
   case SAVE_SCRATCH_OVERWRITE:
@@ -164,6 +163,11 @@ BuildPrefsSaveFrame(void)
     gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(main_window, "prefs_save_date_tag"),TRUE);
   else
     gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(main_window, "prefs_save_num_tag"),TRUE);
+
+  // ram buffer
+  gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(main_window, "use_ram_buffer"),preferences.use_ram_buffer);
+  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(main_window,"ram_buffer_size"), preferences.ram_buffer_size);
+  
 }
 
 void

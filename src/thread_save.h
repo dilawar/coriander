@@ -64,6 +64,10 @@ typedef struct
   int                datenum;
   long int           period;
   int                rawdump;
+  unsigned char*     bigbuffer;
+  unsigned long int  bigbuffer_position;
+  unsigned long int  ram_buffer_size;
+  int                use_ram_buffer;
 
   // timing data:
   struct tms tms_buf;

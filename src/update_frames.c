@@ -63,6 +63,8 @@ UpdatePrefsSaveFrame(void)
 			   preferences.save_scratch==SAVE_SCRATCH_SEQUENTIAL);
   gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_save_num_tag"),
 			   preferences.save_scratch==SAVE_SCRATCH_SEQUENTIAL);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"ram_buffer_frame"), preferences.use_ram_buffer && (preferences.save_scratch==SAVE_SCRATCH_SEQUENCE));
+  gtk_widget_set_sensitive(lookup_widget(main_window,"use_ram_buffer"), preferences.save_scratch==SAVE_SCRATCH_SEQUENCE);
 }
 
 

@@ -178,8 +178,7 @@ V4lThread(void* arg)
     /* Clean cancel handlers */
     pthread_mutex_lock(&info->mutex_cancel);
     if (info->cancel_req>0) {
-      pthread_mutex_unlock(&info->mutex_cancel);
-      return ((void*)1);
+      break;
     }
     else {
       pthread_mutex_unlock(&info->mutex_cancel);
@@ -212,6 +211,10 @@ V4lThread(void* arg)
       }
     }
   }
+
+  pthread_mutex_unlock(&info->mutex_cancel);
+  return ((void*)1);
+
 }
 
 

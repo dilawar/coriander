@@ -2,6 +2,14 @@ Coriander, (c) 2000-2003 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 0.99
 
+   June 13, 2003, by Damien Douxchamps
+   - added a RAM buffer option for saving sequences. The whole sequence is
+     first dumped to RAM, and when the allocated buffer is full the thread
+     exits and save everything to the file. Good for fast acquisitions.
+     There is still a little problem: one needs to 'stop' the thread
+     manually (click on the service button) to really clean it. The thread
+     can't cancel itself but I'll look into that.
+	
    June 12, 2003, by Damien Douxchamps
    - fixed some problems in transmission of GUI parameters to threads
    - removed some free() in main.c that prevented the program from exiting

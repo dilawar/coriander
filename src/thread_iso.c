@@ -487,7 +487,7 @@ IsoThreadCheckParams(chain_t *iso_service)
 	  free(info->temp);
 	  //fprintf(stderr,"temp freed\n");
 	}
-	info->temp=(unsigned char *)malloc(temp_requested_size*10);
+	info->temp=(unsigned char *)malloc(temp_requested_size*sizeof(unsigned char));
 	info->temp_allocated=1;
 	info->temp_size=temp_requested_size;
 	//fprintf(stderr,"temp allocated with size %d at 0x%x for a resolution of %d x %d\n",temp_requested_size,info->temp,

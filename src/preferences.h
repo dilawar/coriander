@@ -38,6 +38,8 @@ typedef struct _PrefsInfo
   int save_period;
   int save_convert;
   int save_datenum;
+  int use_ram_buffer;
+  unsigned int ram_buffer_size;
   char *ftp_address;
   char *ftp_user;
   char *ftp_password;

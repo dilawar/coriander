@@ -1206,3 +1206,46 @@ on_prefs_ftp_num_tag_toggled           (GtkToggleButton *togglebutton,
   }
 }
 
+
+void
+on_ram_buffer_toggled                  (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  preferences.use_ram_buffer=togglebutton->active;
+  gnome_config_set_int("coriander/save/use_ram_buffer",preferences.use_ram_buffer);
+  gnome_config_sync();
+  UpdatePrefsSaveFrame();
+}
+
+
+void
+on_ram_buffer_size_changed             (GtkEditable     *editable,
+                                        gpointer         user_data)
+{
+  preferences.ram_buffer_size=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(main_window,"ram_buffer_size")));
+  gnome_config_set_int("coriander/save/ram_buffer_size",preferences.ram_buffer_size);
+  gnome_config_sync();
+  UpdatePrefsSaveFrame();
+}
+
+
+void
+on_malloc_test_clicked                 (GtkButton       *button,
+                                        gpointer         user_data)
+{
+  unsigned char *temp;
+  char stemp[STRING_SIZE];
+
+  // test if we can allocate enough memory
+  sprintf(stemp,"Trying to allocate %d MB...", preferences.ram_buffer_size);
+  MainStatus(stemp);
+  temp=(unsigned char*)malloc(preferences.ram_buffer_size*1024*1024*sizeof(unsigned char));
+
+  if (temp==NULL)
+    MainStatus("\tFailed to allocate memory");
+  else {
+    MainStatus("\tAllocation succeeded");
+    free(temp);
+  }
+}
+

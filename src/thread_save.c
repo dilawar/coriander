@@ -72,7 +72,22 @@ SaveStartThread(camera_t* cam)
     info->datenum=preferences.save_datenum;
     // if format extension is ".raw", we dump raw data on the file and perform no conversion
     info->rawdump=preferences.save_convert;
-    
+    info->use_ram_buffer=preferences.use_ram_buffer;
+    info->ram_buffer_size=preferences.ram_buffer_size*1024*1024;
+
+    info->bigbuffer=NULL;
+
+    if (info->use_ram_buffer==TRUE) {
+      info->bigbuffer_position=0;
+      info->bigbuffer=(unsigned char*)malloc(info->ram_buffer_size*sizeof(unsigned char));
+      if (info->bigbuffer==NULL) {
+	MainError("Could not allocate memory for RAM buffer save service");
+	pthread_mutex_unlock(&save_service->mutex_data);
+	FreeChain(save_service);
+	return(0);
+      }
+    }
+
     //pthread_mutex_unlock(&save_service->mutex_data);
     
     /* Insert chain and start service*/
@@ -117,6 +132,8 @@ SaveCleanupThread(void* arg)
 
   /* Mendatory cleanups: */
   pthread_mutex_unlock(&save_service->mutex_data);
+
+  //fprintf(stderr,"cleanup thread!<n");
 
   return(NULL);
 }
@@ -180,6 +197,11 @@ SaveThread(void* arg)
     fd=fopen(filename_out,"w");
     if (fd==NULL)
       MainError("Can't open file for saving");
+    /*
+    if (info->use_ram_buffer>0) {
+      pthread_cleanup_push((void*)SaveStopThread, (void*) save_service->camera);
+    }
+    */
   }
   
   // time inits:
@@ -190,11 +212,7 @@ SaveThread(void* arg)
     /* Clean cancel handlers */
     pthread_mutex_lock(&info->mutex_cancel);
     if (info->cancel_req>0) {
-      if ((info->scratch==SAVE_SCRATCH_SEQUENCE)&&(fd!=NULL)) {
-	fclose(fd);
-      }
-      pthread_mutex_unlock(&info->mutex_cancel);
-      return ((void*)1);
+      break;
     }
     else {
       pthread_mutex_unlock(&info->mutex_cancel);
@@ -230,28 +248,42 @@ SaveThread(void* arg)
 	      break;
 	    }
 	    
-	    if (info->rawdump) {
-	      if (info->scratch==SAVE_SCRATCH_SEQUENCE) {
-		fwrite(save_service->current_buffer->image, 1, save_service->current_buffer->bytes_per_frame, fd);
+	    // rambuffer operation
+	    if (info->use_ram_buffer>0) {
+	      if (info->ram_buffer_size-info->bigbuffer_position>=save_service->current_buffer->bytes_per_frame) {
+		memcpy(&info->bigbuffer[info->bigbuffer_position], save_service->current_buffer->image, save_service->current_buffer->bytes_per_frame);
+		info->bigbuffer_position+=save_service->current_buffer->bytes_per_frame;
+		//fprintf(stderr,"remains: %ld bytes\n",info->ram_buffer_size-info->bigbuffer_position);
 	      }
 	      else {
-		Dump2File(filename_out,save_service);
+		// buffer is full, exit thread
+		info->cancel_req=1;
 	      }
 	    }
+	    // normal operation
 	    else {
-	      convert_to_rgb(save_service->current_buffer, info->buffer);
-	      im=gdk_imlib_create_image_from_data(info->buffer,NULL, save_service->current_buffer->width, save_service->current_buffer->height);
-	      if (im != NULL) {
-		if (gdk_imlib_save_image(im, filename_out, NULL)==0) {
-		  MainError("Can't save image with Imlib!");
+	      if (info->rawdump>0) {
+		if (info->scratch==SAVE_SCRATCH_SEQUENCE) {
+		  fwrite(save_service->current_buffer->image, 1, save_service->current_buffer->bytes_per_frame, fd);
 		}
-		gdk_imlib_kill_image(im);
+		else {
+		  Dump2File(filename_out,save_service);
+		}
 	      }
 	      else {
-		MainError("Can't create gdk image!");
+		convert_to_rgb(save_service->current_buffer, info->buffer);
+		im=gdk_imlib_create_image_from_data(info->buffer,NULL, save_service->current_buffer->width, save_service->current_buffer->height);
+		if (im != NULL) {
+		  if (gdk_imlib_save_image(im, filename_out, NULL)==0) {
+		    MainError("Can't save image with Imlib!");
+		  }
+		  gdk_imlib_kill_image(im);
+		}
+		else {
+		  MainError("Can't create gdk image!");
+		}
 	      }
 	    }
-	    
 	    info->frames++;
 
 	  }
@@ -269,8 +301,24 @@ SaveThread(void* arg)
       }
     }
   }
-  if (info->scratch==SAVE_SCRATCH_SEQUENCE)
+  //fprintf(stderr,"cancel requested\n");
+  if (info->use_ram_buffer>0) {
+    //fprintf(stderr,"writing to file\n");
+    fwrite(info->bigbuffer, 1, info->bigbuffer_position, fd);
+    //fprintf(stderr,"wrote %ld bytes to file\n",info->bigbuffer_position);
+  }
+
+  if ((info->scratch==SAVE_SCRATCH_SEQUENCE)&&(fd!=NULL)) {
     fclose(fd);
+  }
+
+  if (info->bigbuffer!=NULL) {
+    //fprintf(stderr,"freeing bigbuffer\n");
+    free(info->bigbuffer);
+    //fprintf(stderr,"freed\n");
+  }
+  pthread_mutex_unlock(&info->mutex_cancel);
+  return ((void*)1);
 }
 
 

@@ -181,11 +181,19 @@ create_main_window (void)
   GSList *save_datenum_group = NULL;
   GtkWidget *prefs_save_date_tag;
   GtkWidget *prefs_save_num_tag;
+  GtkWidget *use_ram_buffer;
+  GtkWidget *hbox67;
   GtkWidget *prefs_save_convert_frame;
   GtkWidget *vbox71;
   GSList *save_convert_group = NULL;
   GtkWidget *prefs_save_convert;
   GtkWidget *prefs_save_noconvert;
+  GtkWidget *ram_buffer_frame;
+  GtkWidget *table75;
+  GtkObject *ram_buffer_size_adj;
+  GtkWidget *ram_buffer_size;
+  GtkWidget *label152;
+  GtkWidget *malloc_test;
   GtkWidget *label145;
   GtkWidget *vbox79;
   GtkWidget *frame9;
@@ -1347,12 +1355,28 @@ create_main_window (void)
   gtk_widget_show (prefs_save_num_tag);
   gtk_box_pack_start (GTK_BOX (hbox66), prefs_save_num_tag, TRUE, TRUE, 0);
 
+  use_ram_buffer = gtk_check_button_new_with_label (_("Use RAM buffering"));
+  gtk_widget_ref (use_ram_buffer);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "use_ram_buffer", use_ram_buffer,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (use_ram_buffer);
+  gtk_table_attach (GTK_TABLE (table74), use_ram_buffer, 1, 2, 2, 3,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  hbox67 = gtk_hbox_new (TRUE, 0);
+  gtk_widget_ref (hbox67);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "hbox67", hbox67,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (hbox67);
+  gtk_box_pack_start (GTK_BOX (vbox54), hbox67, FALSE, TRUE, 0);
+
   prefs_save_convert_frame = gtk_frame_new (_("Conversions"));
   gtk_widget_ref (prefs_save_convert_frame);
   gtk_object_set_data_full (GTK_OBJECT (main_window), "prefs_save_convert_frame", prefs_save_convert_frame,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (prefs_save_convert_frame);
-  gtk_box_pack_start (GTK_BOX (vbox54), prefs_save_convert_frame, FALSE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (hbox67), prefs_save_convert_frame, TRUE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (prefs_save_convert_frame), 5);
 
   vbox71 = gtk_vbox_new (FALSE, 0);
@@ -1371,13 +1395,58 @@ create_main_window (void)
   gtk_box_pack_start (GTK_BOX (vbox71), prefs_save_convert, FALSE, FALSE, 0);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (prefs_save_convert), TRUE);
 
-  prefs_save_noconvert = gtk_radio_button_new_with_label (save_convert_group, _("No conversion: dump raw data"));
+  prefs_save_noconvert = gtk_radio_button_new_with_label (save_convert_group, _("Dump raw data"));
   save_convert_group = gtk_radio_button_group (GTK_RADIO_BUTTON (prefs_save_noconvert));
   gtk_widget_ref (prefs_save_noconvert);
   gtk_object_set_data_full (GTK_OBJECT (main_window), "prefs_save_noconvert", prefs_save_noconvert,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (prefs_save_noconvert);
   gtk_box_pack_start (GTK_BOX (vbox71), prefs_save_noconvert, FALSE, FALSE, 0);
+
+  ram_buffer_frame = gtk_frame_new (_("RAM buffering options"));
+  gtk_widget_ref (ram_buffer_frame);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "ram_buffer_frame", ram_buffer_frame,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (ram_buffer_frame);
+  gtk_box_pack_start (GTK_BOX (hbox67), ram_buffer_frame, TRUE, TRUE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (ram_buffer_frame), 5);
+
+  table75 = gtk_table_new (2, 2, FALSE);
+  gtk_widget_ref (table75);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "table75", table75,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (table75);
+  gtk_container_add (GTK_CONTAINER (ram_buffer_frame), table75);
+
+  ram_buffer_size_adj = gtk_adjustment_new (1, 1, 1e+08, 1, 10, 10);
+  ram_buffer_size = gtk_spin_button_new (GTK_ADJUSTMENT (ram_buffer_size_adj), 1, 0);
+  gtk_widget_ref (ram_buffer_size);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "ram_buffer_size", ram_buffer_size,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (ram_buffer_size);
+  gtk_table_attach (GTK_TABLE (table75), ram_buffer_size, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  label152 = gtk_label_new (_("Buffer size [MB]:"));
+  gtk_widget_ref (label152);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "label152", label152,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label152);
+  gtk_table_attach (GTK_TABLE (table75), label152, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 2, 2);
+  gtk_misc_set_alignment (GTK_MISC (label152), 0, 0.5);
+
+  malloc_test = gtk_button_new_with_label (_("Test Memory Allocation"));
+  gtk_widget_ref (malloc_test);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "malloc_test", malloc_test,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (malloc_test);
+  gtk_table_attach (GTK_TABLE (table75), malloc_test, 0, 2, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (malloc_test), 2);
 
   label145 = gtk_label_new (_("Save"));
   gtk_widget_ref (label145);
@@ -2707,11 +2776,20 @@ create_main_window (void)
   gtk_signal_connect (GTK_OBJECT (prefs_save_num_tag), "toggled",
                       GTK_SIGNAL_FUNC (on_prefs_save_num_tag_toggled),
                       NULL);
+  gtk_signal_connect (GTK_OBJECT (use_ram_buffer), "toggled",
+                      GTK_SIGNAL_FUNC (on_ram_buffer_toggled),
+                      NULL);
   gtk_signal_connect (GTK_OBJECT (prefs_save_convert), "toggled",
                       GTK_SIGNAL_FUNC (on_prefs_save_convert_toggled),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (prefs_save_noconvert), "toggled",
                       GTK_SIGNAL_FUNC (on_prefs_save_noconvert_toggled),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (ram_buffer_size), "changed",
+                      GTK_SIGNAL_FUNC (on_ram_buffer_size_changed),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (malloc_test), "clicked",
+                      GTK_SIGNAL_FUNC (on_malloc_test_clicked),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (prefs_v4l_period), "changed",
                       GTK_SIGNAL_FUNC (on_prefs_v4l_period_changed),

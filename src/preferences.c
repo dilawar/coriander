@@ -42,6 +42,8 @@ LoadConfigFile(void)
   preferences.save_period = gnome_config_get_int("coriander/save/period=1");
   preferences.save_convert = gnome_config_get_int("coriander/save/convert=1");
   preferences.save_datenum = gnome_config_get_int("coriander/save/datenum=1");
+  preferences.use_ram_buffer = gnome_config_get_int("coriander/save/use_ram_buffer=0");
+  preferences.ram_buffer_size = gnome_config_get_int("coriander/save/ram_buffer_size=100");
   preferences.ftp_address = gnome_config_get_string("coriander/ftp/address=");
   preferences.ftp_user = gnome_config_get_string("coriander/ftp/user=username");
   preferences.ftp_password = gnome_config_get_string("coriander/ftp/password=");
