@@ -90,9 +90,12 @@ GetFormat7Capabilities(raw1394handle_t handle, nodeid_t node, Format7Info *info)
 	      err*=dc1394_query_format7_byte_per_packet(handle,node,f,&info->mode[i].bpp);
 	      err*=dc1394_query_format7_packet_para(handle,node,f,&info->mode[i].min_bpp,&info->mode[i].max_bpp);
 	      err*=dc1394_query_format7_total_bytes(handle,node,f,&info->mode[i].total_bytes);
-	      
-	      // TODO: get color coding id
+
+	      err*=dc1394_query_format7_color_coding_id(handle,node,f,&info->mode[i].color_coding_id);
 	      err*=dc1394_query_format7_color_coding(handle,node,f,&info->mode[i].color_coding);
+	      //fprintf(stderr,"color coding for mode %d: 0x%x, current: %d\n", i,
+	      //	      info->mode[i].color_coding, info->mode[i].color_coding_id);
+
 	      if (!err) MainError("Got a problem querying format7 capabilitie");
 	    }
 	}
@@ -117,7 +120,7 @@ ChangeModeAndFormat(int mode, int format)
     MainError("Could not set video mode");
   else
     misc_info->mode=mode;
-
+  
   BuildFpsMenu();
   UpdateTriggerFrame();
 

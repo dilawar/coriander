@@ -580,13 +580,9 @@ create_commander_window (void)
   GtkWidget *label83;
   GtkWidget *main_status;
 
-  /* BEGIN additions by Dan Dennedy via interface.patch */
-  GtkAccelGroup *accel_group;
-  /* END additions */
-
   commander_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_object_set_data (GTK_OBJECT (commander_window), "commander_window", commander_window);
-  gtk_window_set_title (GTK_WINDOW (commander_window), _("Coriander 0.23"));
+  gtk_window_set_title (GTK_WINDOW (commander_window), _("Coriander 0.22"));
   gtk_window_set_policy (GTK_WINDOW (commander_window), FALSE, TRUE, TRUE);
 
   vbox26 = gtk_vbox_new (FALSE, 0);
@@ -602,15 +598,8 @@ create_commander_window (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (menubar);
   gtk_box_pack_start (GTK_BOX (vbox26), menubar, FALSE, FALSE, 0);
-  
-  /* BEGIN additions by Dan Dennedy via interface.patch */
-  accel_group = gtk_accel_group_new();
-  gtk_accel_group_attach(accel_group, GTK_OBJECT(commander_window));
-  /* END additions */
-  
-  /* modified by Dan Dennedy for menu accellerators */
   gnome_app_fill_menu (GTK_MENU_SHELL (menubar), menubar_uiinfo,
-                       accel_group, TRUE, 0);
+                       NULL, FALSE, 0);
 
   gtk_widget_ref (menubar_uiinfo[0].widget);
   gtk_object_set_data_full (GTK_OBJECT (commander_window), "file",
@@ -1204,7 +1193,7 @@ create_commander_window (void)
                     (GtkAttachOptions) (0), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (fps_menu), 1);
   fps_menu_menu = gtk_menu_new ();
-  glade_menuitem = gtk_menu_item_new_with_label ("");
+  glade_menuitem = gtk_menu_item_new_with_label (_("N/A"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (fps_menu_menu), glade_menuitem);
   gtk_option_menu_set_menu (GTK_OPTION_MENU (fps_menu), fps_menu_menu);
@@ -1241,7 +1230,7 @@ create_commander_window (void)
                     (GtkAttachOptions) (0), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (trigger_mode), 1);
   trigger_mode_menu = gtk_menu_new ();
-  glade_menuitem = gtk_menu_item_new_with_label ("");
+  glade_menuitem = gtk_menu_item_new_with_label (_("N/A"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (trigger_mode_menu), glade_menuitem);
   gtk_option_menu_set_menu (GTK_OPTION_MENU (trigger_mode), trigger_mode_menu);
@@ -2513,7 +2502,6 @@ create_format7_window (void)
   GtkWidget *vbox36;
   GtkWidget *format7_packet_frame;
   GtkWidget *hbox57;
-  GtkObject *format7_packet_size_adj;
   GtkWidget *format7_packet_size;
   GtkWidget *format7_frame_info_frame;
   GtkWidget *table15;
@@ -2533,7 +2521,7 @@ create_format7_window (void)
   format7_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_object_set_data (GTK_OBJECT (format7_window), "format7_window", format7_window);
   gtk_window_set_title (GTK_WINDOW (format7_window), _("Format_7 Editor"));
-  gtk_window_set_policy (GTK_WINDOW (format7_window), FALSE, FALSE, FALSE);
+  gtk_window_set_policy (GTK_WINDOW (format7_window), FALSE, FALSE, TRUE);
 
   hbox30 = gtk_hbox_new (FALSE, 0);
   gtk_widget_ref (hbox30);
@@ -2626,17 +2614,14 @@ create_format7_window (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hbox57);
   gtk_container_add (GTK_CONTAINER (format7_packet_frame), hbox57);
-  gtk_container_set_border_width (GTK_CONTAINER (hbox57), 3);
 
-  format7_packet_size_adj = gtk_adjustment_new (0, 0, 100, 1, 10, 10);
-  format7_packet_size = gtk_spin_button_new (GTK_ADJUSTMENT (format7_packet_size_adj), 1, 0);
+  format7_packet_size = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 0, 0, 0, 0)));
   gtk_widget_ref (format7_packet_size);
   gtk_object_set_data_full (GTK_OBJECT (format7_window), "format7_packet_size", format7_packet_size,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (format7_packet_size);
-  gtk_box_pack_start (GTK_BOX (hbox57), format7_packet_size, TRUE, TRUE, 2);
-  gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (format7_packet_size), TRUE);
-  gtk_spin_button_set_update_policy (GTK_SPIN_BUTTON (format7_packet_size), GTK_UPDATE_IF_VALID);
+  gtk_box_pack_start (GTK_BOX (hbox57), format7_packet_size, TRUE, TRUE, 0);
+  gtk_scale_set_digits (GTK_SCALE (format7_packet_size), 0);
 
   format7_frame_info_frame = gtk_frame_new (_("Frame info"));
   gtk_widget_ref (format7_frame_info_frame);
@@ -2742,7 +2727,7 @@ create_format7_window (void)
   gtk_object_set_data_full (GTK_OBJECT (format7_window), "format7_vsize_scale", format7_vsize_scale,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (format7_vsize_scale);
-  gtk_box_pack_start (GTK_BOX (hbox31), format7_vsize_scale, TRUE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (hbox31), format7_vsize_scale, TRUE, TRUE, 0);
   gtk_scale_set_value_pos (GTK_SCALE (format7_vsize_scale), GTK_POS_LEFT);
   gtk_scale_set_digits (GTK_SCALE (format7_vsize_scale), 0);
 
@@ -2751,9 +2736,19 @@ create_format7_window (void)
   gtk_object_set_data_full (GTK_OBJECT (format7_window), "format7_vposition_scale", format7_vposition_scale,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (format7_vposition_scale);
-  gtk_box_pack_start (GTK_BOX (hbox31), format7_vposition_scale, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (hbox31), format7_vposition_scale, TRUE, TRUE, 0);
   gtk_scale_set_value_pos (GTK_SCALE (format7_vposition_scale), GTK_POS_LEFT);
   gtk_scale_set_digits (GTK_SCALE (format7_vposition_scale), 0);
+
+  gtk_signal_connect (GTK_OBJECT (format7_window), "delete_event",
+                      GTK_SIGNAL_FUNC (gtk_widget_hide),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (format7_window), "destroy_event",
+                      GTK_SIGNAL_FUNC (gtk_widget_hide),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (format7_window), "destroy",
+                      GTK_SIGNAL_FUNC (gtk_widget_hide),
+                      NULL);
 
   return format7_window;
 }
@@ -3037,6 +3032,16 @@ create_format6_window (void)
   gtk_widget_show (delete_button);
   gtk_box_pack_start (GTK_BOX (vbox45), delete_button, FALSE, FALSE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (delete_button), 2);
+
+  gtk_signal_connect (GTK_OBJECT (format6_window), "delete_event",
+                      GTK_SIGNAL_FUNC (gtk_widget_hide),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (format6_window), "destroy_event",
+                      GTK_SIGNAL_FUNC (gtk_widget_hide),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (format6_window), "destroy",
+                      GTK_SIGNAL_FUNC (gtk_widget_hide),
+                      NULL);
 
   return format6_window;
 }

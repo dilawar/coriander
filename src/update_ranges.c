@@ -23,16 +23,19 @@
 #include "callbacks.h"
 #include "support.h"
 #include "update_ranges.h"
+#include "build_ranges.h"
 #include "definitions.h"
 #include "tools.h"
 #include "preferences.h"
 #include <libdc1394/dc1394_control.h>
 
+extern GtkWidget *format7_window;
 extern char* feature_scale_list[NUM_FEATURES];
 extern char* feature_frame_list[NUM_FEATURES];
 extern char* feature_menu_list[NUM_FEATURES];
 extern char* feature_menu_table_list[NUM_FEATURES]; 
 extern char* feature_menu_items_list[NUM_FEATURES];
+extern Format7Info *format7_info;
 extern GtkWidget *preferences_window;
 extern dc1394_camerainfo *camera;
 extern dc1394_feature_set *feature_set;
@@ -171,4 +174,32 @@ UpdateRangeValue(GtkWidget* widget, int feature)
       }
     }
 
+}
+
+void
+UpdateFormat7BppRange(void)
+{
+  GtkAdjustment* adj;
+  Format7ModeInfo *info;
+  info=&format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN];
+
+  if (dc1394_query_format7_byte_per_packet(camera->handle,camera->id,format7_info->edit_mode,
+					   &info->bpp)==DC1394_SUCCESS)
+    if (dc1394_query_format7_packet_para(camera->handle,camera->id,format7_info->edit_mode,
+					 &info->min_bpp,&info->max_bpp)==DC1394_SUCCESS)
+      {
+	adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(format7_window, "format7_packet_size")));
+	adj->upper=info->max_bpp;
+	adj->lower=info->min_bpp;
+	adj->value=info->bpp;
+	gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
+      }
+    else
+      MainError("Can't get bpp info from camera");
+  else
+    MainError("Can't get bpp info from camera");
+  //fprintf(stderr,"mode %d, bpp: %d, max: %d, min: %d\n",
+  //format7_info->edit_mode,format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].bpp,
+  //format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].max_bpp,
+  //format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].min_bpp);
 }

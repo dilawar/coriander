@@ -35,6 +35,7 @@
 extern GtkWidget *commander_window;
 extern UIInfo *uiinfo;
 extern int camera_num;
+
 void
 BuildPreferencesWindow(void)
 {
@@ -51,6 +52,8 @@ void
 BuildFormat7Window(void)
 {
   BuildFormat7ModeFrame();
+  BuildFormat7Ranges();
+  BuildFormat7BppRange();
 }
 
 void

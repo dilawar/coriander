@@ -556,7 +556,6 @@ on_iso_restart_clicked                 (GtkButton       *button,
   UpdateTransferStatusFrame();
 }
 
-
 void
 on_camera_select_activate              (GtkMenuItem     *menuitem,
 					gpointer         user_data)
@@ -572,22 +571,45 @@ on_camera_select_activate              (GtkMenuItem     *menuitem,
   // redraw all:
   BuildAllWindows();
   UpdateAllWindows();
-
 }
 
 void
-on_edit_format7_mode_activate             (GtkMenuItem     *menuitem,
-					 gpointer         user_data)
+on_format7_packet_size_changed               (GtkAdjustment    *adj,
+					      gpointer         user_data)
 {
-  //TODO
-  //format7_info->edit_mode=...;
+  int bpp;
+
+  if (dc1394_set_format7_byte_per_packet(camera->handle, camera->id, 
+					 format7_info->edit_mode, (int)adj->value)!=DC1394_SUCCESS)
+    MainError("Could not change Format7 bytes per packet");
+  else
+    format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].bpp=adj->value;
+
+  dc1394_query_format7_byte_per_packet(camera->handle,camera->id,format7_info->edit_mode,&bpp);
+
+  //fprintf(stderr,"bpp: %d (should set to %d)\n",bpp, (int)adj->value);
+}
+
+
+void
+on_edit_format7_mode_activate             (GtkMenuItem     *menuitem,
+					   gpointer         user_data)
+{
+  format7_info->edit_mode=(int)user_data;
+  BuildFormat7Window();
 }
 
 void
 on_edit_format7_color_activate             (GtkMenuItem     *menuitem,
 					    gpointer         user_data)
 {
-  //TODO
+  if (dc1394_set_format7_color_coding_id(camera->handle, camera->id, format7_info->edit_mode, (int)user_data)!=DC1394_SUCCESS)
+    MainError("Could not change Format7 color coding");
+  else
+    format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].color_coding_id=(int)user_data;
+
+  // update bpp range here.
+
 }
 
 void
@@ -739,6 +761,9 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
 	MainError("Bad FORMAT7 scale ID passed to 'on_format7_value_changed'\n");
 	break;
     }
+
+  // update bpp range here.
+  UpdateFormat7BppRange();
 }
 
 

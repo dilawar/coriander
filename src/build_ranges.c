@@ -174,12 +174,12 @@ BuildFormat7Ranges(void)
   // define the adjustments for the 4 format7 controls. Note that (pos_x+size_x)<=max_size_x which yields some inter-dependencies
 
   // define adjustement for X-position
-  adjustment_px=(GtkAdjustment*)gtk_adjustment_new(info->pos_x,0,info->max_size_x-info->size_x-1,1,info->step_x,0);
+  adjustment_px=(GtkAdjustment*)gtk_adjustment_new(info->pos_x,0,info->max_size_x-info->size_x,1,info->step_x,0);
   gtk_range_set_adjustment((GtkRange*)lookup_widget(format7_window, "format7_hposition_scale"),adjustment_px);
   gtk_signal_connect(GTK_OBJECT (adjustment_px), "value_changed", GTK_SIGNAL_FUNC (on_format7_value_changed), (int*) FORMAT7_POS_X);
   
   // define adjustement for Y-position 
-  adjustment_py=(GtkAdjustment*)gtk_adjustment_new(info->pos_y,0,info->max_size_y-info->size_y-1,1,info->step_y,0);
+  adjustment_py=(GtkAdjustment*)gtk_adjustment_new(info->pos_y,0,info->max_size_y-info->size_y,1,info->step_y,0);
   gtk_range_set_adjustment((GtkRange*)lookup_widget(format7_window, "format7_vposition_scale"),adjustment_py);
   gtk_signal_connect(GTK_OBJECT (adjustment_py), "value_changed", GTK_SIGNAL_FUNC (on_format7_value_changed), (int*) FORMAT7_POS_Y);
 
@@ -193,4 +193,18 @@ BuildFormat7Ranges(void)
   gtk_range_set_adjustment((GtkRange*)lookup_widget(format7_window, "format7_vsize_scale"),adjustment_sy);
   gtk_signal_connect(GTK_OBJECT (adjustment_sy), "value_changed", GTK_SIGNAL_FUNC (on_format7_value_changed), (int*) FORMAT7_SIZE_Y);
 
+}
+
+void
+BuildFormat7BppRange(void)
+{ 
+  GtkAdjustment *adjustment_packet;
+  Format7ModeInfo *info;
+  info=&format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN];
+  // define adjustment for packet size:
+  adjustment_packet=(GtkAdjustment*)gtk_adjustment_new(info->bpp,info->min_bpp,info->max_bpp,info->min_bpp,16*info->min_bpp,0);
+  // min_bpp is the minimum bpp, but also the 'unit' bpp.
+  gtk_range_set_adjustment((GtkRange*)lookup_widget(format7_window, "format7_packet_size"),adjustment_packet);
+  gtk_signal_connect(GTK_OBJECT (adjustment_packet), "value_changed", GTK_SIGNAL_FUNC (on_format7_packet_size_changed),(int*)0);
+  
 }

@@ -82,6 +82,9 @@ BuildTriggerFrame(void)
   BuildTriggerModeMenu();
   BuildFpsMenu();
   
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"trigger_external")),
+			       feature_set->feature[FEATURE_TRIGGER-FEATURE_MIN].is_on);
+
   // set the trigger_count value adjustment
   adjustment=(GtkAdjustment*)gtk_adjustment_new(0,1,(int)0xFFF,1,10,0);// max. number for trigger parameter is 12bit=FFFh
   gtk_spin_button_set_adjustment((GtkSpinButton*)lookup_widget(commander_window, "trigger_count"),adjustment);
@@ -138,11 +141,8 @@ BuildIsoFrame(void)
 void
 BuildFormat7ModeFrame(void)
 {
-
   BuildFormat7ModeMenu();
   BuildFormat7ColorMenu();
-  BuildFormat7Ranges();
-  
 }
 
 void

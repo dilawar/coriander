@@ -107,7 +107,8 @@ UpdateTriggerFrame(void)
   gtk_widget_set_sensitive(lookup_widget(commander_window,"trigger_external"),
 			   feature_set->feature[FEATURE_TRIGGER-FEATURE_MIN].available);
   gtk_widget_set_sensitive(lookup_widget(commander_window,"fps_menu"),
-			   !(feature_set->feature[FEATURE_TRIGGER-FEATURE_MIN].is_on));
+			   !(feature_set->feature[FEATURE_TRIGGER-FEATURE_MIN].is_on) &&
+			   (misc_info->format != FORMAT_SCALABLE_IMAGE_SIZE));
   gtk_widget_set_sensitive(lookup_widget(commander_window,"trigger_mode"),
 			   feature_set->feature[FEATURE_TRIGGER-FEATURE_MIN].is_on && 
 			   feature_set->feature[FEATURE_TRIGGER-FEATURE_MIN].available);
@@ -118,21 +119,20 @@ UpdateTriggerFrame(void)
   gtk_widget_set_sensitive(lookup_widget(commander_window,"trigger_count"),
 			   (feature_set->feature[FEATURE_TRIGGER-FEATURE_MIN].available) &&
 			   (feature_set->feature[FEATURE_TRIGGER-FEATURE_MIN].is_on) && 
-			   (feature_set->feature[FEATURE_TRIGGER-FEATURE_MIN].trigger_mode >> 1));
-  // 2 or 3 means 2nd bit=1 => >>1==1
+			   ((feature_set->feature[FEATURE_TRIGGER-FEATURE_MIN].trigger_mode == TRIGGER_MODE_2)||
+			     feature_set->feature[FEATURE_TRIGGER-FEATURE_MIN].trigger_mode == TRIGGER_MODE_3));
+
   gtk_widget_set_sensitive(lookup_widget(commander_window, "label16"),
 			   (feature_set->feature[FEATURE_TRIGGER-FEATURE_MIN].available) &&
 			   (feature_set->feature[FEATURE_TRIGGER-FEATURE_MIN].is_on) && 
-			   (feature_set->feature[FEATURE_TRIGGER-FEATURE_MIN].trigger_mode >> 1));
-  // 2 or 3 means 2nd bit=1 => >>1==1
-
+			   ((feature_set->feature[FEATURE_TRIGGER-FEATURE_MIN].trigger_mode == TRIGGER_MODE_2)||
+			     feature_set->feature[FEATURE_TRIGGER-FEATURE_MIN].trigger_mode == TRIGGER_MODE_3));
 }
 
 void
 UpdatePowerFrame(void)
 {
   // nothing to update
-
 }
 
 void

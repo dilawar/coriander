@@ -250,7 +250,7 @@ BuildFormat7ColorMenu(void)
 
   for (f=COLOR_FORMAT7_MIN,i=0;f<=COLOR_FORMAT7_MAX;f++,i++)
     {
-      if ((format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].color_coding-COLOR_FORMAT7_MIN) & (0x1 << (31-i)))
+      if ((format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].color_coding) & (0x1 << (31-i)))
 	{
 	  index[i]=k;
 	  k++;
@@ -291,12 +291,14 @@ BuildFpsMenu(void)
   if( misc_info->format == FORMAT_SCALABLE_IMAGE_SIZE)
   {
     value = 0; /* format 7 has no fixed framerates */
+    gtk_widget_set_sensitive(lookup_widget(commander_window,"fps_menu"),FALSE);
   }
   else
   {
+    gtk_widget_set_sensitive(lookup_widget(commander_window,"fps_menu"),TRUE);
     err=dc1394_query_supported_framerates(camera->handle, camera->id, misc_info->format, misc_info->mode, &value);
     if (!err) MainError("Could not query supported framerates");
-  }
+  
  
   gtk_widget_destroy(GTK_WIDGET (lookup_widget(commander_window,"fps_menu"))); // remove previous menu
 
@@ -362,7 +364,7 @@ BuildFpsMenu(void)
       misc_info->framerate=new_framerate;
     }
   gtk_option_menu_set_history (GTK_OPTION_MENU (fps), index[misc_info->framerate-FRAMERATE_MIN]);
-
+  }
 }
 
 

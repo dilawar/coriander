@@ -166,6 +166,7 @@ DisplayThread(void* arg)
 					     display_service->format7_color_mode);
 		      SDL_UnlockYUVOverlay(info->SDL_overlay);
 		      SDL_DisplayYUVOverlay(info->SDL_overlay, &info->SDL_videoRect);
+		      //fprintf(stderr,"Displayed\n");
 		    }
 #endif
 		}
@@ -309,6 +310,8 @@ void
 convert_to_yuv_for_SDL(unsigned char *src, unsigned char *dest, int mode,
 		       int width, int height, int f7_colormode)
 {
+
+  //f7_colormode=320;
   switch(mode)
     {
     case MODE_160x120_YUV444:
@@ -377,6 +380,8 @@ convert_to_yuv_for_SDL(unsigned char *src, unsigned char *dest, int mode,
 	case COLOR_FORMAT7_RGB16:
 	  rgb482uyvy(src,dest,width*height);
 	  break;
+	  //default:
+	  //fprintf(stderr,"Unknown color format: %d\n",f7_colormode);
 	}
       break;
     }

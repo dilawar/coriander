@@ -145,9 +145,11 @@ CommonChainSetup(chain_t* chain, service_t req_service, unsigned int camera)
       chain->bytes_per_frame=buffer_size;
       chain->mode=misc_info->mode;
       if (misc_info->format==FORMAT_SCALABLE_IMAGE_SIZE)
-	chain->format7_color_mode=format7_info->mode[misc_info->mode].color_coding_id;
+	chain->format7_color_mode=format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].color_coding_id;
       else
 	chain->format7_color_mode=-1;
+      //fprintf(stderr,"color coding (master): %d\n",format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].color_coding_id);
+      //fprintf(stderr,"color coding (copy): %d\n",chain->format7_color_mode);
     }
   else
     { // other type. First check for 'firstness'
@@ -165,6 +167,8 @@ CommonChainSetup(chain_t* chain, service_t req_service, unsigned int camera)
 	  chain->mode=chain->prev_chain->mode;
 	  chain->bytes_per_frame=chain->prev_chain->bytes_per_frame;
 	  buffer_size=chain->bytes_per_frame;
+	  chain->format7_color_mode=chain->prev_chain->format7_color_mode;
+	  //fprintf(stderr,"color coding (slave): %d\n",chain->format7_color_mode);
 	}
     }
 

@@ -102,11 +102,9 @@ gint IsoStartThread(void)
 	      }
 	  else
 	    if (dc1394_dma_setup_format7_capture(camera->handle, camera->id, misc_info->iso_channel, 
-						 misc_info->mode, maxspeed, 4096,
-						 format7_info->mode[misc_info->mode].pos_x,
-						 format7_info->mode[misc_info->mode].pos_y,
-						 format7_info->mode[misc_info->mode].size_x,
-						 format7_info->mode[misc_info->mode].size_y, 
+						 misc_info->mode, maxspeed, QUERY_FROM_CAMERA,
+						 QUERY_FROM_CAMERA, QUERY_FROM_CAMERA,
+						 QUERY_FROM_CAMERA, QUERY_FROM_CAMERA, 
 						 DMA_BUFFERS, &info->capture)
 		== DC1394_SUCCESS)
 	      {
@@ -140,11 +138,9 @@ gint IsoStartThread(void)
 	      }
 	  else
 	    if (dc1394_setup_format7_capture(camera->handle, camera->id, misc_info->iso_channel, 
-					     misc_info->mode, maxspeed, 4096, 
-					     format7_info->mode[misc_info->mode].pos_x,
-					     format7_info->mode[misc_info->mode].pos_y,
-					     format7_info->mode[misc_info->mode].size_x,
-					     format7_info->mode[misc_info->mode].size_y,
+					     misc_info->mode, maxspeed, QUERY_FROM_CAMERA,
+					     QUERY_FROM_CAMERA, QUERY_FROM_CAMERA,
+					     QUERY_FROM_CAMERA, QUERY_FROM_CAMERA,
 					     &info->capture)
 		== DC1394_SUCCESS)
 	      {
@@ -246,6 +242,7 @@ IsoThread(void* arg)
 	     iso_service->bytes_per_frame);
       pthread_mutex_lock(&iso_service->mutex_data);
       RollBuffers(iso_service);
+      //fprintf(stderr,"Got one frame\n");
       pthread_mutex_unlock(&iso_service->mutex_data);
       pthread_cleanup_pop(0);
     }

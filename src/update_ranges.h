@@ -25,4 +25,7 @@ UpdateRange(GtkWidget* current_window, int feature);
 void
 UpdateRangeValue(GtkWidget* widget, int feature);
  
+void
+UpdateFormat7BppRange(void);
+
 #endif

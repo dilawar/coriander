@@ -444,4 +444,7 @@ void
 on_prefs_real_audience_dsl512_toggled  (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
 
+void
+on_format7_packet_size_changed               (GtkAdjustment    *adj,
+					      gpointer         user_data);
 #endif
