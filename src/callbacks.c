@@ -1324,7 +1324,7 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
 
 	    // adjust the pos_x adjustment so that (size_x+pos_x)<=max_size_x:
 	    adj2=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(format7_window, "format7_hposition_scale")));
-	    adj2->upper=format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].max_size_x-adj->value+1;
+	    adj2->upper=format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].max_size_x-adj->value;
 	    gtk_signal_emit_by_name(GTK_OBJECT (adj2), "changed");
 	  }
 	break;
@@ -1338,7 +1338,7 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
 	    format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].size_y=adj->value;
 	    // adjust the pos_y adjustment so that (size_y+pos_y)<=max_size_y:
 	    adj2=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(format7_window, "format7_vposition_scale")));
-	    adj2->upper=format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].max_size_y-adj->value+1;
+	    adj2->upper=format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].max_size_y-adj->value;
 	    gtk_signal_emit_by_name(GTK_OBJECT (adj2), "changed");
 	  }
 	break;
@@ -1352,7 +1352,7 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
 	    format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].pos_x=adj->value;
 	    // adjust the size_x adjustment so that (size_x+pos_x)<=max_size_x:
 	    adj2=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(format7_window, "format7_hsize_scale")));
-	    adj2->upper=format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].max_size_x-adj->value+1;
+	    adj2->upper=format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].max_size_x-adj->value;
 	    gtk_signal_emit_by_name(GTK_OBJECT (adj2), "changed");
 	  }
 	break;
@@ -1366,7 +1366,7 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
 	    format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].pos_y=adj->value;
 	    // adjust the size_y adjustment so that (size_y+pos_y)<=max_size_y:
 	    adj2=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(format7_window, "format7_vsize_scale")));
-	    adj2->upper=format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].max_size_y-adj->value+1;
+	    adj2->upper=format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].max_size_y-adj->value;
 	    gtk_signal_emit_by_name(GTK_OBJECT (adj2), "changed");
 	  }
 	break;

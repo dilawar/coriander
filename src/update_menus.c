@@ -82,7 +82,7 @@ void UpdateFormatMenu(void)
   if (formats & (0x1<<30))
     {
       err= dc1394_query_supported_modes(camera->handle, camera->id, FORMAT_SVGA_NONCOMPRESSED_1, &modes);
-      if (!err) MainError("Could not query Format1 modes");
+      if (!err)
       {
 	MainError("Could not query Format1 modes");
 	modes=0;

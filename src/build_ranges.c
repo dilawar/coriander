@@ -97,31 +97,32 @@ void BuildRange(GtkWidget* current_window, int feature)
 void
 BuildFormat7Ranges(void)
 {
-
+  
   GtkAdjustment  *adjustment_px, *adjustment_py, *adjustment_sx, *adjustment_sy;
   Format7ModeInfo *info;
   
-  info=&format7_info->mode[format7_info->edit_mode];
+  info=&format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN];
+  printf( "BuildFormat7Ranges()\n");
 
   // define the adjustments for the 4 format7 controls. Note that (pos_x+size_x)<=max_size_x which yields some inter-dependencies
 
   // define adjustement for X-position
-  adjustment_px=(GtkAdjustment*)gtk_adjustment_new(info->pos_x,1,info->max_size_x-info->size_x+1,1,10*info->step_x,0);
+  adjustment_px=(GtkAdjustment*)gtk_adjustment_new(info->pos_x,0,info->max_size_x-info->size_x-1,1,info->step_x,0);
   gtk_range_set_adjustment((GtkRange*)lookup_widget(format7_window, "format7_hposition_scale"),adjustment_px);
   gtk_signal_connect(GTK_OBJECT (adjustment_px), "value_changed", GTK_SIGNAL_FUNC (on_format7_value_changed), (int*) FORMAT7_POS_X);
   
   // define adjustement for Y-position 
-  adjustment_py=(GtkAdjustment*)gtk_adjustment_new(info->pos_y,1,info->max_size_y-info->size_y+1,1,10*info->step_y,0);
+  adjustment_py=(GtkAdjustment*)gtk_adjustment_new(info->pos_y,0,info->max_size_y-info->size_y-1,1,info->step_y,0);
   gtk_range_set_adjustment((GtkRange*)lookup_widget(format7_window, "format7_vposition_scale"),adjustment_py);
   gtk_signal_connect(GTK_OBJECT (adjustment_py), "value_changed", GTK_SIGNAL_FUNC (on_format7_value_changed), (int*) FORMAT7_POS_Y);
 
   // define adjustement for X-size
-  adjustment_sx=(GtkAdjustment*)gtk_adjustment_new(info->size_x,1,info->max_size_x-info->pos_x+1,1,10*info->step_x,0);
+  adjustment_sx=(GtkAdjustment*)gtk_adjustment_new(info->size_x,1,info->max_size_x-info->pos_x,1,info->step_x,0);
   gtk_range_set_adjustment((GtkRange*)lookup_widget(format7_window, "format7_hsize_scale"),adjustment_sx);
   gtk_signal_connect(GTK_OBJECT (adjustment_sx), "value_changed", GTK_SIGNAL_FUNC (on_format7_value_changed), (int*) FORMAT7_SIZE_X);
 
   // define adjustement for X-size
-  adjustment_sy=(GtkAdjustment*)gtk_adjustment_new(info->size_y,1,info->max_size_y-info->pos_y+1,1,10*info->step_y,0);
+  adjustment_sy=(GtkAdjustment*)gtk_adjustment_new(info->size_y,1,info->max_size_y-info->pos_y,1,info->step_y,0);
   gtk_range_set_adjustment((GtkRange*)lookup_widget(format7_window, "format7_vsize_scale"),adjustment_sy);
   gtk_signal_connect(GTK_OBJECT (adjustment_sy), "value_changed", GTK_SIGNAL_FUNC (on_format7_value_changed), (int*) FORMAT7_SIZE_Y);
 

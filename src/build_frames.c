@@ -120,7 +120,8 @@ BuildFormat7ModeFrame(void)
 
   BuildFormat7ModeMenu();
   BuildFormat7ColorMenu();
-
+  BuildFormat7Ranges();
+  
 }
 
 void

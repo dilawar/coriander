@@ -47,6 +47,7 @@ guint gCaptureIdleID;
 extern dc1394_cameracapture *capture;
 extern dc1394_miscinfo *misc_info;
 extern dc1394_camerainfo *camera;
+extern Format7Info *format7_info;
 extern GtkWidget *porthole_window;
 
 void convert_to_rgb( dc1394_cameracapture *capture, unsigned char *src, unsigned char *dest)
@@ -78,6 +79,14 @@ void convert_to_rgb( dc1394_cameracapture *capture, unsigned char *src, unsigned
     case MODE_1024x768_MONO:
     case MODE_1280x960_MONO:
     case MODE_1600x1200_MONO:
+    case MODE_FORMAT7_0:
+    case MODE_FORMAT7_1:
+    case MODE_FORMAT7_2:
+    case MODE_FORMAT7_3:
+    case MODE_FORMAT7_4:
+    case MODE_FORMAT7_5:
+    case MODE_FORMAT7_6:
+    case MODE_FORMAT7_7:
       y2rgb( src, dest, capture->frame_width*capture->frame_height);
 	  break;
   }
@@ -87,8 +96,8 @@ gint IsoStartThread(gpointer p)
 {
   GtkWidget *scope = lookup_widget( GTK_WIDGET(p), "camera_scope");
   int maxspeed;
-  /* currently only supports (S)VGA NONCOMPRESSED */
-  if (misc_info->format > FORMAT_SVGA_NONCOMPRESSED_2)
+  /* currently FORMAT_STILL_IMAGE is not supported*/
+  if (misc_info->format == FORMAT_STILL_IMAGE)
     return(-1);
 
   pi.handle = NULL;
@@ -107,20 +116,30 @@ gint IsoStartThread(gpointer p)
     }
 
   if (dc1394_dma_setup_capture( camera->handle, camera->id, misc_info->iso_channel, 
-        misc_info->format, misc_info->mode, maxspeed,
-        misc_info->framerate, DMA_BUFFERS, capture)==DC1394_SUCCESS)
+                                misc_info->format, misc_info->mode, maxspeed,
+                                misc_info->framerate, DMA_BUFFERS, capture)
+      ==DC1394_SUCCESS)
+  {
     pi.receive_method=RECEIVE_METHOD_VIDEO1394;
-
+  }
   else 
-    if (dc1394_setup_capture(camera->handle, camera->id, misc_info->iso_channel, 
-        misc_info->format, misc_info->mode, maxspeed,
-        misc_info->framerate, capture) == DC1394_SUCCESS)
+  {
+    if (dc1394_setup_capture(camera->handle, camera->id,
+                             misc_info->iso_channel, 
+                             misc_info->format, misc_info->mode, maxspeed,
+                             misc_info->framerate, capture)
+        == DC1394_SUCCESS)
+    {
       pi.receive_method=RECEIVE_METHOD_RAW1394;
+    }
     else
-      {
-	raw1394_destroy_handle(pi.handle);
-	return(-1);
-      }
+    {
+      raw1394_destroy_handle(pi.handle);
+      return(-1);
+    }
+    
+  }
+  
 #ifdef HAVE_X11_EXTENSIONS_XVLIB_H
   if (xvInit())
     pi.display_method=DISPLAY_METHOD_XV;
@@ -295,6 +314,14 @@ gint porthole_idler(gpointer p)
         case MODE_1024x768_MONO:
         case MODE_1280x960_MONO:
         case MODE_1600x1200_MONO:
+    case MODE_FORMAT7_0:
+    case MODE_FORMAT7_1:
+    case MODE_FORMAT7_2:
+    case MODE_FORMAT7_3:
+    case MODE_FORMAT7_4:
+    case MODE_FORMAT7_5:
+    case MODE_FORMAT7_6:
+    case MODE_FORMAT7_7:
           y2yuy2( (char *) capture->capture_buffer, pi.xv_image->data, 
             capture->frame_width*capture->frame_height);
           break;
@@ -315,7 +342,7 @@ gint porthole_idler(gpointer p)
 
 gboolean capture_single_frame(void)
 {
-  if (misc_info->format > FORMAT_SVGA_NONCOMPRESSED_2)
+  if (misc_info->format == FORMAT_STILL_IMAGE)
     return FALSE;
 
   if (pi.receive_method == RECEIVE_METHOD_VIDEO1394) {
@@ -338,7 +365,7 @@ gboolean capture_single_frame(void)
 gboolean capture_multi_start(gchar *filename)
 {
   gchar *tmp;
-  if (misc_info->format > FORMAT_SVGA_NONCOMPRESSED_2)
+  if (misc_info->format == FORMAT_STILL_IMAGE)
     return FALSE;
   
   strcpy( g_filename, filename);

@@ -91,10 +91,10 @@ GetFormat7Capabilities(raw1394handle_t handle, nodeid_t node, Format7Info *info)
 	  if (info->mode[i].present) // check for mode presence before query
 	    {
 	      err=1;
-	      err*=dc1394_query_format7_max_image_size(handle,node,f,&info->mode[i].max_size_y,&info->mode[i].max_size_x);
-	      err*=dc1394_query_format7_unit_size(handle,node,f,&info->mode[i].step_y,&info->mode[i].step_x);
-	      err*=dc1394_query_format7_image_position(handle,node,f,&info->mode[i].pos_y,&info->mode[i].pos_x);
-	      err*=dc1394_query_format7_image_size(handle,node,f,&info->mode[i].size_y,&info->mode[i].size_x);
+	      err*=dc1394_query_format7_max_image_size(handle,node,f,&info->mode[i].max_size_x,&info->mode[i].max_size_y);
+	      err*=dc1394_query_format7_unit_size(handle,node,f,&info->mode[i].step_x,&info->mode[i].step_y);
+	      err*=dc1394_query_format7_image_position(handle,node,f,&info->mode[i].pos_x,&info->mode[i].pos_y);
+	      err*=dc1394_query_format7_image_size(handle,node,f,&info->mode[i].size_x,&info->mode[i].size_y);
 	      
 	      err*=dc1394_query_format7_pixel_number(handle,node,f,&info->mode[i].pixnum);
 	      err*=dc1394_query_format7_byte_per_packet(handle,node,f,&info->mode[i].bpp);
@@ -164,7 +164,7 @@ void IsoFlowResume()
       if (!err) MainError("Could not set ISO channel and speed");
       else 
 	{
-	  err=dc1394_start_iso_transmission(camera->handle, camera->id);
+          err=dc1394_start_iso_transmission(camera->handle, camera->id);
 	  if (!err) MainError("Could not start ISO transmission");
 	  else
 	    {

@@ -205,7 +205,7 @@ BuildFormat7ModeMenu(void)
 
   for (f=MODE_FORMAT7_MIN,i=0;f<=MODE_FORMAT7_MAX;f++,i++)
     {
-      if (format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].present)
+      if (format7_info->mode[f-MODE_FORMAT7_MIN].present)
 	{
 	  index[i]=k;
 	  k++;
@@ -272,7 +272,7 @@ BuildFormat7ColorMenu(void)
 
   // sets the active menu item:
   gtk_option_menu_set_history (GTK_OPTION_MENU (color_num),
-			       index[format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].color_coding_id-COLOR_FORMAT7_MIN]);
+			       index[format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].color_coding_id]);
 
 }
 
@@ -291,8 +291,16 @@ BuildFpsMenu(void)
   dc1394bool_t cont=DC1394_TRUE;
   char temp[256];
 
-  err=dc1394_query_supported_framerates(camera->handle, camera->id, misc_info->format, misc_info->mode, &value);
-  if (!err) MainError("Could not query supported framerates");
+  if( misc_info->format == FORMAT_SCALABLE_IMAGE_SIZE)
+  {
+    value = 0; /* format 7 has no fixed framerates */
+  }
+  else
+  {
+    err=dc1394_query_supported_framerates(camera->handle, camera->id, misc_info->format, misc_info->mode, &value);
+    if (!err) MainError("Could not query supported framerates");
+  }
+ 
   gtk_widget_destroy(GTK_WIDGET (lookup_widget(commander_window,"fps_menu"))); // remove previous menu
 
   fps = gtk_option_menu_new ();

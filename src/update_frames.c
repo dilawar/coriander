@@ -26,6 +26,7 @@
 #include "build_menus.h"
 #include "definitions.h"
 #include "tools.h"
+#include "build_ranges.h"
 #include <string.h>
 #include <libdc1394/dc1394_control.h>
 #include "raw1394support.h"
@@ -127,6 +128,7 @@ UpdateFormat7ModeFrame(void)
 {
   BuildFormat7ColorMenu();
   BuildFormat7ModeMenu();
+  BuildFormat7Ranges();
 }
 
 void
