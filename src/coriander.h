@@ -28,16 +28,6 @@
 #include <libraw1394/csr.h>
 #include <libdc1394/dc1394_control.h>
 
-#ifdef HAVE_GDK_PIXBUF
-#include <gdk/gdk.h>
-#include <gdk-pixbuf/gdk-pixbuf.h>
-#include <gdk-pixbuf/gdk-pixbuf-loader.h>
-#endif
-
-#ifdef HAVE_FTPLIB
-#  include "ftplib.h"
-#endif
- 
 // FTP lib
 #ifdef HAVE_FTPLIB
 #include <ftplib.h>
@@ -81,8 +71,10 @@
 #include <ctype.h>
 #endif
 
-#include <jpeglib.h>
+#ifdef HAVE_FFMPEG
+//#include <jpeglib.h> // don't use this: ffmpeg is faster.
 #include <avformat.h>
+#endif
 
 #include "video_encode.h"
 

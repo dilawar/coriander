@@ -24,6 +24,8 @@
 
 #include "coriander.h"
 
+#ifdef HAVE_FFMPEG
+
 #define STREAM_FRAME_RATE 15 /* 15 images/s */
 
 //AVFrame *picture;
@@ -282,15 +284,19 @@ int jpeg_write(AVFrame *jpeg_picture, unsigned int width, unsigned int height, i
   return 1;
 }
 
-/* 
- * Encode an image to JPEG using LibJPEG-MMX
- */
+
+/* don't use this: FFMPEG is faster...
+ 
+// Encode an image to JPEG using LibJPEG-MMX
+
+
+
 int ImageToFile_JPEG(unsigned char *image_buffer, unsigned int image_width, unsigned int image_height, char *filename, char *comment) {
   struct jpeg_compress_struct cinfo;
   struct jpeg_error_mgr jerr;
-  JSAMPROW row_pointer[1];	/* pointer to JSAMPLE row[s] */
-  FILE * outfile;		/* target file */
-  unsigned int row_stride;	/* physical row width in image buffer */
+  JSAMPROW row_pointer[1];	// pointer to JSAMPLE row[s]
+  FILE * outfile;		// target file
+  unsigned int row_stride;	// physical row width in image buffer
 
 #define JPEG_QUALITY 75
 
@@ -302,11 +308,11 @@ int ImageToFile_JPEG(unsigned char *image_buffer, unsigned int image_width, unsi
     return -1;
   }
 
-  cinfo.image_width = image_width; 	/* image width and height, in pixels */
+  cinfo.image_width = image_width; 	// image width and height, in pixels 
   cinfo.image_height = image_height;
-  cinfo.input_components = 3;		/* # of color components per pixel */
-  cinfo.in_color_space = JCS_RGB; 	/* colorspace of input image */
-  //cinfo.jpeg_color_space = JCS_YCbCr; /* colorspace of ouput image */
+  cinfo.input_components = 3;		// # of color components per pixel 
+  cinfo.in_color_space = JCS_RGB; 	// colorspace of input image 
+  //cinfo.jpeg_color_space = JCS_YCbCr; // colorspace of ouput image 
   cinfo.dct_method = JDCT_FASTEST;
   //cinfo.JFIF_minor_version = 2;
 
@@ -319,7 +325,7 @@ int ImageToFile_JPEG(unsigned char *image_buffer, unsigned int image_width, unsi
 
   jpeg_write_marker(&cinfo, JPEG_COM, comment, strlen(comment));
 
-  row_stride = image_width * 3; /* JSAMPLEs per row in image_buffer */
+  row_stride = image_width * 3; // JSAMPLEs per row in image_buffer
   while (cinfo.next_scanline < cinfo.image_height) {
     row_pointer[0] = & image_buffer[cinfo.next_scanline*row_stride];
     jpeg_write_scanlines(&cinfo, row_pointer, 1);
@@ -335,3 +341,6 @@ int ImageToFile_JPEG(unsigned char *image_buffer, unsigned int image_width, unsi
 
   return 1;
 }
+*/
+
+#endif

@@ -986,7 +986,7 @@ BuildSaveFormatMenu(void)
   gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
 		      GTK_SIGNAL_FUNC (on_save_format_menu_activate),
 		      (int*)SAVE_FORMAT_PVN);
-  
+#ifdef HAVE_FFMPEG
   //
   glade_menuitem = gtk_menu_item_new_with_label (_("mpeg"));
   gtk_widget_show (glade_menuitem);
@@ -994,6 +994,7 @@ BuildSaveFormatMenu(void)
   gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
 		      GTK_SIGNAL_FUNC (on_save_format_menu_activate),
 		      (int*)SAVE_FORMAT_MPEG);
+#endif
 
   gtk_option_menu_set_menu (GTK_OPTION_MENU (new_option_menu), new_menu);
 

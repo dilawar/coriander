@@ -74,7 +74,9 @@ void
 UpdatePrefsSaveFrame(void)
 {
   int is_video=((camera->prefs.save_format==SAVE_FORMAT_PVN)||
+#ifdef HAVE_FFMPEG
 		(camera->prefs.save_format==SAVE_FORMAT_MPEG)||
+#endif
 		(camera->prefs.save_format==SAVE_FORMAT_RAW_VIDEO));
 
   // thread presence blanking: default some to ON
@@ -781,7 +783,9 @@ UpdateSaveFilenameFrame(void)
     }
     break;
   case SAVE_FORMAT_RAW_VIDEO:
+#ifdef HAVE_FFMPEG
   case SAVE_FORMAT_MPEG:
+#endif
   case SAVE_FORMAT_PVN:
     switch (camera->prefs.save_append) {
     case SAVE_APPEND_NONE:

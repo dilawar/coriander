@@ -2,7 +2,7 @@
 
 # CPPFLAGS = 
 # AM_CFLAGS = -DDATADIR="$(datadir)"
-INCLUDES  = $(SDLLIB_CFLAGS) $(LIBRAW_CFLAGS) $(LIBDC_CFLAGS) $(GDK_PIXBUF_CFLAGS) $(COR_LFS_CFLAGS) $(MMX_CFLAGS) $(SSE_CFLAGS) $(SSE2_CFLAGS) -I$(top_srcdir)/intl $(GNOME_INCLUDEDIR) -I/usr/include/gnome-xml -I/usr/include/ffmpeg -I/usr/local/ffmpeg -I/usr/local/ffmpeg/libavcodec -I/usr/local/ffmpeg/libavformat
+INCLUDES  = $(SDLLIB_CFLAGS) $(LIBRAW_CFLAGS) $(LIBDC_CFLAGS) $(GDK_PIXBUF_CFLAGS) $(COR_LFS_CFLAGS) $(MMX_CFLAGS) $(SSE_CFLAGS) $(SSE2_CFLAGS) -I$(top_srcdir)/intl $(GNOME_INCLUDEDIR) $(FFMPEG_CFLAGS) -I/usr/include/gnome-xml
 
 bin_PROGRAMS = coriander
 
@@ -40,7 +40,7 @@ coriander_SOURCES = \
 	raw1394support.h 
 
 #$(INTLLIBS) removed from the line below
-coriander_LDADD = $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(PTHREAD_LIB) $(FTPLIB_LIBS) $(SDLLIB_LIBS) $(LIBDC_LIBS) $(LIBRAW_LIBS) $(GDK_PIXBUF_LIBS) $(XV_LIBS) $(COR_LFS_LDFLAGS) -lgthread -ljpeg-mmx -lm -lavformat -lavcodec -lz -L/usr/local/ffmpeg/libavformat -L/usr/local/ffmpeg/libavcodec
+coriander_LDADD = $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(PTHREAD_LIB) $(FTPLIB_LIBS) $(SDLLIB_LIBS) $(LIBDC_LIBS) $(LIBRAW_LIBS) $(GDK_PIXBUF_LIBS) $(XV_LIBS) $(COR_LFS_LDFLAGS) -lgthread $(FFMPEG_LIBS)
 #-ldl -lvorbis -lvorbisenc -logg
 
 

@@ -83,7 +83,9 @@ SaveStartThread(camera_t* cam)
 
     if ((info->use_ram_buffer==TRUE)&&
 	((info->format==SAVE_FORMAT_RAW_VIDEO)||
+#ifdef HAVE_FFMPEG
 	 (info->format==SAVE_FORMAT_MPEG)||
+#endif
 	 (info->format==SAVE_FORMAT_PVN))) {
       info->bigbuffer_position=0;
       info->bigbuffer=(unsigned char*)malloc(info->ram_buffer_size*sizeof(unsigned char));
@@ -452,7 +454,9 @@ GetSaveFD(chain_t *save_service, FILE **fd, char *filename_out)
     }
     break;
   case SAVE_FORMAT_RAW_VIDEO:
+#ifdef HAVE_FFMPEG
   case SAVE_FORMAT_MPEG:
+#endif
   case SAVE_FORMAT_PVN:
     switch (info->append) {
     case SAVE_APPEND_NONE:
@@ -465,6 +469,9 @@ GetSaveFD(chain_t *save_service, FILE **fd, char *filename_out)
       sprintf(filename_out,"%s-%10.10lli.%s", info->filename_base, save_service->processed_frames, info->filename_ext);
       break;
     }
+    break;
+  default:
+    fprintf(stderr,"unsuported format!\n");
     break;
   }
 
@@ -487,7 +494,9 @@ GetSaveFD(chain_t *save_service, FILE **fd, char *filename_out)
       MainError("Can't create sequence file for saving");
       return DC1394_FAILURE;
     }
+#ifdef HAVE_FFMPEG
   case SAVE_FORMAT_MPEG:
+#endif
   case SAVE_FORMAT_PNG:
   case SAVE_FORMAT_JPEG:
   case SAVE_FORMAT_TIFF:
@@ -495,6 +504,9 @@ GetSaveFD(chain_t *save_service, FILE **fd, char *filename_out)
   case SAVE_FORMAT_XPM:
   case SAVE_FORMAT_EIM:
     // do nothing
+    break;
+  default:
+    fprintf(stderr,"unsupported format!\n");
     break;
   }
 
@@ -508,13 +520,15 @@ InitVideoFile(chain_t *save_service, FILE *fd, char *filename_out)
   savethread_info_t *info;
   info=(savethread_info_t*)save_service->data;
 
-  info->fmt = NULL;///////////////////////////
+#ifdef HAVE_FFMPEG
+  info->fmt = NULL;
   info->oc = NULL;
   info->video_st = NULL;
   info->picture = NULL;
   info->tmp_picture = NULL;
   
-  info->fdts = 0;///////////////////////////
+  info->fdts = 0;
+#endif
 
   // (JG) if extension is PVN, write PVN header here
   if ((info->format==SAVE_FORMAT_PVN) && (info->use_ram_buffer==FALSE)) {//-----------------------------------
@@ -526,6 +540,7 @@ InitVideoFile(chain_t *save_service, FILE *fd, char *filename_out)
 		   framerateAsDouble(camera->misc_info.framerate));
   }
 
+#ifdef HAVE_FFMPEG
   if ((info->format==SAVE_FORMAT_MPEG) && (info->use_ram_buffer==FALSE)) {//-----------------------------------
     // MPEG
     fprintf(stderr,"setting up mpeg codec\n");
@@ -623,9 +638,9 @@ InitVideoFile(chain_t *save_service, FILE *fd, char *filename_out)
     strcpy(strrchr(info->subtitle,'.'), ".sub");
     fprintf(stderr, "Recording frame timestamps to: %s\n", info->subtitle);
     info->fdts = open(info->subtitle, O_CREAT | O_WRONLY | O_SYNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
-    
-    // END MPEG
+
   }
+#endif    // END MPEG
 
   // other inits for other video formats come here...          ----------------------------------
   // ...
@@ -643,7 +658,9 @@ FillRamBuffer(chain_t *save_service)
 
   if ((info->use_ram_buffer==TRUE)&&
       ((info->format==SAVE_FORMAT_RAW_VIDEO)||
+#ifdef HAVE_FFMPEG
        (info->format==SAVE_FORMAT_MPEG)||
+#endif
        (info->format==SAVE_FORMAT_PVN))) {
     if (info->ram_buffer_size-info->bigbuffer_position>=save_service->current_buffer->buffer_image_bytes) {
       memcpy(&info->bigbuffer[info->bigbuffer_position], save_service->current_buffer->image, save_service->current_buffer->buffer_image_bytes);
@@ -708,16 +725,20 @@ SaveThread(void* arg)
 	    if (GetSaveFD(save_service, &fd, filename_out)!=DC1394_SUCCESS)
 	      break;
 
+#ifdef HAVE_FFMPEG
 	    if ((save_service->processed_frames==0)&&
 		((info->format==SAVE_FORMAT_MPEG)||
 		 (info->format==SAVE_FORMAT_JPEG))) {
 	      av_register_all();
 	    }
+#endif
 
 	    // write initial data for video (header,...)
 	    if ((save_service->processed_frames==0)&&
 		((info->format==SAVE_FORMAT_RAW_VIDEO)||
+#ifdef HAVE_FFMPEG
 		 (info->format==SAVE_FORMAT_MPEG)||
+#endif
 		 (info->format==SAVE_FORMAT_PVN))) {
 	      if (InitVideoFile(save_service, fd, filename_out)!=DC1394_SUCCESS) {
 		break;
@@ -727,7 +748,9 @@ SaveThread(void* arg)
 	    // rambuffer operation
 	    if ((info->use_ram_buffer==TRUE)&&
 		((info->format==SAVE_FORMAT_RAW_VIDEO)||
+#ifdef HAVE_FFMPEG
 		 (info->format==SAVE_FORMAT_MPEG)||
+#endif
 		 (info->format==SAVE_FORMAT_PVN))) {
 	      FillRamBuffer(save_service);
 	    }
@@ -755,6 +778,7 @@ SaveThread(void* arg)
 		  fwrite(save_service->current_buffer->image, save_service->current_buffer->buffer_image_bytes, 1, fd);
 		}
 		break;
+#ifdef HAVE_FFMPEG
 	      case SAVE_FORMAT_MPEG:
 		// video saving mode
 		//fprintf(stderr,"entering MPEG save and convert section\n");
@@ -776,6 +800,7 @@ SaveThread(void* arg)
 		  write_video_frame(info->oc, info->video_st, info->picture);
 		  break;
 		default:
+		  fprintf(stderr,"unsupported format!!\n");
 		  break;
 		}
 		
@@ -786,7 +811,9 @@ SaveThread(void* arg)
 		write(info->fdts, info->subtitle, strlen(info->subtitle));
 		
 		break;
+#endif
 	      case SAVE_FORMAT_JPEG:
+#ifdef HAVE_FFMPEG
 		/* Save JPEG file using LibJPEG-MMX */
 		/*
 		convert_to_rgb(save_service->current_buffer, info->buffer);
@@ -839,6 +866,7 @@ SaveThread(void* arg)
 		  av_free(info->tmp_picture);
 		}
 		break;
+#endif
 	      case SAVE_FORMAT_PNG:
 	      case SAVE_FORMAT_TIFF:
 	      case SAVE_FORMAT_PPMPGM:
@@ -888,9 +916,11 @@ SaveThread(void* arg)
   if (info->use_ram_buffer==TRUE) {
     switch(info->format) {
     case SAVE_FORMAT_RAW_VIDEO:
+#ifdef HAVE_FFMPEG
     case SAVE_FORMAT_MPEG:
       fwrite(info->bigbuffer, info->bigbuffer_position, 1, fd);
       break;
+#endif
     case SAVE_FORMAT_PVN:
       writePVNHeader(fd, save_service->current_buffer->buffer_color_mode,
 		     save_service->current_buffer->height,
@@ -925,7 +955,7 @@ SaveThread(void* arg)
   if (fd!=NULL) {
     fclose(fd);
   }
-
+#ifdef HAVE_FFMPEG
   if (info->format==SAVE_FORMAT_MPEG) {
     av_free(info->picture->data[0]);
     av_free(info->picture);
@@ -954,6 +984,7 @@ SaveThread(void* arg)
     
     fprintf(stderr, "Video encode: Finnished and closed video file...\n");
   }
+#endif
 
   if (info->bigbuffer!=NULL) {
     free(info->bigbuffer);

@@ -31,8 +31,13 @@ typedef enum
   SAVE_FORMAT_EIM,
   SAVE_FORMAT_RAW,
   SAVE_FORMAT_RAW_VIDEO,
+#ifdef HAVE_FFMPEG
   SAVE_FORMAT_PVN,
   SAVE_FORMAT_MPEG
+#else
+  SAVE_FORMAT_PVN
+#endif
+
 } save_format_t;
 
 #define SAVE_FORMAT_FIRST_VIDEO SAVE_FORMAT_RAW_VIDEO
@@ -66,15 +71,16 @@ typedef struct
   int                use_ram_buffer;
   int                mpeg_color_mode;
 
+#ifdef HAVE_FFMPEG
   //MPEG encoding data
   AVOutputFormat *fmt;
   AVFormatContext *oc;
   AVStream *video_st;
   AVFrame *picture;
   AVFrame *tmp_picture;
-  
-  char subtitle[256];
+    char subtitle[256];
   int fdts;
+#endif
 
 } savethread_info_t;
 

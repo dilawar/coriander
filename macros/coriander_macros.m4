@@ -1,6 +1,6 @@
 dnl
 dnl Coriander custom macros for system check.
-dnl (C) 2002 by Damien Douxchamps
+dnl (C) 2002- by Damien Douxchamps
 dnl
 
 
@@ -289,3 +289,24 @@ AC_DEFUN([AC_CHECK_LFS],[
 **************************************************************************])
 	fi
 ])
+
+AC_DEFUN([AC_CHECK_FFMPEG],[
+	AC_SUBST(FFMPEG_CFLAGS)
+	AC_SUBST(FFMPEG_LIBS)
+	AC_CHECK_PROG(have_ffmpeg_config, ffmpeg-config, "found", "no")
+	if test x$have_ffmpeg_config = xfound; then
+	  FFMPEG_LIBS=`ffmpeg-config --libs avformat avcodec`
+	  FFMPEG_CFLAGS=`ffmpeg-config --cflags`
+	  AC_DEFINE(HAVE_FFMPEG,1,[defined if ffmpeg is available])
+	else
+	  AC_MSG_RESULT([ffmpeg required for MPEG video saving.
+**************************************************************************
+**   ffmpeg can be obtained using your favorite package mamagement      **
+**   system (such as apt-get). Be sure to get ffmpeg and the two        **
+**   development packages libavcodec-dev and libavformat                **
+**   Saving MPEG movies is DISABLED.                                    **
+**   Saving JPEGs will be SIGNIFICANTLY SLOWER                          **
+**************************************************************************])
+	fi
+])
+
