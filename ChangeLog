@@ -4,6 +4,8 @@ Changes towards version 1.0.2
 
    Jan 28, 2005, by Damien Douxchamps
    - fixed the non-blanked boundary line in ClearBorders (Frederic Devernay)
+   - updated the UI file (coriander.glade) regarding the 'save' filename
+     selection
 	
    Jan 27, 2005, by Damien Douxchamps
    - updated the TODO and BUGS files after receving inputs from Jagob Gryn.

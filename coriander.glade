@@ -2659,7 +2659,7 @@ Average
 		<class>GtkFrame</class>
 		<name>prefs_save_filename_frame</name>
 		<border_width>5</border_width>
-		<label>Base directory or filename</label>
+		<label>Filename</label>
 		<label_xalign>0</label_xalign>
 		<shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
 		<child>
@@ -2669,28 +2669,283 @@ Average
 		</child>
 
 		<widget>
-		  <class>GnomeFileEntry</class>
-		  <name>save_filename_entry</name>
-		  <border_width>3</border_width>
-		  <max_saved>30</max_saved>
-		  <title>Choose a base directory</title>
-		  <directory>False</directory>
-		  <modal>False</modal>
+		  <class>GtkTable</class>
+		  <name>table81</name>
+		  <rows>4</rows>
+		  <columns>4</columns>
+		  <homogeneous>False</homogeneous>
+		  <row_spacing>0</row_spacing>
+		  <column_spacing>0</column_spacing>
 
 		  <widget>
-		    <class>GtkEntry</class>
-		    <child_name>GnomeEntry:entry</child_name>
-		    <name>save_filename_subentry</name>
+		    <class>GtkLabel</class>
+		    <name>label175</name>
+		    <label>Append:</label>
+		    <justify>GTK_JUSTIFY_CENTER</justify>
+		    <wrap>False</wrap>
+		    <xalign>0.5</xalign>
+		    <yalign>0.5</yalign>
+		    <xpad>5</xpad>
+		    <ypad>2</ypad>
+		    <child>
+		      <left_attach>0</left_attach>
+		      <right_attach>1</right_attach>
+		      <top_attach>1</top_attach>
+		      <bottom_attach>2</bottom_attach>
+		      <xpad>0</xpad>
+		      <ypad>0</ypad>
+		      <xexpand>False</xexpand>
+		      <yexpand>False</yexpand>
+		      <xshrink>False</xshrink>
+		      <yshrink>False</yshrink>
+		      <xfill>True</xfill>
+		      <yfill>False</yfill>
+		    </child>
+		  </widget>
+
+		  <widget>
+		    <class>GtkLabel</class>
+		    <name>label174</name>
+		    <label>Filename:</label>
+		    <justify>GTK_JUSTIFY_LEFT</justify>
+		    <wrap>False</wrap>
+		    <xalign>0.5</xalign>
+		    <yalign>0.5</yalign>
+		    <xpad>5</xpad>
+		    <ypad>2</ypad>
+		    <child>
+		      <left_attach>0</left_attach>
+		      <right_attach>1</right_attach>
+		      <top_attach>3</top_attach>
+		      <bottom_attach>4</bottom_attach>
+		      <xpad>0</xpad>
+		      <ypad>0</ypad>
+		      <xexpand>False</xexpand>
+		      <yexpand>False</yexpand>
+		      <xshrink>False</xshrink>
+		      <yshrink>False</yshrink>
+		      <xfill>True</xfill>
+		      <yfill>False</yfill>
+		    </child>
+		  </widget>
+
+		  <widget>
+		    <class>GtkStatusbar</class>
+		    <name>save_filename_status</name>
+		    <border_width>2</border_width>
+		    <child>
+		      <left_attach>1</left_attach>
+		      <right_attach>4</right_attach>
+		      <top_attach>3</top_attach>
+		      <bottom_attach>4</bottom_attach>
+		      <xpad>0</xpad>
+		      <ypad>0</ypad>
+		      <xexpand>True</xexpand>
+		      <yexpand>False</yexpand>
+		      <xshrink>False</xshrink>
+		      <yshrink>False</yshrink>
+		      <xfill>True</xfill>
+		      <yfill>False</yfill>
+		    </child>
+		  </widget>
+
+		  <widget>
+		    <class>GtkLabel</class>
+		    <name>label176</name>
+		    <label>Format:</label>
+		    <justify>GTK_JUSTIFY_CENTER</justify>
+		    <wrap>False</wrap>
+		    <xalign>0.5</xalign>
+		    <yalign>0.5</yalign>
+		    <xpad>5</xpad>
+		    <ypad>2</ypad>
+		    <child>
+		      <left_attach>0</left_attach>
+		      <right_attach>1</right_attach>
+		      <top_attach>2</top_attach>
+		      <bottom_attach>3</bottom_attach>
+		      <xpad>0</xpad>
+		      <ypad>0</ypad>
+		      <xexpand>False</xexpand>
+		      <yexpand>False</yexpand>
+		      <xshrink>False</xshrink>
+		      <yshrink>False</yshrink>
+		      <xfill>True</xfill>
+		      <yfill>False</yfill>
+		    </child>
+		  </widget>
+
+		  <widget>
+		    <class>GnomeFileEntry</class>
+		    <name>save_filename_entry</name>
+		    <border_width>3</border_width>
+		    <max_saved>30</max_saved>
+		    <title>Choose a base directory</title>
+		    <directory>False</directory>
+		    <modal>False</modal>
+		    <child>
+		      <left_attach>1</left_attach>
+		      <right_attach>4</right_attach>
+		      <top_attach>0</top_attach>
+		      <bottom_attach>1</bottom_attach>
+		      <xpad>0</xpad>
+		      <ypad>0</ypad>
+		      <xexpand>True</xexpand>
+		      <yexpand>False</yexpand>
+		      <xshrink>False</xshrink>
+		      <yshrink>False</yshrink>
+		      <xfill>True</xfill>
+		      <yfill>False</yfill>
+		    </child>
+
+		    <widget>
+		      <class>GtkEntry</class>
+		      <child_name>GnomeEntry:entry</child_name>
+		      <name>save_filename_subentry</name>
+		      <can_focus>True</can_focus>
+		      <signal>
+			<name>changed</name>
+			<handler>on_save_filename_subentry_changed</handler>
+			<last_modification_time>Mon, 13 Dec 2004 07:05:05 GMT</last_modification_time>
+		      </signal>
+		      <editable>True</editable>
+		      <text_visible>True</text_visible>
+		      <text_max_length>0</text_max_length>
+		      <text></text>
+		    </widget>
+		  </widget>
+
+		  <widget>
+		    <class>GtkLabel</class>
+		    <name>label177</name>
+		    <label>Base:</label>
+		    <justify>GTK_JUSTIFY_CENTER</justify>
+		    <wrap>False</wrap>
+		    <xalign>0.5</xalign>
+		    <yalign>0.5</yalign>
+		    <xpad>5</xpad>
+		    <ypad>2</ypad>
+		    <child>
+		      <left_attach>0</left_attach>
+		      <right_attach>1</right_attach>
+		      <top_attach>0</top_attach>
+		      <bottom_attach>1</bottom_attach>
+		      <xpad>0</xpad>
+		      <ypad>0</ypad>
+		      <xexpand>False</xexpand>
+		      <yexpand>False</yexpand>
+		      <xshrink>False</xshrink>
+		      <yshrink>False</yshrink>
+		      <xfill>True</xfill>
+		      <yfill>False</yfill>
+		    </child>
+		  </widget>
+
+		  <widget>
+		    <class>GtkVSeparator</class>
+		    <name>vseparator1</name>
+		    <child>
+		      <left_attach>2</left_attach>
+		      <right_attach>3</right_attach>
+		      <top_attach>1</top_attach>
+		      <bottom_attach>3</bottom_attach>
+		      <xpad>0</xpad>
+		      <ypad>0</ypad>
+		      <xexpand>False</xexpand>
+		      <yexpand>False</yexpand>
+		      <xshrink>False</xshrink>
+		      <yshrink>False</yshrink>
+		      <xfill>True</xfill>
+		      <yfill>True</yfill>
+		    </child>
+		  </widget>
+
+		  <widget>
+		    <class>GtkOptionMenu</class>
+		    <name>append_menu</name>
+		    <border_width>1</border_width>
+		    <can_focus>True</can_focus>
+		    <items>none (overwrite)
+-date-time
+-number
+</items>
+		    <initial_choice>0</initial_choice>
+		    <child>
+		      <left_attach>1</left_attach>
+		      <right_attach>2</right_attach>
+		      <top_attach>1</top_attach>
+		      <bottom_attach>2</bottom_attach>
+		      <xpad>0</xpad>
+		      <ypad>0</ypad>
+		      <xexpand>False</xexpand>
+		      <yexpand>False</yexpand>
+		      <xshrink>False</xshrink>
+		      <yshrink>False</yshrink>
+		      <xfill>True</xfill>
+		      <yfill>False</yfill>
+		    </child>
+		  </widget>
+
+		  <widget>
+		    <class>GtkCheckButton</class>
+		    <name>save_to_dir</name>
 		    <can_focus>True</can_focus>
 		    <signal>
-		      <name>changed</name>
-		      <handler>on_save_filename_subentry_changed</handler>
-		      <last_modification_time>Mon, 13 Dec 2004 07:05:05 GMT</last_modification_time>
+		      <name>toggled</name>
+		      <handler>on_save_to_dir_toggled</handler>
+		      <last_modification_time>Wed, 26 Jan 2005 12:08:47 GMT</last_modification_time>
 		    </signal>
-		    <editable>True</editable>
-		    <text_visible>True</text_visible>
-		    <text_max_length>0</text_max_length>
-		    <text></text>
+		    <label>Save to a directory</label>
+		    <active>False</active>
+		    <draw_indicator>True</draw_indicator>
+		    <child>
+		      <left_attach>3</left_attach>
+		      <right_attach>4</right_attach>
+		      <top_attach>1</top_attach>
+		      <bottom_attach>2</bottom_attach>
+		      <xpad>0</xpad>
+		      <ypad>0</ypad>
+		      <xexpand>False</xexpand>
+		      <yexpand>False</yexpand>
+		      <xshrink>False</xshrink>
+		      <yshrink>False</yshrink>
+		      <xfill>True</xfill>
+		      <yfill>False</yfill>
+		    </child>
+		  </widget>
+
+		  <widget>
+		    <class>GtkOptionMenu</class>
+		    <name>save_format_menu</name>
+		    <border_width>1</border_width>
+		    <can_focus>True</can_focus>
+		    <items>png
+jpeg
+tiff
+ppm
+pgm
+xpm
+eim
+raw
+mpeg (video)
+pvn (video)
+raw (video)
+</items>
+		    <initial_choice>0</initial_choice>
+		    <child>
+		      <left_attach>1</left_attach>
+		      <right_attach>2</right_attach>
+		      <top_attach>2</top_attach>
+		      <bottom_attach>3</bottom_attach>
+		      <xpad>0</xpad>
+		      <ypad>0</ypad>
+		      <xexpand>False</xexpand>
+		      <yexpand>False</yexpand>
+		      <xshrink>False</xshrink>
+		      <yshrink>False</yshrink>
+		      <xfill>True</xfill>
+		      <yfill>False</yfill>
+		    </child>
 		  </widget>
 		</widget>
 	      </widget>
@@ -2821,142 +3076,6 @@ Average
 
 	      <widget>
 		<class>GtkFrame</class>
-		<name>prefs_save_mode_frame</name>
-		<border_width>5</border_width>
-		<label>Mode</label>
-		<label_xalign>0</label_xalign>
-		<shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
-		<child>
-		  <padding>0</padding>
-		  <expand>False</expand>
-		  <fill>False</fill>
-		</child>
-
-		<widget>
-		  <class>GtkTable</class>
-		  <name>table74</name>
-		  <rows>2</rows>
-		  <columns>3</columns>
-		  <homogeneous>False</homogeneous>
-		  <row_spacing>0</row_spacing>
-		  <column_spacing>5</column_spacing>
-
-		  <widget>
-		    <class>GtkRadioButton</class>
-		    <name>prefs_save_date_tag</name>
-		    <can_focus>True</can_focus>
-		    <signal>
-		      <name>toggled</name>
-		      <handler>on_prefs_save_date_tag_toggled</handler>
-		      <last_modification_time>Wed, 11 Jun 2003 10:11:08 GMT</last_modification_time>
-		    </signal>
-		    <label>with date</label>
-		    <active>False</active>
-		    <draw_indicator>True</draw_indicator>
-		    <group>save_datenum</group>
-		    <child>
-		      <left_attach>1</left_attach>
-		      <right_attach>2</right_attach>
-		      <top_attach>0</top_attach>
-		      <bottom_attach>1</bottom_attach>
-		      <xpad>0</xpad>
-		      <ypad>0</ypad>
-		      <xexpand>False</xexpand>
-		      <yexpand>False</yexpand>
-		      <xshrink>False</xshrink>
-		      <yshrink>False</yshrink>
-		      <xfill>True</xfill>
-		      <yfill>False</yfill>
-		    </child>
-		  </widget>
-
-		  <widget>
-		    <class>GtkRadioButton</class>
-		    <name>prefs_save_num_tag</name>
-		    <can_focus>True</can_focus>
-		    <signal>
-		      <name>toggled</name>
-		      <handler>on_prefs_save_num_tag_toggled</handler>
-		      <last_modification_time>Mon, 17 Jan 2005 10:41:21 GMT</last_modification_time>
-		    </signal>
-		    <label>with numbers</label>
-		    <active>False</active>
-		    <draw_indicator>True</draw_indicator>
-		    <group>save_datenum</group>
-		    <child>
-		      <left_attach>2</left_attach>
-		      <right_attach>3</right_attach>
-		      <top_attach>0</top_attach>
-		      <bottom_attach>1</bottom_attach>
-		      <xpad>0</xpad>
-		      <ypad>0</ypad>
-		      <xexpand>False</xexpand>
-		      <yexpand>False</yexpand>
-		      <xshrink>False</xshrink>
-		      <yshrink>False</yshrink>
-		      <xfill>True</xfill>
-		      <yfill>False</yfill>
-		    </child>
-		  </widget>
-
-		  <widget>
-		    <class>GtkOptionMenu</class>
-		    <name>prefs_save_mode_menu</name>
-		    <border_width>1</border_width>
-		    <can_focus>True</can_focus>
-		    <items>Save files sequentially
-Overwrite the same file
-Write a video sequence
-</items>
-		    <initial_choice>0</initial_choice>
-		    <child>
-		      <left_attach>0</left_attach>
-		      <right_attach>1</right_attach>
-		      <top_attach>0</top_attach>
-		      <bottom_attach>1</bottom_attach>
-		      <xpad>0</xpad>
-		      <ypad>0</ypad>
-		      <xexpand>True</xexpand>
-		      <yexpand>False</yexpand>
-		      <xshrink>False</xshrink>
-		      <yshrink>False</yshrink>
-		      <xfill>True</xfill>
-		      <yfill>False</yfill>
-		    </child>
-		  </widget>
-
-		  <widget>
-		    <class>GtkCheckButton</class>
-		    <name>save_to_dir</name>
-		    <can_focus>True</can_focus>
-		    <signal>
-		      <name>toggled</name>
-		      <handler>on_save_to_dir_toggled</handler>
-		      <last_modification_time>Wed, 26 Jan 2005 12:08:47 GMT</last_modification_time>
-		    </signal>
-		    <label>Save to a directory</label>
-		    <active>False</active>
-		    <draw_indicator>True</draw_indicator>
-		    <child>
-		      <left_attach>1</left_attach>
-		      <right_attach>3</right_attach>
-		      <top_attach>1</top_attach>
-		      <bottom_attach>2</bottom_attach>
-		      <xpad>0</xpad>
-		      <ypad>0</ypad>
-		      <xexpand>False</xexpand>
-		      <yexpand>False</yexpand>
-		      <xshrink>False</xshrink>
-		      <yshrink>False</yshrink>
-		      <xfill>True</xfill>
-		      <yfill>False</yfill>
-		    </child>
-		  </widget>
-		</widget>
-	      </widget>
-
-	      <widget>
-		<class>GtkFrame</class>
 		<name>ram_buffer_frame</name>
 		<border_width>5</border_width>
 		<label>RAM buffering</label>
@@ -2976,34 +3095,6 @@ Write a video sequence
 		  <homogeneous>False</homogeneous>
 		  <row_spacing>0</row_spacing>
 		  <column_spacing>0</column_spacing>
-
-		  <widget>
-		    <class>GtkButton</class>
-		    <name>malloc_test</name>
-		    <border_width>2</border_width>
-		    <can_focus>True</can_focus>
-		    <signal>
-		      <name>clicked</name>
-		      <handler>on_malloc_test_clicked</handler>
-		      <last_modification_time>Fri, 13 Jun 2003 00:21:56 GMT</last_modification_time>
-		    </signal>
-		    <label>malloc test</label>
-		    <relief>GTK_RELIEF_NORMAL</relief>
-		    <child>
-		      <left_attach>3</left_attach>
-		      <right_attach>4</right_attach>
-		      <top_attach>0</top_attach>
-		      <bottom_attach>1</bottom_attach>
-		      <xpad>0</xpad>
-		      <ypad>0</ypad>
-		      <xexpand>False</xexpand>
-		      <yexpand>False</yexpand>
-		      <xshrink>False</xshrink>
-		      <yshrink>False</yshrink>
-		      <xfill>True</xfill>
-		      <yfill>False</yfill>
-		    </child>
-		  </widget>
 
 		  <widget>
 		    <class>GtkSpinButton</class>
@@ -3083,6 +3174,34 @@ Write a video sequence
 		    <child>
 		      <left_attach>0</left_attach>
 		      <right_attach>1</right_attach>
+		      <top_attach>0</top_attach>
+		      <bottom_attach>1</bottom_attach>
+		      <xpad>0</xpad>
+		      <ypad>0</ypad>
+		      <xexpand>True</xexpand>
+		      <yexpand>False</yexpand>
+		      <xshrink>False</xshrink>
+		      <yshrink>False</yshrink>
+		      <xfill>True</xfill>
+		      <yfill>False</yfill>
+		    </child>
+		  </widget>
+
+		  <widget>
+		    <class>GtkButton</class>
+		    <name>malloc_test</name>
+		    <border_width>2</border_width>
+		    <can_focus>True</can_focus>
+		    <signal>
+		      <name>clicked</name>
+		      <handler>on_malloc_test_clicked</handler>
+		      <last_modification_time>Fri, 13 Jun 2003 00:21:56 GMT</last_modification_time>
+		    </signal>
+		    <label>malloc test</label>
+		    <relief>GTK_RELIEF_NORMAL</relief>
+		    <child>
+		      <left_attach>3</left_attach>
+		      <right_attach>4</right_attach>
 		      <top_attach>0</top_attach>
 		      <bottom_attach>1</bottom_attach>
 		      <xpad>0</xpad>
@@ -5587,7 +5706,7 @@ anything in the GUI at all...</label>
   <name>about_window</name>
   <modal>True</modal>
   <logo>coriander-logo.png</logo>
-  <copyright>Copyright 2000-2004 Damien Douxchamps</copyright>
+  <copyright>Copyright 2000-2005 Damien Douxchamps</copyright>
   <authors>Damien Douxchamps &lt;ddouxchamps@users.sf.net&gt;
 Dan Dennedy &lt;dan@dennedy.org&gt;
 See the AUTHORS file for more authors and contributors
