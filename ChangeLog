@@ -2,6 +2,13 @@ Coriander, (c) 2000-2003 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 0.32
 	
+   May 1, 2003, by Damien Douxchamps
+   - service/save: update scratch frame correctly at boot/camera change (video
+     pref was ignored)
+   - add global ISO start/stop/restart to start grabbing from multiple cameras
+     at the 'same time'. Note that it is NOT EXACTLY THE SAME TIME: a delay of
+     50ms seems necessary between ISO starting commands.
+	
    April 30, 2003, by Damien Douxchamps
    - stop/resume FPS display when changing camera
    - fixed big multicamera problem: all threads were sharing the same uiinfo,

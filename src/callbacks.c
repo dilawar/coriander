@@ -66,7 +66,7 @@ extern int current_camera;
 extern PrefsInfo preferences; 
 extern int silent_ui_update;
 extern char* feature_scale_list[NUM_FEATURES];
-
+extern int camera_num;
 gboolean
 on_commander_window_delete_event       (GtkWidget       *widget,
                                         GdkEvent        *event,
@@ -1261,4 +1261,62 @@ on_abs_brightness_entry_activate        (GtkEditable     *editable,
                                         gpointer         user_data)
 {
   SetAbsValue(FEATURE_BRIGHTNESS);
+}
+
+void
+on_global_iso_stop_clicked             (GtkButton       *button,
+                                        gpointer         user_data)
+{
+  int i;
+  for (i=0;i<camera_num;i++) {
+    //fprintf(stderr,"Trying to stop camera %d\n",i);
+    if (misc_infos[i].is_iso_on!=DC1394_FALSE) {
+      if (dc1394_stop_iso_transmission(camera[i].handle,camera[i].id)!=DC1394_SUCCESS) {
+	MainError("Could not stop ISO transmission");
+      }
+      else {
+	//fprintf(stderr," ISO stopped for camera %d\n",i);
+	misc_info[i].is_iso_on=DC1394_FALSE;
+      }
+      if (i==current_camera) {
+	UpdateIsoFrame();
+	UpdateTransferStatusFrame();
+      }
+      usleep(50000);
+    }
+  }
+}
+
+
+void
+on_global_iso_restart_clicked          (GtkButton       *button,
+                                        gpointer         user_data)
+{
+  on_global_iso_stop_clicked(GTK_BUTTON(lookup_widget(commander_window,"global_iso_stop")),NULL);
+  on_global_iso_start_clicked(GTK_BUTTON(lookup_widget(commander_window,"global_iso_start")),NULL);
+}
+
+
+void
+on_global_iso_start_clicked            (GtkButton       *button,
+                                        gpointer         user_data)
+{
+  int i;
+  for (i=0;i<camera_num;i++) {
+    //fprintf(stderr,"Trying to start camera %d\n",i);
+    if (misc_infos[i].is_iso_on!=DC1394_TRUE) {
+      if (dc1394_start_iso_transmission(camera[i].handle,camera[i].id)!=DC1394_SUCCESS) {
+	MainError("Could not start ISO transmission");
+      }
+      else {
+	//fprintf(stderr," ISO started for camera %d\n",i);
+	misc_infos[i].is_iso_on=DC1394_TRUE;
+      }
+      if (i==current_camera) {
+	UpdateIsoFrame();
+	UpdateTransferStatusFrame();
+      }
+      usleep(50000);
+    }
+  }
 }

@@ -98,7 +98,11 @@ create_commander_window (void)
   GtkWidget *memory_channel_menu;
   GtkWidget *load_mem;
   GtkWidget *save_mem;
-  GtkWidget *label112;
+  GtkWidget *global_iso_frame;
+  GtkWidget *table72;
+  GtkWidget *global_iso_stop;
+  GtkWidget *global_iso_restart;
+  GtkWidget *global_iso_start;
   GtkWidget *label56;
   GtkWidget *vbox75;
   GtkWidget *vbox78;
@@ -597,12 +601,53 @@ create_commander_window (void)
   gtk_container_set_border_width (GTK_CONTAINER (save_mem), 2);
   gtk_widget_set_sensitive (save_mem, FALSE);
 
-  label112 = gtk_label_new ("");
-  gtk_widget_ref (label112);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "label112", label112,
+  global_iso_frame = gtk_frame_new (_("Global Iso Control"));
+  gtk_widget_ref (global_iso_frame);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "global_iso_frame", global_iso_frame,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label112);
-  gtk_box_pack_start (GTK_BOX (hbox60), label112, FALSE, FALSE, 0);
+  gtk_widget_show (global_iso_frame);
+  gtk_box_pack_start (GTK_BOX (hbox60), global_iso_frame, TRUE, TRUE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (global_iso_frame), 5);
+
+  table72 = gtk_table_new (3, 2, TRUE);
+  gtk_widget_ref (table72);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "table72", table72,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (table72);
+  gtk_container_add (GTK_CONTAINER (global_iso_frame), table72);
+
+  global_iso_stop = gtk_button_new_with_label (_("STOP"));
+  gtk_widget_ref (global_iso_stop);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "global_iso_stop", global_iso_stop,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (global_iso_stop);
+  gtk_table_attach (GTK_TABLE (table72), global_iso_stop, 0, 2, 1, 2,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (global_iso_stop), 2);
+  gtk_widget_set_sensitive (global_iso_stop, FALSE);
+
+  global_iso_restart = gtk_button_new_with_label (_("RESTART"));
+  gtk_widget_ref (global_iso_restart);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "global_iso_restart", global_iso_restart,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (global_iso_restart);
+  gtk_table_attach (GTK_TABLE (table72), global_iso_restart, 0, 2, 2, 3,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (global_iso_restart), 2);
+  gtk_widget_set_sensitive (global_iso_restart, FALSE);
+
+  global_iso_start = gtk_button_new_with_label (_("START"));
+  gtk_widget_ref (global_iso_start);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "global_iso_start", global_iso_start,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (global_iso_start);
+  gtk_table_attach (GTK_TABLE (table72), global_iso_start, 0, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (global_iso_start), 2);
+  gtk_widget_set_sensitive (global_iso_start, FALSE);
 
   label56 = gtk_label_new (_("Camera"));
   gtk_widget_ref (label56);
@@ -2842,6 +2887,15 @@ create_commander_window (void)
                       NULL);
   gtk_signal_connect (GTK_OBJECT (save_mem), "clicked",
                       GTK_SIGNAL_FUNC (on_save_mem_clicked),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (global_iso_stop), "clicked",
+                      GTK_SIGNAL_FUNC (on_global_iso_stop_clicked),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (global_iso_restart), "clicked",
+                      GTK_SIGNAL_FUNC (on_global_iso_restart_clicked),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (global_iso_start), "clicked",
+                      GTK_SIGNAL_FUNC (on_global_iso_start_clicked),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (service_iso), "toggled",
                       GTK_SIGNAL_FUNC (on_service_iso_toggled),

@@ -48,6 +48,9 @@ void
 BuildIsoFrame(void);
 
 void
+BuildGlobalIsoFrame(void);
+
+void
 BuildFormat7ModeFrame(void);
 
 void

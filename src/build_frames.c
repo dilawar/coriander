@@ -127,6 +127,17 @@ BuildIsoFrame(void)
 }
 
 void
+BuildGlobalIsoFrame(void)
+{
+  // TODO: only if ISO capable
+  gtk_widget_set_sensitive(lookup_widget(commander_window,"global_iso_frame"),TRUE);
+  gtk_widget_set_sensitive(lookup_widget(commander_window,"global_iso_start"),TRUE);
+  gtk_widget_set_sensitive(lookup_widget(commander_window,"global_iso_restart"),TRUE);
+  gtk_widget_set_sensitive(lookup_widget(commander_window,"global_iso_stop"),TRUE);
+
+}
+
+void
 BuildFormat7ModeFrame(void)
 {
   BuildFormat7ModeMenu();
@@ -159,6 +170,9 @@ BuildPrefsSaveFrame(void)
     case SAVE_SCRATCH_SEQUENTIAL:
       gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(commander_window,
 								   "prefs_save_seq"),TRUE);
+    case SAVE_SCRATCH_SEQUENCE:
+      gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(commander_window,
+								   "prefs_save_video"),TRUE);
       break;
     }
   // scratch

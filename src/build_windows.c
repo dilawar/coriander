@@ -95,6 +95,7 @@ BuildCommanderWindow(void)
   BuildServiceFrame();
   BuildTriggerFrame();
   BuildIsoFrame();
+  BuildGlobalIsoFrame();
   BuildCameraFrame();
   BuildMemoryFrame();
   BuildFormatMenu();

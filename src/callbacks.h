@@ -432,3 +432,15 @@ void
 on_abs_pan_entry_activate               (GtkEditable     *editable,
                                         gpointer         user_data);
 #endif
+
+void
+on_global_iso_stop_clicked             (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_global_iso_restart_clicked          (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_global_iso_start_clicked            (GtkButton       *button,
+                                        gpointer         user_data);

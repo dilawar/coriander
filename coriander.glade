@@ -492,20 +492,114 @@
 	    </widget>
 
 	    <widget>
-	      <class>GtkLabel</class>
-	      <name>label112</name>
-	      <label></label>
-	      <justify>GTK_JUSTIFY_CENTER</justify>
-	      <wrap>False</wrap>
-	      <xalign>0.5</xalign>
-	      <yalign>0.5</yalign>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
+	      <class>GtkFrame</class>
+	      <name>global_iso_frame</name>
+	      <border_width>5</border_width>
+	      <label>Global Iso Control</label>
+	      <label_xalign>0</label_xalign>
+	      <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
 	      <child>
 		<padding>0</padding>
-		<expand>False</expand>
-		<fill>False</fill>
+		<expand>True</expand>
+		<fill>True</fill>
 	      </child>
+
+	      <widget>
+		<class>GtkTable</class>
+		<name>table72</name>
+		<rows>3</rows>
+		<columns>2</columns>
+		<homogeneous>True</homogeneous>
+		<row_spacing>0</row_spacing>
+		<column_spacing>0</column_spacing>
+
+		<widget>
+		  <class>GtkButton</class>
+		  <name>global_iso_stop</name>
+		  <border_width>2</border_width>
+		  <sensitive>False</sensitive>
+		  <can_focus>True</can_focus>
+		  <signal>
+		    <name>clicked</name>
+		    <handler>on_global_iso_stop_clicked</handler>
+		    <last_modification_time>Thu, 01 May 2003 09:58:43 GMT</last_modification_time>
+		  </signal>
+		  <label>STOP</label>
+		  <relief>GTK_RELIEF_NORMAL</relief>
+		  <child>
+		    <left_attach>0</left_attach>
+		    <right_attach>2</right_attach>
+		    <top_attach>1</top_attach>
+		    <bottom_attach>2</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>True</xexpand>
+		    <yexpand>True</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>True</xfill>
+		    <yfill>True</yfill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkButton</class>
+		  <name>global_iso_restart</name>
+		  <border_width>2</border_width>
+		  <sensitive>False</sensitive>
+		  <can_focus>True</can_focus>
+		  <signal>
+		    <name>clicked</name>
+		    <handler>on_global_iso_restart_clicked</handler>
+		    <last_modification_time>Thu, 01 May 2003 09:59:18 GMT</last_modification_time>
+		  </signal>
+		  <label>RESTART</label>
+		  <relief>GTK_RELIEF_NORMAL</relief>
+		  <child>
+		    <left_attach>0</left_attach>
+		    <right_attach>2</right_attach>
+		    <top_attach>2</top_attach>
+		    <bottom_attach>3</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>True</xexpand>
+		    <yexpand>True</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>True</xfill>
+		    <yfill>True</yfill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkButton</class>
+		  <name>global_iso_start</name>
+		  <border_width>2</border_width>
+		  <sensitive>False</sensitive>
+		  <can_focus>True</can_focus>
+		  <signal>
+		    <name>clicked</name>
+		    <handler>on_global_iso_start_clicked</handler>
+		    <last_modification_time>Thu, 01 May 2003 09:59:30 GMT</last_modification_time>
+		  </signal>
+		  <label>START</label>
+		  <relief>GTK_RELIEF_NORMAL</relief>
+		  <child>
+		    <left_attach>0</left_attach>
+		    <right_attach>2</right_attach>
+		    <top_attach>0</top_attach>
+		    <bottom_attach>1</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>True</xexpand>
+		    <yexpand>True</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>True</xfill>
+		    <yfill>True</yfill>
+		  </child>
+		</widget>
+	      </widget>
 	    </widget>
 	  </widget>
 	</widget>
