@@ -3,6 +3,10 @@ Coriander, (c) 2000-2005 Damien Douxchamps <ddouxchamps@users.sf.net>
 Changes towards version 1.0.2
 
    Jan 29, 2005, by Damien Douxchamps
+   - little optimization of the Edge Sense bayer decoding
+   - added a few benchmarks in the bayer.c file
+	
+   Jan 29, 2005, by Damien Douxchamps
    - more bayer update and optimization from Frederic Devernay
 	
    Jan 28, 2005, by Damien Douxchamps
