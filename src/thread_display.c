@@ -524,11 +524,23 @@ DisplayThreadCheckParams(chain_t *display_service)
     // DO SOMETHING
     // if the width is not -1, that is if some image has already reached the thread
     if ((display_service->local_param_copy.width!=-1)&&(size_change!=0)) {
+#if 0 // please don't create a new window and obscure the focus
       if (!first_time) {
 	SDLQuit(display_service);
       }
       SDLInit(display_service);
-	
+#else
+      if (first_time) {
+	SDLInit(display_service);
+      } else {
+	SDL_FreeYUVOverlay(info->sdloverlay);
+	info->sdloverlay=
+	  SDL_CreateYUVOverlay(display_service->current_buffer->width,
+			       display_service->current_buffer->height,
+			       SDL_YUY2_OVERLAY,
+			       info->sdlvideo);
+      }
+#endif
     }
   }
 
