@@ -677,7 +677,7 @@ StopFPSDisplay(int camera)
 {
   chain_t *service;
   isothread_info_t* infoiso;
-  displaythread_info_t* infodisplay;
+  //displaythread_info_t* infodisplay;
   savethread_info_t* infosave;
   ftpthread_info_t* infoftp;
 
@@ -693,7 +693,9 @@ StopFPSDisplay(int camera)
     //fprintf(stderr,"done\n");
   
   } 
- service=GetService(SERVICE_DISPLAY,current_camera);
+  // we don't need to stop display FPS: the thread is completely disabled if necessary.
+  /*
+  service=GetService(SERVICE_DISPLAY,current_camera);
   if (service!=NULL) {
     infodisplay=(displaythread_info_t*)service->data;
     //fprintf(stderr,"Stopping display fps, id %d...",infodisplay->timeout_func_id);
@@ -704,6 +706,7 @@ StopFPSDisplay(int camera)
 					   ctxt.fps_display_ctxt, "");
     //fprintf(stderr,"done\n");
   }
+  */
  service=GetService(SERVICE_SAVE,current_camera);
   if (service!=NULL) {
     infosave=(savethread_info_t*)service->data;
@@ -733,7 +736,7 @@ ResumeFPSDisplay(int camera)
 {
   chain_t *service;
   isothread_info_t* infoiso;
-  displaythread_info_t* infodisplay;
+  //displaythread_info_t* infodisplay;
   savethread_info_t* infosave;
   ftpthread_info_t* infoftp;
 
@@ -744,6 +747,8 @@ ResumeFPSDisplay(int camera)
     infoiso->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)IsoShowFPS, (gpointer*) service);
     //fprintf(stderr,"done: id= %d\n",infoiso->timeout_func_id);
   } 
+  // we don't restart display FPS because if necessary the thread will be restarted anyway.
+  /*
  service=GetService(SERVICE_DISPLAY,current_camera);
   if (service!=NULL) {
     infodisplay=(displaythread_info_t*)service->data;
@@ -751,6 +756,7 @@ ResumeFPSDisplay(int camera)
     infodisplay->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)DisplayShowFPS, (gpointer*) service);
     //fprintf(stderr,"done: id= %d\n",infodisplay->timeout_func_id);
   }
+  */
  service=GetService(SERVICE_SAVE,current_camera);
   if (service!=NULL) {
     infosave=(savethread_info_t*)service->data;
