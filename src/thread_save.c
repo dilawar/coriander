@@ -44,7 +44,7 @@ SaveStartThread(camera_t* cam)
     
     /* setup save_thread: handles, ...*/
     pthread_mutex_lock(&save_service->mutex_data);
-    strcpy(info->filename, cam->prefs.save_filename);
+    strcpy(info->filename, cam->prefs.save_basedir);
 
     // if we use conversion, look for the extension.
     if (cam->prefs.save_convert==SAVE_CONVERT_ON) {
@@ -58,7 +58,7 @@ SaveStartThread(camera_t* cam)
       }
     
       tmp[0] = '\0';// cut filename before point
-      strcpy(info->filename_ext, strrchr(cam->prefs.save_filename, '.'));
+      strcpy(info->filename_ext, strrchr(cam->prefs.save_basedir, '.'));
     }
     else { // no conversion
       strcpy(info->filename_ext, "");

@@ -203,15 +203,18 @@ create_main_window (void)
   GtkWidget *overlay_file_subentry;
   GtkWidget *label144;
   GtkWidget *vbox54;
-  GtkWidget *prefs_save_file_frame;
-  GtkWidget *save_filename_entry;
-  GtkWidget *save_filename_subentry;
+  GtkWidget *prefs_save_basedir_frame;
+  GtkWidget *save_basedir_entry;
+  GtkWidget *save_basedir_subentry;
+  GtkWidget *hbox71;
   GtkWidget *prefs_save_framedrop;
   GtkWidget *hbox_capture_freq_periodic;
   GtkWidget *label76;
   GtkObject *prefs_save_period_adj;
   GtkWidget *prefs_save_period;
   GtkWidget *label42;
+  GtkWidget *frame12;
+  GtkWidget *grab_now;
   GtkWidget *prefs_save_scratch_frame;
   GtkWidget *table74;
   GSList *save_mode_group = NULL;
@@ -377,7 +380,7 @@ create_main_window (void)
 
   main_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_object_set_data (GTK_OBJECT (main_window), "main_window", main_window);
-  gtk_window_set_title (GTK_WINDOW (main_window), _("Coriander 1.0.0"));
+  gtk_window_set_title (GTK_WINDOW (main_window), _("Coriander 1.0.1"));
   gtk_window_set_policy (GTK_WINDOW (main_window), FALSE, TRUE, TRUE);
 
   vbox26 = gtk_vbox_new (FALSE, 0);
@@ -1653,34 +1656,42 @@ create_main_window (void)
   gtk_widget_show (vbox54);
   gtk_container_add (GTK_CONTAINER (notebook5), vbox54);
 
-  prefs_save_file_frame = gtk_frame_new (_("Filename"));
-  gtk_widget_ref (prefs_save_file_frame);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "prefs_save_file_frame", prefs_save_file_frame,
+  prefs_save_basedir_frame = gtk_frame_new (_("Base directory"));
+  gtk_widget_ref (prefs_save_basedir_frame);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "prefs_save_basedir_frame", prefs_save_basedir_frame,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (prefs_save_file_frame);
-  gtk_box_pack_start (GTK_BOX (vbox54), prefs_save_file_frame, FALSE, TRUE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (prefs_save_file_frame), 5);
+  gtk_widget_show (prefs_save_basedir_frame);
+  gtk_box_pack_start (GTK_BOX (vbox54), prefs_save_basedir_frame, FALSE, TRUE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (prefs_save_basedir_frame), 5);
 
-  save_filename_entry = gnome_file_entry_new (NULL, _("Choose a filename"));
-  gtk_widget_ref (save_filename_entry);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "save_filename_entry", save_filename_entry,
+  save_basedir_entry = gnome_file_entry_new (NULL, _("Choose a base directory"));
+  gtk_widget_ref (save_basedir_entry);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "save_basedir_entry", save_basedir_entry,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (save_filename_entry);
-  gtk_container_add (GTK_CONTAINER (prefs_save_file_frame), save_filename_entry);
-  gtk_container_set_border_width (GTK_CONTAINER (save_filename_entry), 3);
+  gtk_widget_show (save_basedir_entry);
+  gtk_container_add (GTK_CONTAINER (prefs_save_basedir_frame), save_basedir_entry);
+  gtk_container_set_border_width (GTK_CONTAINER (save_basedir_entry), 3);
+  gnome_file_entry_set_directory (GNOME_FILE_ENTRY (save_basedir_entry), TRUE);
 
-  save_filename_subentry = gnome_file_entry_gtk_entry (GNOME_FILE_ENTRY (save_filename_entry));
-  gtk_widget_ref (save_filename_subentry);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "save_filename_subentry", save_filename_subentry,
+  save_basedir_subentry = gnome_file_entry_gtk_entry (GNOME_FILE_ENTRY (save_basedir_entry));
+  gtk_widget_ref (save_basedir_subentry);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "save_basedir_subentry", save_basedir_subentry,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (save_filename_subentry);
+  gtk_widget_show (save_basedir_subentry);
+
+  hbox71 = gtk_hbox_new (TRUE, 0);
+  gtk_widget_ref (hbox71);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "hbox71", hbox71,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (hbox71);
+  gtk_box_pack_start (GTK_BOX (vbox54), hbox71, FALSE, TRUE, 0);
 
   prefs_save_framedrop = gtk_frame_new (_("Frame drop"));
   gtk_widget_ref (prefs_save_framedrop);
   gtk_object_set_data_full (GTK_OBJECT (main_window), "prefs_save_framedrop", prefs_save_framedrop,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (prefs_save_framedrop);
-  gtk_box_pack_start (GTK_BOX (vbox54), prefs_save_framedrop, FALSE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (hbox71), prefs_save_framedrop, TRUE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (prefs_save_framedrop), 5);
 
   hbox_capture_freq_periodic = gtk_hbox_new (FALSE, 0);
@@ -1716,6 +1727,22 @@ create_main_window (void)
   gtk_widget_show (label42);
   gtk_box_pack_start (GTK_BOX (hbox_capture_freq_periodic), label42, FALSE, FALSE, 2);
   gtk_misc_set_padding (GTK_MISC (label42), 5, 8);
+
+  frame12 = gtk_frame_new (_("Grab single image"));
+  gtk_widget_ref (frame12);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "frame12", frame12,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (frame12);
+  gtk_box_pack_start (GTK_BOX (hbox71), frame12, TRUE, TRUE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (frame12), 5);
+
+  grab_now = gtk_button_new_with_label (_("NOW!"));
+  gtk_widget_ref (grab_now);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "grab_now", grab_now,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (grab_now);
+  gtk_container_add (GTK_CONTAINER (frame12), grab_now);
+  gtk_container_set_border_width (GTK_CONTAINER (grab_now), 2);
 
   prefs_save_scratch_frame = gtk_frame_new (_("Scratch"));
   gtk_widget_ref (prefs_save_scratch_frame);
@@ -3140,11 +3167,14 @@ create_main_window (void)
   gtk_signal_connect (GTK_OBJECT (overlay_file_subentry), "changed",
                       GTK_SIGNAL_FUNC (on_overlay_file_subentry_changed),
                       NULL);
-  gtk_signal_connect (GTK_OBJECT (save_filename_subentry), "changed",
-                      GTK_SIGNAL_FUNC (on_save_filename_subentry_changed),
+  gtk_signal_connect (GTK_OBJECT (save_basedir_subentry), "changed",
+                      GTK_SIGNAL_FUNC (on_save_basedir_subentry_changed),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (prefs_save_period), "changed",
                       GTK_SIGNAL_FUNC (on_prefs_save_period_changed),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (grab_now), "clicked",
+                      GTK_SIGNAL_FUNC (on_grab_now_clicked),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (prefs_save_seq), "toggled",
                       GTK_SIGNAL_FUNC (on_prefs_save_seq_toggled),

@@ -55,7 +55,7 @@ typedef struct _CamPrefs
   char *video1394_device;
   int video1394_dropframes;
   int dma_buffer_size;
-  char *save_filename;
+  char *save_basedir;
   int save_scratch;
   int save_period;
   int save_convert;

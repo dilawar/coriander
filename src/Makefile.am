@@ -34,8 +34,7 @@ coriander_SOURCES = \
 	conversions.c conversions.h \
 	topology.c topology.h \
 	preferences.c preferences.h \
-	raw1394support.h \
-	icons.h
+	raw1394support.h 
 
 #$(INTLLIBS) removed from the line below
 coriander_LDADD = $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(PTHREAD_LIB) $(FTPLIB_LIBS) $(SDLLIB_LIBS) $(LIBDC_LIBS) $(LIBRAW_LIBS) $(GDK_PIXBUF_LIBS) $(XV_LIBS) $(COR_LFS_LDFLAGS) -lgthread 

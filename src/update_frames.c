@@ -74,7 +74,7 @@ void
 UpdatePrefsSaveFrame(void)
 {
   // thread presence balnking: default some to ON
-  gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_save_file_frame"), TRUE);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_save_basedir_frame"), TRUE);
   gtk_widget_set_sensitive(lookup_widget(main_window,"ram_buffer_frame"), TRUE);
   gtk_widget_set_sensitive(lookup_widget(main_window,"use_ram_buffer"), TRUE);
   gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_save_scratch"), TRUE);
@@ -97,7 +97,7 @@ UpdatePrefsSaveFrame(void)
 
   // thread presence blanking:
   if (GetService(camera,SERVICE_SAVE)!=NULL) {
-    gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_save_file_frame"), FALSE);
+    gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_save_basedir_frame"), FALSE);
     gtk_widget_set_sensitive(lookup_widget(main_window,"ram_buffer_frame"), FALSE);
     gtk_widget_set_sensitive(lookup_widget(main_window,"use_ram_buffer"), FALSE);
     if (camera->prefs.save_scratch==SAVE_SCRATCH_VIDEO) {
@@ -118,7 +118,7 @@ UpdatePrefsFtpFrame(void)
   gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_ftp_num_tag"),
 			   camera->prefs.ftp_scratch==FTP_SCRATCH_SEQUENTIAL);
 
-  // thread presence balnking:
+  // thread presence blanking:
   if (GetService(camera,SERVICE_FTP)!=NULL) {
     gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_ftp_server_frame"),FALSE);
   }
@@ -131,7 +131,7 @@ UpdatePrefsFtpFrame(void)
 void
 UpdatePrefsV4lFrame(void)
 {
-  // thread presence balnking:
+  // thread presence blanking:
   if (GetService(camera,SERVICE_V4L)!=NULL) {
     gtk_widget_set_sensitive(lookup_widget(main_window,"v4l_output_device_frame"),FALSE);
   }

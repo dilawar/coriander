@@ -492,48 +492,48 @@ SDLDisplayPattern(chain_t *display_service)
       j=(7*sy)/16;
       j=j-j%4;
       for (i=(7*sx)/16;i<=(9*sx)/16;i+=2) {
-	INVPIX(pimage, (j*sx+i)*2);
-	INVPIX(pimage, ((j-1)*sx+i)*2);
+	INVPIX(pimage, ((j*sx+i)<<1));
+	INVPIX(pimage, (((j-1)*sx+i)<<1));
       }
       j=(9*sy)/16;
       j=j-j%4;
       for (i=(7*sx)/16;i<=(9*sx)/16;i+=2) {
-	INVPIX(pimage, (j*sx+i)*2);
-	INVPIX(pimage, ((j+1)*sx+i)*2);
+	INVPIX(pimage, ((j*sx+i)<<1));
+	INVPIX(pimage, (((j+1)*sx+i)<<1));
       }
       j=(7*sx)/16;
       j=j-j%4;
       for (i=(7*sy)/16;i<=(9*sy)/16;i++) {
-	INVPIX(pimage, (i*sx+j)*2);
+	INVPIX(pimage, ((i*sx+j)<<1));
       }
       j=(9*sx)/16;
       j=j-j%4;
       for (i=(7*sy)/16;i<=(9*sy)/16;i++) {
-	INVPIX(pimage, (i*sx+j)*2);
+	INVPIX(pimage, ((i*sx+j)<<1));
       }
     }
     else {
       j=(7*sy)/16;
       j=j-j%4;
       for (i=(7*sx)/16;i<=(9*sx)/16;i+=2) {
-	REPLPIX(pimage, block, (j*sx+i)*2);
-	REPLPIX(pimage, block, ((j-1)*sx+i)*2);
+	REPLPIX(pimage, block, ((j*sx+i)<<1));
+	REPLPIX(pimage, block, (((j-1)*sx+i)<<1));
       }
       j=(9*sy)/16;
       j=j-j%4;
       for (i=(7*sx)/16;i<=(9*sx)/16;i+=2) {
-	REPLPIX(pimage, block, (j*sx+i)*2);
-	REPLPIX(pimage, block, ((j+1)*sx+i)*2);
+	REPLPIX(pimage, block, ((j*sx+i)<<1));
+	REPLPIX(pimage, block, (((j+1)*sx+i)<<1));
       }
       j=(7*sx)/16;
       j=j-j%4;
       for (i=(7*sy)/16;i<=(9*sy)/16;i++) {
-	REPLPIX(pimage, block, (i*sx+j)*2);
+	REPLPIX(pimage, block, ((i*sx+j)<<1));
       }
       j=(9*sx)/16;
       j=j-j%4;
       for (i=(7*sy)/16;i<=(9*sy)/16;i++) {
-	REPLPIX(pimage, block, (i*sx+j)*2);
+	REPLPIX(pimage, block, ((i*sx+j)<<1));
       }
     }
     break;
@@ -542,26 +542,26 @@ SDLDisplayPattern(chain_t *display_service)
       j=sy/2;
       j=j-j%4;
       for (i=(7*sx)/16;i<=(9*sx)/16;i+=2) {
-	INVPIX(pimage, (j*sx+i)*2);
-	INVPIX(pimage, ((j-1)*sx+i)*2);
+	INVPIX(pimage, ((j*sx+i)<<1));
+	INVPIX(pimage, (((j-1)*sx+i)<<1));
       }
       j=sx/2;
       j=j-j%4;
       for (i=(7*sy)/16;i<=(9*sy)/16;i++) {
-	INVPIX(pimage, (i*sx+j)*2);
+	INVPIX(pimage, ((i*sx+j)<<1));
       }
     }
     else {
       j=sy/2;
       j=j-j%4;
       for (i=(7*sx)/16;i<=(9*sx)/16;i+=2) {
-	REPLPIX(pimage, block, (j*sx+i)*2);
-	REPLPIX(pimage, block, ((j-1)*sx+i)*2);
+	REPLPIX(pimage, block, ((j*sx+i)<<1));
+	REPLPIX(pimage, block, (((j-1)*sx+i)<<1));
       }
       j=sx/2;
       j=j-j%4;
       for (i=(7*sy)/16;i<=(9*sy)/16;i++) {
-	REPLPIX(pimage, block, (i*sx+j)*2);
+	REPLPIX(pimage, block, ((i*sx+j)<<1));
       }
     }
     break;
@@ -570,26 +570,26 @@ SDLDisplayPattern(chain_t *display_service)
       j=sy/2;
       j=j-j%4;
       for (i=0;i<sx;i+=2) {
-	INVPIX(pimage, (j*sx+i)*2);
-	INVPIX(pimage, ((j-1)*sx+i)*2);
+	INVPIX(pimage, ((j*sx+i)<<1));
+	INVPIX(pimage, (((j-1)*sx+i)<<1));
       }
       j=sx/2;
       j=j-j%4;
       for (i=0;i<sy;i++) {
-	INVPIX(pimage, (i*sx+j)*2);
+	INVPIX(pimage, ((i*sx+j)<<1));
       }
     }
     else {
       j=sy/2;
       j=j-j%4;
       for (i=0;i<sx;i+=2) {
-	REPLPIX(pimage, block, (j*sx+i)*2);
-	REPLPIX(pimage, block, ((j-1)*sx+i)*2);
+	REPLPIX(pimage, block, ((j*sx+i)<<1));
+	REPLPIX(pimage, block, (((j-1)*sx+i)<<1));
       }
       j=sx/2;
       j=j-j%4;
       for (i=0;i<sy;i++) {
-	REPLPIX(pimage, block, (i*sx+j)*2);
+	REPLPIX(pimage, block, ((i*sx+j)<<1));
       }
     }
     break;
@@ -598,48 +598,48 @@ SDLDisplayPattern(chain_t *display_service)
       j=sy/3;
       j=j-j%4;
       for (i=0;i<sx;i+=2) {
-	INVPIX(pimage, (j*sx+i)*2);
-	INVPIX(pimage, ((j-1)*sx+i)*2);
+	INVPIX(pimage, ((j*sx+i)<<1));
+	INVPIX(pimage, (((j-1)*sx+i)<<1));
       }
       j=2*sy/3;
       j=j-j%4;
       for (i=0;i<sx;i+=2) {
-	INVPIX(pimage, (j*sx+i)*2);
-	INVPIX(pimage, ((j-1)*sx+i)*2);
+	INVPIX(pimage, ((j*sx+i)<<1));
+	INVPIX(pimage, (((j-1)*sx+i)<<1));
       }
       j=sx/3;
       j=j-j%4;
       for (i=0;i<sy;i++) {
-	INVPIX(pimage, (i*sx+j)*2);
+	INVPIX(pimage, ((i*sx+j)<<1));
       }
       j=2*sx/3;
       j=j-j%4;
       for (i=0;i<sy;i++) {
-	INVPIX(pimage, (i*sx+j)*2);
+	INVPIX(pimage, ((i*sx+j)<<1));
       }
     }
     else {
       j=sy/3;
       j=j-j%4;
       for (i=0;i<sx;i+=2) {
-	REPLPIX(pimage, block, (j*sx+i)*2);
-	REPLPIX(pimage, block, ((j-1)*sx+i)*2);
+	REPLPIX(pimage, block, ((j*sx+i)<<1));
+	REPLPIX(pimage, block, (((j-1)*sx+i)<<1));
       }
       j=2*sy/3;
       j=j-j%4;
       for (i=0;i<sx;i+=2) {
-	REPLPIX(pimage, block, (j*sx+i)*2);
-	REPLPIX(pimage, block, ((j-1)*sx+i)*2);
+	REPLPIX(pimage, block, ((j*sx+i)<<1));
+	REPLPIX(pimage, block, (((j-1)*sx+i)<<1));
       }
       j=sx/3;
       j=j-j%4;
       for (i=0;i<sy;i++) {
-	REPLPIX(pimage, block, (i*sx+j)*2);
+	REPLPIX(pimage, block, ((i*sx+j)<<1));
       }
       j=2*sx/3;
       j=j-j%4;
       for (i=0;i<sy;i++) {
-	REPLPIX(pimage, block, (i*sx+j)*2);
+	REPLPIX(pimage, block, ((i*sx+j)<<1));
       }
       
     }

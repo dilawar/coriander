@@ -247,7 +247,7 @@ on_prefs_save_period_changed           (GtkEditable     *editable,
                                         gpointer         user_data);
 
 void
-on_prefs_save_filename_changed         (GtkEditable     *editable,
+on_prefs_save_basedir_changed         (GtkEditable     *editable,
                                         gpointer         user_data);
 
 void
@@ -408,12 +408,16 @@ on_overlay_color_picker_color_set      (GnomeColorPicker *gnomecolorpicker,
                                         guint            arg4,
                                         gpointer         user_data);
 
-#endif // __CALLBACKS_H__
-
 void
 on_overlay_file_subentry_changed       (GtkEditable     *editable,
                                         gpointer         user_data);
 
 void
-on_save_filename_subentry_changed      (GtkEditable     *editable,
+on_save_basedir_subentry_changed      (GtkEditable     *editable,
                                         gpointer         user_data);
+
+void
+on_grab_now_clicked                    (GtkButton       *button,
+                                        gpointer         user_data);
+
+#endif // __CALLBACKS_H__

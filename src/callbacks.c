@@ -1507,13 +1507,21 @@ on_overlay_file_subentry_changed       (GtkEditable     *editable,
 
 
 void
-on_save_filename_subentry_changed      (GtkEditable     *editable,
+on_save_basedir_subentry_changed      (GtkEditable     *editable,
                                         gpointer         user_data)
 {
   char *tmp_ptr;
-  tmp_ptr=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"save_filename_subentry")));
-  strcpy(camera->prefs.save_filename,tmp_ptr);
-  gnome_config_set_string("coriander/save/filename",camera->prefs.save_filename);
+  tmp_ptr=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"save_basedir_subentry")));
+  strcpy(camera->prefs.save_basedir,tmp_ptr);
+  gnome_config_set_string("coriander/save/filename",camera->prefs.save_basedir);
   gnome_config_sync();
+}
+
+
+void
+on_grab_now_clicked                    (GtkButton       *button,
+                                        gpointer         user_data)
+{
+
 }
 

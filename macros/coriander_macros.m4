@@ -17,7 +17,7 @@ AC_DEFUN([AC_CHECK_LIBDC],[
  	if test x$libdc1394 = xno; then
           AC_ERROR([libdc1394 is not installed.  
 **************************************************************************
-**   Please install libdc1394 version >= 1.0.0                          **
+**   Please install libdc1394 version > 1.0.0 or its latest CVS         **
 **   Source tarball and CVS at:  http://www.sf.net/projects/libdc1394   **
 **************************************************************************])
  	fi
@@ -35,14 +35,14 @@ AC_DEFUN([AC_CHECK_LIBDC_VERSION_FUNCTION],[
 	   else
              AC_ERROR([libdc1394 is too old.
 **************************************************************************
-**   Please upgrade to the current CVS or to a version >= 1.0.0         **
+**   Please install libdc1394 version > 1.0.0 or its latest CVS         **
 **   Source tarball and CVS at:  http://www.sf.net/projects/libdc1394   **
 **************************************************************************])
 	   fi
 	else
           AC_ERROR([libdc1394 is too old. 
 **************************************************************************
-**   Please upgrade to the current CVS or to a version >= 1.0.0         **
+**   Please install libdc1394 version > 1.0.0 or its latest CVS         **
 **   Source tarball and CVS at:  http://www.sf.net/projects/libdc1394   **
 **************************************************************************])
  	fi
@@ -51,7 +51,7 @@ AC_DEFUN([AC_CHECK_LIBDC_VERSION_FUNCTION],[
 AC_DEFUN([AC_CHECK_LIBDC_VERSION_COMPILE],[
 	AC_SUBST(LIBDC_CFLAGS)
 	AC_SUBST(LIBDC_LIBS)
-	AC_MSG_CHECKING(libdc1394 DMA interface)
+	AC_MSG_CHECKING(presence of IIDC v1.31 in libdc)
 	AC_TRY_COMPILE([
         #include <libraw1394/raw1394.h>
         #include <libdc1394/dc1394_control.h>
@@ -59,10 +59,11 @@ AC_DEFUN([AC_CHECK_LIBDC_VERSION_COMPILE],[
 	int main(void) {
 	raw1394handle_t handle;
 	dc1394_cameracapture camera;
-	dc1394_dma_setup_capture(handle, 0, 0, 0, 0, 0, 0, 0, 0, "tmp", &camera);
+	dc1394_dma_setup_capture(handle, FRAMERATE_240, 0, 0, COLOR_FORMAT7_RAW8,
+	                         0, 0, 0, 0, "tmp", &camera);
 	return 0;
 	}
-	],libdc1394=ok,libdc1394=old);
+	],libdc1394=ok,libdc1394=missing);
 	AC_MSG_RESULT($libdc1394)
  	if test x$libdc1394 = xok; then
            LIBDC_LIBS="-ldc1394_control"
@@ -70,7 +71,7 @@ AC_DEFUN([AC_CHECK_LIBDC_VERSION_COMPILE],[
 	else
           AC_ERROR([libdc1394 is too old. 
 **************************************************************************
-**   Please upgrade to the current CVS or to a version >= 1.0.0         **
+**   Please install libdc1394 version > 1.0.0 or its latest CVS         **
 **   Source tarball and CVS at:  http://www.sf.net/projects/libdc1394   **
 **************************************************************************])
  	fi

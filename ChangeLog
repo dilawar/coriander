@@ -1,9 +1,16 @@
 Coriander, (c) 2000-2004 Damien Douxchamps <ddouxchamps@users.sf.net>
 
-Changes since version 1.0.0
+Changes towards version 1.0.2
 
+   Dec 27, 2004, by Damien Douxchamps
+   - little optimization of pattern overlay
+   - add [ and ] keys as controls for the image zoom
+   - begin integration of the patch for write-to-dir (Anthony Wesley)
+
+Changes in version 1.0.1
+	
    Dec 20, 2004, by Damien Douxchamps
-   - update pattern overlay
+   - updated the pattern overlay.
 	
    Dec 17, 2004, by Damien Douxchamps
    - removal of icons.h, which was somehow still lurking in the src directory

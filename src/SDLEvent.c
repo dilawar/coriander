@@ -183,7 +183,8 @@ OnKeyPressed(chain_t *display_service, int key, int mod)
        'a' = SDLK_a,0 'A' = SDLK_a,KMOD_SHIFT, etc. On my keyboard, '<' is
        SDLK_COMMA,KMOD_SHIFT and SDLK_GREATER will never arrive here.
     */
-  case SDLK_GREATER:
+  case SDLK_RIGHTBRACKET:
+  case SDLK_LESS:
     // image size *2
     if (mod&(KMOD_SHIFT)) {
       SDLResizeDisplay(display_service, info->sdlvideorect.w/2, info->sdlvideorect.h/2);
@@ -191,7 +192,8 @@ OnKeyPressed(chain_t *display_service, int key, int mod)
       SDLResizeDisplay(display_service, info->sdlvideorect.w*2, info->sdlvideorect.h*2);
     }
     break;
-  case SDLK_LESS:
+  case SDLK_LEFTBRACKET:
+  case SDLK_GREATER:
     // image size /2
     if (mod&(KMOD_SHIFT)) {
       SDLResizeDisplay(display_service, info->sdlvideorect.w*2, info->sdlvideorect.h*2);
