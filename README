@@ -73,7 +73,7 @@ _______________________
 
 Basically, you should just type:
 
-./autogen.sh
+./configure
 make
 make install
 

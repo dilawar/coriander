@@ -1088,13 +1088,13 @@ on_global_iso_stop_clicked             (GtkButton       *button,
   camera_t* camera_ptr;
   camera_ptr=cameras;
   while (camera_ptr!=NULL) {
-    //fprintf(stderr,"Trying to stop camera %d\n",i);
-    if (camera_ptr->misc_info.is_iso_on!=DC1394_FALSE) {
+    //fprintf(stderr,"Trying to stop camera\n");
+    if (camera_ptr->misc_info.is_iso_on==DC1394_TRUE) {
       if (dc1394_stop_iso_transmission(camera_ptr->camera_info.handle,camera_ptr->camera_info.id)!=DC1394_SUCCESS) {
 	MainError("Could not stop ISO transmission");
       }
       else {
-	//fprintf(stderr," ISO stopped for camera %d\n",i);
+	//fprintf(stderr," ISO stopped\n");
 	camera_ptr->misc_info.is_iso_on=DC1394_FALSE;
       } 
       if (camera_ptr==camera) {
@@ -1125,14 +1125,14 @@ on_global_iso_start_clicked            (GtkButton       *button,
   camera_t* camera_ptr;
   camera_ptr=cameras;
   while (camera_ptr!=NULL) {
-    //fprintf(stderr,"Trying to start camera %d\n",i);
-    if (camera_ptr->misc_info.is_iso_on!=DC1394_FALSE) {
+    //fprintf(stderr,"Trying to start camera\n");
+    if (camera_ptr->misc_info.is_iso_on==DC1394_FALSE) {
       if (dc1394_start_iso_transmission(camera_ptr->camera_info.handle,camera_ptr->camera_info.id)!=DC1394_SUCCESS) {
 	MainError("Could not stop ISO transmission");
       }
       else {
-	//fprintf(stderr," ISO started for camera %d\n",i);
-	camera_ptr->misc_info.is_iso_on=DC1394_FALSE;
+	//fprintf(stderr," ISO started\n");
+	camera_ptr->misc_info.is_iso_on=DC1394_TRUE;
       } 
       if (camera_ptr==camera) {
 	UpdateIsoFrame();

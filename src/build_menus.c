@@ -79,10 +79,12 @@ BuildTriggerModeMenu(void)
     gtk_option_menu_set_menu (GTK_OPTION_MENU (trigger_mode), trigger_mode_menu);
     
     // sets the active menu item:
-    if (dc1394_get_trigger_mode(camera->camera_info.handle,camera->camera_info.id, &current_trigger_mode)!=DC1394_SUCCESS)
+    if (dc1394_get_trigger_mode(camera->camera_info.handle,camera->camera_info.id, &current_trigger_mode)!=DC1394_SUCCESS) {
       MainError("Could not query current trigger mode");
+      current_trigger_mode=TRIGGER_MODE_MIN;
+    }
 
-    //fprintf(stderr,"current trigger mode: %d\n",current_trigger_mode - TRIGGER_MODE_MIN);
+    //fprintf(stderr,"current trigger mode: %d\n", current_trigger_mode - TRIGGER_MODE_MIN);
     gtk_option_menu_set_history (GTK_OPTION_MENU (trigger_mode), index[current_trigger_mode - TRIGGER_MODE_MIN]);
     
   }

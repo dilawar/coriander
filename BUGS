@@ -1,6 +1,5 @@
 Known bugs for version 0.99.3:
 
-- full-screen should zoom the image to screen resolution
-- someone experienced a problem with the BuildTriggerMenu
-  function. I can't reproduce it, but it seems there's
-  somthing lurking there. 
+- If you want to use coriander remotely, i.e. run coriander on
+  a remote machine with a display export, the BPP settings of
+  computer displays should be the same.

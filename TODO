@@ -7,6 +7,7 @@ _______________________________________________________________________________
 - video:
     	- add a button somewhere to quickly capture an image and save it to
 	  disk (this was previously called "capture single").
+	- full-screen should zoom the image to screen resolution
 
 - refresh/update:
 	- regularly update ranges in auto-mode
