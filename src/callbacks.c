@@ -195,11 +195,20 @@ void
 on_iso_start_clicked                   (GtkButton       *button,
                                         gpointer         user_data)
 {
+  dc1394bool_t status;
+
   if (dc1394_start_iso_transmission(camera->camera_info.handle, camera->camera_info.id)!=DC1394_SUCCESS)
     MainError("Could not start ISO transmission");
   else {
-    camera->misc_info.is_iso_on=DC1394_TRUE;
-    UpdateIsoFrame();
+    if (dc1394_get_iso_status(camera->camera_info.handle, camera->camera_info.id, &status)!=DC1394_SUCCESS)
+      MainError("Could get ISO status");
+    else {
+      if (status==DC1394_FALSE) {
+	MainError("ISO transmission refuses to start");
+      }
+      camera->misc_info.is_iso_on=status;
+      UpdateIsoFrame();
+    }
   }
   UpdateTransferStatusFrame();
 }
@@ -209,11 +218,20 @@ void
 on_iso_stop_clicked                    (GtkButton       *button,
                                         gpointer         user_data)
 {
+  dc1394bool_t status;
+
   if (dc1394_stop_iso_transmission(camera->camera_info.handle, camera->camera_info.id)!=DC1394_SUCCESS)
     MainError("Could not stop ISO transmission");
   else {
-    camera->misc_info.is_iso_on=DC1394_FALSE;
-    UpdateIsoFrame();
+    if (dc1394_get_iso_status(camera->camera_info.handle, camera->camera_info.id, &status)!=DC1394_SUCCESS)
+      MainError("Could get ISO status");
+    else {
+      if (status==DC1394_TRUE) {
+	MainError("ISO transmission refuses to stop");
+      }
+      camera->misc_info.is_iso_on=status;
+      UpdateIsoFrame();
+    }
   }
   UpdateTransferStatusFrame();
 }
@@ -259,24 +277,42 @@ on_camera_select_activate              (GtkMenuItem     *menuitem,
 void
 on_format7_packet_size_changed               (GtkAdjustment    *adj,
 					      gpointer         user_data)
-{
+{ 
   int bpp;
   int state;
+  int value;
+  
+  value=(int)adj->value;
 
-  IsoFlowCheck(&state);
+  value=value-value%4;
 
-  if (dc1394_set_format7_byte_per_packet(camera->camera_info.handle, camera->camera_info.id, 
-					 camera->format7_info.edit_mode, (int)adj->value)!=DC1394_SUCCESS)
-    MainError("Could not change Format7 bytes per packet");
-  else
-    camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].bpp=adj->value;
+  // do something if we were called by a first generation signal:
+  if (gtk_signal_n_emissions_by_name(GTK_OBJECT (adj), "changed")==0) {
 
-  dc1394_query_format7_byte_per_packet(camera->camera_info.handle, camera->camera_info.id,camera->format7_info.edit_mode,&bpp);
+    IsoFlowCheck(&state);
+    
+    if (dc1394_set_format7_byte_per_packet(camera->camera_info.handle, camera->camera_info.id, 
+					   camera->format7_info.edit_mode, value)!=DC1394_SUCCESS)
+      MainError("Could not change Format7 bytes per packet");
+    else {
+      if (dc1394_query_format7_byte_per_packet(camera->camera_info.handle, camera->camera_info.id,
+					       camera->format7_info.edit_mode,&bpp)!=DC1394_SUCCESS) 
+	MainError("Could not query Format7 bytes per packet");
+      else {
+	camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].bpp=bpp;
+    
+	// tell the range to change its setting
+	adj->value=bpp;
+	gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
+      
+	usleep(100e3);
+      }
+    }
 
-  IsoFlowResume(&state);
-  //fprintf(stderr,"bpp: %d (should set to %d)\n",bpp, (int)adj->value);
-}
+    IsoFlowResume(&state);
 
+  }
+} 
 
 void
 on_edit_format7_mode_activate             (GtkMenuItem     *menuitem,
@@ -362,7 +398,7 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
 				       gpointer         user_data)
 {
   int sx, sy, px, py;
-  fprintf(stderr,"%d\n",camera->format7_info.edit_mode);
+  //fprintf(stderr,"%d\n",camera->format7_info.edit_mode);
   if (camera->format7_info.edit_mode>=0) { // check if F7 is supported
     sx=camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].size_x;
     sy=camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].size_y;
@@ -383,7 +419,7 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
       py=adj->value;
       break;
     }
-    SetFormat7Crop(sx,sy,px,py);
+    SetFormat7Crop(sx,sy,px,py, camera->format7_info.edit_mode);
     
     //fprintf(stderr,"Size: %d %d  Position: %d %d\n",info->size_x, info->size_y, info->pos_x, info->pos_y);
     // update bpp range here.

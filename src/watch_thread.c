@@ -105,7 +105,8 @@ WatchThread(void *arg)
 	//fprintf(stderr,"corners: [%d %d] [%d %d], pos: [%d %d], size[%d %d]\n",
 	//      upper_left[0],upper_left[1],lower_right[0],lower_right[1],
 	//      pos[0],pos[1],size[0],size[1]);
-	SetFormat7Crop(size[0],size[1],pos[0],pos[1]);
+	SetFormat7Crop(size[0],size[1],pos[0],pos[1],camera->misc_info.mode);
+	UpdateFormat7BppRange();
 	info->crop=0;
       }
       // end stuff -------------------------------------------------------------------------------------

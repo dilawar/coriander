@@ -316,7 +316,7 @@ IsoThread(void* arg)
 		      iso_service->current_buffer->width, iso_service->current_buffer->height, iso_service->current_buffer->bayer_pattern);
       break;
     case NO_BAYER_DECODING:
-      if (info->temp!=info->capture.capture_buffer) {
+      if ((unsigned char*)info->temp!=(unsigned char*)info->capture.capture_buffer) {
 	fprintf(stderr,"Kaiiii! Capture buffer changed!\n");
       }
       // this is only necessary if no stereo was performed

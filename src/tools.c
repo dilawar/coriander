@@ -160,8 +160,6 @@ ChangeModeAndFormat         (GtkMenuItem     *menuitem,
   
   mode=(int)user_data;
 
-  //fprintf(stderr,"Mode: %d\n",mode);
-
   if ((mode>=MODE_FORMAT0_MIN)&&(mode<=MODE_FORMAT0_MAX))
     format=FORMAT_VGA_NONCOMPRESSED;
   else
@@ -195,7 +193,6 @@ ChangeModeAndFormat         (GtkMenuItem     *menuitem,
     else {
       if ((value & (0x1<<(31-(camera->misc_info.framerate-FRAMERATE_MIN))))==0) {
 	// the current framerate is not OK for the new mode/format. Switch to nearest framerate
-	//MainStatus("changemodeandformat fps update");
 	SwitchToNearestFPS(value,camera->misc_info.framerate);
       }
     }
@@ -213,7 +210,6 @@ ChangeModeAndFormat         (GtkMenuItem     *menuitem,
 
   if (format==FORMAT_SCALABLE_IMAGE_SIZE) {
     GetFormat7Capabilities(camera->camera_info.handle,camera->camera_info.id, &camera->format7_info);
-    //format7_info->edit_mode=mode;
   }
 
   BuildAllWindows();
@@ -223,8 +219,6 @@ ChangeModeAndFormat         (GtkMenuItem     *menuitem,
 
 void IsoFlowCheck(int *state)
 { 
-  //fprintf(stderr,"Iso flow stopped\n");
-
   if (dc1394_get_iso_status(camera->camera_info.handle, camera->camera_info.id, &camera->misc_info.is_iso_on)!=DC1394_SUCCESS)
     MainError("Could not get ISO status");
   else {
@@ -244,6 +238,7 @@ void IsoFlowCheck(int *state)
 void IsoFlowResume(int *state)
 {
   int was_on;
+  int timeout;
 
   was_on=camera->misc_info.is_iso_on;
   if (was_on>0) { // restart if it was 'on' before the changes
@@ -261,23 +256,25 @@ void IsoFlowResume(int *state)
       MainError("Could not get ISO status");
     else {
       if (!camera->misc_info.is_iso_on) {
-	MainError("ISO not properly restarted. Trying again after 1 second");
-	usleep(1000000);
-	if (dc1394_start_iso_transmission(camera->camera_info.handle, camera->camera_info.id)!=DC1394_SUCCESS)
-	  // ... (if not done, restarting is no more possible)
-	  MainError("Could not start ISO transmission");
-	else {
-	  if (dc1394_get_iso_status(camera->camera_info.handle, camera->camera_info.id,&camera->misc_info.is_iso_on)!=DC1394_SUCCESS)
-	    MainError("Could not get ISO status");
-	  else
-	    if (!camera->misc_info.is_iso_on)
-	      MainError("Can't start ISO, giving up...");
+	MainError("ISO could not be restarted. Trying again for 5 seconds");
+	timeout=0;
+	while ((!camera->misc_info.is_iso_on)&&(timeout<50)) {
+	  usleep(500000);
+	  timeout+=5;
+	  if (dc1394_start_iso_transmission(camera->camera_info.handle, camera->camera_info.id)!=DC1394_SUCCESS)
+	    // ... (if not done, restarting is no more possible)
+	    MainError("Could not start ISO transmission");
+	  else {
+	    if (dc1394_get_iso_status(camera->camera_info.handle, camera->camera_info.id,&camera->misc_info.is_iso_on)!=DC1394_SUCCESS)
+	      MainError("Could not get ISO status");
+	  }
 	}
+	if (!camera->misc_info.is_iso_on)
+	  MainError("Can't start ISO, giving up...");
       }
     }
     UpdateIsoFrame();
   }
-  //fprintf(stderr,"Iso flow restarted\n");
 }
 
 void GetContextStatus()
@@ -957,13 +954,13 @@ main_timeout_handler(gpointer* port_num) {
 
 
 void
-SetFormat7Crop(int sx, int sy, int px, int py) {
+SetFormat7Crop(int sx, int sy, int px, int py, int mode) {
 	
   int state;
   Format7ModeInfo *info;
   GtkAdjustment *adjsx, *adjsy, *adjpx, *adjpy;
 
-  info=&camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN];
+  info=&camera->format7_info.mode[mode-MODE_FORMAT7_MIN];
 
   // use +step/2 to 'round' instead of using 'floor'
   // (don't do this: it breaks with bad values...)
@@ -995,17 +992,17 @@ SetFormat7Crop(int sx, int sy, int px, int py) {
       (gtk_signal_n_emissions_by_name(GTK_OBJECT (adjsx), "changed")==0)&&
       (gtk_signal_n_emissions_by_name(GTK_OBJECT (adjsy), "changed")==0)) {
 
-    if (camera->format7_info.edit_mode==camera->misc_info.mode) {
+    if (mode==camera->misc_info.mode) {
       IsoFlowCheck(&state);
     }
     
     // the order in which we apply the F7 changes is important.
     // example: from size=128x128, pos=128x128, we can't go to size=1280x1024 by just changing the size.
     // We need to set the position to 0x0 first.
-    if (dc1394_set_format7_image_position(camera->camera_info.handle,camera->camera_info.id, camera->misc_info.mode, 0, 0)!=DC1394_SUCCESS)
+    if (dc1394_set_format7_image_position(camera->camera_info.handle,camera->camera_info.id, mode, 0, 0)!=DC1394_SUCCESS)
       MainError("Could not set Format7 image position to zero");
-    if ((dc1394_set_format7_image_size(camera->camera_info.handle,camera->camera_info.id, camera->misc_info.mode, sx, sy)!=DC1394_SUCCESS)||
-	(dc1394_set_format7_image_position(camera->camera_info.handle,camera->camera_info.id, camera->misc_info.mode, px, py)!=DC1394_SUCCESS))
+    if ((dc1394_set_format7_image_size(camera->camera_info.handle,camera->camera_info.id, mode, sx, sy)!=DC1394_SUCCESS)||
+	(dc1394_set_format7_image_position(camera->camera_info.handle,camera->camera_info.id, mode, px, py)!=DC1394_SUCCESS))
       MainError("Could not set Format7 image size and position");
     else {
       info->size_x=sx;
@@ -1037,7 +1034,7 @@ SetFormat7Crop(int sx, int sy, int px, int py) {
     //dc1394_query_format7_packet_per_frame(camera->camera_info.handle,camera->camera_info.id,0,&ppf);
     //fprintf(stderr,"ppf: %d, theoretical framerate= %.2f\n",ppf,1/((float)ppf*125e-6));
     
-    if (camera->format7_info.edit_mode==camera->misc_info.mode) {
+    if (mode==camera->misc_info.mode) {
       IsoFlowResume(&state);
     }
   }
