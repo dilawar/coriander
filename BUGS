@@ -1,4 +1,4 @@
-Known bugs/limiations for version 1.0.0-pre2:
+Known bugs/limiations for version 1.0.0-pre3:
 
 - If you want to use coriander remotely, i.e. run coriander on
   a remote machine with a display export, the BPP settings of

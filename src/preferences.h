@@ -27,6 +27,6 @@ void
 LoadConfigFile(void);
 
 void
-LoadCameraConfig(camera_t* camera);
+CopyCameraPrefs(camera_t* cam);
 
 #endif

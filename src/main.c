@@ -51,7 +51,7 @@ GtkWidget *help_window;
 GtkWidget *preferences_window;
 GtkWidget *waiting_camera_window;
 CtxtInfo_t ctxt;
-PrefsUI_t preferences;
+Prefs_t preferences;
 int silent_ui_update;
 camera_t* camera;
 camera_t* cameras;
@@ -126,6 +126,8 @@ main (int argc, char *argv[])
       return(1);
     }
   }
+
+  LoadConfigFile();
 
   // we have at least one camera on one interface card.
   // get camera infos and serialize the port info for each camera

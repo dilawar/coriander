@@ -28,7 +28,7 @@ extern GtkWidget *main_window;
 extern GtkWidget *preferences_window;
 extern camera_t* camera;
 extern camera_t* cameras;
-extern PrefsUI_t preferences;
+extern Prefs_t preferences;
 extern int silent_ui_update;
 
 #ifdef HAVE_SDLLIB
@@ -702,10 +702,10 @@ on_camera_name_text_changed            (GtkEditable     *editable,
   const char *camera_name_str =  "coriander/camera_names/";
   
   tmp=(char*)malloc(STRING_SIZE*sizeof(char));
-  camera->name=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window, "camera_name_text")));
+  camera->prefs.name=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window, "camera_name_text")));
   sprintf(tmp,"%s%llx",camera_name_str, camera->camera_info.euid_64);
   
-  gnome_config_set_string(tmp,camera->name);
+  gnome_config_set_string(tmp,camera->prefs.name);
   gnome_config_sync();
   BuildCameraMenu();
 
@@ -851,6 +851,7 @@ on_prefs_ftp_password_changed          (GtkEditable     *editable,
                                         gpointer         user_data)
 {
   camera->prefs.ftp_password=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"prefs_ftp_password")));
+  // don't save passwords!
   //gnome_config_set_string("coriander/ftp/password",preferences.ftp_password);
   //gnome_config_sync();
 }

@@ -178,7 +178,7 @@ BuildCameraMenu(void)
   i=0;
   current_camera_id=0;
   while (camera_ptr!=NULL) {
-    glade_menuitem = gtk_menu_item_new_with_label (_(camera_ptr->name));
+    glade_menuitem = gtk_menu_item_new_with_label (_(camera_ptr->prefs.name));
     gtk_widget_show (glade_menuitem);
     gtk_menu_append (GTK_MENU (camera_id_menu), glade_menuitem);
     gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",

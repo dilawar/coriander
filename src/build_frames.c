@@ -22,7 +22,7 @@
 extern GtkWidget *main_window;
 extern GtkWidget *preferences_window;
 extern GtkWidget *absolute_settings_window;
-extern PrefsUI_t preferences;
+extern Prefs_t preferences;
 extern camera_t* camera;
 extern BusInfo_t* businfo;
 
@@ -211,7 +211,6 @@ BuildPrefsFtpFrame(void)
   // file,... names
   gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window, "prefs_ftp_filename")), camera->prefs.ftp_filename);
   gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window, "prefs_ftp_address")), camera->prefs.ftp_address);
-  gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window, "prefs_ftp_password")),camera->prefs.ftp_password);
   gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window, "prefs_ftp_path")), camera->prefs.ftp_path);
   gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window, "prefs_ftp_user")), camera->prefs.ftp_user);
 

@@ -24,7 +24,7 @@ extern CtxtInfo_t ctxt;
 extern char* phy_speed_list[4];
 extern char* phy_delay_list[4];
 extern char* power_class_list[8];
-extern PrefsUI_t preferences; 
+extern Prefs_t preferences; 
 extern camera_t* camera;
 extern camera_t* cameras;
 extern BusInfo_t* businfo;
@@ -291,7 +291,7 @@ UpdateCameraStatusFrame(void)
   ctxt.pwclass_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"camera_pwclass_status"), ctxt.pwclass_ctxt,temp);
 
   // camera name: 
-  gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window,"camera_name_text")), camera->name);
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window,"camera_name_text")), camera->prefs.name);
 
   free(temp);
 
@@ -587,7 +587,7 @@ UpdateServiceTree(void)
 
   cam=cameras;
   while(cam!=NULL) {
-    sprintf(temp[0],"%s",cam->name);
+    sprintf(temp[0],"%s",cam->prefs.name);
     sprintf(temp[1]," ");
     sprintf(temp[2]," ");
     gtk_clist_append (list, temp);

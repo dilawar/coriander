@@ -80,19 +80,22 @@ typedef struct _CamPrefs
   int v4l_period;
   char *v4l_dev_name;
 
-  char *camera_name;
+  char* name;
 
   // internal data:
   int receive_method2index[2];
 
 } PrefsCam_t;
 
-typedef struct _UIPrefs
+typedef struct _Prefs
 {
   float op_timeout;
   int auto_update;
   float auto_update_frequency;
-} PrefsUI_t;
+
+  struct _CamPrefs camprefs;
+
+} Prefs_t;
 
 typedef enum _Service_T
 {
@@ -164,7 +167,6 @@ typedef struct _CameraInfo_T {
   struct _Chain_T* image_pipe;
   Format7Info_t format7_info;
   SelfIdPacket_t selfid;
-  char* name;
 
   // old uiinfo
   pthread_mutex_t uimutex;

@@ -369,7 +369,7 @@ SDLInit(chain_t *display_service)
   SDL_ShowCursor(1);
   
   // set window title:
-  SDL_WM_SetCaption(camera->name,camera->name);
+  SDL_WM_SetCaption(camera->prefs.name,camera->prefs.name);
 
   // this line broke everything for unknown reasons so I just remove it.
   //info->sdlvideo->format->BytesPerPixel=2;

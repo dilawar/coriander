@@ -28,7 +28,6 @@ extern unsigned int format7_tab_presence;
 void
 BuildPreferencesWindow(void)
 {
-  LoadConfigFile();
   BuildPrefsGeneralFrame();
   BuildPrefsDisplayFrame();
   BuildPrefsReceiveFrame();
