@@ -129,7 +129,10 @@ main (int argc, char *argv[])
 	  format7_infos=(Format7Info*)calloc(camera_num,sizeof(Format7Info));
 	  uiinfos=(UIInfo*)calloc(camera_num,sizeof(UIInfo));
 	  selfids=(SelfIdPacket_t*)calloc(camera_num,sizeof(SelfIdPacket_t));
-	  
+	  preferences.camera_names=(char **)calloc(camera_num,sizeof(char*));
+	  //for (i=0;i<camera_num;i++)
+	  //  preferences.camera_names[i]=(char*)calloc(STRING_SIZE,sizeof(char));
+
 	  // get camera infos and serialize the port info for each camera
 	  index=0;
 	  for (port=0;port<portmax;port++)
@@ -203,6 +206,7 @@ main (int argc, char *argv[])
 	  free(camera_nodes);
 	  free(handles);
 	  free(port_camera_num);
+	  free(preferences.camera_names);
 
 	} // end of if no handle check
 

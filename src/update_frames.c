@@ -257,6 +257,11 @@ UpdateCameraStatusFrame(void)
   ctxt.pwclass_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(commander_window,"camera_pwclass_status"),
 				     ctxt.pwclass_ctxt,temp);
 
+  // camera name: 
+  //fprintf(stderr,"name: %s\n",preferences.camera_names[current_camera]);
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(commander_window,"camera_name_text")),
+  		     preferences.camera_names[current_camera]);
+
 }
 
 

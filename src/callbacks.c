@@ -1349,3 +1349,17 @@ on_key_bindings_activate               (GtkMenuItem     *menuitem,
 }
 
 
+void
+on_camera_name_text_changed            (GtkEditable     *editable,
+                                        gpointer         user_data)
+{
+  char tmp[STRING_SIZE];
+  const char *camera_name_str =  "coriander/camera_names/";
+
+  preferences.camera_names[current_camera]=gtk_entry_get_text(GTK_ENTRY(lookup_widget(commander_window, "camera_name_text")));
+  sprintf(tmp,"%s%llx",camera_name_str, camera->euid_64);
+  gnome_config_set_string(tmp,preferences.camera_names[current_camera]);
+  gnome_config_sync();
+  
+}
+

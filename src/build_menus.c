@@ -25,6 +25,7 @@
 #include "support.h"
 #include "definitions.h"
 #include "callbacks.h"
+#include "preferences.h"
 #include "tools.h"
 #include "build_menus.h"
 #include <libdc1394/dc1394_control.h>
@@ -33,6 +34,7 @@ extern dc1394_feature_set *feature_set;
 extern dc1394_miscinfo *misc_info;
 extern GtkWidget *commander_window;
 extern GtkWidget *format7_window;
+extern PrefsInfo preferences; 
 extern char* fps_label_list[NUM_FRAMERATES];
 extern char* format7_color_list[NUM_MODE_FORMAT7];
 extern char* format7_mode_list[NUM_MODE_FORMAT7];
@@ -144,7 +146,6 @@ BuildCameraMenu(void)
   GtkWidget* camera_id;
   GtkWidget* camera_id_menu;
   GtkWidget* glade_menuitem;
-  char tmp[STRING_SIZE];
 
   gtk_widget_destroy(GTK_WIDGET (lookup_widget(commander_window,"camera_select"))); // remove previous menu
 
@@ -160,8 +161,7 @@ BuildCameraMenu(void)
 
   for (i=0;i<camera_num;i++)
     {
-      sprintf(tmp,"Node %d: %s %s",cameras[i].id, cameras[i].vendor, cameras[i].model);
-      glade_menuitem = gtk_menu_item_new_with_label (_(tmp));
+      glade_menuitem = gtk_menu_item_new_with_label (_(preferences.camera_names[i]));
       gtk_widget_show (glade_menuitem);
       gtk_menu_append (GTK_MENU (camera_id_menu), glade_menuitem);
       gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",

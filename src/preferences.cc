@@ -37,10 +37,17 @@ extern "C" {
 #include "tools.h"
 
 extern PrefsInfo preferences; 
+dc1394_camerainfo *cameras;
+extern int camera_num;
 
 void
 LoadConfigFile(void)
 {
+  int i;
+
+  char tmp[1024];
+  const char *camera_name_str =  "coriander/camera_names/";
+
   preferences.op_timeout = gnome_config_get_float("coriander/global/one_push_timeout=10.0");
   preferences.auto_update = gnome_config_get_int("coriander/global/auto_update=1");
   preferences.auto_update_frequency = gnome_config_get_float("coriander/global/auto_update_frequency=2.0");
@@ -86,6 +93,15 @@ LoadConfigFile(void)
   preferences.real_quality = gnome_config_get_int("coriander/real/quality=0");
   preferences.real_compatibility = gnome_config_get_int("coriander/real/compatibility=0");
   preferences.real_period = gnome_config_get_int("coriander/real/period=1");
+
+  // fprintf(stderr,"starting to grab camera names\n");
+  for (i=0;i<camera_num;i++)
+    {
+      sprintf(tmp,"%s%llx=Node %d: %s %s",camera_name_str, cameras[i].euid_64,cameras[i].id, cameras[i].vendor, cameras[i].model);
+      preferences.camera_names[i] = gnome_config_get_string(tmp);
+      //fprintf(stderr,"Node %d: %s\n",cameras[i].id,preferences.camera_names[i]);
+    }
+  //fprintf(stderr,"   ...names grabbed");
 }
 
 void

@@ -55,6 +55,8 @@ typedef struct _PrefsInfo
   int real_compatibility;
   int real_period;
 
+  char **camera_names;
+
   // internal data:
   int receive_method2index[2];
 

@@ -4,6 +4,11 @@ Changes towards version 0.26
 	
    July 4, 2002, by Damien Douxchamps
    - Multiple interface card support, beta version.
+   - you can now name any connected camera. The choosen name
+     will appear in the camera list menu and should help to
+     distinguish between different cameras, even after bus reset or
+     power off. It is based on GUID recognition. The name is saved
+     in the config file with other preferences.
 	
 Changes in version 0.25
 

@@ -464,3 +464,11 @@ on_prefs_save_convert_toggled          (GtkToggleButton *togglebutton,
 void
 on_prefs_save_noconvert_toggled        (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
+
+void
+on_name_camera_clicked                 (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_camera_name_text_changed            (GtkEditable     *editable,
+                                        gpointer         user_data);
