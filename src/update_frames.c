@@ -496,7 +496,6 @@ UpdateBandwidthFrame(void)
   int nports, i, truebps, theobps;
   chain_t* iso_service;
   GtkProgressBar *bar;
-  //fprintf(stderr,"test 1\n");
   
   temp=(char*)malloc(STRING_SIZE*sizeof(char));
 
@@ -513,6 +512,7 @@ UpdateBandwidthFrame(void)
     if (dc1394_get_bandwidth_usage(cam->camera_info.handle, cam->camera_info.id, &bandwidth)!=DC1394_SUCCESS) {
       MainError("Could not get a camera bandwidth usage. Bus usage might be inaccurate.");
     }
+    //fprintf(stderr,"%d\n",bandwidth);
     iso_service=GetService(cam,SERVICE_ISO);
     // if we are using format7 and there is a running ISO service, we can get a better estimate:
     if ((cam->misc_info.format==FORMAT_SCALABLE_IMAGE_SIZE)&&(iso_service!=NULL)){
@@ -533,13 +533,14 @@ UpdateBandwidthFrame(void)
 
   for (i=0;i<nports;i++) {
     sprintf(temp,"bandwidth_bar%d",i);
-    ports[i]=ports[i]/4915;
+    ports[i]=ports[i]/4915.0;
     if (ports[i]>1.0)
       ports[i]=1;
     //fprintf(stderr,"Cam bandwidth usage: %.1f%%\n",100*ports[i]);
     //fprintf(stderr,"test 2\n");
     bar=GTK_PROGRESS_BAR(lookup_widget(main_window,temp));
-    gtk_progress_set_percentage(GTK_PROGRESS(bar),ports[i] );
+    gtk_progress_bar_update(GTK_PROGRESS_BAR(bar),ports[i] );
+    //gtk_progress_bar_update(GTK_PROGRESS_BAR(bar),.33 );
   }
   free(ports);
   free(temp);

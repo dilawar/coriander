@@ -410,6 +410,13 @@ BuildSeviceTreeFrame(void)
   //fprintf(stderr,"Start building tree...");
   tree_view=(GtkTreeView*)lookup_widget(main_window,"service_tree");
 
+  // clear current view
+  col=gtk_tree_view_get_column (tree_view,0);
+  while (col!=NULL) {
+    gtk_tree_view_remove_column (tree_view,col);
+    col=gtk_tree_view_get_column (tree_view,0);
+  }
+
   // --- First column ---
   col = gtk_tree_view_column_new();
   gtk_tree_view_column_set_title(col, "Camera");

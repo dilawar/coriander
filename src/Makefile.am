@@ -1,10 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-INCLUDES = \
-	-DPACKAGE_DATA_DIR=\""$(datadir)"\" \
-	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
-	@PACKAGE_CFLAGS@ \
-        $(SDLLIB_CFLAGS) $(LIBRAW_CFLAGS) $(LIBDC_CFLAGS) $(COR_LFS_CFLAGS) $(MMX_CFLAGS) $(SSE_CFLAGS) $(SSE2_CFLAGS) $(FFMPEG_CFLAGS)
+INCLUDES = -DPACKAGE_DATA_DIR=\""$(datadir)"\" -DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" @PACKAGE_CFLAGS@ $(SDLLIB_CFLAGS) $(LIBRAW_CFLAGS) $(LIBDC_CFLAGS) $(COR_LFS_CFLAGS) $(MMX_CFLAGS) $(SSE_CFLAGS) $(SSE2_CFLAGS) $(FFMPEG_CFLAGS)
 
 bin_PROGRAMS = coriander
 
@@ -41,5 +37,5 @@ coriander_SOURCES = \
 	subtitles.c subtitles.h \
 	raw1394support.h 
 
-coriander_LDADD = @PACKAGE_LIBS@ $(INTLLIBS) $(PTHREAD_LIB) $(FTPLIB_LIBS) $(SDLLIB_LIBS) $(LIBDC_LIBS) $(LIBRAW_LIBS) $(XV_LIBS) $(COR_LFS_LDFLAGS) -lgthread $(FFMPEG_LIBS)
+coriander_LDADD = @PACKAGE_LIBS@ $(INTLLIBS) $(FTPLIB_LIBS) $(SDLLIB_LIBS) $(LIBDC_LIBS) $(LIBRAW_LIBS) $(XV_LIBS) $(COR_LFS_LDFLAGS) -lgthread $(FFMPEG_LIBS)
 

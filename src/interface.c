@@ -843,7 +843,7 @@ create_main_window (void)
 
   main_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_widget_set_name (main_window, "main_window");
-  gtk_window_set_title (GTK_WINDOW (main_window), _("Coriander 1.0.1"));
+  gtk_window_set_title (GTK_WINDOW (main_window), _("Coriander 1.2.0"));
   main_window_icon_pixbuf = create_pixbuf ("coriander/coriander-icon.png");
   if (main_window_icon_pixbuf)
     {

@@ -367,12 +367,12 @@ ChangeModeAndFormat         (GtkMenuItem     *menuitem,
 
 void IsoFlowCheck(int *state)
 { 
-  fprintf(stderr,"Checking ISO... ");
+  //fprintf(stderr,"Checking ISO... ");
   if (dc1394_get_iso_status(camera->camera_info.handle, camera->camera_info.id, &camera->misc_info.is_iso_on)!=DC1394_SUCCESS)
     MainError("Could not get ISO status");
   else {
     if (camera->misc_info.is_iso_on>0) {
-      fprintf(stderr,"Stopping... ");
+      //fprintf(stderr,"Stopping... ");
       if (dc1394_stop_iso_transmission(camera->camera_info.handle, camera->camera_info.id)!=DC1394_SUCCESS) {
 	// ... (if not done, restarting is no more possible)
 	MainError("Could not stop ISO transmission");
@@ -384,7 +384,7 @@ void IsoFlowCheck(int *state)
   if (*state!=0) {
     gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(main_window,"service_iso"),FALSE);
   }
-  fprintf(stderr,"done\n");
+  //fprintf(stderr,"done\n");
 }
 
 void IsoFlowResume(int *state)
@@ -392,11 +392,11 @@ void IsoFlowResume(int *state)
   int was_on;
   int timeout;
 
-  fprintf(stderr,"Resuming ISO... ");
+  //fprintf(stderr,"Resuming ISO... ");
   was_on=camera->misc_info.is_iso_on;
   if (was_on>0) { // restart if it was 'on' before the changes
     usleep(DELAY); // necessary to avoid desynchronized ISO flow.
-    fprintf(stderr,"Starting ... ");
+    //fprintf(stderr,"Starting ... ");
     if (dc1394_start_iso_transmission(camera->camera_info.handle, camera->camera_info.id)!=DC1394_SUCCESS) {
       MainError("Could not start ISO transmission");
     }
@@ -430,7 +430,7 @@ void IsoFlowResume(int *state)
     }
     UpdateIsoFrame();
   }
-  fprintf(stderr,"done\n");
+  //fprintf(stderr,"done\n");
 }
 
 void GetContextStatus()
