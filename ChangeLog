@@ -5,6 +5,8 @@ Changes towards version 1.0.0
    January 21, 2004, by Damien Douxchamps
    - Bypassed problems when F7 BPP is zero. This only happens with
      Sony camera, for unknown reasons.
+   - removed warning messages on stdout: it was a libdc/camera
+     problem
 	
    January 16, 2004, by Damien Douxchamps
    - introduced a new logo

@@ -232,8 +232,8 @@ UpdateFormat7BppRange(void)
 					   camera->format7_info.edit_mode, &info->bpp)==DC1394_SUCCESS) {
     if (dc1394_query_format7_packet_para(camera->camera_info.handle,camera->camera_info.id,
 					 camera->format7_info.edit_mode, &info->min_bpp,&info->max_bpp)==DC1394_SUCCESS) {
-      if (info->bpp==0)
-	fprintf(stderr,"BPP is zero in %s at line %d\n",__FUNCTION__,__LINE__);
+      //if (info->bpp==0)
+      //  fprintf(stderr,"BPP is zero in %s at line %d\n",__FUNCTION__,__LINE__);
       adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_packet_size")));
       adj->upper=info->max_bpp;
       adj->lower=info->min_bpp;
