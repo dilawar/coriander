@@ -428,9 +428,11 @@ UpdateFormat7InfoFrame(void)
 
     switch (mode->color_coding_id) {
     case COLOR_FORMAT7_MONO8:
+    case COLOR_FORMAT7_RAW8:
       bpp=1;
       break;
     case COLOR_FORMAT7_MONO16:
+    case COLOR_FORMAT7_RAW16:
       bpp=2;
       break;
     case COLOR_FORMAT7_RGB8:
