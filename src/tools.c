@@ -53,10 +53,10 @@ extern dc1394_feature_set *feature_set;
 extern dc1394_feature_set *feature_sets;
 extern Format7Info *format7_info;
 extern Format7Info *format7_infos;
-extern dc1394_cameracapture *capture;
-extern dc1394_cameracapture *captures;
 extern UIInfo *uiinfos;
 extern UIInfo *uiinfo;
+extern chain_t **image_pipes;
+extern chain_t *image_pipe;
 extern SelfIdPacket_t *selfid;
 extern SelfIdPacket_t *selfids;
 extern char* feature_op_list[NUM_FEATURES];
@@ -73,7 +73,6 @@ extern char* phy_delay_list[4];
 extern char* power_class_list[8];
 extern int camera_num;
 extern int current_camera;
-//extern capture_info ci;
 extern CtxtInfo ctxt;
 
 
@@ -117,24 +116,38 @@ GetFormat7Capabilities(raw1394handle_t handle, nodeid_t node, Format7Info *info)
 void
 ChangeModeAndFormat(int mode, int format)
 {
-  int err;
   int state[4];
 
   IsoFlowCheck(state);
-  err=dc1394_set_video_format(camera->handle,camera->id,format);
-  if (!err) MainError("Could not set video format");
-  else misc_info->format=format;
-  err=dc1394_set_video_mode(camera->handle,camera->id,mode);
-  if (!err) MainError("Could not set video mode");
-  else misc_info->mode=mode;
+
+  if (!dc1394_set_video_format(camera->handle,camera->id,format))
+    MainError("Could not set video format");
+  else
+    misc_info->format=format;
+
+  if (!dc1394_set_video_mode(camera->handle,camera->id,mode))
+    MainError("Could not set video mode");
+  else
+    misc_info->mode=mode;
+
   BuildFpsMenu();
   UpdateTriggerFrame();
+
   IsoFlowResume(state);
 }
 
-void IsoFlowCheck(int* state)
+
+void IsoFlowCheck(int *state)
 { 
-  int err;
+  if (!dc1394_get_iso_status(camera->handle, camera->id, &misc_info->is_iso_on))
+    MainError("Could not get ISO status");
+  else
+    if (misc_info->is_iso_on>0)
+      {
+	if (!dc1394_stop_iso_transmission(camera->handle, camera->id))
+	  // ... (if not done, restarting is no more possible)
+	  MainError("Could not stop ISO transmission");
+      }
 
   state[0]=(GetService(SERVICE_ISO)!=NULL);
   state[1]=(GetService(SERVICE_DISPLAY)!=NULL);
@@ -142,38 +155,45 @@ void IsoFlowCheck(int* state)
   state[3]=(GetService(SERVICE_FTP)!=NULL);
 
   CleanThreads(CLEAN_MODE_NO_UI_UPDATE);
-
-  err=dc1394_get_iso_status(camera->handle, camera->id, &misc_info->is_iso_on);
-  if (!err) MainError("Could not get ISO status");
-  else
-    if (misc_info->is_iso_on)
-      {
-	err=dc1394_stop_iso_transmission(camera->handle, camera->id);
-	// ... (if not done, restarting is no more possible)
-	if (!err) MainError("Could not stop ISO transmission");
-      }
 }
 
-void IsoFlowResume(int* state)
+void IsoFlowResume(int *state)
 {
-  int err;
+  int was_on;
 
-  if (misc_info->is_iso_on)// restart if it was 'on' before the changes
+  was_on=misc_info->is_iso_on;
+
+  if (was_on)// restart if it was 'on' before the changes
     {
-      err=dc1394_set_iso_channel_and_speed(camera->handle, camera->id, misc_info->iso_channel, misc_info->iso_speed);
-      if (!err) MainError("Could not set ISO channel and speed");
-      else 
-	{
-          err=dc1394_start_iso_transmission(camera->handle, camera->id);
-	  if (!err)
-	    MainError("Could not start ISO transmission");
-	}
+      if (!dc1394_start_iso_transmission(camera->handle, camera->id))
+	MainError("Could not start ISO transmission");
     }
 
   if (state[0]) IsoStartThread();
   if (state[1]) DisplayStartThread();
   if (state[2]) SaveStartThread();
   if (state[3]) FtpStartThread();
+
+  if (was_on)
+    {
+      if (!dc1394_get_iso_status(camera->handle, camera->id,&misc_info->is_iso_on))
+	MainError("Could not get ISO status");
+      else
+	if (!misc_info->is_iso_on)
+	  {
+	    MainError("ISO not properly restarted. Trying again");
+	    if (!dc1394_start_iso_transmission(camera->handle, camera->id))
+	      // ... (if not done, restarting is no more possible)
+	      MainError("Could not start ISO transmission");
+	    else
+	      if (!dc1394_get_iso_status(camera->handle, camera->id,&misc_info->is_iso_on))
+		MainError("Could not get ISO status");
+	      else
+		if (!misc_info->is_iso_on)
+		  MainError("Can't start ISO, giving up...");
+	  }
+    }
+  UpdateIsoFrame();
 
 }
 
@@ -239,14 +259,59 @@ void GrabSelfIds(raw1394handle_t handle)
 
 void SelectCamera(int i)
 {
+  image_pipes[current_camera]=image_pipe;
   current_camera=i;
   camera=&cameras[i];
   feature_set=&feature_sets[i];
   misc_info=&misc_infos[i];
-  capture=&captures[i];
   format7_info=&format7_infos[i];
   uiinfo=&uiinfos[i];
   selfid=&selfids[i];
+  //fprintf(stderr,"Image pipe: before: %ld, ",(long int)image_pipe);
+  image_pipe=image_pipes[i];
+  //fprintf(stderr,"after: %ld\n",(long int)image_pipe);
+}
+
+void
+SetChannel(int camera_index)
+{
+  int *forbid;
+  int finished=0, i;
+  unsigned int channel, speed;
+
+  //fprintf(stderr,"Entering channel selection for camera #%d\n",camera_index);
+  forbid=(int*)malloc(camera_num*sizeof(int));
+  
+  for (i=0;i<camera_num;i++)
+    {
+      //fprintf(stderr,"Probing channel for camera #%d\n",i);
+      if (dc1394_get_iso_channel_and_speed(cameras[i].handle, cameras[i].id, &forbid[i], &speed)!=DC1394_SUCCESS)
+	MainError("Can't get iso channel and speed");
+      //fprintf(stderr," Probed channel for camera #%d\n",i);
+    }
+  
+  //fprintf(stderr,"Finished probing\n");
+
+  channel=0;
+  while (finished!=1)
+    { 
+      finished=1;
+      for (i=0;i<camera_num;i++)
+	if (channel==forbid[i])
+	  {
+	    channel++;
+	    finished=0;
+	    //fprintf(stderr,"Channel #%d already used.\n",channel-1);
+	  }
+    }
+  free(forbid);
+
+  //fprintf(stderr,"Using channel #%d for camera %d\n",channel,camera_index);
+  
+  if(dc1394_set_iso_channel_and_speed(cameras[camera_index].handle, cameras[camera_index].id, channel, speed)!=DC1394_SUCCESS)
+    MainError("Can't set iso channel and speed");
+
+  misc_infos[i].iso_channel=channel;
 }
 
 void MainError(const char *string)
