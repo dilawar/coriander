@@ -584,7 +584,6 @@ void
 on_format6_window_activate             (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
-
 void
 on_test_pattern_activate               (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
@@ -636,6 +635,7 @@ on_prefs_close_button_clicked          (GtkButton       *button,
 void
 on_prefs_update_value_changed          (GtkAdjustment    *adj,
 					gpointer         user_data);
+
 void
 on_prefs_timeout_value_changed         (GtkAdjustment    *adj,
 					gpointer         user_data);
@@ -713,4 +713,25 @@ on_prefs_ftp_seq_toggled               (GtkToggleButton *togglebutton,
 
 void
 on_prefs_ftp_scratch_toggled           (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_service_real_toggled                (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_prefs_real_audience_activate              (GtkMenuItem     *menuitem,
+					      gpointer         user_data);
+
+void
+on_prefs_real_quality_activate              (GtkMenuItem     *menuitem,
+					     gpointer         user_data);
+
+void
+on_prefs_real_compatibility_activate              (GtkMenuItem     *menuitem,
+						   gpointer         user_data);
+
+
+void
+on_prefs_real_record_yes_toggled       (GtkToggleButton *togglebutton,
                                         gpointer         user_data);

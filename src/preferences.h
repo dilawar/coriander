@@ -19,7 +19,7 @@
 #ifndef __PREFERENCES_H__
 #define __PREFERENCES_H__
 
-#define PREFERENCE_ITEMS 17
+#define PREFERENCE_ITEMS 29
 
 enum {
   ONE_PUSH_TIMEOUT=0,
@@ -38,7 +38,19 @@ enum {
   FTP_PATH,
   FTP_MODE,
   FTP_SCRATCH,
-  FTP_PERIOD
+  FTP_PERIOD,
+  REAL_ADDRESS,
+  REAL_USER,
+  REAL_PASSWORD,
+  REAL_FILENAME,
+  REAL_PORT,
+  REAL_TITLE,
+  REAL_AUTHOR,
+  REAL_COPYRIGHT,
+  REAL_RECORDABLE,
+  REAL_AUDIENCE,
+  REAL_QUALITY,
+  REAL_COMPATIBILITY
 };
 
 typedef struct _PrefsInfo
@@ -60,8 +72,24 @@ typedef struct _PrefsInfo
   int ftp_mode;
   int ftp_scratch;
   int ftp_period;
+  char real_address[256];
+  char real_user[256];
+  char real_password[256];
+  char real_filename[256];
+  int real_port;
+  char real_author[256];
+  char real_title[256];
+  char real_copyright[256];
+  int real_recordable;
+  int real_audience;
+  int real_quality;
+  int real_compatibility;
 
 } PrefsInfo;
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 void
 ParseConfigFile(FILE* fd);
@@ -77,5 +105,9 @@ WriteConfigFile(void);
 
 char *
 GetFileName(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

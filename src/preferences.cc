@@ -21,6 +21,11 @@
 #endif
 
 #include <gnome.h>
+#include <libdc1394/dc1394_control.h>
+#include "thread_real.h"
+
+extern "C" {
+
 #include "callbacks.h"
 #include "support.h"
 #include "definitions.h"
@@ -30,7 +35,6 @@
 #include "thread_save.h"
 #include "thread_ftp.h"
 #include "tools.h"
-#include <libdc1394/dc1394_control.h>
 
 extern char * preferences_features[PREFERENCE_ITEMS];
 extern char * preferences_defaults[PREFERENCE_ITEMS];
@@ -51,11 +55,29 @@ SetPreferencesDefaults(void)
   strcpy(preferences.ftp_address,"ftp.sf.net");
   strcpy(preferences.ftp_user,"user_string");
   strcpy(preferences.ftp_password,"password_string");
-  strcpy(preferences.ftp_filename,"test.bmp");
+  strcpy(preferences.ftp_filename,"hello_world.bmp");
   strcpy(preferences.ftp_path,"/path/");
   preferences.ftp_mode=FTP_MODE_IMMEDIATE;
   preferences.ftp_scratch=FTP_SCRATCH_SEQUENTIAL;
   preferences.ftp_period=1;
+  strcpy(preferences.real_address,"your.server.address");
+  strcpy(preferences.real_user,"user_string");
+  strcpy(preferences.real_password,"password_string");
+  strcpy(preferences.real_filename,"hello_world.rm");
+  preferences.real_port=4040;
+  strcpy(preferences.real_title,"Hello World");
+  strcpy(preferences.real_author,"Myself");
+  strcpy(preferences.real_copyright,"(c)2032 Jenkins the Robot");
+  preferences.real_recordable=0;
+#ifdef HAVE_REALLIB
+  preferences.real_audience=REAL_AUDIENCE_LAN_HIGH;
+  preferences.real_quality=REAL_QUALITY_NORMAL;
+  preferences.real_compatibility=REAL_COMPATIBILITY_6;
+#else
+  preferences.real_audience=0;
+  preferences.real_quality=0;
+  preferences.real_compatibility=0;
+#endif
 }
 
 void
@@ -189,6 +211,26 @@ WriteConfigFile(void)
       
   fprintf(fd,"%s %d\n",preferences_features[16],preferences.ftp_period);
 
+  fprintf(fd,"%s %s\n",preferences_features[17],preferences.real_address);
+  fprintf(fd,"%s %s\n",preferences_features[18],preferences.real_user);
+  fprintf(fd,"%s %s\n",preferences_features[19],preferences.real_password);
+  fprintf(fd,"%s %s\n",preferences_features[20],preferences.real_filename);
+  fprintf(fd,"%s %d\n",preferences_features[21],preferences.real_port);
+  fprintf(fd,"%s %s\n",preferences_features[22],preferences.real_author);
+  fprintf(fd,"%s %s\n",preferences_features[23],preferences.real_title);
+  fprintf(fd,"%s %s\n",preferences_features[24],preferences.real_copyright);
+
+  if (preferences.real_recordable)
+    fprintf(fd,"%s YES\n",preferences_features[25]);
+  else
+    fprintf(fd,"%s NO\n",preferences_features[25]);
+
+  fprintf(fd,"%s %d\n",preferences_features[26],preferences.real_audience);
+  fprintf(fd,"%s %d\n",preferences_features[27],preferences.real_quality);
+  fprintf(fd,"%s %d\n",preferences_features[28],preferences.real_compatibility);
+
+
+
   fclose(fd);
 }
 
@@ -311,6 +353,44 @@ ParseConfigFile(FILE* fd)
 	    case FTP_PERIOD:
 	      preferences.ftp_period=atoi(feature_value);
 	      break;
+	      
+	    case REAL_ADDRESS:
+	      strcpy(preferences.real_address,feature_value);
+	      break;
+	    case REAL_USER:
+	      strcpy(preferences.real_user,feature_value);
+	      break;
+	    case REAL_PASSWORD:
+	      strcpy(preferences.real_password,feature_value);
+	      break;
+	    case REAL_FILENAME:
+	      strcpy(preferences.real_filename,feature_value);
+	      break;
+	    case REAL_PORT:
+	      preferences.real_port=atoi(feature_value);
+	      break;
+	    case REAL_TITLE:
+	      strcpy(preferences.real_title,feature_value);
+	      break;
+	    case REAL_AUTHOR:
+	      strcpy(preferences.real_author,feature_value);
+	      break;
+	    case REAL_COPYRIGHT:
+	      strcpy(preferences.real_copyright,feature_value);
+	      break;
+	    case REAL_RECORDABLE:
+	      needle=strstr(feature_value,"YES");
+	      preferences.real_recordable=(needle!=NULL);
+	      break;
+	    case REAL_AUDIENCE:
+	      preferences.real_audience=atoi(feature_value);
+	      break;
+	    case REAL_QUALITY:
+	      preferences.real_quality=atoi(feature_value);
+	      break;
+	    case REAL_COMPATIBILITY:
+	      preferences.real_compatibility=atoi(feature_value);
+	      break;
 	    default:
 	      MainError("Invalid config item");
 	      break;
@@ -341,4 +421,6 @@ GetFileName(void)
       sprintf(out,"%s%s",path,filename);
     }
   return(out);
+}
+
 }

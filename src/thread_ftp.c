@@ -217,7 +217,10 @@ FtpThread(void* arg)
 		gdk_imlib_kill_image(im);
 	    }
 	  else
-	    pthread_mutex_unlock(&ftp_service->mutex_data);
+	    {
+	      pthread_mutex_unlock(&ftp_service->mutex_data);
+	      usleep(THREAD_LOOP_SLEEP_TIME_US);
+	    }
 	}
     }
 }

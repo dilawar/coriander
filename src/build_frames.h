@@ -24,6 +24,9 @@ void
 BuildCameraFrame(void);
 
 void
+BuildServiceFrame(void);
+
+void
 BuildLockFrame(void);
 
 void
@@ -55,4 +58,8 @@ BuildPrefsSaveFrame(void);
 
 void
 BuildPrefsFtpFrame(void);
+
+void
+BuildPrefsRealFrame(void);
+
 #endif

@@ -175,7 +175,7 @@ y2yuy2 (unsigned char *src, unsigned char *dest, int NumPixels) {
   v = v > 255 ? 255 : v
 
 inline void
-rgb2yuy2 (char *RGB, char *YUV, int NumPixels) {
+rgb2yuy2 (unsigned char *RGB, unsigned char *YUV, int NumPixels) {
   int i, j;
   register int y0, y1, u0, u1, v0, v1 ;
   register int r, g, b;
@@ -201,7 +201,7 @@ rgb2yuy2 (char *RGB, char *YUV, int NumPixels) {
   from Bart Nabbe
 */
 inline void
-uyvy2rgb (char *YUV, char *RGB, int NumPixels) {
+uyvy2rgb (unsigned char *YUV, unsigned char *RGB, int NumPixels) {
   int i, j;
   register int y0, y1, u, v;
   register int r, g, b;
@@ -225,7 +225,7 @@ uyvy2rgb (char *YUV, char *RGB, int NumPixels) {
 
 
 inline void
-yuy22rgb (char *YUV, char *RGB, int NumPixels) {
+yuy22rgb (unsigned char *YUV, unsigned char *RGB, int NumPixels) {
   int i, j;
   register int y0, y1, u, v;
   register int r, g, b;
@@ -248,7 +248,7 @@ yuy22rgb (char *YUV, char *RGB, int NumPixels) {
 }
 
 inline void
-iyu12rgb (char *YUV, char *RGB, int NumPixels) {
+iyu12rgb (unsigned char *YUV, unsigned char *RGB, int NumPixels) {
   int i, j;
   register int y0, y1, y2, y3, u, v;
   register int r, g, b;
@@ -281,7 +281,7 @@ iyu12rgb (char *YUV, char *RGB, int NumPixels) {
 }
 
 inline void
-iyu22rgb (char *YUV, char *RGB, int NumPixels) {
+iyu22rgb (unsigned char *YUV, unsigned char *RGB, int NumPixels) {
   int i, j;
   register int y0, y1, u0, u1, v0, v1;
   register int r, g, b;
@@ -306,7 +306,7 @@ iyu22rgb (char *YUV, char *RGB, int NumPixels) {
 }
 
 inline void
-y2rgb (char *YUV, char *RGB, int NumPixels) {
+y2rgb (unsigned char *YUV, unsigned char *RGB, int NumPixels) {
   int i, j;
   register int y;
   register int r, g, b;

@@ -1,0 +1,61 @@
+This README is for an untested version of Coriander. It explains how to
+install and use the Real streaming capabilities of Coriander. 
+
+****************** WARNING ******************
+
+The Real code is untested, and will probably NOT work. It is for
+development ONLY. RealProducer SDK does not work with Red Hat 7.2. If
+you have another distibution, please test the Real function and report
+bugs! :-))
+
+*************** END OF WARNING **************
+
+
+1) Getting the software
+--------------------------
+
+You need two packages from Real Networks (www.realnetworks.com). Feel
+free to upgrade the RealServer to the unlimited edition.
+
+- The RealSystemProducer SDK:
+  http://proforma.real.com/rnforms/resources/server/realsystemsdk/index.html
+- The RealServer (12-months trial edition):
+  http://www.realnetworks.com/products/servers/basic.html
+
+
+2) Installation
+--------------------------
+
+2.1 - RealSystemProducer SDK
+
+- check that you have /usr/local/lib in your /etc/ld.so.conf
+- untar the package somewhere
+- mkdir /usr/local/lib/realproducersdk /usr/local/include/realproducersdk
+- cp realproducersdk/bin/* /usr/local/lib/realproducersdk
+- cp realproducersdk/lib/* /usr/local/lib/realproducersdk
+- cp realproducersdk/include/* /usr/local/include/realproducersdk
+- ldconfig
+
+2.2 - RealServerBasic
+
+- install the RPM
+- if you have a 1 processor machine, edit the RealServerBasic/rmserver.cfg
+  file: replace 
+  <Var ProcessorCount="0"/>
+  by 
+  <Var ProcessorCount="1"/>
+  To launch the server, you need to bypass processor autodetection by typing
+  ./Bin/rmserver rmserver.cfg --sct
+
+That's all folks!
+
+3) Testing the Real installation
+----------------------------------
+
+In order to check your Real installation, you can compile some test programs
+of the realproducer SDK. Just don't forget to run the server before executing
+the sample program. You can view the real content by running a RealPlayer
+with the location:
+ my.server.machine.domain.xxx:8080/ramgen/encoder/your_filename.rm
+
+

@@ -40,21 +40,21 @@ inline void
 y2yuy2 (unsigned char *src, unsigned char *dest, int NumPixels);
 
 inline void
-rgb2yuy2 (char *RGB, char *YUV, int NumPixels);
+rgb2yuy2 (unsigned char *RGB, unsigned char *YUV, int NumPixels);
 
 inline void
-uyvy2rgb (char *YUV, char *RGB, int NumPixels);
+uyvy2rgb (unsigned char *YUV, unsigned char *RGB, int NumPixels);
 
 inline void
-yuy22rgb (char *YUV, char *RGB, int NumPixels);
+yuy22rgb (unsigned char *YUV, unsigned char *RGB, int NumPixels);
 
 inline void
-iyu12rgb (char *YUV, char *RGB, int NumPixels);
+iyu12rgb (unsigned char *YUV, unsigned char *RGB, int NumPixels);
 
 inline void
-iyu22rgb (char *YUV, char *RGB, int NumPixels);
+iyu22rgb (unsigned char *YUV, unsigned char *RGB, int NumPixels);
 
 inline void
-y2rgb (char *YUV, char *RGB, int NumPixels);
+y2rgb (unsigned char *YUV, unsigned char *RGB, int NumPixels);
 
 #endif

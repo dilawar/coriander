@@ -417,7 +417,7 @@ void
 on_fps_activate                    (GtkMenuItem     *menuitem,
 				    gpointer         user_data)
 {
-  int state[4];
+  int state[5];
   
   IsoFlowCheck(state);
   
@@ -1219,7 +1219,7 @@ on_test_pattern_activate               (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
     quadlet_t value;
-    int state[4];
+    int state[5];
 
     IsoFlowCheck(state);
     
@@ -1336,8 +1336,24 @@ on_prefs_save_button_clicked           (GtkButton       *button,
   strcpy(preferences.ftp_user,tmp);
   tmp=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_save_filename")));
   strcpy(preferences.save_filename,tmp);
+  tmp=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_address")));
+  strcpy(preferences.real_address,tmp);
+  tmp=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_user")));
+  strcpy(preferences.real_user,tmp);
+  tmp=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_password")));
+  strcpy(preferences.real_password,tmp);
+  tmp=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_filename")));
+  strcpy(preferences.real_filename,tmp);
+  tmp=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_title")));
+  strcpy(preferences.real_title,tmp);
+  tmp=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_author")));
+  strcpy(preferences.real_author,tmp);
+  tmp=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_copyright")));
+  strcpy(preferences.real_copyright,tmp);
 
   preferences.save_period = gtk_spin_button_get_value_as_int( GTK_SPIN_BUTTON(lookup_widget( GTK_WIDGET(preferences_window), "prefs_save_period")));
+  preferences.ftp_period = gtk_spin_button_get_value_as_int( GTK_SPIN_BUTTON(lookup_widget( GTK_WIDGET(preferences_window), "prefs_ftp_period")));
+  preferences.real_port = gtk_spin_button_get_value_as_int( GTK_SPIN_BUTTON(lookup_widget( GTK_WIDGET(preferences_window), "prefs_real_port")));
 
   WriteConfigFile();
 }
@@ -1442,6 +1458,25 @@ on_service_ftp_toggled                 (GtkToggleButton *togglebutton,
       else
 	FtpStopThread();
     }
+}
+
+
+void
+on_service_real_toggled                (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  if (!silent_ui_update)
+    {
+      if (togglebutton->active)
+	{
+	  if (GetService(SERVICE_ISO)==NULL)
+	    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"service_iso")), TRUE);
+	  RealStartThread();
+	}
+      else
+	RealStopThread();
+    }
+
 }
 
 
@@ -1635,5 +1670,35 @@ on_prefs_ftp_scratch_toggled           (GtkToggleButton *togglebutton,
 {
   preferences.ftp_scratch=FTP_SCRATCH_OVERWRITE;
   UpdatePrefsFtpFrame();
+}
+
+
+void
+on_prefs_real_audience_activate              (GtkMenuItem     *menuitem,
+					      gpointer         user_data)
+{
+  preferences.real_audience=(int)user_data;
+}
+
+void
+on_prefs_real_quality_activate              (GtkMenuItem     *menuitem,
+					     gpointer         user_data)
+{
+  preferences.real_quality=(int)user_data;
+}
+
+void
+on_prefs_real_compatibility_activate              (GtkMenuItem     *menuitem,
+						   gpointer         user_data)
+{
+  preferences.real_compatibility=(int)user_data;
+}
+
+
+void
+on_prefs_real_record_yes_toggled       (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  preferences.real_recordable=togglebutton->active;
 }
 

@@ -1,6 +1,9 @@
 Coriander, (c) 2000-2001 Damien Douxchamps <douxchamps@ieee.org>
 
 Changes towards version 0.20:
+
+    Dec 14, by Damien Douxchamps
+    - added a Real streaming service. This is not yet tested.
 	
     Nov 26, by Damien Douxchamps:
     - added handle release and thread cleanup at the end of main.c

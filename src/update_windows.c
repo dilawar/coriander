@@ -55,6 +55,7 @@ UpdatePreferencesWindow(void)
   UpdatePrefsRanges();
   UpdatePrefsSaveFrame();
   UpdatePrefsFtpFrame();
+  UpdatePrefsRealFrame();
 }
 
 void

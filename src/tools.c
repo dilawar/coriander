@@ -147,6 +147,7 @@ void IsoFlowCheck(int *state)
   state[1]=(GetService(SERVICE_DISPLAY)!=NULL);
   state[2]=(GetService(SERVICE_SAVE)!=NULL);
   state[3]=(GetService(SERVICE_FTP)!=NULL);
+  state[4]=(GetService(SERVICE_REAL)!=NULL);
 
   CleanThreads(CLEAN_MODE_NO_UI_UPDATE);
 }
@@ -167,6 +168,7 @@ void IsoFlowResume(int *state)
   if (state[1]) DisplayStartThread();
   if (state[2]) SaveStartThread();
   if (state[3]) FtpStartThread();
+  if (state[4]) RealStartThread();
 
   if (was_on)
     {
@@ -356,5 +358,4 @@ void MessageBox( gchar *message)
   gtk_widget_show (dialog_window);
   gtk_grab_add (dialog_window);
 }
-
 

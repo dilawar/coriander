@@ -4,17 +4,19 @@ AC_INIT(configure.in)
 AM_INIT_AUTOMAKE(coriander, 0.19b)
 AM_CONFIG_HEADER(config.h)
 
+
 dnl Pick up the Gnome macros.
 AM_ACLOCAL_INCLUDE(macros)
 
 GNOME_INIT
 AC_ISC_POSIX
 AC_PROG_CC
+AC_PROG_CXX
 AM_PROG_CC_STDC
 AC_HEADER_STDC
 AC_CHECK_HEADERS(X11/extensions/Xvlib.h)
 
- GNOME_COMPILE_WARNINGS
+GNOME_COMPILE_WARNINGS
 GNOME_X_CHECKS
 
 dnl Add the languages which your application supports here.
@@ -58,6 +60,33 @@ AC_CHECK_LIB(ftp, FtpInit,
              FTP_LIB="-lftp",
              AC_MSG_RESULT(ftplib is required for ftp support, disabled))
 AC_SUBST(FTP_LIB)
+
+# Check for realproducersdk
+AC_MSG_CHECKING(for Real Producer SDK)
+ real_sdk=no
+ AC_TRY_COMPILE([
+	#include <realproducersdk/pncom.h>
+	#include <realproducersdk/rmaerror.h>
+	#include <realproducersdk/pnwintyp.h>
+	#include <realproducersdk/engtypes.h>
+	#include <realproducersdk/rmaenum.h>
+	#include <realproducersdk/rmapckts.h>
+	#include <realproducersdk/engstats.h>
+	#include <realproducersdk/engcodec.h>
+ ],[
+  	IRMABuffer *pBuffer;
+ ],[
+ real_sdk=yes
+ ])
+ AC_MSG_RESULT($real_sdk)
+ if test x$real_sdk = xyes; then
+  AC_DEFINE(HAVE_REALLIB)	
+  REAL_LIB="-L/usr/local/lib/realproducersdk -lenceng -ldl"
+  REAL_INCLUDEDIR="-I/usr/local/include/realproducersdk"
+ fi
+
+AC_SUBST(REAL_LIB)
+AC_SUBST(REAL_INCLUDEDIR)
 
 dnl temporarily removed intl/Makefile and po/Makefile.in
 AC_OUTPUT([

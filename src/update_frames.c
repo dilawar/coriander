@@ -101,6 +101,32 @@ UpdatePrefsFtpFrame(void)
 
 }
 
+void
+UpdatePrefsRealFrame(void)
+{
+
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_filename")),
+		     preferences.real_filename);
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_address")),
+		     preferences.real_address);
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_password")),
+		     preferences.real_password);
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_user")),
+		     preferences.real_user);
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_title")),
+		     preferences.real_title);
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_author")),
+		     preferences.real_author);
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_copyright")),
+		     preferences.real_copyright);
+  gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(preferences_window, "prefs_real_audience")),preferences.real_audience);
+  //fprintf(stderr,"quality: %d\n",preferences.real_quality);
+  gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(preferences_window, "prefs_real_quality")),preferences.real_quality);
+  gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(preferences_window, "prefs_real_compatibility")),preferences.real_compatibility);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(preferences_window, "prefs_real_record_yes")),preferences.real_recordable);
+
+}
+
 
 void
 UpdatePrefsDisplayFrame(void)
@@ -379,6 +405,8 @@ UpdateServicesFrame(void)
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"service_save")),
 			       GetService(SERVICE_SAVE)!=NULL);
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"service_ftp")),
+			       GetService(SERVICE_FTP)!=NULL);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"service_real")),
 			       GetService(SERVICE_FTP)!=NULL);
   silent_ui_update=0;
 

@@ -25,6 +25,9 @@ void
 UpdatePrefsDisplayFrame(void);
 
 void
+UpdatePrefsRealFrame(void);
+
+void
 UpdateCameraFrame(void);
 
 void

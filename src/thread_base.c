@@ -27,6 +27,7 @@
 #include "thread_display.h"
 #include "thread_iso.h"
 #include "thread_ftp.h"
+//#include "thread_real.h"
 #include "thread_save.h"
 #include "conversions.h"
 
@@ -314,6 +315,8 @@ CleanThreads(clean_mode_t mode)
     {
     case CLEAN_MODE_UI_UPDATE:
       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,
+								   "service_real")),FALSE);
+      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,
 								   "service_ftp")),FALSE);
       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,
 								   "service_save")),FALSE);
@@ -324,6 +327,7 @@ CleanThreads(clean_mode_t mode)
       //fprintf(stderr,"CLEAN_MODE_UI_UPDATE\n");
       break;
     case CLEAN_MODE_NO_UI_UPDATE:
+      RealStopThread();
       FtpStopThread();
       SaveStopThread();
       DisplayStopThread();
@@ -331,6 +335,8 @@ CleanThreads(clean_mode_t mode)
       //fprintf(stderr,"CLEAN_MODE_NO_UI_UPDATE\n");
       break;
     case CLEAN_MODE_UI_UPDATE_NOT_ISO:
+      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,
+								   "service_real")),FALSE);
       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,
 								   "service_ftp")),FALSE);
       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,

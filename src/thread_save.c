@@ -180,7 +180,10 @@ SaveThread(void* arg)
 	      if (im != NULL) gdk_imlib_kill_image(im);
 	    }
 	  else
-	    pthread_mutex_unlock(&save_service->mutex_data);
+	    {
+	      pthread_mutex_unlock(&save_service->mutex_data);
+	      usleep(THREAD_LOOP_SLEEP_TIME_US);
+	    }
 	}
     }
 }

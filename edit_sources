@@ -1,1 +1,1 @@
-emacs src/*.c src/*.h&
+emacs src/*.c src/*.h src/*.cc&

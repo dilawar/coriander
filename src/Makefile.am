@@ -1,11 +1,13 @@
 ## Process this file with automake to produce Makefile.in
 
-CPPFLAGS = -D_REENTRANT
+CPPFLAGS = -D_REENTRANT -D_LINUX -D_LITTLE_ENDIAN -D_UNIX
 
 INCLUDES = \
 	-I$(top_srcdir)/intl \
 	$(GNOME_INCLUDEDIR) \
+	$(REAL_INCLUDEDIR) \
 	-I/usr/include/gnome-xml
+
 
 bin_PROGRAMS = coriander
 
@@ -19,6 +21,8 @@ coriander_SOURCES = \
 	thread_display.c thread_display.h \
 	thread_ftp.c thread_ftp.h \
 	thread_save.c thread_save.h \
+	RealErrorSink.cc RealErrorSink.h \
+	thread_real.cc thread_real.h \
 	tools.c tools.h \
 	callbacks.c callbacks.h \
 	update_frames.c update_frames.h \
@@ -32,8 +36,11 @@ coriander_SOURCES = \
 	callback_proc.c callback_proc.h \
 	conversions.c conversions.h \
 	topology.c topology.h \
-	preferences.c preferences.h
+	preferences.cc preferences.h
+
+LDFLAGS += -Xlinker --export-dynamic
 
 coriander_LDADD = $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(INTLLIBS) $(PTHREAD_LIB) \
-	$(XV_LIB) $(FTP_LIB) -ldc1394_control -lraw1394 -lgthread
+	$(XV_LIB) $(FTP_LIB) $(REAL_LIB) -ldc1394_control -lraw1394 -lgthread
+
 

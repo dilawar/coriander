@@ -48,6 +48,21 @@ BuildCameraFrame(void)
 }
 
 void
+BuildServiceFrame(void)
+{
+#ifdef HAVE_FTPLIB
+  gtk_widget_set_sensitive(lookup_widget(commander_window,"service_ftp"),TRUE);
+#else
+  gtk_widget_set_sensitive(lookup_widget(commander_window,"service_ftp"),FALSE);
+#endif
+#ifdef HAVE_REALLIB
+  gtk_widget_set_sensitive(lookup_widget(commander_window,"service_real"),TRUE);
+#else
+  gtk_widget_set_sensitive(lookup_widget(commander_window,"service_real"),FALSE);
+#endif
+}
+
+void
 BuildTriggerFrame(void)
 {
   GtkAdjustment *adjustment;
@@ -136,8 +151,6 @@ BuildPrefsSaveFrame(void)
 {
   GtkAdjustment *adjustment;
 
-  gtk_entry_set_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_save_filename"))
-  		     ,preferences.save_filename);
   switch(preferences.save_mode)
     {
     case SAVE_MODE_IMMEDIATE:
@@ -161,13 +174,13 @@ BuildPrefsSaveFrame(void)
 								   "prefs_save_seq"),TRUE);
       break;
     }
-  // set the  adjustment for spin button:
+  // set the  adjustment for spin buttons:
   adjustment=(GtkAdjustment*)gtk_adjustment_new(1,1,999999,1,100,0);
   gtk_spin_button_set_adjustment((GtkSpinButton*)lookup_widget(preferences_window,
 							       "prefs_save_period"),adjustment);
   gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(preferences_window,
 							  "prefs_save_period"), preferences.save_period);
-  // TODO: connect signal
+
 }
 
 void
@@ -179,8 +192,6 @@ BuildPrefsFtpFrame(void)
 
   GtkAdjustment *adjustment;
 
-  gtk_entry_set_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_ftp_filename"))
-  		     ,preferences.ftp_filename);
   switch(preferences.ftp_mode)
     {
     case FTP_MODE_IMMEDIATE:
@@ -210,7 +221,6 @@ BuildPrefsFtpFrame(void)
 							       "prefs_ftp_period"),adjustment);
   gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(preferences_window,
 							  "prefs_ftp_period"), preferences.ftp_period);
-  // TODO: connect signal
 
 #else
 
@@ -220,5 +230,61 @@ BuildPrefsFtpFrame(void)
 
 #endif
   //fprintf(stderr,"Exiting buildframe\n");
+
+}
+
+void
+BuildPrefsRealFrame(void)
+{
+
+  GtkAdjustment *adjustment;
+  GtkMenuItem* menuitem;
+  GtkMenu* menu;
+  GtkOptionMenu* option_menu;
+  int i;
+
+  
+  option_menu=(GtkOptionMenu*)lookup_widget(preferences_window, "prefs_real_audience");
+  menu=(GtkMenu*)gtk_option_menu_get_menu(option_menu);
+  for (i=0;i<8;i++)
+    {
+      gtk_menu_set_active(menu, i);
+      menuitem=(GtkMenuItem*)gtk_menu_get_active(menu);
+      gtk_signal_connect (GTK_OBJECT (menuitem), "activate",
+			  GTK_SIGNAL_FUNC (on_prefs_real_audience_activate),
+			  (int*)i);
+    }
+
+  option_menu=(GtkOptionMenu*)lookup_widget(preferences_window, "prefs_real_quality");
+  menu=(GtkMenu*)gtk_option_menu_get_menu(option_menu);
+  for (i=0;i<4;i++)
+    {
+      gtk_menu_set_active(menu, i);
+      menuitem=(GtkMenuItem*)gtk_menu_get_active(menu);
+      gtk_signal_connect (GTK_OBJECT (menuitem), "activate",
+			  GTK_SIGNAL_FUNC (on_prefs_real_quality_activate),
+			  (int*)i);
+    }
+
+  option_menu=(GtkOptionMenu*)lookup_widget(preferences_window, "prefs_real_compatibility");
+  menu=(GtkMenu*)gtk_option_menu_get_menu(option_menu);
+  for (i=0;i<2;i++)
+    {
+      gtk_menu_set_active(menu, i);
+      menuitem=(GtkMenuItem*)gtk_menu_get_active(menu);
+      gtk_signal_connect (GTK_OBJECT (menuitem), "activate",
+			  GTK_SIGNAL_FUNC (on_prefs_real_compatibility_activate),
+			  (int*)i);
+    }
+
+  //fprintf(stderr,"Exiting buildframe\n");
+
+  adjustment=(GtkAdjustment*)gtk_adjustment_new(1,1,9999,1,10,0);
+  gtk_spin_button_set_adjustment((GtkSpinButton*)lookup_widget(preferences_window,
+							       "prefs_real_port"),adjustment);
+  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(preferences_window,
+							  "prefs_real_port"), preferences.real_port);
+
+  // TODO: connect signals
 
 }

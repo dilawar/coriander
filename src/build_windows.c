@@ -44,6 +44,7 @@ BuildPreferencesWindow(void)
   BuildPrefsRanges();
   BuildPrefsSaveFrame();
   BuildPrefsFtpFrame();
+  BuildPrefsRealFrame();
 }
 
 void
@@ -86,6 +87,7 @@ void
 BuildCommanderWindow(void)
 {
   BuildPowerFrame();
+  BuildServiceFrame();
   BuildTriggerFrame();
   BuildIsoFrame();
   BuildCameraFrame();

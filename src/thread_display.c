@@ -197,8 +197,8 @@ DisplayThread(void* arg)
 	    }
 	  else
 	    {
-	      //fprintf(stderr," data mutex unlocked\n");
 	      pthread_mutex_unlock(&display_service->mutex_data);
+	      usleep(THREAD_LOOP_SLEEP_TIME_US);
 	    }
 	}
     }
