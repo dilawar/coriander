@@ -319,6 +319,9 @@ typedef struct _CtxtInfo
   int fps_v4l_ctxt;
   int fps_v4l_id;
 
+  int save_filename_ctxt;
+  int save_filename_id;
+
   int format7_imagebytes_id;
   int format7_totalbytes_id;
   int format7_imagepixels_id;

@@ -213,7 +213,7 @@ create_main_window (void)
   GtkWidget *save_filename_entry;
   GtkWidget *save_filename_subentry;
   GtkWidget *label177;
-  GtkWidget *vseparator1;
+  GtkWidget *table82;
   GtkWidget *save_append_menu;
   GtkWidget *save_append_menu_menu;
   GtkWidget *save_to_dir;
@@ -1666,10 +1666,10 @@ create_main_window (void)
   gtk_object_set_data_full (GTK_OBJECT (main_window), "prefs_save_filename_frame", prefs_save_filename_frame,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (prefs_save_filename_frame);
-  gtk_box_pack_start (GTK_BOX (vbox54), prefs_save_filename_frame, FALSE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox54), prefs_save_filename_frame, FALSE, FALSE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (prefs_save_filename_frame), 5);
 
-  table81 = gtk_table_new (4, 4, FALSE);
+  table81 = gtk_table_new (4, 3, FALSE);
   gtk_widget_ref (table81);
   gtk_object_set_data_full (GTK_OBJECT (main_window), "table81", table81,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1702,7 +1702,7 @@ create_main_window (void)
   gtk_object_set_data_full (GTK_OBJECT (main_window), "save_filename_status", save_filename_status,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (save_filename_status);
-  gtk_table_attach (GTK_TABLE (table81), save_filename_status, 1, 4, 3, 4,
+  gtk_table_attach (GTK_TABLE (table81), save_filename_status, 1, 3, 3, 4,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (save_filename_status), 2);
@@ -1722,7 +1722,7 @@ create_main_window (void)
   gtk_object_set_data_full (GTK_OBJECT (main_window), "save_filename_entry", save_filename_entry,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (save_filename_entry);
-  gtk_table_attach (GTK_TABLE (table81), save_filename_entry, 1, 4, 0, 1,
+  gtk_table_attach (GTK_TABLE (table81), save_filename_entry, 1, 3, 0, 1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (save_filename_entry), 3);
@@ -1744,12 +1744,12 @@ create_main_window (void)
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_padding (GTK_MISC (label177), 5, 2);
 
-  vseparator1 = gtk_vseparator_new ();
-  gtk_widget_ref (vseparator1);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "vseparator1", vseparator1,
+  table82 = gtk_table_new (2, 2, TRUE);
+  gtk_widget_ref (table82);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "table82", table82,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (vseparator1);
-  gtk_table_attach (GTK_TABLE (table81), vseparator1, 2, 3, 1, 3,
+  gtk_widget_show (table82);
+  gtk_table_attach (GTK_TABLE (table81), table82, 1, 3, 1, 3,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (GTK_FILL), 0, 0);
 
@@ -1758,8 +1758,8 @@ create_main_window (void)
   gtk_object_set_data_full (GTK_OBJECT (main_window), "save_append_menu", save_append_menu,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (save_append_menu);
-  gtk_table_attach (GTK_TABLE (table81), save_append_menu, 1, 2, 1, 2,
-                    (GtkAttachOptions) (GTK_FILL),
+  gtk_table_attach (GTK_TABLE (table82), save_append_menu, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (save_append_menu), 1);
   save_append_menu_menu = gtk_menu_new ();
@@ -1779,8 +1779,8 @@ create_main_window (void)
   gtk_object_set_data_full (GTK_OBJECT (main_window), "save_to_dir", save_to_dir,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (save_to_dir);
-  gtk_table_attach (GTK_TABLE (table81), save_to_dir, 3, 4, 1, 2,
-                    (GtkAttachOptions) (GTK_FILL),
+  gtk_table_attach (GTK_TABLE (table82), save_to_dir, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
   save_format_menu = gtk_option_menu_new ();
@@ -1788,8 +1788,8 @@ create_main_window (void)
   gtk_object_set_data_full (GTK_OBJECT (main_window), "save_format_menu", save_format_menu,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (save_format_menu);
-  gtk_table_attach (GTK_TABLE (table81), save_format_menu, 1, 2, 2, 3,
-                    (GtkAttachOptions) (GTK_FILL),
+  gtk_table_attach (GTK_TABLE (table82), save_format_menu, 0, 1, 1, 2,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (save_format_menu), 1);
   save_format_menu_menu = gtk_menu_new ();

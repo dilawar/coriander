@@ -486,6 +486,10 @@ void GetContextStatus()
   ctxt.format7_imagepixels_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(main_window,"format7_imagepixels"), ctxt.format7_imagepixels_ctxt, "");
   ctxt.format7_totalbytes_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(main_window,"format7_totalbytes"), ctxt.format7_totalbytes_ctxt, "");
   ctxt.format7_padding_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(main_window,"format7_padding"), ctxt.format7_padding_ctxt, "");
+
+  // save:
+  ctxt.save_filename_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(main_window,"save_filename_status"),"");
+  ctxt.save_filename_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(main_window,"save_filename_status"), ctxt.save_filename_ctxt, "");
 }
 
 void GrabSelfIds(raw1394handle_t* handles, int portmax)

@@ -85,4 +85,7 @@ UpdateServiceTree(void);
 void
 UpdatePrefsDisplayOverlayFrame(void);
 
+void
+UpdateSaveFilenameFrame(void);
+
 #endif // __UPDATEFRAMES_H__

@@ -2676,14 +2676,14 @@ Average
 		  <child>
 		    <padding>0</padding>
 		    <expand>False</expand>
-		    <fill>True</fill>
+		    <fill>False</fill>
 		  </child>
 
 		  <widget>
 		    <class>GtkTable</class>
 		    <name>table81</name>
 		    <rows>4</rows>
-		    <columns>4</columns>
+		    <columns>3</columns>
 		    <homogeneous>False</homogeneous>
 		    <row_spacing>0</row_spacing>
 		    <column_spacing>0</column_spacing>
@@ -2746,7 +2746,7 @@ Average
 		      <border_width>2</border_width>
 		      <child>
 			<left_attach>1</left_attach>
-			<right_attach>4</right_attach>
+			<right_attach>3</right_attach>
 			<top_attach>3</top_attach>
 			<bottom_attach>4</bottom_attach>
 			<xpad>0</xpad>
@@ -2796,7 +2796,7 @@ Average
 		      <modal>False</modal>
 		      <child>
 			<left_attach>1</left_attach>
-			<right_attach>4</right_attach>
+			<right_attach>3</right_attach>
 			<top_attach>0</top_attach>
 			<bottom_attach>1</bottom_attach>
 			<xpad>0</xpad>
@@ -2853,10 +2853,15 @@ Average
 		    </widget>
 
 		    <widget>
-		      <class>GtkVSeparator</class>
-		      <name>vseparator1</name>
+		      <class>GtkTable</class>
+		      <name>table82</name>
+		      <rows>2</rows>
+		      <columns>2</columns>
+		      <homogeneous>True</homogeneous>
+		      <row_spacing>0</row_spacing>
+		      <column_spacing>0</column_spacing>
 		      <child>
-			<left_attach>2</left_attach>
+			<left_attach>1</left_attach>
 			<right_attach>3</right_attach>
 			<top_attach>1</top_attach>
 			<bottom_attach>3</bottom_attach>
@@ -2869,68 +2874,67 @@ Average
 			<xfill>True</xfill>
 			<yfill>True</yfill>
 		      </child>
-		    </widget>
 
-		    <widget>
-		      <class>GtkOptionMenu</class>
-		      <name>save_append_menu</name>
-		      <border_width>1</border_width>
-		      <can_focus>True</can_focus>
-		      <items>none (overwrite)
+		      <widget>
+			<class>GtkOptionMenu</class>
+			<name>save_append_menu</name>
+			<border_width>1</border_width>
+			<can_focus>True</can_focus>
+			<items>none (overwrite)
 date and time
 number
 </items>
-		      <initial_choice>0</initial_choice>
-		      <child>
-			<left_attach>1</left_attach>
-			<right_attach>2</right_attach>
-			<top_attach>1</top_attach>
-			<bottom_attach>2</bottom_attach>
-			<xpad>0</xpad>
-			<ypad>0</ypad>
-			<xexpand>False</xexpand>
-			<yexpand>False</yexpand>
-			<xshrink>False</xshrink>
-			<yshrink>False</yshrink>
-			<xfill>True</xfill>
-			<yfill>False</yfill>
-		      </child>
-		    </widget>
+			<initial_choice>0</initial_choice>
+			<child>
+			  <left_attach>0</left_attach>
+			  <right_attach>1</right_attach>
+			  <top_attach>0</top_attach>
+			  <bottom_attach>1</bottom_attach>
+			  <xpad>0</xpad>
+			  <ypad>0</ypad>
+			  <xexpand>True</xexpand>
+			  <yexpand>False</yexpand>
+			  <xshrink>False</xshrink>
+			  <yshrink>False</yshrink>
+			  <xfill>True</xfill>
+			  <yfill>False</yfill>
+			</child>
+		      </widget>
 
-		    <widget>
-		      <class>GtkCheckButton</class>
-		      <name>save_to_dir</name>
-		      <can_focus>True</can_focus>
-		      <signal>
-			<name>toggled</name>
-			<handler>on_save_to_dir_toggled</handler>
-			<last_modification_time>Wed, 26 Jan 2005 12:08:47 GMT</last_modification_time>
-		      </signal>
-		      <label>Save to a directory</label>
-		      <active>False</active>
-		      <draw_indicator>True</draw_indicator>
-		      <child>
-			<left_attach>3</left_attach>
-			<right_attach>4</right_attach>
-			<top_attach>1</top_attach>
-			<bottom_attach>2</bottom_attach>
-			<xpad>0</xpad>
-			<ypad>0</ypad>
-			<xexpand>False</xexpand>
-			<yexpand>False</yexpand>
-			<xshrink>False</xshrink>
-			<yshrink>False</yshrink>
-			<xfill>True</xfill>
-			<yfill>False</yfill>
-		      </child>
-		    </widget>
+		      <widget>
+			<class>GtkCheckButton</class>
+			<name>save_to_dir</name>
+			<can_focus>True</can_focus>
+			<signal>
+			  <name>toggled</name>
+			  <handler>on_save_to_dir_toggled</handler>
+			  <last_modification_time>Wed, 26 Jan 2005 12:08:47 GMT</last_modification_time>
+			</signal>
+			<label>Save to a directory</label>
+			<active>False</active>
+			<draw_indicator>True</draw_indicator>
+			<child>
+			  <left_attach>1</left_attach>
+			  <right_attach>2</right_attach>
+			  <top_attach>0</top_attach>
+			  <bottom_attach>1</bottom_attach>
+			  <xpad>0</xpad>
+			  <ypad>0</ypad>
+			  <xexpand>True</xexpand>
+			  <yexpand>False</yexpand>
+			  <xshrink>False</xshrink>
+			  <yshrink>False</yshrink>
+			  <xfill>True</xfill>
+			  <yfill>False</yfill>
+			</child>
+		      </widget>
 
-		    <widget>
-		      <class>GtkOptionMenu</class>
-		      <name>save_format_menu</name>
-		      <border_width>1</border_width>
-		      <can_focus>True</can_focus>
-		      <items>png
+		      <widget>
+			<class>GtkOptionMenu</class>
+			<name>save_format_menu</name>
+			<border_width>1</border_width>
+			<can_focus>True</can_focus>
+			<items>png
 jpeg
 tiff
 ppm/pgm
@@ -2941,21 +2945,22 @@ mpeg (video)
 pvn (video)
 raw (video)
 </items>
-		      <initial_choice>0</initial_choice>
-		      <child>
-			<left_attach>1</left_attach>
-			<right_attach>2</right_attach>
-			<top_attach>2</top_attach>
-			<bottom_attach>3</bottom_attach>
-			<xpad>0</xpad>
-			<ypad>0</ypad>
-			<xexpand>False</xexpand>
-			<yexpand>False</yexpand>
-			<xshrink>False</xshrink>
-			<yshrink>False</yshrink>
-			<xfill>True</xfill>
-			<yfill>False</yfill>
-		      </child>
+			<initial_choice>0</initial_choice>
+			<child>
+			  <left_attach>0</left_attach>
+			  <right_attach>1</right_attach>
+			  <top_attach>1</top_attach>
+			  <bottom_attach>2</bottom_attach>
+			  <xpad>0</xpad>
+			  <ypad>0</ypad>
+			  <xexpand>True</xexpand>
+			  <yexpand>False</yexpand>
+			  <xshrink>False</xshrink>
+			  <yshrink>False</yshrink>
+			  <xfill>True</xfill>
+			  <yfill>False</yfill>
+			</child>
+		      </widget>
 		    </widget>
 		  </widget>
 		</widget>

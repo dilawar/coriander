@@ -406,13 +406,13 @@ GetSaveFD(chain_t *save_service, FILE **fd, char *filename_out)
     if (info->save_to_dir==0) {
       switch (info->append) {
       case SAVE_APPEND_NONE:
-	sprintf(filename_out, "%s%s", info->filename_base,info->filename_ext);
+	sprintf(filename_out, "%s.%s", info->filename_base,info->filename_ext);
 	break;
       case SAVE_APPEND_DATE_TIME:
-	sprintf(filename_out, "%s-%s%s", info->filename_base, save_service->current_buffer->captime_string, info->filename_ext);
+	sprintf(filename_out, "%s-%s.%s", info->filename_base, save_service->current_buffer->captime_string, info->filename_ext);
 	break;
       case SAVE_APPEND_NUMBER:
-	sprintf(filename_out,"%s-%10.10lli%s", info->filename_base, save_service->processed_frames, info->filename_ext);
+	sprintf(filename_out,"%s-%10.10lli.%s", info->filename_base, save_service->processed_frames, info->filename_ext);
 	break;
       }
     }
@@ -442,10 +442,10 @@ GetSaveFD(chain_t *save_service, FILE **fd, char *filename_out)
 	return DC1394_FAILURE;
 	break;
       case SAVE_APPEND_DATE_TIME:
-	sprintf(filename_out, "%s/%s%s", info->destdir, save_service->current_buffer->captime_string, info->filename_ext);
+	sprintf(filename_out, "%s/%s.%s", info->destdir, save_service->current_buffer->captime_string, info->filename_ext);
 	break;
       case SAVE_APPEND_NUMBER:
-	sprintf(filename_out,"%s/%10.10lli%s", info->destdir, save_service->processed_frames, info->filename_ext);
+	sprintf(filename_out,"%s/%10.10lli.%s", info->destdir, save_service->processed_frames, info->filename_ext);
 	break;
       }
       // 3. done!
@@ -456,13 +456,13 @@ GetSaveFD(chain_t *save_service, FILE **fd, char *filename_out)
   case SAVE_FORMAT_PVN:
     switch (info->append) {
     case SAVE_APPEND_NONE:
-      sprintf(filename_out, "%s%s", info->filename_base,info->filename_ext);
+      sprintf(filename_out, "%s.%s", info->filename_base,info->filename_ext);
       break;
     case SAVE_APPEND_DATE_TIME:
-      sprintf(filename_out, "%s-%s%s", info->filename_base, save_service->current_buffer->captime_string, info->filename_ext);
+      sprintf(filename_out, "%s-%s.%s", info->filename_base, save_service->current_buffer->captime_string, info->filename_ext);
       break;
     case SAVE_APPEND_NUMBER:
-      sprintf(filename_out,"%s-%10.10lli%s", info->filename_base, save_service->processed_frames, info->filename_ext);
+      sprintf(filename_out,"%s-%10.10lli.%s", info->filename_base, save_service->processed_frames, info->filename_ext);
       break;
     }
     break;

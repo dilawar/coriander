@@ -1523,40 +1523,53 @@ on_save_filename_subentry_changed      (GtkEditable     *editable,
   tmp = strrchr(camera->prefs.save_filename_base, '.');
   if(tmp != NULL) {
     tmp[0] = '\0';// cut filename before point
-    strcpy(camera->prefs.save_filename_ext, strrchr(camera->prefs.save_filename, '.'));
+    strcpy(camera->prefs.save_filename_ext, strrchr(camera->prefs.save_filename,'.')+1);
   }
   else {
     // error: no extension provided
     MainError("You should provide an extension for the save filename. Default extension is RAW");
   }
-
-  //fprintf(stderr,"%s\n",camera->prefs.save_filename);
-  //fprintf(stderr,"%s\n",camera->prefs.save_filename_ext);
-  //fprintf(stderr,"%s\n",camera->prefs.save_filename_base);
-
   /*
-
-  // detect file format
-  if (strncasecmp(camera->prefs.save_filename_ext, ".pvn",4)==0) {
+  fprintf(stderr,"filname: %s\n",camera->prefs.save_filename);
+  fprintf(stderr,"   ext: %s\n",camera->prefs.save_filename_ext);
+  fprintf(stderr,"  base: %s\n",camera->prefs.save_filename_base);
+  */
+  // autodetect file format
+  if (strncasecmp(camera->prefs.save_filename_ext, "pvn",3)==0) {
     camera->prefs.save_format=SAVE_FORMAT_PVN;
   }
-  else if ((strncasecmp(camera->prefs.save_filename_ext, ".jpg",4)==0)||
-	   (strncasecmp(camera->prefs.save_filename_ext, ".jpeg",5)==0)) {
+  else if ((strncasecmp(camera->prefs.save_filename_ext, "jpg",3)==0)||
+	   (strncasecmp(camera->prefs.save_filename_ext, "jpeg",4)==0)) {
     camera->prefs.save_format=SAVE_FORMAT_JPEG;
   }
-  else if (strncasecmp(camera->prefs.save_filename_ext, ".raw",4)==0) {
+  else if ((strncasecmp(camera->prefs.save_filename_ext, "tif",3)==0)||
+	   (strncasecmp(camera->prefs.save_filename_ext, "tiff",4)==0)) {
+    camera->prefs.save_format=SAVE_FORMAT_TIFF;
+  }
+  else if ((strncasecmp(camera->prefs.save_filename_ext, "mpg",3)==0)||
+	   (strncasecmp(camera->prefs.save_filename_ext, "mpeg",4)==0)) {
+    camera->prefs.save_format=SAVE_FORMAT_MPEG;
+  }
+  else if ((strncasecmp(camera->prefs.save_filename_ext, "pgm",3)==0)||
+	   (strncasecmp(camera->prefs.save_filename_ext, "ppm",3)==0)) {
+    camera->prefs.save_format=SAVE_FORMAT_PPMPGM;
+  }
+  else if (strncasecmp(camera->prefs.save_filename_ext, "png",3)==0) {
+    camera->prefs.save_format=SAVE_FORMAT_PNG;
+  }
+  else if (strncasecmp(camera->prefs.save_filename_ext, "eim",3)==0) {
+    camera->prefs.save_format=SAVE_FORMAT_EIM;
+  }
+  else if (strncasecmp(camera->prefs.save_filename_ext, "xpm",3)==0) {
+    camera->prefs.save_format=SAVE_FORMAT_XPM;
+  }
+  else if (strncasecmp(camera->prefs.save_filename_ext, "raw",3)==0) {
     camera->prefs.save_format=SAVE_FORMAT_RAW;
   }
-  else {
-    camera->prefs.save_format=SAVE_FORMAT_OTHER;
-    if (camera->prefs.save_mode==SAVE_MODE_VIDEO)
-      camera->prefs.save_mode=SAVE_MODE_SEQUENTIAL;
-  }
-
-  */
 
   //BuildSaveModeMenu();
-  UpdatePrefsSaveFrame();
+  UpdateSaveFilenameFrame();
+
 }
 
 
@@ -1572,7 +1585,15 @@ void
 on_save_format_menu_activate             (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  camera->prefs.save_format=(int)user_data;
+  // rebuild the append menu if we switch between video and still formats
+  if ((((int)user_data>=SAVE_FORMAT_RAW_VIDEO)&&(camera->prefs.save_format<SAVE_FORMAT_RAW_VIDEO)) ||
+      (((int)user_data<SAVE_FORMAT_RAW_VIDEO)&&(camera->prefs.save_format>=SAVE_FORMAT_RAW_VIDEO))) {
+    camera->prefs.save_format=(int)user_data;
+    BuildSaveAppendMenu();
+  }
+  else
+    camera->prefs.save_format=(int)user_data;
+
   gnome_config_set_int("coriander/save/format",camera->prefs.save_format);
   gnome_config_sync();
   UpdatePrefsSaveFrame();
@@ -1595,6 +1616,7 @@ on_save_to_dir_toggled                 (GtkToggleButton *togglebutton,
   camera->prefs.save_to_dir=togglebutton->active;
   gnome_config_set_int("coriander/save/save_to_dir",camera->prefs.save_to_dir);
   gnome_config_sync();
+  BuildSaveAppendMenu();
   UpdatePrefsSaveFrame();
 }
 

@@ -16,7 +16,6 @@ _______________________________________________________________________________
 	- merge Johann's patch for a nice display window
 	- add autofocus, autowhitebalance and autoexposure (autocontrast)
 	  in software
-	- upgrade fwrite to correct argument order
 	- record and play 'scenario' files (files containing a list of
 	  timed commands)
 	- record and recall camera setup files
@@ -44,10 +43,8 @@ _______________________________________________________________________________
 	- filename preview should be updated
 	- for video, check previously written files to set the number to append
 	- confirm overwrite files
-	- use dummy menu items in the save format menu (stills/video)
 	- option to propagate the display pattern in the rest of the pipe
-	- integrate MPEG patch
-	- verify the compilation flags originally used for mpeg (-mmx,...)
+	- MPEG libraries should be probed (including libjpeg *and* libjpeg-mmx)
 	- add options to MPEG service (codec, basic params?)
 	- FTP should be upgraded when the save service is completed and tested
 	- errors should be sent to dialogs, not in the status window which is only
@@ -57,6 +54,8 @@ _______________________________________________________________________________
 	  of the DMA buffer were lost after the ISO thread, which could typically lead
 	  to dropped frames in the save service
 	- report frames that were dropped by the kernel drivers
+	- implement the display overlay with used-specified images
+	- create an "mencoder" service or capability
 
 - long term:
 	- add advanced features capability. This would probably require a

@@ -73,11 +73,9 @@ UpdatePrefsReceiveFrame(void)
 void
 UpdatePrefsSaveFrame(void)
 {
-  int is_video;
-
-  is_video=((camera->prefs.save_format==SAVE_FORMAT_PVN)||
-	    (camera->prefs.save_format==SAVE_FORMAT_MPEG)||
-	    (camera->prefs.save_format==SAVE_FORMAT_RAW_VIDEO));
+  int is_video=((camera->prefs.save_format==SAVE_FORMAT_PVN)||
+		(camera->prefs.save_format==SAVE_FORMAT_MPEG)||
+		(camera->prefs.save_format==SAVE_FORMAT_RAW_VIDEO));
 
   // thread presence blanking: default some to ON
   gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_save_filename_frame"), TRUE);
@@ -95,6 +93,7 @@ UpdatePrefsSaveFrame(void)
     gtk_widget_set_sensitive(lookup_widget(main_window,"ram_buffer_frame"), FALSE);
     gtk_widget_set_sensitive(lookup_widget(main_window,"grab_now_frame"), FALSE);
   }
+  UpdateSaveFilenameFrame();
 }
 
 
@@ -726,4 +725,80 @@ UpdatePrefsDisplayOverlayFrame(void)
   gtk_widget_set_sensitive(lookup_widget(main_window,"overlay_type_menu"), camera->prefs.overlay_pattern!=OVERLAY_PATTERN_OFF);
   gtk_widget_set_sensitive(lookup_widget(main_window,"overlay_color_picker"), (camera->prefs.overlay_pattern!=OVERLAY_PATTERN_OFF) && (camera->prefs.overlay_type==OVERLAY_TYPE_REPLACE));
   gtk_widget_set_sensitive(lookup_widget(main_window,"overlay_file_entry"), (camera->prefs.overlay_pattern==OVERLAY_PATTERN_IMAGE));
+}
+
+void
+UpdateSaveFilenameFrame(void)
+{
+  char *filename_out;
+  
+  filename_out=(char*)malloc(STRING_SIZE*sizeof(char));
+
+  // set current menu item
+  pthread_mutex_lock(&camera->uimutex);
+  if (camera->prefs.save_format<SAVE_FORMAT_FIRST_VIDEO)
+    gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(main_window, "save_format_menu")),camera->prefs.save_format+1);
+  else
+    gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(main_window, "save_format_menu")),camera->prefs.save_format+2);
+  pthread_mutex_unlock(&camera->uimutex);
+
+  // update the filename string
+  switch (camera->prefs.save_format) {
+  case SAVE_FORMAT_PNG:
+  case SAVE_FORMAT_JPEG:
+  case SAVE_FORMAT_TIFF:
+  case SAVE_FORMAT_PPMPGM:
+  case SAVE_FORMAT_XPM:
+  case SAVE_FORMAT_EIM:
+  case SAVE_FORMAT_RAW:
+    // first handle the case of save-to-dir
+    if (camera->prefs.save_to_dir==0) {
+      switch (camera->prefs.save_append) {
+      case SAVE_APPEND_NONE:
+	sprintf(filename_out, "%s.%s", camera->prefs.save_filename_base,camera->prefs.save_filename_ext);
+	break;
+      case SAVE_APPEND_DATE_TIME:
+	sprintf(filename_out, "%s-date-time-ms.%s", camera->prefs.save_filename_base, camera->prefs.save_filename_ext);
+	break;
+      case SAVE_APPEND_NUMBER:
+	sprintf(filename_out,"%s-frame_number.%s", camera->prefs.save_filename_base, camera->prefs.save_filename_ext);
+	break;
+      }
+    }
+    else { // we save to a directory...
+      switch (camera->prefs.save_append) {
+      case SAVE_APPEND_NONE:
+        sprintf(filename_out, "time or number should have been selected");
+	break;
+      case SAVE_APPEND_DATE_TIME:
+	sprintf(filename_out, "%s-date-time-ms/date-time-ms.%s", camera->prefs.save_filename_base, camera->prefs.save_filename_ext);
+	break;
+      case SAVE_APPEND_NUMBER:
+	sprintf(filename_out,"%s-date-time-ms/frame_number.%s", camera->prefs.save_filename_base, camera->prefs.save_filename_ext);
+	break;
+      }
+      // 3. done!
+    }
+    break;
+  case SAVE_FORMAT_RAW_VIDEO:
+  case SAVE_FORMAT_MPEG:
+  case SAVE_FORMAT_PVN:
+    switch (camera->prefs.save_append) {
+    case SAVE_APPEND_NONE:
+      sprintf(filename_out, "%s.%s", camera->prefs.save_filename_base,camera->prefs.save_filename_ext);
+      break;
+    case SAVE_APPEND_DATE_TIME:
+      sprintf(filename_out, "%s-date-time-ms.%s", camera->prefs.save_filename_base, camera->prefs.save_filename_ext);
+      break;
+    case SAVE_APPEND_NUMBER:
+      sprintf(filename_out,"%s-frame_number.%s", camera->prefs.save_filename_base, camera->prefs.save_filename_ext);
+      break;
+    }
+    break;
+  }
+
+  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"save_filename_status"), ctxt.save_filename_ctxt, ctxt.save_filename_id);
+  ctxt.save_filename_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"save_filename_status"), ctxt.save_filename_ctxt, filename_out);
+
+  free(filename_out);
 }

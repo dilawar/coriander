@@ -2,6 +2,10 @@ Coriander, (c) 2000-2005 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 1.0.2
 
+   Feb 12, 2005, by Damien Douxchamps
+   - use dummy menu items to separate video/still formats
+   - update of the save filename selection
+
    Feb 7, 2005, by Damien Douxchamps
    - detect speed_800 in thread_iso
    - optional 'no frame drop' behaviour for the image pipe
