@@ -128,15 +128,17 @@ DisplayThread(void* arg)
 	  if (skip_counter>=(info->period-1)) {
 	    skip_counter=0;
 #ifdef HAVE_SDLLIB
-	    if (SDL_LockYUVOverlay(info->sdloverlay) == 0) {
-	      convert_to_yuv_for_SDL(display_service->current_buffer, info->sdloverlay);
-	      
-	      SDLDisplayArea(display_service);
-	      
-	      SDL_UnlockYUVOverlay(info->sdloverlay);
-	      SDL_DisplayYUVOverlay(info->sdloverlay, &info->sdlvideorect);
-	      
-	      info->redraw_prev_time=times(&info->redraw_tms_buf);
+	    if (info->sdloverlay!=NULL) {
+	      if (SDL_LockYUVOverlay(info->sdloverlay) == 0) {
+		convert_to_yuv_for_SDL(display_service->current_buffer, info->sdloverlay);
+		
+		SDLDisplayArea(display_service);
+		
+		SDL_UnlockYUVOverlay(info->sdloverlay);
+		SDL_DisplayYUVOverlay(info->sdloverlay, &info->sdlvideorect);
+		
+		info->redraw_prev_time=times(&info->redraw_tms_buf);
+	      }
 	    }
 #endif
 	    display_service->fps_frames++;

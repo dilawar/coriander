@@ -2,6 +2,10 @@ Coriander, (c) 2000-2004 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes since version 1.0.0
 
+   Oct 28, 2004, by Damien Douxchamps
+   - a check for the info->overlay!=NULL was added in the display thread. Thanks to
+     Will Shackleford for spotting the missing check.
+	
    Sep 23, 2004, by Damien Douxchamps
    - applied patch from Arne to properly handle UYVY overlays
 	
