@@ -2,7 +2,10 @@ Coriander, (c) 2000-2001 Damien Douxchamps <douxchamps@ieee.org>
 
 Changes towards version 0.18:
 
-    Sept 25, by Damien Douxchamps
+    Sept 26, by Damien Douxchamps:
+    - corrected a bug concerning the camera select frame: table 9 was missing.
+	
+    Sept 25, by Damien Douxchamps:
     - I removed some unfinalized things that were not making Coriander look
       professional
     - removed the feature locking frame in commander window, as well as the

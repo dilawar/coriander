@@ -924,14 +924,38 @@
 	</child>
 
 	<widget>
-	  <class>GtkOptionMenu</class>
-	  <name>camera_select</name>
-	  <border_width>1</border_width>
-	  <sensitive>False</sensitive>
-	  <can_focus>True</can_focus>
-	  <items>Node 0: Sony DFW-VL500
+	  <class>GtkTable</class>
+	  <name>table9</name>
+	  <rows>1</rows>
+	  <columns>1</columns>
+	  <homogeneous>False</homogeneous>
+	  <row_spacing>0</row_spacing>
+	  <column_spacing>0</column_spacing>
+
+	  <widget>
+	    <class>GtkOptionMenu</class>
+	    <name>camera_select</name>
+	    <border_width>1</border_width>
+	    <sensitive>False</sensitive>
+	    <can_focus>True</can_focus>
+	    <items>Node 0: Sony DFW-VL500
 </items>
-	  <initial_choice>0</initial_choice>
+	    <initial_choice>0</initial_choice>
+	    <child>
+	      <left_attach>0</left_attach>
+	      <right_attach>1</right_attach>
+	      <top_attach>0</top_attach>
+	      <bottom_attach>1</bottom_attach>
+	      <xpad>0</xpad>
+	      <ypad>0</ypad>
+	      <xexpand>True</xexpand>
+	      <yexpand>False</yexpand>
+	      <xshrink>False</xshrink>
+	      <yshrink>False</yshrink>
+	      <xfill>True</xfill>
+	      <yfill>False</yfill>
+	    </child>
+	  </widget>
 	</widget>
       </widget>
 

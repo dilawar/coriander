@@ -458,6 +458,7 @@ create_commander_window (void)
   GtkWidget *menubar;
   GtkWidget *vbox40;
   GtkWidget *camera_select_frame;
+  GtkWidget *table9;
   GtkWidget *camera_select;
   GtkWidget *camera_select_menu;
   GtkWidget *glade_menuitem;
@@ -859,12 +860,21 @@ create_commander_window (void)
   gtk_box_pack_start (GTK_BOX (vbox40), camera_select_frame, FALSE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (camera_select_frame), 5);
 
+  table9 = gtk_table_new (1, 1, FALSE);
+  gtk_widget_ref (table9);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "table9", table9,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (table9);
+  gtk_container_add (GTK_CONTAINER (camera_select_frame), table9);
+
   camera_select = gtk_option_menu_new ();
   gtk_widget_ref (camera_select);
   gtk_object_set_data_full (GTK_OBJECT (commander_window), "camera_select", camera_select,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (camera_select);
-  gtk_container_add (GTK_CONTAINER (camera_select_frame), camera_select);
+  gtk_table_attach (GTK_TABLE (table9), camera_select, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (camera_select), 1);
   gtk_widget_set_sensitive (camera_select, FALSE);
   camera_select_menu = gtk_menu_new ();
