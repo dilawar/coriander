@@ -58,6 +58,7 @@ gint IsoStartThread(void)
 	{
 	  FreeChain(iso_service);
 	  pthread_mutex_unlock(&iso_service->mutex_data);
+	  //fprintf(stderr," Could not start ISO\n");
 	  return(-1);
 	}
       
@@ -87,6 +88,7 @@ gint IsoStartThread(void)
 				       misc_info->framerate, DMA_BUFFERS, &info->capture)
 	      == DC1394_SUCCESS)
 	    {
+	      //fprintf(stderr,"Manual video1394 selection\n");
 	      info->receive_method=RECEIVE_METHOD_VIDEO1394;
 	    }
 	  else
@@ -95,6 +97,7 @@ gint IsoStartThread(void)
 	      raw1394_destroy_handle(info->handle);
 	      pthread_mutex_unlock(&iso_service->mutex_data);
 	      FreeChain(iso_service);
+	      //fprintf(stderr," Could not start ISO\n");
 	      return(-1);
 	    }
 	  break;
@@ -104,6 +107,7 @@ gint IsoStartThread(void)
 				    misc_info->framerate, &info->capture)
 	      == DC1394_SUCCESS)
 	    {
+	      //fprintf(stderr,"Manual raw1394 selection\n");
 	      info->receive_method=RECEIVE_METHOD_RAW1394;
 	    }
 	  else
@@ -112,6 +116,7 @@ gint IsoStartThread(void)
 	      raw1394_destroy_handle(info->handle);
 	      pthread_mutex_unlock(&iso_service->mutex_data);
 	      FreeChain(iso_service);
+	      //fprintf(stderr," Could not start ISO\n");
 	      return(-1);
 	    }
 	  break;
@@ -121,6 +126,7 @@ gint IsoStartThread(void)
 					misc_info->framerate, DMA_BUFFERS, &info->capture)
 	      == DC1394_SUCCESS)
 	    {
+	      //fprintf(stderr,"Auto video1394 selection\n");
 	      info->receive_method=RECEIVE_METHOD_VIDEO1394;
 	    }
 	  else
@@ -129,6 +135,7 @@ gint IsoStartThread(void)
 				     misc_info->framerate, &info->capture)
 		== DC1394_SUCCESS)
 	      {
+		//fprintf(stderr,"Auto raw1394 selection\n");
 		info->receive_method=RECEIVE_METHOD_RAW1394;
 	      }
 	    else
@@ -137,10 +144,13 @@ gint IsoStartThread(void)
 		raw1394_destroy_handle(info->handle);
 		pthread_mutex_unlock(&iso_service->mutex_data);
 		FreeChain(iso_service);
+		//fprintf(stderr," Could not start ISO\n");
 		return(-1);
 	      }
 	}
       //fprintf(stderr," 1394 setup OK\n");
+
+      //info->cleanup_status=RECEIVE_CLEANUP_NONE;
 
       CommonChainSetup(iso_service, SERVICE_ISO);
       pthread_mutex_unlock(&iso_service->mutex_data);
@@ -157,13 +167,14 @@ gint IsoStartThread(void)
 	  pthread_mutex_unlock(&iso_service->mutex_struct);
 	  pthread_mutex_unlock(&iso_service->mutex_data);
 	  FreeChain(iso_service);
+	  //fprintf(stderr," Could not start ISO\n");
 	  return(-1);
 	}
       else
 	pthread_mutex_unlock(&iso_service->mutex_struct);
 	pthread_mutex_unlock(&iso_service->mutex_data);
 
-      //fprintf(stderr," ISO thread started\n");
+	//fprintf(stderr," ISO thread started\n");
     }
 
   return (1);
@@ -180,11 +191,18 @@ IsoCleanupThread(void* arg)
   iso_service=(chain_t*)arg;
   info=(isothread_info*)iso_service->data;
 
-  if (info->receive_method == RECEIVE_METHOD_RAW1394)
-    dc1394_dma_done_with_buffer(&info->capture);
-  pthread_mutex_unlock(&iso_service->mutex_data);
+  if ((info->receive_method == RECEIVE_METHOD_VIDEO1394))
+    {
+      //dc1394_dma_done_with_buffer(&info->capture);
+      // this should be done at the condition it has not been executed before or
+      // else we get an ioctl error from libdc1394. How to do this, I don't know...
+      //fprintf(stderr,"dma done with buffer\n");
+    }
+  
 
-  //fprintf(stderr,"ISO auto Cleanup finished\n");
+    pthread_mutex_unlock(&iso_service->mutex_data);
+
+    //fprintf(stderr," ISO auto Cleanup finished\n");
   
   return(NULL);
 
@@ -203,6 +221,7 @@ IsoThread(void* arg)
   info=(isothread_info*)iso_service->data;
   pthread_setcancelstate(PTHREAD_CANCEL_ENABLE,NULL);
   pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS,NULL);
+  pthread_mutex_unlock(&iso_service->mutex_data);
 
   while (1)
     {
@@ -220,6 +239,7 @@ IsoThread(void* arg)
 	     info->capture.capture_buffer,
 	     iso_service->bytes_per_frame);
       //fprintf(stderr,"ISO: trying to roll\n");
+      pthread_mutex_lock(&iso_service->mutex_data);
       RollBuffers(iso_service);
       pthread_mutex_unlock(&iso_service->mutex_data);
       //fprintf(stderr,"ISO: unlocked\n");
