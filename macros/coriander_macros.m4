@@ -6,14 +6,9 @@ dnl
 
 AC_DEFUN([AC_CHECK_LIBDC],[
 	AC_MSG_CHECKING(for libdc1394)
- 	AC_TRY_LINK([
+ 	AC_TRY_CPP([
 	#include <libdc1394/dc1394_control.h>
-	#include <libraw1394/raw1394.h>
- 	],[
-        raw1394handle_t handle;
-        dc1394_camerainfo info;
-	dc1394_cameracapture capture;
- 	],[
+	],[
  	libdc1394=yes
  	],[
  	libdc1394=no
@@ -22,7 +17,7 @@ AC_DEFUN([AC_CHECK_LIBDC],[
  	if test x$libdc1394 = xno; then
           AC_ERROR(libdc1394 is not installed.  
 **************************************************************************
-**   Please install libdc1394 version > 0.9.1                           **
+**   Please install libdc1394 version > 0.9.2                            **
 **   Source tarball and CVS at:  http://www.sf.net/projects/libdc1394   **
 **************************************************************************)
  	fi
@@ -31,34 +26,7 @@ AC_DEFUN([AC_CHECK_LIBDC],[
 AC_DEFUN([AC_CHECK_LIBDC_VERSION],[
 	AC_SUBST(LIBDC_CFLAGS)
 	AC_SUBST(LIBDC_LIBS)
-
-	AC_MSG_CHECKING(libdc1394 version)
- 	AC_TRY_COMPILE([
-	#include <libdc1394/dc1394_control.h>
-	#include <libraw1394/raw1394.h>
- 	],[
-        raw1394handle_t handle;
-        dc1394_camerainfo info;
-	dc1394_cameracapture capture;
-	dc1394_feature_set features;
-	int value;
-	const char *dmafile="/dev/video1394";
-  	dc1394_get_sw_version(info.handle, info.id, &value);
-	capture.dma_device_file=NULL;
-	dc1394_destroy_handle(info.handle);
-        dc1394_dma_setup_format7_capture(info.handle, info.id,
-                         	         1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                         	         dmafile, &capture);
-	dc1394_query_absolute_feature_value(info.handle, info.id, 1,&value);
-	features.feature[0].abs_control=0;
-	features.feature[0].abs_value=0.0;
-	dc1394_get_bandwidth_usage(info.handle, info.id, &value);
- 	],[
- 	libdc1394=ok
- 	],[
- 	libdc1394=old
- 	])
- 	AC_MSG_RESULT($libdc1394)
+ 	AC_CHECK_LIB(dc1394_control,dc1394_get_camera_port,libdc1394=ok,libdc1394=old,-lraw1394)
  	if test x$libdc1394 = xok; then
            LIBDC_LIBS="-ldc1394_control"
            LIBDC_CFLAGS=""
@@ -73,10 +41,8 @@ AC_DEFUN([AC_CHECK_LIBDC_VERSION],[
 
 AC_DEFUN([AC_CHECK_LIBRAW],[
 	AC_MSG_CHECKING(for libraw1394)
- 	AC_TRY_LINK([
+ 	AC_TRY_CPP([
 	#include <libraw1394/raw1394.h>
- 	],[
-        raw1394handle_t handle;
  	],[
  	libraw1394=yes
  	],[
@@ -95,18 +61,7 @@ AC_DEFUN([AC_CHECK_LIBRAW],[
 AC_DEFUN([AC_CHECK_LIBRAW_VERSION],[
 	AC_SUBST(LIBRAW_CFLAGS)
 	AC_SUBST(LIBRAW_LIBS)
-	AC_MSG_CHECKING(libraw1394 version)
- 	AC_TRY_COMPILE([
-	#include <libraw1394/raw1394.h>
- 	],[
-        raw1394handle_t handle;
-	handle=raw1394_new_handle();
- 	],[
- 	libraw1394=ok
- 	],[
- 	libraw1394=old
- 	])
- 	AC_MSG_RESULT($libraw1394)
+ 	AC_CHECK_LIB(raw1394,raw1394_new_handle,libraw1394=ok,libraw1394=old)
  	if test x$libraw1394 = xok; then
            LIBRAW_LIBS="-lraw1394"
            LIBRAW_CFLAGS=""
