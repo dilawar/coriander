@@ -2,6 +2,10 @@ Coriander, (c) 2000-2002 Damien Douxchamps <douxchamps@ieee.org>
 
 Changes towards version 0.26
 
+   August 9, 2002, by Damien Douxchamps
+   - Added another function to descramble Bayer pattern. Not linked,
+     currently for testing/devel only.
+	
    August 6, 2002, by Damien Douxchamps
    - more fixes for initial segfault when no card/modules are present
 	

@@ -74,4 +74,7 @@ y162rgb (unsigned char *src, unsigned char *dest, int NumPixels);
 void
 BayerNearestNeighbor(unsigned char *src, unsigned char *dest, int sx, int sy);
 
+void
+BayerEdgeSense2(unsigned char *src, unsigned char *dest, int sx, int sy);
+
 #endif

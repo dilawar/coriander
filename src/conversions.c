@@ -403,6 +403,7 @@ y162rgb (unsigned char *src, unsigned char *dest, int NumPixels) {
  * output raw-Bayer pattern images, such as some Basler cameras *
  * Most of the algos presented here com from                    *
  * http://ise0.Stanford.EDU/~tingchen/main.htm                  *
+ * and have been converted from Matlab to C                     *
  ****************************************************************/
 
 void
@@ -460,3 +461,90 @@ BayerNearestNeighbor(unsigned char *src, unsigned char *dest, int sx, int sy)
     }
 }
 
+
+void
+BayerEdgeSense2(unsigned char *src, unsigned char *dest, int sx, int sy)
+{
+  unsigned char *outR, *outG, *outB;
+  register int i,j;
+  int dh, dv;
+
+  // There is no boundary check (<0, >255). This should be implmented later.
+
+  // sx and sy should be even
+  // first pixel should be Green, second red:
+  // G R G R G R G R
+  // B G B G B G B G
+  // G R G R G R G R
+
+  outR=&dest[0];
+  outG=&dest[sx*sy];
+  outB=&dest[sx*sy*2];
+
+  // copy original RGB data to output images
+  for (i=0;i<sy;i+=2)
+    for (j=0;j<sx;j+=2)
+      {
+	outG[i*sx+j]=src[i*sx+j];
+	outG[(i+1)*sx+(j+1)]=src[(i+1)*sx+(j+1)];
+	outR[i*sx+j+1]=src[i*sx+j+1];
+	outB[(i+1)*sx+j]=src[(i+1)*sx+j];
+      }
+
+  // process GREEN channel
+  for (i=3;i<sx-2;i+=2)
+    for (j=2;j<sy-3;j+=2)
+      {
+	dh=abs((outB[(j-2)*sx+i]+outB[(j+2)*sx+i])/2-outB[j*sx+i]);
+	dv=abs((outB[j*sx+i-2]+outB[j*sx+i+2])/2-outB[j*sx+i]);
+	if (dh<dv)
+	  outG[j*sx+i]=(outG[(j-1)*sx+i]+outG[(j+1)*sx+i])/2;
+	else
+	  if (dh>dv)
+	    outG[j*sx+i]=(outG[j*sx+i-1]+outG[j*sx+i+1])/2;
+	  else
+	    outG[j*sx+i]=(outG[j*sx+i-1]+outG[j*sx+i+1]+outG[(j-1)*sx+i]+outG[(j+1)*sx+i])/4;
+      }
+
+  for (i=2;i<sx-3;i+=2)
+    for (j=3;j<sy-2;j+=2)
+      {
+	dh=abs((outR[(j-2)*sx+i]+outR[(j+2)*sx+i])/2-outR[j*sx+i]);
+	dv=abs((outR[j*sx+i-2]+outR[j*sx+i+2])/2-outR[j*sx+i]);
+	if (dh<dv)
+	  outG[j*sx+i]=(outG[(j-1)*sx+i]+outG[(j+1)*sx+i])/2;
+	else
+	  if (dh>dv)
+	    outG[j*sx+i]=(outG[j*sx+i-1]+outG[j*sx+i+1])/2;
+	  else
+	    outG[j*sx+i]=(outG[j*sx+i-1]+outG[j*sx+i+1]+outG[(j-1)*sx+i]+outG[(j+1)*sx+i])/4;
+      }
+
+  // process RED channel
+  for (i=0;i<sx-1;i+=2)
+    for (j=2;j<sy-1;j+=2)
+      outR[j*sx+i]=outG[j*sx+i]+(outR[(j-1)*sx+i]-outG[(j-1)*sx+i]+outR[(j+1)*sx+i]-outG[(j+1)*sx+i])/2;
+
+  for (i=1;i<sx-2;i+=2)
+    {
+      for (j=1;j<sy;j+=2)
+	outR[j*sx+i]=outG[j*sx+i]+(outR[j*sx+i-1]-outG[j*sx+i-1]+outR[j*sx+i+1]-outG[j*sx+i+1])/2;
+      for (j=2;j<sy-1;j+=2)
+	outR[j*sx+i]=(outR[(j-1)*sx+i-1]-outG[(j-1)*sx+i-1]+outR[(j+1)*sx+i-1]-outG[(j+1)*sx+i-1]+
+		      outR[(j-1)*sx+i+1]-outG[(j-1)*sx+i+1]+outR[(j+1)*sx+i+1]-outG[(j+1)*sx+i+1])/4;
+    }
+
+  // process BLUE channel
+  for (i=1;i<sx;i+=2)
+    for (j=1;j<sy;j+=2)
+      outB[j*sx+i]=outG[j*sx+i]+(outB[(j-1)*sx+i]-outG[(j-1)*sx+i]+outB[(j+1)*sx+i]-outG[(j+1)*sx+i])/2;
+
+  for (i=2;i<sx-1;i+=2)
+    {
+      for (j=0;j<sy-1;j+=2)
+	outB[j*sx+i]=outG[j*sx+i]+(outB[j*sx+i-1]-outG[j*sx+i-1]+outB[j*sx+i+1]-outG[j*sx+i+1])/2;
+      for (j=1;j<sy-2;j+=2)
+	outB[j*sx+i]=(outB[(j-1)*sx+i-1]-outG[(j-1)*sx+i-1]+outB[(j+1)*sx+i-1]-outG[(j+1)*sx+i-1]+
+		      outB[(j-1)*sx+i+1]-outG[(j-1)*sx+i+1]+outB[(j+1)*sx+i+1]-outG[(j+1)*sx+i+1])/4;
+    }
+}
