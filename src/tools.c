@@ -46,6 +46,7 @@ extern CtxtInfo ctxt;
 extern raw1394handle_t* handles;
 extern unsigned int main_timeout_ticker;
 extern int WM_cancel_display;
+extern cursor_info_t cursor_info;
 
 void
 GetFormat7Capabilities(raw1394handle_t handle, nodeid_t node, Format7Info *info)
@@ -751,6 +752,7 @@ main_timeout_handler(gpointer* port_num) {
   // the main_timeout_ticker can be consulted.
   main_timeout_ticker=(main_timeout_ticker+10)%1000;
 
+  // -------------------------------------------------------
   // cancel display thread if asked by the SDL/WM
   // We must do this here because it is not allowed to call a GTK function from a thread. At least if we do
   // so the program progressively breaks with strange GUI behavior/look.
@@ -761,6 +763,8 @@ main_timeout_handler(gpointer* port_num) {
     }
     //fprintf(stderr,"check display cancel\n");
   }
+
+  // -------------------------------------------------------
   // performs a dummy read on all handles
   if (!(main_timeout_ticker%1000)) { // every second
     for (i=0;i<ports;i++) {
@@ -769,6 +773,13 @@ main_timeout_handler(gpointer* port_num) {
 		      (quadlet_t *) &quadlet);
     }
     //fprintf(stderr,"dummy read\n");
+  }
+  // -------------------------------------------------------
+  if (!(main_timeout_ticker%100)) { // every 100ms
+    if (cursor_info.update_req>0) {
+      UpdateCursorFrame();
+      cursor_info.update_req=0;
+    }
   }
   return(1);
 }

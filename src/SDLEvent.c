@@ -26,6 +26,7 @@ extern GtkWidget *commander_window;
 extern watchthread_info_t watchthread_info;
 extern camera_t* camera;
 extern int WM_cancel_display;
+extern cursor_info_t cursor_info;
 //extern whitebal_data_t* whitebal_data;
 
 #define YUV2RGB(y, u, v, r, g, b)\
@@ -202,8 +203,6 @@ OnKeyReleased(chain_t *display_service, int key, int mod)
 void
 OnMouseDown(chain_t *display_service, int button, int x, int y)
 {
-  
-  int col_r,col_g,col_b,col_y,col_u,col_v;
   displaythread_info_t *info;
   info=(displaythread_info_t*)display_service->data;
 
@@ -224,11 +223,14 @@ OnMouseDown(chain_t *display_service, int button, int x, int y)
     x=x*display_service->current_buffer->width/info->SDL_videoRect.w; //rescaling
     y=y*display_service->current_buffer->height/info->SDL_videoRect.h;
     // THIS IS ONLY VALID FOR YUYV!!
-    col_y=info->SDL_overlay->pixels[0][(y*display_service->current_buffer->width+x)*2];
-    col_u=info->SDL_overlay->pixels[0][(((y*display_service->current_buffer->width+x)>>1)<<2)+1]-127;
-    col_v=info->SDL_overlay->pixels[0][(((y*display_service->current_buffer->width+x)>>1)<<2)+3]-127;
-    YUV2RGB(col_y, col_u, col_v, col_r, col_g, col_b);
-    UpdateCursorFrame(x, y, col_r, col_g, col_b, col_y, col_u, col_v);
+    cursor_info.col_y=info->SDL_overlay->pixels[0][(y*display_service->current_buffer->width+x)*2];
+    cursor_info.col_u=info->SDL_overlay->pixels[0][(((y*display_service->current_buffer->width+x)>>1)<<2)+1]-127;
+    cursor_info.col_v=info->SDL_overlay->pixels[0][(((y*display_service->current_buffer->width+x)>>1)<<2)+3]-127;
+    YUV2RGB(cursor_info.col_y, cursor_info.col_u, cursor_info.col_v,
+	    cursor_info.col_r, cursor_info.col_g, cursor_info.col_b);
+    cursor_info.x=x;
+    cursor_info.y=y;
+    cursor_info.update_req=1;
     break;
   case SDL_BUTTON_RIGHT:
     //whitebal_data->x=x*display_service->current_buffer->width/info->SDL_videoRect.w; //rescaling

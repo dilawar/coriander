@@ -43,6 +43,7 @@
 #include "thread_save.h"
 #include "thread_ftp.h"
 #include "thread_display.h"
+#include "SDLEvent.h"
 
 GtkWidget *commander_window;
 GtkWidget *absolute_settings_window;
@@ -61,6 +62,7 @@ raw1394handle_t *handles;
 
 unsigned int main_timeout_ticker;
 unsigned int WM_cancel_display;
+cursor_info_t cursor_info;
 
 #ifdef HAVE_SDLLIB
   watchthread_info_t watchthread_info;

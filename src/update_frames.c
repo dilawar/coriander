@@ -26,6 +26,7 @@ extern char* phy_delay_list[4];
 extern char* power_class_list[8];
 extern PrefsInfo preferences; 
 extern camera_t* camera;
+extern cursor_info_t cursor_info;
 
 void
 UpdatePrefsGeneralFrame(void)
@@ -240,24 +241,24 @@ UpdateTransferStatusFrame(void)
 }
 
 void
-UpdateCursorFrame(int posx, int posy, int r, int g, int b, int y, int u, int v)
+UpdateCursorFrame(void)
 {
   char temp[50];
 
   // position: 
-  sprintf(temp," %d,%d",posx,posy);
+  sprintf(temp," %d,%d",cursor_info.x,cursor_info.y);
   gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"cursor_pos"), ctxt.cursor_pos_ctxt, ctxt.cursor_pos_id);
   ctxt.cursor_pos_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"cursor_pos"), ctxt.cursor_pos_ctxt, temp);
 
   // color:
-  if (r>-255) {
-    sprintf(temp," %03d,%03d,%03d",r,g,b);
+  if (cursor_info.col_r>-255) {
+    sprintf(temp," %03d,%03d,%03d",cursor_info.col_r,cursor_info.col_g,cursor_info.col_b);
     gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"cursor_rgb"), ctxt.cursor_rgb_ctxt, ctxt.cursor_rgb_id);
     ctxt.cursor_rgb_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"cursor_rgb"), ctxt.cursor_rgb_ctxt, temp);
   }
   
-  if (y>-255) {
-    sprintf(temp," %03d,%03d,%03d",y,u,v);
+  if (cursor_info.col_y>-255) {
+    sprintf(temp," %03d,%03d,%03d",cursor_info.col_y,cursor_info.col_u,cursor_info.col_v);
     gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"cursor_yuv"), ctxt.cursor_yuv_ctxt, ctxt.cursor_yuv_id);
       ctxt.cursor_yuv_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"cursor_yuv"), ctxt.cursor_yuv_ctxt, temp);
   }

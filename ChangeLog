@@ -6,6 +6,8 @@ Changes towards version 0.33
    - misc updates in the save service.
    - added warning window for V4L service.
    - the display window can now be closed with the WM button.
+   - fixed cursor frame update (put it in gtk callback instead of access a
+     gtk function in a thread which breaks everything).
 	
    May 26, 2003, by Damien Douxchamps
    - FPS display now takes into account the period setting.

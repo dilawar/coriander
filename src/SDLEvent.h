@@ -36,6 +36,21 @@
 
 #define EVENTS_SLEEP_MS 50
 
+typedef struct _cursor_info_t {
+
+  int update_req;
+  int col_r;
+  int col_g;
+  int col_b;
+
+  int col_y;
+  int col_u;
+  int col_v;
+
+  int x;
+  int y;
+} cursor_info_t;
+
 int
 SDLEventStartThread(chain_t *display_service);
 
