@@ -15,6 +15,11 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
+
+#ifndef __ICONS_H
+
+#ifdef HAVE_GDK_PIXBUF
+
 static char * coriander_icon_xpm[] = {
 "48 48 97 2",
 "  	c None",
@@ -162,3 +167,7 @@ static char * coriander_icon_xpm[] = {
 "                                    O O O O O O O O O O O O +.                                  ",
 "                                  @.O O O O O O O O O O O O #.                                  ",
 "                                      S Q R O O O O O Q +.                                      "};
+
+#endif
+
+#endif
