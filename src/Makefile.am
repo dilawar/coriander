@@ -2,8 +2,7 @@
 
 # CPPFLAGS = 
 
-INCLUDES = -I$(top_srcdir)/intl $(GNOME_INCLUDEDIR) $(SDLLIB_CFLAGS) $(LIBRAW_CFLAGS) $(LIBDC_CFLAGS) $(GDK_PIXBUF_CFLAGS) $(COR_LFS_CFLAGS) -I/usr/include/gnome-xml
-#-march=i686 -mcpu=i686
+INCLUDES = -I$(top_srcdir)/intl $(GNOME_INCLUDEDIR) $(SDLLIB_CFLAGS) $(LIBRAW_CFLAGS) $(LIBDC_CFLAGS) $(GDK_PIXBUF_CFLAGS) $(COR_LFS_CFLAGS) $(PROC_CFLAGS) -I/usr/include/gnome-xml
 
 bin_PROGRAMS = coriander
 

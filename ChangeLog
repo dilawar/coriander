@@ -5,6 +5,8 @@ Changes towards version 1.0.2
    Jan 29, 2005, by Damien Douxchamps
    - little optimization of the Edge Sense bayer decoding
    - added a few benchmarks in the bayer.c file
+   - stupid automatic insertion of march/mcpu compilation flags (it is currently
+     linked to the presence of SSE2, which is not false but not exactly correct either)
 	
    Jan 29, 2005, by Damien Douxchamps
    - more bayer update and optimization from Frederic Devernay

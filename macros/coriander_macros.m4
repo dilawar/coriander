@@ -196,6 +196,7 @@ AC_DEFUN([AC_CHECK_SSE],[
 
 
 AC_DEFUN([AC_CHECK_SSE2],[
+	AC_SUBST(PROC_CFLAGS)
 	AC_MSG_CHECKING(for SSE2 support)
  	sse2=no
  	AC_TRY_RUN([
@@ -217,6 +218,9 @@ AC_DEFUN([AC_CHECK_SSE2],[
  	AC_MSG_RESULT($sse2)
  	if test x$sse2 = xyes; then
   	   AC_DEFINE(SSE2_SUPPORT,1,[defined if SSE2 is available])
+	   PROC_CFLAGS="-march=i686 -mcpu=i686"
+	else
+	   PROC_CFLAGS=""
  	fi
 
 ])
