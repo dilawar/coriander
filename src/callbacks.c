@@ -512,7 +512,7 @@ on_save_mem_clicked                    (GtkButton       *button,
 	      timeout_bin+=step;
 	    }
 	  if (timeout_bin>=(unsigned long int)(preferences.op_timeout*1000000.0))
-	    MainStatus("Save operation function timed-out!\n"); 
+	    MainStatus("Save operation function timed-out!"); 
 	}
     }
 }
@@ -562,25 +562,16 @@ on_camera_select_activate              (GtkMenuItem     *menuitem,
 					gpointer         user_data)
 {
   // close current display (we don't want display to be used by 2 threads at the same time 'cause SDL forbids it)
-
-  //fprintf(stderr,"1\n");
   DisplayStopThread(current_camera);
-
-  //fprintf(stderr,"2\n");
   // set current camera pointers:
   SelectCamera((int)user_data);
-  //fprintf(stderr,"3\n");
 
   if (uiinfo->want_to_display>0)
     DisplayStartThread();
-  //fprintf(stderr,"4\n");
 
   // redraw all:
   BuildAllWindows();
-  //fprintf(stderr,"5\n");
   UpdateAllWindows();
-  //fprintf(stderr,"6\n");
-
 
 }
 
@@ -847,8 +838,8 @@ on_prefs_save_button_clicked           (GtkButton       *button,
   tmp=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_copyright")));
 #endif
 
-  preferences.op_timeout = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(preferences_window), "prefs_op_timeout_scale")));
-  preferences.auto_update_frequency = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(preferences_window), "prefs_update_scale")));
+  preferences.op_timeout = gtk_spin_button_get_value_as_float(GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(preferences_window), "prefs_op_timeout_scale")));
+  preferences.auto_update_frequency = gtk_spin_button_get_value_as_float(GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(preferences_window), "prefs_update_scale")));
   preferences.display_period = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(preferences_window), "prefs_display_period")));
   preferences.save_period = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(preferences_window), "prefs_save_period")));
   preferences.ftp_period = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(preferences_window), "prefs_ftp_period")));
@@ -1127,7 +1118,7 @@ on_range_menu_activate             (GtkMenuItem     *menuitem,
 	      UpdateRange(commander_window,feature);
 	    }
 	  if (timeout_bin>=(unsigned long int)(preferences.op_timeout*1000000.0))
-	    MainStatus("One-Push function timed-out!\n");
+	    MainStatus("One-Push function timed-out!");
 	  UpdateRange(commander_window,feature);
 	  // should switch back to manual mode here. Maybe a recursive call??
 	  // >> Not necessary because UpdateRange reloads the status which folds

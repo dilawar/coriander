@@ -180,6 +180,16 @@ BuildPrefsSaveFrame(void)
 }
 
 void
+BuildPrefsGeneralFrame(void)
+{
+  
+  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(preferences_window,"prefs_op_timeout_scale"),
+			    preferences.op_timeout);
+  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(preferences_window,"prefs_update_scale"),
+			    preferences.auto_update_frequency);
+}
+
+void
 BuildPrefsFtpFrame(void)
 {
 #ifdef HAVE_FTPLIB

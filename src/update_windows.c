@@ -51,7 +51,7 @@ UpdatePreferencesWindow(void)
 {
   UpdatePrefsReceiveFrame();    
   UpdatePrefsDisplayFrame();
-  UpdatePrefsUpdateFrame();    
+  UpdatePrefsGeneralFrame();    
   UpdatePrefsSaveFrame();
   UpdatePrefsFtpFrame();
   UpdatePrefsRealFrame();

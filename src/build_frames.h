@@ -21,6 +21,9 @@
 #define __BUILDFRAMES_H__
 
 void
+BuildPrefsGeneralFrame(void);
+
+void
 BuildCameraFrame(void);
 
 void

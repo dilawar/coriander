@@ -39,6 +39,7 @@ void
 BuildPreferencesWindow(void)
 {
   LoadConfigFile();
+  BuildPrefsGeneralFrame();
   BuildPrefsDisplayFrame();
   BuildPrefsReceiveFrame();
   BuildPrefsSaveFrame();

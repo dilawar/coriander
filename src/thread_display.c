@@ -206,10 +206,10 @@ DisplayStopThread(unsigned int camera)
       pthread_mutex_lock(&display_service->mutex_struct);
       RemoveChain(display_service, camera);
 #ifdef HAVE_SDLLIB
-	  SDLEventStopThread(display_service);
-	  SDL_FreeYUVOverlay(info->SDL_overlay);
-	  SDL_FreeSurface(info->SDL_video);
-	  SDL_QuitSubSystem(SDL_INIT_VIDEO);
+      SDLEventStopThread(display_service);
+      SDL_FreeYUVOverlay(info->SDL_overlay);
+      SDL_FreeSurface(info->SDL_video);
+      SDL_QuitSubSystem(SDL_INIT_VIDEO);
 #endif
       pthread_mutex_unlock(&display_service->mutex_struct);
       pthread_mutex_unlock(&display_service->mutex_data);
@@ -259,7 +259,9 @@ sdlInit(chain_t *display_service)
 
   // Create YUV Overlay
   info->SDL_overlay = SDL_CreateYUVOverlay(display_service->width, display_service->height, 
-					   SDL_UYVY_OVERLAY,info->SDL_video);
+					   SDL_YUY2_OVERLAY,info->SDL_video);
+
+  fprintf(stderr,"0x%x\n",info->SDL_overlay->format);
 
   if (info->SDL_overlay == NULL)
     {

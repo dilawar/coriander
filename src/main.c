@@ -83,7 +83,6 @@ main (int argc, char *argv[])
   gnome_init ("coriander", VERSION, argc, argv);
 
   handle=dc1394_create_handle(port);
-  // probe the IEEE1394 bus for DC camera:
   if (handle==0)
     {
       gtk_widget_show(create_no_handle_window());
@@ -91,6 +90,7 @@ main (int argc, char *argv[])
     }
   else
     {
+  // probe the IEEE1394 bus for DC camera:
   camera_nodes=dc1394_get_camera_nodes(handle, &camera_num, 0); // 0 not to show the cams.
   if (camera_num<1)
     {

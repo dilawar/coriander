@@ -20,7 +20,7 @@
 #define __UPDATEFRAMES_H__
 
 void
-UpdatePrefsUpdateFrame(void);
+UpdatePrefsGeneralFrame(void);
 
 void
 UpdatePrefsDisplayFrame(void);

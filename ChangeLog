@@ -2,6 +2,10 @@ Coriander, (c) 2000-2002 Damien Douxchamps <douxchamps@ieee.org>
 
 Changes towards version 0.24:
 
+   Feb 18, 2002, by Damien Douxchamps
+   - the color problem is in SDL, not in coriander. Stay tuned.
+   - small config bugs corrected
+	
    Feb 14, 2002, by Damien Douxchamps
    - more color conversion bugs corrected. Will this ever end?
    - removed a "/n" in build_menus.c

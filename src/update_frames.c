@@ -54,9 +54,11 @@ extern int silent_ui_update;
 extern int current_camera;
 
 void
-UpdatePrefsUpdateFrame(void)
+UpdatePrefsGeneralFrame(void)
 {
   // nothing yet. should update ranges
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (lookup_widget(preferences_window,"prefs_update_power")),
+			       preferences.auto_update);
 }
 
 void

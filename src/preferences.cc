@@ -41,9 +41,9 @@ extern PrefsInfo preferences;
 void
 LoadConfigFile(void)
 {
-  preferences.op_timeout = gnome_config_get_int("coriander/global/one_push_timeout=10");
-  preferences.auto_update = gnome_config_get_int("coriander/global/auto_update=0");
-  preferences.auto_update_frequency = gnome_config_get_float("coriander/global/auto_update_frequency=10");
+  preferences.op_timeout = gnome_config_get_float("coriander/global/one_push_timeout=10.0");
+  preferences.auto_update = gnome_config_get_int("coriander/global/auto_update=1");
+  preferences.auto_update_frequency = gnome_config_get_float("coriander/global/auto_update_frequency=2.0");
   preferences.display_keep_ratio = gnome_config_get_int("coriander/display/keep_ratio=0");
   preferences.display_period = gnome_config_get_int("coriander/display/period=1");
   preferences.receive_method = gnome_config_get_int("coriander/receive/method=0");
@@ -91,7 +91,7 @@ void
 WriteConfigFile(void)
 {
   gnome_config_set_float("coriander/global/one_push_timeout",preferences.op_timeout);
-  gnome_config_set_float("coriander/global/auto_update",preferences.auto_update);
+  gnome_config_set_int("coriander/global/auto_update",preferences.auto_update);
   gnome_config_set_float("coriander/global/auto_update_frequency",preferences.auto_update_frequency);
   gnome_config_set_int("coriander/display/keep_ratio",preferences.display_keep_ratio);
   gnome_config_set_int("coriander/display/period",preferences.display_period);

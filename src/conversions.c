@@ -98,7 +98,6 @@ uyyvyy2uyvy (unsigned char *src, unsigned char *dest, int NumPixels) {
       dest[j--] = v;
       dest[j--] = y0;
       dest[j--] = u;
-
     }
 }
 
