@@ -2,6 +2,9 @@ Coriander, (c) 2000-2002 Damien Douxchamps <douxchamps@ieee.org>
 
 Changes towards version 0.26
 
+   August 21, 2002, by Damien Douxchamps
+   - bug introduced yesterday fixed in isothread.
+	
    August 20, 2002, by Damien Douxchamps
    - support Y16 in bayer decoding
    - support PointGrey cameras (require libdc CVS 21-08-2002)

@@ -225,6 +225,12 @@ IsoThread(void* arg)
 
   iso_service=(chain_t*)arg;
 
+  pthread_mutex_lock(&iso_service->mutex_data);
+  info=(isothread_info_t*)iso_service->data;
+  pthread_setcancelstate(PTHREAD_CANCEL_ENABLE,NULL);
+  pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS,NULL);
+  pthread_mutex_unlock(&iso_service->mutex_data);
+
   cond16bit=((iso_service->mode==MODE_640x480_MONO16)||
 	     (iso_service->mode==MODE_800x600_MONO16)||
 	     (iso_service->mode==MODE_1024x768_MONO16)||
@@ -235,12 +241,6 @@ IsoThread(void* arg)
     temp=(unsigned char*)malloc(iso_service->width*iso_service->height*sizeof(unsigned char));
   else
     temp=(unsigned char *)info->capture.capture_buffer;
-
-  pthread_mutex_lock(&iso_service->mutex_data);
-  info=(isothread_info_t*)iso_service->data;
-  pthread_setcancelstate(PTHREAD_CANCEL_ENABLE,NULL);
-  pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS,NULL);
-  pthread_mutex_unlock(&iso_service->mutex_data);
 
   while (1)
     {
