@@ -334,6 +334,7 @@ SaveThreadCheckParams(chain_t *save_service)
 {
 
   savethread_info_t *info;
+  int buffer_size_change=0;
   info=(savethread_info_t*)save_service->data;
 
   // copy harmless parameters anyway:
@@ -355,6 +356,14 @@ SaveThreadCheckParams(chain_t *save_service)
       (save_service->current_buffer->bayer!=save_service->local_param_copy.bayer)
       )
     {
+      if (save_service->current_buffer->width*save_service->current_buffer->height!=
+	  save_service->local_param_copy.width*save_service->local_param_copy.height) {
+	buffer_size_change=1;
+      }
+      else {
+	buffer_size_change=0;
+      }
+
       // copy all new parameters:
       save_service->local_param_copy.width=save_service->current_buffer->width;
       save_service->local_param_copy.height=save_service->current_buffer->height;
@@ -366,12 +375,15 @@ SaveThreadCheckParams(chain_t *save_service)
       save_service->local_param_copy.bayer=save_service->current_buffer->bayer;
 
       // DO SOMETHING
-      if (info->save_buffer!=NULL) {
-	free(info->save_buffer);
-	info->save_buffer=NULL;
+      if (buffer_size_change!=0) {
+
+	if (info->save_buffer!=NULL) {
+	  free(info->save_buffer);
+	  info->save_buffer=NULL;
+	}
+	info->save_buffer=(unsigned char*)malloc(save_service->current_buffer->width*save_service->current_buffer->height*3
+						 *sizeof(unsigned char));
       }
-      info->save_buffer=(unsigned char*)malloc(save_service->current_buffer->width*save_service->current_buffer->height*3
-						*sizeof(unsigned char));
     }
   
 }

@@ -1,7 +1,12 @@
 Coriander, (c) 2000-2002 Damien Douxchamps <ddouxchamps@users.sf.net>
 
-Changes towards version 0.28
+Changes in version 0.28
 
+   March 4, 2003, by Damien Douxchamps
+   - only restart SDL if display size changes
+   - only re-allocated thread-specific buffers if their size change.
+   - remove test pattern button as if sometimes freeze the cameras.
+	
    February 28, 2003, by Damien Douxchamps
    - fixed compiling issues with gcc 2.95
    - fixed a bug with the recently introduced buffer structure (display...

@@ -135,8 +135,6 @@ create_commander_window (void)
   GtkWidget *trigger_polarity;
   GtkWidget *image_options_frame;
   GtkWidget *table61;
-  GtkWidget *label114;
-  GtkWidget *test_pattern;
   GtkWidget *bayer_menu;
   GtkWidget *bayer_menu_menu;
   GtkWidget *pattern_menu;
@@ -144,6 +142,7 @@ create_commander_window (void)
   GtkWidget *stereo_button;
   GtkObject *mono16_bpp_adj;
   GtkWidget *mono16_bpp;
+  GtkWidget *label114;
   GtkWidget *format_frame;
   GtkWidget *table60;
   GtkWidget *format_select;
@@ -776,32 +775,12 @@ create_commander_window (void)
   gtk_widget_show (table61);
   gtk_container_add (GTK_CONTAINER (image_options_frame), table61);
 
-  label114 = gtk_label_new (_("BPP :"));
-  gtk_widget_ref (label114);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "label114", label114,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label114);
-  gtk_table_attach (GTK_TABLE (table61), label114, 0, 1, 4, 5,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_misc_set_padding (GTK_MISC (label114), 2, 2);
-
-  test_pattern = gtk_toggle_button_new_with_label (_("Test Pattern"));
-  gtk_widget_ref (test_pattern);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "test_pattern", test_pattern,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (test_pattern);
-  gtk_table_attach (GTK_TABLE (table61), test_pattern, 0, 2, 0, 1,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (test_pattern), 2);
-
   bayer_menu = gtk_option_menu_new ();
   gtk_widget_ref (bayer_menu);
   gtk_object_set_data_full (GTK_OBJECT (commander_window), "bayer_menu", bayer_menu,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (bayer_menu);
-  gtk_table_attach (GTK_TABLE (table61), bayer_menu, 0, 2, 1, 2,
+  gtk_table_attach (GTK_TABLE (table61), bayer_menu, 0, 2, 0, 1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (bayer_menu), 1);
@@ -822,7 +801,7 @@ create_commander_window (void)
   gtk_object_set_data_full (GTK_OBJECT (commander_window), "pattern_menu", pattern_menu,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (pattern_menu);
-  gtk_table_attach (GTK_TABLE (table61), pattern_menu, 0, 2, 2, 3,
+  gtk_table_attach (GTK_TABLE (table61), pattern_menu, 0, 2, 1, 2,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (pattern_menu), 1);
@@ -840,7 +819,7 @@ create_commander_window (void)
   gtk_object_set_data_full (GTK_OBJECT (commander_window), "stereo_button", stereo_button,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (stereo_button);
-  gtk_table_attach (GTK_TABLE (table61), stereo_button, 0, 2, 3, 4,
+  gtk_table_attach (GTK_TABLE (table61), stereo_button, 0, 2, 2, 3,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (stereo_button), 2);
@@ -851,12 +830,22 @@ create_commander_window (void)
   gtk_object_set_data_full (GTK_OBJECT (commander_window), "mono16_bpp", mono16_bpp,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (mono16_bpp);
-  gtk_table_attach (GTK_TABLE (table61), mono16_bpp, 1, 2, 4, 5,
+  gtk_table_attach (GTK_TABLE (table61), mono16_bpp, 1, 2, 3, 4,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
   gtk_widget_set_sensitive (mono16_bpp, FALSE);
   gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (mono16_bpp), TRUE);
   gtk_spin_button_set_update_policy (GTK_SPIN_BUTTON (mono16_bpp), GTK_UPDATE_IF_VALID);
+
+  label114 = gtk_label_new (_("BPP :"));
+  gtk_widget_ref (label114);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "label114", label114,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label114);
+  gtk_table_attach (GTK_TABLE (table61), label114, 0, 1, 3, 4,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_padding (GTK_MISC (label114), 2, 2);
 
   format_frame = gtk_frame_new (_("Format"));
   gtk_widget_ref (format_frame);
@@ -2427,9 +2416,6 @@ create_commander_window (void)
   gtk_signal_connect (GTK_OBJECT (trigger_polarity), "toggled",
                       GTK_SIGNAL_FUNC (on_trigger_polarity_toggled),
                       NULL);
-  gtk_signal_connect (GTK_OBJECT (test_pattern), "toggled",
-                      GTK_SIGNAL_FUNC (on_test_pattern_toggled),
-                      NULL);
   gtk_signal_connect (GTK_OBJECT (stereo_button), "toggled",
                       GTK_SIGNAL_FUNC (on_stereo_button_toggled),
                       NULL);
@@ -2462,7 +2448,7 @@ GtkWidget*
 create_about_window (void)
 {
   const gchar *authors[] = {
-    "Damien Douxchamps <douxchamps@ieee.org>",
+    "Damien Douxchamps <ddouxchamps@users.sf.net>",
     "Dan Dennedy <dan@dennedy.org>",
     "See the AUTHORS file for more authors and contributors",
     "",

@@ -131,10 +131,6 @@ on_preferences_activate                (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
 void
-on_test_pattern_toggled               (GtkToggleButton *togglebutton,
-                                        gpointer        user_data);
-
-void
 on_prefs_update_power_toggled          (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
 

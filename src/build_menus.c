@@ -590,7 +590,7 @@ BuildBayerMenu(void)
 			    (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (new_option_menu);
   gtk_table_attach (GTK_TABLE (lookup_widget(commander_window,"table61")),
-		    new_option_menu, 0, 2, 1, 2,
+		    new_option_menu, 0, 2, 0, 1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (new_option_menu), 1);
@@ -650,7 +650,7 @@ BuildBayerPatternMenu(void)
 			    (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (new_option_menu);
   gtk_table_attach (GTK_TABLE (lookup_widget(commander_window,"table61")),
-		    new_option_menu, 0, 2, 2, 3,
+		    new_option_menu, 0, 2, 1, 2,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (new_option_menu), 1);

@@ -333,6 +333,7 @@ FtpThreadCheckParams(chain_t *ftp_service)
 {
 
   ftpthread_info_t *info;
+  int buffer_size_change=0;
   info=(ftpthread_info_t*)ftp_service->data;
 
   // copy harmless parameters anyway:
@@ -354,6 +355,14 @@ FtpThreadCheckParams(chain_t *ftp_service)
       (ftp_service->current_buffer->bayer!=ftp_service->local_param_copy.bayer)
       )
     {
+      if (ftp_service->current_buffer->width*ftp_service->current_buffer->height!=
+	  ftp_service->local_param_copy.width*ftp_service->local_param_copy.height) {
+	buffer_size_change=1;
+      }
+      else {
+	buffer_size_change=0;
+      }
+
       // copy all new parameters:
       ftp_service->local_param_copy.width=ftp_service->current_buffer->width;
       ftp_service->local_param_copy.height=ftp_service->current_buffer->height;
@@ -365,13 +374,15 @@ FtpThreadCheckParams(chain_t *ftp_service)
       ftp_service->local_param_copy.bayer=ftp_service->current_buffer->bayer;
 
       // DO SOMETHING
-      if (info->ftp_buffer!=NULL) {
-	free(info->ftp_buffer);
-	info->ftp_buffer=NULL;
-      }
+      if (buffer_size_change!=0) {
 
-      info->imlib_buffer_size=ftp_service->current_buffer->width*ftp_service->current_buffer->height*3;
-      info->ftp_buffer=(unsigned char*)malloc(info->imlib_buffer_size*sizeof(unsigned char));
+	if (info->ftp_buffer!=NULL) {
+	  free(info->ftp_buffer);
+	  info->ftp_buffer=NULL;
+	}
+	info->imlib_buffer_size=ftp_service->current_buffer->width*ftp_service->current_buffer->height*3;
+	info->ftp_buffer=(unsigned char*)malloc(info->imlib_buffer_size*sizeof(unsigned char));
+      }
     }
   
 }

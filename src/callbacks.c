@@ -485,40 +485,6 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
 
 
 void
-on_test_pattern_toggled               (GtkToggleButton *togglebutton,
-                                        gpointer        user_data)
-{
-    quadlet_t value;
-    int state[5];
-
-    IsoFlowCheck(state);
-    
-    value= htonl(0x12345678ULL);
-    if (!raw1394_write(camera->handle, 0xffc0 | camera->id, CCR_BASE + EEPROM_CNFG, 4, &value))
-      MainError("Could not set test pattern registers");
-    if (uiinfo->test_pattern==0)
-      {
-	value= htonl(0x80000000ULL);
-	uiinfo->test_pattern=1;
-      }
-    else
-      {
-	value= htonl(0x00000000ULL);
-	uiinfo->test_pattern=0;
-      }
-    if (!raw1394_write(camera->handle, 0xffc0 | camera->id, CCR_BASE + TEST_CNFG, 4, &value))
-    MainError("Could not set test pattern registers");
-    value= htonl(0x00000000ULL);
-    if (!raw1394_write(camera->handle, 0xffc0 | camera->id, CCR_BASE + EEPROM_CNFG, 4, &value))
-    MainError("Could not set test pattern registers");
-
-    BuildFpsMenu();
-    UpdateTriggerFrame();
-    IsoFlowResume(state);  
-}
-
-
-void
 on_preferences_window_activate         (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {

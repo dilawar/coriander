@@ -157,16 +157,8 @@ main (int argc, char *argv[])
 		    if (err<0) MainError("Could not get camera misc information!");
 		    err=dc1394_get_camera_feature_set(cameras[index].handle, cameras[index].id, &feature_sets[index]);
 		    if (err<0) MainError("Could not get camera feature information!");
-		    //dc1394_print_feature_set(&feature_sets[index]);
-		    //dc1394_absolute_setting_on_off(cameras[index].handle, cameras[index].id, FEATURE_SHUTTER,0);
-		    //feature_sets[index].feature[FEATURE_SHUTTER-FEATURE_MIN].abs_control=0;
-		    //tmp=.00000001;
-		    //dc1394_set_absolute_feature_value(cameras[index].handle, cameras[index].id, FEATURE_SHUTTER, &tmp);
-		    //dc1394_query_absolute_feature_value(cameras[index].handle, cameras[index].id, FEATURE_SHUTTER, &tmp);
-		    //fprintf(stderr,"returned value: %3.8f\n",tmp);
 		    GetFormat7Capabilities(cameras[index].handle, cameras[index].id, &format7_infos[index]);
 		    image_pipes[index]=NULL;
-		    uiinfos[index].test_pattern=0;
 		    uiinfos[index].want_to_display=0;
 		    uiinfos[index].bayer=NO_BAYER_DECODING;
 		    uiinfos[index].stereo=NO_STEREO_DECODING;

@@ -347,6 +347,7 @@ RealThreadCheckParams(chain_t *real_service)
 {
 
   realthread_info_t *info;
+  int buffer_size_change=0;
   info=(realthread_info_t*)real_service->data;
 
   // copy harmless parameters anyway:
@@ -368,6 +369,14 @@ RealThreadCheckParams(chain_t *real_service)
       (real_service->current_buffer->bayer!=real_service->local_param_copy.bayer)
       )
     {
+      if (real_service->current_buffer->width*real_service->current_buffer->height!=
+	  real_service->local_param_copy.width*real_service->local_param_copy.height) {
+	buffer_size_change=1;
+      }
+      else {
+	buffer_size_change=0;
+      }
+
       // copy all new parameters:
       real_service->local_param_copy.width=real_service->current_buffer->width;
       real_service->local_param_copy.height=real_service->current_buffer->height;
@@ -379,12 +388,15 @@ RealThreadCheckParams(chain_t *real_service)
       real_service->local_param_copy.bayer=real_service->current_buffer->bayer;
 
       // DO SOMETHING
-      if (info->real_buffer!=NULL) {
-	free(info->real_buffer);
-	info->real_buffer=NULL;
+      if (buffer_size_change!=0) {
+
+	if (info->real_buffer!=NULL) {
+	  free(info->real_buffer);
+	  info->real_buffer=NULL;
+	}
+	info->real_buffer=(unsigned char*)malloc(real_service->current_buffer->width*real_service->current_buffer->height*3
+						 *sizeof(unsigned char));
       }
-      info->real_buffer=(unsigned char*)malloc(real_service->current_buffer->width*real_service->current_buffer->height*3
-						*sizeof(unsigned char));
     }
   
 }

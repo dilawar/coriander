@@ -506,6 +506,7 @@ DisplayThreadCheckParams(chain_t *display_service)
 
   displaythread_info_t *info;
   int first_time=0;
+  int size_change;
   info=(displaythread_info_t*)display_service->data;
 
   // copy harmless parameters anyway:
@@ -534,6 +535,14 @@ DisplayThreadCheckParams(chain_t *display_service)
 	first_time=0;
       }
 
+      if ((display_service->current_buffer->width!=display_service->local_param_copy.width)||
+	  (display_service->current_buffer->height!=display_service->local_param_copy.height)) {
+	size_change=1;
+      }
+      else {
+	size_change=0;
+      }
+
       // copy all new parameters:
       display_service->local_param_copy.width=display_service->current_buffer->width;
       display_service->local_param_copy.height=display_service->current_buffer->height;
@@ -546,7 +555,7 @@ DisplayThreadCheckParams(chain_t *display_service)
 
       // DO SOMETHING
       // if the width is not -1, that is if some image has already reached the thread
-      if (display_service->local_param_copy.width!=-1) {
+      if ((display_service->local_param_copy.width!=-1)&&(size_change!=0)) {
 	if (!first_time) {
 	  //fprintf(stderr,"Not the first time, kill current SDL\n");
 	  SDLQuit(display_service);
