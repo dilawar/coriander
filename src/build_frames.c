@@ -397,3 +397,4 @@ BuildPrefsReceiveFrame(void)
   gtk_entry_set_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_video1394_device")),
 		     preferences.video1394_device);
 }
+

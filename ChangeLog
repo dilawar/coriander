@@ -1,6 +1,12 @@
 Coriander, (c) 2000-2002 Damien Douxchamps <douxchamps@ieee.org>
 
 Changes towards version 0.26
+
+   July 5, 2002, by Damien Douxchamps
+   - Updated the status window
+   - changing the name affects the menu immediately.
+   - updated the preferences mechanism. You don't need to push the
+     'apply' button anymore
 	
    July 4, 2002, by Damien Douxchamps
    - Multiple interface card support, beta version.

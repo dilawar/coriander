@@ -271,28 +271,15 @@ UpdateTransferStatusFrame(void)
   char temp[STRING_SIZE];
   int err;
   sprintf(temp," %d",misc_info->iso_channel);
-
   gtk_statusbar_remove( (GtkStatusbar*) lookup_widget(commander_window,"iso_channel_status"), ctxt.iso_channel_ctxt, ctxt.iso_channel_id);
   ctxt.iso_channel_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"iso_channel_status"), ctxt.iso_channel_ctxt, temp);
 
   sprintf(temp," %d",misc_info->iso_speed);
-
   gtk_statusbar_remove( (GtkStatusbar*) lookup_widget(commander_window,"iso_speed_status"), ctxt.iso_speed_ctxt, ctxt.iso_speed_id);
-  ctxt.iso_speed_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"iso_speed_status"), ctxt.iso_speed_ctxt, " <Future Feature>");
-
-  // we perform an update of the ISO local info here. Just to avoid possible incoherencies.
-  err=dc1394_get_iso_status(camera->handle, camera->id, &misc_info->is_iso_on);
-  if (misc_info->is_iso_on>0)
-    sprintf(temp," Transmitting...");
-  else
-    sprintf(temp," No ISO transmission");
-
-  gtk_statusbar_remove( (GtkStatusbar*) lookup_widget(commander_window,"iso_status_status"), ctxt.iso_status_ctxt, ctxt.iso_status_id);
-  ctxt.iso_status_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"iso_status_status"), ctxt.iso_status_ctxt, temp);
+  ctxt.iso_speed_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"iso_speed_status"), ctxt.iso_speed_ctxt, " N/A");
 
   err=dc1394_get_iso_channel_and_speed(camera->handle, camera->id, &misc_info->iso_channel, &misc_info->iso_speed);
   sprintf(temp," %d",misc_info->iso_channel);
-
   gtk_statusbar_remove( (GtkStatusbar*) lookup_widget(commander_window,"iso_channel_status"), ctxt.iso_channel_ctxt, ctxt.iso_channel_id);
   ctxt.iso_channel_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"iso_channel_status"), ctxt.iso_channel_ctxt, temp);
 

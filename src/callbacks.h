@@ -472,3 +472,91 @@ on_name_camera_clicked                 (GtkButton       *button,
 void
 on_camera_name_text_changed            (GtkEditable     *editable,
                                         gpointer         user_data);
+
+void
+on_prefs_op_timeout_scale_changed      (GtkEditable     *editable,
+                                        gpointer         user_data);
+
+void
+on_prefs_update_scale_changed          (GtkEditable     *editable,
+                                        gpointer         user_data);
+
+void
+on_prefs_video1394_device_changed      (GtkEditable     *editable,
+                                        gpointer         user_data);
+
+void
+on_prefs_display_period_changed        (GtkEditable     *editable,
+                                        gpointer         user_data);
+
+void
+on_prefs_save_period_changed           (GtkEditable     *editable,
+                                        gpointer         user_data);
+
+void
+on_prefs_save_filename_changed         (GtkEditable     *editable,
+                                        gpointer         user_data);
+
+void
+on_prefs_ftp_period_changed            (GtkEditable     *editable,
+                                        gpointer         user_data);
+
+void
+on_prefs_ftp_address_changed           (GtkEditable     *editable,
+                                        gpointer         user_data);
+
+void
+on_prefs_ftp_path_changed              (GtkEditable     *editable,
+                                        gpointer         user_data);
+
+void
+on_prefs_ftp_user_changed              (GtkEditable     *editable,
+                                        gpointer         user_data);
+
+void
+on_prefs_ftp_password_changed          (GtkEditable     *editable,
+                                        gpointer         user_data);
+
+void
+on_prefs_ftp_filename_changed          (GtkEditable     *editable,
+                                        gpointer         user_data);
+
+void
+on_prefs_real_address_changed          (GtkEditable     *editable,
+                                        gpointer         user_data);
+
+void
+on_prefs_real_filename_changed         (GtkEditable     *editable,
+                                        gpointer         user_data);
+
+void
+on_prefs_real_user_changed             (GtkEditable     *editable,
+                                        gpointer         user_data);
+
+void
+on_prefs_real_password_changed         (GtkEditable     *editable,
+                                        gpointer         user_data);
+
+void
+on_prefs_real_port_changed             (GtkEditable     *editable,
+                                        gpointer         user_data);
+
+void
+on_prefs_real_title_changed            (GtkEditable     *editable,
+                                        gpointer         user_data);
+
+void
+on_prefs_real_author_changed           (GtkEditable     *editable,
+                                        gpointer         user_data);
+
+void
+on_prefs_real_copyright_changed        (GtkEditable     *editable,
+                                        gpointer         user_data);
+
+void
+on_prefs_op_timeout_scale_changed      (GtkEditable     *editable,
+                                        gpointer         user_data);
+
+void
+on_prefs_update_scale_changed          (GtkEditable     *editable,
+                                        gpointer         user_data);

@@ -107,10 +107,6 @@ LoadConfigFile(void)
 void
 WriteConfigFile(void)
 {
-  gnome_config_set_float("coriander/global/one_push_timeout",preferences.op_timeout);
-  gnome_config_set_int("coriander/global/auto_update",preferences.auto_update);
-  gnome_config_set_float("coriander/global/auto_update_frequency",preferences.auto_update_frequency);
-  gnome_config_set_int("coriander/display/keep_ratio",preferences.display_keep_ratio);
   gnome_config_set_int("coriander/display/period",preferences.display_period);
   gnome_config_set_int("coriander/receive/method",preferences.receive_method);
   gnome_config_set_string("coriander/receive/video1394_device",preferences.video1394_device);

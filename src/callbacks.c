@@ -835,83 +835,12 @@ on_test_pattern_activate               (GtkMenuItem     *menuitem,
 
 
 void
-on_prefs_update_power_toggled          (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-  preferences.auto_update=togglebutton->active;
-}
-
-void
 on_preferences_window_activate         (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
   gtk_widget_show(preferences_window);
 }
 
-
-void
-on_prefs_save_button_clicked           (GtkButton       *button,
-                                        gpointer         user_data)
-{
-  preferences.save_filename=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_save_filename")));
-  preferences.video1394_device=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_video1394_device")));
-
-#ifdef HAVE_FTPLIB
-  preferences.ftp_address=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_ftp_address")));
-  preferences.ftp_filename=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_ftp_filename")));
-  preferences.ftp_path=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_ftp_path")));
-  preferences.ftp_password=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_ftp_password")));
-  preferences.ftp_user=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_ftp_user")));
-#endif
-
-#ifdef HAVE_REALLIB
-  preferences.real_address=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_address")));
-  preferences.real_user=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_user")));
-  preferences.real_password=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_password")));
-  preferences.real_filename=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_filename")));
-  preferences.real_title=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_title")));
-  preferences.real_author=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_author")));
-  preferences.real_copyright=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_copyright")));
-#endif
-
-  preferences.op_timeout = gtk_spin_button_get_value_as_float(GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(preferences_window),
-											    "prefs_op_timeout_scale")));
-  preferences.auto_update_frequency = gtk_spin_button_get_value_as_float(GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(preferences_window),
-												       "prefs_update_scale")));
-  preferences.display_period = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(preferences_window),
-											      "prefs_display_period")));
-  preferences.save_period = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(preferences_window),
-											   "prefs_save_period")));
-  preferences.ftp_period = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(preferences_window),
-											  "prefs_ftp_period")));
-  preferences.real_port = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(preferences_window),
-											 "prefs_real_port")));
-
-  WriteConfigFile();
-}
-
-
-void
-on_prefs_close_button_clicked          (GtkButton       *button,
-                                        gpointer         user_data)
-{
-  gtk_widget_hide(preferences_window);
-}
-
-void
-on_prefs_update_value_changed( GtkAdjustment    *adj,
-			       gpointer         user_data)
-{
-  preferences.auto_update_frequency=adj->value;
-}
-
-
-void
-on_prefs_timeout_value_changed( GtkAdjustment    *adj,
-			       gpointer         user_data)
-{
-  preferences.op_timeout=adj->value;
-}
 
 void
 on_service_iso_toggled                 (GtkToggleButton *togglebutton,
@@ -1004,100 +933,6 @@ on_service_real_toggled                (GtkToggleButton *togglebutton,
 
 }
 
-
-void
-on_prefs_save_seq_toggled              (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-  if (togglebutton->active)
-    preferences.save_scratch=SAVE_SCRATCH_SEQUENTIAL;
-  UpdatePrefsSaveFrame();
-}
-
-
-void
-on_prefs_save_scratch_toggled          (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-  if (togglebutton->active)
-    preferences.save_scratch=SAVE_SCRATCH_OVERWRITE;
-  UpdatePrefsSaveFrame();
-}
-
-
-void
-on_prefs_save_video_toggled            (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-  if (togglebutton->active)
-    preferences.save_scratch=SAVE_SCRATCH_SEQUENCE;
-  UpdatePrefsSaveFrame();
-}
-
-void
-on_prefs_save_convert_toggled          (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-  if (togglebutton->active)
-    preferences.save_convert=SAVE_CONVERT_ON;
-  UpdatePrefsSaveFrame();
-}
-
-
-void
-on_prefs_save_noconvert_toggled        (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-  if (togglebutton->active)
-    preferences.save_convert=SAVE_CONVERT_OFF;
-  UpdatePrefsSaveFrame();
-}
-
-
-void
-on_prefs_save_choose_clicked           (GtkButton       *button,
-                                        gpointer         user_data)
-{
-  GtkWidget *dialog = create_get_filename_dialog();
-  gtk_widget_show(dialog);
-}
-
-void
-on_get_filename_dialog_ok_clicked      (GtkButton       *button,
-                                        gpointer         user_data)
-{
-  GtkWidget *dialog = gtk_widget_get_toplevel(GTK_WIDGET(button));
-  gchar *filename = gtk_file_selection_get_filename(GTK_FILE_SELECTION(dialog));
-  gtk_entry_set_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_save_filename")),filename);
-  gtk_widget_destroy(dialog);
-}
-
-
-void
-on_get_filename_dialog_cancel_clicked  (GtkButton       *button,
-                                        gpointer         user_data)
-{
-    GtkWidget *dialog = gtk_widget_get_toplevel(GTK_WIDGET(button));
-    gtk_widget_destroy(dialog);
-}
-
-
-void
-on_prefs_ftp_seq_toggled               (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-  if (togglebutton->active)
-    preferences.ftp_scratch=FTP_SCRATCH_SEQUENTIAL;
-}
-
-
-void
-on_prefs_ftp_scratch_toggled           (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-  if (togglebutton->active)
-    preferences.ftp_scratch=FTP_SCRATCH_OVERWRITE;
-}
 
 
 void
@@ -1202,11 +1037,352 @@ on_range_menu_activate             (GtkMenuItem     *menuitem,
     }
 }
 
+
+void
+on_key_bindings_activate               (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+  help_window = create_help_window();
+  BuildHelpWindow();
+  gtk_widget_show(help_window);
+}
+
+/******************************
+ *       PREFERENCES          *
+ ******************************/
+
+void
+on_camera_name_text_changed            (GtkEditable     *editable,
+                                        gpointer         user_data)
+{
+  char tmp[STRING_SIZE];
+  const char *camera_name_str =  "coriander/camera_names/";
+
+  preferences.camera_names[current_camera]=gtk_entry_get_text(GTK_ENTRY(lookup_widget(commander_window, "camera_name_text")));
+  sprintf(tmp,"%s%llx",camera_name_str, camera->euid_64);
+  
+  gnome_config_set_string(tmp,preferences.camera_names[current_camera]);
+  gnome_config_sync();
+  BuildCameraMenu();
+}
+
+void
+on_prefs_op_timeout_scale_changed      (GtkEditable     *editable,
+                                        gpointer         user_data)
+{
+  preferences.op_timeout=gtk_spin_button_get_value_as_float(GTK_SPIN_BUTTON(lookup_widget(preferences_window,"prefs_op_timeout_scale")));
+  gnome_config_set_float("coriander/global/one_push_timeout",preferences.op_timeout);
+  gnome_config_sync();
+}
+
+
+void
+on_prefs_update_scale_changed          (GtkEditable     *editable,
+                                        gpointer         user_data)
+{
+  preferences.auto_update_frequency=gtk_spin_button_get_value_as_float(GTK_SPIN_BUTTON(lookup_widget(preferences_window,"prefs_update_scale")));
+  gnome_config_set_float("coriander/global/auto_update_frequency",preferences.auto_update_frequency);
+  gnome_config_sync();
+}
+
+void
+on_prefs_display_period_changed        (GtkEditable     *editable,
+                                        gpointer         user_data)
+{
+  preferences.display_period=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(preferences_window,"prefs_display_period")));
+  gnome_config_set_int("coriander/display/period",preferences.display_period);
+  gnome_config_sync();
+}
+
+void
+on_prefs_save_period_changed           (GtkEditable     *editable,
+                                        gpointer         user_data)
+{
+  preferences.save_period=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(preferences_window,"prefs_save_period")));
+  gnome_config_set_int("coriander/save/period",preferences.save_period);
+  gnome_config_sync();
+}
+
+
+void
+on_prefs_ftp_period_changed            (GtkEditable     *editable,
+                                        gpointer         user_data)
+{
+  preferences.ftp_period=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(preferences_window,"prefs_ftp_period")));
+  gnome_config_set_int("coriander/ftp/period",preferences.ftp_period);
+  gnome_config_sync();
+}
+
+
+void
+on_prefs_ftp_address_changed           (GtkEditable     *editable,
+                                        gpointer         user_data)
+{
+  preferences.ftp_address=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window,"prefs_ftp_address")));
+  gnome_config_set_string("coriander/ftp/address",preferences.ftp_address);
+  gnome_config_sync();
+}
+
+
+void
+on_prefs_ftp_path_changed              (GtkEditable     *editable,
+                                        gpointer         user_data)
+{
+  preferences.ftp_path=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window,"prefs_ftp_path")));
+  gnome_config_set_string("coriander/ftp/path",preferences.ftp_path);
+  gnome_config_sync();
+
+}
+
+
+void
+on_prefs_ftp_user_changed              (GtkEditable     *editable,
+                                        gpointer         user_data)
+{
+  preferences.ftp_user=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window,"prefs_ftp_user")));
+  gnome_config_set_string("coriander/ftp/user",preferences.ftp_user);
+  gnome_config_sync();
+
+}
+
+
+void
+on_prefs_ftp_password_changed          (GtkEditable     *editable,
+                                        gpointer         user_data)
+{
+  preferences.ftp_password=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window,"prefs_ftp_password")));
+  gnome_config_set_string("coriander/ftp/password",preferences.ftp_password);
+  gnome_config_sync();
+}
+
+
+void
+on_prefs_ftp_filename_changed          (GtkEditable     *editable,
+                                        gpointer         user_data)
+{
+  preferences.ftp_filename=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window,"prefs_ftp_filename")));
+  gnome_config_set_string("coriander/ftp/filename",preferences.ftp_filename);
+  gnome_config_sync();
+}
+
+
+void
+on_prefs_real_address_changed          (GtkEditable     *editable,
+                                        gpointer         user_data)
+{
+  preferences.real_address=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window,"prefs_real_address")));
+  gnome_config_set_string("coriander/real/address",preferences.real_address);
+  gnome_config_sync();
+}
+
+void
+on_prefs_save_filename_changed         (GtkEditable     *editable,
+                                        gpointer         user_data)
+{
+  preferences.save_filename=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window,"prefs_save_filename")));
+  gnome_config_set_string("coriander/save/filename",preferences.save_filename);
+  gnome_config_sync();
+}
+
+
+
+void
+on_prefs_real_filename_changed         (GtkEditable     *editable,
+                                        gpointer         user_data)
+{
+  preferences.real_filename=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window,"prefs_real_filename")));
+  gnome_config_set_string("coriander/real/filename",preferences.real_filename);
+  gnome_config_sync();
+}
+
+
+void
+on_prefs_real_user_changed             (GtkEditable     *editable,
+                                        gpointer         user_data)
+{
+  preferences.real_user=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window,"prefs_real_user")));
+  gnome_config_set_string("coriander/real/user",preferences.real_user);
+  gnome_config_sync();
+}
+
+
+void
+on_prefs_real_password_changed         (GtkEditable     *editable,
+                                        gpointer         user_data)
+{
+  preferences.real_password=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window,"prefs_real_password")));
+  gnome_config_set_string("coriander/real/password",preferences.real_password);
+  gnome_config_sync();
+}
+
+
+void
+on_prefs_real_port_changed             (GtkEditable     *editable,
+                                        gpointer         user_data)
+{
+  preferences.real_port=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(preferences_window,"prefs_real_port")));
+  gnome_config_set_int("coriander/real/port",preferences.real_port);
+  gnome_config_sync();
+
+}
+
+
+void
+on_prefs_real_title_changed            (GtkEditable     *editable,
+                                        gpointer         user_data)
+{
+  preferences.real_title=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window,"prefs_real_title")));
+  gnome_config_set_string("coriander/real/title",preferences.real_title);
+  gnome_config_sync();
+
+}
+
+
+void
+on_prefs_real_author_changed           (GtkEditable     *editable,
+                                        gpointer         user_data)
+{
+  preferences.real_author=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window,"prefs_real_author")));
+  gnome_config_set_string("coriander/real/author",preferences.real_author);
+  gnome_config_sync();
+
+}
+
+
+void
+on_prefs_real_copyright_changed        (GtkEditable     *editable,
+                                        gpointer         user_data)
+{
+  preferences.real_copyright=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window,"prefs_real_copyright")));
+  gnome_config_set_string("coriander/real/copyright",preferences.real_copyright);
+  gnome_config_sync();
+
+}
+
+void
+on_prefs_update_power_toggled          (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  preferences.auto_update=togglebutton->active;
+  gnome_config_set_int("coriander/global/auto_update",preferences.auto_update);
+  gnome_config_sync();
+}
+
+void
+on_prefs_save_seq_toggled              (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  if (togglebutton->active)
+    preferences.save_scratch=SAVE_SCRATCH_SEQUENTIAL;
+  gnome_config_set_int("coriander/save/scratch",preferences.save_scratch);
+  gnome_config_sync();
+  UpdatePrefsSaveFrame();
+}
+
+
+void
+on_prefs_save_scratch_toggled          (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  if (togglebutton->active)
+    preferences.save_scratch=SAVE_SCRATCH_OVERWRITE;
+  gnome_config_set_int("coriander/save/scratch",preferences.save_scratch);
+  gnome_config_sync();
+  UpdatePrefsSaveFrame();
+}
+
+
+void
+on_prefs_save_video_toggled            (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  if (togglebutton->active)
+    preferences.save_scratch=SAVE_SCRATCH_SEQUENCE;
+  gnome_config_set_int("coriander/save/scratch",preferences.save_scratch);
+  gnome_config_sync();
+  UpdatePrefsSaveFrame();
+}
+
+void
+on_prefs_save_convert_toggled          (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  if (togglebutton->active)
+    preferences.save_convert=SAVE_CONVERT_ON;
+  gnome_config_set_int("coriander/save/convert",preferences.save_convert);
+  gnome_config_sync();
+  UpdatePrefsSaveFrame();
+}
+
+
+void
+on_prefs_save_noconvert_toggled        (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  if (togglebutton->active)
+    preferences.save_convert=SAVE_CONVERT_OFF;
+  gnome_config_set_int("coriander/save/convert",preferences.save_convert);
+  gnome_config_sync();
+  UpdatePrefsSaveFrame();
+}
+
+
+void
+on_prefs_save_choose_clicked           (GtkButton       *button,
+                                        gpointer         user_data)
+{
+  GtkWidget *dialog = create_get_filename_dialog();
+  gtk_widget_show(dialog);
+}
+
+void
+on_get_filename_dialog_ok_clicked      (GtkButton       *button,
+                                        gpointer         user_data)
+{
+  GtkWidget *dialog = gtk_widget_get_toplevel(GTK_WIDGET(button));
+  gchar *filename = gtk_file_selection_get_filename(GTK_FILE_SELECTION(dialog));
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_save_filename")),filename);
+  gtk_widget_destroy(dialog);
+}
+
+
+void
+on_get_filename_dialog_cancel_clicked  (GtkButton       *button,
+                                        gpointer         user_data)
+{
+    GtkWidget *dialog = gtk_widget_get_toplevel(GTK_WIDGET(button));
+    gtk_widget_destroy(dialog);
+}
+
+
+void
+on_prefs_ftp_seq_toggled               (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  if (togglebutton->active)
+    preferences.ftp_scratch=FTP_SCRATCH_SEQUENTIAL;
+  gnome_config_set_int("coriander/ftp/scratch",preferences.ftp_scratch);
+  gnome_config_sync();
+}
+
+
+void
+on_prefs_ftp_scratch_toggled           (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  if (togglebutton->active)
+    preferences.ftp_scratch=FTP_SCRATCH_OVERWRITE;
+  gnome_config_set_int("coriander/ftp/scratch",preferences.ftp_scratch);
+  gnome_config_sync();
+}
+
 void 
 on_prefs_real_quality_activate         (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
   preferences.real_quality=(int)user_data;
+  gnome_config_set_int("coriander/real/quality",preferences.real_quality);
+  gnome_config_sync();
 }
 
 void
@@ -1214,6 +1390,8 @@ on_prefs_real_compatibility_activate   (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
   preferences.real_compatibility=(int)user_data;
+  gnome_config_set_int("coriander/real/compatibility",preferences.real_compatibility);
+  gnome_config_sync();
 }
 
 void
@@ -1221,6 +1399,8 @@ on_prefs_receive_method_activate      (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
   preferences.receive_method=(int)user_data;
+  gnome_config_set_int("coriander/receive/method",preferences.receive_method);
+  gnome_config_sync();
   UpdatePrefsReceiveFrame();
 }
 
@@ -1229,6 +1409,8 @@ on_prefs_display_keep_ratio_toggled    (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
   preferences.display_keep_ratio=togglebutton->active;
+  gnome_config_set_int("coriander/display/keep_ratio",preferences.display_keep_ratio);
+  gnome_config_sync();
 }
 
 
@@ -1240,6 +1422,8 @@ on_prefs_real_recordable_toggled       (GtkToggleButton *togglebutton,
     preferences.real_recordable=1;
   else
     preferences.real_recordable=0;
+  gnome_config_set_int("coriander/real/recordable",preferences.real_recordable);
+  gnome_config_sync();
 }
 
 
@@ -1251,6 +1435,8 @@ on_prefs_real_audience_28k_toggled     (GtkToggleButton *togglebutton,
     preferences.real_audience=(preferences.real_audience | REAL_AUDIENCE_28_MODEM);
   else
     preferences.real_audience=(preferences.real_audience & (~REAL_AUDIENCE_28_MODEM));
+  gnome_config_set_int("coriander/real/audience",preferences.real_audience);
+  gnome_config_sync();
   //fprintf(stderr,"audience flags: 0x%x\n",preferences.real_audience);
 }
 
@@ -1263,6 +1449,8 @@ on_prefs_real_audience_56k_toggled     (GtkToggleButton *togglebutton,
     preferences.real_audience=(preferences.real_audience | REAL_AUDIENCE_56_MODEM);
   else
     preferences.real_audience=(preferences.real_audience & (~REAL_AUDIENCE_56_MODEM));
+  gnome_config_set_int("coriander/real/audience",preferences.real_audience);
+  gnome_config_sync();
   //fprintf(stderr,"audience flags: 0x%x\n",preferences.real_audience);
 }
 
@@ -1275,6 +1463,8 @@ on_prefs_real_audience_sisdn_toggled   (GtkToggleButton *togglebutton,
     preferences.real_audience=(preferences.real_audience | REAL_AUDIENCE_SINGLE_ISDN);
   else
     preferences.real_audience=(preferences.real_audience & (~REAL_AUDIENCE_SINGLE_ISDN));
+  gnome_config_set_int("coriander/real/audience",preferences.real_audience);
+  gnome_config_sync();
   //fprintf(stderr,"audience flags: 0x%x\n",preferences.real_audience);
 }
 
@@ -1287,6 +1477,8 @@ on_prefs_real_audience_disdn_toggled   (GtkToggleButton *togglebutton,
     preferences.real_audience=(preferences.real_audience | REAL_AUDIENCE_DUAL_ISDN);
   else
     preferences.real_audience=(preferences.real_audience & (~REAL_AUDIENCE_DUAL_ISDN));
+  gnome_config_set_int("coriander/real/audience",preferences.real_audience);
+  gnome_config_sync();
   //fprintf(stderr,"audience flags: 0x%x\n",preferences.real_audience);
 }
 
@@ -1299,6 +1491,8 @@ on_prefs_real_audience_lan_toggled     (GtkToggleButton *togglebutton,
     preferences.real_audience=(preferences.real_audience | REAL_AUDIENCE_LAN_HIGH);
   else
     preferences.real_audience=(preferences.real_audience & (~REAL_AUDIENCE_LAN_HIGH));
+  gnome_config_set_int("coriander/real/audience",preferences.real_audience);
+  gnome_config_sync();
   //fprintf(stderr,"audience flags: 0x%x\n",preferences.real_audience);
 }
 
@@ -1311,6 +1505,8 @@ on_prefs_real_audience_dsl256_toggled  (GtkToggleButton *togglebutton,
     preferences.real_audience=(preferences.real_audience | REAL_AUDIENCE_256_DSL_CABLE);
   else
     preferences.real_audience=(preferences.real_audience & (~REAL_AUDIENCE_256_DSL_CABLE));
+  gnome_config_set_int("coriander/real/audience",preferences.real_audience);
+  gnome_config_sync();
   //fprintf(stderr,"audience flags: 0x%x\n",preferences.real_audience);
 }
 
@@ -1323,6 +1519,8 @@ on_prefs_real_audience_dsl384_toggled  (GtkToggleButton *togglebutton,
     preferences.real_audience=(preferences.real_audience | REAL_AUDIENCE_384_DSL_CABLE);
   else
     preferences.real_audience=(preferences.real_audience & (~REAL_AUDIENCE_384_DSL_CABLE));
+  gnome_config_set_int("coriander/real/audience",preferences.real_audience);
+  gnome_config_sync();
   //fprintf(stderr,"audience flags: 0x%x\n",preferences.real_audience);
 }
 
@@ -1335,31 +1533,18 @@ on_prefs_real_audience_dsl512_toggled  (GtkToggleButton *togglebutton,
     preferences.real_audience=(preferences.real_audience | REAL_AUDIENCE_512_DSL_CABLE);
   else
     preferences.real_audience=(preferences.real_audience & (~REAL_AUDIENCE_512_DSL_CABLE));
+  gnome_config_set_int("coriander/real/audience",preferences.real_audience);
+  gnome_config_sync();
   //fprintf(stderr,"audience flags: 0x%x\n",preferences.real_audience);
 }
 
-
 void
-on_key_bindings_activate               (GtkMenuItem     *menuitem,
+on_prefs_video1394_device_changed      (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  help_window = create_help_window();
-  BuildHelpWindow();
-  gtk_widget_show(help_window);
-}
-
-
-void
-on_camera_name_text_changed            (GtkEditable     *editable,
-                                        gpointer         user_data)
-{
-  char tmp[STRING_SIZE];
-  const char *camera_name_str =  "coriander/camera_names/";
-
-  preferences.camera_names[current_camera]=gtk_entry_get_text(GTK_ENTRY(lookup_widget(commander_window, "camera_name_text")));
-  sprintf(tmp,"%s%llx",camera_name_str, camera->euid_64);
-  gnome_config_set_string(tmp,preferences.camera_names[current_camera]);
+  preferences.video1394_device=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window,"prefs_video1394_device")));
+  gnome_config_set_string("coriander/receive/video1394_device",preferences.video1394_device);
   gnome_config_sync();
-  
+
 }
 
