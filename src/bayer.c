@@ -47,8 +47,8 @@
  *                                                            *
  * (in % of processor use)                                    *
  * Test conditions: - Point Grey Dragonfly, 640x480, 30fps    *
- *                  - only service running is RECEIVE         *
- * 		 - Dell Precision 370, P4, 2.8GHz, 1GB RAM    *
+ *                  - the only service running is RECEIVE     *
+ * 		    - Dell Precision 370, P4, 2.8GHz, 1GB RAM *
  *                                                            *
  * type		  std	  +march=i686/mcpu=i686               *
  * ---------------------------------------------              *
