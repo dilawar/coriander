@@ -179,6 +179,7 @@ FtpThread(void* arg)
 	  pthread_mutex_lock(&ftp_service->mutex_data);
 	  if(RollBuffers(ftp_service)) // have buffers been rolled?
 	    {
+	      pthread_mutex_unlock(&ftp_service->mutex_data);
 	      convert_to_rgb(ftp_service->current_buffer, info->ftp_buffer,
 			     ftp_service->mode, ftp_service->width,
 			     ftp_service->height, ftp_service->bytes_per_frame);
@@ -213,7 +214,8 @@ FtpThread(void* arg)
 	      if (im != NULL)
 		gdk_imlib_kill_image(im);
 	    }
-	  pthread_mutex_unlock(&ftp_service->mutex_data);
+	  else
+	    pthread_mutex_unlock(&ftp_service->mutex_data);
 	}
     }
 }
