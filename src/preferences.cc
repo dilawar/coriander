@@ -72,7 +72,7 @@ LoadConfigFile(void)
   g_free(preferences.real_password);
   preferences.real_password = gnome_config_get_string("coriander/real/password=don'tyouwish");
   g_free(preferences.real_filename);
-  preferences.real_filename = gnome_config_get_string("coriander/real/filenamehelloworld.rm");
+  preferences.real_filename = gnome_config_get_string("coriander/real/filename=helloworld.rm");
   preferences.real_port = gnome_config_get_int("coriander/real/port=4040");
   g_free(preferences.real_title);
   preferences.real_title = gnome_config_get_string("coriander/real/title=my stream");
