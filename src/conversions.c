@@ -185,9 +185,10 @@ y162uyvy (unsigned char *src, unsigned char *dest, int NumPixels, int bits) {
   register int i = (NumPixels << 1)-1;
   register int j = (NumPixels << 1)-1;
   register int y0, y1;
-  //fprintf(stderr,"bpp:%d\n",bits);
+  //fprintf(stderr,"Conv: Pix: %d Bpp: %d\n",NumPixels, bits);
   while (i > 0)
     {
+      //fprintf(stderr,"%d ",i);
       y1 = src[i--];
       y1 = (y1 + (((int)src[i--])<<8))>>(bits-8);
       y0 = src[i--];
@@ -795,7 +796,8 @@ BayerDownsample(unsigned char *src, unsigned char *dest, int sx, int sy, bayer_p
   register int i,j;
   int tmp;
 
-  // sx and sy should be even
+  sx*=2;
+  sy*=2;
 
   switch (type)
     {
@@ -856,13 +858,14 @@ BayerDownsample(unsigned char *src, unsigned char *dest, int sx, int sy, bayer_p
 void
 StereoDecode (unsigned char *src, unsigned char *dest, int NumPixels)
 {
-  register int i = (NumPixels<<1)-1;
-  register int j = NumPixels-1;
-  register int k = (NumPixels<<1)-1;
-
+  register int i = NumPixels-1;
+  register int j = (NumPixels>>1)-1;
+  register int k = NumPixels-1;
+  //fprintf(stderr,"NumPixels: %d\n",NumPixels);
   while (i > 0)
     {
       dest[k--] = src[i--];
       dest[j--] = src[i--];
     }
 }
+

@@ -241,83 +241,30 @@ FreeChain(chain_t* chain)
 void
 convert_to_rgb(buffer_t *buffer, unsigned char *dest)
 {
-  if (buffer->bayer==NO_BAYER_DECODING)
+  switch(buffer->buffer_color_mode)
     {
-      switch(buffer->mode)
-	{
-	case MODE_160x120_YUV444:
-	  uyv2rgb(buffer->image,dest,buffer->width*buffer->height);
-	  break;
-	case MODE_320x240_YUV422:
-	case MODE_640x480_YUV422:
-	case MODE_800x600_YUV422:
-	case MODE_1024x768_YUV422:
-	case MODE_1280x960_YUV422:
-	case MODE_1600x1200_YUV422:
-	  uyvy2rgb(buffer->image,dest,buffer->width*buffer->height);
-	  break;
-	case MODE_640x480_YUV411:
-	  uyyvyy2rgb(buffer->image,dest,buffer->width*buffer->height);
-	  break;
-	case MODE_640x480_RGB:
-	case MODE_800x600_RGB:
-	case MODE_1024x768_RGB:
-	case MODE_1280x960_RGB:
-	case MODE_1600x1200_RGB:
-	  memcpy(dest,buffer->image,3*buffer->width*buffer->height);
-	  break;
-	case MODE_640x480_MONO:
-	case MODE_800x600_MONO:
-	case MODE_1024x768_MONO:
-	case MODE_1280x960_MONO:
-	case MODE_1600x1200_MONO:
-	  y2rgb(buffer->image,dest,buffer->width*buffer->height);
-	  break;
-	case MODE_640x480_MONO16:
-	case MODE_800x600_MONO16:
-	case MODE_1024x768_MONO16:
-	case MODE_1280x960_MONO16:
-	case MODE_1600x1200_MONO16:
-	  y162rgb(buffer->image,dest,buffer->width*buffer->height,buffer->bpp);
-	  break;
-	case MODE_FORMAT7_0:
-	case MODE_FORMAT7_1:
-	case MODE_FORMAT7_2:
-	case MODE_FORMAT7_3:
-	case MODE_FORMAT7_4:
-	case MODE_FORMAT7_5:
-	case MODE_FORMAT7_6:
-	case MODE_FORMAT7_7:
-	  switch (buffer->format7_color_mode)
-	    {
-	    case COLOR_FORMAT7_MONO8:
-	      y2rgb(buffer->image,dest,buffer->width*buffer->height);
-	      break;
-	    case COLOR_FORMAT7_YUV411:
-	      uyyvyy2rgb(buffer->image,dest,buffer->width*buffer->height);
-	      break;
-	    case COLOR_FORMAT7_YUV422:
-	      uyvy2rgb(buffer->image,dest,buffer->width*buffer->height);
-	      break;
-	    case COLOR_FORMAT7_YUV444:
-	      uyv2rgb(buffer->image,dest,buffer->width*buffer->height);
-	      break;
-	    case COLOR_FORMAT7_RGB8:
-	      memcpy(dest,buffer->image,3*buffer->width*buffer->height);
-	      break;
-	    case COLOR_FORMAT7_MONO16:
-	      y162rgb(buffer->image,dest,buffer->width*buffer->height,buffer->bpp);
-	      break;
-	    case COLOR_FORMAT7_RGB16:
-	      rgb482rgb(buffer->image,dest,buffer->width*buffer->height);
-	      break;
-	    }
-	  break;
-	}
+    case COLOR_FORMAT7_MONO8:
+      y2rgb(buffer->image,dest,buffer->width*buffer->height);
+      break;
+    case COLOR_FORMAT7_YUV411:
+      uyyvyy2rgb(buffer->image,dest,buffer->width*buffer->height);
+      break;
+    case COLOR_FORMAT7_YUV422:
+      uyvy2rgb(buffer->image,dest,buffer->width*buffer->height);
+      break;
+    case COLOR_FORMAT7_YUV444:
+      uyv2rgb(buffer->image,dest,buffer->width*buffer->height);
+      break;
+    case COLOR_FORMAT7_RGB8:
+      memcpy(dest,buffer->image,3*buffer->width*buffer->height);
+      break;
+    case COLOR_FORMAT7_MONO16:
+      y162rgb(buffer->image,dest,buffer->width*buffer->height,buffer->bpp);
+      break;
+    case COLOR_FORMAT7_RGB16:
+      rgb482rgb(buffer->image,dest,buffer->width*buffer->height);
+      break;
     }
-  else // we force RGB mode, thus use memcpy
-    memcpy(dest,buffer->image,3*buffer->width*buffer->height);
-    
 }
 
 void
@@ -372,5 +319,6 @@ InitBuffer(buffer_t *buffer)
   buffer->stereo_decoding=-1;
   buffer->format=-1;
   buffer->format7_color_mode=-1;
+  buffer->buffer_color_mode=-1;
   buffer->image=NULL;
 }

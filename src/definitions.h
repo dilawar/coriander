@@ -98,10 +98,8 @@ typedef struct _Format7Info
 
 typedef struct _UIInfo
 {
+  pthread_mutex_t mutex;
   int want_to_display;
-  int all_auto;
-  int all_man;
-  int all_lock;
   int bayer;
   int bayer_pattern;
   int stereo;

@@ -55,6 +55,8 @@ typedef struct _Buffer_T
   stereo_decoding_t stereo_decoding;
   int format7_color_mode;
 
+  int buffer_color_mode;
+
   // information about the time the frame was captured by the ISO thread.
   struct tm captime;
   int captime_millisec;

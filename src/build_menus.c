@@ -630,7 +630,9 @@ BuildBayerMenu(void)
   gtk_option_menu_set_menu (GTK_OPTION_MENU (new_option_menu), new_menu);
 
   // menu history
+  pthread_mutex_lock(&uiinfo->mutex);
   gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(commander_window, "bayer_menu")),uiinfo->bayer);
+  pthread_mutex_unlock(&uiinfo->mutex);
       
 }
 
@@ -689,7 +691,9 @@ BuildBayerPatternMenu(void)
   gtk_option_menu_set_menu (GTK_OPTION_MENU (new_option_menu), new_menu);
 
   // menu history
+  pthread_mutex_lock(&uiinfo->mutex);
   gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(commander_window, "pattern_menu")),
 			      uiinfo->bayer_pattern);
+  pthread_mutex_unlock(&uiinfo->mutex);
       
 }

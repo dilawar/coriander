@@ -404,8 +404,10 @@ BuildPrefsReceiveFrame(void)
 void
 BuildOptionFrame(void)
 {
+  pthread_mutex_lock(&uiinfo->mutex);
   gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(commander_window,
 							  "mono16_bpp"),uiinfo->bpp);
+  pthread_mutex_unlock(&uiinfo->mutex);
   BuildBayerMenu();
   BuildBayerPatternMenu();
 }

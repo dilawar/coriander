@@ -192,7 +192,9 @@ DisplayThread(void* arg)
 		  skip_counter=0;
 #ifdef HAVE_SDLLIB
 		  if (SDL_LockYUVOverlay(info->SDL_overlay) == 0) {
+		    //fprintf(stderr,"Converting... ");
 		    convert_to_yuv_for_SDL(display_service->current_buffer, info->SDL_overlay->pixels[0]);
+		    //fprintf(stderr,"Done\n");
 		    SDLDisplayArea(display_service);
 		    SDL_UnlockYUVOverlay(info->SDL_overlay);
 		    SDL_DisplayYUVOverlay(info->SDL_overlay, &info->SDL_videoRect);
@@ -358,86 +360,32 @@ SDLInit(chain_t *display_service)
 void
 convert_to_yuv_for_SDL(buffer_t *buffer, unsigned char *dest)
 {
-
-  if (buffer->bayer==NO_BAYER_DECODING)
+  switch(buffer->buffer_color_mode)
     {
-      switch(buffer->mode)
-	{
-	case MODE_160x120_YUV444:
-	  uyv2uyvy(buffer->image,dest,buffer->width*buffer->height);
-	  break;
-	case MODE_320x240_YUV422:
-	case MODE_640x480_YUV422:
-	case MODE_800x600_YUV422:
-	case MODE_1024x768_YUV422:
-	case MODE_1280x960_YUV422:
-	case MODE_1600x1200_YUV422:
-	  yuyv2uyvy(buffer->image,dest,buffer->width*buffer->height);
-	  break;
-	case MODE_640x480_YUV411:
-	  uyyvyy2uyvy(buffer->image,dest,buffer->width*buffer->height);
-	  break;
-	case MODE_640x480_RGB:
-	case MODE_800x600_RGB:
-	case MODE_1024x768_RGB:
-	case MODE_1280x960_RGB:
-	case MODE_1600x1200_RGB:
-	  rgb2uyvy(buffer->image,dest,buffer->width*buffer->height);
-	  break;
-	case MODE_640x480_MONO16:
-	case MODE_800x600_MONO16:
-	case MODE_1024x768_MONO16:
-	case MODE_1280x960_MONO16:
-	case MODE_1600x1200_MONO16:
-	  y162uyvy(buffer->image,dest,buffer->width*buffer->height, buffer->bpp);
-	  break;
-	case MODE_640x480_MONO:
-	case MODE_800x600_MONO:
-	case MODE_1024x768_MONO:
-	case MODE_1280x960_MONO:
-	case MODE_1600x1200_MONO:
-	  y2uyvy(buffer->image,dest,buffer->width*buffer->height);
-	  break;
-	case MODE_FORMAT7_0:
-	case MODE_FORMAT7_1:
-	case MODE_FORMAT7_2:
-	case MODE_FORMAT7_3:
-	case MODE_FORMAT7_4:
-	case MODE_FORMAT7_5:
-	case MODE_FORMAT7_6:
-	case MODE_FORMAT7_7:
-	  switch (buffer->format7_color_mode)
-	    {
-	    case COLOR_FORMAT7_MONO8:
-	      y2uyvy(buffer->image,dest,buffer->width*buffer->height);
-	      break;
-	    case COLOR_FORMAT7_YUV411:
-	      uyyvyy2uyvy(buffer->image,dest,buffer->width*buffer->height);
-	      break;
-	    case COLOR_FORMAT7_YUV422:
-	      yuyv2uyvy(buffer->image,dest,buffer->width*buffer->height);
-	      break;
-	    case COLOR_FORMAT7_YUV444:
-	      uyv2uyvy(buffer->image,dest,buffer->width*buffer->height);
-	      break;
-	    case COLOR_FORMAT7_RGB8:
-	      rgb2uyvy(buffer->image,dest,buffer->width*buffer->height);
-	      break;
-	    case COLOR_FORMAT7_MONO16:
-	      y162uyvy(buffer->image,dest,buffer->width*buffer->height,buffer->bpp);
-	      break;
-	    case COLOR_FORMAT7_RGB16:
-	      rgb482uyvy(buffer->image,dest,buffer->width*buffer->height);
-	      break;
-	    default:
-	      fprintf(stderr,"Unknown color format: %d\n",buffer->format7_color_mode);
-	    }
-	  break;
-	}
+    case COLOR_FORMAT7_MONO8:
+      y2uyvy(buffer->image,dest,buffer->width*buffer->height);
+      break;
+    case COLOR_FORMAT7_YUV411:
+      uyyvyy2uyvy(buffer->image,dest,buffer->width*buffer->height);
+      break;
+    case COLOR_FORMAT7_YUV422:
+      memcpy(dest,buffer->image,buffer->width*buffer->height*2);
+      break;
+    case COLOR_FORMAT7_YUV444:
+      uyv2uyvy(buffer->image,dest,buffer->width*buffer->height);
+      break;
+    case COLOR_FORMAT7_RGB8:
+      rgb2uyvy(buffer->image,dest,buffer->width*buffer->height);
+      break;
+    case COLOR_FORMAT7_MONO16:
+      y162uyvy(buffer->image,dest,buffer->width*buffer->height,buffer->bpp);
+      break;
+    case COLOR_FORMAT7_RGB16:
+      rgb482uyvy(buffer->image,dest,buffer->width*buffer->height);
+      break;
     }
-  else // we force RGB mode
-    rgb2uyvy(buffer->image,dest,buffer->width*buffer->height);
 }
+
 
 void
 SDLDisplayArea(chain_t *display_service)
@@ -512,6 +460,7 @@ DisplayThreadCheckParams(chain_t *display_service)
   // copy harmless parameters anyway:
   display_service->local_param_copy.bpp=display_service->current_buffer->bpp;
   display_service->local_param_copy.bayer_pattern=display_service->current_buffer->bayer_pattern;
+  //fprintf(stderr,"Display size: %dx%d\n",display_service->current_buffer->width,display_service->current_buffer->height);
 
   // if some parameters changed, we need to re-allocate the local buffers and restart the display
   if ((display_service->current_buffer->width!=display_service->local_param_copy.width)||
@@ -538,6 +487,7 @@ DisplayThreadCheckParams(chain_t *display_service)
       if ((display_service->current_buffer->width!=display_service->local_param_copy.width)||
 	  (display_service->current_buffer->height!=display_service->local_param_copy.height)) {
 	size_change=1;
+	//fprintf(stderr,"Display size change: %d x %d\n",display_service->current_buffer->width,display_service->current_buffer->height);
       }
       else {
 	size_change=0;
@@ -559,9 +509,11 @@ DisplayThreadCheckParams(chain_t *display_service)
 	if (!first_time) {
 	  //fprintf(stderr,"Not the first time, kill current SDL\n");
 	  SDLQuit(display_service);
+	  //usleep(500000);
 	}
 	//fprintf(stderr,"Init SDL\n");
 	SDLInit(display_service);
+	//usleep(500000);
       }
     }
 

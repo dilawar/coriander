@@ -2,6 +2,12 @@ Coriander, (c) 2000-2002 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes in version 0.28
 
+   March 6, 2003, by Damien Douxchamps
+   - image color format is now coded in the iso thread with F7 color codes.
+     It is no more required to check format/mode to have color info in
+     following threads.
+   - big buffer structure cleanup. Hopefuly this now works 100%
+	
    March 4, 2003, by Damien Douxchamps
    - only restart SDL if display size changes
    - only re-allocated thread-specific buffers if their size change.

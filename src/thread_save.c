@@ -222,10 +222,16 @@ SaveThread(void* arg)
 		      {
 		      case SAVE_SCRATCH_OVERWRITE:
 			sprintf(filename_out, "%s%s", info->filename,info->filename_ext);
+			fd=fopen(filename_out,"w");
+			if (fd==NULL)
+			  MainError("Can't open file for saving");
 			break;
 		      case SAVE_SCRATCH_SEQUENTIAL:
 			sprintf(filename_out, "%s-%s%s", info->filename,
 				save_service->current_buffer->captime_string, info->filename_ext);
+			fd=fopen(filename_out,"w");
+			if (fd==NULL)
+			  MainError("Can't open file for saving");
 			break;
 		      default:
 			break;
@@ -383,6 +389,8 @@ SaveThreadCheckParams(chain_t *save_service)
 	}
 	info->save_buffer=(unsigned char*)malloc(save_service->current_buffer->width*save_service->current_buffer->height*3
 						 *sizeof(unsigned char));
+	if (info->save_buffer==NULL)
+	  fprintf(stderr,"Can't allocate buffer! Aiiieee!\n");
       }
     }
   

@@ -341,8 +341,10 @@ UpdateOptionFrame(void)
 {
   int cond16;
   int cond8;
+  pthread_mutex_lock(&uiinfo->mutex);
   gtk_widget_set_sensitive(lookup_widget(commander_window,"pattern_menu"),
 			   uiinfo->bayer!=NO_BAYER_DECODING);
+  pthread_mutex_unlock(&uiinfo->mutex);
   if (misc_info->format!=FORMAT_SCALABLE_IMAGE_SIZE)
     {
       cond8=((misc_info->mode==MODE_640x480_MONO)||
@@ -364,9 +366,11 @@ UpdateOptionFrame(void)
   gtk_widget_set_sensitive(lookup_widget(commander_window,"pattern_menu"),(cond8||cond16));
   gtk_widget_set_sensitive(lookup_widget(commander_window,"bayer_menu"),(cond8||cond16));
   gtk_widget_set_sensitive(lookup_widget(commander_window,"stereo_button"),cond16);
+  pthread_mutex_lock(&uiinfo->mutex);
   gtk_widget_set_sensitive(lookup_widget(commander_window,"mono16_bpp"),cond16&&
 			   (uiinfo->stereo==NO_STEREO_DECODING)&&(uiinfo->bayer==NO_BAYER_DECODING));
   gtk_widget_set_sensitive(lookup_widget(commander_window,"label114"),cond16&&
 			   (uiinfo->stereo==NO_STEREO_DECODING)&&(uiinfo->bayer==NO_BAYER_DECODING));
+  pthread_mutex_unlock(&uiinfo->mutex);
   
 }

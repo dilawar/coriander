@@ -51,7 +51,8 @@ typedef struct
   int temp_size;
   int temp_allocated;
 
-  int factor;
+  int orig_sizex;
+  int orig_sizey;
   int cond16bit;
 
   struct timeb rawtime;
@@ -75,5 +76,8 @@ IsoStopThread(void);
 
 void
 IsoThreadCheckParams(chain_t *iso_service);
+
+void
+SetColorMode(buffer_t *buffer);
 
 #endif

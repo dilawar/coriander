@@ -159,10 +159,12 @@ main (int argc, char *argv[])
 		    if (err<0) MainError("Could not get camera feature information!");
 		    GetFormat7Capabilities(cameras[index].handle, cameras[index].id, &format7_infos[index]);
 		    image_pipes[index]=NULL;
+		    pthread_mutex_lock(&uiinfos[index].mutex);
 		    uiinfos[index].want_to_display=0;
 		    uiinfos[index].bayer=NO_BAYER_DECODING;
 		    uiinfos[index].stereo=NO_STEREO_DECODING;
 		    uiinfos[index].bpp=8;
+		    pthread_mutex_unlock(&uiinfos[index].mutex);
 		    index++;
 		  }
 	    }

@@ -279,8 +279,14 @@ on_camera_select_activate              (GtkMenuItem     *menuitem,
   // set current camera pointers:
   SelectCamera((int)user_data);
 
-  if (uiinfo->want_to_display>0)
+  pthread_mutex_lock(&uiinfo->mutex);
+  if (uiinfo->want_to_display>0) {
+    pthread_mutex_unlock(&uiinfo->mutex);
     DisplayStartThread();
+  }
+  else {
+    pthread_mutex_unlock(&uiinfo->mutex);
+  }
 
   // redraw all:
   BuildAllWindows();
@@ -517,13 +523,17 @@ on_service_display_toggled             (GtkToggleButton *togglebutton,
 	{
 	  if (GetService(SERVICE_ISO,current_camera)==NULL)
 	    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"service_iso")), TRUE);
+	  pthread_mutex_lock(&uiinfo->mutex);
 	  uiinfo->want_to_display=1;
+	  pthread_mutex_unlock(&uiinfo->mutex);
 	  DisplayStartThread();
 	} 
       else
 	{
 	  DisplayStopThread(current_camera);
+	  pthread_mutex_lock(&uiinfo->mutex);
 	  uiinfo->want_to_display=0;
+	  pthread_mutex_unlock(&uiinfo->mutex);
 	} 
     }
 }
@@ -1216,7 +1226,9 @@ on_bayer_menu_activate           (GtkMenuItem     *menuitem,
   int tmp;
   tmp=(int)user_data;
   
+  pthread_mutex_lock(&uiinfo->mutex);
   uiinfo->bayer=tmp;
+  pthread_mutex_unlock(&uiinfo->mutex);
   UpdateOptionFrame();
 }
 
@@ -1227,18 +1239,25 @@ on_bayer_pattern_menu_activate           (GtkMenuItem     *menuitem,
   int tmp;
   tmp=(int)user_data;
   
+  pthread_mutex_unlock(&uiinfo->mutex);
   uiinfo->bayer_pattern=tmp;
+  pthread_mutex_unlock(&uiinfo->mutex);
 }
 
 void
 on_stereo_button_toggled               (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-  if (togglebutton->active>0)
+  if (togglebutton->active>0) {
+    pthread_mutex_lock(&uiinfo->mutex);
     uiinfo->stereo=STEREO_DECODING;
-  else
+    pthread_mutex_unlock(&uiinfo->mutex);
+  }
+  else {
+    pthread_mutex_lock(&uiinfo->mutex);
     uiinfo->stereo=NO_STEREO_DECODING;
-
+    pthread_mutex_unlock(&uiinfo->mutex);
+  }
   UpdateOptionFrame();
 
 }
@@ -1264,8 +1283,10 @@ on_mono16_bpp_changed                  (GtkEditable     *editable,
 {
   int value;
   value=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(commander_window,"mono16_bpp")));
+  pthread_mutex_lock(&uiinfo->mutex);
   uiinfo->bpp=value;
   //fprintf(stderr,"uiinfo->bpp = %d\n",uiinfo->bpp);
+  pthread_mutex_unlock(&uiinfo->mutex);
 }
 
 
