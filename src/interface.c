@@ -3956,6 +3956,7 @@ create_about_window (void)
     "Dan Dennedy <dan@dennedy.org>",
     "Marcus Lim <marcuzlim@yahoo.com>",
     "Andreas Micklei <andreas.micklei@ivistar.de>",
+    "Olaf Ronneberger <ronneber@informatik.uni-freiburg.de>",
     "(see the AUTHORS file for details)",
     NULL
   };

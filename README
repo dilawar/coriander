@@ -81,7 +81,7 @@ _______________________
 - A linux box,
 - an 1394 interface card (PCI, CardBus, whatever...). Try to get an
   OHCI card as their support is better under linux.
-- a digital camera compatible with DC specs v1.20 or later.
+- a digital camera compatible with DC specs v1.04 or later.
 
 
 
@@ -89,18 +89,19 @@ Software requirements:
 _______________________
 
 - a kernel with 1394 support [3], preferably at least a 2.4.1
-  WITH latest CVS for ieee1394 (very important)
+  WITH latest CVS for ieee1394 (very important). Kernel modules to be compiled:
+  ieee1394, ohci1394, raw1394 and video1394
 - XFree 3.3.6 (XFree 4.0.3 recommended for video overlay)
 - Gtk 1.2 & Gtk-devel
+- libraw1394 installed (version 0.9) [5]
+- libdc1394 installed (version 0.8.3 or later) [2]
+- ftplib installed for FTP support [9]
 - Glade (for development only)
-- libraw1394 installed, VERSION 0.8.2, not later! [5]
-- libdc1394 installed (latest CVS from sourceforge)
-- kernel modules: ieee1394, ohci1394, raw1394 and video1394
 - automake 1.4
 - autoconf 2.13
 
-In order to have Xv support you will maybe need some custom drivers
-[6].
+In order to have Xv support you will maybe need some custom drivers, e.g. for
+Nvidia chipsets [10] or for ATI Rage chipsets [6].
 
 
 References:
@@ -115,5 +116,5 @@ _______________________
 [7] 1394 IIDC camera list:
 	http://www.tele.ucl.ac.be/PEOPLE/DOUXCHAMPS/ieee1394/cameras/
 [8] linux1394 HOWTO,...	: http://linux1394.sourceforge.net
-
-
+[9] ftplib 	: http://www.eclipse.net/~pfau/ftplib
+[10] Nvidia	: http://www.nvidia.com

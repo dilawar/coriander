@@ -1,7 +1,7 @@
 _______________________________________________________________________________
 
 	                    Open issues for Coriander 0.17 ...
-	   Damien Douxchamps <douxchamps@ieee.org> , July 25, 2001
+	   Damien Douxchamps <douxchamps@ieee.org> , September 24, 2001
 _______________________________________________________________________________
 
 - video:
@@ -13,10 +13,7 @@ _______________________________________________________________________________
 	- control-lock function for stereo cameras
 	- indicate node number in menu (else you can't distinguish two cameras
 	  of the same model)
-- programming:
-	- better update of format menu (merge callbacks)
 - features:
-	- deal with the FORMAT_7 (callbacks,...)
 	- add FORMAT_6 capabilities  
 	- save/load setup file
 	- add auto-lock, man-lock and setup-lock functions
