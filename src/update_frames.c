@@ -454,14 +454,20 @@ UpdateFormat7InfoFrame(void)
       MainStatus("The camera has a strange TOTAL_BYTES value.");
       }
     */
-    // if there is packet padding, take it into account
-    if (mode->total_bytes%mode->bpp!=0) {
-      grandtotal=(mode->total_bytes/mode->bpp+1)*mode->bpp;
+    if (mode->bpp!=0) {
+      // if there is packet padding, take it into account
+      if (mode->total_bytes%mode->bpp!=0) {
+	grandtotal=(mode->total_bytes/mode->bpp+1)*mode->bpp;
+      }
+      else {
+	grandtotal=mode->total_bytes;
+      }
     }
     else {
-      grandtotal=mode->total_bytes;
+      grandtotal=0;
+      MainError("BPP is zero! This should not happen.");
     }
-    
+
     sprintf(temp," %d", bytesize);
     gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"format7_imagebytes"), 
 			 ctxt.format7_imagebytes_ctxt, ctxt.format7_imagebytes_id);
