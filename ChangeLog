@@ -23,7 +23,13 @@ Changes towards version 0.23:
        Glade regenerates the code. The patch adds keyboard accellerator
        support to menus. This is easier to maintain than the manual
        instructions described in interface.mods.
-
+     - prereferences window save function does not attempt to read
+       widgets when RealServer/SDK not installed. Doing so creates
+       empty values in the config file, and the config file parser 
+       fails. Also, revised default values of some preferences items
+       to replace spaces with underscores. The spaces also choke
+       the config file parser. A better parser is needed. Why not 
+       use gnome-config?
 	
 Changes in version 0.22:
 
