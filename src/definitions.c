@@ -62,47 +62,26 @@ const char *feature_abs_switch_list[NUM_FEATURES] = {
   "abs_capture_quality_switch"
 };
 
-const char *feature_abs_entry_list[NUM_FEATURES] = {
-  "abs_brightness_entry",
-  "abs_autoexp_entry",
-  "abs_sharpness_entry",
-  "abs_whitebal_entry",
-  "abs_hue_entry",
-  "abs_saturation_entry",
-  "abs_gamma_entry",
-  "abs_shutter_entry",
-  "abs_gain_entry",
-  "abs_iris_entry",
-  "abs_focus_entry",
-  "abs_temperature_entry",
-  "abs_trigger_entry",
-  "abs_zoom_entry",
-  "abs_pan_entry",
-  "abs_tilt_entry",
-  "abs_filter_entry",
-  "abs_capture_size_entry",
-  "abs_capture_quality_entry"
-};
-
 const char *feature_abs_label_list[NUM_FEATURES] = {
-  "label134",
-  "label127",
-  "label",
-  "label132",
-  "label131",
-  "label133",
-  "label",
-  "label129",
-  "label130",
-  "label128",
-  "label136",
-  "label",
-  "label",
-  "label135",
-  "label138",
-  "label137",
-  "label",
-  "label"
+  "%",
+  "IL",
+  "-",
+  "K",
+  "deg",
+  "%",
+  "-",
+  "s",
+  "dB",
+  "F/",
+  "m",
+  "-",
+  "-",
+  "X",
+  "deg",
+  "deg",
+  "-",
+  "-",
+  "-"
 };
 
 const char * trigger_mode_list[NUM_TRIGGER_MODE] = {
@@ -248,7 +227,7 @@ const char *feature_menu_items_list[5]= {
   "Man",
   "Auto",
   "Single",
-  "N/A"
+  "Abs"
 };
 
 const char *help_key_bindings_keys[KEY_BINDINGS_NUM]= {

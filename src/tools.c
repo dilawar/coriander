@@ -30,10 +30,6 @@
   b = b > 255 ? 255 : b
 
 extern GtkWidget *main_window;
-extern GtkWidget *absolute_settings_window;
-extern char* feature_abs_entry_list[NUM_FEATURES];
-extern char* feature_abs_switch_list[NUM_FEATURES];
-extern char* feature_abs_label_list[NUM_FEATURES];
 extern char* trigger_mode_list[4];
 extern char* channel_num_list[16];
 extern char* phy_speed_list[4];
@@ -529,62 +525,30 @@ GetRGBPix(int px, int py, chain_t *service, int* R, int* G, int* B)
 void
 SetAbsoluteControl(int feature, int power)
 {
-  char string[256];
-
   if (dc1394_absolute_setting_on_off(camera->camera_info.handle, camera->camera_info.id, feature, power)!=DC1394_SUCCESS)
-    MainError("Could not activate absolute setting\n");
+    MainError("Could not toggle absolute setting control\n");
   else {
     camera->feature_set.feature[feature-FEATURE_MIN].abs_control=power;
-    sprintf(string,"feature_%d_frame",feature);
-    gtk_widget_set_sensitive(lookup_widget(main_window, string), !power);
-    gtk_widget_set_sensitive(lookup_widget(absolute_settings_window,feature_abs_entry_list[feature-FEATURE_MIN]),power);
-    gtk_widget_set_sensitive(lookup_widget(absolute_settings_window,feature_abs_label_list[feature-FEATURE_MIN]),power);
     if (power>0) {
-      // update absolute value 
-      dc1394_query_absolute_feature_value(camera->camera_info.handle, camera->camera_info.id, feature, &camera->feature_set.feature[feature-FEATURE_MIN].abs_value);
-      sprintf(string,"%f",camera->feature_set.feature[feature-FEATURE_MIN].abs_value);
-      gtk_entry_set_text(GTK_ENTRY(lookup_widget(absolute_settings_window, feature_abs_entry_list[feature-FEATURE_MIN])),
-			 string);
+      GetAbsValue(feature);
     }
     else {
-      // update range
       UpdateRange(feature);
     }
   }
-  
 }
 
-
-dc1394bool_t
-BuildAbsControl(int feature)
-{
-  dc1394bool_t capable, working;
-  char string[256];
-
-  capable=camera->feature_set.feature[feature-FEATURE_MIN].absolute_capable;
-  gtk_widget_set_sensitive(lookup_widget(absolute_settings_window,feature_abs_switch_list[feature-FEATURE_MIN]),capable);
-  if (capable) {
-    sprintf(string,"%f",camera->feature_set.feature[feature-FEATURE_MIN].abs_value);
-    gtk_entry_set_text(GTK_ENTRY(lookup_widget(absolute_settings_window, feature_abs_entry_list[feature-FEATURE_MIN])),
-		       string);
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(absolute_settings_window, feature_abs_switch_list[feature-FEATURE_MIN])),
-				 camera->feature_set.feature[feature-FEATURE_MIN].abs_control);
-  }
-  working=(capable&&camera->feature_set.feature[feature-FEATURE_MIN].abs_control);
-  gtk_widget_set_sensitive(lookup_widget(absolute_settings_window,feature_abs_entry_list[feature-FEATURE_MIN]),working);
-  gtk_widget_set_sensitive(lookup_widget(absolute_settings_window,feature_abs_label_list[feature-FEATURE_MIN]),working);
-
-  return capable;
-}
 
 void
 SetAbsValue(int feature)
 {
   char string[256];
+  char stemp[256];
   char *stringp;
   float value;
  
-  stringp=gtk_entry_get_text(GTK_ENTRY(lookup_widget(absolute_settings_window,feature_abs_entry_list[feature-FEATURE_MIN])));
+  sprintf(stemp,"feature_%d_abs_entry",feature);
+  stringp=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,stemp)));
   value=atof(stringp);
   if (dc1394_set_absolute_feature_value(camera->camera_info.handle, camera->camera_info.id, feature, value)!=DC1394_SUCCESS) {
     MainError("Can't set absolute value!");
@@ -593,11 +557,10 @@ SetAbsValue(int feature)
     if (dc1394_query_absolute_feature_value(camera->camera_info.handle, camera->camera_info.id, feature, &value)!=DC1394_SUCCESS) {
       MainError("Can't get absolute value!");
     }
-    else
-      {
-	sprintf(string,"%.8f",value);
-	gtk_entry_set_text(GTK_ENTRY(lookup_widget(absolute_settings_window,feature_abs_entry_list[feature-FEATURE_MIN])),string);
-      }
+    else {
+      sprintf(string,"%.8f",value);
+      gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window,stemp)),string);
+    }
   }
 }
 
@@ -605,6 +568,7 @@ void
 GetAbsValue(int feature)
 {
   char string[256];
+  char stemp[256];
   float value;
  
   
@@ -613,7 +577,8 @@ GetAbsValue(int feature)
   }
   else {
     sprintf(string,"%.8f",value);
-    gtk_entry_set_text(GTK_ENTRY(lookup_widget(absolute_settings_window,feature_abs_entry_list[feature-FEATURE_MIN])),string);
+    sprintf(stemp,"feature_%d_abs_entry",feature);
+    gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window,stemp)),string);
   }
 }
 

@@ -23,7 +23,6 @@
 #define CCR_BASE          0xFFFFF0F00000ULL
 
 extern GtkWidget *about_window;
-extern GtkWidget *absolute_settings_window;
 extern GtkWidget *help_window;
 extern GtkWidget *main_window;
 extern GtkWidget *preferences_window;
@@ -586,6 +585,8 @@ on_range_menu_activate             (GtkMenuItem     *menuitem,
 	MainError("Could not set manual mode");
       else {
 	camera->feature_set.feature[feature-FEATURE_MIN].auto_active=FALSE;
+	if (camera->feature_set.feature[feature-FEATURE_MIN].absolute_capable)
+	  SetAbsoluteControl(feature, FALSE);
 	UpdateRange(feature);
       }
       break;
@@ -602,6 +603,8 @@ on_range_menu_activate             (GtkMenuItem     *menuitem,
       MainError("Could not set auto mode");
     else {
       camera->feature_set.feature[feature-FEATURE_MIN].auto_active=TRUE;
+      if (camera->feature_set.feature[feature-FEATURE_MIN].absolute_capable)
+	SetAbsoluteControl(feature, FALSE);
       UpdateRange(feature);
     }
     break;
@@ -628,12 +631,27 @@ on_range_menu_activate             (GtkMenuItem     *menuitem,
 	}
 	if (timeout_bin>=(unsigned long int)(preferences.op_timeout*1000000.0))
 	  MainStatus("One-Push function timed-out!");
+
+	if (camera->feature_set.feature[feature-FEATURE_MIN].absolute_capable)
+	  SetAbsoluteControl(feature, FALSE);
 	UpdateRange(feature);
 	// should switch back to manual mode here. Maybe a recursive call??
 	// >> Not necessary because UpdateRange reloads the status which folds
 	// back to 'man' in the camera
       }
       break;
+  case RANGE_MENU_ABSOLUTE : // ============================== ABSOLUTE ==============================
+    if (camera->feature_set.feature[feature-FEATURE_MIN].on_off_capable) {
+      if (dc1394_feature_on_off(camera->camera_info.handle, camera->camera_info.id, feature, TRUE)!=DC1394_SUCCESS) {
+	MainError("Could not set feature on");
+	break;
+      }
+      else
+	camera->feature_set.feature[feature-FEATURE_MIN].is_on=TRUE;
+    }
+    SetAbsoluteControl(feature, TRUE);
+    UpdateRange(feature);
+    break;
   }
 }
 
@@ -1024,202 +1042,14 @@ on_mono16_bpp_changed                  (GtkEditable     *editable,
 
 
 void
-on_absolute_settings_window_activate   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-  gtk_widget_show(absolute_settings_window);
-}
-
-
-void
-on_abs_autoexp_switch_toggled          (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-  SetAbsoluteControl(FEATURE_EXPOSURE, togglebutton->active);
-}
-
-
-void
-on_abs_iris_switch_toggled         (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-  SetAbsoluteControl(FEATURE_IRIS, togglebutton->active);
-}
-
-
-void
-on_abs_shutter_switch_toggled          (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-  SetAbsoluteControl(FEATURE_SHUTTER, togglebutton->active);
-}
-
-
-void
-on_abs_gain_switch_toggled             (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-  SetAbsoluteControl(FEATURE_GAIN, togglebutton->active);
-}
-
-
-void
-on_abs_hue_switch_toggled              (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-  SetAbsoluteControl(FEATURE_HUE, togglebutton->active);
-}
-
-
-void
-on_abs_saturation_switch_toggled       (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-  SetAbsoluteControl(FEATURE_SATURATION, togglebutton->active);
-}
-
-
-void
-on_abs_whitebal_switch_toggled         (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-  SetAbsoluteControl(FEATURE_WHITE_BALANCE, togglebutton->active);
-}
-
-
-void
-on_abs_brightness_switch_toggled       (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-  SetAbsoluteControl(FEATURE_BRIGHTNESS, togglebutton->active);
-}
-
-
-void
-on_abs_zoom_switch_toggled             (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-  SetAbsoluteControl(FEATURE_ZOOM, togglebutton->active);
-}
-
-
-void
-on_abs_focus_switch_toggled            (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-  SetAbsoluteControl(FEATURE_FOCUS, togglebutton->active);
-}
-
-
-void
-on_abs_tilt_switch_toggled             (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-  SetAbsoluteControl(FEATURE_TILT, togglebutton->active);
-}
-
-
-void
-on_abs_pan_switch_toggled              (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-  SetAbsoluteControl(FEATURE_PAN, togglebutton->active);
-}
-
-
-void
-on_abs_zoom_entry_activate              (GtkEditable     *editable,
-                                        gpointer         user_data)
+on_abs_entry_activate              (GtkEditable     *editable,
+                                    gpointer         user_data)
 { 
-  SetAbsValue(FEATURE_ZOOM);
+  int feature;
+  feature=(int)user_data;
+  SetAbsValue(feature);
 }
 
-
-void
-on_abs_focus_entry_activate             (GtkEditable     *editable,
-                                        gpointer         user_data)
-{
-  SetAbsValue(FEATURE_FOCUS);
-}
-
-
-void
-on_abs_tilt_entry_activate              (GtkEditable     *editable,
-                                        gpointer         user_data)
-{
-  SetAbsValue(FEATURE_TILT);
-}
-
-
-void
-on_abs_pan_entry_activate               (GtkEditable     *editable,
-                                        gpointer         user_data)
-{
-  SetAbsValue(FEATURE_PAN);
-}
-
-
-void
-on_abs_whitebal_entry_activate          (GtkEditable     *editable,
-                                        gpointer         user_data)
-{
-  SetAbsValue(FEATURE_WHITE_BALANCE);
-}
-
-
-void
-on_abs_saturation_entry_activate        (GtkEditable     *editable,
-                                        gpointer         user_data)
-{
-  SetAbsValue(FEATURE_SATURATION);
-}
-
-
-void
-on_abs_hue_entry_activate               (GtkEditable     *editable,
-                                        gpointer         user_data)
-{
-  SetAbsValue(FEATURE_HUE);
-}
-
-void
-on_abs_autoexp_entry_activate           (GtkEditable     *editable,
-                                        gpointer         user_data)
-{
-  SetAbsValue(FEATURE_EXPOSURE);
-}
-
-
-void
-on_abs_iris_entry_activate              (GtkEditable     *editable,
-                                        gpointer         user_data)
-{
-  SetAbsValue(FEATURE_IRIS);
-}
-
-
-void
-on_abs_shutter_entry_activate           (GtkEditable     *editable,
-                                        gpointer         user_data)
-{
-  SetAbsValue(FEATURE_SHUTTER);
-}
-
-
-void
-on_abs_gain_entry_activate              (GtkEditable     *editable,
-                                        gpointer         user_data)
-{
-  SetAbsValue(FEATURE_GAIN);
-}
-
-
-void
-on_abs_brightness_entry_activate        (GtkEditable     *editable,
-                                        gpointer         user_data)
-{
-  SetAbsValue(FEATURE_BRIGHTNESS);
-}
 
 void
 on_global_iso_stop_clicked             (GtkButton       *button,

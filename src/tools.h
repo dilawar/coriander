@@ -86,9 +86,6 @@ AutoWhiteBalance(void* arg);
 void
 SetAbsoluteControl(int feature, int power);
 
-dc1394bool_t
-BuildAbsControl(int feature);
-
 void
 SetAbsValue(int feature);
 

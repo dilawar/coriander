@@ -46,7 +46,7 @@
 #include "SDLEvent.h"
 
 GtkWidget *main_window;
-GtkWidget *absolute_settings_window;
+//GtkWidget *absolute_settings_window;
 GtkWidget *about_window;
 GtkWidget *help_window;
 GtkWidget *preferences_window;
@@ -151,7 +151,7 @@ main (int argc, char *argv[])
       
       preferences_window= create_preferences_window();
       main_window = create_main_window();
-      absolute_settings_window = create_absolute_settings_window();
+      //absolute_settings_window = create_absolute_settings_window();
       
       // Setup the GUI in accordance with the camera capabilities
       GetContextStatus();

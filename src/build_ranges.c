@@ -24,6 +24,7 @@ extern camera_t* camera;
 extern char* feature_menu_table_list[NUM_FEATURES];
 extern char* feature_menu_items_list[NUM_FEATURES];
 extern char* feature_name_list[NUM_FEATURES];
+extern char* feature_abs_label_list[NUM_FEATURES];
 
 void
 BuildEmptyRange(int feature)
@@ -43,7 +44,8 @@ BuildEmptyRange(int feature)
 
   switch (feature) {
   case FEATURE_TEMPERATURE:
-    table = gtk_table_new (3, 2, FALSE);
+    table = gtk_table_new (3, 6, FALSE);
+    gtk_table_set_homogeneous (GTK_TABLE(table),TRUE);
     gtk_widget_ref (table);
     sprintf(stemp,"feature_%d_table",feature);
     gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, table,
@@ -75,7 +77,8 @@ BuildEmptyRange(int feature)
 
     break;
   case FEATURE_WHITE_BALANCE:
-    table = gtk_table_new (3, 2, FALSE);
+    table = gtk_table_new (3, 6, FALSE);
+    gtk_table_set_homogeneous (GTK_TABLE(table),TRUE);
     gtk_widget_ref (table);
     sprintf(stemp,"feature_%d_table",feature);
     gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, table,
@@ -83,7 +86,7 @@ BuildEmptyRange(int feature)
     gtk_widget_show (table);
     gtk_container_add (GTK_CONTAINER (frame), table);
 
-    label1 = gtk_label_new (_("Blue/U-field:"));
+    label1 = gtk_label_new (_("Blue/U:"));
     gtk_widget_ref (label1);
     gtk_object_set_data_full (GTK_OBJECT (main_window), "label_wb_scale_bu", label1,
 			      (GtkDestroyNotify) gtk_widget_unref);
@@ -94,7 +97,7 @@ BuildEmptyRange(int feature)
     gtk_label_set_justify (GTK_LABEL (label1), GTK_JUSTIFY_RIGHT);
     gtk_misc_set_alignment (GTK_MISC (label1), 0, 0.5);
 
-    label2 = gtk_label_new (_("Red/V-field:"));
+    label2 = gtk_label_new (_("Red/V:"));
     gtk_widget_ref (label2);
     gtk_object_set_data_full (GTK_OBJECT (main_window), "label_wb_scale_rv", label2,
 			      (GtkDestroyNotify) gtk_widget_unref);
@@ -108,7 +111,13 @@ BuildEmptyRange(int feature)
     break;
 
   default:
-    table = gtk_table_new (1, 2, FALSE);
+    if (camera->feature_set.feature[feature-FEATURE_MIN].absolute_capable!=0) {
+      table = gtk_table_new (2, 6, FALSE);
+    }
+    else {
+      table = gtk_table_new (1, 6, FALSE);
+    }
+    gtk_table_set_homogeneous (GTK_TABLE(table),TRUE);
     gtk_widget_ref (table);
     sprintf(stemp,"feature_%d_table",feature);
     gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, table,
@@ -126,6 +135,9 @@ void BuildRange(int feature)
   GtkWidget* new_menu;
   GtkWidget* glade_menuitem;
   GtkWidget* scale, *scale2;
+  GtkWidget* abs_entry;
+  GtkWidget* label;
+  
 
   char stemp[256];
 
@@ -198,6 +210,15 @@ void BuildRange(int feature)
 			GTK_SIGNAL_FUNC (on_range_menu_activate),
 			(int*)(feature*1000+RANGE_MENU_SINGLE));
   }
+  // 'absolute' menuitem optional addition:
+  if (camera->feature_set.feature[feature-FEATURE_MIN].absolute_capable>0) {
+    glade_menuitem = gtk_menu_item_new_with_label (_(feature_menu_items_list[RANGE_MENU_ABSOLUTE]));
+    gtk_widget_show (glade_menuitem);
+    gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+    gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
+			GTK_SIGNAL_FUNC (on_range_menu_activate),
+			(int*)(feature*1000+RANGE_MENU_ABSOLUTE));
+  }
   
   gtk_option_menu_set_menu (GTK_OPTION_MENU (new_option_menu), new_menu);
   
@@ -218,7 +239,7 @@ void BuildRange(int feature)
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (scale);
     sprintf(stemp,"feature_%d_table",feature);
-    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale, 1, 2, 1, 2,
+    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale, 1, 6, 1, 2,
 		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 		      (GtkAttachOptions) (GTK_FILL), 0, 0);
     gtk_widget_set_sensitive (scale, TRUE);
@@ -231,7 +252,7 @@ void BuildRange(int feature)
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (scale2);
     sprintf(stemp,"feature_%d_table",feature);
-    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale2, 1, 2, 2, 3,
+    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale2, 1, 6, 2, 3,
 		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 		      (GtkAttachOptions) (GTK_FILL), 0, 0);
     gtk_widget_set_sensitive (scale2, TRUE);
@@ -258,7 +279,7 @@ void BuildRange(int feature)
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (scale);
     sprintf(stemp,"feature_%d_table",feature);
-    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale, 1, 2, 1, 2,
+    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale, 1, 6, 1, 2,
 		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 		      (GtkAttachOptions) (GTK_FILL), 0, 0);
     gtk_widget_set_sensitive (scale, TRUE);
@@ -271,7 +292,7 @@ void BuildRange(int feature)
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (scale2);
     sprintf(stemp,"feature_%d_table",feature);
-    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale2, 1, 2, 2, 3,
+    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale2, 1, 6, 2, 3,
 		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 		      (GtkAttachOptions) (GTK_FILL), 0, 0);
     gtk_widget_set_sensitive (scale2, TRUE);
@@ -293,9 +314,16 @@ void BuildRange(int feature)
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (scale);
     sprintf(stemp,"feature_%d_table",feature);
-    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale, 1, 2, 0, 1,
+    if (camera->feature_set.feature[feature-FEATURE_MIN].absolute_capable!=0) {
+    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale, 0, 6, 1, 2,
 		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 		      (GtkAttachOptions) (GTK_FILL), 0, 0);
+    }
+    else {
+    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale, 1, 6, 0, 1,
+		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+		      (GtkAttachOptions) (GTK_FILL), 0, 0);
+    }
     gtk_widget_set_sensitive (scale, TRUE);
     gtk_scale_set_digits (GTK_SCALE (scale), 0);
 
@@ -304,7 +332,36 @@ void BuildRange(int feature)
     gtk_signal_connect (GTK_OBJECT (adjustment), "value_changed", GTK_SIGNAL_FUNC (on_scale_value_changed), (int*) feature);
     
   }
- 
+  // common action for absolute settings:
+  if (camera->feature_set.feature[feature-FEATURE_MIN].absolute_capable!=0) {
+    // entry
+    abs_entry = gtk_entry_new ();
+    gtk_widget_ref (abs_entry);
+    sprintf(stemp,"feature_%d_abs_entry",feature);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, abs_entry,
+			      (GtkDestroyNotify) gtk_widget_unref);
+    gtk_widget_show (abs_entry);
+    sprintf(stemp,"feature_%d_table",feature);
+    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), abs_entry, 2, 5, 0, 1,
+		      (GtkAttachOptions) (GTK_EXPAND|GTK_FILL),
+		      (GtkAttachOptions) (0), 0, 0);
+    gtk_signal_connect (GTK_OBJECT (abs_entry), "activate",
+                      GTK_SIGNAL_FUNC (on_abs_entry_activate),
+                      (int*)feature);
+    // label
+    label = gtk_label_new (_(feature_abs_label_list[feature-FEATURE_MIN]));
+    gtk_widget_ref (label);
+    sprintf(stemp,"feature_%d_abs_label",feature);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, label,
+			      (GtkDestroyNotify) gtk_widget_unref);
+    gtk_label_set_justify(GTK_LABEL(label),GTK_JUSTIFY_LEFT);
+    gtk_widget_show (label);
+    sprintf(stemp,"feature_%d_table",feature);
+    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), label, 5, 6, 0, 1,
+		      (GtkAttachOptions) (GTK_FILL|GTK_FILL),
+		      (GtkAttachOptions) (0), 10, 0);
+    gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+  }
 }
 
 void

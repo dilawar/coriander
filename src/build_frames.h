@@ -94,16 +94,4 @@ BuildPrefsReceiveFrame(void);
 void
 BuildOptionFrame(void);
 
-int
-BuildAbsApertureFrame(void);
-
-int
-BuildAbsColorFrame(void);
-
-int
-BuildAbsLuminanceFrame(void);
-
-int
-BuildAbsPositioningFrame(void);
-
 #endif
