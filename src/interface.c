@@ -4114,7 +4114,7 @@ create_preferences_window (void)
   GtkWidget *prefs_ftp_filename;
   GtkWidget *lable53;
   GtkWidget *vbox61;
-  GtkWidget *frame1;
+  GtkWidget *prefs_real_server_frame;
   GtkWidget *table24;
   GtkWidget *label62;
   GtkWidget *label63;
@@ -4127,7 +4127,7 @@ create_preferences_window (void)
   GtkWidget *label66;
   GtkObject *prefs_real_port_adj;
   GtkWidget *prefs_real_port;
-  GtkWidget *frame2;
+  GtkWidget *prefs_real_infos_frame;
   GtkWidget *table25;
   GtkWidget *label67;
   GtkWidget *label68;
@@ -4135,7 +4135,7 @@ create_preferences_window (void)
   GtkWidget *prefs_real_title;
   GtkWidget *prefs_real_author;
   GtkWidget *prefs_real_copyright;
-  GtkWidget *frame3;
+  GtkWidget *prefs_real_stream_frame;
   GtkWidget *table26;
   GtkWidget *label70;
   GtkWidget *label71;
@@ -4723,20 +4723,20 @@ create_preferences_window (void)
   gtk_widget_show (vbox61);
   gtk_container_add (GTK_CONTAINER (prefs_notebook), vbox61);
 
-  frame1 = gtk_frame_new (_("Server"));
-  gtk_widget_ref (frame1);
-  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "frame1", frame1,
+  prefs_real_server_frame = gtk_frame_new (_("Server"));
+  gtk_widget_ref (prefs_real_server_frame);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "prefs_real_server_frame", prefs_real_server_frame,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (frame1);
-  gtk_box_pack_start (GTK_BOX (vbox61), frame1, TRUE, TRUE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (frame1), 5);
+  gtk_widget_show (prefs_real_server_frame);
+  gtk_box_pack_start (GTK_BOX (vbox61), prefs_real_server_frame, TRUE, TRUE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (prefs_real_server_frame), 5);
 
   table24 = gtk_table_new (5, 2, FALSE);
   gtk_widget_ref (table24);
   gtk_object_set_data_full (GTK_OBJECT (preferences_window), "table24", table24,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (table24);
-  gtk_container_add (GTK_CONTAINER (frame1), table24);
+  gtk_container_add (GTK_CONTAINER (prefs_real_server_frame), table24);
   gtk_container_set_border_width (GTK_CONTAINER (table24), 5);
 
   label62 = gtk_label_new (_("Address: "));
@@ -4852,20 +4852,20 @@ create_preferences_window (void)
   gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (prefs_real_port), TRUE);
   gtk_spin_button_set_update_policy (GTK_SPIN_BUTTON (prefs_real_port), GTK_UPDATE_IF_VALID);
 
-  frame2 = gtk_frame_new (_("Infos"));
-  gtk_widget_ref (frame2);
-  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "frame2", frame2,
+  prefs_real_infos_frame = gtk_frame_new (_("Infos"));
+  gtk_widget_ref (prefs_real_infos_frame);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "prefs_real_infos_frame", prefs_real_infos_frame,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (frame2);
-  gtk_box_pack_start (GTK_BOX (vbox61), frame2, TRUE, TRUE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (frame2), 5);
+  gtk_widget_show (prefs_real_infos_frame);
+  gtk_box_pack_start (GTK_BOX (vbox61), prefs_real_infos_frame, TRUE, TRUE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (prefs_real_infos_frame), 5);
 
   table25 = gtk_table_new (3, 2, FALSE);
   gtk_widget_ref (table25);
   gtk_object_set_data_full (GTK_OBJECT (preferences_window), "table25", table25,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (table25);
-  gtk_container_add (GTK_CONTAINER (frame2), table25);
+  gtk_container_add (GTK_CONTAINER (prefs_real_infos_frame), table25);
   gtk_container_set_border_width (GTK_CONTAINER (table25), 5);
 
   label67 = gtk_label_new (_("Title: "));
@@ -4934,20 +4934,20 @@ create_preferences_window (void)
                     (GtkAttachOptions) (0), 0, 1);
   gtk_widget_set_usize (prefs_real_copyright, -2, 22);
 
-  frame3 = gtk_frame_new (_("Stream"));
-  gtk_widget_ref (frame3);
-  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "frame3", frame3,
+  prefs_real_stream_frame = gtk_frame_new (_("Stream"));
+  gtk_widget_ref (prefs_real_stream_frame);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "prefs_real_stream_frame", prefs_real_stream_frame,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (frame3);
-  gtk_box_pack_start (GTK_BOX (vbox61), frame3, TRUE, TRUE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (frame3), 5);
+  gtk_widget_show (prefs_real_stream_frame);
+  gtk_box_pack_start (GTK_BOX (vbox61), prefs_real_stream_frame, TRUE, TRUE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (prefs_real_stream_frame), 5);
 
   table26 = gtk_table_new (4, 2, FALSE);
   gtk_widget_ref (table26);
   gtk_object_set_data_full (GTK_OBJECT (preferences_window), "table26", table26,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (table26);
-  gtk_container_add (GTK_CONTAINER (frame3), table26);
+  gtk_container_add (GTK_CONTAINER (prefs_real_stream_frame), table26);
 
   label70 = gtk_label_new (_("Recordable: "));
   gtk_widget_ref (label70);

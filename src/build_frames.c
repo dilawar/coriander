@@ -242,8 +242,16 @@ BuildPrefsRealFrame(void)
   GtkMenu* menu;
   GtkOptionMenu* option_menu;
   int i;
+#ifdef HAVE_REALLIB
+  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_real_server_frame"),TRUE);
+  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_real_infos_frame"),TRUE);
+  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_real_stream_frame"),TRUE);
+#else
+  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_real_server_frame"),FALSE);
+  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_real_infos_frame"),FALSE);
+  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_real_stream_frame"),FALSE);
+#endif
 
-  
   option_menu=(GtkOptionMenu*)lookup_widget(preferences_window, "prefs_real_audience");
   menu=(GtkMenu*)gtk_option_menu_get_menu(option_menu);
   for (i=0;i<8;i++)
@@ -285,6 +293,5 @@ BuildPrefsRealFrame(void)
   gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(preferences_window,
 							  "prefs_real_port"), preferences.real_port);
 
-  // TODO: connect signals
 
 }

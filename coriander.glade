@@ -7314,7 +7314,7 @@ controlled with the AV/C protocol, please refer to http://linux1394.sourceforge.
 
 	<widget>
 	  <class>GtkFrame</class>
-	  <name>frame1</name>
+	  <name>prefs_real_server_frame</name>
 	  <border_width>5</border_width>
 	  <label>Server</label>
 	  <label_xalign>0</label_xalign>
@@ -7601,7 +7601,7 @@ controlled with the AV/C protocol, please refer to http://linux1394.sourceforge.
 
 	<widget>
 	  <class>GtkFrame</class>
-	  <name>frame2</name>
+	  <name>prefs_real_infos_frame</name>
 	  <border_width>5</border_width>
 	  <label>Infos</label>
 	  <label_xalign>0</label_xalign>
@@ -7779,7 +7779,7 @@ controlled with the AV/C protocol, please refer to http://linux1394.sourceforge.
 
 	<widget>
 	  <class>GtkFrame</class>
-	  <name>frame3</name>
+	  <name>prefs_real_stream_frame</name>
 	  <border_width>5</border_width>
 	  <label>Stream</label>
 	  <label_xalign>0</label_xalign>
