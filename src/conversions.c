@@ -100,7 +100,7 @@ uyyvyy2uyvy (unsigned char *src, unsigned char *dest, unsigned long long int Num
 
   switch (byte_order) {
   case OVERLAY_BYTE_ORDER_YUYV:
-    while (i > 0) {
+    while (i >= 0) {
       y3 = src[i--];
       y2 = src[i--];
       v  = src[i--];
@@ -120,7 +120,7 @@ uyyvyy2uyvy (unsigned char *src, unsigned char *dest, unsigned long long int Num
     }
     break;
   case OVERLAY_BYTE_ORDER_UYVY:
-    while (i > 0) {
+    while (i >= 0) {
       y3 = src[i--];
       y2 = src[i--];
       v  = src[i--];
@@ -155,7 +155,7 @@ uyv2uyvy (unsigned char *src, unsigned char *dest, unsigned long long int NumPix
 
   switch (byte_order) {
   case OVERLAY_BYTE_ORDER_YUYV:
-    while (i > 0) {
+    while (i >= 0) {
       v1 = src[i--];
       y1 = src[i--];
       u1 = src[i--];
@@ -170,7 +170,7 @@ uyv2uyvy (unsigned char *src, unsigned char *dest, unsigned long long int NumPix
     }
     break;
   case OVERLAY_BYTE_ORDER_UYVY:
-    while (i > 0) {
+    while (i >= 0) {
       v1 = src[i--];
       y1 = src[i--];
       u1 = src[i--];
@@ -203,7 +203,7 @@ y2uyvy (unsigned char *src, unsigned char *dest,
     
     switch (byte_order) {
     case OVERLAY_BYTE_ORDER_YUYV:
-      while (i > 0) {
+      while (i >= 0) {
 	y1 = src[i--];
 	y0 = src[i--];
 	dest[j--] = 128;
@@ -213,7 +213,7 @@ y2uyvy (unsigned char *src, unsigned char *dest,
       }
       break;
     case OVERLAY_BYTE_ORDER_UYVY:
-      while (i > 0) {
+      while (i >= 0) {
 	y1 = src[i--];
 	y0 = src[i--];
 	dest[j--] = y1;
@@ -274,7 +274,7 @@ y162uyvy (unsigned char *src, unsigned char *dest, unsigned long long int NumPix
 
   switch (byte_order) {
   case OVERLAY_BYTE_ORDER_YUYV:
-    while (i > 0) {
+    while (i >= 0) {
       y1 = src[i--];
       y1 = (y1 + (((int)src[i--])<<8))>>(bits-8);
       y0 = src[i--];
@@ -286,7 +286,7 @@ y162uyvy (unsigned char *src, unsigned char *dest, unsigned long long int NumPix
     }
     break;
   case OVERLAY_BYTE_ORDER_UYVY:
-    while (i > 0) {
+    while (i >= 0) {
       y1 = src[i--];
       y1 = (y1 + (((int)src[i--])<<8))>>(bits-8);
       y0 = src[i--];
@@ -311,7 +311,7 @@ y162y (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels
   register int j = NumPixels-1;
   register int y;
 
-  while (i > 0) {
+  while (i >= 0) {
     y = src[i--];
     dest[j--] = (y + (src[i--]<<8))>>(bits-8);
   }
@@ -327,7 +327,7 @@ rgb2uyvy (unsigned char *src, unsigned char *dest, unsigned long long int NumPix
 
   switch (byte_order) {
   case OVERLAY_BYTE_ORDER_YUYV:
-    while (i > 0) {
+    while (i >= 0) {
       b = (unsigned char) src[i--];
       g = (unsigned char) src[i--];
       r = (unsigned char) src[i--];
@@ -343,7 +343,7 @@ rgb2uyvy (unsigned char *src, unsigned char *dest, unsigned long long int NumPix
     }
     break;
   case OVERLAY_BYTE_ORDER_UYVY:
-    while (i > 0) {
+    while (i >= 0) {
       b = (unsigned char) src[i--];
       g = (unsigned char) src[i--];
       r = (unsigned char) src[i--];
@@ -374,7 +374,7 @@ rgb482uyvy (unsigned char *src, unsigned char *dest, unsigned long long int NumP
 
   switch (byte_order) {
   case OVERLAY_BYTE_ORDER_YUYV:
-    while (i > 0) {
+    while (i >= 0) {
       i--;
       b = (unsigned char) src[i--];
       i--;
@@ -396,7 +396,7 @@ rgb482uyvy (unsigned char *src, unsigned char *dest, unsigned long long int NumP
     } 
     break;
   case OVERLAY_BYTE_ORDER_UYVY:
-    while (i > 0) {
+    while (i >= 0) {
       i--;
       b = (unsigned char) src[i--];
       i--;
@@ -435,7 +435,7 @@ rgb482rgb (unsigned char *src, unsigned char *dest, unsigned long long int NumPi
   register int i = ((NumPixels + ( NumPixels << 1 )) << 1)-1;
   register int j = NumPixels + ( NumPixels << 1 ) -1;
 
-  while (i > 0) {
+  while (i >= 0) {
     i--;
     dest[j--]=src[i--];
     i--;
@@ -454,7 +454,7 @@ uyv2rgb (unsigned char *src, unsigned char *dest, unsigned long long int NumPixe
   register int y, u, v;
   register int r, g, b;
 
-  while (i > 0) {
+  while (i >= 0) {
     v = (unsigned char) src[i--] - 128;
     y = (unsigned char) src[i--];
     u = (unsigned char) src[i--] - 128;
@@ -473,7 +473,7 @@ uyvy2rgb (unsigned char *src, unsigned char *dest, unsigned long long int NumPix
   register int y0, y1, u, v;
   register int r, g, b;
 
-  while (i > 0) {
+  while (i >= 0) {
     y1 = (unsigned char) src[i--];
     v  = (unsigned char) src[i--] - 128;
     y0 = (unsigned char) src[i--];
@@ -498,7 +498,7 @@ uyyvyy2rgb (unsigned char *src, unsigned char *dest, unsigned long long int NumP
   register int y0, y1, y2, y3, u, v;
   register int r, g, b;
   
-  while (i > 0) {
+  while (i >= 0) {
     y3 = (unsigned char) src[i--];
     y2 = (unsigned char) src[i--];
     v  = (unsigned char) src[i--] - 128;
@@ -531,11 +531,7 @@ y2rgb (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels
   register int j = NumPixels + ( NumPixels << 1 )-1;
   register int y;
 
-  while (i > 0) {
-    y = (unsigned char) src[i--];
-    dest[j--] = y;
-    dest[j--] = y;
-    dest[j--] = y;
+  while (i >= 0) {
     y = (unsigned char) src[i--];
     dest[j--] = y;
     dest[j--] = y;
@@ -571,7 +567,7 @@ y162rgb (unsigned char *src, unsigned char *dest, unsigned long long int NumPixe
 void
 BayerNearestNeighbor(unsigned char *src, unsigned char *dest, int sx, int sy, int type)
 {
-  unsigned char *outR, *outG, *outB;
+  unsigned char *outR=NULL, *outG=NULL, *outB=NULL;
   register int i,j;
 
   // sx and sy should be even
@@ -589,7 +585,8 @@ BayerNearestNeighbor(unsigned char *src, unsigned char *dest, int sx, int sy, in
     outB=&dest[0];
     break;
   default:
-    outR=NULL;outG=NULL;outB=NULL;
+    fprintf(stderr,"Bad Bayer pattern ID: %d\n",type);
+    return;
     break;
   }
   
@@ -682,6 +679,8 @@ BayerNearestNeighbor(unsigned char *src, unsigned char *dest, int sx, int sy, in
     break;
     
   default:  //-------------------------------------------
+    fprintf(stderr,"Bad Bayer pattern ID: %d\n",type);
+    return;
     break;
   }
 }
@@ -690,7 +689,7 @@ BayerNearestNeighbor(unsigned char *src, unsigned char *dest, int sx, int sy, in
 void
 BayerEdgeSense(unsigned char *src, unsigned char *dest, int sx, int sy, int type)
 {
-  unsigned char *outR, *outG, *outB;
+  unsigned char *outR=NULL, *outG=NULL, *outB=NULL;
   register int i,j;
   int dh, dv;
   int tmp;
@@ -710,7 +709,8 @@ BayerEdgeSense(unsigned char *src, unsigned char *dest, int sx, int sy, int type
     outB=&dest[0];
     break;
   default:
-    outR=NULL;outG=NULL;outB=NULL;
+    fprintf(stderr,"Bad Bayer pattern ID: %d\n",type);
+    return;
     break;
   }
 
@@ -894,15 +894,45 @@ BayerEdgeSense(unsigned char *src, unsigned char *dest, int sx, int sy, int type
     }
     break;
   default: //---------------------------------------------------------
-    fprintf(stderr,"Bad bayer pattern ID\n");
+    fprintf(stderr,"Bad Bayer pattern ID: %d\n",type);
+    return;
     break;
   }
+  
+  ClearBorders(dest, sx, sy, 3);
+
 }
+
+void
+ClearBorders(unsigned char* dest, int sx, int sy, int w) 
+{
+  int i,j;
+
+  // black edges:
+  i=3*sx*w-1;
+  j=3*sx*(sy-1)-1;
+  while (i>=0) {
+    dest[i--]=0;
+    dest[j--]=0;
+  }
+  
+  i=sx*(sy-1)*3-1+w*3;
+  while (i>sx) {
+    j=6*w;
+    while (j>0) {
+      dest[i--]=0;
+      j--;
+    }
+    i-=(sx-2*w)*3;
+  }
+  
+}
+
 
 void
 BayerDownsample(unsigned char *src, unsigned char *dest, int sx, int sy, int type)
 {
-  unsigned char *outR, *outG, *outB;
+  unsigned char *outR=NULL, *outG=NULL, *outB=NULL;
   register int i,j;
   int tmp;
 
@@ -923,7 +953,8 @@ BayerDownsample(unsigned char *src, unsigned char *dest, int sx, int sy, int typ
     outB=&dest[0];
     break;
   default:
-    outR=NULL;outG=NULL;outB=NULL;
+    fprintf(stderr,"Bad Bayer pattern ID: %d\n",type);
+    return;
     break;
   }
   
@@ -955,7 +986,8 @@ BayerDownsample(unsigned char *src, unsigned char *dest, int sx, int sy, int typ
     }
     break;
   default: //---------------------------------------------------------
-    fprintf(stderr,"Bad bayer pattern ID\n");
+    fprintf(stderr,"Bad Bayer pattern ID: %d\n",type);
+    return;
     break;
   }
   
@@ -964,10 +996,10 @@ BayerDownsample(unsigned char *src, unsigned char *dest, int sx, int sy, int typ
 void
 BayerSimple(unsigned char *src, unsigned char *dest, int sx, int sy, int type)
 {
-  unsigned char *outR, *outG, *outB;
+  unsigned char *outR=NULL, *outG=NULL, *outB=NULL;
   register int i,j;
   int tmp, base;
-
+  
   switch (type) {
   case COLOR_FILTER_FORMAT7_GRBG:
   case COLOR_FILTER_FORMAT7_BGGR:
@@ -982,7 +1014,8 @@ BayerSimple(unsigned char *src, unsigned char *dest, int sx, int sy, int type)
     outB=&dest[0];
     break;
   default:
-    outR=NULL;outG=NULL;outB=NULL;
+    fprintf(stderr,"Bad Bayer pattern ID: %d\n",type);
+    return;
     break;
   }
   
@@ -1064,9 +1097,11 @@ BayerSimple(unsigned char *src, unsigned char *dest, int sx, int sy, int type)
     }
     break;
   default: //---------------------------------------------------------
-    fprintf(stderr,"Bad bayer pattern ID\n");
+    fprintf(stderr,"Bad Bayer pattern ID: %d\n",type);
+    return;
     break;
   }
+  
 }
 
 // change a 16bit stereo image (8bit/channel) into two 8bit images on top
@@ -1078,7 +1113,7 @@ StereoDecode(unsigned char *src, unsigned char *dest, unsigned long long int Num
   register int j = (NumPixels>>1)-1;
   register int k = NumPixels-1;
 
-  while (i > 0) {
+  while (i >= 0) {
     dest[k--] = src[i--];
     dest[j--] = src[i--];
   }

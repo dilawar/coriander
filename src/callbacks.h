@@ -409,3 +409,11 @@ on_overlay_color_picker_color_set      (GnomeColorPicker *gnomecolorpicker,
                                         gpointer         user_data);
 
 #endif // __CALLBACKS_H__
+
+void
+on_overlay_file_subentry_changed       (GtkEditable     *editable,
+                                        gpointer         user_data);
+
+void
+on_save_filename_subentry_changed      (GtkEditable     *editable,
+                                        gpointer         user_data);

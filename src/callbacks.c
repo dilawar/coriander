@@ -865,18 +865,6 @@ on_prefs_ftp_filename_changed          (GtkEditable     *editable,
 
 
 void
-on_prefs_save_filename_changed         (GtkEditable     *editable,
-                                        gpointer         user_data)
-{
-  char *tmp_ptr;
-  tmp_ptr=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"prefs_save_filename")));
-  strcpy(camera->prefs.save_filename,tmp_ptr);
-  gnome_config_set_string("coriander/save/filename",camera->prefs.save_filename);
-  gnome_config_sync();
-}
-
-
-void
 on_prefs_update_power_toggled          (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
@@ -1498,5 +1486,29 @@ on_overlay_color_picker_color_set      (GnomeColorPicker *gnomecolorpicker,
                                         gpointer         user_data)
 {
 
+}
+
+
+void
+on_overlay_file_subentry_changed       (GtkEditable     *editable,
+                                        gpointer         user_data)
+{
+  char *tmp_ptr;
+  tmp_ptr=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"overlay_file_subentry")));
+  strcpy(camera->prefs.overlay_filename,tmp_ptr);
+  gnome_config_set_string("coriander/display/overlay_filename",camera->prefs.overlay_filename);
+  gnome_config_sync();
+}
+
+
+void
+on_save_filename_subentry_changed      (GtkEditable     *editable,
+                                        gpointer         user_data)
+{
+  char *tmp_ptr;
+  tmp_ptr=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"save_filename_subentry")));
+  strcpy(camera->prefs.save_filename,tmp_ptr);
+  gnome_config_set_string("coriander/save/filename",camera->prefs.save_filename);
+  gnome_config_sync();
 }
 

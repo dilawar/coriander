@@ -256,7 +256,7 @@ InitBuffer(buffer_t *buffer)
   buffer->mode=-1;
   buffer->bayer=-1;
   buffer->bpp=-1;
-  buffer->bayer_pattern=-1;
+  buffer->bayer_pattern=-1;//COLOR_FILTER_FORMAT7_BGGR
   buffer->stereo_decoding=-1;
   buffer->format=-1;
   buffer->format7_color_mode=-1;

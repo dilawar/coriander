@@ -100,6 +100,9 @@ void
 BayerEdgeSense(unsigned char *src, unsigned char *dest, int sx, int sy, int type);
 
 void
+ClearBorders(unsigned char* dest, int sx, int sy, int w);
+
+void
 BayerDownsample(unsigned char *src, unsigned char *dest, int sx, int sy, int type);
 
 void

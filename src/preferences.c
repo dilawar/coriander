@@ -52,7 +52,7 @@ LoadConfigFile(void)
   preferences.camprefs.video1394_device = gnome_config_get_string("coriander/receive/video1394_device=/dev/video1394/0");
 
   preferences.camprefs.save_filename = gnome_config_get_string("coriander/save/filename=test.jpg");
-  preferences.camprefs.overlay_filename = gnome_config_get_string("coriander/display/overlay_filename=test.");
+  preferences.camprefs.overlay_filename = gnome_config_get_string("coriander/display/overlay_filename=test.png");
   preferences.camprefs.ftp_filename  = gnome_config_get_string("coriander/ftp/filename=");
   preferences.camprefs.ftp_path      = gnome_config_get_string("coriander/ftp/path=");
   preferences.camprefs.ftp_address   = gnome_config_get_string("coriander/ftp/address=");

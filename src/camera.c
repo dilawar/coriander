@@ -117,6 +117,7 @@ NewCamera(void) {
   cam->prefs.name = (char*)malloc(STRING_SIZE*sizeof(char));
   cam->prefs.save_filename = (char*)malloc(STRING_SIZE*sizeof(char));
   cam->prefs.overlay_filename = (char*)malloc(STRING_SIZE*sizeof(char));
+  cam->bayer_pattern=COLOR_FILTER_FORMAT7_BGGR;
   pthread_mutex_init(&cam->uimutex, NULL);
   return cam;
 

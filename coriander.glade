@@ -2619,8 +2619,13 @@ Average
 		    <widget>
 		      <class>GtkEntry</class>
 		      <child_name>GnomeEntry:entry</child_name>
-		      <name>combo-entry1</name>
+		      <name>overlay_file_subentry</name>
 		      <can_focus>True</can_focus>
+		      <signal>
+			<name>changed</name>
+			<handler>on_overlay_file_subentry_changed</handler>
+			<last_modification_time>Mon, 13 Dec 2004 07:05:49 GMT</last_modification_time>
+		      </signal>
 		      <editable>True</editable>
 		      <text_visible>True</text_visible>
 		      <text_max_length>0</text_max_length>
@@ -2675,8 +2680,13 @@ Average
 		  <widget>
 		    <class>GtkEntry</class>
 		    <child_name>GnomeEntry:entry</child_name>
-		    <name>combo-entry2</name>
+		    <name>save_filename_subentry</name>
 		    <can_focus>True</can_focus>
+		    <signal>
+		      <name>changed</name>
+		      <handler>on_save_filename_subentry_changed</handler>
+		      <last_modification_time>Mon, 13 Dec 2004 07:05:05 GMT</last_modification_time>
+		    </signal>
 		    <editable>True</editable>
 		    <text_visible>True</text_visible>
 		    <text_max_length>0</text_max_length>

@@ -125,7 +125,7 @@ DisplayThread(void* arg)
 		
 		// informative overlays
 		SDLDisplayArea(display_service);
-		SDLDisplayPattern(display_service);
+		//SDLDisplayPattern(display_service);
 		
 		SDL_UnlockYUVOverlay(info->sdloverlay);
 		SDL_DisplayYUVOverlay(info->sdloverlay, &info->sdlvideorect);

@@ -2,10 +2,22 @@ Coriander, (c) 2000-2004 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes since version 1.0.0
 
+   Dec 13, 2004, by Damien Douxchamps
+   - fixed the GTK errors
+   - fixed the filename dialogs
+   - fixed invalid bayer pattern IDs
+   - fixed receive/display segfaults/Xlib async's
+   - draw black border around image if color conversion is Edge Sense II
+	
+   Nov 26, 2004, by Damien Douxchamps
+   - properly fixed a conversion problem in y2rgb: the first pixel was never
+     converted. Now we use >=0 as the loop condition in most functions: faster
+     and better... (Frederic Devernay)
+	
    Nov 25, 2004, by Damien Douxchamps
    - fixed a conversion problem in y2rgb: the first pixel was never converted
      (Frederic Devernay)
-	
+
    Nov 24, 2004, by Damien Douxchamps
    - started to integrate Johann's enhanced display
    - modified the filename dialogs to standard grome dialogs (not working yet)
@@ -21,8 +33,8 @@ Changes since version 1.0.0
    - add a preference for overlay byte order instead of #define's
 	
    Oct 28, 2004, by Damien Douxchamps
-   - a check for the info->overlay!=NULL was added in the display thread. Thanks to
-     Will Shackleford for spotting the missing check.
+   - a check for the info->overlay!=NULL was added in the display thread.
+     Thanks to Will Shackleford for spotting the missing check.
 	
    Sep 23, 2004, by Damien Douxchamps
    - applied patch from Arne to properly handle UYVY overlays

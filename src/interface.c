@@ -200,12 +200,12 @@ create_main_window (void)
   GtkWidget *overlay_type_menu_menu;
   GtkWidget *overlay_color_picker;
   GtkWidget *overlay_file_entry;
-  GtkWidget *combo_entry1;
+  GtkWidget *overlay_file_subentry;
   GtkWidget *label144;
   GtkWidget *vbox54;
   GtkWidget *prefs_save_file_frame;
   GtkWidget *save_filename_entry;
-  GtkWidget *combo_entry2;
+  GtkWidget *save_filename_subentry;
   GtkWidget *prefs_save_framedrop;
   GtkWidget *hbox_capture_freq_periodic;
   GtkWidget *label76;
@@ -1633,11 +1633,11 @@ create_main_window (void)
                     (GtkAttachOptions) (0), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (overlay_file_entry), 3);
 
-  combo_entry1 = gnome_file_entry_gtk_entry (GNOME_FILE_ENTRY (overlay_file_entry));
-  gtk_widget_ref (combo_entry1);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "combo_entry1", combo_entry1,
+  overlay_file_subentry = gnome_file_entry_gtk_entry (GNOME_FILE_ENTRY (overlay_file_entry));
+  gtk_widget_ref (overlay_file_subentry);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "overlay_file_subentry", overlay_file_subentry,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (combo_entry1);
+  gtk_widget_show (overlay_file_subentry);
 
   label144 = gtk_label_new (_("Display"));
   gtk_widget_ref (label144);
@@ -1669,11 +1669,11 @@ create_main_window (void)
   gtk_container_add (GTK_CONTAINER (prefs_save_file_frame), save_filename_entry);
   gtk_container_set_border_width (GTK_CONTAINER (save_filename_entry), 3);
 
-  combo_entry2 = gnome_file_entry_gtk_entry (GNOME_FILE_ENTRY (save_filename_entry));
-  gtk_widget_ref (combo_entry2);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "combo_entry2", combo_entry2,
+  save_filename_subentry = gnome_file_entry_gtk_entry (GNOME_FILE_ENTRY (save_filename_entry));
+  gtk_widget_ref (save_filename_subentry);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "save_filename_subentry", save_filename_subentry,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (combo_entry2);
+  gtk_widget_show (save_filename_subentry);
 
   prefs_save_framedrop = gtk_frame_new (_("Frame drop"));
   gtk_widget_ref (prefs_save_framedrop);
@@ -3136,6 +3136,12 @@ create_main_window (void)
                       NULL);
   gtk_signal_connect (GTK_OBJECT (overlay_color_picker), "color_set",
                       GTK_SIGNAL_FUNC (on_overlay_color_picker_color_set),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (overlay_file_subentry), "changed",
+                      GTK_SIGNAL_FUNC (on_overlay_file_subentry_changed),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (save_filename_subentry), "changed",
+                      GTK_SIGNAL_FUNC (on_save_filename_subentry_changed),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (prefs_save_period), "changed",
                       GTK_SIGNAL_FUNC (on_prefs_save_period_changed),

@@ -646,14 +646,15 @@ BuildBayerPatternMenu(void)
   gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
 		      GTK_SIGNAL_FUNC (on_bayer_pattern_menu_activate),
 		      (int*)COLOR_FILTER_FORMAT7_GBRG); 
+  /*
   // add Auto option
   glade_menuitem = gtk_menu_item_new_with_label (_("Auto"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
   gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
 		      GTK_SIGNAL_FUNC (on_bayer_pattern_menu_activate),
-		      (int*)-1); 
-
+		      (int*)0); 
+  */
   gtk_option_menu_set_menu (GTK_OPTION_MENU (new_option_menu), new_menu);
 
   // menu history
