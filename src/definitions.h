@@ -122,10 +122,6 @@ typedef struct _CameraInfo_T {
   SelfIdPacket_t selfid;
   char* name;
 
-  // F7 data
-  Format7ModeInfo_t mode[NUM_MODE_FORMAT7];
-  //int edit_mode;
-
   // old uiinfo
   pthread_mutex_t uimutex;
   int want_to_display;
