@@ -5,6 +5,7 @@ Changes towards version 1.00
    June 17, 2003, by Damien Douxchamps
    - added a control for DMA buffer size.
    - misc fixes in preferences
+   - major fix in file saving
 	
    June 16, 2003, by Damien Douxchamps
    - fixed the difference between bytes per image (w*h*bpp) and

@@ -228,10 +228,6 @@ SaveThread(void* arg)
 	    switch (info->scratch) {
 	    case SAVE_SCRATCH_OVERWRITE:
 	      sprintf(filename_out, "%s%s", info->filename,info->filename_ext);
-	      fd=fopen(filename_out,"w");
-	      if (fd==NULL)
-		MainError("Can't create/open image file for saving");
-	      break;
 	    case SAVE_SCRATCH_SEQUENTIAL:
 	      switch (info->datenum) {
 	      case SAVE_TAG_DATE:
@@ -241,35 +237,34 @@ SaveThread(void* arg)
 		sprintf(filename_out,"%s-%10.10li%s", info->filename, info->counter++, info->filename_ext);
 		break;
 	      }
-	      fd=fopen(filename_out,"w");
-	      if (fd==NULL)
-		MainError("Can't create/open image file for saving");
 	      break;
 	    default:
 	      break;
 	    }
-	    
 	    // rambuffer operation
 	    if ((info->use_ram_buffer==TRUE)&&(info->scratch==SAVE_SCRATCH_VIDEO)) {
 	      if (info->ram_buffer_size-info->bigbuffer_position>=save_service->current_buffer->buffer_image_bytes) {
 		memcpy(&info->bigbuffer[info->bigbuffer_position], save_service->current_buffer->image, save_service->current_buffer->buffer_image_bytes);
 		info->bigbuffer_position+=save_service->current_buffer->buffer_image_bytes;
-		//fprintf(stderr,"remains: %ld bytes\n",info->ram_buffer_size-info->bigbuffer_position);
 	      }
-	      else {
-		// buffer is full, exit thread
+	      else { // buffer is full, exit thread
 		info->cancel_req=1;
 	      }
 	    }
 	    // normal operation
 	    else {
 	      if (info->rawdump>0) {
-		if (info->scratch==SAVE_SCRATCH_VIDEO) {
+		if (info->scratch!=SAVE_SCRATCH_VIDEO) {
+		  fd=fopen(filename_out,"w");
+		  if (fd==NULL)
+		    MainError("Can't create/open image file for saving");
+		  else {
+		    fwrite(save_service->current_buffer->image, 1, save_service->current_buffer->buffer_image_bytes, fd);
+		    fclose(fd);
+		  }
+		}
+		else // video saving mode
 		  fwrite(save_service->current_buffer->image, 1, save_service->current_buffer->buffer_image_bytes, fd);
-		}
-		else {
-		  Dump2File(filename_out,save_service);
-		}
 	      }
 	      else {
 		convert_to_rgb(save_service->current_buffer, info->buffer);
@@ -360,19 +355,6 @@ SaveStopThread(camera_t* cam)
   }
   
   return (1);
-}
-
-void
-Dump2File(char *name, chain_t *service)
-{
-  FILE *fd;
-  fd=fopen(name,"w");
-  if (fd==NULL)
-    MainError("Can't open file for saving");
-  else {
-    fwrite(service->current_buffer->image, 1, service->current_buffer->buffer_image_bytes, fd);
-    fclose(fd);
-  }
 }
 
 void

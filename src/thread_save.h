@@ -94,9 +94,6 @@ gint
 SaveStopThread(camera_t* cam);
 
 void
-Dump2File(char *name, chain_t *service);
-
-void
 SaveThreadCheckParams(chain_t *save_service);
 
 #endif
