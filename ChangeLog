@@ -2,6 +2,9 @@ Coriander, (c) 2000-2003 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 0.30
 
+   April 14, 2003, by Damien Douxchamps
+   - fixed big fat hairy YUV422 bug. Thanks again to Laurent and Vincent.
+	
    April 10, 2003, by Damien Douxchamps
    - new GUI layout
 	
