@@ -210,7 +210,7 @@ RemoveChain(chain_t* chain, unsigned int camera)
   if (chain->next_chain!=NULL)// lock next_mutex if we are not the last in the line
     pthread_mutex_unlock(&chain->next_chain->mutex_struct);
 
-  fprintf(stderr,"pipe: 0x%x\n",image_pipes[camera]);
+  //fprintf(stderr,"pipe: 0x%x\n",image_pipes[camera]);
 
 }
 

@@ -1246,19 +1246,16 @@ on_bayer_pattern_menu_activate           (GtkMenuItem     *menuitem,
 }
 
 void
-on_stereo_button_toggled               (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
+on_stereo_menu_activate               (GtkToggleButton *menuitem,
+                                       gpointer         user_data)
 {
-  if (togglebutton->active>0) {
-    pthread_mutex_lock(&uiinfo->mutex);
-    uiinfo->stereo=STEREO_DECODING;
-    pthread_mutex_unlock(&uiinfo->mutex);
-  }
-  else {
-    pthread_mutex_lock(&uiinfo->mutex);
-    uiinfo->stereo=NO_STEREO_DECODING;
-    pthread_mutex_unlock(&uiinfo->mutex);
-  }
+  int tmp;
+  tmp=(int)user_data;
+  
+  pthread_mutex_unlock(&uiinfo->mutex);
+  uiinfo->stereo=tmp;
+  pthread_mutex_unlock(&uiinfo->mutex);
+
   UpdateOptionFrame();
 
 }
