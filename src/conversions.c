@@ -536,6 +536,10 @@ y2rgb (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels
     dest[j--] = y;
     dest[j--] = y;
     dest[j--] = y;
+    y = (unsigned char) src[i--];
+    dest[j--] = y;
+    dest[j--] = y;
+    dest[j--] = y;
   }
 }
 

@@ -2,6 +2,10 @@ Coriander, (c) 2000-2004 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes since version 1.0.0
 
+   Nov 25, 2004, by Damien Douxchamps
+   - fixed a conversion problem in y2rgb: the first pixel was never converted
+     (Frederic Devernay)
+	
    Nov 24, 2004, by Damien Douxchamps
    - started to integrate Johann's enhanced display
    - modified the filename dialogs to standard grome dialogs (not working yet)
