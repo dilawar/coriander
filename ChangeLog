@@ -4,6 +4,7 @@ Changes towards version 0.99.3
 
    August 18, 2003, by Damien Douxchamps
    - fixed stupid businfo allocation in main.c
+   - fixed empty trigger menu if cam does not support ext trigger
 
    August 16, 2003, by Damien Douxchamps
    - added missing mutex init during in NewCamera()

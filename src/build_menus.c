@@ -76,14 +76,23 @@ BuildTriggerModeMenu(void)
       else
 	index[i]=0;
     }
+
+    gtk_option_menu_set_menu (GTK_OPTION_MENU (trigger_mode), trigger_mode_menu);
+    
+    // sets the active menu item:
+    //fprintf(stderr,"trig: max: %d, default: %d\n",NUM_TRIGGER_MODE,
+    //	  feature_set->feature[FEATURE_TRIGGER-FEATURE_MIN].trigger_mode);
+    gtk_option_menu_set_history (GTK_OPTION_MENU (trigger_mode), 
+				 index[camera->feature_set.feature[FEATURE_TRIGGER-FEATURE_MIN].trigger_mode]);
+    
   }
-  gtk_option_menu_set_menu (GTK_OPTION_MENU (trigger_mode), trigger_mode_menu);
-  
-  // sets the active menu item:
-  //fprintf(stderr,"trig: max: %d, default: %d\n",NUM_TRIGGER_MODE,
-  //	  feature_set->feature[FEATURE_TRIGGER-FEATURE_MIN].trigger_mode);
-  gtk_option_menu_set_history (GTK_OPTION_MENU (trigger_mode), 
-			       index[camera->feature_set.feature[FEATURE_TRIGGER-FEATURE_MIN].trigger_mode]);
+  else {
+    // add dummy menu item
+    glade_menuitem = gtk_menu_item_new_with_label (_("N/A"));
+    gtk_widget_show (glade_menuitem);
+    gtk_menu_append (GTK_MENU (trigger_mode_menu), glade_menuitem);
+    gtk_option_menu_set_history (GTK_OPTION_MENU (trigger_mode), 0);
+  }
 }
 
 
