@@ -1022,7 +1022,7 @@ BayerSimple(unsigned char *src, unsigned char *dest, int sx, int sy, int type)
   switch (type) {
   case COLOR_FILTER_FORMAT7_GRBG://---------------------------------------------------------
   case COLOR_FILTER_FORMAT7_GBRG:
-    for (i=0;i<sy-1;i+=1) {
+    for (i=0;i<sy-1;i+=2) {
       for (j=0;j<sx-1;j+=2) {
 	base=i*sx+j;
 	tmp=((src[base]+src[base+sx+1])>>1);
@@ -1031,15 +1031,20 @@ BayerSimple(unsigned char *src, unsigned char *dest, int sx, int sy, int type)
 	CLIP(tmp,outR[base*3]);
 	tmp=src[base+sx];
 	CLIP(tmp,outB[base*3]);
-
-	tmp=((src[base+2]+src[base+sx+1])>>1);
-	CLIP(tmp,outG[(base+1)*3]);
-	tmp=src[base+1];
-	CLIP(tmp,outR[(base+1)*3]);
-	tmp=src[base+2+sx];
-	CLIP(tmp,outB[(base+1)*3]);
       }
-      i+=1;
+    }
+    for (i=0;i<sy-1;i+=2) {
+      for (j=1;j<sx-1;j+=2) {
+	base=i*sx+j;
+	tmp=((src[base+1]+src[base+sx])>>1);
+	CLIP(tmp,outG[(base)*3]);
+	tmp=src[base];
+	CLIP(tmp,outR[(base)*3]);
+	tmp=src[base+1+sx];
+	CLIP(tmp,outB[(base)*3]);
+      }
+    }
+    for (i=1;i<sy-1;i+=2) {
       for (j=0;j<sx-1;j+=2) {
 	base=i*sx+j;
 	tmp=((src[base+sx]+src[base+1])>>1);
@@ -1048,19 +1053,23 @@ BayerSimple(unsigned char *src, unsigned char *dest, int sx, int sy, int type)
 	CLIP(tmp,outR[base*3]);
 	tmp=src[base];
 	CLIP(tmp,outB[base*3]);
-
-	tmp=((src[base+1]+src[base+2+sx])>>1);
-	CLIP(tmp,outG[(base+1)*3]);
-	tmp=src[base+sx+1];
-	CLIP(tmp,outR[(base+1)*3]);
-	tmp=src[base+2];
-	CLIP(tmp,outB[(base+1)*3]);
+      }
+    }
+    for (i=1;i<sy-1;i+=2) {
+      for (j=1;j<sx-1;j+=2) {
+	base=i*sx+j;
+	tmp=((src[base]+src[base+1+sx])>>1);
+	CLIP(tmp,outG[(base)*3]);
+	tmp=src[base+sx];
+	CLIP(tmp,outR[(base)*3]);
+	tmp=src[base+1];
+	CLIP(tmp,outB[(base)*3]);
       }
     }
     break;
   case COLOR_FILTER_FORMAT7_BGGR://---------------------------------------------------------
   case COLOR_FILTER_FORMAT7_RGGB:
-    for (i=0;i<sy-1;i+=1) {
+    for (i=0;i<sy-1;i+=2) {
       for (j=0;j<sx-1;j+=2) {
 	base=i*sx+j;
 	tmp=((src[base+sx]+src[base+1])>>1);
@@ -1069,30 +1078,39 @@ BayerSimple(unsigned char *src, unsigned char *dest, int sx, int sy, int type)
 	CLIP(tmp,outR[base*3]);
 	tmp=src[base];
 	CLIP(tmp,outB[base*3]);
-
-	tmp=((src[base+1]+src[base+2+sx])>>1);
-	CLIP(tmp,outG[(base+1)*3]);
-	tmp=src[base+sx+1];
-	CLIP(tmp,outR[(base+1)*3]);
-	tmp=src[base+2];
-	CLIP(tmp,outB[(base+1)*3]);
       }
-      i+=1;
+    }
+    for (i=1;i<sy-1;i+=2) {
       for (j=0;j<sx-1;j+=2) {
+	base=i*sx+j;
+	tmp=((src[base]+src[base+1+sx])>>1);
+	CLIP(tmp,outG[(base)*3]);
+	tmp=src[base+1];
+	CLIP(tmp,outR[(base)*3]);
+	tmp=src[base+sx];
+	CLIP(tmp,outB[(base)*3]);
+      }
+    }
+    for (i=0;i<sy-1;i+=2) {
+      for (j=1;j<sx-1;j+=2) {
 	base=i*sx+j;
 	tmp=((src[base]+src[base+sx+1])>>1);
 	CLIP(tmp,outG[base*3]);
-	tmp=src[base+1];
-	CLIP(tmp,outR[base*3]);
 	tmp=src[base+sx];
-	CLIP(tmp,outB[base*3]);
-
-	tmp=((src[base+2]+src[base+sx+1])>>1);
-	CLIP(tmp,outG[(base+1)*3]);
+	CLIP(tmp,outR[base*3]);
 	tmp=src[base+1];
-	CLIP(tmp,outR[(base+1)*3]);
-	tmp=src[base+2+sx];
-	CLIP(tmp,outB[(base+1)*3]);
+	CLIP(tmp,outB[base*3]);
+      }
+    }
+    for (i=1;i<sy-1;i+=2) {
+      for (j=1;j<sx-1;j+=2) {
+	base=i*sx+j;
+	tmp=((src[base+1]+src[base+sx])>>1);
+	CLIP(tmp,outG[(base)*3]);
+	tmp=src[base];
+	CLIP(tmp,outR[(base)*3]);
+	tmp=src[base+1+sx];
+	CLIP(tmp,outB[(base)*3]);
       }
     }
     break;
@@ -1101,7 +1119,18 @@ BayerSimple(unsigned char *src, unsigned char *dest, int sx, int sy, int type)
     return;
     break;
   }
-  
+ 
+  // add black border
+  for (i=sx*(sy-1)*3;i<sx*sy*3;i++) {
+    dest[i]=0;
+  }
+  for (i=(sx-1)*3;i<sx*sy*3;i+=(sx-1)*3) {
+    dest[i++]=0;
+    dest[i++]=0;
+    dest[i++]=0;
+  }
+
+
 }
 
 // change a 16bit stereo image (8bit/channel) into two 8bit images on top

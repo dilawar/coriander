@@ -445,7 +445,7 @@ SDLDisplayPattern(chain_t *display_service)
   register int i;
   register int j;
 
-  pthread_mutex_lock(&watchthread_info.mutex_area);
+  //pthread_mutex_lock(&watchthread_info.mutex_area);
   pimage=info->sdloverlay->pixels[0];
   switch(display_service->camera->prefs.overlay_pattern) {
   case OVERLAY_PATTERN_OFF:

@@ -2,6 +2,11 @@ Coriander, (c) 2000-2004 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes since version 1.0.0
 
+   Dec 14, 2004, by Damien Douxchamps
+   - fixed problems with the Simple bayer conversion
+   - added black borders to Simple and Edge Sense II bayer conversions to blank
+     invalid pixels
+	
    Dec 13, 2004, by Damien Douxchamps
    - fixed the GTK errors
    - fixed the filename dialogs
