@@ -22,7 +22,7 @@
 #define __THREAD_REAL_H__
 
 #include "thread_base.h"
-
+ 
 #ifdef HAVE_REALLIB
 #include "RealErrorSink.h"
 

@@ -23,7 +23,7 @@
 #include <gnome.h>
 #include "callbacks.h"
 #include "support.h"
-#include "definitions.h"
+#include "definitions.h" 
 #include "preferences.h"
 #include "update_ranges.h"
 #include "build_ranges.h"

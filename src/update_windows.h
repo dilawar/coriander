@@ -19,7 +19,7 @@
 #ifndef __UPDATEWINDOWS_H__
 #define __UPDATEWINDOWS_H__
 
-void
+void 
 UpdateFormat7Window(void);
 
 void

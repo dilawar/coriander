@@ -30,7 +30,7 @@ void
 ChangeModeAndFormat(int mode, int format);
 
 void
-IsoFlowCheck(int *state);
+IsoFlowCheck(int *state); 
 
 void
 IsoFlowResume(int *state);

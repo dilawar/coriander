@@ -22,7 +22,7 @@
 void
 BuildRange(GtkWidget* current_window, int feature);
 
-void
+void 
 BuildFormat7Ranges(void);
 
 

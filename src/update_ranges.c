@@ -31,7 +31,7 @@
 extern char* feature_scale_list[NUM_FEATURES];
 extern char* feature_frame_list[NUM_FEATURES];
 extern char* feature_menu_list[NUM_FEATURES];
-extern char* feature_menu_table_list[NUM_FEATURES];
+extern char* feature_menu_table_list[NUM_FEATURES]; 
 extern char* feature_menu_items_list[NUM_FEATURES];
 extern GtkWidget *preferences_window;
 extern dc1394_camerainfo *camera;

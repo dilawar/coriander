@@ -29,7 +29,7 @@
 #include "update_ranges.h"
 #include "update_windows.h"
 #include "tools.h"
-#include <libdc1394/dc1394_control.h>
+#include <libdc1394/dc1394_control.h> 
 
 extern GtkWidget *porthole_window;
 extern GtkWidget *commander_window;

@@ -27,7 +27,7 @@
 #include "preferences.h"
 #include "topology.h"
 #include "definitions.h"
-#include "tools.h"
+#include "tools.h" 
 
 extern dc1394_miscinfo *misc_info;
 extern dc1394_camerainfo *camera;

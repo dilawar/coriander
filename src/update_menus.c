@@ -31,7 +31,7 @@
 extern GtkWidget *commander_window;
 extern dc1394_camerainfo *camera;
 extern dc1394_feature_set *feature_set;
-extern dc1394_miscinfo *misc_info;
+extern dc1394_miscinfo *misc_info; 
 extern char* format_list[5];
 extern char* format0_list[7];
 extern char* format1_list[8];

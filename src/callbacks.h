@@ -29,7 +29,7 @@ on_file_activate                       (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
 void
-on_exit_activate                       (GtkMenuItem     *menuitem,
+on_exit_activate                       (GtkMenuItem     *menuitem, 
                                         gpointer         user_data);
 
 void

@@ -25,7 +25,7 @@
 #  include <config.h>
 #endif
 
-#include <gnome.h>
+#include <gnome.h> 
 #include "interface.h"
 #include "support.h"
 #include "callbacks.h"

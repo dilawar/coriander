@@ -42,7 +42,7 @@ extern "C" {
 #include "preferences.h"
 #include "conversions.h"
 #include "tools.h"
-
+ 
 extern PrefsInfo preferences;
 extern int current_camera;
 

@@ -29,7 +29,7 @@
 #include "preferences.h"
 #include <libdc1394/dc1394_control.h>
 
-const char * feature_list[NUM_FEATURES] = {
+const char * feature_list[NUM_FEATURES] = { 
   "brightness",
   "auto_exposure",
   "sharpness",

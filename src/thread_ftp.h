@@ -32,7 +32,7 @@ typedef enum
   FTP_SCRATCH_SEQUENTIAL,
   FTP_SCRATCH_OVERWRITE
 } ftp_scratch_t;
-
+ 
 typedef struct
 { 
   /* Define thread variables here.

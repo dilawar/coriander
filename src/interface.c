@@ -25,7 +25,7 @@ static GnomeUIInfo file_menu_uiinfo[] =
     GNOME_APP_UI_ITEM, N_("E_xit"),
     NULL,
     (gpointer) on_exit_activate, NULL, NULL,
-    GNOME_APP_PIXMAP_STOCK, GNOME_STOCK_MENU_EXIT,
+    GNOME_APP_PIXMAP_STOCK, GNOME_STOCK_MENU_EXIT, 
     GDK_Q, (GdkModifierType) GDK_CONTROL_MASK, NULL
   },
   GNOMEUIINFO_END

@@ -23,7 +23,7 @@
 #include <gnome.h>
 #include <pthread.h>
 #include "support.h"
-#include "thread_base.h"
+#include "thread_base.h" 
 #include "thread_display.h"
 #include "thread_iso.h"
 #include "thread_ftp.h"

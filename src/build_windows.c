@@ -27,7 +27,7 @@
 #include "build_menus.h"
 #include "build_ranges.h"
 #include "build_frames.h"
-#include "build_windows.h"
+#include "build_windows.h" 
 #include "preferences.h"
 #include "definitions.h"
 #include <libdc1394/dc1394_control.h>

@@ -23,7 +23,7 @@
 #include "thread_base.h"
 #include <libdc1394/dc1394_control.h>
 
-#define GUID_YUV12_PLANAR 0x32315659
+#define GUID_YUV12_PLANAR 0x32315659 
 #define GUID_YUY2_PACKED 0x32595559
 #define GUID_UYVY_PACKED 0x59565955
 #define THREAD_LOOP_SLEEP_TIME_US 1

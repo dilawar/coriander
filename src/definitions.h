@@ -27,7 +27,7 @@
 #define  RV                  2000     // scales of the FEATURE_WHITE_BALANCE feature
 #define  NO                 FALSE
 #define  YES                 TRUE
-
+ 
 enum 
 {
     RANGE_MENU_OFF = 0,

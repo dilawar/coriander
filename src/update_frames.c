@@ -32,7 +32,7 @@
 #include "preferences.h"
 #include "tools.h"
 #include "thread_iso.h"
-#include "thread_display.h"
+#include "thread_display.h" 
 #include "thread_save.h"
 #include "thread_ftp.h"
 #include "thread_base.h"

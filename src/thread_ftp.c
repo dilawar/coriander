@@ -34,7 +34,7 @@
 
 extern PrefsInfo preferences;
 extern int current_camera;
-
+ 
 gint
 FtpStartThread(void)
 {

@@ -31,7 +31,7 @@
 
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
-#include "thread_base.h"
+#include "thread_base.h" 
 
 
 typedef enum

@@ -29,7 +29,7 @@ void
 UpdatePrefsReceiveFrame(void);
 
 void
-UpdatePrefsRealFrame(void);
+UpdatePrefsRealFrame(void); 
 
 void
 UpdateCameraFrame(void);

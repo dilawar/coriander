@@ -23,7 +23,7 @@
 #include <pthread.h>
 #include <libdc1394/dc1394_control.h>
 #include "thread_base.h"
-#include "thread_save.h"
+#include "thread_save.h" 
 #include "definitions.h"
 #include "preferences.h"
 #include "tools.h"
