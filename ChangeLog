@@ -1,5 +1,10 @@
 Coriander, (c) 2000-2003 Damien Douxchamps <ddouxchamps@users.sf.net>
 
+Changes towards version 0.99.3
+
+   July 17, 2003, by Damien Douxchamps
+   - fixed white balance sliders that were not updated
+	
 Changes in version 0.99.2
 
    July 10, 2003, by Damien Douxchamps

@@ -317,14 +317,14 @@ void BuildRange(int feature)
     gtk_widget_show (scale);
     sprintf(stemp,"feature_%d_table",feature);
     if (camera->feature_set.feature[feature-FEATURE_MIN].absolute_capable!=0) {
-    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale, 0, RANGE_TABLE_WIDTH, 1, 2,
-		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-		      (GtkAttachOptions) (GTK_FILL), 0, 0);
+      gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale, 0, RANGE_TABLE_WIDTH, 1, 2,
+			(GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+			(GtkAttachOptions) (GTK_FILL), 0, 0);
     }
     else {
-    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale, 1, RANGE_TABLE_WIDTH, 0, 1,
-		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-		      (GtkAttachOptions) (GTK_FILL), 0, 0);
+      gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale, 1, RANGE_TABLE_WIDTH, 0, 1,
+			(GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+			(GtkAttachOptions) (GTK_FILL), 0, 0);
     }
     gtk_widget_set_sensitive (scale, TRUE);
     gtk_scale_set_digits (GTK_SCALE (scale), 0);

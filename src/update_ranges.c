@@ -148,17 +148,21 @@ UpdateRangeValue(GtkWidget* widget, int feature)
 	  prec_valueBU=valueBU;
 	  prec_valueRV=valueRV;
 	  usleep(100000);// wait 1/10 sec
+	  //fprintf(stderr,"values: %d %d\n",valueBU,valueRV);
 	}
       }
       if (err<0)
 	MainError("Could not get white balance value");
       else {
-	adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(widget, "white_balance_BU_scale")));
+	sprintf(stemp,"feature_%d_bu_scale",feature);
+	adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(widget, stemp)));
 	adj->value=valueBU;
 	gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
-	adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(widget, "white_balance_RV_scale")));
+	sprintf(stemp,"feature_%d_rv_scale",feature);
+	adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(widget, stemp)));
 	adj->value=valueRV;
 	gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
+	//fprintf(stderr,"white balance updated\n");
       }
       break;
     case FEATURE_TEMPERATURE:
@@ -175,10 +179,12 @@ UpdateRangeValue(GtkWidget* widget, int feature)
       if (err<0)
 	MainError("Could not get temperature value");
       else {
-	adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(widget, "temperature_target_scale")));
+	sprintf(stemp,"feature_%d_target_scale",feature);
+	adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(widget,stemp)));
 	adj->value=valuegoal;
 	gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
-	adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(widget, "temperature_current_scale")));
+	sprintf(stemp,"feature_%d_current_scale",feature);
+	adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(widget, stemp)));
 	adj->value=valuecurrent;
 	gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
       }
