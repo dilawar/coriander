@@ -8,7 +8,6 @@ Changes towards version 1.0.2
    - new save filename entry
    - fixed a PVN issue (Jacob Gryn)
    - fixed missing recall of 'use_ram_buffer'
-   - remove unecessary 'filename_out' in thread_save.c
 	
    Feb 1, 2005, by Damien Douxchamps
    - fixed save-to-PVN

@@ -551,6 +551,7 @@ FillRamBuffer(chain_t *save_service)
 void*
 SaveThread(void* arg)
 {
+  char *filename_out;
   chain_t* save_service=NULL;
   savethread_info_t *info=NULL;
   GdkImlibImage *im=NULL;
@@ -559,6 +560,8 @@ SaveThread(void* arg)
   float tmp;
   int i;
   unsigned char* dest=NULL;
+
+  filename_out=(char*)malloc(STRING_SIZE*sizeof(char));
 
   save_service=(chain_t*)arg;
   pthread_mutex_lock(&save_service->mutex_data);
@@ -737,6 +740,7 @@ SaveThread(void* arg)
 
   pthread_mutex_unlock(&info->mutex_cancel);
 
+  free(filename_out);
   return ((void*)1);
 }
 

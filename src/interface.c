@@ -1802,10 +1802,7 @@ create_main_window (void)
   glade_menuitem = gtk_menu_item_new_with_label (_("tiff"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (save_format_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("ppm"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (save_format_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("pgm"));
+  glade_menuitem = gtk_menu_item_new_with_label (_("ppm/pgm"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (save_format_menu_menu), glade_menuitem);
   glade_menuitem = gtk_menu_item_new_with_label (_("xpm"));
@@ -1827,7 +1824,6 @@ create_main_window (void)
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (save_format_menu_menu), glade_menuitem);
   gtk_option_menu_set_menu (GTK_OPTION_MENU (save_format_menu), save_format_menu_menu);
-  gtk_option_menu_set_history (GTK_OPTION_MENU (save_format_menu), 10);
 
   hbox71 = gtk_hbox_new (TRUE, 0);
   gtk_widget_ref (hbox71);

@@ -2930,8 +2930,7 @@ number
 		      <items>png
 jpeg
 tiff
-ppm
-pgm
+ppm/pgm
 xpm
 eim
 raw
@@ -2939,7 +2938,7 @@ mpeg (video)
 pvn (video)
 raw (video)
 </items>
-		      <initial_choice>10</initial_choice>
+		      <initial_choice>0</initial_choice>
 		      <child>
 			<left_attach>1</left_attach>
 			<right_attach>2</right_attach>
