@@ -158,8 +158,8 @@ GetValidF7Crop(watchthread_info_t *wtinfo, chain_t* display_service) {
       wtinfo->pos[1]=0;
     if (wtinfo->pos[0]+wtinfo->size[0]>display_service->current_buffer->width-1)
       wtinfo->pos[0]-=wtinfo->pos[0]+wtinfo->size[0]-display_service->current_buffer->width+1;
-    if (wtinfo->pos[1]+wtinfo->size[1]>display_service->current_buffer->width-1)
-      wtinfo->pos[1]-=wtinfo->pos[1]+wtinfo->size[1]-display_service->current_buffer->width+1;
+    if (wtinfo->pos[1]+wtinfo->size[1]>display_service->current_buffer->height-1)
+      wtinfo->pos[1]-=wtinfo->pos[1]+wtinfo->size[1]-display_service->current_buffer->height+1;
 
   }
   else {

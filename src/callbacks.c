@@ -260,15 +260,15 @@ on_camera_select_activate              (GtkMenuItem     *menuitem,
 
   // close current display (we don't want display to be used by 2 threads at the same time 'cause SDL forbids it)
   DisplayStopThread(camera);
-  fprintf(stderr,"display stopped\n");
+  //fprintf(stderr,"display stopped\n");
 
   // stop all FPS displays:
   StopFPSDisplay();
-  fprintf(stderr,"FPS display stopped\n");
+  //fprintf(stderr,"FPS display stopped\n");
 
   // set current camera pointers:
   SetCurrentCamera(camera_ptr->camera_info.euid_64);
-  fprintf(stderr,"camera selected\n");
+  //fprintf(stderr,"camera selected\n");
 
   watchthread_info.draw=0;
   watchthread_info.mouse_down=0;
@@ -276,16 +276,16 @@ on_camera_select_activate              (GtkMenuItem     *menuitem,
 
   if (camera->want_to_display>0)
     DisplayStartThread(camera);
-  fprintf(stderr,"display restarted\n");
+  //fprintf(stderr,"display restarted\n");
 
   // redraw all:
   BuildAllWindows();
   UpdateAllWindows();
-  fprintf(stderr,"GUI redraw\n");
+  //fprintf(stderr,"GUI redraw\n");
 
   // resume all FPS displays:
   ResumeFPSDisplay();
-  fprintf(stderr,"FPS display resumed\n");
+  //fprintf(stderr,"FPS display resumed\n");
 }
 
 void
