@@ -8,4 +8,6 @@ Known bugs:
         - the RESET function is not working
 	- saving setups is not fully working
 - The test pattern generation is only working with some cameras.
-- The new thread mechanism is working but needs nore testing.
+- The new thread mechanism is working but needs more testing.
+- The REAL service is untested and only runs with some distros. It does not
+  work on RH-7.2

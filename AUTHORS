@@ -3,7 +3,7 @@ Authors:
 Video overlay				-- Dan Dennedy
 Video capture				-- Dan Dennedy
 Test pattern				-- Marcus Lim
-Bus Topology				-- Andreas Micklei
+Bus topology functions			-- Andreas Micklei
 GDK display init function missing	-- John B. Burchett
 Format7 massive debug			-- Olaf Ronneberger 
 The rest				-- Damien Douxchamps
