@@ -1243,14 +1243,14 @@ on_global_iso_start_clicked            (GtkButton       *button,
     while (camera_ptr!=NULL) {
       if (camera_ptr->misc_info.is_iso_on==DC1394_FALSE) {
 	if (dc1394_start_iso_transmission(camera_ptr->camera_info.handle,camera_ptr->camera_info.id)!=DC1394_SUCCESS) {
-	  MainError("Could not stop ISO transmission");
+	  MainError("Could not start ISO transmission");
 	}
 	else {
 	  if (dc1394_get_iso_status(camera_ptr->camera_info.handle, camera_ptr->camera_info.id, &status)!=DC1394_SUCCESS)
 	    MainError("Could not get ISO status");
 	  else {
 	    if (status==DC1394_FALSE)
-	      MainError("Broacast ISO stop failed for a camera");
+	      MainError("Broacast ISO start failed for a camera");
 	    else
 	      camera_ptr->misc_info.is_iso_on=DC1394_TRUE;
 	  }
