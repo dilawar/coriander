@@ -9,7 +9,7 @@
 ==========================================================================
 		
 
-(This README is for version 0.32)
+(This README is for version 0.33)
 
 Hello world!
 
@@ -18,8 +18,14 @@ the IIDC specs issued by the 1394 Trade Association [1]). Due to the
 properties of the IEEE1394 protocol, Coriander can control an IEEE1394
 camera without interferring with the image flow from that camera. It
 can thus be used to setup a camera with Coriander while the video flow
-is used by another application (at least if the porthole display is
+is used by another application (at least if the image reception is
 switched off).
+
+Coriander offers full camera control (including Format_7 and absolute
+settings), live video display, images and streams saving, images posting
+with FTP and last but not least video4linux (V4L) export. The latter
+service allows you to use Coriander as a V4L video generator for popular
+applications like GnomeMeeting, Effectv,...
 
 				**********
 

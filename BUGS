@@ -1,4 +1,3 @@
-Known bugs for version 0.32:
+Known bugs for version 0.33:
 
-- Format_7 has some bugs, these will be fixed before 1.0 release
-- threads don't like to be removed if they were never used.
+None right now. That's good because we are reaching 1.0...

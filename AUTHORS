@@ -1,6 +1,6 @@
 Authors:
 -----------
-Dan Dennedy				-- Video overlay and capture
+Dan Dennedy				-- V4L, first video overlay and capture
 Damien Douxchamps			-- The rest
 
 Contributors and Beta Testers:
@@ -8,7 +8,7 @@ Contributors and Beta Testers:
 Yasutoshi Onishi			-- big help debugging Format7
 Xiong Quanren				-- big help debugging Bayer
 					   decoding functions
-Marcu Lim				-- test pattern function
+Marcu Lim				-- test pattern function (discontinued)
 Andreas Micklei				-- Bus topology functions
 Olaf Ronneberger			-- Format7 massive debug
 
