@@ -16,25 +16,7 @@
  * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif
-
-#include <gnome.h>
-#include <libdc1394/dc1394_control.h>
-#include <string.h>
 #include "tools.h"
-#include "build_menus.h" 
-#include "update_frames.h"
-#include "update_windows.h"
-#include "build_windows.h"
-#include "update_ranges.h"
-#include "raw1394support.h"
-#include "topology.h"
-#include "thread_iso.h"
-#include "thread_display.h"
-#include "thread_ftp.h"
-#include "thread_save.h"
   
 #define YUV2RGB(y, u, v, r, g, b)\
   r = y + ((v*1436) >>10);\
@@ -87,52 +69,49 @@ GetFormat7Capabilities(raw1394handle_t handle, nodeid_t node, Format7Info *info)
   
   if (dc1394_query_supported_modes(handle, node, FORMAT_SCALABLE_IMAGE_SIZE, &value)!=DC1394_SUCCESS)
     MainError("Could not query Format7 supported modes");
-  else
-    {
-      for (i=0,f=MODE_FORMAT7_MIN;f<MODE_FORMAT7_MAX;f++,i++)
-	{
-	  info->mode[i].present= (value & (0x1<<(31-i)) );
-	  if (info->mode[i].present) // check for mode presence before query
-	    {
-	      if (dc1394_query_format7_max_image_size(handle,node,f,&info->mode[i].max_size_x,&info->mode[i].max_size_y)!=DC1394_SUCCESS)
-		MainError("Got a problem querying format7 max image size");
-	      if (dc1394_query_format7_unit_size(handle,node,f,&info->mode[i].step_x,&info->mode[i].step_y)!=DC1394_SUCCESS)
-		MainError("Got a problem querying format7 unit size");
-	      // quick hack to keep size/position even. If pos/size is ODD, strange color/distorsions occur on some cams
-	      // (e.g. Basler cams). This will have to really fixed later.
-	      // REM: this is fixed by using the unit_position:
-	      //fprintf(stderr,"Using pos units = %d %d\n",info->mode[i].step_pos_x,info->mode[i].step_pos_y);
-	      if (dc1394_query_format7_unit_position(handle,node,f,&info->mode[i].step_pos_x,&info->mode[i].step_pos_y)!=DC1394_SUCCESS)
-		MainError("Got a problem querying format7 unit position");
-	      info->mode[i].use_unit_pos=((info->mode[i].step_pos_x>0)&&(info->mode[i].step_pos_x<info->mode[i].max_size_x)&&
-					  (info->mode[i].step_pos_y>0)&&(info->mode[i].step_pos_y<info->mode[i].max_size_y));
-
-	      if (dc1394_query_format7_image_position(handle,node,f,&info->mode[i].pos_x,&info->mode[i].pos_y)!=DC1394_SUCCESS)
-		MainError("Got a problem querying format7 image position");
-	      if (dc1394_query_format7_image_size(handle,node,f,&info->mode[i].size_x,&info->mode[i].size_y)!=DC1394_SUCCESS)
-		MainError("Got a problem querying format7 image size");
-	      if (dc1394_query_format7_pixel_number(handle,node,f,&info->mode[i].pixnum)!=DC1394_SUCCESS)
-		MainError("Got a problem querying format7 pixel number");
-	      if (dc1394_query_format7_byte_per_packet(handle,node,f,&info->mode[i].bpp)!=DC1394_SUCCESS)
-		MainError("Got a problem querying format7 bytes per packet");
-	      if (dc1394_query_format7_packet_para(handle,node,f,&info->mode[i].min_bpp,&info->mode[i].max_bpp)!=DC1394_SUCCESS)
-		MainError("Got a problem querying format7 packet parameters");
-	      if (dc1394_query_format7_total_bytes(handle,node,f,&info->mode[i].total_bytes)!=DC1394_SUCCESS)
-		MainError("Got a problem querying format7 total bytes per frame");
-	      if (dc1394_query_format7_color_coding_id(handle,node,f,&info->mode[i].color_coding_id)!=DC1394_SUCCESS)
-		MainError("Got a problem querying format7 color coding ID");
-	      if (dc1394_query_format7_color_coding(handle,node,f,&info->mode[i].color_coding)!=DC1394_SUCCESS)
-		MainError("Got a problem querying format7 color coding");
-
-
-	      //fprintf(stderr,"color coding for mode %d: 0x%x, current: %d\n", i,
-	      //	      info->mode[i].color_coding, info->mode[i].color_coding_id);
-
-	    }
-	}
+  else {
+    for (i=0,f=MODE_FORMAT7_MIN;f<MODE_FORMAT7_MAX;f++,i++) {
+      info->mode[i].present= (value & (0x1<<(31-i)) );
+      if (info->mode[i].present) { // check for mode presence before query
+	if (dc1394_query_format7_max_image_size(handle,node,f,&info->mode[i].max_size_x,&info->mode[i].max_size_y)!=DC1394_SUCCESS)
+	  MainError("Got a problem querying format7 max image size");
+	if (dc1394_query_format7_unit_size(handle,node,f,&info->mode[i].step_x,&info->mode[i].step_y)!=DC1394_SUCCESS)
+	  MainError("Got a problem querying format7 unit size");
+	// quick hack to keep size/position even. If pos/size is ODD, strange color/distorsions occur on some cams
+	// (e.g. Basler cams). This will have to really fixed later.
+	// REM: this is fixed by using the unit_position:
+	//fprintf(stderr,"Using pos units = %d %d\n",info->mode[i].step_pos_x,info->mode[i].step_pos_y);
+	if (dc1394_query_format7_unit_position(handle,node,f,&info->mode[i].step_pos_x,&info->mode[i].step_pos_y)!=DC1394_SUCCESS)
+	  MainError("Got a problem querying format7 unit position");
+	info->mode[i].use_unit_pos=((info->mode[i].step_pos_x>0)&&(info->mode[i].step_pos_x<info->mode[i].max_size_x)&&
+				    (info->mode[i].step_pos_y>0)&&(info->mode[i].step_pos_y<info->mode[i].max_size_y));
+	
+	if (dc1394_query_format7_image_position(handle,node,f,&info->mode[i].pos_x,&info->mode[i].pos_y)!=DC1394_SUCCESS)
+	  MainError("Got a problem querying format7 image position");
+	if (dc1394_query_format7_image_size(handle,node,f,&info->mode[i].size_x,&info->mode[i].size_y)!=DC1394_SUCCESS)
+	  MainError("Got a problem querying format7 image size");
+	if (dc1394_query_format7_pixel_number(handle,node,f,&info->mode[i].pixnum)!=DC1394_SUCCESS)
+	  MainError("Got a problem querying format7 pixel number");
+	if (dc1394_query_format7_byte_per_packet(handle,node,f,&info->mode[i].bpp)!=DC1394_SUCCESS)
+	  MainError("Got a problem querying format7 bytes per packet");
+	if (dc1394_query_format7_packet_para(handle,node,f,&info->mode[i].min_bpp,&info->mode[i].max_bpp)!=DC1394_SUCCESS)
+	  MainError("Got a problem querying format7 packet parameters");
+	if (dc1394_query_format7_total_bytes(handle,node,f,&info->mode[i].total_bytes)!=DC1394_SUCCESS)
+	  MainError("Got a problem querying format7 total bytes per frame");
+	if (dc1394_query_format7_color_coding_id(handle,node,f,&info->mode[i].color_coding_id)!=DC1394_SUCCESS)
+	  MainError("Got a problem querying format7 color coding ID");
+	if (dc1394_query_format7_color_coding(handle,node,f,&info->mode[i].color_coding)!=DC1394_SUCCESS)
+	  MainError("Got a problem querying format7 color coding");
+	
+	
+	//fprintf(stderr,"color coding for mode %d: 0x%x, current: %d\n", i,
+	//	      info->mode[i].color_coding, info->mode[i].color_coding_id);
+	
+      }
     }
+  }
   info->edit_mode = MODE_FORMAT7_MIN;
-
+  
 }
 
 void
@@ -195,18 +174,17 @@ void IsoFlowCheck(int *state)
 { 
   if (dc1394_get_iso_status(camera->handle, camera->id, &misc_info->is_iso_on)!=DC1394_SUCCESS)
     MainError("Could not get ISO status");
-  else
-    if (misc_info->is_iso_on>0)
-      {
-	if (dc1394_stop_iso_transmission(camera->handle, camera->id)!=DC1394_SUCCESS)
-	  // ... (if not done, restarting is no more possible)
-	  MainError("Could not stop ISO transmission");
-      }
-  
+  else {
+    if (misc_info->is_iso_on>0) {
+      if (dc1394_stop_iso_transmission(camera->handle, camera->id)!=DC1394_SUCCESS)
+	// ... (if not done, restarting is no more possible)
+	MainError("Could not stop ISO transmission");
+    }
+  }
   // memorize state:
   *state=(GetService(SERVICE_ISO,current_camera)!=NULL);
   if (*state!=0) {
-    gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(commander_window,"service_iso"),0);
+    gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(commander_window,"service_iso"),FALSE);
   }
 }
 
@@ -222,7 +200,7 @@ void IsoFlowResume(int *state)
   }
 
   if (*state!=0) {
-    gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(commander_window,"service_iso"),1);
+    gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(commander_window,"service_iso"),TRUE);
   }
   
   if (was_on>0) {
@@ -308,24 +286,22 @@ void GrabSelfIds(raw1394handle_t* handles, int portmax)
   unsigned int* pselfid_int;
   int i, j, port;
 
-  for (port=0;port<portmax;port++)
-    {
-      if (handles[port]!=0)
-	{
-	  // get and decode SelfIds.
-	  topomap=raw1394GetTopologyMap(handles[port]);
-	  
-	  for (i=0;i<topomap->selfIdCount;i++)
-	    {
-	      pselfid_int = (unsigned int *) &topomap->selfIdPacket[i];
-	      decode_selfid(&packet,pselfid_int);
-	      // find the camera related to this packet:
-	      for (j=0;j<camera_num;j++)
-		if (cameras[j].id==packet.packetZero.phyID)
-		  selfids[j]=packet;
-	    }
+  for (port=0;port<portmax;port++) {
+    if (handles[port]!=0) {
+      // get and decode SelfIds.
+      topomap=raw1394GetTopologyMap(handles[port]);
+      
+      for (i=0;i<topomap->selfIdCount;i++) {
+	pselfid_int = (unsigned int *) &topomap->selfIdPacket[i];
+	decode_selfid(&packet,pselfid_int);
+	// find the camera related to this packet:
+	for (j=0;j<camera_num;j++) {
+	  if (cameras[j].id==packet.packetZero.phyID)
+	    selfids[j]=packet;
 	}
+      }
     }
+  }
 }
 
 void SelectCamera(int i)
@@ -348,13 +324,12 @@ SetChannels(void)
 {
   unsigned int channel, speed, i;
 
-  for (i=0;i<camera_num;i++)
-    {
-      if (dc1394_get_iso_channel_and_speed(cameras[i].handle, cameras[i].id, &channel, &speed)!=DC1394_SUCCESS)
-	MainError("Can't get iso channel and speed");
-      if (dc1394_set_iso_channel_and_speed(cameras[i].handle, cameras[i].id, cameras[i].id, speed)!=DC1394_SUCCESS)
-	MainError("Can't set iso channel and speed");
-    }
+  for (i=0;i<camera_num;i++) {
+    if (dc1394_get_iso_channel_and_speed(cameras[i].handle, cameras[i].id, &channel, &speed)!=DC1394_SUCCESS)
+      MainError("Can't get iso channel and speed");
+    if (dc1394_set_iso_channel_and_speed(cameras[i].handle, cameras[i].id, cameras[i].id, speed)!=DC1394_SUCCESS)
+      MainError("Can't set iso channel and speed");
+  }
 }
 
 void MainError(const char *string)
@@ -412,40 +387,39 @@ void MessageBox( gchar *message)
 void
 SetScaleSensitivity(GtkWidget* widget, int feature, dc1394bool_t sense)
 { 
-  switch (feature)
-    {
-    case FEATURE_WHITE_BALANCE:
-      gtk_widget_set_sensitive(GTK_WIDGET (lookup_widget(GTK_WIDGET (widget), "white_balance_RV_scale")),sense);
-      gtk_widget_set_sensitive(GTK_WIDGET (lookup_widget(GTK_WIDGET (widget), "white_balance_BU_scale")),sense);
-      break;
-    case FEATURE_TEMPERATURE:
-      gtk_widget_set_sensitive(GTK_WIDGET (lookup_widget(GTK_WIDGET (widget), "temperature_target_scale")),sense);
-      break;
-    default:
-      gtk_widget_set_sensitive(GTK_WIDGET (lookup_widget(GTK_WIDGET (widget), feature_scale_list[feature-FEATURE_MIN])),sense);
-      break;
-    }
+  switch (feature) {
+  case FEATURE_WHITE_BALANCE:
+    gtk_widget_set_sensitive(GTK_WIDGET (lookup_widget(GTK_WIDGET (widget), "white_balance_RV_scale")),sense);
+    gtk_widget_set_sensitive(GTK_WIDGET (lookup_widget(GTK_WIDGET (widget), "white_balance_BU_scale")),sense);
+    break;
+  case FEATURE_TEMPERATURE:
+    gtk_widget_set_sensitive(GTK_WIDGET (lookup_widget(GTK_WIDGET (widget), "temperature_target_scale")),sense);
+    break;
+  default:
+    gtk_widget_set_sensitive(GTK_WIDGET (lookup_widget(GTK_WIDGET (widget), feature_scale_list[feature-FEATURE_MIN])),sense);
+    break;
+  }
 }
 
 void
 DisplayActiveServices(void)
 {
   int i;
-  for (i=0;i<camera_num;i++)
-    {
-      fprintf(stderr,"Camera %d : ",i);
-      if (GetService(SERVICE_ISO,i)!=NULL)
-	fprintf(stderr, "ISO ");
-      if (GetService(SERVICE_DISPLAY,i)!=NULL)
-	fprintf(stderr, "DISPLAY ");
-      if (GetService(SERVICE_FTP,i)!=NULL)
-	fprintf(stderr, "FTP ");
-      if (GetService(SERVICE_SAVE,i)!=NULL)
-	fprintf(stderr, "SAVE ");
-      fprintf(stderr,"\n");
-    }
+  for (i=0;i<camera_num;i++) {
+    fprintf(stderr,"Camera %d : ",i);
+    if (GetService(SERVICE_ISO,i)!=NULL)
+      fprintf(stderr, "ISO ");
+    if (GetService(SERVICE_DISPLAY,i)!=NULL)
+      fprintf(stderr, "DISPLAY ");
+    if (GetService(SERVICE_FTP,i)!=NULL)
+      fprintf(stderr, "FTP ");
+    if (GetService(SERVICE_SAVE,i)!=NULL)
+      fprintf(stderr, "SAVE ");
+    fprintf(stderr,"\n");
+  }
   fprintf(stderr,"\n");
 }
+
 /*
 void*
 AutoWhiteBalance(void* arg)
@@ -587,25 +561,24 @@ SetAbsoluteControl(int feature, int power)
 
   if (dc1394_absolute_setting_on_off(camera->handle, camera->id, feature, power)!=DC1394_SUCCESS)
     MainError("Could not activate absolute setting\n");
-  else
-    {
-      feature_set->feature[feature-FEATURE_MIN].abs_control=power;
-      gtk_widget_set_sensitive(lookup_widget(commander_window, feature_frame_list[feature-FEATURE_MIN]), !power);
-      gtk_widget_set_sensitive(lookup_widget(absolute_settings_window,feature_abs_entry_list[feature-FEATURE_MIN]),power);
-      gtk_widget_set_sensitive(lookup_widget(absolute_settings_window,feature_abs_label_list[feature-FEATURE_MIN]),power);
-      if (power>0) {
-	// update absolute value 
-	dc1394_query_absolute_feature_value(camera->handle, camera->id, feature, &(feature_set->feature[feature-FEATURE_MIN].abs_value));
-	sprintf(string,"%f",feature_set->feature[feature-FEATURE_MIN].abs_value);
-	gtk_entry_set_text(GTK_ENTRY(lookup_widget(absolute_settings_window, feature_abs_entry_list[feature-FEATURE_MIN])),
-			   string);
-      }
-      else {
-	// update range
-	UpdateRange(commander_window, feature);
-      }
+  else {
+    feature_set->feature[feature-FEATURE_MIN].abs_control=power;
+    gtk_widget_set_sensitive(lookup_widget(commander_window, feature_frame_list[feature-FEATURE_MIN]), !power);
+    gtk_widget_set_sensitive(lookup_widget(absolute_settings_window,feature_abs_entry_list[feature-FEATURE_MIN]),power);
+    gtk_widget_set_sensitive(lookup_widget(absolute_settings_window,feature_abs_label_list[feature-FEATURE_MIN]),power);
+    if (power>0) {
+      // update absolute value 
+      dc1394_query_absolute_feature_value(camera->handle, camera->id, feature, &(feature_set->feature[feature-FEATURE_MIN].abs_value));
+      sprintf(string,"%f",feature_set->feature[feature-FEATURE_MIN].abs_value);
+      gtk_entry_set_text(GTK_ENTRY(lookup_widget(absolute_settings_window, feature_abs_entry_list[feature-FEATURE_MIN])),
+			 string);
     }
-
+    else {
+      // update range
+      UpdateRange(commander_window, feature);
+    }
+  }
+  
 }
 
 

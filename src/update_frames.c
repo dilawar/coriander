@@ -16,28 +16,7 @@
  * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif
-
-#include <gnome.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <string.h>
 #include "update_frames.h"
-#include "support.h"
-#include "build_menus.h"
-#include "definitions.h"
-#include "preferences.h"
-#include "tools.h"
-#include "thread_iso.h"
-#include "thread_display.h" 
-#include "thread_save.h"
-#include "thread_ftp.h"
-#include "thread_base.h"
-#include "build_ranges.h"
-#include <libdc1394/dc1394_control.h>
-#include "raw1394support.h"
 
 extern uiinfo_t *uiinfo;
 extern GtkWidget *commander_window;
@@ -182,52 +161,38 @@ UpdateCameraStatusFrame(void)
 
   // vendor:
   sprintf(temp," %s",camera->vendor);
-  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"camera_vendor_status"),
-		       ctxt.vendor_ctxt, ctxt.vendor_id);
-  ctxt.vendor_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"camera_vendor_status"),
-				    ctxt.vendor_ctxt, temp);
+  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"camera_vendor_status"), ctxt.vendor_ctxt, ctxt.vendor_id);
+  ctxt.vendor_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"camera_vendor_status"), ctxt.vendor_ctxt, temp);
 
   // camera model:
   sprintf(temp," %s",camera->model);
-  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"camera_model_status"),
-		       ctxt.model_ctxt, ctxt.model_id);
-  ctxt.model_id=gtk_statusbar_push( (GtkStatusbar*)lookup_widget(commander_window,"camera_model_status"),
-				    ctxt.model_ctxt, temp);
+  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"camera_model_status"), ctxt.model_ctxt, ctxt.model_id);
+  ctxt.model_id=gtk_statusbar_push( (GtkStatusbar*)lookup_widget(commander_window,"camera_model_status"), ctxt.model_ctxt, temp);
 
   // camera node:
   sprintf(temp," %d",camera->id);
-  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"camera_node_status"),
-		       ctxt.node_ctxt, ctxt.node_id);
-  ctxt.node_id=gtk_statusbar_push( (GtkStatusbar*)lookup_widget(commander_window,"camera_node_status"),
-				   ctxt.node_ctxt, temp);
+  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"camera_node_status"), ctxt.node_ctxt, ctxt.node_id);
+  ctxt.node_id=gtk_statusbar_push( (GtkStatusbar*)lookup_widget(commander_window,"camera_node_status"), ctxt.node_ctxt, temp);
 
   // camera handle:
   sprintf(temp," 0x%x",(unsigned int)camera->handle);
-  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"camera_handle_status"),
-		       ctxt.handle_ctxt, ctxt.handle_id);
-  ctxt.handle_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(commander_window,"camera_handle_status"),
-				    ctxt.handle_ctxt, temp);
+  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"camera_handle_status"), ctxt.handle_ctxt, ctxt.handle_id);
+  ctxt.handle_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(commander_window,"camera_handle_status"), ctxt.handle_ctxt, temp);
 
   // camera GUID:
   sprintf(temp," 0x%06x-%02x%08x", value[2], value[1], value[0]);
-  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"camera_guid_status"),
-		       ctxt.guid_ctxt, ctxt.guid_id);
-  ctxt.guid_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(commander_window,"camera_guid_status"),
-				  ctxt.guid_ctxt, temp);
+  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"camera_guid_status"), ctxt.guid_ctxt, ctxt.guid_id);
+  ctxt.guid_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(commander_window,"camera_guid_status"), ctxt.guid_ctxt, temp);
 
   // camera maximal PHY speed:
   sprintf(temp," %s",phy_speed_list[selfid->packetZero.phySpeed]);
-  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"camera_maxiso_status"),
-		       ctxt.max_iso_ctxt, ctxt.max_iso_id);
-  ctxt.max_iso_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(commander_window,"camera_maxiso_status"),
-				     ctxt.max_iso_ctxt, temp);
+  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"camera_maxiso_status"), ctxt.max_iso_ctxt, ctxt.max_iso_id);
+  ctxt.max_iso_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(commander_window,"camera_maxiso_status"), ctxt.max_iso_ctxt, temp);
 
   // camera maximal PHY delay:
   sprintf(temp," %s",phy_delay_list[selfid->packetZero.phyDelay]);
-  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"camera_delay_status"),
-		       ctxt.delay_ctxt, ctxt.delay_id);
-  ctxt.delay_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(commander_window,"camera_delay_status"),
-				     ctxt.delay_ctxt, temp);
+  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"camera_delay_status"), ctxt.delay_ctxt, ctxt.delay_id);
+  ctxt.delay_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(commander_window,"camera_delay_status"), ctxt.delay_ctxt, temp);
 
   // IIDC software revision:
   if (dc1394_get_sw_version(camera->handle, camera->id, &sw_version)!=DC1394_SUCCESS) {
@@ -241,22 +206,17 @@ UpdateCameraStatusFrame(void)
   case 0x000114: sprintf(temp," Point Grey 114");break;
   default: sprintf(temp," Unknown");
   }
-  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"camera_dc_status"),
-		       ctxt.dc_ctxt, ctxt.dc_id);
-  ctxt.dc_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(commander_window,"camera_dc_status"),
-				     ctxt.dc_ctxt, temp);
+  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"camera_dc_status"), ctxt.dc_ctxt, ctxt.dc_id);
+  ctxt.dc_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(commander_window,"camera_dc_status"), ctxt.dc_ctxt, temp);
 
   // power class:
   sprintf(temp," %s",power_class_list[selfid->packetZero.powerClass]);
-  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"camera_pwclass_status"),
-		       ctxt.pwclass_ctxt, ctxt.pwclass_id);
-  ctxt.pwclass_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(commander_window,"camera_pwclass_status"),
-				     ctxt.pwclass_ctxt,temp);
+  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"camera_pwclass_status"), ctxt.pwclass_ctxt, ctxt.pwclass_id);
+  ctxt.pwclass_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(commander_window,"camera_pwclass_status"), ctxt.pwclass_ctxt,temp);
 
   // camera name: 
   //fprintf(stderr,"name: %s\n",preferences.camera_names[current_camera]);
-  gtk_entry_set_text(GTK_ENTRY(lookup_widget(commander_window,"camera_name_text")),
-  		     preferences.camera_names[current_camera]);
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(commander_window,"camera_name_text")), preferences.camera_names[current_camera]);
 
 }
 
@@ -292,19 +252,17 @@ UpdateCursorFrame(int posx, int posy, int r, int g, int b, int y, int u, int v)
   ctxt.cursor_pos_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"cursor_pos"), ctxt.cursor_pos_ctxt, temp);
 
   // color:
-  if (r>-255)
-    {
-      sprintf(temp," %03d,%03d,%03d",r,g,b);
-      gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"cursor_rgb"), ctxt.cursor_rgb_ctxt, ctxt.cursor_rgb_id);
-      ctxt.cursor_rgb_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"cursor_rgb"), ctxt.cursor_rgb_ctxt, temp);
-    }
+  if (r>-255) {
+    sprintf(temp," %03d,%03d,%03d",r,g,b);
+    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"cursor_rgb"), ctxt.cursor_rgb_ctxt, ctxt.cursor_rgb_id);
+    ctxt.cursor_rgb_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"cursor_rgb"), ctxt.cursor_rgb_ctxt, temp);
+  }
   
-  if (y>-255)
-    {
-      sprintf(temp," %03d,%03d,%03d",y,u,v);
-      gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"cursor_yuv"), ctxt.cursor_yuv_ctxt, ctxt.cursor_yuv_id);
+  if (y>-255) {
+    sprintf(temp," %03d,%03d,%03d",y,u,v);
+    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"cursor_yuv"), ctxt.cursor_yuv_ctxt, ctxt.cursor_yuv_id);
       ctxt.cursor_yuv_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"cursor_yuv"), ctxt.cursor_yuv_ctxt, temp);
-    }
+  }
 }
 
 void
@@ -316,31 +274,29 @@ UpdateOptionFrame(void)
   gtk_widget_set_sensitive(lookup_widget(commander_window,"pattern_menu"),
 			   uiinfo->bayer!=NO_BAYER_DECODING);
   pthread_mutex_unlock(&uiinfo->mutex);
-  if (misc_info->format!=FORMAT_SCALABLE_IMAGE_SIZE)
-    {
-      cond8=((misc_info->mode==MODE_640x480_MONO)||
-	     (misc_info->mode==MODE_800x600_MONO)||
-	     (misc_info->mode==MODE_1024x768_MONO)||
-	     (misc_info->mode==MODE_1280x960_MONO)||
-	     (misc_info->mode==MODE_1600x1200_MONO));
-      cond16=((misc_info->mode==MODE_640x480_MONO16)||
-	      (misc_info->mode==MODE_800x600_MONO16)||
-	      (misc_info->mode==MODE_1024x768_MONO16)||
-	      (misc_info->mode==MODE_1280x960_MONO16)||
-	      (misc_info->mode==MODE_1600x1200_MONO16));
-      cond422=((misc_info->mode==MODE_320x240_YUV422)||
-	       (misc_info->mode==MODE_640x480_YUV422)||
-	       (misc_info->mode==MODE_800x600_YUV422)||
-	       (misc_info->mode==MODE_1024x768_YUV422)||
-	       (misc_info->mode==MODE_1280x960_YUV422)||
-	       (misc_info->mode==MODE_1600x1200_YUV422));
-    }
-  else
-    {
-      cond16=(format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].color_coding_id==COLOR_FORMAT7_MONO16);
-      cond8=(format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].color_coding_id==COLOR_FORMAT7_MONO8);
-      cond422=(format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].color_coding_id==COLOR_FORMAT7_YUV422);
-    }
+  if (misc_info->format!=FORMAT_SCALABLE_IMAGE_SIZE) {
+    cond8=((misc_info->mode==MODE_640x480_MONO)||
+	   (misc_info->mode==MODE_800x600_MONO)||
+	   (misc_info->mode==MODE_1024x768_MONO)||
+	   (misc_info->mode==MODE_1280x960_MONO)||
+	   (misc_info->mode==MODE_1600x1200_MONO));
+    cond16=((misc_info->mode==MODE_640x480_MONO16)||
+	    (misc_info->mode==MODE_800x600_MONO16)||
+	    (misc_info->mode==MODE_1024x768_MONO16)||
+	    (misc_info->mode==MODE_1280x960_MONO16)||
+	    (misc_info->mode==MODE_1600x1200_MONO16));
+    cond422=((misc_info->mode==MODE_320x240_YUV422)||
+	     (misc_info->mode==MODE_640x480_YUV422)||
+	     (misc_info->mode==MODE_800x600_YUV422)||
+	     (misc_info->mode==MODE_1024x768_YUV422)||
+	     (misc_info->mode==MODE_1280x960_YUV422)||
+	     (misc_info->mode==MODE_1600x1200_YUV422));
+  }
+  else {
+    cond16=(format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].color_coding_id==COLOR_FORMAT7_MONO16);
+    cond8=(format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].color_coding_id==COLOR_FORMAT7_MONO8);
+    cond422=(format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].color_coding_id==COLOR_FORMAT7_YUV422);
+  }
   gtk_widget_set_sensitive(lookup_widget(commander_window,"pattern_menu"),(cond8||cond16||cond422));
   gtk_widget_set_sensitive(lookup_widget(commander_window,"bayer_menu"),(cond8||cond16||cond422));
   gtk_widget_set_sensitive(lookup_widget(commander_window,"stereo_menu"),cond16||cond422);

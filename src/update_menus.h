@@ -19,6 +19,15 @@
 #ifndef __UPDATEMENUS_H__
 #define __UPDATEMENUS_H__
 
+#include <gnome.h>
+#include <libdc1394/dc1394_control.h>
+#include "support.h"
+#include "tools.h"
+
+/*
+#include "callbacks.h"
+#include "definitions.h"
+*/
 void
 UpdateFormatMenu(void);
 

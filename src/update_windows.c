@@ -16,21 +16,7 @@
  * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif
-
-#include <gnome.h>
-#include "callbacks.h"
-#include "support.h"
-#include "definitions.h"
-#include "update_frames.h"
-#include "update_menus.h"
-#include "update_ranges.h"
 #include "update_windows.h"
-#include "build_menus.h"
-#include "tools.h"
-#include <libdc1394/dc1394_control.h> 
 
 extern GtkWidget *commander_window;
 

@@ -19,6 +19,16 @@
 #ifndef __UPDATERANGES_H__
 #define __UPDATERANGES_H__
 
+#include <gnome.h>
+#include <libdc1394/dc1394_control.h>
+#include "preferences.h"
+#include "support.h"
+#include "tools.h"
+/*
+#include "callbacks.h"
+#include "build_ranges.h"
+#include "definitions.h"
+*/
 void
 UpdateRange(GtkWidget* current_window, int feature);
 

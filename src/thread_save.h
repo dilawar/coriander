@@ -16,15 +16,15 @@
  * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <gnome.h>
-
 #ifndef __THREAD_SAVE_H__
 #define __THREAD_SAVE_H__
 
-
+#include <gnome.h>
+#include <string.h>
 #include <pthread.h>
 #include <time.h>
 #include <sys/times.h>
+#include "support.h"
 #include "thread_base.h"
 #include "definitions.h"
 

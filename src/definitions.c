@@ -21,8 +21,6 @@
 #endif
 
 #include "definitions.h"
-#include "preferences.h"
-#include <libdc1394/dc1394_control.h>
 
 const char * feature_list[NUM_FEATURES] = { 
   "brightness",

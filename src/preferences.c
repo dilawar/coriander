@@ -65,11 +65,10 @@ LoadConfigFile(void)
   preferences.ftp_scratch = gnome_config_get_int("coriander/ftp/scratch=0");
   preferences.ftp_period = gnome_config_get_int("coriander/ftp/period=1");
 
-  for (i=0;i<camera_num;i++)
-    {
-      sprintf(tmp,"coriander/camera_names/%llx=%s %s",cameras[i].euid_64, cameras[i].vendor, cameras[i].model);
-      preferences.camera_names[i] = gnome_config_get_string(tmp);
-    }
+  for (i=0;i<camera_num;i++) {
+    sprintf(tmp,"coriander/camera_names/%llx=%s %s",cameras[i].euid_64, cameras[i].vendor, cameras[i].model);
+    preferences.camera_names[i] = gnome_config_get_string(tmp);
+  }
 }
 
 
@@ -81,44 +80,41 @@ SaveSetup(char *filename)
   fd=fopen(filename,"w");
   if (fd==NULL)
     MainError("Can't open file for saving");
-  else
-    {
-      fprintf(fd,"%d\n",misc_info->format);
-      fprintf(fd,"%d\n",misc_info->mode);
-      fprintf(fd,"%d\n",misc_info->framerate);
-      fprintf(fd,"%d\n",misc_info->is_iso_on);
-      fprintf(fd,"%d\n",misc_info->iso_channel);
-      fprintf(fd,"%d\n",misc_info->mem_channel_number);
-      fprintf(fd,"%d\n",misc_info->save_channel);
-      fprintf(fd,"%d\n",misc_info->load_channel);
-      for (i=0;i<NUM_FEATURES;i++)
-	{
-	  switch (i+FEATURE_MIN)
-	    { 
-	    case FEATURE_TRIGGER:
-	      fprintf(fd,"%d\n",feature_set->feature[i].auto_active);
-	      fprintf(fd,"%d\n",feature_set->feature[i].trigger_mode);
-	      fprintf(fd,"%d\n",feature_set->feature[i].trigger_polarity);
-	      fprintf(fd,"%d\n",feature_set->feature[i].value);
-	      break;
-	    case FEATURE_WHITE_BALANCE:
-	      fprintf(fd,"%d\n",feature_set->feature[i].auto_active);
-	      fprintf(fd,"%d\n",feature_set->feature[i].BU_value);
-	      fprintf(fd,"%d\n",feature_set->feature[i].RV_value);
-	      break;
-	    case FEATURE_TEMPERATURE:
-	      fprintf(fd,"%d\n",feature_set->feature[i].auto_active);
-	      fprintf(fd,"%d\n",feature_set->feature[i].target_value);
-	      fprintf(fd,"%d\n",feature_set->feature[i].value);
-	      break;
-	    default:
-	      fprintf(fd,"%d\n",feature_set->feature[i].auto_active);
-	      fprintf(fd,"%d\n",feature_set->feature[i].value);
-	      break;
-	    }
-	}
-      fclose(fd);
+  else {
+    fprintf(fd,"%d\n",misc_info->format);
+    fprintf(fd,"%d\n",misc_info->mode);
+    fprintf(fd,"%d\n",misc_info->framerate);
+    fprintf(fd,"%d\n",misc_info->is_iso_on);
+    fprintf(fd,"%d\n",misc_info->iso_channel);
+    fprintf(fd,"%d\n",misc_info->mem_channel_number);
+    fprintf(fd,"%d\n",misc_info->save_channel);
+    fprintf(fd,"%d\n",misc_info->load_channel);
+    for (i=0;i<NUM_FEATURES;i++) {
+      switch (i+FEATURE_MIN) { 
+      case FEATURE_TRIGGER:
+	fprintf(fd,"%d\n",feature_set->feature[i].auto_active);
+	fprintf(fd,"%d\n",feature_set->feature[i].trigger_mode);
+	fprintf(fd,"%d\n",feature_set->feature[i].trigger_polarity);
+	fprintf(fd,"%d\n",feature_set->feature[i].value);
+	break;
+      case FEATURE_WHITE_BALANCE:
+	fprintf(fd,"%d\n",feature_set->feature[i].auto_active);
+	fprintf(fd,"%d\n",feature_set->feature[i].BU_value);
+	fprintf(fd,"%d\n",feature_set->feature[i].RV_value);
+	break;
+      case FEATURE_TEMPERATURE:
+	fprintf(fd,"%d\n",feature_set->feature[i].auto_active);
+	fprintf(fd,"%d\n",feature_set->feature[i].target_value);
+	fprintf(fd,"%d\n",feature_set->feature[i].value);
+	break;
+      default:
+	fprintf(fd,"%d\n",feature_set->feature[i].auto_active);
+	fprintf(fd,"%d\n",feature_set->feature[i].value);
+	break;
+      }
     }
+    fclose(fd);
+  }
 }
 
 void
@@ -130,47 +126,44 @@ LoadSetup(char *filename)
   fd=fopen(filename,"r");
   if (fd==NULL)
     MainError("Can't open file for loading");
-  else
-    {
-      fscanf(fd,"%d\n",&misc_info->format);
-      fscanf(fd,"%d\n",&misc_info->mode);
-      fscanf(fd,"%d\n",&misc_info->framerate);
-      fscanf(fd,"%d\n",(int*)&misc_info->is_iso_on);
-      fscanf(fd,"%d\n",&misc_info->iso_channel);
-      fscanf(fd,"%d\n",&misc_info->mem_channel_number);
-      fscanf(fd,"%d\n",&misc_info->save_channel);
-      fscanf(fd,"%d\n",&misc_info->load_channel);
-      for (i=0;i<NUM_FEATURES;i++)
-	{
-	  switch (i+FEATURE_MIN)
-	    { 
-	    case FEATURE_TRIGGER:
-	      fscanf(fd,"%d\n",(int*)&feature_set->feature[i].auto_active);
-	      fscanf(fd,"%d\n",&feature_set->feature[i].trigger_mode);
-	      fscanf(fd,"%d\n",(int*)&feature_set->feature[i].trigger_polarity);
-	      fscanf(fd,"%d\n",&feature_set->feature[i].value);
-	      break;
-	    case FEATURE_WHITE_BALANCE:
-	      fscanf(fd,"%d\n",(int*)&feature_set->feature[i].auto_active);
-	      fscanf(fd,"%d\n",&feature_set->feature[i].BU_value);
-	      fscanf(fd,"%d\n",&feature_set->feature[i].RV_value);
-	      break;
-	    case FEATURE_TEMPERATURE:
-	      fscanf(fd,"%d\n",(int*)&feature_set->feature[i].auto_active);
-	      fscanf(fd,"%d\n",&feature_set->feature[i].target_value);
-	      fscanf(fd,"%d\n",&feature_set->feature[i].value);
-	      break;
-	    default:
-	      fscanf(fd,"%d\n",(int*)&feature_set->feature[i].auto_active);
-	      fscanf(fd,"%d\n",&feature_set->feature[i].value);
-	      break;
-	    }
-	}
-      // REDRAW ALL HERE...
-
-      ///////
-      fclose(fd);
+  else {
+    fscanf(fd,"%d\n",&misc_info->format);
+    fscanf(fd,"%d\n",&misc_info->mode);
+    fscanf(fd,"%d\n",&misc_info->framerate);
+    fscanf(fd,"%d\n",(int*)&misc_info->is_iso_on);
+    fscanf(fd,"%d\n",&misc_info->iso_channel);
+    fscanf(fd,"%d\n",&misc_info->mem_channel_number);
+    fscanf(fd,"%d\n",&misc_info->save_channel);
+    fscanf(fd,"%d\n",&misc_info->load_channel);
+    for (i=0;i<NUM_FEATURES;i++) {
+      switch (i+FEATURE_MIN) { 
+      case FEATURE_TRIGGER:
+	fscanf(fd,"%d\n",(int*)&feature_set->feature[i].auto_active);
+	fscanf(fd,"%d\n",&feature_set->feature[i].trigger_mode);
+	fscanf(fd,"%d\n",(int*)&feature_set->feature[i].trigger_polarity);
+	fscanf(fd,"%d\n",&feature_set->feature[i].value);
+	break;
+      case FEATURE_WHITE_BALANCE:
+	fscanf(fd,"%d\n",(int*)&feature_set->feature[i].auto_active);
+	fscanf(fd,"%d\n",&feature_set->feature[i].BU_value);
+	fscanf(fd,"%d\n",&feature_set->feature[i].RV_value);
+	break;
+      case FEATURE_TEMPERATURE:
+	fscanf(fd,"%d\n",(int*)&feature_set->feature[i].auto_active);
+	fscanf(fd,"%d\n",&feature_set->feature[i].target_value);
+	fscanf(fd,"%d\n",&feature_set->feature[i].value);
+	break;
+      default:
+	fscanf(fd,"%d\n",(int*)&feature_set->feature[i].auto_active);
+	fscanf(fd,"%d\n",&feature_set->feature[i].value);
+	break;
+      }
     }
+    // REDRAW ALL HERE...
+    
+    ///////
+    fclose(fd);
+  }
 }
 
 

@@ -2,6 +2,10 @@ Coriander, (c) 2000-2003 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 0.32
 	
+   May 2, 2003, by Damien Douxchamps
+   - code cleanup: includes in .h, misc beautifications. This will result in
+     ugly and noisy diffs!
+	
    May 1, 2003, by Damien Douxchamps
    - service/save: update scratch frame correctly at boot/camera change (video
      pref was ignored)

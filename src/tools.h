@@ -19,15 +19,19 @@
 #ifndef __TOOLS_H__
 #define __TOOLS_H__
 
-#include <libdc1394/dc1394_control.h>
-#include <libraw1394/raw1394.h>
-#include "definitions.h"
-#include "callbacks.h"
 #include "support.h"
-#include "definitions.h"
-#include "thread_display.h"
 #include "thread_base.h"
+#include "raw1394support.h"
+#include "topology.h"
+#include "update_windows.h"
+#include "build_windows.h"
+#include "update_frames.h"
+#include "update_ranges.h"
+#include "thread_iso.h"
+#include "thread_ftp.h"
+#include "thread_save.h"
 
+/*
 typedef struct _whitebaldata
 {
   int x;
@@ -36,6 +40,7 @@ typedef struct _whitebaldata
   pthread_t thread;
 
 } whitebal_data_t;
+*/
 
 void
 GetFormat7Capabilities(raw1394handle_t handle, nodeid_t node, Format7Info *info);
@@ -75,10 +80,10 @@ SetScaleSensitivity(GtkWidget* widget, int feature, dc1394bool_t sense);
 
 void
 DisplayActiveServices(void);
-
+/*
 void
 GetRGBPix(int px, int py, chain_t *service, int* R, int* G, int* B);
-/*
+
 void*
 AutoWhiteBalance(void* arg);
 */

@@ -19,11 +19,13 @@
 #ifndef __THREAD_BASE_H__
 #define __THREAD_BASE_H__
 
+#include <gnome.h>
 #include <pthread.h>
-#include "thread_base.h"
-#include "conversions.h"
 #include <libdc1394/dc1394_control.h>
 #include <time.h>
+#include <string.h>
+#include "definitions.h"
+#include "conversions.h"
 
 #define GUID_YUV12_PLANAR 0x32315659 
 #define GUID_YUY2_PACKED  0x32595559

@@ -19,6 +19,12 @@
 #ifndef __BUILDRANGES_H__
 #define __BUILDRANGES_H__
 
+#include <gnome.h>
+#include <libdc1394/dc1394_control.h>
+#include "definitions.h"
+#include "support.h"
+#include "callbacks.h"
+
 void
 BuildRange(GtkWidget* current_window, int feature);
 

@@ -19,6 +19,22 @@
 #ifndef __CALLBACKS_H__
 #define __CALLBACKS_H__
 
+#include <gnome.h>
+#include <libdc1394/dc1394_control.h>
+#include <pthread.h>
+#include "interface.h"
+#include "support.h"
+#include "definitions.h"
+#include "preferences.h"
+#include "update_frames.h" 
+#include "update_windows.h"
+#include "tools.h"
+#include "thread_display.h"
+#include "build_windows.h"
+#include "update_ranges.h"
+#include "thread_iso.h"
+#include "build_menus.h"
+
 gboolean
 on_commander_window_delete_event       (GtkWidget       *widget,
                                         GdkEvent        *event,
@@ -431,7 +447,6 @@ on_abs_tilt_entry_activate              (GtkEditable     *editable,
 void
 on_abs_pan_entry_activate               (GtkEditable     *editable,
                                         gpointer         user_data);
-#endif
 
 void
 on_global_iso_stop_clicked             (GtkButton       *button,
@@ -444,3 +459,5 @@ on_global_iso_restart_clicked          (GtkButton       *button,
 void
 on_global_iso_start_clicked            (GtkButton       *button,
                                         gpointer         user_data);
+
+#endif

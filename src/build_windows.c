@@ -16,21 +16,7 @@
  * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif
-
-#include <gnome.h>
-#include "callbacks.h"
-#include "support.h"
-#include "update_windows.h"
-#include "build_menus.h"
-#include "build_ranges.h"
-#include "build_frames.h"
 #include "build_windows.h" 
-#include "preferences.h"
-#include "definitions.h"
-#include <libdc1394/dc1394_control.h>
 
 extern GtkWidget *commander_window;
 extern GtkWidget *help_window;
@@ -149,12 +135,11 @@ BuildHelpWindow(void)
   text[1]=(char*)malloc(STRING_SIZE*sizeof(char));
 
   gtk_clist_set_column_justification(clist,0,GTK_JUSTIFY_CENTER);
-  for (i=0;i<KEY_BINDINGS_NUM;i++)
-    {
-      strcpy(text[0],help_key_bindings_keys[i]);
-      strcpy(text[1],help_key_bindings_functions[i]);
-      gtk_clist_append(clist,text);
-    }
+  for (i=0;i<KEY_BINDINGS_NUM;i++) {
+    strcpy(text[0],help_key_bindings_keys[i]);
+    strcpy(text[1],help_key_bindings_functions[i]);
+    gtk_clist_append(clist,text);
+  }
   gtk_clist_set_column_auto_resize(clist,0,1);
   gtk_clist_set_column_auto_resize(clist,1,1);
   free(text[0]);

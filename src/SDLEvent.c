@@ -20,22 +20,9 @@
 #  include <config.h>
 #endif
 
-#include <pthread.h>
-#include "thread_display.h"
-#include "thread_base.h"
-#include "math.h"
-#include <stdlib.h>
-
 #ifdef HAVE_SDLLIB
-#  include "SDL.h"
 
 #include "SDLEvent.h"
-#include "support.h"
-#include "definitions.h"
-#include "preferences.h"
-#include "tools.h"
-#include "watch_thread.h"
-#include "update_frames.h"
 
 extern PrefsInfo preferences;
 extern Format7Info *format7_info;
@@ -43,7 +30,7 @@ extern GtkWidget *format7_window;
 extern dc1394_camerainfo *camera;
 extern dc1394_miscinfo *misc_info;
 extern watchthread_info_t watchthread_info;
-extern whitebal_data_t* whitebal_data;
+//extern whitebal_data_t* whitebal_data;
 
 #define YUV2RGB(y, u, v, r, g, b)\
   r = y + ((v*1436) >>10);\
@@ -87,30 +74,25 @@ SDLEventThread(void *arg)
   pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED,NULL);
   pthread_mutex_unlock(&display_service->mutex_data);
 
-  while (1)
-    {
-      pthread_mutex_lock(&info->mutex_cancel_event);
-      if (info->cancel_event_req>0)
-	{
-	  pthread_mutex_unlock(&info->mutex_cancel_event);
-	  return ((void*)1);
-	}
-      else
-	{
-	  pthread_mutex_unlock(&info->mutex_cancel_event);
-	  pthread_mutex_lock(&info->mutex_event);
-	  if (!SDLHandleEvent(display_service)) 
-	    {
-	      pthread_mutex_unlock(&info->mutex_event);
-	      break;
-	    }
-	  else
-	    {
-	      pthread_mutex_unlock(&info->mutex_event);
-	      usleep(EVENTS_SLEEP_MS * 1000);
-	    }
-	}
+  while (1) {
+    pthread_mutex_lock(&info->mutex_cancel_event);
+    if (info->cancel_event_req>0) {
+      pthread_mutex_unlock(&info->mutex_cancel_event);
+      return ((void*)1);
     }
+    else {
+      pthread_mutex_unlock(&info->mutex_cancel_event);
+      pthread_mutex_lock(&info->mutex_event);
+      if (!SDLHandleEvent(display_service)) {
+	pthread_mutex_unlock(&info->mutex_event);
+	break;
+      }
+      else {
+	pthread_mutex_unlock(&info->mutex_event);
+	usleep(EVENTS_SLEEP_MS * 1000);
+      }
+    }
+  }
   return ((void*)0);
 }
 
@@ -137,32 +119,30 @@ SDLHandleEvent(chain_t *display_service)
 
   info=(displaythread_info_t*)display_service->data;
 
-  while ( SDL_PollEvent(&event) )
-    {
-      pthread_mutex_lock(&display_service->mutex_data);
-      switch(event.type)
-	{
-	case SDL_VIDEORESIZE:
-	  SDLResizeDisplay(display_service, event.resize.w, event.resize.h);
-	  break;
-	case SDL_KEYDOWN:
-	  OnKeyPressed(display_service,event.key.keysym.sym, event.key.keysym.mod);
-	  break;
-	case SDL_KEYUP:
-	  OnKeyReleased(display_service,event.key.keysym.sym, event.key.keysym.mod);
-	  break;
-	case SDL_MOUSEBUTTONDOWN:
-	  OnMouseDown(display_service,event.button.button, event.button.x, event.button.y);
-	  break;
-	case SDL_MOUSEBUTTONUP:
-	  OnMouseUp(display_service,event.button.button, event.button.x, event.button.y);
-	  break;
-	case SDL_MOUSEMOTION:
-	  OnMouseMotion(display_service, event.motion.x, event.motion.y);
-	  break;
-	}
-      pthread_mutex_unlock(&display_service->mutex_data);
+  while ( SDL_PollEvent(&event) ) {
+    pthread_mutex_lock(&display_service->mutex_data);
+    switch(event.type) {
+    case SDL_VIDEORESIZE:
+      SDLResizeDisplay(display_service, event.resize.w, event.resize.h);
+      break;
+    case SDL_KEYDOWN:
+      OnKeyPressed(display_service,event.key.keysym.sym, event.key.keysym.mod);
+      break;
+    case SDL_KEYUP:
+      OnKeyReleased(display_service,event.key.keysym.sym, event.key.keysym.mod);
+      break;
+    case SDL_MOUSEBUTTONDOWN:
+      OnMouseDown(display_service,event.button.button, event.button.x, event.button.y);
+      break;
+    case SDL_MOUSEBUTTONUP:
+      OnMouseUp(display_service,event.button.button, event.button.x, event.button.y);
+      break;
+    case SDL_MOUSEMOTION:
+      OnMouseMotion(display_service, event.motion.x, event.motion.y);
+      break;
     }
+    pthread_mutex_unlock(&display_service->mutex_data);
+  }
   return(1);
 }
 
@@ -173,39 +153,38 @@ OnKeyPressed(chain_t *display_service, int key, int mod)
   displaythread_info_t *info;
   info=(displaythread_info_t*)display_service->data;
 
-  switch (key)
-    {
-    case SDLK_n:
-      // set display to normal size
-      SDLResizeDisplay(display_service, display_service->current_buffer->width, display_service->current_buffer->height);
-      break;
-    case SDLK_f:
-      // toggle fullscreen mode
-      SDL_WM_ToggleFullScreen(info->SDL_video);
-      break;
-    case SDLK_c:
-      // crop image
-      SDLCropImage(display_service);
-      break;
-    case SDLK_m:
-      // set F7 image to max size
-      SDLSetMaxSize(display_service);
-      break;
-    case SDLK_GREATER:
-      // image size *2
-      if (mod&(SDLK_LSHIFT|SDLK_RSHIFT))
-	SDLResizeDisplay(display_service, info->SDL_videoRect.w/2, info->SDL_videoRect.h/2);
-      else
-	SDLResizeDisplay(display_service, info->SDL_videoRect.w*2, info->SDL_videoRect.h*2);
-      break;
-    case SDLK_LESS:
-      // image size /2
-      if (mod&(SDLK_LSHIFT|SDLK_RSHIFT))
-	SDLResizeDisplay(display_service, info->SDL_videoRect.w*2, info->SDL_videoRect.h*2);
-      else
-	SDLResizeDisplay(display_service, info->SDL_videoRect.w/2, info->SDL_videoRect.h/2);
-      break;
-    }
+  switch (key) {
+  case SDLK_n:
+    // set display to normal size
+    SDLResizeDisplay(display_service, display_service->current_buffer->width, display_service->current_buffer->height);
+    break;
+  case SDLK_f:
+    // toggle fullscreen mode
+    SDL_WM_ToggleFullScreen(info->SDL_video);
+    break;
+  case SDLK_c:
+    // crop image
+    SDLCropImage(display_service);
+    break;
+  case SDLK_m:
+    // set F7 image to max size
+    SDLSetMaxSize(display_service);
+    break;
+  case SDLK_GREATER:
+    // image size *2
+    if (mod&(SDLK_LSHIFT|SDLK_RSHIFT))
+      SDLResizeDisplay(display_service, info->SDL_videoRect.w/2, info->SDL_videoRect.h/2);
+    else
+      SDLResizeDisplay(display_service, info->SDL_videoRect.w*2, info->SDL_videoRect.h*2);
+    break;
+  case SDLK_LESS:
+    // image size /2
+    if (mod&(SDLK_LSHIFT|SDLK_RSHIFT))
+      SDLResizeDisplay(display_service, info->SDL_videoRect.w*2, info->SDL_videoRect.h*2);
+    else
+      SDLResizeDisplay(display_service, info->SDL_videoRect.w/2, info->SDL_videoRect.h/2);
+    break;
+  }
       
 }
 
@@ -223,40 +202,39 @@ OnMouseDown(chain_t *display_service, int button, int x, int y)
   displaythread_info_t *info;
   info=(displaythread_info_t*)display_service->data;
 
-  switch (button)
-    {
-    case SDL_BUTTON_LEFT:
-      pthread_mutex_lock(&watchthread_info.mutex_area);
-      watchthread_info.draw=1;
-      watchthread_info.mouse_down=1;
-      // there is some adaptation because the display size can be different
-      // from the real image size. (i.e. the image can be resized)
-      watchthread_info.upper_left[0]= ((x*display_service->current_buffer->width /info->SDL_videoRect.w));
-      watchthread_info.upper_left[1]= ((y*display_service->current_buffer->height/info->SDL_videoRect.h));
-      watchthread_info.lower_right[0]=((x*display_service->current_buffer->width /info->SDL_videoRect.w));
-      watchthread_info.lower_right[1]=((y*display_service->current_buffer->height/info->SDL_videoRect.h));
-      pthread_mutex_unlock(&watchthread_info.mutex_area);
-      break;
-    case SDL_BUTTON_MIDDLE:
-      x=x*display_service->current_buffer->width/info->SDL_videoRect.w; //rescaling
-      y=y*display_service->current_buffer->height/info->SDL_videoRect.h;
-      // THIS IS ONLY VALID FOR YUYV!!
-      col_y=info->SDL_overlay->pixels[0][(y*display_service->current_buffer->width+x)*2];
-      col_u=info->SDL_overlay->pixels[0][(((y*display_service->current_buffer->width+x)>>1)<<2)+1]-127;
-      col_v=info->SDL_overlay->pixels[0][(((y*display_service->current_buffer->width+x)>>1)<<2)+3]-127;
-      YUV2RGB(col_y, col_u, col_v, col_r, col_g, col_b);
-      UpdateCursorFrame(x, y, col_r, col_g, col_b, col_y, col_u, col_v);
-      break;
-    case SDL_BUTTON_RIGHT:
-      //whitebal_data->x=x*display_service->current_buffer->width/info->SDL_videoRect.w; //rescaling
-      //whitebal_data->y=y*display_service->current_buffer->height/info->SDL_videoRect.h;
-      //whitebal_data->service=display_service;
-      //pthread_create(&whitebal_data->thread, NULL, AutoWhiteBalance, (void*)&whitebal_data);
-      break;
-    default:
-      fprintf(stderr,"Bad button ID in SDL!\n");
-      break;
-    }
+  switch (button) {
+  case SDL_BUTTON_LEFT:
+    pthread_mutex_lock(&watchthread_info.mutex_area);
+    watchthread_info.draw=1;
+    watchthread_info.mouse_down=1;
+    // there is some adaptation because the display size can be different
+    // from the real image size. (i.e. the image can be resized)
+    watchthread_info.upper_left[0]= ((x*display_service->current_buffer->width /info->SDL_videoRect.w));
+    watchthread_info.upper_left[1]= ((y*display_service->current_buffer->height/info->SDL_videoRect.h));
+    watchthread_info.lower_right[0]=((x*display_service->current_buffer->width /info->SDL_videoRect.w));
+    watchthread_info.lower_right[1]=((y*display_service->current_buffer->height/info->SDL_videoRect.h));
+    pthread_mutex_unlock(&watchthread_info.mutex_area);
+    break;
+  case SDL_BUTTON_MIDDLE:
+    x=x*display_service->current_buffer->width/info->SDL_videoRect.w; //rescaling
+    y=y*display_service->current_buffer->height/info->SDL_videoRect.h;
+    // THIS IS ONLY VALID FOR YUYV!!
+    col_y=info->SDL_overlay->pixels[0][(y*display_service->current_buffer->width+x)*2];
+    col_u=info->SDL_overlay->pixels[0][(((y*display_service->current_buffer->width+x)>>1)<<2)+1]-127;
+    col_v=info->SDL_overlay->pixels[0][(((y*display_service->current_buffer->width+x)>>1)<<2)+3]-127;
+    YUV2RGB(col_y, col_u, col_v, col_r, col_g, col_b);
+    UpdateCursorFrame(x, y, col_r, col_g, col_b, col_y, col_u, col_v);
+    break;
+  case SDL_BUTTON_RIGHT:
+    //whitebal_data->x=x*display_service->current_buffer->width/info->SDL_videoRect.w; //rescaling
+    //whitebal_data->y=y*display_service->current_buffer->height/info->SDL_videoRect.h;
+    //whitebal_data->service=display_service;
+    //pthread_create(&whitebal_data->thread, NULL, AutoWhiteBalance, (void*)&whitebal_data);
+    break;
+  default:
+    fprintf(stderr,"Bad button ID in SDL!\n");
+    break;
+  }
 }
 
 void
@@ -266,25 +244,24 @@ OnMouseUp(chain_t *display_service, int button, int x, int y)
   displaythread_info_t *info;
   info=(displaythread_info_t*)display_service->data;
 
-  switch (button)
-    {
-    case SDL_BUTTON_LEFT:
-      pthread_mutex_lock(&watchthread_info.mutex_area);
-      watchthread_info.mouse_down=0;
-      // there is some adaptation because the display size can be different
-      // from the real image size. (i.e. the image can be resized)
-      //info->lower_right[0]=x*display_service->current_buffer->width/info->SDL_videoRect.w;
-      //info->lower_right[1]=y*display_service->current_buffer->height/info->SDL_videoRect.h;
-      pthread_mutex_unlock(&watchthread_info.mutex_area);
-      break;
-    case SDL_BUTTON_MIDDLE:
-      break;
-    case SDL_BUTTON_RIGHT:
-      break;
-    default:
-      fprintf(stderr,"Bad button ID in SDL!\n");
-      break;
-    }
+  switch (button) {
+  case SDL_BUTTON_LEFT:
+    pthread_mutex_lock(&watchthread_info.mutex_area);
+    watchthread_info.mouse_down=0;
+    // there is some adaptation because the display size can be different
+    // from the real image size. (i.e. the image can be resized)
+    //info->lower_right[0]=x*display_service->current_buffer->width/info->SDL_videoRect.w;
+    //info->lower_right[1]=y*display_service->current_buffer->height/info->SDL_videoRect.h;
+    pthread_mutex_unlock(&watchthread_info.mutex_area);
+    break;
+  case SDL_BUTTON_MIDDLE:
+    break;
+  case SDL_BUTTON_RIGHT:
+    break;
+  default:
+    fprintf(stderr,"Bad button ID in SDL!\n");
+    break;
+  }
 }
 
 
@@ -295,15 +272,14 @@ OnMouseMotion(chain_t *display_service, int x, int y)
   //int col_r,col_g,col_b,col_y,col_u,col_v;
   info=(displaythread_info_t*)display_service->data;
   pthread_mutex_lock(&watchthread_info.mutex_area);
-  if (watchthread_info.mouse_down==1)
-    {
-      // there is some adaptation because the display size can be different
-      // from the real image size. (i.e. the image can be resized)
-      watchthread_info.lower_right[0]=x*display_service->current_buffer->width/info->SDL_videoRect.w;
-      watchthread_info.lower_right[1]=y*display_service->current_buffer->height/info->SDL_videoRect.h;
-    }
+  if (watchthread_info.mouse_down==1) {
+    // there is some adaptation because the display size can be different
+    // from the real image size. (i.e. the image can be resized)
+    watchthread_info.lower_right[0]=x*display_service->current_buffer->width/info->SDL_videoRect.w;
+    watchthread_info.lower_right[1]=y*display_service->current_buffer->height/info->SDL_videoRect.h;
+  }
   pthread_mutex_unlock(&watchthread_info.mutex_area);
-
+  
 }
 
 void
@@ -312,29 +288,25 @@ SDLResizeDisplay(chain_t *display_service, int width, int height)
   displaythread_info_t *info;
   info=(displaythread_info_t*)display_service->data;
   
-  if (preferences.display_keep_ratio>0)
-    {
-      // keep aspect ratio and resize following which dimension we change
-      if (abs(width-info->SDL_videoRect.w) >= (abs(height-info->SDL_videoRect.h)))
-	{
-	  // we changed the width, set height accordingly
-	  info->SDL_videoRect.w = width;
-	  info->SDL_videoRect.h = (width * display_service->current_buffer->height) / display_service->current_buffer->width;
-	}
-      else
-	{
-	  // we changed the hieght, set width accordingly
-	  info->SDL_videoRect.w = (height * display_service->current_buffer->width) / display_service->current_buffer->height;
-	  info->SDL_videoRect.h = height;
-	}
-    }
-  else
-    {
-      // bypass aspect keep:
+  if (preferences.display_keep_ratio>0) {
+    // keep aspect ratio and resize following which dimension we change
+    if (abs(width-info->SDL_videoRect.w) >= (abs(height-info->SDL_videoRect.h))) {
+      // we changed the width, set height accordingly
       info->SDL_videoRect.w = width;
+      info->SDL_videoRect.h = (width * display_service->current_buffer->height) / display_service->current_buffer->width;
+    }
+    else {
+      // we changed the hieght, set width accordingly
+      info->SDL_videoRect.w = (height * display_service->current_buffer->width) / display_service->current_buffer->height;
       info->SDL_videoRect.h = height;
     }
-      
+  }
+  else {
+    // bypass aspect keep:
+    info->SDL_videoRect.w = width;
+    info->SDL_videoRect.h = height;
+  }
+  
   // Free overlay & video surface
   SDL_FreeYUVOverlay(info->SDL_overlay);
   SDL_FreeSurface(info->SDL_video);
@@ -344,20 +316,18 @@ SDLResizeDisplay(chain_t *display_service, int width, int height)
 				     info->SDL_videoRect.h,
 				     info->SDL_bpp,
 				     info->SDL_flags);
-  if (info->SDL_video == NULL)
-    {
-      SDL_Quit();
-      fprintf(stderr,"Error realocating video overlay after resize\n");
-    }
+  if (info->SDL_video == NULL) {
+    SDL_Quit();
+    MainError("Error realocating video overlay after resize");
+  }
 
   // Create YUV Overlay
   info->SDL_overlay = SDL_CreateYUVOverlay(display_service->current_buffer->width, display_service->current_buffer->height,
 					   SDL_YUY2_OVERLAY,info->SDL_video);
-  if (info->SDL_overlay == NULL)
-    {
-      SDL_Quit();
-      fprintf(stderr,"Error creating video overlay after resize\n");
-    }
+  if (info->SDL_overlay == NULL) {
+    SDL_Quit();
+    MainError("Error creating video overlay after resize");
+  }
 }
 
 
@@ -378,14 +348,13 @@ void
 SDLSetMaxSize(chain_t *display_service)
 {
   pthread_mutex_lock(&watchthread_info.mutex_area);
-  if (display_service->current_buffer->format==FORMAT_SCALABLE_IMAGE_SIZE)
-    {
-      watchthread_info.crop=1;
-      watchthread_info.upper_left[0]=0;
-      watchthread_info.upper_left[1]=0;
-      watchthread_info.lower_right[0]=format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].max_size_x;
-      watchthread_info.lower_right[1]=format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].max_size_y;
-    }
+  if (display_service->current_buffer->format==FORMAT_SCALABLE_IMAGE_SIZE) {
+    watchthread_info.crop=1;
+    watchthread_info.upper_left[0]=0;
+    watchthread_info.upper_left[1]=0;
+    watchthread_info.lower_right[0]=format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].max_size_x;
+    watchthread_info.lower_right[1]=format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].max_size_y;
+  }
   pthread_mutex_unlock(&watchthread_info.mutex_area);
 
 }

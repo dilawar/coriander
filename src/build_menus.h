@@ -18,6 +18,18 @@
 
 #ifndef __BUILDMENUS_H__
 #define __BUILDMENUS_H__
+
+#include <gnome.h>
+#include <libdc1394/dc1394_control.h>
+#include "preferences.h"
+#include "definitions.h"
+#include "tools.h"
+#include "support.h"
+/*
+#include "callbacks.h"
+#include "callbacks.h"
+#include "conversions.h"
+*/
 void
 BuildTriggerModeMenu(void);
 

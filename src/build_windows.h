@@ -19,6 +19,10 @@
 #ifndef __BUILDWINDOWS_H__
 #define __BUILDWINDOWS_H__
 
+#include <gnome.h>
+#include "definitions.h"
+#include "build_frames.h"
+
 void
 BuildFormat7Window(void);
 

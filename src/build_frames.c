@@ -16,27 +16,8 @@
  * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif 
 
-#include <gnome.h>
-#include "callbacks.h"
-#include "support.h"
-#include <sys/stat.h>
-#include "definitions.h"
-#include "build_menus.h"
-#include "build_ranges.h"
 #include "build_frames.h"
-#include "update_frames.h"
-#include "thread_base.h"
-#include "thread_ftp.h"
-#include "thread_save.h"
-#include "thread_display.h"
-#include "thread_iso.h"
-#include "preferences.h"
-#include "tools.h"
-#include <libdc1394/dc1394_control.h>
 
 extern GtkWidget *commander_window;
 extern GtkWidget *preferences_window;
@@ -161,41 +142,32 @@ BuildPrefsSaveFrame(void)
   gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(commander_window,
 							  "prefs_save_period"), preferences.save_period);
   // scratch
-  switch(preferences.save_scratch)
-    {
-    case SAVE_SCRATCH_OVERWRITE:
-      gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(commander_window,
-								   "prefs_save_scratch"),TRUE);
-      break;
-    case SAVE_SCRATCH_SEQUENTIAL:
-      gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(commander_window,
-								   "prefs_save_seq"),TRUE);
-    case SAVE_SCRATCH_SEQUENCE:
-      gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(commander_window,
-								   "prefs_save_video"),TRUE);
-      break;
-    }
+  switch(preferences.save_scratch) {
+  case SAVE_SCRATCH_OVERWRITE:
+    gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(commander_window, "prefs_save_scratch"),TRUE);
+    break;
+  case SAVE_SCRATCH_SEQUENTIAL:
+    gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(commander_window, "prefs_save_seq"),TRUE);
+  case SAVE_SCRATCH_SEQUENCE:
+    gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(commander_window, "prefs_save_video"),TRUE);
+    break;
+  }
   // scratch
   if (preferences.save_convert == SAVE_CONVERT_ON)
-    gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(commander_window,
-								 "prefs_save_convert"),TRUE);
+    gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(commander_window, "prefs_save_convert"),TRUE);
   else
-    gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(commander_window,
-								 "prefs_save_noconvert"),TRUE);
-
+    gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(commander_window, "prefs_save_noconvert"),TRUE);
+  
   //filename
-  gtk_entry_set_text(GTK_ENTRY(lookup_widget(commander_window, "prefs_save_filename")),
-		     preferences.save_filename);
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(commander_window, "prefs_save_filename")), preferences.save_filename);
 }
 
 void
 BuildPrefsGeneralFrame(void)
 {
   
-  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(preferences_window,"prefs_op_timeout_scale"),
-			    preferences.op_timeout);
-  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(preferences_window,"prefs_update_scale"),
-			    preferences.auto_update_frequency);
+  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(preferences_window,"prefs_op_timeout_scale"), preferences.op_timeout);
+  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(preferences_window,"prefs_update_scale"), preferences.auto_update_frequency);
 }
 
 void
@@ -203,31 +175,22 @@ BuildPrefsFtpFrame(void)
 {
 #ifdef HAVE_FTPLIB
   // frame drop
-  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(commander_window,
-							  "prefs_ftp_period"), preferences.ftp_period);
+  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(commander_window, "prefs_ftp_period"), preferences.ftp_period);
   // scratch
-  switch(preferences.ftp_scratch)
-    {
-    case FTP_SCRATCH_OVERWRITE:
-      gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(commander_window,
-								   "prefs_ftp_scratch"),TRUE);
-      break;
-    case FTP_SCRATCH_SEQUENTIAL:
-      gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(commander_window,
-								   "prefs_ftp_seq"),TRUE);
-      break;
-    }
+  switch(preferences.ftp_scratch) {
+  case FTP_SCRATCH_OVERWRITE:
+    gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(commander_window, "prefs_ftp_scratch"),TRUE);
+    break;
+  case FTP_SCRATCH_SEQUENTIAL:
+    gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(commander_window, "prefs_ftp_seq"),TRUE);
+    break;
+  }
   // file,... names
-  gtk_entry_set_text(GTK_ENTRY(lookup_widget(commander_window, "prefs_ftp_filename")),
-		     preferences.ftp_filename);
-  gtk_entry_set_text(GTK_ENTRY(lookup_widget(commander_window, "prefs_ftp_address")),
-		     preferences.ftp_address);
-  gtk_entry_set_text(GTK_ENTRY(lookup_widget(commander_window, "prefs_ftp_password")),
-		     preferences.ftp_password);
-  gtk_entry_set_text(GTK_ENTRY(lookup_widget(commander_window, "prefs_ftp_path")),
-		     preferences.ftp_path);
-  gtk_entry_set_text(GTK_ENTRY(lookup_widget(commander_window, "prefs_ftp_user")),
-		     preferences.ftp_user);
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(commander_window, "prefs_ftp_filename")), preferences.ftp_filename);
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(commander_window, "prefs_ftp_address")), preferences.ftp_address);
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(commander_window, "prefs_ftp_password")),preferences.ftp_password);
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(commander_window, "prefs_ftp_path")), preferences.ftp_path);
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(commander_window, "prefs_ftp_user")), preferences.ftp_user);
 
 #else
 
@@ -243,11 +206,9 @@ void
 BuildPrefsDisplayFrame(void)
 {
   // frame drop
-  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(commander_window,"prefs_display_period"),
-			    preferences.display_period);
+  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(commander_window,"prefs_display_period"), preferences.display_period);
 
-  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"prefs_display_keep_ratio")),
-			       preferences.display_keep_ratio);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"prefs_display_keep_ratio")), preferences.display_keep_ratio);
 }
 
 void
@@ -260,11 +221,11 @@ BuildPrefsReceiveFrame(void)
   int k=0;
   struct stat statstruct;
 
-  if(stat("/dev/video1394",&statstruct)==0)
+  if(stat("/dev/video1394",&statstruct)==0) {
     // the device is there, check RW permissions
     if ((statstruct.st_mode&&S_IRUSR)&&(statstruct.st_mode&&S_IWUSR))
       video_ok=1;
-
+  }
   // BUILD A NEW  OPTION_MENU:
   gtk_widget_destroy(GTK_WIDGET(lookup_widget(commander_window,"prefs_receive_method_menu"))); // remove previous menu
   
@@ -291,18 +252,17 @@ BuildPrefsReceiveFrame(void)
   preferences.receive_method2index[RECEIVE_METHOD_RAW1394]=k;
   k++;
 
-  if (video_ok==1)
-    {
-      // 'video1394' menuitem optional addition:
-      glade_menuitem = gtk_menu_item_new_with_label (_("VIDEO1394"));
-      gtk_widget_show (glade_menuitem);
-      gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-      gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
-			  GTK_SIGNAL_FUNC (on_prefs_receive_method_activate),
-			  (int*)RECEIVE_METHOD_VIDEO1394); 
-      preferences.receive_method2index[RECEIVE_METHOD_VIDEO1394]=k;
-      k++;
-    }
+  if (video_ok==1) {
+    // 'video1394' menuitem optional addition:
+    glade_menuitem = gtk_menu_item_new_with_label (_("VIDEO1394"));
+    gtk_widget_show (glade_menuitem);
+    gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+    gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
+			GTK_SIGNAL_FUNC (on_prefs_receive_method_activate),
+			(int*)RECEIVE_METHOD_VIDEO1394); 
+    preferences.receive_method2index[RECEIVE_METHOD_VIDEO1394]=k;
+    k++;
+  }
   
   gtk_option_menu_set_menu (GTK_OPTION_MENU (new_option_menu), new_menu);
 
@@ -310,18 +270,15 @@ BuildPrefsReceiveFrame(void)
   gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(commander_window, "prefs_receive_method_menu")),
 			      preferences.receive_method2index[preferences.receive_method]);
 
-  gtk_entry_set_text(GTK_ENTRY(lookup_widget(commander_window, "prefs_video1394_device")),
-		     preferences.video1394_device);
-  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window, "prefs_receive_dropframes")),
-		     preferences.video1394_dropframes);
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(commander_window, "prefs_video1394_device")), preferences.video1394_device);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window, "prefs_receive_dropframes")), preferences.video1394_dropframes);
 }
 
 void
 BuildOptionFrame(void)
 {
   pthread_mutex_lock(&uiinfo->mutex);
-  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(commander_window,
-							  "mono16_bpp"),uiinfo->bpp);
+  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(commander_window, "mono16_bpp"),uiinfo->bpp);
   pthread_mutex_unlock(&uiinfo->mutex);
   BuildBayerMenu();
   BuildBayerPatternMenu();

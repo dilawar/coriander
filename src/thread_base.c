@@ -16,19 +16,7 @@
  * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif
-
-#include <gnome.h>
-#include <pthread.h>
-#include "support.h"
 #include "thread_base.h" 
-#include "thread_display.h"
-#include "thread_iso.h"
-#include "thread_ftp.h"
-#include "thread_save.h"
-#include "conversions.h"
 
 extern chain_t *image_pipe;
 extern chain_t **image_pipes;
@@ -219,53 +207,51 @@ RemoveChain(chain_t* chain, unsigned int camera)
 void
 FreeChain(chain_t* chain)
 {
-  if (chain!=NULL)
-    {
-      if (chain->data!=NULL)
-	free(chain->data);
-      if (chain->current_buffer!=NULL) {
-	if (chain->current_buffer->image!=NULL) {
-	  free(chain->current_buffer->image);
-	}
-	free(chain->current_buffer);
+  if (chain!=NULL) {
+    if (chain->data!=NULL)
+      free(chain->data);
+    if (chain->current_buffer!=NULL) {
+      if (chain->current_buffer->image!=NULL) {
+	free(chain->current_buffer->image);
       }
-      if (chain->next_buffer!=NULL) {
-	if (chain->next_buffer->image!=NULL)
-	  free(chain->next_buffer->image);
-	free(chain->next_buffer);
-      }
-      free(chain);
+      free(chain->current_buffer);
     }
+    if (chain->next_buffer!=NULL) {
+      if (chain->next_buffer->image!=NULL)
+	free(chain->next_buffer->image);
+      free(chain->next_buffer);
+    }
+    free(chain);
+  }
 }
 
 
 void
 convert_to_rgb(buffer_t *buffer, unsigned char *dest)
 {
-  switch(buffer->buffer_color_mode)
-    {
-    case COLOR_FORMAT7_MONO8:
-      y2rgb(buffer->image,dest,buffer->width*buffer->height);
-      break;
-    case COLOR_FORMAT7_YUV411:
-      uyyvyy2rgb(buffer->image,dest,buffer->width*buffer->height);
-      break;
-    case COLOR_FORMAT7_YUV422:
-      uyvy2rgb(buffer->image,dest,buffer->width*buffer->height);
-      break;
-    case COLOR_FORMAT7_YUV444:
-      uyv2rgb(buffer->image,dest,buffer->width*buffer->height);
-      break;
-    case COLOR_FORMAT7_RGB8:
-      memcpy(dest,buffer->image,3*buffer->width*buffer->height);
-      break;
-    case COLOR_FORMAT7_MONO16:
-      y162rgb(buffer->image,dest,buffer->width*buffer->height,buffer->bpp);
-      break;
-    case COLOR_FORMAT7_RGB16:
-      rgb482rgb(buffer->image,dest,buffer->width*buffer->height);
-      break;
-    }
+  switch(buffer->buffer_color_mode) {
+  case COLOR_FORMAT7_MONO8:
+    y2rgb(buffer->image,dest,buffer->width*buffer->height);
+    break;
+  case COLOR_FORMAT7_YUV411:
+    uyyvyy2rgb(buffer->image,dest,buffer->width*buffer->height);
+    break;
+  case COLOR_FORMAT7_YUV422:
+    uyvy2rgb(buffer->image,dest,buffer->width*buffer->height);
+    break;
+  case COLOR_FORMAT7_YUV444:
+    uyv2rgb(buffer->image,dest,buffer->width*buffer->height);
+    break;
+  case COLOR_FORMAT7_RGB8:
+    memcpy(dest,buffer->image,3*buffer->width*buffer->height);
+    break;
+  case COLOR_FORMAT7_MONO16:
+    y162rgb(buffer->image,dest,buffer->width*buffer->height,buffer->bpp);
+    break;
+  case COLOR_FORMAT7_RGB16:
+    rgb482rgb(buffer->image,dest,buffer->width*buffer->height);
+    break;
+  }
 }
 
 

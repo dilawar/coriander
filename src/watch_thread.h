@@ -21,9 +21,11 @@
 
 #ifdef HAVE_SDLLIB
 
-#include "SDL.h"
-#include "thread_display.h"
-#include "thread_base.h"
+#include <pthread.h>
+#include <gnome.h>
+#include "preferences.h"
+#include "support.h"
+#include "tools.h"
 
 typedef struct
 {

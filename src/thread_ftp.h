@@ -16,19 +16,27 @@
  * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <gnome.h>
-
 #ifndef __THREAD_FTP_H__
 #define __THREAD_FTP_H__
+
+
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
 #ifdef HAVE_FTPLIB
 #include <ftplib.h>
 #endif
 
-#include <pthread.h> 
-#include <time.h>
+#include <pthread.h>
 #include <sys/times.h>
+#include <gnome.h>
+#include <math.h>
+#include "support.h"
 #include "definitions.h"
+#include "thread_base.h"
+#include "tools.h"
+
 
 typedef enum
 {

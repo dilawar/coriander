@@ -21,9 +21,14 @@
 
 #ifdef HAVE_SDLLIB
 
-#include "SDL.h"
-#include "thread_display.h"
+#include <gnome.h>
+#include "preferences.h"
+#include "definitions.h"
 #include "thread_base.h"
+#include "watch_thread.h"
+#include "thread_display.h"
+#include "tools.h"
+#include "update_frames.h"
 
 #define EVENTS_SLEEP_MS 50
 

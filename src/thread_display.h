@@ -19,23 +19,18 @@
 #ifndef __THREAD_DISPLAY_H__
 #define __THREAD_DISPLAY_H__
 
-#ifdef HAVE_X11_EXTENSIONS_XVLIB_H
-#include <X11/Xlib.h>
-#include <sys/ipc.h>
-#include <sys/shm.h>
-#include <X11/extensions/XShm.h>
-#include <X11/extensions/Xvlib.h>
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
 #endif
 
 #ifdef HAVE_SDLLIB
 #include "SDL.h"
+#include "SDLEvent.h"
 #endif
 
-#include <gdk/gdk.h>
-#include <gtk/gtk.h>
-#include "thread_base.h" 
-#include <time.h>
-#include <sys/times.h>
+#include <math.h>
+#include "thread_base.h"
+#include "watch_thread.h"
 
 typedef struct
 {

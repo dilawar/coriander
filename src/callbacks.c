@@ -16,29 +16,8 @@
  * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif
 
-#include <gnome.h>
 #include "callbacks.h"
-#include <netinet/in.h>
-#include "interface.h"
-#include "support.h"
-#include "build_menus.h"
-#include "update_frames.h"
-#include "update_ranges.h"
-#include "build_windows.h"
-#include "update_windows.h"
-#include "definitions.h"
-#include "preferences.h" 
-#include "tools.h"
-#include "thread_iso.h"
-#include "thread_display.h"
-#include "thread_save.h"
-#include "thread_ftp.h"
-#include "thread_base.h"
-#include <libdc1394/dc1394_control.h>
 
 #define EEPROM_CNFG       0xF00U
 #define TEST_CNFG         0xF04U
@@ -211,24 +190,20 @@ on_save_mem_clicked                    (GtkButton       *button,
 
   if (dc1394_set_memory_save_ch(camera->handle,camera->id, misc_info->save_channel)!=DC1394_SUCCESS)
     MainError("Could not set memory save channel");
-  else
-    { 
-      if (dc1394_memory_save(camera->handle,camera->id)!=DC1394_SUCCESS)
-	MainError("Could not save setup to memory channel");
-      else
-	{
-	  while ((value==DC1394_TRUE)
-		 &&(timeout_bin<(unsigned long int)(preferences.op_timeout*1000000.0)) )
-	    {
-	      usleep(step);
-	      if (dc1394_is_memory_save_in_operation(camera->handle,camera->id, &value)!=DC1394_SUCCESS)
-		MainError("Could not query if memory save is in operation");
-	      timeout_bin+=step;
-	    }
-	  if (timeout_bin>=(unsigned long int)(preferences.op_timeout*1000000.0))
-	    MainStatus("Save operation function timed-out!"); 
-	}
+  else { 
+    if (dc1394_memory_save(camera->handle,camera->id)!=DC1394_SUCCESS)
+      MainError("Could not save setup to memory channel");
+    else {
+      while ((value==DC1394_TRUE) &&(timeout_bin<(unsigned long int)(preferences.op_timeout*1000000.0)) ) {
+	usleep(step);
+	if (dc1394_is_memory_save_in_operation(camera->handle,camera->id, &value)!=DC1394_SUCCESS)
+	  MainError("Could not query if memory save is in operation");
+	timeout_bin+=step;
+      }
+      if (timeout_bin>=(unsigned long int)(preferences.op_timeout*1000000.0))
+	MainStatus("Save operation function timed-out!"); 
     }
+  }
 }
 
 void
@@ -237,11 +212,10 @@ on_iso_start_clicked                   (GtkButton       *button,
 {
   if (dc1394_start_iso_transmission(camera->handle,camera->id)!=DC1394_SUCCESS)
     MainError("Could not start ISO transmission");
-  else
-    {
-      misc_info->is_iso_on=DC1394_TRUE;
-      UpdateIsoFrame();
-    }
+  else {
+    misc_info->is_iso_on=DC1394_TRUE;
+    UpdateIsoFrame();
+  }
   UpdateTransferStatusFrame();
 }
 
@@ -252,11 +226,10 @@ on_iso_stop_clicked                    (GtkButton       *button,
 {
   if (dc1394_stop_iso_transmission(camera->handle,camera->id)!=DC1394_SUCCESS)
     MainError("Could not stop ISO transmission");
-  else
-    {
-      misc_info->is_iso_on=DC1394_FALSE;
-      UpdateIsoFrame();
-    }
+  else {
+    misc_info->is_iso_on=DC1394_FALSE;
+    UpdateIsoFrame();
+  }
   UpdateTransferStatusFrame();
 }
 
@@ -303,6 +276,7 @@ on_format7_packet_size_changed               (GtkAdjustment    *adj,
   int state;
 
   IsoFlowCheck(&state);
+
   if (dc1394_set_format7_byte_per_packet(camera->handle, camera->id, 
 					 format7_info->edit_mode, (int)adj->value)!=DC1394_SUCCESS)
     MainError("Could not change Format7 bytes per packet");
@@ -340,13 +314,12 @@ on_edit_format7_color_activate             (GtkMenuItem     *menuitem,
     format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].color_coding_id=(int)user_data;
 
   // if the mode is the 'live' mode:
-  if (format7_info->edit_mode==misc_info->mode)
-    {
-      UpdateOptionFrame();
-      UpdateFormat7BppRange();
-      UpdateFormat7Ranges();
-      IsoFlowResume(&state);
-    }
+  if (format7_info->edit_mode==misc_info->mode) {
+    UpdateOptionFrame();
+    UpdateFormat7BppRange();
+    UpdateFormat7Ranges();
+    IsoFlowResume(&state);
+  }
 
 }
 
@@ -362,46 +335,45 @@ void
 on_scale_value_changed             ( GtkAdjustment    *adj,
 				     gpointer         user_data)
 {
-  switch((int)user_data)
-    {
-      case FEATURE_TEMPERATURE:
-	if (dc1394_set_temperature(camera->handle,camera->id,adj->value)!=DC1394_SUCCESS)
-	  MainError("Could not set temperature");
-	else
-	  feature_set->feature[FEATURE_TEMPERATURE-FEATURE_MIN].target_value=adj->value;
-	break;
-      case FEATURE_WHITE_BALANCE+BU*4: // why oh why is there a *4?
-	if (dc1394_set_white_balance(camera->handle,camera->id,adj->value, feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].RV_value)!=DC1394_SUCCESS)
-	  MainError("Could not set B/U white balance");
-	else {
-	  feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].BU_value=adj->value;
-	  if (feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].absolute_capable!=0) {
-	    GetAbsValue(FEATURE_WHITE_BALANCE);
-	  }
-	}
-	break;
-      case FEATURE_WHITE_BALANCE+RV*4: // why oh why is there a *4?
-	if (dc1394_set_white_balance(camera->handle,camera->id, feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].BU_value, adj->value)!=DC1394_SUCCESS)
-	  MainError("Could not set R/V white balance");
-	else {
-	  feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].RV_value=adj->value;
-	  if (feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].absolute_capable!=0) {
-	    GetAbsValue(FEATURE_WHITE_BALANCE);
-	  }
-	}
-	break;
-      default: // includes trigger_count
-	if (dc1394_set_feature_value(camera->handle,camera->id,(int)user_data,adj->value)!=DC1394_SUCCESS)
-	  MainError("Could not set feature");
-	else {
-	  feature_set->feature[(int)user_data-FEATURE_MIN].value=adj->value;
-	  if ((int)user_data!=FEATURE_TRIGGER) {
-	    if (feature_set->feature[(int)user_data-FEATURE_MIN].absolute_capable!=0) {
-	      GetAbsValue((int)user_data);
-	    }
-	  } 
-	}
+  switch((int)user_data) {
+  case FEATURE_TEMPERATURE:
+    if (dc1394_set_temperature(camera->handle,camera->id,adj->value)!=DC1394_SUCCESS)
+      MainError("Could not set temperature");
+    else
+      feature_set->feature[FEATURE_TEMPERATURE-FEATURE_MIN].target_value=adj->value;
+    break;
+  case FEATURE_WHITE_BALANCE+BU*4: // why oh why is there a *4?
+    if (dc1394_set_white_balance(camera->handle,camera->id,adj->value, feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].RV_value)!=DC1394_SUCCESS)
+      MainError("Could not set B/U white balance");
+    else {
+      feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].BU_value=adj->value;
+      if (feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].absolute_capable!=0) {
+	GetAbsValue(FEATURE_WHITE_BALANCE);
+      }
     }
+    break;
+  case FEATURE_WHITE_BALANCE+RV*4: // why oh why is there a *4?
+    if (dc1394_set_white_balance(camera->handle,camera->id, feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].BU_value, adj->value)!=DC1394_SUCCESS)
+      MainError("Could not set R/V white balance");
+    else {
+      feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].RV_value=adj->value;
+      if (feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].absolute_capable!=0) {
+	GetAbsValue(FEATURE_WHITE_BALANCE);
+      }
+    }
+    break;
+  default: // includes trigger_count
+    if (dc1394_set_feature_value(camera->handle,camera->id,(int)user_data,adj->value)!=DC1394_SUCCESS)
+      MainError("Could not set feature");
+    else {
+      feature_set->feature[(int)user_data-FEATURE_MIN].value=adj->value;
+      if ((int)user_data!=FEATURE_TRIGGER) {
+	if (feature_set->feature[(int)user_data-FEATURE_MIN].absolute_capable!=0) {
+	  GetAbsValue((int)user_data);
+	}
+      } 
+    }
+  }
 }
 
 void
@@ -423,15 +395,14 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
 	adj->value=(((int)adj->value)/step)*step;
 	if (dc1394_set_format7_image_size(camera->handle,camera->id, format7_info->edit_mode, adj->value, info->size_y)!=DC1394_SUCCESS)
 	  MainError("Could not set Format7 image size");
-	else 
-	  {
-	    info->size_x=adj->value;
-	    // adjust the pos_x adjustment so that (size_x+pos_x)<=max_size_x:
-	    adj2=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(format7_window, "format7_hposition_scale")));
-	    adj2->upper=info->max_size_x-adj->value;
-	    gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
-	    gtk_signal_emit_by_name(GTK_OBJECT (adj2), "changed");
-	  }
+	else  {
+	  info->size_x=adj->value;
+	  // adjust the pos_x adjustment so that (size_x+pos_x)<=max_size_x:
+	  adj2=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(format7_window, "format7_hposition_scale")));
+	  adj2->upper=info->max_size_x-adj->value;
+	  gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
+	  gtk_signal_emit_by_name(GTK_OBJECT (adj2), "changed");
+	}
 	if (format7_info->edit_mode==misc_info->mode) IsoFlowResume(&state);
 	break;
 
@@ -441,18 +412,17 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
 	adj->value=(((int)adj->value)/step)*step;
 	if (dc1394_set_format7_image_size(camera->handle,camera->id, format7_info->edit_mode, info->size_x, adj->value)!=DC1394_SUCCESS)
 	  MainError("Could not set Format7 image size");
-	else
-	  {
-	    info->size_y=adj->value;
-	    // adjust the pos_y adjustment so that (size_y+pos_y)<=max_size_y:
-	    adj2=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(format7_window, "format7_vposition_scale")));
-	    adj2->upper=info->max_size_y-adj->value;
-	    gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
-	    gtk_signal_emit_by_name(GTK_OBJECT (adj2), "changed");
-	  }
+	else {
+	  info->size_y=adj->value;
+	  // adjust the pos_y adjustment so that (size_y+pos_y)<=max_size_y:
+	  adj2=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(format7_window, "format7_vposition_scale")));
+	  adj2->upper=info->max_size_y-adj->value;
+	  gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
+	  gtk_signal_emit_by_name(GTK_OBJECT (adj2), "changed");
+	}
 	if (format7_info->edit_mode==misc_info->mode) IsoFlowResume(&state);
 	break;
-
+	
       case FORMAT7_POS_X:
 	if (format7_info->edit_mode==misc_info->mode) IsoFlowCheck(&state);
 	if (info->use_unit_pos>0)
@@ -462,15 +432,14 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
 	adj->value=(((int)adj->value)/step)*step;
 	if (dc1394_set_format7_image_position(camera->handle,camera->id, format7_info->edit_mode, adj->value, info->pos_y)!=DC1394_SUCCESS)
 	  MainError("Could not set Format7 image position");
-	else
-	  {
-	    info->pos_x=adj->value;
-	    // adjust the size_x adjustment so that (size_x+pos_x)<=max_size_x:
-	    adj2=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(format7_window, "format7_hsize_scale")));
-	    adj2->upper=info->max_size_x-adj->value;
-	    gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
-	    gtk_signal_emit_by_name(GTK_OBJECT (adj2), "changed");
-	  }
+	else {
+	  info->pos_x=adj->value;
+	  // adjust the size_x adjustment so that (size_x+pos_x)<=max_size_x:
+	  adj2=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(format7_window, "format7_hsize_scale")));
+	  adj2->upper=info->max_size_x-adj->value;
+	  gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
+	  gtk_signal_emit_by_name(GTK_OBJECT (adj2), "changed");
+	}
 	if (format7_info->edit_mode==misc_info->mode) IsoFlowResume(&state);
 	break;
 
@@ -483,15 +452,14 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
 	adj->value=(((int)adj->value)/step)*step;
 	if (dc1394_set_format7_image_position(camera->handle,camera->id, format7_info->edit_mode, info->pos_x, adj->value)!=DC1394_SUCCESS)
 	  MainError("Cannot set Format7 image position");
-	else
-	  {
-	    info->pos_y=adj->value;
-	    // adjust the size_y adjustment so that (size_y+pos_y)<=max_size_y:
-	    adj2=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(format7_window, "format7_vsize_scale")));
-	    adj2->upper=info->max_size_y-adj->value;
-	    gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
-	    gtk_signal_emit_by_name(GTK_OBJECT (adj2), "changed");
-	  }
+	else {
+	  info->pos_y=adj->value;
+	  // adjust the size_y adjustment so that (size_y+pos_y)<=max_size_y:
+	  adj2=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(format7_window, "format7_vsize_scale")));
+	  adj2->upper=info->max_size_y-adj->value;
+	  gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
+	  gtk_signal_emit_by_name(GTK_OBJECT (adj2), "changed");
+	}
 	if (format7_info->edit_mode==misc_info->mode) IsoFlowResume(&state);
 	break;
 
@@ -517,16 +485,15 @@ void
 on_service_iso_toggled                 (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-  if (!silent_ui_update)
-    {
-      if (togglebutton->active) {
-	if (IsoStartThread()==-1)
-	  gtk_toggle_button_set_active(togglebutton,0);
-      }
-      else
-	IsoStopThread();
-        //CleanThreads(CLEAN_MODE_UI_UPDATE_NOT_ISO);
+  if (!silent_ui_update) {
+    if (togglebutton->active) {
+      if (IsoStartThread()==-1)
+	gtk_toggle_button_set_active(togglebutton,0);
     }
+    else
+      IsoStopThread();
+    //CleanThreads(CLEAN_MODE_UI_UPDATE_NOT_ISO);
+  }
 
 }
 
@@ -535,26 +502,23 @@ void
 on_service_display_toggled             (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-  if (!silent_ui_update)
-    {
-      if (togglebutton->active)
-	{
-	  //if (GetService(SERVICE_ISO,current_camera)==NULL)
-	  //  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"service_iso")), TRUE);
-	  pthread_mutex_lock(&uiinfo->mutex);
-	  uiinfo->want_to_display=1;
-	  pthread_mutex_unlock(&uiinfo->mutex);
-	  if (DisplayStartThread()==-1)
-	    gtk_toggle_button_set_active(togglebutton,0);
-	} 
-      else
-	{
-	  DisplayStopThread(current_camera);
-	  pthread_mutex_lock(&uiinfo->mutex);
-	  uiinfo->want_to_display=0;
-	  pthread_mutex_unlock(&uiinfo->mutex);
-	} 
-    }
+  if (!silent_ui_update) {
+    if (togglebutton->active) {
+      //if (GetService(SERVICE_ISO,current_camera)==NULL)
+      //  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"service_iso")), TRUE);
+      pthread_mutex_lock(&uiinfo->mutex);
+      uiinfo->want_to_display=1;
+      pthread_mutex_unlock(&uiinfo->mutex);
+      if (DisplayStartThread()==-1)
+	gtk_toggle_button_set_active(togglebutton,0);
+    } 
+    else {
+      DisplayStopThread(current_camera);
+      pthread_mutex_lock(&uiinfo->mutex);
+      uiinfo->want_to_display=0;
+      pthread_mutex_unlock(&uiinfo->mutex);
+    } 
+  }
 }
 
 
@@ -562,18 +526,16 @@ void
 on_service_save_toggled                (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-  if (!silent_ui_update)
-    {
-      if (togglebutton->active)
-	{
-	  //if (GetService(SERVICE_ISO,current_camera)==NULL)
-	  //  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"service_iso")), TRUE);
-	  if (SaveStartThread()==-1)
-	    gtk_toggle_button_set_active(togglebutton,0);
-	}
-      else
-	SaveStopThread();
+  if (!silent_ui_update) {
+    if (togglebutton->active) {
+      //if (GetService(SERVICE_ISO,current_camera)==NULL)
+      //  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"service_iso")), TRUE);
+      if (SaveStartThread()==-1)
+	gtk_toggle_button_set_active(togglebutton,0);
     }
+    else
+      SaveStopThread();
+  }
 }
 
 
@@ -581,18 +543,16 @@ void
 on_service_ftp_toggled                 (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-  if (!silent_ui_update)
-    {
-      if (togglebutton->active)
-	{
-	  //if (GetService(SERVICE_ISO,current_camera)==NULL)
-	  //  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"service_iso")), TRUE);
-	  if (FtpStartThread()==-1)
-	    gtk_toggle_button_set_active(togglebutton,0);
-	}
-      else
-	FtpStopThread();
+  if (!silent_ui_update) {
+    if (togglebutton->active) {
+      //if (GetService(SERVICE_ISO,current_camera)==NULL)
+      //  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"service_iso")), TRUE);
+      if (FtpStartThread()==-1)
+	gtk_toggle_button_set_active(togglebutton,0);
     }
+    else
+      FtpStopThread();
+  }
 }
 
 
@@ -612,90 +572,77 @@ on_range_menu_activate             (GtkMenuItem     *menuitem,
   action=((int)user_data)%1000;
   feature=(((int)user_data)-action)/1000;
 
-  switch (action)
-    {
-    case RANGE_MENU_OFF : // ============================== OFF ==============================
-      if (dc1394_feature_on_off(camera->handle, camera->id, feature, FALSE)!=DC1394_SUCCESS)
-	MainError("Could not set feature on/off");
-      else
-	{
-	  feature_set->feature[feature-FEATURE_MIN].is_on=FALSE;
-	  UpdateRange(commander_window,feature);
+  switch (action) {
+  case RANGE_MENU_OFF : // ============================== OFF ==============================
+    if (dc1394_feature_on_off(camera->handle, camera->id, feature, FALSE)!=DC1394_SUCCESS)
+      MainError("Could not set feature on/off");
+    else {
+      feature_set->feature[feature-FEATURE_MIN].is_on=FALSE;
+      UpdateRange(commander_window,feature);
+    }
+    break;
+  case RANGE_MENU_MAN : // ============================== MAN ==============================
+      if (feature_set->feature[feature-FEATURE_MIN].on_off_capable) {
+	if (dc1394_feature_on_off(camera->handle, camera->id, feature, TRUE)!=DC1394_SUCCESS) {
+	  MainError("Could not set feature on");
+	  break;
 	}
-      break;
-    case RANGE_MENU_MAN : // ============================== MAN ==============================
-      if (feature_set->feature[feature-FEATURE_MIN].on_off_capable)
-	{
-	  if (dc1394_feature_on_off(camera->handle, camera->id, feature, TRUE)!=DC1394_SUCCESS)
-	    {
-	      MainError("Could not set feature on");
-	      break;
-	    }
-	  else
-	    feature_set->feature[feature-FEATURE_MIN].is_on=TRUE;
-	}
+	else
+	  feature_set->feature[feature-FEATURE_MIN].is_on=TRUE;
+      }
       if (dc1394_auto_on_off(camera->handle, camera->id, feature, FALSE)!=DC1394_SUCCESS)
 	MainError("Could not set manual mode");
-      else
-	{
-	  feature_set->feature[feature-FEATURE_MIN].auto_active=FALSE;
-	  UpdateRange(commander_window,feature);
-	}
+      else {
+	feature_set->feature[feature-FEATURE_MIN].auto_active=FALSE;
+	UpdateRange(commander_window,feature);
+      }
       break;
-    case RANGE_MENU_AUTO : // ============================== AUTO ==============================
-      if (feature_set->feature[feature-FEATURE_MIN].on_off_capable)
-	{
-	  if (dc1394_feature_on_off(camera->handle, camera->id, feature, TRUE)!=DC1394_SUCCESS)
-	    {
-	      MainError("Could not set feature on");
-	      break;
-	    }
-	  else
-	    feature_set->feature[feature-FEATURE_MIN].is_on=TRUE;
-	}
-      if (dc1394_auto_on_off(camera->handle, camera->id, feature, TRUE)!=DC1394_SUCCESS)
-	MainError("Could not set auto mode");
+  case RANGE_MENU_AUTO : // ============================== AUTO ==============================
+    if (feature_set->feature[feature-FEATURE_MIN].on_off_capable) {
+      if (dc1394_feature_on_off(camera->handle, camera->id, feature, TRUE)!=DC1394_SUCCESS) {
+	MainError("Could not set feature on");
+	break;
+      }
       else
-	{
-	  feature_set->feature[feature-FEATURE_MIN].auto_active=TRUE;
-	  UpdateRange(commander_window,feature);
-	}
-      break;
+	feature_set->feature[feature-FEATURE_MIN].is_on=TRUE;
+    }
+    if (dc1394_auto_on_off(camera->handle, camera->id, feature, TRUE)!=DC1394_SUCCESS)
+      MainError("Could not set auto mode");
+    else {
+      feature_set->feature[feature-FEATURE_MIN].auto_active=TRUE;
+      UpdateRange(commander_window,feature);
+    }
+    break;
     case RANGE_MENU_SINGLE : // ============================== SINGLE ==============================
-      if (feature_set->feature[feature-FEATURE_MIN].on_off_capable)
-	{
-	  if (dc1394_feature_on_off(camera->handle, camera->id, feature, TRUE)!=DC1394_SUCCESS)
-	    {
-	      MainError("Could not set feature on");
-	      break;
-	    }
-	  else
-	    feature_set->feature[feature-FEATURE_MIN].is_on=TRUE;
+      if (feature_set->feature[feature-FEATURE_MIN].on_off_capable) {
+	if (dc1394_feature_on_off(camera->handle, camera->id, feature, TRUE)!=DC1394_SUCCESS) {
+	  MainError("Could not set feature on");
+	  break;
 	}
+	else
+	  feature_set->feature[feature-FEATURE_MIN].is_on=TRUE;
+      }
       step=(unsigned long int)(1000000.0/preferences.auto_update_frequency);
       if (dc1394_start_one_push_operation(camera->handle, camera->id, feature)!=DC1394_SUCCESS)
 	MainError("Could not start one-push operation");
-      else
-	{
-	  SetScaleSensitivity(GTK_WIDGET(menuitem),feature,FALSE);
-	  while ((value==DC1394_TRUE) 
-		 && (timeout_bin<(unsigned long int)(preferences.op_timeout*1000000.0)) )
-	    {
-	      usleep(step);
-	      if (dc1394_is_one_push_in_operation(camera->handle, camera->id, feature, &value)!=DC1394_SUCCESS)
-		MainError("Could not query one-push operation");
-	      timeout_bin+=step;
-	      UpdateRange(commander_window,feature);
-	    }
-	  if (timeout_bin>=(unsigned long int)(preferences.op_timeout*1000000.0))
-	    MainStatus("One-Push function timed-out!");
+      else {
+	SetScaleSensitivity(GTK_WIDGET(menuitem),feature,FALSE);
+	while ((value==DC1394_TRUE) && (timeout_bin<(unsigned long int)(preferences.op_timeout*1000000.0)) ) {
+	  usleep(step);
+	  if (dc1394_is_one_push_in_operation(camera->handle, camera->id, feature, &value)!=DC1394_SUCCESS)
+	    MainError("Could not query one-push operation");
+	  timeout_bin+=step;
 	  UpdateRange(commander_window,feature);
-	  // should switch back to manual mode here. Maybe a recursive call??
-	  // >> Not necessary because UpdateRange reloads the status which folds
-	  // back to 'man' in the camera
 	}
+	if (timeout_bin>=(unsigned long int)(preferences.op_timeout*1000000.0))
+	  MainStatus("One-Push function timed-out!");
+	UpdateRange(commander_window,feature);
+	// should switch back to manual mode here. Maybe a recursive call??
+	// >> Not necessary because UpdateRange reloads the status which folds
+	// back to 'man' in the camera
+      }
       break;
-    }
+  }
 }
 
 

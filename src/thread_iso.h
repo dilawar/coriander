@@ -20,10 +20,16 @@
 #define __THREAD_ISO_H__
 
 #include <gnome.h>
-#include "conversions.h"
-#include <time.h>
+#include <pthread.h>
 #include <sys/times.h>
 #include <sys/timeb.h>
+#include <libdc1394/dc1394_control.h>
+#include <math.h>
+#include "support.h"
+#include "thread_base.h"
+#include "topology.h"
+#include "definitions.h"
+#include "tools.h" 
 
 #define DMA_BUFFERS 4
 
