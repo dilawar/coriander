@@ -22,15 +22,6 @@
 
 typedef enum
 {
-  NO_BAYER_DECODING=0,
-  BAYER_DECODING_NEAREST,
-  BAYER_DECODING_EDGE_SENSE,
-  BAYER_DECODING_DOWNSAMPLE,
-  BAYER_DECODING_SIMPLE
-} bayer_decoding_t;
-
-typedef enum
-{
   NO_STEREO_DECODING=0,
   STEREO_DECODING_INTERLACED,
   STEREO_DECODING_FIELD
@@ -130,6 +121,8 @@ y2rgb (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels
 void
 y162rgb (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels, int bits);
 
+/*
+
 // BAYER -> RGB
 void
 BayerNearestNeighbor(unsigned char *src, unsigned char *dest, int sx, int sy, int type);
@@ -138,16 +131,17 @@ void
 BayerEdgeSense(unsigned char *src, unsigned char *dest, int sx, int sy, int type);
 
 void
-ClearBorders(unsigned char* dest, int sx, int sy, int w);
-
-void
 BayerDownsample(unsigned char *src, unsigned char *dest, int sx, int sy, int type);
 
 void
 BayerSimple(unsigned char *src, unsigned char *dest, int sx, int sy, int type);
 
 void
-StereoDecode(unsigned char *src, unsigned char *dest, unsigned long long int NumPixels);
+ClearBorders(unsigned char* dest, int sx, int sy, int w);
 
+*/
+
+void
+StereoDecode(unsigned char *src, unsigned char *dest, unsigned long long int NumPixels);
 
 #endif // __CONVERSIONS_H__

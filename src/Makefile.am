@@ -32,6 +32,7 @@ coriander_SOURCES = \
 	update_ranges.c update_ranges.h \
 	build_ranges.c build_ranges.h \
 	conversions.c conversions.h \
+	bayer.c bayer.h \
 	topology.c topology.h \
 	preferences.c preferences.h \
 	raw1394support.h 

@@ -63,6 +63,7 @@
 #include <netinet/in.h>
 
 #include "raw1394support.h"
+#include "bayer.h"
 #include "conversions.h"
 #include "definitions.h"
 #include "videodev.h"

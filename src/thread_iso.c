@@ -275,6 +275,14 @@ IsoThread(void* arg)
       BayerDownsample(info->temp, iso_service->current_buffer->image,
 		      iso_service->current_buffer->width, iso_service->current_buffer->height, iso_service->current_buffer->bayer_pattern);
       break;
+    case BAYER_DECODING_BILINEAR:
+      BayerBilinear(info->temp, iso_service->current_buffer->image,
+		    iso_service->current_buffer->width, iso_service->current_buffer->height, iso_service->current_buffer->bayer_pattern);
+      break;
+    case BAYER_DECODING_HQLINEAR:
+      BayerHQLinear(info->temp, iso_service->current_buffer->image,
+		    iso_service->current_buffer->width, iso_service->current_buffer->height, iso_service->current_buffer->bayer_pattern);
+      break;
     case NO_BAYER_DECODING:
       // this is only necessary if no stereo was performed
       if (iso_service->current_buffer->stereo_decoding==NO_STEREO_DECODING) {
@@ -414,6 +422,8 @@ IsoThreadCheckParams(chain_t *iso_service)
   case BAYER_DECODING_EDGE_SENSE:
   case BAYER_DECODING_NEAREST:
   case BAYER_DECODING_SIMPLE:
+  case BAYER_DECODING_BILINEAR:
+  case BAYER_DECODING_HQLINEAR:
     switch (iso_service->current_buffer->stereo_decoding) {
     case STEREO_DECODING_FIELD:
     case STEREO_DECODING_INTERLACED:

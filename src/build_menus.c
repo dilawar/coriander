@@ -580,6 +580,20 @@ BuildBayerMenu(void)
   gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
 		      GTK_SIGNAL_FUNC (on_bayer_menu_activate),
 		      (int*)BAYER_DECODING_DOWNSAMPLE); 
+  // add bilinear option
+  glade_menuitem = gtk_menu_item_new_with_label (_("Bilinear"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
+		      GTK_SIGNAL_FUNC (on_bayer_menu_activate),
+		      (int*)BAYER_DECODING_BILINEAR); 
+  // add HQ linear option
+  glade_menuitem = gtk_menu_item_new_with_label (_("HQ Linear"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
+		      GTK_SIGNAL_FUNC (on_bayer_menu_activate),
+		      (int*)BAYER_DECODING_HQLINEAR); 
   
   gtk_option_menu_set_menu (GTK_OPTION_MENU (new_option_menu), new_menu);
 

@@ -6,6 +6,7 @@ Changes towards version 1.0.2
    - fixed the non-blanked boundary line in ClearBorders (Frederic Devernay)
    - updated the UI file (coriander.glade) regarding the 'save' filename
      selection
+   - phatt bayer pattern update by Frederic Devernay.
 	
    Jan 27, 2005, by Damien Douxchamps
    - updated the TODO and BUGS files after receving inputs from Jagob Gryn.

@@ -22,11 +22,6 @@
 // this should disappear...
 extern void swab();
 
-#define CLIP(in, out)\
-   in = in < 0 ? 0 : in;\
-   in = in > 255 ? 255 : in;\
-   out=in;
-  
 /**********************************************************************
  *
  *  CONVERSION FUNCTIONS TO UYVY 
@@ -537,6 +532,44 @@ y162rgb (unsigned char *src, unsigned char *dest, unsigned long long int NumPixe
  * patterns.                                                     *
  *****************************************************************/
 
+/*
+
+#define CLIP(in, out)\
+   in = in < 0 ? 0 : in;\
+   in = in > 255 ? 255 : in;\
+   out=in;
+  
+#define CLIP16(in, out)\
+   in = in < 0 ? 0 : in;\
+   in = in > 16383 ? 16383 : in;\
+   out=in;
+  
+void
+ClearBorders(unsigned char* dest, int sx, int sy, int w) 
+{
+  int i,j;
+
+  // black edges:
+  i=3*sx*w-1;
+  j=3*sx*sy-1;
+  while (i>=0) {
+    dest[i--]=0;
+    dest[j--]=0;
+  }
+  
+  i=sx*(sy-1)*3-1+w*3;
+  while (i>sx) {
+    j=6*w;
+    while (j>0) {
+      dest[i--]=0;
+      j--;
+    }
+    i-=(sx-2*w)*3;
+  }
+  
+}
+
+
 void
 BayerNearestNeighbor(unsigned char *src, unsigned char *dest, int sx, int sy, int type)
 {
@@ -877,32 +910,6 @@ BayerEdgeSense(unsigned char *src, unsigned char *dest, int sx, int sy, int type
 }
 
 void
-ClearBorders(unsigned char* dest, int sx, int sy, int w) 
-{
-  int i,j;
-
-  // black edges:
-  i=3*sx*w-1;
-  j=3*sx*sy-1;
-  while (i>=0) {
-    dest[i--]=0;
-    dest[j--]=0;
-  }
-  
-  i=sx*(sy-1)*3-1+w*3;
-  while (i>sx) {
-    j=6*w;
-    while (j>0) {
-      dest[i--]=0;
-      j--;
-    }
-    i-=(sx-2*w)*3;
-  }
-  
-}
-
-
-void
 BayerDownsample(unsigned char *src, unsigned char *dest, int sx, int sy, int type)
 {
   unsigned char *outR=NULL, *outG=NULL, *outB=NULL;
@@ -1105,6 +1112,8 @@ BayerSimple(unsigned char *src, unsigned char *dest, int sx, int sy, int type)
 
 
 }
+
+*/
 
 // change a 16bit stereo image (8bit/channel) into two 8bit images on top
 // of each other
