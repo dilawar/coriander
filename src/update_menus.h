@@ -24,10 +24,6 @@
 #include "support.h"
 #include "tools.h"
 
-/*
-#include "callbacks.h"
-#include "definitions.h"
-*/
 void
 UpdateFormatMenu(void);
 

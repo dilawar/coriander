@@ -18,18 +18,10 @@
 
 #include "thread_iso.h"
 
-extern Format7Info *format7_infos;
-extern Format7Info *format7_info;
-extern dc1394_miscinfo *misc_infos;
-extern dc1394_miscinfo *misc_info;
-extern SelfIdPacket_t *selfid;
 extern PrefsInfo preferences; 
 extern GtkWidget *commander_window;
-extern int current_camera;
 extern CtxtInfo ctxt;
-extern uiinfo_t *uiinfo;
-extern uiinfo_t *uiinfos;
-extern dc1394_camerainfo *camera;
+extern camera_t* camera;
 
 gint IsoStartThread(void)
 {
@@ -37,7 +29,7 @@ gint IsoStartThread(void)
   chain_t* iso_service=NULL;
   isothread_info_t *info=NULL;
 
-  iso_service=GetService(SERVICE_ISO,current_camera);
+  iso_service=GetService(SERVICE_ISO);
 
   if (iso_service==NULL) { // if no ISO service running...
     //fprintf(stderr,"*** No ISO service found, inserting new one\n");
@@ -51,7 +43,7 @@ gint IsoStartThread(void)
     info=(isothread_info_t*)iso_service->data;
     
     /* currently FORMAT_STILL_IMAGE is not supported*/
-    if (misc_info->format == FORMAT_STILL_IMAGE) {
+    if (camera->misc_info.format == FORMAT_STILL_IMAGE) {
       FreeChain(iso_service);
       return(-1);
     }
@@ -64,7 +56,7 @@ gint IsoStartThread(void)
       return(-1);
     }
     
-    switch (selfid->packetZero.phySpeed) {
+    switch (camera->selfid.packetZero.phySpeed) {
     case 1: maxspeed=SPEED_200;break;
     case 2: maxspeed=SPEED_400;break;
     default: maxspeed=SPEED_100;break;
@@ -72,10 +64,10 @@ gint IsoStartThread(void)
     //fprintf(stderr,"    Setting up capture\n");
     switch(preferences.receive_method) {
     case RECEIVE_METHOD_VIDEO1394:
-      if (misc_info->format!=FORMAT_SCALABLE_IMAGE_SIZE)
-	if (dc1394_dma_setup_capture(camera->handle, camera->id, misc_info->iso_channel, 
-				     misc_info->format, misc_info->mode, maxspeed,
-				     misc_info->framerate, DMA_BUFFERS,
+      if (camera->misc_info.format!=FORMAT_SCALABLE_IMAGE_SIZE)
+	if (dc1394_dma_setup_capture(camera->camera_info.handle, camera->camera_info.id, camera->misc_info.iso_channel, 
+				     camera->misc_info.format, camera->misc_info.mode, maxspeed,
+				     camera->misc_info.framerate, DMA_BUFFERS,
 				     preferences.video1394_dropframes,
 				     preferences.video1394_device, &info->capture)
 	    == DC1394_SUCCESS) {
@@ -89,8 +81,8 @@ gint IsoStartThread(void)
 	}
       else {
 	info->capture.dma_device_file = preferences.video1394_device;
-	if (dc1394_dma_setup_format7_capture(camera->handle, camera->id, misc_info->iso_channel, 
-					     misc_info->mode, maxspeed, QUERY_FROM_CAMERA,
+	if (dc1394_dma_setup_format7_capture(camera->camera_info.handle, camera->camera_info.id, camera->misc_info.iso_channel, 
+					     camera->misc_info.mode, maxspeed, QUERY_FROM_CAMERA,
 					     QUERY_FROM_CAMERA, QUERY_FROM_CAMERA,
 					     QUERY_FROM_CAMERA, QUERY_FROM_CAMERA, 
 					     DMA_BUFFERS, &info->capture)
@@ -106,10 +98,10 @@ gint IsoStartThread(void)
       }
       break;
     case RECEIVE_METHOD_RAW1394:
-      if (misc_info->format!=FORMAT_SCALABLE_IMAGE_SIZE)
-	if (dc1394_setup_capture(camera->handle, camera->id, misc_info->iso_channel, 
-				 misc_info->format, misc_info->mode, maxspeed,
-				 misc_info->framerate, &info->capture)
+      if (camera->misc_info.format!=FORMAT_SCALABLE_IMAGE_SIZE)
+	if (dc1394_setup_capture(camera->camera_info.handle, camera->camera_info.id, camera->misc_info.iso_channel, 
+				 camera->misc_info.format, camera->misc_info.mode, maxspeed,
+				 camera->misc_info.framerate, &info->capture)
 	    == DC1394_SUCCESS) {
 	  info->receive_method=RECEIVE_METHOD_RAW1394;
 	}
@@ -120,8 +112,8 @@ gint IsoStartThread(void)
 	  return(-1);
 	}
       else {
-	if (dc1394_setup_format7_capture(camera->handle, camera->id, misc_info->iso_channel, 
-					 misc_info->mode, maxspeed, QUERY_FROM_CAMERA,
+	if (dc1394_setup_format7_capture(camera->camera_info.handle, camera->camera_info.id, camera->misc_info.iso_channel, 
+					 camera->misc_info.mode, maxspeed, QUERY_FROM_CAMERA,
 					 QUERY_FROM_CAMERA, QUERY_FROM_CAMERA,
 					 QUERY_FROM_CAMERA, QUERY_FROM_CAMERA,
 					 &info->capture)
@@ -140,7 +132,7 @@ gint IsoStartThread(void)
     //fprintf(stderr,"   1394 setup OK\n");
     
     pthread_mutex_lock(&iso_service->mutex_data);
-    CommonChainSetup(iso_service, SERVICE_ISO, current_camera);
+    CommonChainSetup(iso_service, SERVICE_ISO);
     // init image buffers structs
     info->temp=NULL;
     info->temp_size=0;
@@ -149,13 +141,13 @@ gint IsoStartThread(void)
     pthread_mutex_unlock(&iso_service->mutex_data);
     
     pthread_mutex_lock(&iso_service->mutex_struct);
-    InsertChain(iso_service,current_camera);
+    InsertChain(iso_service);
     pthread_mutex_unlock(&iso_service->mutex_struct);
     
     pthread_mutex_lock(&iso_service->mutex_data);
     pthread_mutex_lock(&iso_service->mutex_struct);
     if (pthread_create(&iso_service->thread, NULL, IsoThread,(void*) iso_service)) {
-      RemoveChain(iso_service,current_camera);
+      RemoveChain(iso_service);
       pthread_mutex_unlock(&iso_service->mutex_struct);
       pthread_mutex_unlock(&iso_service->mutex_data);
       FreeChain(iso_service);
@@ -337,7 +329,7 @@ gint IsoStopThread(void)
 {
   isothread_info_t *info;
   chain_t *iso_service;
-  iso_service=GetService(SERVICE_ISO,current_camera);  
+  iso_service=GetService(SERVICE_ISO);  
 
   if (iso_service!=NULL) { // if ISO service running...
     //fprintf(stderr,"ISO service found, stopping\n");
@@ -351,7 +343,7 @@ gint IsoStopThread(void)
     gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"fps_receive"), ctxt.fps_receive_ctxt, ctxt.fps_receive_id);
     ctxt.fps_receive_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"fps_receive"), ctxt.fps_receive_ctxt, "");
     
-    RemoveChain(iso_service,current_camera);
+    RemoveChain(iso_service);
     
     if ((info->temp!=NULL)&&(info->temp_allocated>0)) {
       free(info->temp);
@@ -362,11 +354,11 @@ gint IsoStopThread(void)
     }
     
     if (info->receive_method == RECEIVE_METHOD_VIDEO1394) {
-      dc1394_dma_unlisten(camera->handle, &info->capture);
+      dc1394_dma_unlisten(camera->camera_info.handle, &info->capture);
       dc1394_dma_release_camera(info->handle, &info->capture);
     }
     else 
-      dc1394_release_camera(camera->handle, &info->capture);
+      dc1394_release_camera(camera->camera_info.handle, &info->capture);
     
     dc1394_destroy_handle(info->handle);
     info->handle = NULL;
@@ -392,9 +384,9 @@ IsoThreadCheckParams(chain_t *iso_service)
   int temp_requested_size=0;
   info=(isothread_info_t*)iso_service->data;
   // copy harmless parameters anyway:
-  pthread_mutex_lock(&uiinfos[iso_service->camera].mutex);
-  iso_service->current_buffer->bpp=uiinfos[iso_service->camera].bpp;
-  iso_service->current_buffer->bayer_pattern=uiinfo[iso_service->camera].bayer_pattern;
+  pthread_mutex_lock(&iso_service->camera->uimutex);
+  iso_service->current_buffer->bpp=iso_service->camera->bpp;
+  iso_service->current_buffer->bayer_pattern=iso_service->camera->bayer_pattern;
 
   if (iso_service->current_buffer->width==-1) {
     // we have to allocate something and get the parameters: it's the first pass:
@@ -423,15 +415,15 @@ IsoThreadCheckParams(chain_t *iso_service)
     }
   }
   // check mode and format:
-  change_detected+=iso_service->current_buffer->mode!=misc_infos[iso_service->camera].mode;
-  change_detected+=iso_service->current_buffer->format!=misc_infos[iso_service->camera].format;
+  change_detected+=iso_service->current_buffer->mode!=iso_service->camera->misc_info.mode;
+  change_detected+=iso_service->current_buffer->format!=iso_service->camera->misc_info.format;
   // check F7 color mode change
   change_detected+=((iso_service->current_buffer->format==FORMAT_SCALABLE_IMAGE_SIZE)&&
-		    (iso_service->current_buffer->format7_color_mode!=format7_infos[iso_service->camera].mode[misc_infos[iso_service->camera].mode-MODE_FORMAT7_MIN].color_coding_id));
+		    (iso_service->current_buffer->format7_color_mode!=iso_service->camera->format7_info.mode[iso_service->camera->misc_info.mode-MODE_FORMAT7_MIN].color_coding_id));
   // check stereo decoding
-  change_detected+=iso_service->current_buffer->stereo_decoding!=uiinfos[iso_service->camera].stereo;
+  change_detected+=iso_service->current_buffer->stereo_decoding!=iso_service->camera->stereo;
   // check bayer decoding
-  change_detected+=iso_service->current_buffer->bayer!=uiinfos[iso_service->camera].bayer;
+  change_detected+=iso_service->current_buffer->bayer!=iso_service->camera->bayer;
 
   // (note: there is no check in bytes_per_frame as this mearly reflects some changes for other parameters)
 
@@ -441,11 +433,11 @@ IsoThreadCheckParams(chain_t *iso_service)
     iso_service->current_buffer->width=info->capture.frame_width;
     iso_service->current_buffer->height=info->capture.frame_height;
     iso_service->current_buffer->bytes_per_frame=info->capture.quadlets_per_frame*4;
-    iso_service->current_buffer->mode=misc_infos[iso_service->camera].mode;
-    iso_service->current_buffer->format=misc_infos[iso_service->camera].format;
-    iso_service->current_buffer->format7_color_mode=format7_infos[iso_service->camera].mode[misc_infos[iso_service->camera].mode-MODE_FORMAT7_MIN].color_coding_id;
-    iso_service->current_buffer->stereo_decoding=uiinfos[iso_service->camera].stereo;
-    iso_service->current_buffer->bayer=uiinfos[iso_service->camera].bayer;
+    iso_service->current_buffer->mode=iso_service->camera->misc_info.mode;
+    iso_service->current_buffer->format=iso_service->camera->misc_info.format;
+    iso_service->current_buffer->format7_color_mode=iso_service->camera->format7_info.mode[iso_service->camera->misc_info.mode-MODE_FORMAT7_MIN].color_coding_id;
+    iso_service->current_buffer->stereo_decoding=iso_service->camera->stereo;
+    iso_service->current_buffer->bayer=iso_service->camera->bayer;
     info->orig_sizex=iso_service->current_buffer->width;
     info->orig_sizey=iso_service->current_buffer->height;
     
@@ -458,7 +450,8 @@ IsoThreadCheckParams(chain_t *iso_service)
 		       (iso_service->current_buffer->mode==MODE_1280x960_MONO16)||
 		       (iso_service->current_buffer->mode==MODE_1600x1200_MONO16));
     else
-      info->cond16bit=(format7_info->mode[iso_service->current_buffer->mode-MODE_FORMAT7_MIN].color_coding_id==COLOR_FORMAT7_MONO16);
+      // warning: little change, might have big effect
+      info->cond16bit=(iso_service->camera->format7_info.mode[iso_service->current_buffer->mode-MODE_FORMAT7_MIN].color_coding_id==COLOR_FORMAT7_MONO16);
     
     if (iso_service->current_buffer->stereo_decoding!=NO_STEREO_DECODING)
       temp_requested_size=iso_service->current_buffer->width*iso_service->current_buffer->height*2*sizeof(unsigned char);
@@ -543,7 +536,7 @@ IsoThreadCheckParams(chain_t *iso_service)
   
   //fprintf(stderr,"ISO size: %dx%d\n",iso_service->current_buffer->width,iso_service->current_buffer->height);
 
-  pthread_mutex_unlock(&uiinfos[iso_service->camera].mutex);
+  pthread_mutex_unlock(&iso_service->camera->uimutex);
 
 }
 

@@ -24,11 +24,7 @@
 #include "preferences.h"
 #include "support.h"
 #include "tools.h"
-/*
-#include "callbacks.h"
-#include "build_ranges.h"
-#include "definitions.h"
-*/
+
 void
 UpdateRange(int feature);
 

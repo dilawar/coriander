@@ -19,9 +19,7 @@
 #include "update_menus.h"
 
 extern GtkWidget *commander_window;
-extern dc1394_camerainfo *camera;
-extern dc1394_feature_set *feature_set;
-extern dc1394_miscinfo *misc_info; 
+extern camera_t* camera;
 extern char* format_list[5];
 extern char* format0_list[7];
 extern char* format1_list[8];
@@ -33,7 +31,7 @@ void UpdateFormatMenu(void)
 {
   quadlet_t formats;
 
-  if (dc1394_query_supported_formats(camera->handle, camera->id, &formats)!=DC1394_SUCCESS) {
+  if (dc1394_query_supported_formats(camera->camera_info.handle, camera->camera_info.id, &formats)!=DC1394_SUCCESS) {
     MainError("Could not query supported formats");
     formats=0x0;
   }
@@ -42,7 +40,7 @@ void UpdateFormatMenu(void)
   gtk_widget_set_sensitive(lookup_widget(commander_window,"format7_window"),formats & (0x1<<24) );
   //gtk_widget_set_sensitive(lookup_widget(commander_window,"format6_window"),formats & (0x1<<25) );
   gtk_widget_set_sensitive(lookup_widget(commander_window,"temperature_frame"),
-			   feature_set->feature[FEATURE_TEMPERATURE-FEATURE_MIN].available );
+			   camera->feature_set.feature[FEATURE_TEMPERATURE-FEATURE_MIN].available );
   
 }
 

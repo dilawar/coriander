@@ -31,20 +31,6 @@
 
 extern GtkWidget *commander_window;
 extern GtkWidget *absolute_settings_window;
-extern dc1394_camerainfo *camera;
-extern dc1394_camerainfo *cameras;
-extern dc1394_miscinfo *misc_info;
-extern dc1394_miscinfo *misc_infos;
-extern dc1394_feature_set *feature_set;
-extern dc1394_feature_set *feature_sets;
-extern Format7Info *format7_info;
-extern Format7Info *format7_infos;
-extern uiinfo_t *uiinfos;
-extern uiinfo_t *uiinfo;
-extern chain_t **image_pipes;
-extern chain_t *image_pipe;
-extern SelfIdPacket_t *selfid;
-extern SelfIdPacket_t *selfids;
 extern char* feature_abs_entry_list[NUM_FEATURES];
 extern char* feature_abs_switch_list[NUM_FEATURES];
 extern char* feature_abs_label_list[NUM_FEATURES];
@@ -53,10 +39,11 @@ extern char* channel_num_list[16];
 extern char* phy_speed_list[4];
 extern char* phy_delay_list[4];
 extern char* power_class_list[8];
+extern camera_t* camera;
+extern camera_t* cameras;
 extern int camera_num;
-extern int current_camera;
 extern CtxtInfo ctxt;
-
+extern raw1394handle_t* handles;
 
 void
 GetFormat7Capabilities(raw1394handle_t handle, nodeid_t node, Format7Info *info)
@@ -138,28 +125,28 @@ ChangeModeAndFormat         (GtkMenuItem     *menuitem,
 
   IsoFlowCheck(&state);
 
-  if (dc1394_set_video_format(camera->handle,camera->id,format)!=DC1394_SUCCESS)
+  if (dc1394_set_video_format(camera->camera_info.handle,camera->camera_info.id,format)!=DC1394_SUCCESS)
     MainError("Could not set video format");
   else
-    misc_info->format=format;
+    camera->misc_info.format=format;
 
-  if (dc1394_set_video_mode(camera->handle,camera->id,mode)!=DC1394_SUCCESS)
+  if (dc1394_set_video_mode(camera->camera_info.handle,camera->camera_info.id,mode)!=DC1394_SUCCESS)
     MainError("Could not set video mode");
   else
-    misc_info->mode=mode;
+    camera->misc_info.mode=mode;
  
   IsoFlowResume(&state);
 
   // REPROBE EVERYTHING
-  if (dc1394_get_camera_info(camera->handle, camera->id, camera)!=DC1394_SUCCESS)
+  if (dc1394_get_camera_info(camera->camera_info.handle,camera->camera_info.id, &camera->camera_info)!=DC1394_SUCCESS)
     MainError("Could not get camera basic information!");
-  if (dc1394_get_camera_misc_info(camera->handle, camera->id, misc_info)!=DC1394_SUCCESS)
+  if (dc1394_get_camera_misc_info(camera->camera_info.handle,camera->camera_info.id, &camera->misc_info)!=DC1394_SUCCESS)
     MainError("Could not get camera misc information!");
-  if (dc1394_get_camera_feature_set(camera->handle, camera->id, feature_set)!=DC1394_SUCCESS)
+  if (dc1394_get_camera_feature_set(camera->camera_info.handle,camera->camera_info.id, &camera->feature_set)!=DC1394_SUCCESS)
     MainError("Could not get camera feature information!");
 
   if (format==FORMAT_SCALABLE_IMAGE_SIZE) {
-    GetFormat7Capabilities(camera->handle, camera->id, format7_info);
+    GetFormat7Capabilities(camera->camera_info.handle,camera->camera_info.id, &camera->format7_info);
     //format7_info->edit_mode=mode;
   }
 
@@ -170,17 +157,17 @@ ChangeModeAndFormat         (GtkMenuItem     *menuitem,
 
 void IsoFlowCheck(int *state)
 { 
-  if (dc1394_get_iso_status(camera->handle, camera->id, &misc_info->is_iso_on)!=DC1394_SUCCESS)
+  if (dc1394_get_iso_status(camera->camera_info.handle, camera->camera_info.id, &camera->misc_info.is_iso_on)!=DC1394_SUCCESS)
     MainError("Could not get ISO status");
   else {
-    if (misc_info->is_iso_on>0) {
-      if (dc1394_stop_iso_transmission(camera->handle, camera->id)!=DC1394_SUCCESS)
+    if (camera->misc_info.is_iso_on>0) {
+      if (dc1394_stop_iso_transmission(camera->camera_info.handle, camera->camera_info.id)!=DC1394_SUCCESS)
 	// ... (if not done, restarting is no more possible)
 	MainError("Could not stop ISO transmission");
     }
   }
   // memorize state:
-  *state=(GetService(SERVICE_ISO,current_camera)!=NULL);
+  *state=(GetService(SERVICE_ISO)!=NULL);
   if (*state!=0) {
     gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(commander_window,"service_iso"),FALSE);
   }
@@ -190,10 +177,10 @@ void IsoFlowResume(int *state)
 {
   int was_on;
 
-  was_on=misc_info->is_iso_on;
+  was_on=camera->misc_info.is_iso_on;
   if (was_on>0) { // restart if it was 'on' before the changes
     usleep(50000); // necessary to avoid desynchronized ISO flow.
-    if (dc1394_start_iso_transmission(camera->handle, camera->id)!=DC1394_SUCCESS)
+    if (dc1394_start_iso_transmission(camera->camera_info.handle, camera->camera_info.id)!=DC1394_SUCCESS)
       MainError("Could not start ISO transmission");
   }
 
@@ -202,20 +189,20 @@ void IsoFlowResume(int *state)
   }
   
   if (was_on>0) {
-    if (dc1394_get_iso_status(camera->handle, camera->id,&misc_info->is_iso_on)!=DC1394_SUCCESS)
+    if (dc1394_get_iso_status(camera->camera_info.handle, camera->camera_info.id,&camera->misc_info.is_iso_on)!=DC1394_SUCCESS)
       MainError("Could not get ISO status");
     else {
-      if (!misc_info->is_iso_on) {
+      if (!camera->misc_info.is_iso_on) {
 	MainError("ISO not properly restarted. Trying again after 1 second");
 	usleep(1000000);
-	if (dc1394_start_iso_transmission(camera->handle, camera->id)!=DC1394_SUCCESS)
+	if (dc1394_start_iso_transmission(camera->camera_info.handle, camera->camera_info.id)!=DC1394_SUCCESS)
 	  // ... (if not done, restarting is no more possible)
 	  MainError("Could not start ISO transmission");
 	else {
-	  if (dc1394_get_iso_status(camera->handle, camera->id,&misc_info->is_iso_on)!=DC1394_SUCCESS)
+	  if (dc1394_get_iso_status(camera->camera_info.handle, camera->camera_info.id,&camera->misc_info.is_iso_on)!=DC1394_SUCCESS)
 	    MainError("Could not get ISO status");
 	  else
-	    if (!misc_info->is_iso_on)
+	    if (!camera->misc_info.is_iso_on)
 	      MainError("Can't start ISO, giving up...");
 	}
       }
@@ -279,10 +266,12 @@ void GetContextStatus()
 
 void GrabSelfIds(raw1394handle_t* handles, int portmax)
 {
+ 
   RAW1394topologyMap *topomap;
   SelfIdPacket_t packet;
   unsigned int* pselfid_int;
-  int i, j, port;
+  int i, port;
+  camera_t* camera_ptr;
 
   for (port=0;port<portmax;port++) {
     if (handles[port]!=0) {
@@ -293,40 +282,34 @@ void GrabSelfIds(raw1394handle_t* handles, int portmax)
 	pselfid_int = (unsigned int *) &topomap->selfIdPacket[i];
 	decode_selfid(&packet,pselfid_int);
 	// find the camera related to this packet:
-	for (j=0;j<camera_num;j++) {
-	  if (cameras[j].id==packet.packetZero.phyID)
-	    selfids[j]=packet;
+	
+	camera_ptr=cameras;
+	while (camera_ptr!=NULL) {
+	  if (camera_ptr->camera_info.id==packet.packetZero.phyID) {
+	    camera_ptr->selfid=packet;
+	  }
+	  camera_ptr=camera_ptr->next;
 	}
       }
     }
   }
+ 
 }
 
-void SelectCamera(int i)
-{
-  current_camera=i;
-  //DisplayActiveServices();//////////
-  image_pipe=image_pipes[current_camera];
-  camera=&cameras[current_camera];
-  feature_set=&feature_sets[current_camera];
-  misc_info=&misc_infos[current_camera];
-  format7_info=&format7_infos[current_camera];
-  uiinfo=&uiinfos[current_camera];
-  selfid=&selfids[current_camera];
-  image_pipe=image_pipes[current_camera];
-  //DisplayActiveServices();//////////
-}
 
 void
 SetChannels(void)
 {
-  unsigned int channel, speed, i;
+  unsigned int channel, speed;
+  camera_t* camera_ptr;
 
-  for (i=0;i<camera_num;i++) {
-    if (dc1394_get_iso_channel_and_speed(cameras[i].handle, cameras[i].id, &channel, &speed)!=DC1394_SUCCESS)
+  camera_ptr=cameras;
+  while(camera_ptr!=NULL) {
+    if (dc1394_get_iso_channel_and_speed(camera_ptr->camera_info.handle, camera_ptr->camera_info.id, &channel, &speed)!=DC1394_SUCCESS)
       MainError("Can't get iso channel and speed");
-    if (dc1394_set_iso_channel_and_speed(cameras[i].handle, cameras[i].id, cameras[i].id, speed)!=DC1394_SUCCESS)
+    if (dc1394_set_iso_channel_and_speed(camera_ptr->camera_info.handle, camera_ptr->camera_info.id, camera_ptr->camera_info.id, speed)!=DC1394_SUCCESS)
       MainError("Can't set iso channel and speed");
+    camera_ptr=camera_ptr->next;
   }
 }
 
@@ -403,25 +386,6 @@ SetScaleSensitivity(GtkWidget* widget, int feature, dc1394bool_t sense)
     gtk_widget_set_sensitive(GTK_WIDGET (lookup_widget(GTK_WIDGET (widget), stemp)),sense);
     break;
   }
-}
-
-void
-DisplayActiveServices(void)
-{
-  int i;
-  for (i=0;i<camera_num;i++) {
-    fprintf(stderr,"Camera %d : ",i);
-    if (GetService(SERVICE_ISO,i)!=NULL)
-      fprintf(stderr, "ISO ");
-    if (GetService(SERVICE_DISPLAY,i)!=NULL)
-      fprintf(stderr, "DISPLAY ");
-    if (GetService(SERVICE_FTP,i)!=NULL)
-      fprintf(stderr, "FTP ");
-    if (GetService(SERVICE_SAVE,i)!=NULL)
-      fprintf(stderr, "SAVE ");
-    fprintf(stderr,"\n");
-  }
-  fprintf(stderr,"\n");
 }
 
 /*
@@ -564,18 +528,18 @@ SetAbsoluteControl(int feature, int power)
 {
   char string[256];
 
-  if (dc1394_absolute_setting_on_off(camera->handle, camera->id, feature, power)!=DC1394_SUCCESS)
+  if (dc1394_absolute_setting_on_off(camera->camera_info.handle, camera->camera_info.id, feature, power)!=DC1394_SUCCESS)
     MainError("Could not activate absolute setting\n");
   else {
-    feature_set->feature[feature-FEATURE_MIN].abs_control=power;
+    camera->feature_set.feature[feature-FEATURE_MIN].abs_control=power;
     sprintf(string,"feature_%d_frame",feature);
     gtk_widget_set_sensitive(lookup_widget(commander_window, string), !power);
     gtk_widget_set_sensitive(lookup_widget(absolute_settings_window,feature_abs_entry_list[feature-FEATURE_MIN]),power);
     gtk_widget_set_sensitive(lookup_widget(absolute_settings_window,feature_abs_label_list[feature-FEATURE_MIN]),power);
     if (power>0) {
       // update absolute value 
-      dc1394_query_absolute_feature_value(camera->handle, camera->id, feature, &(feature_set->feature[feature-FEATURE_MIN].abs_value));
-      sprintf(string,"%f",feature_set->feature[feature-FEATURE_MIN].abs_value);
+      dc1394_query_absolute_feature_value(camera->camera_info.handle, camera->camera_info.id, feature, &camera->feature_set.feature[feature-FEATURE_MIN].abs_value);
+      sprintf(string,"%f",camera->feature_set.feature[feature-FEATURE_MIN].abs_value);
       gtk_entry_set_text(GTK_ENTRY(lookup_widget(absolute_settings_window, feature_abs_entry_list[feature-FEATURE_MIN])),
 			 string);
     }
@@ -594,16 +558,16 @@ BuildAbsControl(int feature)
   dc1394bool_t capable, working;
   char string[256];
 
-  capable=feature_set->feature[feature-FEATURE_MIN].absolute_capable;
+  capable=camera->feature_set.feature[feature-FEATURE_MIN].absolute_capable;
   gtk_widget_set_sensitive(lookup_widget(absolute_settings_window,feature_abs_switch_list[feature-FEATURE_MIN]),capable);
   if (capable) {
-    sprintf(string,"%f",feature_set->feature[feature-FEATURE_MIN].abs_value);
+    sprintf(string,"%f",camera->feature_set.feature[feature-FEATURE_MIN].abs_value);
     gtk_entry_set_text(GTK_ENTRY(lookup_widget(absolute_settings_window, feature_abs_entry_list[feature-FEATURE_MIN])),
 		       string);
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(absolute_settings_window, feature_abs_switch_list[feature-FEATURE_MIN])),
-				 feature_set->feature[feature-FEATURE_MIN].abs_control);
+				 camera->feature_set.feature[feature-FEATURE_MIN].abs_control);
   }
-  working=(capable&&feature_set->feature[feature-FEATURE_MIN].abs_control);
+  working=(capable&&camera->feature_set.feature[feature-FEATURE_MIN].abs_control);
   gtk_widget_set_sensitive(lookup_widget(absolute_settings_window,feature_abs_entry_list[feature-FEATURE_MIN]),working);
   gtk_widget_set_sensitive(lookup_widget(absolute_settings_window,feature_abs_label_list[feature-FEATURE_MIN]),working);
 
@@ -619,11 +583,11 @@ SetAbsValue(int feature)
  
   stringp=gtk_entry_get_text(GTK_ENTRY(lookup_widget(absolute_settings_window,feature_abs_entry_list[feature-FEATURE_MIN])));
   value=atof(stringp);
-  if (dc1394_set_absolute_feature_value(camera->handle, camera->id, feature, value)!=DC1394_SUCCESS) {
+  if (dc1394_set_absolute_feature_value(camera->camera_info.handle, camera->camera_info.id, feature, value)!=DC1394_SUCCESS) {
     MainError("Can't set absolute value!");
   }
   else {
-    if (dc1394_query_absolute_feature_value(camera->handle, camera->id, feature, &value)!=DC1394_SUCCESS) {
+    if (dc1394_query_absolute_feature_value(camera->camera_info.handle, camera->camera_info.id, feature, &value)!=DC1394_SUCCESS) {
       MainError("Can't get absolute value!");
     }
     else
@@ -641,7 +605,7 @@ GetAbsValue(int feature)
   float value;
  
   
-  if (dc1394_query_absolute_feature_value(camera->handle, camera->id, feature, &value)!=DC1394_SUCCESS) {
+  if (dc1394_query_absolute_feature_value(camera->camera_info.handle, camera->camera_info.id, feature, &value)!=DC1394_SUCCESS) {
     MainError("Can't get absolute value!");
   }
   else {
@@ -652,7 +616,7 @@ GetAbsValue(int feature)
 
 
 void
-StopFPSDisplay(int camera)
+StopFPSDisplay(void)
 {
   chain_t *service;
   isothread_info_t* infoiso;
@@ -660,7 +624,7 @@ StopFPSDisplay(int camera)
   savethread_info_t* infosave;
   ftpthread_info_t* infoftp;
 
-  service=GetService(SERVICE_ISO,current_camera);
+  service=GetService(SERVICE_ISO);
   if (service!=NULL) {
     infoiso=(isothread_info_t*)service->data;
     //fprintf(stderr,"Stopping iso fps, id %d...",infoiso->timeout_func_id);
@@ -673,20 +637,8 @@ StopFPSDisplay(int camera)
   
   } 
   // we don't need to stop display FPS: the thread is completely disabled if necessary.
-  /*
-  service=GetService(SERVICE_DISPLAY,current_camera);
-  if (service!=NULL) {
-    infodisplay=(displaythread_info_t*)service->data;
-    //fprintf(stderr,"Stopping display fps, id %d...",infodisplay->timeout_func_id);
-    gtk_timeout_remove(infodisplay->timeout_func_id);
-    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"fps_display"),
-			 ctxt.fps_display_ctxt, ctxt.fps_display_id);
-    ctxt.fps_display_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"fps_display"),
-					   ctxt.fps_display_ctxt, "");
-    //fprintf(stderr,"done\n");
-  }
-  */
- service=GetService(SERVICE_SAVE,current_camera);
+  
+  service=GetService(SERVICE_SAVE);
   if (service!=NULL) {
     infosave=(savethread_info_t*)service->data;
     //fprintf(stderr,"Stopping save fps, id %d...",infosave->timeout_func_id);
@@ -697,7 +649,7 @@ StopFPSDisplay(int camera)
 					   ctxt.fps_save_ctxt, "");
     //fprintf(stderr,"done\n");
   }
- service=GetService(SERVICE_FTP,current_camera);
+  service=GetService(SERVICE_FTP);
   if (service!=NULL) {
     infoftp=(ftpthread_info_t*)service->data;
     //fprintf(stderr,"Stopping ftp fps, id %d...",infoftp->timeout_func_id);
@@ -711,7 +663,7 @@ StopFPSDisplay(int camera)
 }
 
 void
-ResumeFPSDisplay(int camera)
+ResumeFPSDisplay(void)
 {
   chain_t *service;
   isothread_info_t* infoiso;
@@ -719,7 +671,7 @@ ResumeFPSDisplay(int camera)
   savethread_info_t* infosave;
   ftpthread_info_t* infoftp;
 
-  service=GetService(SERVICE_ISO,current_camera);
+  service=GetService(SERVICE_ISO);
   if (service!=NULL) {
     infoiso=(isothread_info_t*)service->data;
     //fprintf(stderr,"Starting iso fps...");
@@ -727,27 +679,56 @@ ResumeFPSDisplay(int camera)
     //fprintf(stderr,"done: id= %d\n",infoiso->timeout_func_id);
   } 
   // we don't restart display FPS because if necessary the thread will be restarted anyway.
-  /*
- service=GetService(SERVICE_DISPLAY,current_camera);
-  if (service!=NULL) {
-    infodisplay=(displaythread_info_t*)service->data;
-    //fprintf(stderr,"Starting display fps...");
-    infodisplay->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)DisplayShowFPS, (gpointer*) service);
-    //fprintf(stderr,"done: id= %d\n",infodisplay->timeout_func_id);
-  }
-  */
- service=GetService(SERVICE_SAVE,current_camera);
+  
+  service=GetService(SERVICE_SAVE);
   if (service!=NULL) {
     infosave=(savethread_info_t*)service->data;
     //fprintf(stderr,"Starting save fps...");
     infosave->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)SaveShowFPS, (gpointer*) service);
     //fprintf(stderr,"done: id= %d\n",infosave->timeout_func_id);
   }
- service=GetService(SERVICE_FTP,current_camera);
+  service=GetService(SERVICE_FTP);
   if (service!=NULL) {
     infoftp=(ftpthread_info_t*)service->data;
     //fprintf(stderr,"Starting ftp fps...");
     infoftp->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)FtpShowFPS, (gpointer*) service);
     //fprintf(stderr,"done: id= %d\n",infoftp->timeout_func_id);
   }
+}
+
+/*
+  The timeout/bus_reset handling technique is 'strongly inspired' by the code found in
+  GScanbus by Andreas Micklei.
+*/
+
+int
+bus_reset_handler(raw1394handle_t handle, unsigned int generation) {
+
+  fprintf(stderr,"Bus reset detected by gtk timeout. Generation: %d\n",generation);
+  raw1394_update_generation(handle, generation);
+  // Now we have to deal with this bus reset...
+  fprintf(stderr,"Coriander does not support hotplugging yet and has therefore entered\n");
+  fprintf(stderr,"a very unstable state. This program will self-terminate in 5 seconds.\n");
+  usleep(5000000);
+  fprintf(stderr,"Bye...\n");
+  exit(0);
+
+  return(0);
+}
+
+int
+main_timeout_handler(gpointer* port_num) {
+
+  int i;
+  int ports=(int)port_num;
+  quadlet_t quadlet;
+
+  //fprintf(stderr,"Main timeout triggered\n");
+  // performs a dummy read on all handles
+  for (i=0;i<ports;i++) {
+	cooked1394_read(handles[i], 0xffc0 | raw1394_get_local_id(handles[i]),
+		CSR_REGISTER_BASE + CSR_CYCLE_TIME, 4,
+		(quadlet_t *) &quadlet);
+  }
+  return(1);
 }

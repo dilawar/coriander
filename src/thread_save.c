@@ -19,7 +19,7 @@
 #include "thread_save.h" 
 
 extern PrefsInfo preferences;
-extern int current_camera;
+extern camera_t* camera;
 extern GtkWidget *commander_window;
 extern CtxtInfo ctxt;
 
@@ -30,7 +30,7 @@ SaveStartThread(void)
   savethread_info_t *info=NULL;
   gchar *tmp;
 
-  save_service=GetService(SERVICE_SAVE,current_camera);
+  save_service=GetService(SERVICE_SAVE);
 
   if (save_service==NULL) { // if no SAVE service running...
     //fprintf(stderr,"No SAVE service found, inserting new one\n");
@@ -64,7 +64,7 @@ SaveStartThread(void)
     strcpy(info->filename_ext, strrchr(preferences.save_filename, '.'));
     
     info->period=preferences.save_period;
-    CommonChainSetup(save_service,SERVICE_SAVE,current_camera);
+    CommonChainSetup(save_service,SERVICE_SAVE);
     
     info->save_buffer=NULL;
     info->counter=0;
@@ -76,7 +76,7 @@ SaveStartThread(void)
     
     /* Insert chain and start service*/
     pthread_mutex_lock(&save_service->mutex_struct);
-    InsertChain(save_service,current_camera);
+    InsertChain(save_service);
     pthread_mutex_unlock(&save_service->mutex_struct);
     
     pthread_mutex_lock(&save_service->mutex_data);
@@ -86,7 +86,7 @@ SaveStartThread(void)
 	 (free, unset global vars,...):*/
       
       /* Mendatory cleanups:*/
-      RemoveChain(save_service,current_camera);
+      RemoveChain(save_service);
       pthread_mutex_unlock(&save_service->mutex_struct);
       pthread_mutex_unlock(&save_service->mutex_data);
       free(info->save_buffer);
@@ -263,7 +263,7 @@ SaveStopThread(void)
 {
   savethread_info_t *info;
   chain_t *save_service;
-  save_service=GetService(SERVICE_SAVE,current_camera);
+  save_service=GetService(SERVICE_SAVE);
 
   if (save_service!=NULL) { // if SAVE service running...
     //fprintf(stderr,"SAVE service found, stopping\n");
@@ -283,7 +283,7 @@ SaveStopThread(void)
     gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"fps_save"), ctxt.fps_save_ctxt, ctxt.fps_save_id);
     ctxt.fps_save_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"fps_save"), ctxt.fps_save_ctxt, "");
     
-    RemoveChain(save_service,current_camera);
+    RemoveChain(save_service);
     
     /* Do custom cleanups here...*/
     if (info->save_buffer!=NULL) {

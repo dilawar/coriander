@@ -18,11 +18,11 @@
 
 #include "build_menus.h"
 
-extern dc1394_feature_set *feature_set;
-extern dc1394_miscinfo *misc_info;
 extern GtkWidget *commander_window;
 extern GtkWidget *format7_window;
 extern PrefsInfo preferences; 
+extern camera_t* camera;
+extern camera_t* cameras;
 extern char* fps_label_list[NUM_FRAMERATES];
 extern char* format7_color_list[NUM_MODE_FORMAT7];
 extern char* format7_mode_list[NUM_MODE_FORMAT7];
@@ -33,12 +33,6 @@ extern char* format1_list[NUM_FORMAT1_MODES];
 extern char* format2_list[NUM_FORMAT2_MODES];
 extern char* format6_list[NUM_FORMAT6_MODES];
 extern char* format7_list[NUM_MODE_FORMAT7];
-extern Format7Info *format7_info;
-extern dc1394_camerainfo *camera;
-extern dc1394_camerainfo *cameras;
-extern int current_camera;
-extern int camera_num;
-extern uiinfo_t *uiinfo;
 
 void
 BuildTriggerModeMenu(void)
@@ -52,7 +46,7 @@ BuildTriggerModeMenu(void)
   GtkWidget* trigger_mode_menu;
   GtkWidget* glade_menuitem;
 
-  if (dc1394_query_feature_characteristics(camera->handle,camera->id,FEATURE_TRIGGER,&value)!=DC1394_SUCCESS)
+  if (dc1394_query_feature_characteristics(camera->camera_info.handle,camera->camera_info.id,FEATURE_TRIGGER,&value)!=DC1394_SUCCESS)
     MainError("Could not query trigger feature characteristics");
   modes=( (value & (0xF << 12))>>12 );
   gtk_widget_destroy(GTK_WIDGET (lookup_widget(commander_window,"trigger_mode"))); // remove previous menu
@@ -90,7 +84,7 @@ BuildTriggerModeMenu(void)
   //fprintf(stderr,"trig: max: %d, default: %d\n",NUM_TRIGGER_MODE,
   //	  feature_set->feature[FEATURE_TRIGGER-FEATURE_MIN].trigger_mode);
   gtk_option_menu_set_history (GTK_OPTION_MENU (trigger_mode), 
-			       index[feature_set->feature[FEATURE_TRIGGER-FEATURE_MIN].trigger_mode]);
+			       index[camera->feature_set.feature[FEATURE_TRIGGER-FEATURE_MIN].trigger_mode]);
 }
 
 
@@ -103,7 +97,7 @@ BuildMemoryChannelMenu(void)
   GtkWidget* channel_num_menu;
   GtkWidget* glade_menuitem;
 
-  misc_info->save_channel=misc_info->load_channel;
+  camera->misc_info.save_channel=camera->misc_info.load_channel;
 
   gtk_widget_destroy(GTK_WIDGET (lookup_widget(commander_window,"memory_channel"))); // remove previous menu
 
@@ -117,7 +111,7 @@ BuildMemoryChannelMenu(void)
 
   channel_num_menu = gtk_menu_new ();
 
-  for (i=0;i<=misc_info->mem_channel_number;i++) {
+  for (i=0;i<=camera->misc_info.mem_channel_number;i++) {
     glade_menuitem = gtk_menu_item_new_with_label (_(channel_num_list[i]));
     gtk_widget_show (glade_menuitem);
     gtk_menu_append (GTK_MENU (channel_num_menu), glade_menuitem);
@@ -129,13 +123,15 @@ BuildMemoryChannelMenu(void)
   gtk_option_menu_set_menu (GTK_OPTION_MENU (channel_num), channel_num_menu);
 
   // sets the active menu item:
-  gtk_option_menu_set_history (GTK_OPTION_MENU (channel_num), misc_info->load_channel);
+  gtk_option_menu_set_history (GTK_OPTION_MENU (channel_num), camera->misc_info.load_channel);
 }
 
 void
 BuildCameraMenu(void)
 {
-  int i;
+  int i,current_camera_id;
+  camera_t* camera_ptr;
+
   // note: this function does not require indexing the menu items for they are always in the same consecutive order
   GtkWidget* camera_id;
   GtkWidget* camera_id_menu;
@@ -151,21 +147,29 @@ BuildCameraMenu(void)
   gtk_table_attach_defaults (GTK_TABLE (lookup_widget(commander_window,"table9")), camera_id, 1, 2, 0, 1);
   gtk_container_set_border_width (GTK_CONTAINER (camera_id), 1);
 
-  camera_id_menu = gtk_menu_new ();
+  camera_id_menu = gtk_menu_new (); 
 
-  for (i=0;i<camera_num;i++) {
-    glade_menuitem = gtk_menu_item_new_with_label (_(preferences.camera_names[i]));
+  camera_ptr=cameras;
+  i=0;
+  current_camera_id=0;
+  while (camera_ptr!=NULL) {
+    glade_menuitem = gtk_menu_item_new_with_label (_(camera_ptr->name));
     gtk_widget_show (glade_menuitem);
     gtk_menu_append (GTK_MENU (camera_id_menu), glade_menuitem);
     gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
 			GTK_SIGNAL_FUNC (on_camera_select_activate),
-			(int*)i); // i is an int passed in a pointer variable. This is 'normal'.
+			(camera_t*)camera_ptr);
+    if (camera_ptr==camera) {
+      current_camera_id=i;
+    }
+    camera_ptr=camera_ptr->next;
+    i++;
   }
-  
+
   gtk_option_menu_set_menu (GTK_OPTION_MENU (camera_id), camera_id_menu);
 
   // sets the active menu item:
-  gtk_option_menu_set_history (GTK_OPTION_MENU (camera_id) , current_camera);
+  gtk_option_menu_set_history (GTK_OPTION_MENU (camera_id) , current_camera_id);
 
 }
 
@@ -196,7 +200,7 @@ BuildFormat7ModeMenu(void)
   mode_num_menu = gtk_menu_new ();
 
   for (f=MODE_FORMAT7_MIN,i=0;f<=MODE_FORMAT7_MAX;f++,i++) {
-    if (format7_info->mode[f-MODE_FORMAT7_MIN].present) {
+    if (camera->format7_info.mode[f-MODE_FORMAT7_MIN].present) {
       index[i]=k;
       k++;
       glade_menuitem = gtk_menu_item_new_with_label (_(format7_mode_list[i]));
@@ -216,7 +220,7 @@ BuildFormat7ModeMenu(void)
   //fprintf(stderr,"F7 mode: max: %d, default: %d\n",
   //	  NUM_MODE_FORMAT7,format7_info->edit_mode-MODE_FORMAT7_MIN);
   gtk_option_menu_set_history (GTK_OPTION_MENU (mode_num), 
-			       index[format7_info->edit_mode-MODE_FORMAT7_MIN]);
+			       index[camera->format7_info.edit_mode-MODE_FORMAT7_MIN]);
 
 }
 
@@ -247,7 +251,7 @@ BuildFormat7ColorMenu(void)
   color_num_menu = gtk_menu_new ();
 
   for (f=COLOR_FORMAT7_MIN,i=0;f<=COLOR_FORMAT7_MAX;f++,i++) {
-    if ((format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].color_coding) & (0x1 << (31-i))) {
+    if ((camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].color_coding) & (0x1 << (31-i))) {
       index[i]=k;
       k++;
       glade_menuitem = gtk_menu_item_new_with_label (_(format7_color_list[i]));
@@ -269,7 +273,7 @@ BuildFormat7ColorMenu(void)
   //fprintf(stderr,"current mode: %d\n", format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].color_coding_id);
   //fprintf(stderr,"history set to %d\n",index[format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].color_coding_id-COLOR_FORMAT7_MIN]);
   gtk_option_menu_set_history (GTK_OPTION_MENU (color_num),
-			       index[format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].color_coding_id-COLOR_FORMAT7_MIN]);
+			       index[camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].color_coding_id-COLOR_FORMAT7_MIN]);
 
 }
 
@@ -288,13 +292,13 @@ BuildFpsMenu(void)
   dc1394bool_t cont=DC1394_TRUE;
   char temp[STRING_SIZE];
 
-  if( misc_info->format == FORMAT_SCALABLE_IMAGE_SIZE) {
+  if (camera->misc_info.format == FORMAT_SCALABLE_IMAGE_SIZE) {
     value = 0; /* format 7 has no fixed framerates */
     gtk_widget_set_sensitive(lookup_widget(commander_window,"fps_menu"),FALSE);
   }
   else {
     gtk_widget_set_sensitive(lookup_widget(commander_window,"fps_menu"),TRUE);
-    if (dc1394_query_supported_framerates(camera->handle, camera->id, misc_info->format, misc_info->mode, &value)!=DC1394_SUCCESS)
+    if (dc1394_query_supported_framerates(camera->camera_info.handle, camera->camera_info.id, camera->misc_info.format, camera->misc_info.mode, &value)!=DC1394_SUCCESS)
       MainError("Could not query supported framerates");
   
  
@@ -332,29 +336,29 @@ BuildFpsMenu(void)
     //			    !(GTK_TOGGLE_BUTTON (lookup_widget(commander_window,"trigger_external")))->active);
     
     // sets the active menu item:
-    if (index[misc_info->framerate-FRAMERATE_MIN]<0) { // previously selected framerate unsupported!!
+    if (index[camera->misc_info.framerate-FRAMERATE_MIN]<0) { // previously selected framerate unsupported!!
       // automatically switch to nearest fps available
       for (i=1;i<=((NUM_FRAMERATES>>1)+1);i++) { // search radius is num_framerates/2 +1 for safe rounding
-	if (((misc_info->framerate-FRAMERATE_MIN-i)>=0) && cont) {
-	  if (index[misc_info->framerate-FRAMERATE_MIN-i]>=0) { // try down 
-	    new_framerate=misc_info->framerate-i;
+	if (((camera->misc_info.framerate-FRAMERATE_MIN-i)>=0) && cont) {
+	  if (index[camera->misc_info.framerate-FRAMERATE_MIN-i]>=0) { // try down 
+	    new_framerate=camera->misc_info.framerate-i;
 	    cont=DC1394_FALSE;
 	  }
 	}
-	if (((misc_info->framerate-FRAMERATE_MIN+i)<NUM_FRAMERATES) && cont) {
-	  if (index[misc_info->framerate-FRAMERATE_MIN+i]>=0) { // try up  
-	    new_framerate=misc_info->framerate+i;
+	if (((camera->misc_info.framerate-FRAMERATE_MIN+i)<NUM_FRAMERATES) && cont) {
+	  if (index[camera->misc_info.framerate-FRAMERATE_MIN+i]>=0) { // try up  
+	    new_framerate=camera->misc_info.framerate+i;
 	    cont=DC1394_FALSE;
 	  }
 	}
       }
       sprintf(temp,"Invalid framerate. Updating to nearest: %s",fps_label_list[new_framerate-FRAMERATE_MIN]);
       MainStatus(temp);
-      if (dc1394_set_video_framerate(camera->handle,camera->id,new_framerate)!=DC1394_SUCCESS)
+      if (dc1394_set_video_framerate(camera->camera_info.handle,camera->camera_info.id,new_framerate)!=DC1394_SUCCESS)
 	MainError("Cannot set video framerate");
-      misc_info->framerate=new_framerate;
+      camera->misc_info.framerate=new_framerate;
     }
-    gtk_option_menu_set_history (GTK_OPTION_MENU (fps), index[misc_info->framerate-FRAMERATE_MIN]);
+    gtk_option_menu_set_history (GTK_OPTION_MENU (fps), index[camera->misc_info.framerate-FRAMERATE_MIN]);
   }
 }
 
@@ -385,14 +389,14 @@ BuildFormatMenu(void)
   mode_num_menu = gtk_menu_new ();
 
   // get supported formats
-  if (dc1394_query_supported_formats(camera->handle, camera->id, &formats)<0) {
+  if (dc1394_query_supported_formats(camera->camera_info.handle, camera->camera_info.id, &formats)<0) {
     MainError("Could not query supported formats");
     formats=0x0;
   }
 
   // FORMAT_0 -----------------------------------
   if (formats & (0x1<<31)) {
-    if (dc1394_query_supported_modes(camera->handle, camera->id, FORMAT_VGA_NONCOMPRESSED, &modes)<0) {
+    if (dc1394_query_supported_modes(camera->camera_info.handle, camera->camera_info.id, FORMAT_VGA_NONCOMPRESSED, &modes)<0) {
       MainError("Could not query Format0 modes");
       modes=0;
     }
@@ -417,7 +421,7 @@ BuildFormatMenu(void)
 
   // FORMAT_1 -----------------------------------
   if (formats & (0x1<<30)) {
-    if (dc1394_query_supported_modes(camera->handle, camera->id, FORMAT_SVGA_NONCOMPRESSED_1, &modes)<0) {
+    if (dc1394_query_supported_modes(camera->camera_info.handle, camera->camera_info.id, FORMAT_SVGA_NONCOMPRESSED_1, &modes)<0) {
       MainError("Could not query Format0 modes");
       modes=0;
     }
@@ -442,7 +446,7 @@ BuildFormatMenu(void)
 
   // FORMAT_2 -----------------------------------
   if (formats & (0x1<<29)) {
-    if (dc1394_query_supported_modes(camera->handle, camera->id, FORMAT_SVGA_NONCOMPRESSED_2, &modes)<0) {
+    if (dc1394_query_supported_modes(camera->camera_info.handle, camera->camera_info.id, FORMAT_SVGA_NONCOMPRESSED_2, &modes)<0) {
       MainError("Could not query Format0 modes");
       modes=0;
     }
@@ -467,7 +471,7 @@ BuildFormatMenu(void)
   
   // FORMAT_6 -----------------------------------
   if (formats & (0x1<<25)) {
-    if (dc1394_query_supported_modes(camera->handle, camera->id, FORMAT_STILL_IMAGE, &modes)<0) {
+    if (dc1394_query_supported_modes(camera->camera_info.handle, camera->camera_info.id, FORMAT_STILL_IMAGE, &modes)<0) {
       MainError("Could not query Format0 modes");
       modes=0;
     }
@@ -492,7 +496,7 @@ BuildFormatMenu(void)
 
   // FORMAT_7 -----------------------------------
   if (formats & (0x1<<24)) {
-    if (dc1394_query_supported_modes(camera->handle, camera->id, FORMAT_SCALABLE_IMAGE_SIZE, &modes)<0) {
+    if (dc1394_query_supported_modes(camera->camera_info.handle, camera->camera_info.id, FORMAT_SCALABLE_IMAGE_SIZE, &modes)<0) {
       MainError("Could not query Format0 modes");
       modes=0;
     }
@@ -518,7 +522,7 @@ BuildFormatMenu(void)
   gtk_option_menu_set_menu (GTK_OPTION_MENU (mode_num), mode_num_menu);
 
   // sets the active menu item:
-  gtk_option_menu_set_history (GTK_OPTION_MENU (mode_num), index[misc_info->mode]);
+  gtk_option_menu_set_history (GTK_OPTION_MENU (mode_num), index[camera->misc_info.mode]);
 
 }
 
@@ -579,9 +583,9 @@ BuildBayerMenu(void)
   gtk_option_menu_set_menu (GTK_OPTION_MENU (new_option_menu), new_menu);
 
   // menu history
-  pthread_mutex_lock(&uiinfo->mutex);
-  gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(commander_window, "bayer_menu")),uiinfo->bayer);
-  pthread_mutex_unlock(&uiinfo->mutex);
+  pthread_mutex_lock(&camera->uimutex);
+  gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(commander_window, "bayer_menu")),camera->bayer);
+  pthread_mutex_unlock(&camera->uimutex);
       
 }
 
@@ -640,10 +644,10 @@ BuildBayerPatternMenu(void)
   gtk_option_menu_set_menu (GTK_OPTION_MENU (new_option_menu), new_menu);
 
   // menu history
-  pthread_mutex_lock(&uiinfo->mutex);
+  pthread_mutex_lock(&camera->uimutex);
   gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(commander_window, "pattern_menu")),
-			      uiinfo->bayer_pattern);
-  pthread_mutex_unlock(&uiinfo->mutex);
+			      camera->bayer_pattern);
+  pthread_mutex_unlock(&camera->uimutex);
       
 }
 
@@ -696,8 +700,8 @@ BuildStereoMenu(void)
   gtk_option_menu_set_menu (GTK_OPTION_MENU (new_option_menu), new_menu);
 
   // menu history
-  pthread_mutex_lock(&uiinfo->mutex);
-  gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(commander_window, "stereo_menu")),uiinfo->stereo);
-  pthread_mutex_unlock(&uiinfo->mutex);
+  pthread_mutex_lock(&camera->uimutex);
+  gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(commander_window, "stereo_menu")),camera->stereo);
+  pthread_mutex_unlock(&camera->uimutex);
       
 }

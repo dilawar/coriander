@@ -259,14 +259,16 @@ const char *help_key_bindings_keys[KEY_BINDINGS_NUM]= {
   "f",
   "m",
   "mouse button 2",
+  "mouse button 1"
 }; 
 
 const char *help_key_bindings_functions[KEY_BINDINGS_NUM]= {
-  "Set the AOI to the one defined by the area (Format7)",
+  "Set the WOI",
   "Set image zoom to normal (1:1)",
   "Zoom image, factor 2",
   "Shrink image, factor 2",
   "Toggle full-screen mode",
   "Switch to maximum size (Format7)",
-  "Display the current pixel value & coordinates"
+  "Display the current pixel value & coordinates",
+  "Select WOI region"
 }; 

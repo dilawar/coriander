@@ -32,6 +32,7 @@
 #include "interface.h"
 #include "support.h"
 #include "definitions.h"
+#include "camera.h"
 #include "thread_base.h"
 #include "build_windows.h"
 #include "update_windows.h"
@@ -49,28 +50,13 @@ GtkWidget *about_window;
 GtkWidget *help_window;
 GtkWidget *format7_window;
 GtkWidget *preferences_window;
-
-dc1394_camerainfo *camera;
-dc1394_camerainfo *cameras;
-dc1394_feature_set *feature_set;
-dc1394_feature_set *feature_sets;
-dc1394_miscinfo *misc_info;
-dc1394_miscinfo *misc_infos;
-chain_t **image_pipes;
-chain_t *image_pipe;
-Format7Info *format7_infos;
-Format7Info *format7_info;
-uiinfo_t *uiinfos;
-uiinfo_t *uiinfo;
-StatusInfo *statusinfos;
-StatusInfo *statusinfo;
 CtxtInfo ctxt;
-SelfIdPacket_t *selfid;
-SelfIdPacket_t *selfids;
 PrefsInfo preferences;
 int silent_ui_update;
-int camera_num;
-int current_camera;
+camera_t* camera;
+camera_t* cameras;
+
+raw1394handle_t *handles;
 //whitebal_data_t *whitebal_data;
 
 #ifdef HAVE_SDLLIB
@@ -82,15 +68,20 @@ main (int argc, char *argv[])
 {
   int i, cam;
   nodeid_t **camera_nodes=NULL; 
-  raw1394handle_t *handles=NULL;
   raw1394handle_t tmp_handle;
   int port;
+  int camera_num;
   int index;
   int *port_camera_num=NULL;
   int portmax=0;
   int card_found;
-  //float tmp;
+  int main_timeout;
+  camera_t* camera_ptr;
   
+  handles=NULL;
+  camera_num=0;
+  cameras=NULL;
+
 #ifdef ENABLE_NLS
   bindtextdomain (PACKAGE, PACKAGE_LOCALE_DIR);
   textdomain (PACKAGE);
@@ -129,46 +120,23 @@ main (int argc, char *argv[])
       gtk_main ();
     }
     else { // we have at least one camera on one interface card.
-      // allocate memory space for all camera infos & download all infos:
-      cameras=(dc1394_camerainfo*)calloc(camera_num,sizeof(dc1394_camerainfo));
-      feature_sets=(dc1394_feature_set*)calloc(camera_num,sizeof(dc1394_feature_set));
-      misc_infos=(dc1394_miscinfo*)calloc(camera_num,sizeof(dc1394_miscinfo));
-      image_pipes=(chain_t**)calloc(camera_num,sizeof(chain_t*));
-      format7_infos=(Format7Info*)calloc(camera_num,sizeof(Format7Info));
-      uiinfos=(uiinfo_t*)calloc(camera_num,sizeof(uiinfo_t));
-      selfids=(SelfIdPacket_t*)calloc(camera_num,sizeof(SelfIdPacket_t));
-      preferences.camera_names=(char **)calloc(camera_num,sizeof(char*));
-      
       // get camera infos and serialize the port info for each camera
       index=0;
       for (port=0;port<portmax;port++) {
 	if (handles[port]!=0)
 	  for (cam=0;cam<port_camera_num[port];cam++) {
-	    if (dc1394_get_camera_info(handles[port], camera_nodes[port][cam], &cameras[index])!=DC1394_SUCCESS)
-	      MainError("Could not get camera basic information!");
-	    if (dc1394_get_camera_misc_info(cameras[index].handle, cameras[index].id, &misc_infos[index])!=DC1394_SUCCESS)
-	      MainError("Could not get camera misc information!");
-	    if (dc1394_get_camera_feature_set(cameras[index].handle, cameras[index].id, &feature_sets[index])!=DC1394_SUCCESS)
-	      MainError("Could not get camera feature information!");
-	    GetFormat7Capabilities(cameras[index].handle, cameras[index].id, &format7_infos[index]);
-	    image_pipes[index]=NULL;
-	    pthread_mutex_lock(&uiinfos[index].mutex);
-	    uiinfos[index].want_to_display=0;
-	    uiinfos[index].bayer=NO_BAYER_DECODING;
-	    uiinfos[index].stereo=NO_STEREO_DECODING;
-	    uiinfos[index].bpp=8;
-	    pthread_mutex_unlock(&uiinfos[index].mutex);
-	    index++;
+	    camera_ptr=NewCamera();
+	    GetCameraData(handles[port], camera_nodes[port][cam], camera_ptr);
+	    AppendCamera(camera_ptr);
 	  }
       }
-      
+
+      raw1394_set_bus_reset_handler(handles[0], bus_reset_handler);
       GrabSelfIds(handles, portmax);
       silent_ui_update=0;
       SetChannels();
-      
       // current camera is the first camera:
-      SelectCamera(0);
-      
+      SetCurrentCamera(cameras->camera_info.euid_64);
       // Create the permanent control windows.
       // (note BTW that other windows like 'file_selector' are created
       //  and destroyed on purpose while the following windows always exist.)
@@ -190,31 +158,31 @@ main (int argc, char *argv[])
       MainStatus("Welcome to Coriander...");
       gtk_widget_show (commander_window); // this is the only window shown at boot-time
       
-      gdk_threads_enter();
+      //gdk_threads_enter();
+      main_timeout=gtk_timeout_add(1000, (GtkFunction)main_timeout_handler, (gpointer*)portmax);
       gtk_main();
-      gdk_threads_leave();
+      //gdk_threads_leave();
       
       // clean all threads for all cams:
-      for (i=0;i<camera_num;i++) {
-	SelectCamera(i);
+      camera=cameras;
+      while (camera!=NULL) {
 	FtpStopThread();
 	SaveStopThread();
-	DisplayStopThread(current_camera);
+	DisplayStopThread();
 	IsoStopThread();
+	camera=camera->next;
       }
       
 #ifdef HAVE_SDLLIB
       WatchStopThread(&watchthread_info);
 #endif
-      
-      free(cameras);
-      free(feature_sets);
-      free(misc_infos);
-      free(image_pipes);
-      free(format7_infos);
-      free(uiinfos);
-      free(selfids);
-      
+
+      gtk_timeout_remove(main_timeout);
+
+      while (cameras!=NULL) {
+	RemoveCamera(cameras->camera_info.euid_64);
+      }
+
       for (i=0;i<portmax;i++) {
 	if (handles[i]!=0)
 	  raw1394_destroy_handle(handles[i]);
@@ -224,7 +192,6 @@ main (int argc, char *argv[])
       free(camera_nodes);
       free(handles);
       free(port_camera_num);
-      free(preferences.camera_names);
       
     } // end of if no handle check
     

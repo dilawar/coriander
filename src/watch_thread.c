@@ -21,11 +21,8 @@
 #ifdef HAVE_SDLLIB
 
 extern PrefsInfo preferences;
-extern Format7Info *format7_info;
 extern GtkWidget *format7_window;
-extern dc1394_camerainfo *camera;
-extern dc1394_miscinfo *misc_info;
-
+extern camera_t* camera;
 
 int
 WatchStartThread(watchthread_info_t* info)
@@ -119,33 +116,33 @@ WatchThread(void *arg)
 	// example: from size=128x128, pos=128x128, we can't go to size=1280x1024, pos=0x0 by first changing the size!!
 	// Thus, we need to know what to do first...
 	// OR, we can set the position to ZEROxZERO, then change size, then change position!! :-))
-	if (dc1394_set_format7_image_position(camera->handle,camera->id, misc_info->mode, 0, 0)!=DC1394_SUCCESS)
+	if (dc1394_set_format7_image_position(camera->camera_info.handle,camera->camera_info.id, camera->misc_info.mode, 0, 0)!=DC1394_SUCCESS)
 	  MainError("Could not set Format7 image position to ZERO!!");
-	if ((dc1394_set_format7_image_size(camera->handle,camera->id, misc_info->mode, size[0], size[1])!=DC1394_SUCCESS)||
-	    (dc1394_set_format7_image_position(camera->handle,camera->id, misc_info->mode, pos[0], pos[1])!=DC1394_SUCCESS))
+	if ((dc1394_set_format7_image_size(camera->camera_info.handle,camera->camera_info.id, camera->misc_info.mode, size[0], size[1])!=DC1394_SUCCESS)||
+	    (dc1394_set_format7_image_position(camera->camera_info.handle,camera->camera_info.id, camera->misc_info.mode, pos[0], pos[1])!=DC1394_SUCCESS))
 	  MainError("Could not set Format7 image size and position");
 	//fprintf(stderr,"error setting size/pos.\n");
 	else {
-	  format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].size_x=size[0];
-	  format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].size_y=size[1];
-	  format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].pos_x=pos[0];
-	  format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].pos_y=pos[1];
+	  camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN].size_x=size[0];
+	  camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN].size_y=size[1];
+	  camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN].pos_x=pos[0];
+	  camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN].pos_y=pos[1];
 	  //fprintf(stderr,"size/pos buffered.\n");
 	  
 	  adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(format7_window, "format7_hposition_scale")));
-	  adj->upper=format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].max_size_x-size[0];
+	  adj->upper=camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN].max_size_x-size[0];
 	  adj->value=pos[0];
 	  gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
 	  adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(format7_window, "format7_vposition_scale")));
-	  adj->upper=format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].max_size_y-size[1];
+	  adj->upper=camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN].max_size_y-size[1];
 	  adj->value=pos[1];
 	  gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
 	  adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(format7_window, "format7_hsize_scale")));
-	  adj->upper=format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].max_size_x-pos[0];
+	  adj->upper=camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN].max_size_x-pos[0];
 	  adj->value=size[0];
 	  gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
 	  adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(format7_window, "format7_vsize_scale")));
-	  adj->upper=format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].max_size_y-pos[1];
+	  adj->upper=camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN].max_size_y-pos[1];
 	  adj->value=size[1];
 	  gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
 	  //fprintf(stderr,"ranges adjusted\n");

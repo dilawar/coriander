@@ -19,7 +19,8 @@
 #include "update_windows.h"
 
 extern GtkWidget *commander_window;
-extern dc1394_feature_set *feature_set;
+extern camera_t* camera;
+
 void
 UpdateFormat7Window(void)
 {
@@ -61,7 +62,7 @@ UpdateFeatureWindow(void)
   int i;
 
   for (i=FEATURE_MIN;i<=FEATURE_MAX;i++) {
-    if ((feature_set->feature[i-FEATURE_MIN].available>0)&&
+    if ((camera->feature_set.feature[i-FEATURE_MIN].available>0)&&
 	(i!=FEATURE_TRIGGER)) {
       UpdateRange(i);
     }

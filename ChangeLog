@@ -2,6 +2,12 @@ Coriander, (c) 2000-2003 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 0.33
 
+   May 25, 2003, by Damien Douxchamps
+   - another big change and cleanup: the cameras information are now
+     allocated dynamically and the cameras are linked as a chain. This will
+     allow the handling of bus-resets where cams need to be inserted/removed.
+     This bus-reset handling is under development.
+	
    May 21, 2003, by Damien Douxchamps
    - new feature controls autogeneration. Still experimental, but seems to
      work well.

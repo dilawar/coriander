@@ -22,11 +22,9 @@ extern GtkWidget *format7_window;
 extern GtkWidget *commander_window;
 extern char* feature_menu_table_list[NUM_FEATURES]; 
 extern char* feature_menu_items_list[NUM_FEATURES];
-extern Format7Info *format7_info;
 extern GtkWidget *preferences_window;
-extern dc1394_camerainfo *camera;
-extern dc1394_feature_set *feature_set;
 extern PrefsInfo preferences;
+extern camera_t* camera;
 
 
 void
@@ -36,32 +34,32 @@ UpdateRange(int feature)
   char stemp[256];
   // is feature available?
   sprintf(stemp,"feature_%d_frame",feature);
-  if (feature_set->feature[feature-FEATURE_MIN].available==0) { // feature not available: unsensitive the frame
+  if (camera->feature_set.feature[feature-FEATURE_MIN].available==0) { // feature not available: unsensitive the frame
     gtk_widget_set_sensitive(lookup_widget(commander_window, stemp),FALSE);
   }
   else { // sensitive the current frame:
     gtk_widget_set_sensitive(lookup_widget(commander_window, stemp),TRUE);
     
     // select the current menuitem:
-    if ((!feature_set->feature[feature-FEATURE_MIN].is_on)&& // off
-	(feature_set->feature[feature-FEATURE_MIN].on_off_capable)) {
+    if ((!camera->feature_set.feature[feature-FEATURE_MIN].is_on)&& // off
+	(camera->feature_set.feature[feature-FEATURE_MIN].on_off_capable)) {
       index=0;
     }
     else {
-      if ((!feature_set->feature[feature-FEATURE_MIN].auto_active)&& // man
-	  (feature_set->feature[feature-FEATURE_MIN].manual_capable)) {
-	index=1*(feature_set->feature[feature-FEATURE_MIN].on_off_capable>0);
+      if ((!camera->feature_set.feature[feature-FEATURE_MIN].auto_active)&& // man
+	  (camera->feature_set.feature[feature-FEATURE_MIN].manual_capable)) {
+	index=1*(camera->feature_set.feature[feature-FEATURE_MIN].on_off_capable>0);
       }
       else {
-	if ((feature_set->feature[feature-FEATURE_MIN].auto_active)&& // auto
-	    (feature_set->feature[feature-FEATURE_MIN].auto_capable)) {
-	  index=1*(feature_set->feature[feature-FEATURE_MIN].on_off_capable)+
-	    1*(feature_set->feature[feature-FEATURE_MIN].manual_capable);
+	if ((camera->feature_set.feature[feature-FEATURE_MIN].auto_active)&& // auto
+	    (camera->feature_set.feature[feature-FEATURE_MIN].auto_capable)) {
+	  index=1*(camera->feature_set.feature[feature-FEATURE_MIN].on_off_capable)+
+	    1*(camera->feature_set.feature[feature-FEATURE_MIN].manual_capable);
 	}
 	else {
-	  index=1*(feature_set->feature[feature-FEATURE_MIN].on_off_capable)+// single
-	    1*(feature_set->feature[feature-FEATURE_MIN].manual_capable)+
-	    1*(feature_set->feature[feature-FEATURE_MIN].auto_capable);
+	  index=1*(camera->feature_set.feature[feature-FEATURE_MIN].on_off_capable)+// single
+	    1*(camera->feature_set.feature[feature-FEATURE_MIN].manual_capable)+
+	    1*(camera->feature_set.feature[feature-FEATURE_MIN].auto_capable);
 	}
       }
     }
@@ -75,33 +73,33 @@ UpdateRange(int feature)
     case FEATURE_WHITE_BALANCE:
       sprintf(stemp,"feature_%d_bu_scale",feature);
       gtk_widget_set_sensitive(lookup_widget(commander_window, stemp),
-			       (!feature_set->feature[feature-FEATURE_MIN].auto_active)&&
-			       (!feature_set->feature[feature-FEATURE_MIN].one_push_active)&&
-			       (!(feature_set->feature[feature-FEATURE_MIN].on_off_capable&&
-				  !feature_set->feature[feature-FEATURE_MIN].is_on)));
+			       (!camera->feature_set.feature[feature-FEATURE_MIN].auto_active)&&
+			       (!camera->feature_set.feature[feature-FEATURE_MIN].one_push_active)&&
+			       (!(camera->feature_set.feature[feature-FEATURE_MIN].on_off_capable&&
+				  !camera->feature_set.feature[feature-FEATURE_MIN].is_on)));
       sprintf(stemp,"feature_%d_rv_scale",feature);
       gtk_widget_set_sensitive(lookup_widget(commander_window, stemp),
-			       (!feature_set->feature[feature-FEATURE_MIN].auto_active)&&
-			       (!feature_set->feature[feature-FEATURE_MIN].one_push_active)&&
-			       (!(feature_set->feature[feature-FEATURE_MIN].on_off_capable&&
-				  !feature_set->feature[feature-FEATURE_MIN].is_on)));break;
+			       (!camera->feature_set.feature[feature-FEATURE_MIN].auto_active)&&
+			       (!camera->feature_set.feature[feature-FEATURE_MIN].one_push_active)&&
+			       (!(camera->feature_set.feature[feature-FEATURE_MIN].on_off_capable&&
+				  !camera->feature_set.feature[feature-FEATURE_MIN].is_on)));break;
     case FEATURE_TEMPERATURE:
       // the only changeable range is the target one, the other is just an indicator.
       sprintf(stemp,"feature_%d_target_scale",feature);
       gtk_widget_set_sensitive(lookup_widget(commander_window, stemp),
-			       (!feature_set->feature[feature-FEATURE_MIN].auto_active)&&
-			       (!feature_set->feature[feature-FEATURE_MIN].one_push_active)&&
-			       (!(feature_set->feature[feature-FEATURE_MIN].on_off_capable&&
-				  !feature_set->feature[feature-FEATURE_MIN].is_on)));
+			       (!camera->feature_set.feature[feature-FEATURE_MIN].auto_active)&&
+			       (!camera->feature_set.feature[feature-FEATURE_MIN].one_push_active)&&
+			       (!(camera->feature_set.feature[feature-FEATURE_MIN].on_off_capable&&
+				  !camera->feature_set.feature[feature-FEATURE_MIN].is_on)));
       sprintf(stemp,"feature_%d_current_scale",feature);
       gtk_widget_set_sensitive(lookup_widget(commander_window, stemp),FALSE);break;
     default:
       sprintf(stemp,"feature_%d_scale",feature);
       gtk_widget_set_sensitive(lookup_widget(commander_window, stemp),
-			       (!feature_set->feature[feature-FEATURE_MIN].auto_active)&&
-			       (!feature_set->feature[feature-FEATURE_MIN].one_push_active)&&
-			       (!(feature_set->feature[feature-FEATURE_MIN].on_off_capable&&
-				  !feature_set->feature[feature-FEATURE_MIN].is_on)));break;
+			       (!camera->feature_set.feature[feature-FEATURE_MIN].auto_active)&&
+			       (!camera->feature_set.feature[feature-FEATURE_MIN].one_push_active)&&
+			       (!(camera->feature_set.feature[feature-FEATURE_MIN].on_off_capable&&
+				  !camera->feature_set.feature[feature-FEATURE_MIN].is_on)));break;
     }
     
       // grab&set range value if readable:
@@ -131,11 +129,11 @@ UpdateRangeValue(GtkWidget* widget, int feature)
   prec_valueRV=-1e7;
 
   // grab&set range value if readable:
-  if (feature_set->feature[feature-FEATURE_MIN].readout_capable) {
+  if (camera->feature_set.feature[feature-FEATURE_MIN].readout_capable) {
     switch(feature) {
     case FEATURE_WHITE_BALANCE:
       while(!stable) {
-	err=dc1394_get_white_balance(camera->handle,camera->id,&valueBU,&valueRV);
+	err=dc1394_get_white_balance(camera->camera_info.handle,camera->camera_info.id,&valueBU,&valueRV);
 	if (((valueBU==prec_valueBU)&&(valueRV==prec_valueRV))||(err<0))
 	  stable=1;
 	else {
@@ -157,7 +155,7 @@ UpdateRangeValue(GtkWidget* widget, int feature)
       break;
     case FEATURE_TEMPERATURE:
       while(!stable) {
-	err=dc1394_get_temperature(camera->handle,camera->id,&valuegoal,&valuecurrent);
+	err=dc1394_get_temperature(camera->camera_info.handle,camera->camera_info.id,&valuegoal,&valuecurrent);
 	if (((valuegoal==prec_valuegoal)&&(valuecurrent==prec_valuecurrent))||(err<0))
 	  stable=1;
 	else {
@@ -179,7 +177,7 @@ UpdateRangeValue(GtkWidget* widget, int feature)
       break;
     default:
       while(!stable) {
-	err=dc1394_get_feature_value(camera->handle,camera->id,feature,&value);
+	err=dc1394_get_feature_value(camera->camera_info.handle,camera->camera_info.id,feature,&value);
 	if ((value==prec_value)||(err<0))
 	  stable=1;
 	else {
@@ -206,10 +204,10 @@ UpdateFormat7BppRange(void)
 {
   GtkAdjustment* adj;
   Format7ModeInfo *info;
-  info=&format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN];
+  info=&camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN];
 
-  if (dc1394_query_format7_byte_per_packet(camera->handle,camera->id,format7_info->edit_mode, &info->bpp)==DC1394_SUCCESS) {
-    if (dc1394_query_format7_packet_para(camera->handle,camera->id,format7_info->edit_mode, &info->min_bpp,&info->max_bpp)==DC1394_SUCCESS) {
+  if (dc1394_query_format7_byte_per_packet(camera->camera_info.handle,camera->camera_info.id,camera->format7_info.edit_mode, &info->bpp)==DC1394_SUCCESS) {
+    if (dc1394_query_format7_packet_para(camera->camera_info.handle,camera->camera_info.id,camera->format7_info.edit_mode, &info->min_bpp,&info->max_bpp)==DC1394_SUCCESS) {
       adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(format7_window, "format7_packet_size")));
       adj->upper=info->max_bpp;
       adj->lower=info->min_bpp;
@@ -234,7 +232,7 @@ UpdateFormat7Ranges(void)
 {
   GtkAdjustment  *adj;
   Format7ModeInfo *info;
-  info=&format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN];
+  info=&camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN];
 
   //fprintf(stderr,"size: %d %d\n",info->max_size_x,info->max_size_y);
   // define the adjustments for the 4 format7 controls. Note that (pos_x+size_x)<=max_size_x which yields some inter-dependencies

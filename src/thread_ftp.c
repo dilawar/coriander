@@ -21,7 +21,7 @@
 extern PrefsInfo preferences;
 extern GtkWidget *commander_window;
 extern CtxtInfo ctxt;
-extern int current_camera;
+extern camera_t *camera;
  
 gint
 FtpStartThread(void)
@@ -30,7 +30,7 @@ FtpStartThread(void)
   ftpthread_info_t *info=NULL;
   gchar *tmp;
 
-  ftp_service=GetService(SERVICE_FTP,current_camera);
+  ftp_service=GetService(SERVICE_FTP);
 
   if (ftp_service==NULL) { // if no FTP service running...
     //fprintf(stderr,"No FTP service found, inserting new one\n");
@@ -69,7 +69,7 @@ FtpStartThread(void)
     tmp[0] = '\0';// cut filename before point
     strcpy(info->filename_ext, strrchr(preferences.ftp_filename, '.'));
     
-    CommonChainSetup(ftp_service,SERVICE_FTP,current_camera);
+    CommonChainSetup(ftp_service,SERVICE_FTP);
     
     info->ftp_buffer=NULL;
     info->imlib_buffer_size=0;
@@ -93,7 +93,7 @@ FtpStartThread(void)
     
     /* Insert chain and start service*/
     pthread_mutex_lock(&ftp_service->mutex_struct);
-    InsertChain(ftp_service,current_camera);
+    InsertChain(ftp_service);
     pthread_mutex_unlock(&ftp_service->mutex_struct);
     
     pthread_mutex_lock(&ftp_service->mutex_data);
@@ -103,7 +103,7 @@ FtpStartThread(void)
 	 (free, unset global vars,...):*/
       
       /* Mendatory cleanups:*/
-      RemoveChain(ftp_service,current_camera);
+      RemoveChain(ftp_service);
       pthread_mutex_unlock(&ftp_service->mutex_struct);
       pthread_mutex_unlock(&ftp_service->mutex_data);
       free(info->ftp_buffer);
@@ -262,7 +262,7 @@ FtpStopThread(void)
 {
   ftpthread_info_t *info;
   chain_t *ftp_service;
-  ftp_service=GetService(SERVICE_FTP,current_camera);
+  ftp_service=GetService(SERVICE_FTP);
 
   if (ftp_service!=NULL) { // if FTP service running...
     info=(ftpthread_info_t*)ftp_service->data;
@@ -283,7 +283,7 @@ FtpStopThread(void)
     ctxt.fps_ftp_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"fps_ftp"),
 				       ctxt.fps_ftp_ctxt, "");
     
-    RemoveChain(ftp_service,current_camera);
+    RemoveChain(ftp_service);
     
     /* Do custom cleanups here...*/
     if (info->ftp_buffer!=NULL) {

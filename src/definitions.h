@@ -22,14 +22,16 @@
 #include <libdc1394/dc1394_control.h>
 #include <sys/times.h>
 #include <pthread.h>
+#include "raw1394support.h"
+#include "conversions.h"
 
 #define  BU                  1000     // definitions for distinguishing the BU and RV
 #define  RV                  2000     // scales of the FEATURE_WHITE_BALANCE feature
 #define  NO                 FALSE
 #define  YES                 TRUE
 #define  STRING_SIZE         1024
-#define  KEY_BINDINGS_NUM       7
- 
+#define  KEY_BINDINGS_NUM       8
+
 enum 
 {
     RANGE_MENU_OFF = 0,
@@ -46,6 +48,14 @@ enum
     FORMAT7_POS_X,
     FORMAT7_POS_Y
 };
+
+typedef enum _Service_T
+{
+  SERVICE_ISO=0,
+  SERVICE_DISPLAY,
+  SERVICE_SAVE,
+  SERVICE_FTP
+} service_t;
 
 typedef struct _Format7ModeInfo
 {
@@ -85,6 +95,74 @@ typedef struct _Format7Info
   int edit_mode;
 
 } Format7Info;
+
+typedef struct _CameraInfo_T {
+  dc1394_camerainfo camera_info;
+  dc1394_feature_set feature_set;
+  dc1394_miscinfo misc_info;
+  struct _Chain_T* image_pipe;
+  Format7Info format7_info;
+  SelfIdPacket_t selfid;
+  char* name;
+
+  // F7 data
+  Format7ModeInfo mode[NUM_MODE_FORMAT7];
+  int edit_mode;
+
+  // old uiinfo
+  pthread_mutex_t uimutex;
+  int want_to_display;
+  int bayer;
+  int bayer_pattern;
+  int stereo;
+  int bpp;
+
+  // structure information
+  struct _CameraInfo_T* prev;
+  struct _CameraInfo_T* next;
+
+} camera_t;
+
+typedef struct _Buffer_T
+{
+  unsigned char *image;
+  int width;
+  int height;
+  long int bytes_per_frame;
+  int mode;
+  int format;
+  int bpp;
+  bayer_decoding_t bayer;
+  bayer_pattern_t bayer_pattern;
+  stereo_decoding_t stereo_decoding;
+  int format7_color_mode;
+
+  int buffer_color_mode;
+
+  // information about the time the frame was captured by the ISO thread.
+  struct tm captime;
+  int captime_millisec;
+  char captime_string[19];
+
+} buffer_t;
+
+typedef struct _Chain_T
+{
+  pthread_mutex_t mutex_struct; // below is protected by mutex_struct
+  struct _Chain_T* next_chain;
+  struct _Chain_T* prev_chain;
+  int             updated;
+  service_t       service;
+
+  pthread_mutex_t mutex_data; // below is protected by mutex_data
+  pthread_t       thread;
+  buffer_t*       next_buffer;
+  buffer_t*       current_buffer;
+  void*           data;
+  buffer_t        local_param_copy; // not pointer: it remains in the chain.
+
+  camera_t*       camera; // the camera that uses this thread    
+} chain_t;
 
 typedef struct _UIInfo
 {

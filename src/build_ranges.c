@@ -18,11 +18,10 @@
 
 #include "build_ranges.h"
 
-extern dc1394_feature_set *feature_set;
 extern GtkWidget *format7_window;
 extern GtkWidget *preferences_window;
 extern GtkWidget *commander_window;
-extern Format7Info *format7_info;
+extern camera_t* camera;
 extern char* feature_menu_table_list[NUM_FEATURES];
 extern char* feature_menu_items_list[NUM_FEATURES];
 extern char* feature_name_list[NUM_FEATURES];
@@ -165,7 +164,7 @@ void BuildRange(int feature)
   
   // BUILD MENU ITEMS ====================================================================================
   // 'off' menuitem optional addition:
-  if (feature_set->feature[feature-FEATURE_MIN].on_off_capable>0) {
+  if (camera->feature_set.feature[feature-FEATURE_MIN].on_off_capable>0) {
     glade_menuitem = gtk_menu_item_new_with_label (_(feature_menu_items_list[RANGE_MENU_OFF]));
     gtk_widget_show (glade_menuitem);
     gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
@@ -174,7 +173,7 @@ void BuildRange(int feature)
 			(int*)(feature*1000+RANGE_MENU_OFF)); // i is an int passed in a pointer variable. This is 'normal'.
   }
   // 'man' menuitem optional addition:
-  if (feature_set->feature[feature-FEATURE_MIN].manual_capable>0) {
+  if (camera->feature_set.feature[feature-FEATURE_MIN].manual_capable>0) {
     glade_menuitem = gtk_menu_item_new_with_label (_(feature_menu_items_list[RANGE_MENU_MAN]));
     gtk_widget_show (glade_menuitem);
     gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
@@ -183,7 +182,7 @@ void BuildRange(int feature)
 			(int*)(feature*1000+RANGE_MENU_MAN));
   }
   // 'auto' menuitem optional addition:
-  if (feature_set->feature[feature-FEATURE_MIN].auto_capable>0) {
+  if (camera->feature_set.feature[feature-FEATURE_MIN].auto_capable>0) {
     glade_menuitem = gtk_menu_item_new_with_label (_(feature_menu_items_list[RANGE_MENU_AUTO]));
     gtk_widget_show (glade_menuitem);
     gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
@@ -192,7 +191,7 @@ void BuildRange(int feature)
 			(int*)(feature*1000+RANGE_MENU_AUTO));
   }
   // 'single' menuitem optional addition:
-  if (feature_set->feature[feature-FEATURE_MIN].one_push>0) {
+  if (camera->feature_set.feature[feature-FEATURE_MIN].one_push>0) {
     glade_menuitem = gtk_menu_item_new_with_label (_(feature_menu_items_list[RANGE_MENU_SINGLE]));
     gtk_widget_show (glade_menuitem);
     gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
@@ -207,12 +206,12 @@ void BuildRange(int feature)
 
   switch(feature) {
   case FEATURE_WHITE_BALANCE:
-    adjustment=(GtkAdjustment*)gtk_adjustment_new(feature_set->feature[feature-FEATURE_MIN].min,
-						  feature_set->feature[feature-FEATURE_MIN].min,
-						  feature_set->feature[feature-FEATURE_MIN].max,1,10,0);
-    adjustment2=(GtkAdjustment*)gtk_adjustment_new(feature_set->feature[feature-FEATURE_MIN].min,
-						   feature_set->feature[feature-FEATURE_MIN].min,
-						   feature_set->feature[feature-FEATURE_MIN].max,1,10,0);
+    adjustment=(GtkAdjustment*)gtk_adjustment_new(camera->feature_set.feature[feature-FEATURE_MIN].min,
+						  camera->feature_set.feature[feature-FEATURE_MIN].min,
+						  camera->feature_set.feature[feature-FEATURE_MIN].max,1,10,0);
+    adjustment2=(GtkAdjustment*)gtk_adjustment_new(camera->feature_set.feature[feature-FEATURE_MIN].min,
+						   camera->feature_set.feature[feature-FEATURE_MIN].min,
+						   camera->feature_set.feature[feature-FEATURE_MIN].max,1,10,0);
     scale = gtk_hscale_new (adjustment);
     gtk_widget_ref (scale);
     sprintf(stemp,"feature_%d_bu_scale",feature);
@@ -247,12 +246,12 @@ void BuildRange(int feature)
     gtk_signal_connect (GTK_OBJECT (adjustment2), "value_changed", GTK_SIGNAL_FUNC (on_scale_value_changed), (int*) FEATURE_WHITE_BALANCE+RV);
     break;
   case FEATURE_TEMPERATURE:
-    adjustment=(GtkAdjustment*)gtk_adjustment_new(feature_set->feature[feature-FEATURE_MIN].min,
-						  feature_set->feature[feature-FEATURE_MIN].min,
-						  feature_set->feature[feature-FEATURE_MIN].max,1,10,0);
-    adjustment2=(GtkAdjustment*)gtk_adjustment_new(feature_set->feature[feature-FEATURE_MIN].min,
-						   feature_set->feature[feature-FEATURE_MIN].min,
-						   feature_set->feature[feature-FEATURE_MIN].max,1,10,0);
+    adjustment=(GtkAdjustment*)gtk_adjustment_new(camera->feature_set.feature[feature-FEATURE_MIN].min,
+						  camera->feature_set.feature[feature-FEATURE_MIN].min,
+						  camera->feature_set.feature[feature-FEATURE_MIN].max,1,10,0);
+    adjustment2=(GtkAdjustment*)gtk_adjustment_new(camera->feature_set.feature[feature-FEATURE_MIN].min,
+						   camera->feature_set.feature[feature-FEATURE_MIN].min,
+						   camera->feature_set.feature[feature-FEATURE_MIN].max,1,10,0);
     scale = gtk_hscale_new (adjustment);
     gtk_widget_ref (scale);
     sprintf(stemp,"feature_%d_current_scale",feature);
@@ -285,9 +284,9 @@ void BuildRange(int feature)
     gtk_signal_connect (GTK_OBJECT (adjustment), "value_changed", GTK_SIGNAL_FUNC (on_scale_value_changed), (int*) FEATURE_TEMPERATURE);
     break;
   default:
-    adjustment=(GtkAdjustment*)gtk_adjustment_new(feature_set->feature[feature-FEATURE_MIN].min,
-						  feature_set->feature[feature-FEATURE_MIN].min,
-						  feature_set->feature[feature-FEATURE_MIN].max,1,10,0);
+    adjustment=(GtkAdjustment*)gtk_adjustment_new(camera->feature_set.feature[feature-FEATURE_MIN].min,
+						  camera->feature_set.feature[feature-FEATURE_MIN].min,
+						  camera->feature_set.feature[feature-FEATURE_MIN].max,1,10,0);
     scale = gtk_hscale_new (adjustment);
     gtk_widget_ref (scale);
     sprintf(stemp,"feature_%d_scale",feature);
@@ -316,7 +315,7 @@ BuildFormat7Ranges(void)
   GtkAdjustment  *adjustment_px, *adjustment_py, *adjustment_sx, *adjustment_sy;
   Format7ModeInfo *info;
   
-  info=&format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN];
+  info=&camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN];
 
   //fprintf(stderr,"size: %d %d\n",info->max_size_x,info->max_size_y);
 
@@ -366,7 +365,7 @@ BuildFormat7BppRange(void)
 { 
   GtkAdjustment *adjustment_packet;
   Format7ModeInfo *info;
-  info=&format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN];
+  info=&camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN];
   // define adjustment for packet size:
   adjustment_packet=(GtkAdjustment*)gtk_adjustment_new(info->bpp,info->min_bpp,info->max_bpp,1,(info->max_bpp-info->min_bpp)/16,0);
   // min_bpp is the minimum bpp, but also the 'unit' bpp.

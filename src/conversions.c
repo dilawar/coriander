@@ -418,10 +418,11 @@ y162rgb (unsigned char *src, unsigned char *dest, int NumPixels, int bits)
 
 /****************************************************************
  *     Color conversion functions for cameras that can          * 
- * output raw-Bayer pattern images, such as some Basler cameras *
- * Most of the algos presented here com from                    *
- * http://ise0.Stanford.EDU/~tingchen/main.htm                  *
- * and have been converted from Matlab to C                     *
+ * output raw-Bayer pattern images, such as some Basler and     *
+ * Point Grey camera. Most of the algos presented here com from *
+ * http://ise0.Stanford.EDU/~tingchen/main.htm and have been    *
+ * converted from Matlab to C and extended to all elementary    *
+ * patterns.                                                    *
  ****************************************************************/
 
 void

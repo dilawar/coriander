@@ -25,6 +25,7 @@
 #include "interface.h"
 #include "support.h"
 #include "definitions.h"
+#include "camera.h"
 #include "preferences.h"
 #include "update_frames.h" 
 #include "update_windows.h"

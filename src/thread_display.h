@@ -77,7 +77,7 @@ void*
 DisplayThread(void* arg);
 
 gint
-DisplayStopThread(unsigned int camera);
+DisplayStopThread(void);
 
 #ifdef HAVE_SDLLIB
 

@@ -21,12 +21,10 @@
 #ifdef HAVE_SDLLIB
 
 extern PrefsInfo preferences;
-extern Format7Info *format7_info;
 extern GtkWidget *format7_window;
-extern dc1394_camerainfo *camera;
-extern dc1394_miscinfo *misc_info;
 extern watchthread_info_t watchthread_info;
 //extern whitebal_data_t* whitebal_data;
+extern camera_t* camera;
 
 #define YUV2RGB(y, u, v, r, g, b)\
   r = y + ((v*1436) >>10);\
@@ -348,8 +346,8 @@ SDLSetMaxSize(chain_t *display_service)
     watchthread_info.crop=1;
     watchthread_info.upper_left[0]=0;
     watchthread_info.upper_left[1]=0;
-    watchthread_info.lower_right[0]=format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].max_size_x;
-    watchthread_info.lower_right[1]=format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].max_size_y;
+    watchthread_info.lower_right[0]=camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN].max_size_x;
+    watchthread_info.lower_right[1]=camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN].max_size_y;
   }
   pthread_mutex_unlock(&watchthread_info.mutex_area);
 

@@ -22,15 +22,7 @@
 #include <gnome.h>
 #include "definitions.h"
 #include "tools.h"
-/*
-#include "thread_display.h"
-#include "thread_iso.h"
-#include "thread_save.h"
-#include "thread_ftp.h"
-#include <libdc1394/dc1394_control.h>
-#include "callbacks.h"
-#include "support.h" 
-*/
+
 typedef struct _PrefsInfo
 {
   float op_timeout;
@@ -60,21 +52,14 @@ typedef struct _PrefsInfo
 
 } PrefsInfo;
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 void
 LoadConfigFile(void);
-
+/*
 void
 LoadSetup(char *filename);
 
 void
 SaveSetup(char *filename);
-
-#ifdef __cplusplus
-}
-#endif
+*/
 
 #endif

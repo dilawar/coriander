@@ -22,13 +22,8 @@
 extern GtkWidget *commander_window;
 extern GtkWidget *preferences_window;
 extern GtkWidget *absolute_settings_window;
-extern dc1394_feature_set *feature_set;
-extern dc1394_camerainfo *camera;
-extern dc1394_miscinfo *misc_info;
 extern PrefsInfo preferences;
-extern int camera_num;
-extern uiinfo_t* uiinfo;
-extern Format7Info *format7_info;
+extern camera_t* camera;
 
 void
 BuildCameraFrame(void)
@@ -62,7 +57,7 @@ BuildTriggerFrame(void)
   BuildFpsMenu();
   
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"trigger_external")),
-			       feature_set->feature[FEATURE_TRIGGER-FEATURE_MIN].is_on);
+			       camera->feature_set.feature[FEATURE_TRIGGER-FEATURE_MIN].is_on);
 }
 
 
@@ -75,7 +70,7 @@ BuildPowerFrame(void)
   gtk_widget_set_sensitive(lookup_widget(commander_window,"power_reset"),TRUE);
 
   // activate if camera capable of power on/off:
-  if (dc1394_query_basic_functionality(camera->handle,camera->id,&basic_funcs)!=DC1394_SUCCESS)
+  if (dc1394_query_basic_functionality(camera->camera_info.handle,camera->camera_info.id,&basic_funcs)!=DC1394_SUCCESS)
     MainError("Could not query basic functionalities");
 
   gtk_widget_set_sensitive(lookup_widget(commander_window,"power_on"),(basic_funcs & 0x1<<16));
@@ -99,12 +94,12 @@ void
 BuildIsoFrame(void)
 {
   // TODO: only if ISO capable
-  if (dc1394_get_iso_status(camera->handle,camera->id,&misc_info->is_iso_on)!=DC1394_SUCCESS)
+  if (dc1394_get_iso_status(camera->camera_info.handle,camera->camera_info.id,&camera->misc_info.is_iso_on)!=DC1394_SUCCESS)
     MainError("Can't get ISO status");
   gtk_widget_set_sensitive(lookup_widget(commander_window,"iso_frame"),TRUE);
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"iso_start"),!misc_info->is_iso_on);
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"iso_restart"),misc_info->is_iso_on);
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"iso_stop"),misc_info->is_iso_on);
+  gtk_widget_set_sensitive(lookup_widget(commander_window,"iso_start"),!camera->misc_info.is_iso_on);
+  gtk_widget_set_sensitive(lookup_widget(commander_window,"iso_restart"),camera->misc_info.is_iso_on);
+  gtk_widget_set_sensitive(lookup_widget(commander_window,"iso_stop"),camera->misc_info.is_iso_on);
 
 }
 
@@ -222,7 +217,7 @@ BuildPrefsReceiveFrame(void)
   int k=0;
   struct stat statstruct;
 
-  if(stat("/dev/video1394",&statstruct)==0) {
+  if (stat("/dev/video1394",&statstruct)==0) {
     // the device is there, check RW permissions
     if ((statstruct.st_mode&&S_IRUSR)&&(statstruct.st_mode&&S_IWUSR))
       video_ok=1;
@@ -278,9 +273,9 @@ BuildPrefsReceiveFrame(void)
 void
 BuildOptionFrame(void)
 {
-  pthread_mutex_lock(&uiinfo->mutex);
-  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(commander_window, "mono16_bpp"),uiinfo->bpp);
-  pthread_mutex_unlock(&uiinfo->mutex);
+  pthread_mutex_lock(&camera->uimutex);
+  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(commander_window, "mono16_bpp"),camera->bpp);
+  pthread_mutex_unlock(&camera->uimutex);
   BuildBayerMenu();
   BuildBayerPatternMenu();
   BuildStereoMenu();

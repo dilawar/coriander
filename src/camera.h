@@ -16,47 +16,30 @@
  * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __THREAD_BASE_H__
-#define __THREAD_BASE_H__
+#ifndef __CAMERA_H__
+#define __CAMERA_H__
 
-#include <gnome.h>
-#include <pthread.h>
 #include <libdc1394/dc1394_control.h>
-#include <time.h>
-#include <string.h>
 #include "definitions.h"
-#include "conversions.h"
+#include "raw1394support.h"
+#include "tools.h"
 
-#define GUID_YUV12_PLANAR 0x32315659 
-#define GUID_YUY2_PACKED  0x32595559
-#define GUID_UYVY_PACKED  0x59565955
-#define THREAD_LOOP_SLEEP_TIME_US 1
-
-chain_t*
-GetService(service_t service);
+camera_t*
+NewCamera(void);
 
 void
-CommonChainSetup(chain_t* chain, service_t req_service);
-
-int
-RollBuffers(chain_t* chain);
+GetCameraData(raw1394handle_t handle, nodeid_t node, camera_t* camera);
 
 void
-InsertChain(chain_t* chain);
+AppendCamera(camera_t* camera);
 
 void
-RemoveChain(chain_t* chain);
+SetCurrentCamera(u_int64_t guid);
 
 void
-InitChain(chain_t *chain, service_t service);
+RemoveCamera(u_int64_t guid);
 
 void
-FreeChain(chain_t* chain);
-
-void
-convert_to_rgb(buffer_t *buffer, unsigned char *dest);
-
-void
-InitBuffer(buffer_t *buffer);
+FreeCamera(camera_t* camera);
 
 #endif

@@ -19,12 +19,10 @@
 #include "thread_display.h"
 
 extern PrefsInfo preferences;
-extern Format7Info *format7_info;
-extern Format7Info *format7_infos;
-extern int current_camera;
 extern GtkWidget *commander_window;
 extern CtxtInfo ctxt;
-extern dc1394_camerainfo *camera;
+extern camera_t* camera;
+
 #ifdef HAVE_SDLLIB
 extern watchthread_info_t watchthread_info;
 #endif
@@ -35,7 +33,7 @@ DisplayStartThread()
   chain_t *display_service=NULL;
   displaythread_info_t *info=NULL;
 
-  display_service=GetService(SERVICE_DISPLAY,current_camera);
+  display_service=GetService(SERVICE_DISPLAY);
 
   if (display_service==NULL) {// if no display service running...
     //fprintf(stderr,"No DISPLAY service found, inserting new one\n");
@@ -54,18 +52,18 @@ DisplayStartThread()
     
     pthread_mutex_lock(&display_service->mutex_data);
     info->period=preferences.display_period;
-    CommonChainSetup(display_service,SERVICE_DISPLAY,current_camera);
+    CommonChainSetup(display_service,SERVICE_DISPLAY);
     
     pthread_mutex_unlock(&display_service->mutex_data);
     
     pthread_mutex_lock(&display_service->mutex_struct);
-    InsertChain(display_service,current_camera);
+    InsertChain(display_service);
     pthread_mutex_unlock(&display_service->mutex_struct);
     
     pthread_mutex_lock(&display_service->mutex_data);
     pthread_mutex_lock(&display_service->mutex_struct);
     if (pthread_create(&display_service->thread, NULL, DisplayThread, (void*)display_service)) {
-      RemoveChain(display_service,current_camera);
+      RemoveChain(display_service);
       pthread_mutex_unlock(&display_service->mutex_struct);
       pthread_mutex_unlock(&display_service->mutex_data);
       FreeChain(display_service);
@@ -198,11 +196,11 @@ DisplayThread(void* arg)
 
 
 gint
-DisplayStopThread(unsigned int camera)
+DisplayStopThread(void)
 {
   displaythread_info_t *info;
   chain_t *display_service;
-  display_service=GetService(SERVICE_DISPLAY, camera);
+  display_service=GetService(SERVICE_DISPLAY);
   
   if (display_service!=NULL) { // if display service running... 
     //fprintf(stderr,"DISPLAY service found, stopping\n");
@@ -225,7 +223,7 @@ DisplayStopThread(unsigned int camera)
     ctxt.fps_display_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"fps_display"),
 					   ctxt.fps_display_ctxt, "");
     
-    RemoveChain(display_service, camera);
+    RemoveChain(display_service);
     
     SDLQuit(display_service);
     
@@ -287,7 +285,7 @@ SDLInit(chain_t *display_service)
   SDL_ShowCursor(1);
   
   // set window title:
-  SDL_WM_SetCaption(preferences.camera_names[current_camera],"");
+  SDL_WM_SetCaption(camera->name,"");
 
   // Create YUV Overlay
   info->SDL_overlay = SDL_CreateYUVOverlay(display_service->current_buffer->width, display_service->current_buffer->height, 
@@ -315,11 +313,11 @@ SDLInit(chain_t *display_service)
   info->SDL_videoRect.w=display_service->current_buffer->width;
   info->SDL_videoRect.h=display_service->current_buffer->height;
 
-  watchthread_info.f7_step[0]=format7_infos[display_service->camera].mode[display_service->current_buffer->mode-MODE_FORMAT7_MIN].step_x;
-  watchthread_info.f7_step[1]=format7_infos[display_service->camera].mode[display_service->current_buffer->mode-MODE_FORMAT7_MIN].step_y;
-  watchthread_info.f7_step_pos[0]=format7_infos[display_service->camera].mode[display_service->current_buffer->mode-MODE_FORMAT7_MIN].step_pos_x;
-  watchthread_info.f7_step_pos[1]=format7_infos[display_service->camera].mode[display_service->current_buffer->mode-MODE_FORMAT7_MIN].step_pos_y;
-  watchthread_info.use_unit_pos=format7_infos[display_service->camera].mode[display_service->current_buffer->mode-MODE_FORMAT7_MIN].use_unit_pos;
+  watchthread_info.f7_step[0]=display_service->camera->format7_info.mode[display_service->current_buffer->mode-MODE_FORMAT7_MIN].step_x;
+  watchthread_info.f7_step[1]=display_service->camera->format7_info.mode[display_service->current_buffer->mode-MODE_FORMAT7_MIN].step_y;
+  watchthread_info.f7_step_pos[0]=display_service->camera->format7_info.mode[display_service->current_buffer->mode-MODE_FORMAT7_MIN].step_pos_x;
+  watchthread_info.f7_step_pos[1]=display_service->camera->format7_info.mode[display_service->current_buffer->mode-MODE_FORMAT7_MIN].step_pos_y;
+  watchthread_info.use_unit_pos=display_service->camera->format7_info.mode[display_service->current_buffer->mode-MODE_FORMAT7_MIN].use_unit_pos;
 
   SDLEventStartThread(display_service);
 

@@ -11,6 +11,7 @@ coriander_SOURCES = \
 	support.c support.h \
 	interface.c interface.h \
 	definitions.c definitions.h \
+	camera.c camera.h \
 	thread_base.c thread_base.h \
 	thread_iso.c thread_iso.h \
 	watch_thread.c watch_thread.h \

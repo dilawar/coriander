@@ -61,9 +61,6 @@ void
 GrabSelfIds(raw1394handle_t* handles, int portmax);
 
 void
-SelectCamera(int i);
-
-void
 SetChannels(void);
 
 void
@@ -78,8 +75,6 @@ MessageBox(gchar *message);
 void
 SetScaleSensitivity(GtkWidget* widget, int feature, dc1394bool_t sense);
 
-void
-DisplayActiveServices(void);
 /*
 void
 GetRGBPix(int px, int py, chain_t *service, int* R, int* G, int* B);
@@ -100,10 +95,16 @@ void
 GetAbsValue(int feature);
 
 void
-StopFPSDisplay(int camera);
+StopFPSDisplay(void);
 
 void
-ResumeFPSDisplay(int camera);
+ResumeFPSDisplay(void);
+
+int
+bus_reset_handler(raw1394handle_t handle, unsigned int generation);
+
+int
+main_timeout_handler(gpointer* port_num);
 
 #endif
 

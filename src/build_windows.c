@@ -20,13 +20,9 @@
 
 extern GtkWidget *commander_window;
 extern GtkWidget *help_window;
-extern uiinfo_t* uiinfo;
-extern int camera_num;
 extern const char *help_key_bindings_keys[KEY_BINDINGS_NUM];
 extern const char *help_key_bindings_functions[KEY_BINDINGS_NUM];
-extern Format7Info* format7_info;
-extern dc1394_miscinfo* misc_info;
-dc1394_feature_set *feature_set;
+extern camera_t* camera;
 
 void
 BuildPreferencesWindow(void)
@@ -48,26 +44,26 @@ BuildFormat7Window(void)
   // the first available mode (F7 inactive)
 
   // if we are using F7, choose current F7 mode as default
-  if (misc_info->format==FORMAT_SCALABLE_IMAGE_SIZE) {
-    format7_info->edit_mode=misc_info->mode;
+  if (camera->misc_info.format==FORMAT_SCALABLE_IMAGE_SIZE) {
+    camera->format7_info.edit_mode=camera->misc_info.mode;
   }
   // if we are NOT using F7, check if an F7 mode is supported and use the first one as default
   else { 
     // get first supported F7 mode
     f=MODE_FORMAT7_MIN;
-    while ((format7_info->mode[f].present==0)&&(f<=MODE_FORMAT7_MAX))
+    while ((camera->format7_info.mode[f].present==0)&&(f<=MODE_FORMAT7_MAX))
       f++;
     
-    if (format7_info->mode[f].present==0) {
+    if (camera->format7_info.mode[f].present==0) {
       // F7 not supported. don't build anything
-      format7_info->edit_mode=-1;
+      camera->format7_info.edit_mode=-1;
     }
     else {
-      format7_info->edit_mode=f;
+      camera->format7_info.edit_mode=f;
     }
   }
 
-  if (format7_info->edit_mode>0) {
+  if (camera->format7_info.edit_mode>0) {
     BuildFormat7ModeFrame();
     BuildFormat7Ranges();
     BuildFormat7BppRange();
@@ -91,7 +87,7 @@ BuildFeatureWindow(void)
   gtk_container_add (GTK_CONTAINER (lookup_widget(commander_window,"viewport1")), vbox_features);
 
   for (i=FEATURE_MIN;i<=FEATURE_MAX;i++) {
-    if ((feature_set->feature[i-FEATURE_MIN].available>0)&&
+    if ((camera->feature_set.feature[i-FEATURE_MIN].available>0)&&
 	(i!=FEATURE_TRIGGER)) {
       BuildRange(i);
     }
