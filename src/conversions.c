@@ -883,7 +883,7 @@ ClearBorders(unsigned char* dest, int sx, int sy, int w)
 
   // black edges:
   i=3*sx*w-1;
-  j=3*sx*(sy-1)-1;
+  j=3*sx*sy-1;
   while (i>=0) {
     dest[i--]=0;
     dest[j--]=0;
