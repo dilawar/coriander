@@ -15,11 +15,11 @@ AC_DEFUN([AC_CHECK_LIBDC],[
  	])
  	AC_MSG_RESULT($libdc1394)
  	if test x$libdc1394 = xno; then
-          AC_ERROR(libdc1394 is not installed.  
+          AC_ERROR([libdc1394 is not installed.  
 **************************************************************************
 **   Please install libdc1394 version > 0.9.2                           **
 **   Source tarball and CVS at:  http://www.sf.net/projects/libdc1394   **
-**************************************************************************)
+**************************************************************************])
  	fi
 ]) 
 
@@ -31,11 +31,11 @@ AC_DEFUN([AC_CHECK_LIBDC_VERSION],[
            LIBDC_LIBS="-ldc1394_control"
            LIBDC_CFLAGS=""
 	else
-          AC_ERROR(libdc1394 is too old. 
+          AC_ERROR([libdc1394 is too old. 
 **************************************************************************
 **   Please upgrade to the current CVS or to a version > 0.9.2          **
 **   Source tarball and CVS at:  http://www.sf.net/projects/libdc1394   **
-**************************************************************************)
+**************************************************************************])
  	fi
 ])
 
@@ -50,11 +50,11 @@ AC_DEFUN([AC_CHECK_LIBRAW],[
  	])
  	AC_MSG_RESULT($libraw1394)
  	if test x$libraw1394 = xno; then
-          AC_ERROR(libraw1394 is not installed.
+          AC_ERROR([libraw1394 is not installed.
 **************************************************************************
 **   Please install version >= 0.9.0                                    **
 **   Source tarball and CVS at:  http://www.sf.net/projects/libraw1394  **
-**************************************************************************)
+**************************************************************************])
 	fi
 ])
 
@@ -66,11 +66,11 @@ AC_DEFUN([AC_CHECK_LIBRAW_VERSION],[
            LIBRAW_LIBS="-lraw1394"
            LIBRAW_CFLAGS=""
 	else
-          AC_ERROR(libraw1394 is too old.
+          AC_ERROR([libraw1394 is too old.
 **************************************************************************
 **   Please upgrade to a version >= 0.9.0                               **
 **   Source tarball and CVS at:  http://www.sf.net/projects/libraw1394  **
-**************************************************************************)
+**************************************************************************])
 	fi
 ])
 
@@ -82,11 +82,11 @@ AC_DEFUN([AC_CHECK_FTPLIB],[
           AC_DEFINE(HAVE_FTPLIB)
           FTPLIB_LIBS="-lftp"
           FTPLIB_CFLAGS="",
-          AC_MSG_RESULT(ftplib is required for FTP support.
+          AC_MSG_RESULT([ftplib is required for FTP support.
 **************************************************************************
 **   Source tarball available at: http://nbpfaus.net/~pfau/ftplib/      **
 **   FTP SERVICE DISABLED                                               **
-**************************************************************************))
+**************************************************************************]))
 ])
 
 AC_DEFUN([AC_CHECK_SDLLIB],[
@@ -98,11 +98,11 @@ AC_DEFUN([AC_CHECK_SDLLIB],[
 	  SDLLIB_CFLAGS=`sdl-config --cflags`
 	  AC_DEFINE(HAVE_SDLLIB)
 	else
-	  AC_MSG_RESULT(SDL required for display support.
+	  AC_MSG_RESULT([SDL required for display support.
 **************************************************************************
 **   SDL can be downloaded in various formats at http://www.libsdl.org  **
 **   DISPLAY SERVICE DISABLED                                           **
-**************************************************************************)
+**************************************************************************])
 	fi
 ])
 

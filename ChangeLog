@@ -2,6 +2,10 @@ Coriander, (c) 2000-2004 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 1.0.0
 	
+   January 15, 2004, by Damien Douxchamps
+   - debugging versioning issues in format7 registers
+   - added some debug outputs
+	
    January 9, 2004, by Damien Douxchamps
    - debugging format7 unit position
    - fixed configure bug

@@ -72,6 +72,7 @@ main (int argc, char *argv[])
 {
   int i;
   int main_timeout;
+  //GdkPixbuf *pixbuf = NULL;
   
   main_timeout_ticker=0;
   WM_cancel_display=0;
@@ -136,6 +137,10 @@ main (int argc, char *argv[])
   GetContextStatus();
   BuildAllWindows();
   UpdateAllWindows();
+
+  // show coriander logo
+  //pixbuf = gdk_pixbuf_new_from_file ("pixmaps/coriander-trans.png", NULL);
+  //gtk_window_set_icon (GTK_WINDOW (main_window), pixbuf);
 
   MainStatus("Welcome to Coriander...");
   gtk_widget_show (main_window); // this is the only window shown at boot-time

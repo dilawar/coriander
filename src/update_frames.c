@@ -417,7 +417,7 @@ UpdateFormat7InfoFrame(void)
   if (camera->format7_info.edit_mode!=-1) {
 
     mode = &camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN];
-    
+
     switch (mode->color_coding_id) {
     case COLOR_FORMAT7_MONO8:
       bpp=1;

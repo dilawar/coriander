@@ -4,6 +4,12 @@ _______________________________________________________________________________
 	          Damien Douxchamps <ddouxchamps@users.sf.net>
 _______________________________________________________________________________
 
+- urgent:
+	- record and play 'scenario' files (files containing a list of
+	  timed commands)
+	- record and recall camera setup files
+	- command line capability
+
 - video:
     	- add a button somewhere to quickly capture an image and save it to
 	  disk (this was previously called "capture single").
@@ -21,14 +27,10 @@ _______________________________________________________________________________
 - misc stuff:
 	- add some artwork in the buttons for clearer presentation
 	- add autofocus, autowhitebalance and autoexposure (autocontrast)
-	  in software.
+	  in software
 	- add an SHM service
+	- update the V4L service
 
 - long term:
 	- add advanced features capability. This would probably require a
-	  DB of the supported cameras (Is there any cam supporting this
-	  anyway?)
-	- record and play 'scenario' files (files containing a list of
-	  timed commands)
-	- record and recall camera setup files
-	- command line capability
+	  DB of the supported cameras

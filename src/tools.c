@@ -100,21 +100,27 @@ GetFormat7ModeInfo(raw1394handle_t handle, nodeid_t node, int mode, Format7Info_
       info->mode[i].unit_pos_x=0;
       info->mode[i].unit_pos_y=0;
     }
+
+    // --- the following code should not be necessary with latest libdc (14/1/2004)
     if (!((info->mode[i].unit_pos_x>0)&&(info->mode[i].unit_pos_x<info->mode[i].max_size_x)&&
 	  (info->mode[i].unit_pos_y>0)&&(info->mode[i].unit_pos_y<info->mode[i].max_size_y))) {
-      fprintf(stderr,"UNIT_POS [%d %d] disabled, using UNIT_SIZE instead\n",info->mode[i].unit_pos_x,info->mode[i].unit_pos_y);
+      //fprintf(stderr,"UNIT_POS [%d %d] disabled, using UNIT_SIZE instead\n",info->mode[i].unit_pos_x,info->mode[i].unit_pos_y);
       info->mode[i].unit_pos_x=info->mode[i].unit_size_x;
       info->mode[i].unit_pos_y=info->mode[i].unit_size_y;
     }
     else {
-      fprintf(stderr,"UNIT_POS [%d %d] is valid and will be used\n",info->mode[i].unit_pos_x,info->mode[i].unit_pos_y);
+      //fprintf(stderr,"UNIT_POS [%d %d] is valid and will be used\n",info->mode[i].unit_pos_x,info->mode[i].unit_pos_y);
     }
+    // ---
+
     if (dc1394_query_format7_image_position(handle,node,mode,&info->mode[i].pos_x,&info->mode[i].pos_y)!=DC1394_SUCCESS)
       MainError("Got a problem querying format7 image position");
     if (dc1394_query_format7_image_size(handle,node,mode,&info->mode[i].size_x,&info->mode[i].size_y)!=DC1394_SUCCESS)
       MainError("Got a problem querying format7 image size");
     if (dc1394_query_format7_byte_per_packet(handle,node,mode,&info->mode[i].bpp)!=DC1394_SUCCESS)
       MainError("Got a problem querying format7 bytes per packet");
+    if (info->mode[i].bpp==0)
+      fprintf(stderr,"BPP is zero in %s at line %d\n",__FUNCTION__,__LINE__);
     if (dc1394_query_format7_packet_para(handle,node,mode,&info->mode[i].min_bpp,&info->mode[i].max_bpp)!=DC1394_SUCCESS)
       MainError("Got a problem querying format7 packet parameters");
     if (dc1394_query_format7_pixel_number(handle,node,mode,&info->mode[i].pixnum)!=DC1394_SUCCESS)

@@ -310,6 +310,8 @@ on_format7_packet_size_changed               (GtkAdjustment    *adj,
       MainError("Could not query Format7 bytes per packet");
     else {
       camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].bpp=bpp;
+      if (bpp==0)
+	fprintf(stderr,"BPP is zero in %s at line %d\n",__FUNCTION__,__LINE__);
       
       // tell the range to change its setting
       adj->value=bpp;
