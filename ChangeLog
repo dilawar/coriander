@@ -2,6 +2,9 @@ Coriander, (c) 2000-2002 Damien Douxchamps <douxchamps@ieee.org>
 
 Changes towards version 0.26
 
+   July 15, 2002, by Damien Douxchamps
+   - added #ifdef HAVE_SDLLIB for watchthread related code
+	
    July 8, 2002, by Damien Douxchamps
    - use raw1394_get_port_info to get the number of ports, as Dan
      Dennedy suggested.

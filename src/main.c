@@ -65,12 +65,13 @@ CtxtInfo ctxt;
 SelfIdPacket_t *selfid;
 SelfIdPacket_t *selfids;
 PrefsInfo preferences;
-watchthread_info_t watchthread_info;
-
 int silent_ui_update;
-
 int camera_num;
 int current_camera;
+
+#ifdef HAVE_SDLLIB
+  watchthread_info_t watchthread_info;
+#endif
 
 int
 main (int argc, char *argv[])
@@ -177,8 +178,9 @@ main (int argc, char *argv[])
 	  GetContextStatus();
 	  BuildAllWindows();
 	  UpdateAllWindows();
+#ifdef HAVE_SDLLIB
 	  WatchStartThread(&watchthread_info);
-	  
+#endif
 	  MainStatus("Welcome to Coriander...");
 	  gtk_widget_show (commander_window); // this is the only window shown at boot-time
 	  
@@ -190,8 +192,9 @@ main (int argc, char *argv[])
 	      SelectCamera(i);
 	      CleanThreads(CLEAN_MODE_NO_UI_UPDATE);
 	    }
-	  
+#ifdef HAVE_SDLLIB
 	  WatchStopThread(&watchthread_info);
+#endif
 	  
 	  free(cameras);
 	  free(feature_sets);
