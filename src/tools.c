@@ -836,6 +836,8 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation) {
     ResumeFPSDisplay();
   }
 
+  // re-set ISO channels
+  SetChannels();
   //fprintf(stderr,"finished handling bus-reset\n");
   return(1);
 }

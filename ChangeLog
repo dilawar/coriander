@@ -7,6 +7,7 @@ Changes towards version 0.33
      caused crashes when changing mode/format/F7 parameters.
    - fixed a display problem: SDL was shut down even if no images had reached
      the display thread.
+   - re-set ISO channels after a bus-reset.
 	
    June 1, 2003, by Damien Douxchamps
    - first implementation of a bus-reset handling process
