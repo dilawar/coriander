@@ -22,13 +22,24 @@
 #include <libdc1394/dc1394_control.h>
 #include <libraw1394/raw1394.h>
 #include "definitions.h"
+#include "callbacks.h"
+#include "support.h"
+#include "definitions.h"
+#include "thread_display.h"
+#include "thread_base.h"
+
+typedef struct _whitebaldata
+{
+  int x;
+  int y;
+  chain_t *service;
+  pthread_t thread;
+
+} whitebal_data_t;
 
 void
 GetFormat7Capabilities(raw1394handle_t handle, nodeid_t node, Format7Info *info);
-/*
-void
-ChangeModeAndFormat(int* pmode);
-*/
+
 void
 ChangeModeAndFormat         (GtkMenuItem     *menuitem,
 			     gpointer         user_data);
@@ -57,12 +68,18 @@ void
 MainStatus(const char *string);
 
 void
-MessageBox( gchar *message);
+MessageBox(gchar *message);
 
 void
 SetScaleSensitivity(GtkWidget* widget, int feature, dc1394bool_t sense);
 
 void
 DisplayActiveServices(void);
+
+void
+GetRGBPix(int px, int py, chain_t *service, int* R, int* G, int* B);
+
+void*
+AutoWhiteBalance(void* arg);
 
 #endif

@@ -103,4 +103,7 @@ BayerEdgeSensePlanar(unsigned char *src, unsigned char *dest, int sx, int sy);
 void
 BayerDownsample(unsigned char *src, unsigned char *dest, int sx, int sy, bayer_pattern_t type);
 
+void
+StereoDecode(unsigned char *src, unsigned char *dest, int NumPixels);
+
 #endif

@@ -68,6 +68,7 @@ PrefsInfo preferences;
 int silent_ui_update;
 int camera_num;
 int current_camera;
+whitebal_data_t *whitebal_data;
 
 #ifdef HAVE_SDLLIB
   watchthread_info_t watchthread_info;
@@ -93,6 +94,7 @@ main (int argc, char *argv[])
 #endif
   gnome_init ("coriander", VERSION, argc, argv);
 
+  whitebal_data=(whitebal_data_t*)malloc(sizeof(whitebal_data));
   card_found=0;
   tmp_handle=raw1394_new_handle();
   if (tmp_handle!=NULL)
@@ -221,10 +223,11 @@ main (int argc, char *argv[])
 	  free(handles);
 	  free(port_camera_num);
 	  free(preferences.camera_names);
-
+	  
 	} // end of if no handle check
 
     } // end of if no camera check
+  free(whitebal_data);
   
   return 0;
 }

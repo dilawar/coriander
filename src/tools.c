@@ -23,9 +23,6 @@
 #include <gnome.h>
 #include <libdc1394/dc1394_control.h>
 #include <string.h>
-#include "callbacks.h"
-#include "support.h"
-#include "definitions.h"
 #include "tools.h"
 #include "build_menus.h" 
 #include "update_frames.h"
@@ -35,7 +32,17 @@
 #include "thread_display.h"
 #include "thread_ftp.h"
 #include "thread_save.h"
-#include "thread_base.h"
+  
+#define YUV2RGB(y, u, v, r, g, b)\
+  r = y + ((v*1436) >>10);\
+  g = y - ((u*352 + v*731) >> 10);\
+  b = y + ((u*1814) >> 10);\
+  r = r < 0 ? 0 : r;\
+  g = g < 0 ? 0 : g;\
+  b = b < 0 ? 0 : b;\
+  r = r > 255 ? 255 : r;\
+  g = g > 255 ? 255 : g;\
+  b = b > 255 ? 255 : b
 
 extern GtkWidget *commander_window;
 extern dc1394_camerainfo *camera;
@@ -161,6 +168,7 @@ ChangeModeAndFormat         (GtkMenuItem     *menuitem,
   
   BuildFpsMenu();
   UpdateTriggerFrame();
+  UpdateOptionFrame();
 
   IsoFlowResume(state);
 }
@@ -434,3 +442,137 @@ DisplayActiveServices(void)
     }
   fprintf(stderr,"\n");
 }
+
+void*
+AutoWhiteBalance(void* arg)
+{
+  whitebal_data_t *info;
+  int currentB=0, currentR=0;
+  int span,center;
+  int prevB, prevR;
+  int pixB, pixR;
+  int prevpixB, prevpixR;
+  float kB, kR, oB, oR;
+  unsigned char *prev_ptr;
+  int target;
+  int progressB=1, progressR=1;
+  int px, py;
+  chain_t *service;
+
+  info=(whitebal_data_t*)arg;
+
+  service=info->service;
+  px=info->x;
+  py=info->y;
+
+  fprintf(stderr,"Entering Auto White Balance...\n");
+
+  prevB=feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].BU_value;
+  prevR=feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].RV_value;
+
+  fprintf(stderr,"grabbing RGB...\n");
+
+  GetRGBPix(px, py, service, &prevpixR, &target, &prevpixB);
+
+  fprintf(stderr,"RGB initial value: %d %d %d\n",prevpixR, target, prevpixB);
+
+  span=(feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].max-
+	feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].min);
+  center=((feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].max-
+	   feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].min)/2+
+	  feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].min);
+
+  fprintf(stderr,"span: %d, center: %d\n",span,center);
+  fprintf(stderr,"current whitebal: %d %d\n",prevB, prevR);
+
+  // move 10%*range from current value towards center.
+  if (prevB>center)
+    currentB=prevB-span/10;
+  else
+    currentB=prevB+span/10;
+
+  if (prevR>center)
+    currentR=prevR-span/10;
+  else
+    currentR=prevR+span/10;
+  fprintf(stderr,"first whitebal shift: %d %d\n",currentB, currentR);
+
+  while (progressB||progressR)
+    {
+      fprintf(stderr,"Set whitebal to %d %d\n",currentB, currentR);
+      // get pixel 'color' value (R and B for RGB, U and V for YUV)
+      if (dc1394_set_white_balance(camera->handle,camera->id,currentB,currentR)!=DC1394_SUCCESS)
+	{
+	  MainError("Can't set whitebal parameters in auto white balance proc");
+	  return(0);
+	}
+
+      // wait for buffer pointer to change
+      prev_ptr=service->current_buffer;
+      fprintf(stderr,"prev buffer: 0x%x\n",prev_ptr);
+      while (prev_ptr==service->current_buffer)
+	usleep(10000);// .01 sec
+      
+      // re-grab pixel value (and average with 3x3 mask??)
+      GetRGBPix(px,py,service, &pixR, &target, &pixB);
+      fprintf(stderr,"New RGB values: %d %d %d\n",pixR,target,pixB);
+     
+      // estimate linear law:
+      kB=(pixB-prevpixB)/(currentB-prevB);
+      kR=(pixR-prevpixR)/(currentR-prevR);
+      oB=pixB-kB*currentB;
+      oR=pixR-kR*currentR;
+      
+      // memorize data as old
+      prevpixB=pixB;
+      prevpixR=pixR;
+      prevB=currentB;
+      prevR=currentR;
+
+      // make an prediction:
+      currentB=(target-oB)/kB;
+      currentR=(target-oR)/kR;
+
+      // clamp values in range limit:
+      if (currentB>feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].max)
+	currentB=feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].max;
+      if (currentB<feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].min)
+	currentB=feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].min;
+      if (currentR>feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].max)
+	currentR=feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].max;
+      if (currentR<feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].min)
+	currentR=feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].min;
+
+      // update condition
+      progressB=(abs(pixB-target)<abs(prevpixB-target));
+      progressR=(abs(pixR-target)<abs(prevpixR-target));
+    }
+
+  fprintf(stderr,"Leaving Auto White Balance\n");
+
+  return(0);
+}
+
+
+void
+GetRGBPix(int px, int py, chain_t *service, int* R, int* G, int* B)
+{
+  int u, y, v;
+  displaythread_info_t *info=NULL;
+  info=(displaythread_info_t*)service->data;
+
+  //pthread_mutex_lock(&service->mutex_struct);
+  //pthread_mutex_lock(&service->mutex_data);
+
+  // we work in display thread, therefor the format is always YUYV
+  y=0;//info->SDL_overlay->pixels[0][(py*service->width+px)*2];
+  u=0;//info->SDL_overlay->pixels[0][(((py*service->width+px)>>1)<<2)+1]-127;
+  v=0;//info->SDL_overlay->pixels[0][(((py*service->width+px)>>1)<<2)+3]-127;
+
+  //pthread_mutex_unlock(&service->mutex_data);
+  //pthread_mutex_unlock(&service->mutex_struct);
+
+  YUV2RGB(y,u,v,*R,*G,*B);
+  fprintf(stderr,"YUV: %d %d %d RGB: %d %d %d\n",y,u,v,*R,*G,*B);
+}
+

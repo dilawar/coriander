@@ -43,6 +43,7 @@ extern GtkWidget *format7_window;
 extern dc1394_camerainfo *camera;
 extern dc1394_miscinfo *misc_info;
 extern watchthread_info_t watchthread_info;
+extern whitebal_data_t* whitebal_data;
 
 #define YUV2RGB(y, u, v, r, g, b)\
   r = y + ((v*1436) >>10);\
@@ -239,6 +240,7 @@ OnMouseDown(chain_t *display_service, int button, int x, int y)
     case SDL_BUTTON_MIDDLE:
       x=x*display_service->width/info->SDL_videoRect.w; //rescaling
       y=y*display_service->height/info->SDL_videoRect.h;
+      // THIS IS ONLY VALID FOR YUYV!!
       col_y=info->SDL_overlay->pixels[0][(y*display_service->width+x)*2];
       col_u=info->SDL_overlay->pixels[0][(((y*display_service->width+x)>>1)<<2)+1]-127;
       col_v=info->SDL_overlay->pixels[0][(((y*display_service->width+x)>>1)<<2)+3]-127;
@@ -246,6 +248,10 @@ OnMouseDown(chain_t *display_service, int button, int x, int y)
       UpdateCursorFrame(x, y, col_r, col_g, col_b, col_y, col_u, col_v);
       break;
     case SDL_BUTTON_RIGHT:
+      //whitebal_data->x=x*display_service->width/info->SDL_videoRect.w; //rescaling
+      //whitebal_data->y=y*display_service->height/info->SDL_videoRect.h;
+      //whitebal_data->service=display_service;
+      //pthread_create(&whitebal_data->thread, NULL, AutoWhiteBalance, (void*)&whitebal_data);
       break;
     default:
       fprintf(stderr,"Bad button ID in SDL!\n");

@@ -2,12 +2,16 @@ Coriander, (c) 2000-2002 Damien Douxchamps <douxchamps@ieee.org>
 
 Changes towards version 0.26
 
+   August 22, 2002, by Damien Douxchamps
+   - added sensitiveness check for bayer menus. These are now only
+     accessible when the mode is greyscale (8 or 16bpp)
+	
    August 21, 2002, by Damien Douxchamps
    - fixed a bug in nearest neighbor conversion (sx instead of sy...)
      Thanks to Xiong Quanren.
+   - added a function to decode one 16bit stereo pair into two 8bit
+     images
 	
-   August 21, 2002, by Damien Douxchamps
-   - bug introduced yesterday fixed in isothread.
    - added bayer decoding with format_7
    - added alternative bayer decoding. Two patterns are now supported:
        BGGR: B G    and    GRBG: G R

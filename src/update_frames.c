@@ -51,6 +51,7 @@ extern char* phy_delay_list[4];
 extern char* power_class_list[8];
 extern SelfIdPacket_t *selfid;
 extern PrefsInfo preferences; 
+extern Format7Info *format7_info;
 extern int silent_ui_update;
 extern int current_camera;
 
@@ -380,6 +381,24 @@ UpdateCursorFrame(int posx, int posy, int r, int g, int b, int y, int u, int v)
 void
 UpdateOptionFrame(void)
 {
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"pattern_menu"),uiinfo->bayer!=NO_BAYER_DECODING);
+  int cond;
+  gtk_widget_set_sensitive(lookup_widget(commander_window,"pattern_menu"),
+			   uiinfo->bayer!=NO_BAYER_DECODING);
+  if (misc_info->format!=FORMAT_SCALABLE_IMAGE_SIZE)
+    cond=((misc_info->mode==MODE_640x480_MONO16)||
+	  (misc_info->mode==MODE_800x600_MONO16)||
+	  (misc_info->mode==MODE_1024x768_MONO16)||
+	  (misc_info->mode==MODE_1280x960_MONO16)||
+	  (misc_info->mode==MODE_1600x1200_MONO16)||
+	  (misc_info->mode==MODE_640x480_MONO)||
+	  (misc_info->mode==MODE_800x600_MONO)||
+	  (misc_info->mode==MODE_1024x768_MONO)||
+	  (misc_info->mode==MODE_1280x960_MONO)||
+	  (misc_info->mode==MODE_1600x1200_MONO));
+  else
+    cond=((format7_info->mode[misc_info->mode].color_coding_id==COLOR_FORMAT7_MONO16)||
+	  (format7_info->mode[misc_info->mode].color_coding_id==COLOR_FORMAT7_MONO8));
 
+  gtk_widget_set_sensitive(lookup_widget(commander_window,"pattern_menu"),cond);
+  gtk_widget_set_sensitive(lookup_widget(commander_window,"bayer_menu"),cond);
 }
