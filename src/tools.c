@@ -691,7 +691,8 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation) {
   //fprintf(stderr,"Bus reset detected by gtk timeout. Generation: %d\n",generation);
 
   gtk_widget_set_sensitive(main_window,FALSE);
-  usleep(1000000); // sleep some time to allow the cam to warm-up/boot
+
+  usleep(500000); // sleep some time to allow the cam to warm-up/boot
 
   raw1394_update_generation(handle, generation);
   // Now we have to deal with this bus reset...
@@ -803,9 +804,8 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation) {
 
   if (bi.camera_num>0) {
     //fprintf(stderr,"build/refresh GUI\n");
-    gtk_widget_destroy(waiting_camera_window);
-
-    gtk_widget_set_sensitive(main_window,TRUE);
+    if (waiting_camera_window!=NULL)
+      gtk_widget_destroy(GTK_WIDGET(waiting_camera_window));
 
     // Build/refresh GUI
     if (camera->want_to_display>0)
@@ -816,6 +816,8 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation) {
     
     // resume all FPS displays:
     ResumeFPSDisplay();
+
+    gtk_widget_set_sensitive(main_window,TRUE);
   }
 
   // re-set ISO channels
