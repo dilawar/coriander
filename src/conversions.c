@@ -851,7 +851,7 @@ BayerSimple(unsigned char *src, unsigned char *dest, int sx, int sy, bayer_patte
 {
   unsigned char *outR, *outG, *outB;
   register int i,j;
-  int tmp;
+  int tmp, base;
 
   switch (type) {
   case BAYER_PATTERN_GRBG:
@@ -874,37 +874,39 @@ BayerSimple(unsigned char *src, unsigned char *dest, int sx, int sy, bayer_patte
   switch (type) {
   case BAYER_PATTERN_GRBG://---------------------------------------------------------
   case BAYER_PATTERN_GBRG:
-    for (i=0;i<sy-1;i+=2) {
+    for (i=0;i<sy-1;i+=1) {
       for (j=0;j<sx-1;j+=2) {
-	tmp=((src[i*sx+j]+src[(i+1)*sx+(j+1)])>>1);
-	CLIP(tmp,outG[((i*sx)+j)*3]);
-	tmp=src[i*sx+j+1];
-	CLIP(tmp,outR[((i*sx)+j)*3]);
-	tmp=src[(i+1)*sx+j];
-	CLIP(tmp,outB[((i*sx)+j)*3]);
+	base=i*sx+j;
+	tmp=((src[base]+src[base+sx+1])>>1);
+	CLIP(tmp,outG[base*3]);
+	tmp=src[base+1];
+	CLIP(tmp,outR[base*3]);
+	tmp=src[base+sx];
+	CLIP(tmp,outB[base*3]);
 
-	tmp=((src[i*sx+j+1]+src[(i+1)*sx+(j+2)])>>1);
-	CLIP(tmp,outG[((i*sx)+j+1)*3]);
-	tmp=src[i*sx+j+2];
-	CLIP(tmp,outR[((i*sx)+j+1)*3]);
-	tmp=src[(i+1)*sx+j+1];
-	CLIP(tmp,outB[((i*sx)+j+1)*3]);
+	tmp=((src[base+2]+src[base+sx+1])>>1);
+	CLIP(tmp,outG[(base+1)*3]);
+	tmp=src[base+1];
+	CLIP(tmp,outR[(base+1)*3]);
+	tmp=src[base+2+sx];
+	CLIP(tmp,outB[(base+1)*3]);
       }
       i+=1;
       for (j=0;j<sx-1;j+=2) {
-	tmp=((src[(i+1)*sx+j]+src[i*sx+(j+1)])>>1);
-	CLIP(tmp,outG[((i*sx)+j)*3]);
-	tmp=src[(i+1)*sx+j+1];
-	CLIP(tmp,outR[((i*sx)+j)*3]);
-	tmp=src[i*sx+j];
-	CLIP(tmp,outB[((i*sx)+j)*3]);
+	base=i*sx+j;
+	tmp=((src[base+sx]+src[base+1])>>1);
+	CLIP(tmp,outG[base*3]);
+	tmp=src[base+sx+1];
+	CLIP(tmp,outR[base*3]);
+	tmp=src[base];
+	CLIP(tmp,outB[base*3]);
 
-	tmp=((src[(i+1)*sx+j+1]+src[i*sx+(j+2)])>>1);
-	CLIP(tmp,outG[((i*sx)+j+1)*3]);
-	tmp=src[(i+1)*sx+j+2];
-	CLIP(tmp,outR[((i*sx)+j+1)*3]);
-	tmp=src[i*sx+j+1];
-	CLIP(tmp,outB[((i*sx)+j+1)*3]);
+	tmp=((src[base+1]+src[base+2+sx])>>1);
+	CLIP(tmp,outG[(base+1)*3]);
+	tmp=src[base+sx+1];
+	CLIP(tmp,outR[(base+1)*3]);
+	tmp=src[base+2];
+	CLIP(tmp,outB[(base+1)*3]);
       }
     }
     break;
@@ -912,35 +914,37 @@ BayerSimple(unsigned char *src, unsigned char *dest, int sx, int sy, bayer_patte
   case BAYER_PATTERN_RGGB:
     for (i=0;i<sy-1;i+=1) {
       for (j=0;j<sx-1;j+=2) {
-	tmp=((src[(i+1)*sx+j]+src[i*sx+(j+1)])>>1);
-	CLIP(tmp,outG[((i*sx)+j)*3]);
-	tmp=src[(i+1)*sx+j+1];
-	CLIP(tmp,outR[((i*sx)+j)*3]);
-	tmp=src[i*sx+j];
-	CLIP(tmp,outB[((i*sx)+j)*3]);
+	base=i*sx+j;
+	tmp=((src[base+sx]+src[base+1])>>1);
+	CLIP(tmp,outG[base*3]);
+	tmp=src[base+sx+1];
+	CLIP(tmp,outR[base*3]);
+	tmp=src[base];
+	CLIP(tmp,outB[base*3]);
 
-	tmp=((src[(i+1)*sx+j+1]+src[i*sx+(j+2)])>>1);
-	CLIP(tmp,outG[((i*sx)+j+1)*3]);
-	tmp=src[(i+1)*sx+j+2];
-	CLIP(tmp,outR[((i*sx)+j+1)*3]);
-	tmp=src[i*sx+j+1];
-	CLIP(tmp,outB[((i*sx)+j+1)*3]);
+	tmp=((src[base+1]+src[base+2+sx])>>1);
+	CLIP(tmp,outG[(base+1)*3]);
+	tmp=src[base+sx+1];
+	CLIP(tmp,outR[(base+1)*3]);
+	tmp=src[base+2];
+	CLIP(tmp,outB[(base+1)*3]);
       }
       i+=1;
       for (j=0;j<sx-1;j+=2) {
-	tmp=((src[i*sx+j]+src[(i+1)*sx+(j+1)])>>1);
-	CLIP(tmp,outG[((i*sx)+j)*3]);
-	tmp=src[i*sx+j+1];
-	CLIP(tmp,outR[((i*sx)+j)*3]);
-	tmp=src[(i+1)*sx+j];
-	CLIP(tmp,outB[((i*sx)+j)*3]);
+	base=i*sx+j;
+	tmp=((src[base]+src[base+sx+1])>>1);
+	CLIP(tmp,outG[base*3]);
+	tmp=src[base+1];
+	CLIP(tmp,outR[base*3]);
+	tmp=src[base+sx];
+	CLIP(tmp,outB[base*3]);
 
-	tmp=((src[i*sx+j+1]+src[(i+1)*sx+(j+2)])>>1);
-	CLIP(tmp,outG[((i*sx)+j+1)*3]);
-	tmp=src[i*sx+j+2];
-	CLIP(tmp,outR[((i*sx)+j+1)*3]);
-	tmp=src[(i+1)*sx+j+1];
-	CLIP(tmp,outB[((i*sx)+j+1)*3]);
+	tmp=((src[base+2]+src[base+sx+1])>>1);
+	CLIP(tmp,outG[(base+1)*3]);
+	tmp=src[base+1];
+	CLIP(tmp,outR[(base+1)*3]);
+	tmp=src[base+2+sx];
+	CLIP(tmp,outB[(base+1)*3]);
       }
     }
     break;

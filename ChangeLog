@@ -2,6 +2,9 @@ Coriander, (c) 2000-2004 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 1.0.0
 	
+   May 19, 2004, by Damien Douxchamps
+   - debugged new bayer pattern decoder
+	
    May 18, 2004, by Damien Douxchamps
    - don't require extensions when in raw output format
    - if BPP is zero, set the image size to the maximum value and try to get
