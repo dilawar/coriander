@@ -8,6 +8,11 @@
 
      (C) 2000-2005 by Damien Douxchamps <ddouxchamps@users.sf.net>
 
+Mailing lists: - coriander-user@lists.sourceforge.net
+		 for user support (please RTFM)
+	       - coriander-devel@lists.sourceforge.net
+		 for bugs, feature requests,...
+
 ==========================================================================
 		
 
@@ -40,25 +45,31 @@ about the libdc1394 library [2]. However, it's a real problem when you
 need to quickly setup a demo or get some frames for testing. If, just
 like me, you also had this problem, Coriander is for you [4]!
 
-This version can be considered stable. Please have a look at the TODO,
-ChangeLog and BUGS files to see the current status of the project.
-Contributors are most welcome so if you're interrested in making this
-program better don't hesitate to contact me.
+Please have a look at the TODO, ChangeLog and BUGS files to see the
+current status of the project. Contributors are most welcome so if
+you're interrested in making this program better don't hesitate to
+contact me.
 
 The latest version can be found on the SourceForge website:
 
 http://sourceforge.net/projects/coriander
 
 There is a user manual available at the same URL. Please read it
-before sending tons-o-emails to me!! ;-)
+before sending tons-o-emails to me!! ;-) You will also get a faster
+reply if you send your e;ails to the mailing lists (see above).
 
 As I can only test Coriander with the cameras I have which means some
 features have not been tested. If you have another camera, please test
-Coriander and send me an email with the bugs you identified.
+Coriander and send to the mailing list with the bugs you identified.
 
-'Hope you enjoy this software (well if you don't, just contribute to
-make it better! ;-)
+Last but not least, Coriander has received vision hardware donations or
+lease and technical help from the following companies:
 
+- Hamamatsu Photonics http://www.hpk.co.jp
+- Allied Vision Technologies http://www.alliedvisiontec.com
+- The Imaging Source http://www.1394imaging.com
+
+Many thanks for their support!
 
 Damien
 
@@ -69,6 +80,12 @@ _______________________
 Basically, you should just type:
 
 ./configure
+make
+make install
+
+If you got a CVS version you need to type
+
+./autogen.sh
 make
 make install
 

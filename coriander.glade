@@ -5752,13 +5752,16 @@ anything in the GUI at all...</label>
   <logo>coriander-logo.png</logo>
   <copyright>Copyright 2000-2005 Damien Douxchamps</copyright>
   <authors>Damien Douxchamps &lt;ddouxchamps@users.sf.net&gt;
-Dan Dennedy &lt;dan@dennedy.org&gt;
 See the AUTHORS file for more authors and contributors
 </authors>
   <comments>Coriander home page is http://coriander.sourceforge.net
  
+Coriander received equipment donations/leases from the following companies:
+- Hamamatsu Corporation     http://www.hpk.co.jp
+- Allied Vision Technologies     http://www.alliedvisiontec.com
+- The Imaging Source     http://www.1394imaging.com
  
-Special thanks to Hamamatsu Corporation and Allied Vision Technologies for helping the development of Coriander through the gracious lease and/or donation of vision hardware.</comments>
+Many thanks to our sponsors!</comments>
 </widget>
 
 <widget>

@@ -2,6 +2,10 @@ Coriander, (c) 2000-2005 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 1.0.2
 
+   Feb 17, 2005, by Damien Douxchamps
+   - updated the sponsors information as The Imaging Source just donated
+     two cameras! :-)
+	
    Feb 14, 2005, by Damien Douxchamps
    - proper detection of the FFMPEG libraries
    - Save to STDOUT. I hope I will have time to add mencoder auto-launch

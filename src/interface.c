@@ -3287,7 +3287,6 @@ create_about_window (void)
 {
   const gchar *authors[] = {
     "Damien Douxchamps <ddouxchamps@users.sf.net>",
-    "Dan Dennedy <dan@dennedy.org>",
     "See the AUTHORS file for more authors and contributors",
     NULL
   };
@@ -3296,7 +3295,7 @@ create_about_window (void)
   about_window = gnome_about_new ("Coriander", VERSION,
                         _("Copyright 2000-2005 Damien Douxchamps"),
                         authors,
-                        _("Coriander home page is http://coriander.sourceforge.net\n \n \nSpecial thanks to Hamamatsu Corporation and Allied Vision Technologies for helping the development of Coriander through the gracious lease and/or donation of vision hardware."),
+                        _("Coriander home page is http://coriander.sourceforge.net\n \nCoriander received equipment donations/leases from the following companies:\n- Hamamatsu Corporation     http://www.hpk.co.jp\n- Allied Vision Technologies     http://www.alliedvisiontec.com\n- The Imaging Source     http://www.1394imaging.com\n \nMany thanks to our sponsors!"),
                         "coriander/coriander-logo.png");
   gtk_object_set_data (GTK_OBJECT (about_window), "about_window", about_window);
   gtk_window_set_modal (GTK_WINDOW (about_window), TRUE);
