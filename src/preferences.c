@@ -88,6 +88,7 @@ CopyCameraPrefs(camera_t* cam) {
   cam->prefs.save_period            = preferences.camprefs.save_period;
   cam->prefs.save_append            = preferences.camprefs.save_append;
   cam->prefs.save_to_dir            = preferences.camprefs.save_to_dir;
+  cam->prefs.use_ram_buffer         = preferences.camprefs.use_ram_buffer;
   cam->prefs.ram_buffer_size        = preferences.camprefs.ram_buffer_size;
   cam->prefs.ftp_mode               = preferences.camprefs.ftp_mode;
   cam->prefs.ftp_period             = preferences.camprefs.ftp_period;

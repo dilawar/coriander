@@ -41,6 +41,8 @@ _______________________________________________________________________________
 	- add service/ISO autostart in the preferences. Warn in status window if
 	  services not started in the 'normal' order.
 	- handle the case where no extension is provided
+	- thread_save button should self-reset after finishing to write the
+	  RAM buffer to disk
 
 - long term:
 	- add advanced features capability. This would probably require a

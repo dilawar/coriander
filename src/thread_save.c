@@ -551,7 +551,6 @@ FillRamBuffer(chain_t *save_service)
 void*
 SaveThread(void* arg)
 {
-  char *filename_out;
   chain_t* save_service=NULL;
   savethread_info_t *info=NULL;
   GdkImlibImage *im=NULL;
@@ -560,8 +559,6 @@ SaveThread(void* arg)
   float tmp;
   int i;
   unsigned char* dest=NULL;
-
-  filename_out=(char*)malloc(STRING_SIZE*sizeof(char));
 
   save_service=(chain_t*)arg;
   pthread_mutex_lock(&save_service->mutex_data);
@@ -687,36 +684,40 @@ SaveThread(void* arg)
 
   // we now have to close the video file properly and handle ram buffer operation
 
-  if ((info->use_ram_buffer==TRUE)&&
-      ((info->format==SAVE_FORMAT_RAW_VIDEO)||
-       (info->format==SAVE_FORMAT_MPEG)||
-       (info->format==SAVE_FORMAT_PVN))) {
-    fwrite(info->bigbuffer, 1, info->bigbuffer_position, fd);
-  }
-
-  if ((info->use_ram_buffer==TRUE)&&(info->format==SAVE_FORMAT_PVN)) {
-    writePVNHeader(fd, save_service->current_buffer->buffer_color_mode,
-		   save_service->current_buffer->height,
-		   save_service->current_buffer->width,
-		   getDepth(info->bigbuffer_position, save_service->current_buffer->buffer_color_mode, 
-			    save_service->current_buffer->height, save_service->current_buffer->width),
-		   getConvertedBytesPerChannel(save_service->current_buffer->buffer_color_mode)*8,
-		            framerateAsDouble(camera->misc_info.framerate));
-
-    if(needsConversionForPVN(save_service->current_buffer->buffer_color_mode)==FALSE) {
-      fwrite(info->bigbuffer, 1, info->bigbuffer_position, fd);
-    }
-    else {
-      // we assume that if it needs conversion, the output of the conversion is an 8bpp RGB
-      if (dest==NULL)
-	dest = (unsigned char*)malloc(3*save_service->current_buffer->width*save_service->current_buffer->height*sizeof(unsigned char));
+  if (info->use_ram_buffer==TRUE) {
+    switch(info->format) {
+    case SAVE_FORMAT_RAW_VIDEO:
+    case SAVE_FORMAT_MPEG:
+      fwrite(info->bigbuffer, info->bigbuffer_position, 1, fd);
+      break;
+    case SAVE_FORMAT_PVN:
+      writePVNHeader(fd, save_service->current_buffer->buffer_color_mode,
+		     save_service->current_buffer->height,
+		     save_service->current_buffer->width,
+		     getDepth(info->bigbuffer_position, save_service->current_buffer->buffer_color_mode, 
+			      save_service->current_buffer->height, save_service->current_buffer->width),
+		     getConvertedBytesPerChannel(save_service->current_buffer->buffer_color_mode)*8,
+		     framerateAsDouble(camera->misc_info.framerate));
       
-      for (i = 0; i < getDepth(info->bigbuffer_position, save_service->current_buffer->buffer_color_mode,
-			       save_service->current_buffer->height, save_service->current_buffer->width); i++) {
-        convert_for_pvn(info->bigbuffer, save_service->current_buffer->width,
-			save_service->current_buffer->height, i, save_service->current_buffer->buffer_color_mode, dest);
-        fwrite(dest, 1, 3*save_service->current_buffer->width*save_service->current_buffer->height, fd);
+      if(needsConversionForPVN(save_service->current_buffer->buffer_color_mode)==FALSE) {
+	fwrite(info->bigbuffer, info->bigbuffer_position, 1, fd);
       }
+      else {
+	// we assume that if it needs conversion, the output of the conversion is an 8bpp RGB
+	if (dest==NULL)
+	  dest = (unsigned char*)malloc(3*save_service->current_buffer->width*save_service->current_buffer->height*sizeof(unsigned char));
+	
+	for (i = 0; i < getDepth(info->bigbuffer_position, save_service->current_buffer->buffer_color_mode,
+				 save_service->current_buffer->height, save_service->current_buffer->width); i++) {
+	  convert_for_pvn(info->bigbuffer, save_service->current_buffer->width,
+			  save_service->current_buffer->height, i, save_service->current_buffer->buffer_color_mode, dest);
+	  fwrite(dest, 3*save_service->current_buffer->width*save_service->current_buffer->height, 1, fd);
+	}
+      }
+      break;
+    default:
+      fprintf(stderr,"Error: Ram buffer should be accessible only in video mode\n");
+      break;
     }
   }
   
@@ -736,7 +737,6 @@ SaveThread(void* arg)
 
   pthread_mutex_unlock(&info->mutex_cancel);
 
-  free(filename_out);
   return ((void*)1);
 }
 
