@@ -4,6 +4,9 @@ Changes towards version 1.0
 
    July 10, 2003, by Damien Douxchamps
    - better strategy for buffers allocation in thread_iso.c
+   - the type of the number of bytes per image is now uniformly set to
+     'unsigned long long int'
+   - SDL setup update
 	
    July 7, 2003, by Damien Douxchamps
    - removed stupid declaration that breaks with gcc2.x

@@ -164,13 +164,13 @@ DisplayThread(void* arg)
 	  if (skip_counter>=(info->period-1)) {
 	    skip_counter=0;
 #ifdef HAVE_SDLLIB
-	    if (SDL_LockYUVOverlay(info->SDL_overlay) == 0) {
+	    if (SDL_LockYUVOverlay(info->sdloverlay) == 0) {
 	      //fprintf(stderr,"Converting... ");
-	      convert_to_yuv_for_SDL(display_service->current_buffer, info->SDL_overlay->pixels[0]);
+	      convert_to_yuv_for_SDL(display_service->current_buffer, info->sdloverlay->pixels[0]);
 	      //fprintf(stderr,"Done\n");
 	      SDLDisplayArea(display_service);
-	      SDL_UnlockYUVOverlay(info->SDL_overlay);
-	      SDL_DisplayYUVOverlay(info->SDL_overlay, &info->SDL_videoRect);
+	      SDL_UnlockYUVOverlay(info->sdloverlay);
+	      SDL_DisplayYUVOverlay(info->sdloverlay, &info->sdlvideorect);
 	      //fprintf(stderr,"Displayed\n");
 	      info->redraw_prev_time=times(&info->redraw_tms_buf);
 	    }
@@ -217,11 +217,11 @@ ConditionalTimeoutRedraw(chain_t* service)
     interval=fabs((float)(info->redraw_current_time-info->redraw_prev_time)/sysconf(_SC_CLK_TCK));
     if (interval>(1.0/preferences.display_redraw_rate)) { // redraw a minimal 4 times per second
 #ifdef HAVE_SDLLIB
-      if (SDL_LockYUVOverlay(info->SDL_overlay) == 0) {
-	convert_to_yuv_for_SDL(service->current_buffer, info->SDL_overlay->pixels[0]);
+      if (SDL_LockYUVOverlay(info->sdloverlay) == 0) {
+	convert_to_yuv_for_SDL(service->current_buffer, info->sdloverlay->pixels[0]);
 	SDLDisplayArea(service);
-	SDL_UnlockYUVOverlay(info->SDL_overlay);
-	SDL_DisplayYUVOverlay(info->SDL_overlay, &info->SDL_videoRect);
+	SDL_UnlockYUVOverlay(info->sdloverlay);
+	SDL_DisplayYUVOverlay(info->sdloverlay, &info->sdlvideorect);
       }
 #endif
       //fprintf(stderr,"Display redrawn with time interval of %.3f sec\n",interval);
@@ -274,11 +274,12 @@ int
 SDLInit(chain_t *display_service)
 {
   displaythread_info_t *info;
+  SDL_Rect **modes;
   const SDL_VideoInfo *sdl_videoinfo;
   info=(displaythread_info_t*)display_service->data;
 
-  info->SDL_bpp=16;
-  info->SDL_flags=SDL_ANYFORMAT | SDL_RESIZABLE;
+  info->sdlbpp=16;
+  info->sdlflags=SDL_ANYFORMAT | SDL_RESIZABLE;
 
   // Initialize the SDL library (video subsystem)
   if ( SDL_Init(SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE) == -1) {
@@ -287,23 +288,45 @@ SDLInit(chain_t *display_service)
   }
 
   sdl_videoinfo = SDL_GetVideoInfo();
-  if (sdl_videoinfo->hw_available)
-    info->SDL_flags=info->SDL_flags | SDL_HWSURFACE;
 
-  // Set requested video mode
-  info->SDL_bpp=SDL_VideoModeOK(display_service->current_buffer->width, display_service->current_buffer->height, 
-				info->SDL_bpp, info->SDL_flags);
+  if (sdl_videoinfo->hw_available) {
+    info->sdlflags|= SDL_HWSURFACE;
+    info->sdlflags|= SDL_HWACCEL;
+    info->sdlflags&= ~SDL_SWSURFACE;
+  }
+  else {
+    info->sdlflags|= SDL_SWSURFACE;
+    info->sdlflags&= ~SDL_HWSURFACE;
+    info->sdlflags&= ~SDL_HWACCEL;
+  }
   
-  info->SDL_video = SDL_SetVideoMode(display_service->current_buffer->width, display_service->current_buffer->height, 
-				     info->SDL_bpp, info->SDL_flags);
+  modes=SDL_ListModes(NULL,info->sdlflags);
+  if (modes!=(SDL_Rect**)-1) {
+    // not all resolutions are OK for this video card. For safety we switch to software accel
+    MainError("No SDL mode available with hardware accel. Trying without HWSURFACE");
+    info->sdlflags&= ~SDL_HWSURFACE;
+    modes=SDL_ListModes(NULL,info->sdlflags);
+    if (modes!=(SDL_Rect**)-1) {
+      MainError("Still no modes available. Can't start SDL!");
+      SDL_Quit();
+      return(0);
+    }
+  }
+  
+  // Set requested video mode
+  info->sdlbpp=SDL_VideoModeOK(display_service->current_buffer->width, display_service->current_buffer->height, 
+				info->sdlbpp, info->sdlflags);
+  
+  info->sdlvideo = SDL_SetVideoMode(display_service->current_buffer->width, display_service->current_buffer->height, 
+				     info->sdlbpp, info->sdlflags);
 
-  if (info->SDL_video == NULL) {
+  if (info->sdlvideo == NULL) {
     MainError(SDL_GetError());
     SDL_Quit();
     return(0);
   }
 
-  if (SDL_SetColorKey( info->SDL_video, SDL_SRCCOLORKEY, 0x0) < 0 ) {
+  if (SDL_SetColorKey( info->sdlvideo, SDL_SRCCOLORKEY, 0x0) < 0 ) {
     MainError(SDL_GetError());
   }
   
@@ -313,20 +336,19 @@ SDLInit(chain_t *display_service)
   // set window title:
   SDL_WM_SetCaption(camera->name,"");
 
-  info->SDL_video->format->BytesPerPixel=2;
+  info->sdlvideo->format->BytesPerPixel=2;
   // Create YUV Overlay
-  info->SDL_overlay = SDL_CreateYUVOverlay(display_service->current_buffer->width, display_service->current_buffer->height, 
-					   SDL_YUY2_OVERLAY,info->SDL_video);
-  if (info->SDL_overlay==NULL) {
+  info->sdloverlay = SDL_CreateYUVOverlay(display_service->current_buffer->width, display_service->current_buffer->height, SDL_YUY2_OVERLAY,info->sdlvideo);
+  if (info->sdloverlay==NULL) {
     MainError(SDL_GetError());
     SDL_Quit();
     return(0);
   }
 
-  info->SDL_videoRect.x=0;
-  info->SDL_videoRect.y=0;
-  info->SDL_videoRect.w=display_service->current_buffer->width;
-  info->SDL_videoRect.h=display_service->current_buffer->height;
+  info->sdlvideorect.x=0;
+  info->sdlvideorect.y=0;
+  info->sdlvideorect.w=display_service->current_buffer->width;
+  info->sdlvideorect.h=display_service->current_buffer->height;
 
   watchthread_info.f7_step[0]=display_service->camera->format7_info.mode[display_service->current_buffer->mode-MODE_FORMAT7_MIN].step_x;
   watchthread_info.f7_step[1]=display_service->camera->format7_info.mode[display_service->current_buffer->mode-MODE_FORMAT7_MIN].step_y;
@@ -388,7 +410,7 @@ SDLDisplayArea(chain_t *display_service)
     upper_left[1]=watchthread_info.upper_left[1];
     lower_right[0]=watchthread_info.lower_right[0];
     lower_right[1]=watchthread_info.lower_right[1];
-    pimage=info->SDL_overlay->pixels[0];
+    pimage=info->sdloverlay->pixels[0];
     width=display_service->current_buffer->width;
     pthread_mutex_unlock(&watchthread_info.mutex_area);
     
@@ -425,8 +447,8 @@ SDLQuit(chain_t *display_service)
   // if width==-1, SDL was never initialized so we do nothing
   if (display_service->current_buffer->width!=-1) {
     //fprintf(stderr,"event stopped\n");
-    SDL_FreeYUVOverlay(info->SDL_overlay);
-    SDL_FreeSurface(info->SDL_video);
+    SDL_FreeYUVOverlay(info->sdloverlay);
+    SDL_FreeSurface(info->sdlvideo);
     SDL_QuitSubSystem(SDL_INIT_VIDEO);
   }
 #endif

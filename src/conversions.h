@@ -48,51 +48,51 @@ typedef enum
 
 // UYVY <-> YUYV
 void
-uyvy2yuyv (unsigned char *src, unsigned char *dest, int NumPixels);
+uyvy2yuyv (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels);
 
 void
-yuyv2uyvy (unsigned char *src, unsigned char *dest, int NumPixels);
+yuyv2uyvy (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels);
 
 // XXX -> UYVY
 void
-uyyvyy2uyvy (unsigned char *src, unsigned char *dest, int NumPixels);
+uyyvyy2uyvy (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels);
 
 void
-uyv2uyvy (unsigned char *src, unsigned char *dest, int NumPixels);
+uyv2uyvy (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels);
 
 void
-y2uyvy (unsigned char *src, unsigned char *dest, int NumPixels);
+y2uyvy (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels);
 
 void
-y162uyvy (unsigned char *src, unsigned char *dest, int NumPixels, int bits);
+y162uyvy (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels, int bits);
 
 void
-y162y (unsigned char *src, unsigned char *dest, int NumPixels, int bits);
+y162y (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels, int bits);
 
 void
-rgb2uyvy (unsigned char *src, unsigned char *dest, int NumPixels);
+rgb2uyvy (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels);
 
 void
-rgb482uyvy (unsigned char *src, unsigned char *dest, int NumPixels);
+rgb482uyvy (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels);
 
 // XXX -> RGB
 void
-rgb482rgb (unsigned char *src, unsigned char *dest, int NumPixels);
+rgb482rgb (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels);
 
 void
-uyv2rgb (unsigned char *src, unsigned char *dest, int NumPixels);
+uyv2rgb (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels);
 
 void
-uyvy2rgb (unsigned char *src, unsigned char *dest, int NumPixels);
+uyvy2rgb (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels);
 
 void
-uyyvyy2rgb (unsigned char *src, unsigned char *dest, int NumPixels);
+uyyvyy2rgb (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels);
 
 void
-y2rgb (unsigned char *src, unsigned char *dest, int NumPixels);
+y2rgb (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels);
 
 void
-y162rgb (unsigned char *src, unsigned char *dest, int NumPixels, int bits);
+y162rgb (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels, int bits);
 
 // BAYER -> RGB
 void
@@ -105,6 +105,6 @@ void
 BayerDownsample(unsigned char *src, unsigned char *dest, int sx, int sy, bayer_pattern_t type);
 
 void
-StereoDecode(unsigned char *src, unsigned char *dest, int NumPixels);
+StereoDecode(unsigned char *src, unsigned char *dest, unsigned long long int NumPixels);
 
 #endif

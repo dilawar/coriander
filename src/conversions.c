@@ -65,7 +65,7 @@ extern void swab();
  **********************************************************************/
 
 void
-yuyv2uyvy(unsigned char *src, unsigned char *dest, int NumPixels)
+yuyv2uyvy(unsigned char *src, unsigned char *dest, unsigned long long int NumPixels)
 {
 #ifdef YUYV
   swab(src, dest, NumPixels << 1);
@@ -75,7 +75,7 @@ yuyv2uyvy(unsigned char *src, unsigned char *dest, int NumPixels)
 }
 
 void
-uyvy2yuyv(unsigned char *src, unsigned char *dest, int NumPixels)
+uyvy2yuyv(unsigned char *src, unsigned char *dest, unsigned long long int NumPixels)
 {
 #ifdef YUYV
   swab(src, dest, NumPixels << 1);
@@ -84,7 +84,7 @@ uyvy2yuyv(unsigned char *src, unsigned char *dest, int NumPixels)
 #endif
 }
 void
-uyyvyy2uyvy (unsigned char *src, unsigned char *dest, int NumPixels)
+uyyvyy2uyvy (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels)
 {
   register int i=NumPixels + (NumPixels >> 1)-1;
   register int j=(NumPixels << 1)-1;
@@ -122,7 +122,7 @@ uyyvyy2uyvy (unsigned char *src, unsigned char *dest, int NumPixels)
 }
 
 void
-uyv2uyvy (unsigned char *src, unsigned char *dest, int NumPixels)
+uyv2uyvy (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels)
 {
   register int i = NumPixels + (NumPixels << 1)-1;
   register int j = (NumPixels << 1)-1;
@@ -152,7 +152,7 @@ uyv2uyvy (unsigned char *src, unsigned char *dest, int NumPixels)
 
 
 void
-y2uyvy (unsigned char *src, unsigned char *dest, int NumPixels)
+y2uyvy (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels)
 {
   register int i= NumPixels-1;
   register int j = (NumPixels << 1)-1;
@@ -176,7 +176,7 @@ y2uyvy (unsigned char *src, unsigned char *dest, int NumPixels)
 }
 
 void
-y162uyvy (unsigned char *src, unsigned char *dest, int NumPixels, int bits)
+y162uyvy (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels, int bits)
 {
   register int i = (NumPixels << 1)-1;
   register int j = (NumPixels << 1)-1;
@@ -203,7 +203,7 @@ y162uyvy (unsigned char *src, unsigned char *dest, int NumPixels, int bits)
 }
 
 void
-y162y (unsigned char *src, unsigned char *dest, int NumPixels, int bits)
+y162y (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels, int bits)
 {
   register int i = (NumPixels<<1)-1;
   register int j = NumPixels-1;
@@ -216,7 +216,7 @@ y162y (unsigned char *src, unsigned char *dest, int NumPixels, int bits)
 }
 
 void
-rgb2uyvy (unsigned char *src, unsigned char *dest, int NumPixels)
+rgb2uyvy (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels)
 {
   register int i = NumPixels + ( NumPixels << 1 )-1;
   register int j = (NumPixels << 1)-1;
@@ -247,7 +247,7 @@ rgb2uyvy (unsigned char *src, unsigned char *dest, int NumPixels)
 }
 
 void
-rgb482uyvy (unsigned char *src, unsigned char *dest, int NumPixels)
+rgb482uyvy (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels)
 {
   register int i = ( (NumPixels + ( NumPixels << 1 )) << 1 ) -1;
   register int j = (NumPixels << 1)-1;
@@ -291,7 +291,7 @@ rgb482uyvy (unsigned char *src, unsigned char *dest, int NumPixels)
  **********************************************************************/
 
 void
-rgb482rgb (unsigned char *src, unsigned char *dest, int NumPixels)
+rgb482rgb (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels)
 {
   register int i = ((NumPixels + ( NumPixels << 1 )) << 1)-1;
   register int j = NumPixels + ( NumPixels << 1 ) -1;
@@ -308,7 +308,7 @@ rgb482rgb (unsigned char *src, unsigned char *dest, int NumPixels)
 
 
 void
-uyv2rgb (unsigned char *src, unsigned char *dest, int NumPixels)
+uyv2rgb (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels)
 {
   register int i = NumPixels + ( NumPixels << 1 ) -1;
   register int j = NumPixels + ( NumPixels << 1 ) -1;
@@ -327,7 +327,7 @@ uyv2rgb (unsigned char *src, unsigned char *dest, int NumPixels)
 }
 
 void
-uyvy2rgb (unsigned char *src, unsigned char *dest, int NumPixels)
+uyvy2rgb (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels)
 {
   register int i = (NumPixels << 1)-1;
   register int j = NumPixels + ( NumPixels << 1 ) -1;
@@ -352,7 +352,7 @@ uyvy2rgb (unsigned char *src, unsigned char *dest, int NumPixels)
 
 
 void
-uyyvyy2rgb (unsigned char *src, unsigned char *dest, int NumPixels)
+uyyvyy2rgb (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels)
 {
   register int i = NumPixels + ( NumPixels >> 1 )-1;
   register int j = NumPixels + ( NumPixels << 1 )-1;
@@ -386,7 +386,7 @@ uyyvyy2rgb (unsigned char *src, unsigned char *dest, int NumPixels)
 }
 
 void
-y2rgb (unsigned char *src, unsigned char *dest, int NumPixels)
+y2rgb (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels)
 {
   register int i = NumPixels-1;
   register int j = NumPixels + ( NumPixels << 1 )-1;
@@ -401,7 +401,7 @@ y2rgb (unsigned char *src, unsigned char *dest, int NumPixels)
 }
 
 void
-y162rgb (unsigned char *src, unsigned char *dest, int NumPixels, int bits)
+y162rgb (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels, int bits)
 {
   register int i = (NumPixels << 1)-1;
   register int j = NumPixels + ( NumPixels << 1 )-1;
@@ -821,7 +821,7 @@ BayerDownsample(unsigned char *src, unsigned char *dest, int sx, int sy, bayer_p
 // change a 16bit stereo image (8bit/channel) into two 8bit images on top
 // of each other
 void
-StereoDecode(unsigned char *src, unsigned char *dest, int NumPixels)
+StereoDecode(unsigned char *src, unsigned char *dest, unsigned long long int NumPixels)
 {
   register int i = NumPixels-1;
   register int j = (NumPixels>>1)-1;

@@ -165,7 +165,7 @@ OnKeyPressed(chain_t *display_service, int key, int mod)
     break;
   case SDLK_f:
     // toggle fullscreen mode
-    SDL_WM_ToggleFullScreen(info->SDL_video);
+    SDL_WM_ToggleFullScreen(info->sdlvideo);
     break;
   case SDLK_c:
     // crop image
@@ -178,16 +178,16 @@ OnKeyPressed(chain_t *display_service, int key, int mod)
   case SDLK_GREATER:
     // image size *2
     if (mod&(SDLK_LSHIFT|SDLK_RSHIFT))
-      SDLResizeDisplay(display_service, info->SDL_videoRect.w/2, info->SDL_videoRect.h/2);
+      SDLResizeDisplay(display_service, info->sdlvideorect.w/2, info->sdlvideorect.h/2);
     else
-      SDLResizeDisplay(display_service, info->SDL_videoRect.w*2, info->SDL_videoRect.h*2);
+      SDLResizeDisplay(display_service, info->sdlvideorect.w*2, info->sdlvideorect.h*2);
     break;
   case SDLK_LESS:
     // image size /2
     if (mod&(SDLK_LSHIFT|SDLK_RSHIFT))
-      SDLResizeDisplay(display_service, info->SDL_videoRect.w*2, info->SDL_videoRect.h*2);
+      SDLResizeDisplay(display_service, info->sdlvideorect.w*2, info->sdlvideorect.h*2);
     else
-      SDLResizeDisplay(display_service, info->SDL_videoRect.w/2, info->SDL_videoRect.h/2);
+      SDLResizeDisplay(display_service, info->sdlvideorect.w/2, info->sdlvideorect.h/2);
     break;
   }
       
@@ -212,19 +212,19 @@ OnMouseDown(chain_t *display_service, int button, int x, int y)
     watchthread_info.mouse_down=1;
     // there is some adaptation because the display size can be different
     // from the real image size. (i.e. the image can be resized)
-    watchthread_info.upper_left[0]= ((x*display_service->current_buffer->width /info->SDL_videoRect.w));
-    watchthread_info.upper_left[1]= ((y*display_service->current_buffer->height/info->SDL_videoRect.h));
-    watchthread_info.lower_right[0]=((x*display_service->current_buffer->width /info->SDL_videoRect.w));
-    watchthread_info.lower_right[1]=((y*display_service->current_buffer->height/info->SDL_videoRect.h));
+    watchthread_info.upper_left[0]= ((x*display_service->current_buffer->width /info->sdlvideorect.w));
+    watchthread_info.upper_left[1]= ((y*display_service->current_buffer->height/info->sdlvideorect.h));
+    watchthread_info.lower_right[0]=((x*display_service->current_buffer->width /info->sdlvideorect.w));
+    watchthread_info.lower_right[1]=((y*display_service->current_buffer->height/info->sdlvideorect.h));
     pthread_mutex_unlock(&watchthread_info.mutex_area);
     break;
   case SDL_BUTTON_MIDDLE:
-    x=x*display_service->current_buffer->width/info->SDL_videoRect.w; //rescaling
-    y=y*display_service->current_buffer->height/info->SDL_videoRect.h;
+    x=x*display_service->current_buffer->width/info->sdlvideorect.w; //rescaling
+    y=y*display_service->current_buffer->height/info->sdlvideorect.h;
     // THIS IS ONLY VALID FOR YUYV!!
-    cursor_info.col_y=info->SDL_overlay->pixels[0][(y*display_service->current_buffer->width+x)*2];
-    cursor_info.col_u=info->SDL_overlay->pixels[0][(((y*display_service->current_buffer->width+x)>>1)<<2)+1]-127;
-    cursor_info.col_v=info->SDL_overlay->pixels[0][(((y*display_service->current_buffer->width+x)>>1)<<2)+3]-127;
+    cursor_info.col_y=info->sdloverlay->pixels[0][(y*display_service->current_buffer->width+x)*2];
+    cursor_info.col_u=info->sdloverlay->pixels[0][(((y*display_service->current_buffer->width+x)>>1)<<2)+1]-127;
+    cursor_info.col_v=info->sdloverlay->pixels[0][(((y*display_service->current_buffer->width+x)>>1)<<2)+3]-127;
     YUV2RGB(cursor_info.col_y, cursor_info.col_u, cursor_info.col_v,
 	    cursor_info.col_r, cursor_info.col_g, cursor_info.col_b);
     cursor_info.x=x;
@@ -232,8 +232,8 @@ OnMouseDown(chain_t *display_service, int button, int x, int y)
     cursor_info.update_req=1;
     break;
   case SDL_BUTTON_RIGHT:
-    //whitebal_data->x=x*display_service->current_buffer->width/info->SDL_videoRect.w; //rescaling
-    //whitebal_data->y=y*display_service->current_buffer->height/info->SDL_videoRect.h;
+    //whitebal_data->x=x*display_service->current_buffer->width/info->sdlvideorect.w; //rescaling
+    //whitebal_data->y=y*display_service->current_buffer->height/info->sdlvideorect.h;
     //whitebal_data->service=display_service;
     //pthread_create(&whitebal_data->thread, NULL, AutoWhiteBalance, (void*)&whitebal_data);
     break;
@@ -256,8 +256,8 @@ OnMouseUp(chain_t *display_service, int button, int x, int y)
     watchthread_info.mouse_down=0;
     // there is some adaptation because the display size can be different
     // from the real image size. (i.e. the image can be resized)
-    //info->lower_right[0]=x*display_service->current_buffer->width/info->SDL_videoRect.w;
-    //info->lower_right[1]=y*display_service->current_buffer->height/info->SDL_videoRect.h;
+    //info->lower_right[0]=x*display_service->current_buffer->width/info->sdlvideorect.w;
+    //info->lower_right[1]=y*display_service->current_buffer->height/info->sdlvideorect.h;
     pthread_mutex_unlock(&watchthread_info.mutex_area);
     break;
   case SDL_BUTTON_MIDDLE:
@@ -281,8 +281,8 @@ OnMouseMotion(chain_t *display_service, int x, int y)
   if (watchthread_info.mouse_down==1) {
     // there is some adaptation because the display size can be different
     // from the real image size. (i.e. the image can be resized)
-    watchthread_info.lower_right[0]=x*display_service->current_buffer->width/info->SDL_videoRect.w;
-    watchthread_info.lower_right[1]=y*display_service->current_buffer->height/info->SDL_videoRect.h;
+    watchthread_info.lower_right[0]=x*display_service->current_buffer->width/info->sdlvideorect.w;
+    watchthread_info.lower_right[1]=y*display_service->current_buffer->height/info->sdlvideorect.h;
   }
   pthread_mutex_unlock(&watchthread_info.mutex_area);
   
@@ -296,41 +296,41 @@ SDLResizeDisplay(chain_t *display_service, int width, int height)
   
   if (preferences.display_keep_ratio>0) {
     // keep aspect ratio and resize following which dimension we change
-    if (abs(width-info->SDL_videoRect.w) >= (abs(height-info->SDL_videoRect.h))) {
+    if (abs(width-info->sdlvideorect.w) >= (abs(height-info->sdlvideorect.h))) {
       // we changed the width, set height accordingly
-      info->SDL_videoRect.w = width;
-      info->SDL_videoRect.h = (width * display_service->current_buffer->height) / display_service->current_buffer->width;
+      info->sdlvideorect.w = width;
+      info->sdlvideorect.h = (width * display_service->current_buffer->height) / display_service->current_buffer->width;
     }
     else {
       // we changed the hieght, set width accordingly
-      info->SDL_videoRect.w = (height * display_service->current_buffer->width) / display_service->current_buffer->height;
-      info->SDL_videoRect.h = height;
+      info->sdlvideorect.w = (height * display_service->current_buffer->width) / display_service->current_buffer->height;
+      info->sdlvideorect.h = height;
     }
   }
   else {
     // bypass aspect keep:
-    info->SDL_videoRect.w = width;
-    info->SDL_videoRect.h = height;
+    info->sdlvideorect.w = width;
+    info->sdlvideorect.h = height;
   }
   
   // Free overlay & video surface
-  SDL_FreeYUVOverlay(info->SDL_overlay);
-  SDL_FreeSurface(info->SDL_video);
+  SDL_FreeYUVOverlay(info->sdloverlay);
+  SDL_FreeSurface(info->sdlvideo);
   
   // Set requested video mode
-  info->SDL_video = SDL_SetVideoMode(info->SDL_videoRect.w,
-				     info->SDL_videoRect.h,
-				     info->SDL_bpp,
-				     info->SDL_flags);
-  if (info->SDL_video == NULL) {
+  info->sdlvideo = SDL_SetVideoMode(info->sdlvideorect.w,
+				     info->sdlvideorect.h,
+				     info->sdlbpp,
+				     info->sdlflags);
+  if (info->sdlvideo == NULL) {
     SDL_Quit();
     MainError("Error realocating video overlay after resize");
   }
 
   // Create YUV Overlay
-  info->SDL_overlay = SDL_CreateYUVOverlay(display_service->current_buffer->width, display_service->current_buffer->height,
-					   SDL_YUY2_OVERLAY,info->SDL_video);
-  if (info->SDL_overlay == NULL) {
+  info->sdloverlay = SDL_CreateYUVOverlay(display_service->current_buffer->width, display_service->current_buffer->height,
+					   SDL_YUY2_OVERLAY,info->sdlvideo);
+  if (info->sdloverlay == NULL) {
     SDL_Quit();
     MainError("Error creating video overlay after resize");
   }

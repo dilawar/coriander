@@ -61,11 +61,11 @@ typedef struct
 #ifdef HAVE_SDLLIB
 
   // general SDL stuff
-  long unsigned int SDL_flags;
-  int SDL_bpp;
-  SDL_Surface *SDL_video;   // video surface
-  SDL_Overlay *SDL_overlay; // video overlay surface
-  SDL_Rect SDL_videoRect;   // video rectangle for overlay surface
+  long unsigned int sdlflags;
+  int sdlbpp;
+  SDL_Surface *sdlvideo;   // video surface
+  SDL_Overlay *sdloverlay; // video overlay surface
+  SDL_Rect sdlvideorect;   // video rectangle for overlay surface
 
   // events
   pthread_mutex_t         mutex_cancel_event;
