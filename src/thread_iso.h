@@ -44,12 +44,16 @@ typedef struct
   clock_t prev_time;
   clock_t current_time;
   int frames;
-  
+  int timeout_func_id;
+
   unsigned char *temp;
   int factor;
   int cond16bit;
 
 } isothread_info_t;
+
+int
+IsoShowFPS(gpointer *data);
 
 gint
 IsoStartThread(void);

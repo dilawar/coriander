@@ -48,6 +48,7 @@ typedef struct
   clock_t prev_time;
   clock_t current_time;
   int frames;
+  int timeout_func_id;
 
 #ifdef HAVE_SDLLIB
 
@@ -67,6 +68,9 @@ typedef struct
 #endif
 
 } displaythread_info_t;
+
+int
+DisplayShowFPS(gpointer *data);
 
 gint
 DisplayStartThread(void);

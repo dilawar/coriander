@@ -212,9 +212,12 @@ gint IsoStartThread(void)
 	  return(-1);
 	}
       else
-	pthread_mutex_unlock(&iso_service->mutex_struct);
-	pthread_mutex_unlock(&iso_service->mutex_data);
+	{
+	  info->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)IsoShowFPS, (gpointer*) iso_service);
 
+	  pthread_mutex_unlock(&iso_service->mutex_struct);
+	  pthread_mutex_unlock(&iso_service->mutex_data);
+	}
 	//fprintf(stderr," ISO thread started\n");
     }
 
@@ -239,13 +242,37 @@ IsoCleanupThread(void* arg)
     }
   
   // clear timing info on GUI...
-
- 
   pthread_mutex_unlock(&iso_service->mutex_data);
-
   
   return(NULL);
 
+}
+ 
+int
+IsoShowFPS(gpointer *data)
+{
+  chain_t* iso_service;
+  isothread_info_t *info;
+  char tmp_string[20];
+
+  iso_service=(chain_t*)data;
+  info=(isothread_info_t*)iso_service->data;
+
+  sprintf(tmp_string," %.2f",(float)info->frames/((float)(info->current_time-info->prev_time)/sysconf(_SC_CLK_TCK)));
+  //fprintf(stderr,"CLK_TCK: %d, CLOCKS_PER_SEC: %d\n", CLK_TCK, CLOCKS_PER_SEC);
+  //fprintf(stderr,"receive: %s fps\n",tmp_string);
+  
+  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"fps_receive"),
+		       ctxt.fps_receive_ctxt, ctxt.fps_receive_id);
+  ctxt.fps_receive_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"fps_receive"),
+					 ctxt.fps_receive_ctxt, tmp_string);
+  
+  pthread_mutex_lock(&iso_service->mutex_data);
+  info->prev_time=info->current_time;
+  info->frames=0;
+  pthread_mutex_unlock(&iso_service->mutex_data);
+
+  return 1;
 }
 
 void*
@@ -253,8 +280,6 @@ IsoThread(void* arg)
 {
   chain_t *iso_service;
   isothread_info_t *info;
-  char tmp_string[20];
-  float delay;
 
   // we should only use mutex_data in this function
 
@@ -317,22 +342,9 @@ IsoThread(void* arg)
 	  break;
 	}
       //fprintf(stderr,"done\n");
+      // FPS computation:
       info->current_time=times(&info->tms_buf);
-      delay=(float)(info->current_time-info->prev_time)/CLK_TCK;
       info->frames++;
-      if (delay>1.0) // update every second
-	{
-	  sprintf(tmp_string," %.2f",(float)info->frames/delay);
-	  //fprintf(stderr,"receive: %s fps\n",tmp_string);
-	  /*
-	  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"fps_receive"),
-	  		       ctxt.fps_receive_ctxt, ctxt.fps_receive_id);
-	  ctxt.fps_receive_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"fps_receive"),
-	  					 ctxt.fps_receive_ctxt, tmp_string);
-	  */
-	  info->prev_time=info->current_time;
-	  info->frames=0;
-	}
 
       if (info->receive_method == RECEIVE_METHOD_VIDEO1394) {
         dc1394_dma_done_with_buffer(&info->capture);
@@ -362,6 +374,13 @@ gint IsoStopThread(void)
       pthread_join(iso_service->thread, NULL);
       pthread_mutex_lock(&iso_service->mutex_data);
       pthread_mutex_lock(&iso_service->mutex_struct);
+
+      gtk_timeout_remove(info->timeout_func_id);
+      gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"fps_receive"),
+			   ctxt.fps_receive_ctxt, ctxt.fps_receive_id);
+      ctxt.fps_receive_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"fps_receive"),
+					  ctxt.fps_receive_ctxt, "");
+
       RemoveChain(iso_service,current_camera);
 
       if (info->receive_method == RECEIVE_METHOD_VIDEO1394)

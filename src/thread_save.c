@@ -30,6 +30,8 @@
 
 extern PrefsInfo preferences;
 extern int current_camera;
+extern GtkWidget *commander_window;
+extern CtxtInfo ctxt;
 
 gint
 SaveStartThread(void)
@@ -105,6 +107,7 @@ SaveStartThread(void)
 	    FreeChain(save_service);
 	    return(-1);
 	  }
+      info->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)SaveShowFPS, (gpointer*) save_service);
       pthread_mutex_unlock(&save_service->mutex_struct);
       pthread_mutex_unlock(&save_service->mutex_data);
       
@@ -129,6 +132,33 @@ SaveCleanupThread(void* arg)
   pthread_mutex_unlock(&save_service->mutex_data);
 }
 
+int
+SaveShowFPS(gpointer *data)
+{
+  chain_t* save_service;
+  savethread_info_t *info;
+  char tmp_string[20];
+
+  save_service=(chain_t*)data;
+  info=(savethread_info_t*)save_service->data;
+
+  sprintf(tmp_string," %.2f",(float)info->frames/((float)(info->current_time-info->prev_time)/sysconf(_SC_CLK_TCK)));
+  //fprintf(stderr,"receive: %s fps\n",tmp_string);
+  
+  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"fps_save"),
+		       ctxt.fps_save_ctxt, ctxt.fps_save_id);
+  ctxt.fps_save_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"fps_save"),
+					 ctxt.fps_save_ctxt, tmp_string);
+  
+  pthread_mutex_lock(&save_service->mutex_data);
+  info->prev_time=info->current_time;
+  info->frames=0;
+  pthread_mutex_unlock(&save_service->mutex_data);
+
+  return 1;
+}
+
+
 void*
 SaveThread(void* arg)
 {
@@ -138,8 +168,6 @@ SaveThread(void* arg)
   GdkImlibImage *im=NULL;
   long int skip_counter;
   FILE *fd=NULL;
-  char tmp_string[20];
-  float delay;
 
   save_service=(chain_t*)arg;
   pthread_mutex_lock(&save_service->mutex_data);
@@ -218,22 +246,9 @@ SaveThread(void* arg)
 	      else
 		skip_counter++;
 
-      info->current_time=times(&info->tms_buf);
-      delay=(float)(info->current_time-info->prev_time)/CLK_TCK;
-      info->frames++;
-      if (delay>1.0) // update every second
-	{
-	  sprintf(tmp_string," %.2f",(float)info->frames/delay);
-	  //fprintf(stderr,"save: %s fps\n",tmp_string);
-	  /*
-	  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"fps_save"),
-			       ctxt.fps_save_ctxt, ctxt.fps_save_id);
-	  ctxt.fps_save_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"fps_save"),
-						 ctxt.fps_save_ctxt, tmp_string);
-	  */
-	  info->prev_time=info->current_time;
-	  info->frames=0;
-	}
+	      // FPS display
+	      info->current_time=times(&info->tms_buf);
+	      info->frames++;
 
 	      pthread_mutex_unlock(&save_service->mutex_data);
 	    }
@@ -270,6 +285,13 @@ SaveStopThread(void)
 
       pthread_mutex_lock(&save_service->mutex_data);
       pthread_mutex_lock(&save_service->mutex_struct);
+
+      gtk_timeout_remove(info->timeout_func_id);
+      gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"fps_save"),
+			   ctxt.fps_save_ctxt, ctxt.fps_save_id);
+      ctxt.fps_save_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"fps_save"),
+					  ctxt.fps_save_ctxt, "");
+
       RemoveChain(save_service,current_camera);
 
       /* Do custom cleanups here...*/

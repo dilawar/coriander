@@ -43,6 +43,8 @@ extern PrefsInfo preferences;
 extern Format7Info *format7_info;
 extern dc1394_miscinfo *misc_info;
 extern int current_camera;
+extern GtkWidget *commander_window;
+extern CtxtInfo ctxt;
 extern dc1394_camerainfo *camera;
 #ifdef HAVE_SDLLIB
 extern watchthread_info_t watchthread_info;
@@ -107,6 +109,7 @@ DisplayStartThread()
 	  FreeChain(display_service);
 	  return(-1);
 	}
+      info->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)DisplayShowFPS, (gpointer*) display_service);
       pthread_mutex_unlock(&display_service->mutex_struct);
       pthread_mutex_unlock(&display_service->mutex_data);
       //fprintf(stderr," DISPLAY service started\n");
@@ -129,14 +132,39 @@ DisplayCleanupThread(void* arg)
 }
 
   
+int
+DisplayShowFPS(gpointer *data)
+{
+  chain_t* display_service;
+  displaythread_info_t *info;
+  char tmp_string[20];
+
+  display_service=(chain_t*)data;
+  info=(displaythread_info_t*)display_service->data;
+
+  sprintf(tmp_string," %.2f",(float)info->frames/((float)(info->current_time-info->prev_time)/sysconf(_SC_CLK_TCK)));
+  //fprintf(stderr,"receive: %s fps\n",tmp_string);
+  
+  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"fps_display"),
+		       ctxt.fps_display_ctxt, ctxt.fps_display_id);
+  ctxt.fps_display_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"fps_display"),
+					 ctxt.fps_display_ctxt, tmp_string);
+  
+  pthread_mutex_lock(&display_service->mutex_data);
+  info->prev_time=info->current_time;
+  info->frames=0;
+  pthread_mutex_unlock(&display_service->mutex_data);
+
+  return 1;
+}
+
+
 void*
 DisplayThread(void* arg)
 {
   chain_t* display_service=NULL;
   displaythread_info_t *info=NULL;
   long int skip_counter;
-  char tmp_string[20];
-  float delay;
 
   // we should only use mutex_data in this function
 
@@ -187,22 +215,9 @@ DisplayThread(void* arg)
 	      else
 		skip_counter++;
 
-      info->current_time=times(&info->tms_buf);
-      delay=(float)(info->current_time-info->prev_time)/CLK_TCK;
-      info->frames++;
-      if (delay>1.0) // update every second
-	{
-	  sprintf(tmp_string," %.2f",(float)info->frames/delay);
-	  //fprintf(stderr,"display: %s fps\n",tmp_string);
-	  /*
-	  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"fps_display"),
-			       ctxt.fps_display_ctxt, ctxt.fps_display_id);
-	  ctxt.fps_display_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"fps_display"),
-						 ctxt.fps_display_ctxt, tmp_string);
-	  */
-	  info->prev_time=info->current_time;
-	  info->frames=0;
-	}
+	      // FPS display:
+	      info->current_time=times(&info->tms_buf);
+	      info->frames++;
 
 	      pthread_mutex_unlock(&display_service->mutex_data);
 	    }
@@ -238,6 +253,13 @@ DisplayStopThread(unsigned int camera)
 
       pthread_mutex_lock(&display_service->mutex_data);
       pthread_mutex_lock(&display_service->mutex_struct);
+
+      gtk_timeout_remove(info->timeout_func_id);
+      gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"fps_display"),
+			   ctxt.fps_display_ctxt, ctxt.fps_display_id);
+      ctxt.fps_display_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"fps_display"),
+					  ctxt.fps_display_ctxt, "");
+
       RemoveChain(display_service, camera);
 #ifdef HAVE_SDLLIB
       SDLEventStopThread(display_service);

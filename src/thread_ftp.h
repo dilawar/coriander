@@ -63,6 +63,7 @@ typedef struct
   clock_t prev_time;
   clock_t current_time;
   int frames;
+  int timeout_func_id;
 
 } ftpthread_info_t;
 
@@ -77,6 +78,9 @@ FtpThread(void* arg);
 
 gint
 FtpStopThread(void);
+
+int
+FtpShowFPS(gpointer *data);
 
 #ifdef HAVE_FTPLIB
 

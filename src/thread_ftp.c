@@ -33,6 +33,8 @@
 #include "tools.h"
 
 extern PrefsInfo preferences;
+extern GtkWidget *commander_window;
+extern CtxtInfo ctxt;
 extern int current_camera;
  
 gint
@@ -124,6 +126,7 @@ FtpStartThread(void)
 	    FreeChain(ftp_service);
 	    return(-1);
 	  }
+      info->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)FtpShowFPS, (gpointer*) ftp_service);
       pthread_mutex_unlock(&ftp_service->mutex_struct);
       pthread_mutex_unlock(&ftp_service->mutex_data);
       
@@ -147,6 +150,34 @@ FtpCleanupThread(void* arg)
   pthread_mutex_unlock(&ftp_service->mutex_data);
   FtpStopThread(); // we do this in case of auto-kill from the thread.
 }
+  
+
+int
+FtpShowFPS(gpointer *data)
+{
+  chain_t* ftp_service;
+  ftpthread_info_t *info;
+  char tmp_string[20];
+
+  ftp_service=(chain_t*)data;
+  info=(ftpthread_info_t*)ftp_service->data;
+
+  sprintf(tmp_string," %.2f",(float)info->frames/((float)(info->current_time-info->prev_time)/sysconf(_SC_CLK_TCK)));
+  //fprintf(stderr,"receive: %s fps\n",tmp_string);
+  
+  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"fps_ftp"),
+		       ctxt.fps_ftp_ctxt, ctxt.fps_ftp_id);
+  ctxt.fps_ftp_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"fps_ftp"),
+					 ctxt.fps_ftp_ctxt, tmp_string);
+  
+  pthread_mutex_lock(&ftp_service->mutex_data);
+  info->prev_time=info->current_time;
+  info->frames=0;
+  pthread_mutex_unlock(&ftp_service->mutex_data);
+
+  return 1;
+}
+
 
 void*
 FtpThread(void* arg)
@@ -156,8 +187,6 @@ FtpThread(void* arg)
   ftpthread_info_t *info=NULL;
   GdkImlibImage *im=NULL;
   long int skip_counter;
-  char tmp_string[20];
-  float delay;
 
   ftp_service=(chain_t*)arg;
   pthread_mutex_lock(&ftp_service->mutex_data);
@@ -228,22 +257,9 @@ FtpThread(void* arg)
 	      else
 		skip_counter++;
 
-      info->current_time=times(&info->tms_buf);
-      delay=(float)(info->current_time-info->prev_time)/CLK_TCK;
-      info->frames++;
-      if (delay>1.0) // update every second
-	{
-	  sprintf(tmp_string," %.2f",(float)info->frames/delay);
-	  //fprintf(stderr,"ftp: %s fps\n",tmp_string);
-	  /*
-	  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"fps_ftp"),
-			       ctxt.fps_ftp_ctxt, ctxt.fps_ftp_id);
-	  ctxt.fps_ftp_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"fps_ftp"),
-						 ctxt.fps_ftp_ctxt, tmp_string);
-	  */
-	  info->prev_time=info->current_time;
-	  info->frames=0;
-	}
+	      // FPS display:
+	      info->current_time=times(&info->tms_buf);
+	      info->frames++;
 
 	      pthread_mutex_unlock(&ftp_service->mutex_data);
 	    }
@@ -277,6 +293,13 @@ FtpStopThread(void)
 
       pthread_mutex_lock(&ftp_service->mutex_data);
       pthread_mutex_lock(&ftp_service->mutex_struct);
+
+      gtk_timeout_remove(info->timeout_func_id);
+      gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"fps_ftp"),
+			   ctxt.fps_ftp_ctxt, ctxt.fps_ftp_id);
+      ctxt.fps_ftp_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"fps_ftp"),
+					  ctxt.fps_ftp_ctxt, "");
+
       RemoveChain(ftp_service,current_camera);
 
       /* Do custom cleanups here...*/

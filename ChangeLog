@@ -2,6 +2,9 @@ Coriander, (c) 2000-2002 Damien Douxchamps <douxchamps@ieee.org>
 
 Changes towards version 0.27
 
+   November 19, 2002, by Damien Douxchamps
+   - Use gnome timeout functions to display FPS.
+	
    November 18, 2002, by Damien Douxchamps
    - updated F7 code window build/update. This was messy because there
      was among others some circular references (and a lot of other

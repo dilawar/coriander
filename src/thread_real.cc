@@ -19,13 +19,13 @@
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
-
+/*
 #include <iostream>
 #include <stdio.h>
 #include <assert.h>
 #include <unistd.h>
 #include <sys/time.h>
-
+*/
 #ifdef HAVE_REALLIB
 #include "pntypes.h"
 #include "RealGuids.h"
@@ -36,6 +36,7 @@ extern "C" {
 
 #include <pthread.h>
 #include <libdc1394/dc1394_control.h>
+#include <sys/times.h>
 #include "thread_base.h"
 #include "thread_real.h"
 #include "definitions.h"
@@ -44,6 +45,8 @@ extern "C" {
 #include "tools.h"
  
 extern PrefsInfo preferences;
+extern GtkWidget *commander_window;
+extern CtxtInfo ctxt;
 extern int current_camera;
 
 gint
@@ -118,6 +121,7 @@ RealStartThread(void)
 	    FreeChain(real_service);
 	    return(-1);
 	  }
+      info->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)RealShowFPS, (gpointer*) real_service);
       pthread_mutex_unlock(&real_service->mutex_struct);
       pthread_mutex_unlock(&real_service->mutex_data);
       
@@ -143,6 +147,34 @@ RealCleanupThread(void* arg)
 
   return (NULL);
 }
+  
+
+int
+RealShowFPS(gpointer *data)
+{
+  chain_t* real_service;
+  realthread_info_t *info;
+  char tmp_string[20];
+
+  real_service=(chain_t*)data;
+  info=(realthread_info_t*)real_service->data;
+
+  sprintf(tmp_string," %.2f",(float)info->frames/((float)(info->current_time-info->prev_time)/sysconf(_SC_CLK_TCK)));
+  //fprintf(stderr,"receive: %s fps\n",tmp_string);
+  
+  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"fps_real"),
+		       ctxt.fps_real_ctxt, ctxt.fps_real_id);
+  ctxt.fps_real_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"fps_real"),
+					 ctxt.fps_real_ctxt, tmp_string);
+  
+  pthread_mutex_lock(&real_service->mutex_data);
+  info->prev_time=info->current_time;
+  info->frames=0;
+  pthread_mutex_unlock(&real_service->mutex_data);
+
+  return 1;
+}
+
 
 void*
 RealThread(void* arg)
@@ -231,22 +263,9 @@ RealThread(void* arg)
 	      else
 		skip_counter++;
 
-      info->current_time=times(&info->tms_buf);
-      delay=(float)(info->current_time-info->prev_time)/CLK_TCK;
-      info->frames++;
-      if (delay>1.0) // update every second
-	{
-	  sprintf(tmp_string," %.2f",(float)info->frames/delay);
-	  //fprintf(stderr,"real: %s fps\n",tmp_string);
-	  /*
-	  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"fps_real"),
-			       ctxt.fps_real_ctxt, ctxt.fps_real_id);
-	  ctxt.fps_real_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"fps_real"),
-						 ctxt.fps_real_ctxt, tmp_string);
-	  */
-	  info->prev_time=info->current_time;
-	  info->frames=0;
-	}
+	      // FPS display
+	      info->current_time=times(&info->tms_buf);
+	      info->frames++;
 
 	      pthread_mutex_unlock(&real_service->mutex_data);
 	    }
@@ -284,6 +303,13 @@ RealStopThread(void)
 
       pthread_mutex_lock(&real_service->mutex_data);
       pthread_mutex_lock(&real_service->mutex_struct);
+
+      gtk_timeout_remove(info->timeout_func_id);
+      gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"fps_real"),
+			   ctxt.fps_real_ctxt, ctxt.fps_real_id);
+      ctxt.fps_real_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"fps_real"),
+					  ctxt.fps_real_ctxt, "");
+
       RemoveChain(real_service,current_camera);
 
       /* Do custom cleanups here...*/

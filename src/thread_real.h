@@ -75,6 +75,7 @@ typedef struct
   clock_t prev_time;
   clock_t current_time;
   int frames;
+  int timeout_func_id;
 
 #ifdef HAVE_REALLIB
 
@@ -102,6 +103,9 @@ RealStartThread(void);
 
 void*
 RealCleanupThread(void* arg);
+
+int
+RealShowFPS(gpointer *data);
 
 void*
 RealThread(void* arg);

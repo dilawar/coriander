@@ -63,8 +63,12 @@ typedef struct
   clock_t prev_time;
   clock_t current_time;
   int frames;
+  int timeout_func_id;
 
 } savethread_info_t;
+
+int
+SaveShowFPS(gpointer *data);
 
 gint
 SaveStartThread(void);
