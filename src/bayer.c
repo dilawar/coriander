@@ -101,58 +101,46 @@ BayerNearestNeighbor(const unsigned char *bayer, unsigned char *dst,
     height -= 1;
 
     for (; height--; bayer += bayerStep, dst += dstStep) {
-	int t0, t1;
+      //int t0, t1;
 	const unsigned char *bayerEnd = bayer + width;
 
-	if (start_with_green) {
-	    t0 = bayer[0];
-	    t1 = bayer[bayerStep];
-	    dst[-blue] = (unsigned char) t0;
-	    dst[0] = bayer[bayerStep + 1];
-	    dst[blue] = (unsigned char) t1;
-	    bayer++;
-	    dst += 3;
-	}
+        if (start_with_green) {
+            dst[-blue] = bayer[1];
+            dst[0] = bayer[bayerStep + 1];
+            dst[blue] = bayer[bayerStep];
+            bayer++;
+            dst += 3;
+        }
 
-	if (blue > 0) {
-	    for (; bayer <= bayerEnd - 2; bayer += 2, dst += 6) {
-		t0 = bayer[0];
-		t1 = bayer[1];
-		dst[-1] = (unsigned char) t0;
-		dst[0] = (unsigned char) t1;
-		dst[1] = bayer[bayerStep + 1];
+        if (blue > 0) {
+            for (; bayer <= bayerEnd - 2; bayer += 2, dst += 6) {
+                dst[-1] = bayer[0];
+                dst[0] = bayer[1];
+                dst[1] = bayer[bayerStep + 1];
 
-		t0 = bayer[2];
-		t1 = bayer[bayerStep + 1];
-		dst[2] = (unsigned char) t0;
-		dst[3] = bayer[bayerStep + 2];
-		dst[4] = (unsigned char) t1;
-	    }
-	} else {
-	    for (; bayer <= bayerEnd - 2; bayer += 2, dst += 6) {
-		t0 = bayer[0];
-		t1 = bayer[1];
-		dst[1] = (unsigned char) t0;
-		dst[0] = (unsigned char) t1;
-		dst[-1] = bayer[bayerStep + 1];
+                dst[2] = bayer[2];
+                dst[3] = bayer[bayerStep + 2];
+                dst[4] = bayer[bayerStep + 1];
+            }
+        } else {
+            for (; bayer <= bayerEnd - 2; bayer += 2, dst += 6) {
+                dst[1] = bayer[0];
+                dst[0] = bayer[1];
+                dst[-1] = bayer[bayerStep + 1];
 
-		t0 = bayer[2];
-		t1 = bayer[bayerStep + 1];
-		dst[4] = (unsigned char) t0;
-		dst[3] = bayer[bayerStep + 2];
-		dst[2] = (unsigned char) t1;
-	    }
-	}
+                dst[4] = bayer[2];
+                dst[3] = bayer[bayerStep + 2];
+                dst[2] = bayer[bayerStep + 1];
+            }
+        }
 
-	if (bayer < bayerEnd) {
-	    t0 = bayer[0];
-	    t1 = bayer[1];
-	    dst[-blue] = (unsigned char) t0;
-	    dst[0] = (unsigned char) t1;
-	    dst[blue] = bayer[bayerStep + 1];
-	    bayer++;
-	    dst += 3;
-	}
+        if (bayer < bayerEnd) {
+            dst[-blue] = bayer[0];
+            dst[0] = bayer[1];
+            dst[blue] = bayer[bayerStep + 1];
+            bayer++;
+            dst += 3;
+        }
 
 	bayer -= width;
 	dst -= width * 3;
@@ -1016,6 +1004,87 @@ BayerDownsample(const unsigned char *src, unsigned char *dest, int sx,
 }
 
 /* coriander's Bayer decoding (GPL) */
+#ifndef LEGACY_CORIANDER
+void
+BayerSimple(const unsigned char *bayer, unsigned char *dst,
+            int sx, int sy, int code)
+{
+    const int bayerStep = sx;
+    const int dstStep = 3 * sx;
+    int width = sx;
+    int height = sy;
+    int blue = code == COLOR_FILTER_FORMAT7_BGGR
+        || code == COLOR_FILTER_FORMAT7_GBRG ? -1 : 1;
+    int start_with_green = code == COLOR_FILTER_FORMAT7_GBRG
+        || code == COLOR_FILTER_FORMAT7_GRBG;
+    int i, imax, iinc;
+
+    /* add black border */
+    imax = sx * sy * 3;
+    for (i = sx * (sy - 1) * 3; i < imax; i++) {
+        dst[i] = 0;
+    }
+    iinc = (sx - 1) * 3;
+    for (i = (sx - 1) * 3; i < imax; i += iinc) {
+        dst[i++] = 0;
+        dst[i++] = 0;
+        dst[i++] = 0;
+    }
+
+    dst += 1;
+    width -= 1;
+    height -= 1;
+
+    for (; height--; bayer += bayerStep, dst += dstStep) {
+        const unsigned char *bayerEnd = bayer + width;
+
+        if (start_with_green) {
+            dst[-blue] = bayer[1];
+            dst[0] = (bayer[0] + bayer[bayerStep + 1] + 1) >> 1;
+            dst[blue] = bayer[bayerStep];
+            bayer++;
+            dst += 3;
+        }
+
+        if (blue > 0) {
+            for (; bayer <= bayerEnd - 2; bayer += 2, dst += 6) {
+                dst[-1] = bayer[0];
+                dst[0] = (bayer[1] + bayer[bayerStep] + 1) >> 1;
+                dst[1] = bayer[bayerStep + 1];
+
+                dst[2] = bayer[2];
+                dst[3] = (bayer[1] + bayer[bayerStep + 2] + 1) >> 1;
+                dst[4] = bayer[bayerStep + 1];
+            }
+        } else {
+            for (; bayer <= bayerEnd - 2; bayer += 2, dst += 6) {
+                dst[1] = bayer[0];
+                dst[0] = (bayer[1] + bayer[bayerStep] + 1) >> 1;
+                dst[-1] = bayer[bayerStep + 1];
+
+                dst[4] = bayer[2];
+                dst[3] = (bayer[1] + bayer[bayerStep + 2] + 1) >> 1;
+                dst[2] = bayer[bayerStep + 1];
+            }
+        }
+
+        if (bayer < bayerEnd) {
+            dst[-blue] = bayer[0];
+            dst[0] = (bayer[1] + bayer[bayerStep] + 1) >> 1;
+            dst[blue] = bayer[bayerStep + 1];
+            bayer++;
+            dst += 3;
+        }
+
+        bayer -= width;
+        dst -= width * 3;
+
+        blue = -blue;
+        start_with_green = !start_with_green;
+    }
+}
+
+#else
 void
 BayerSimple(const unsigned char *src, unsigned char *dest, int sx, int sy,
 	    int type)
@@ -1156,6 +1225,8 @@ BayerSimple(const unsigned char *src, unsigned char *dest, int sx, int sy,
     }
 }
 
+#endif
+
 /* 16-bits versions */
 
 #ifndef LEGACY_CORIANDER
@@ -1191,58 +1262,46 @@ BayerNearestNeighbor_uint16(const uint16_t * bayer, uint16_t * dst, int sx,
     width -= 1;
 
     for (; height--; bayer += bayerStep, dst += dstStep) {
-	int t0, t1;
+      //int t0, t1;
 	const uint16_t *bayerEnd = bayer + width;
 
-	if (start_with_green) {
-	    t0 = bayer[0];
-	    t1 = bayer[bayerStep];
-	    dst[-blue] = (uint16_t) t0;
-	    dst[0] = bayer[bayerStep + 1];
-	    dst[blue] = (uint16_t) t1;
-	    bayer++;
-	    dst += 3;
-	}
+        if (start_with_green) {
+            dst[-blue] = bayer[1];
+            dst[0] = bayer[bayerStep + 1];
+            dst[blue] = bayer[bayerStep];
+            bayer++;
+            dst += 3;
+        }
 
-	if (blue > 0) {
-	    for (; bayer <= bayerEnd - 2; bayer += 2, dst += 6) {
-		t0 = bayer[0];
-		t1 = bayer[1];
-		dst[-1] = (uint16_t) t0;
-		dst[0] = (uint16_t) t1;
-		dst[1] = bayer[bayerStep + 1];
+        if (blue > 0) {
+            for (; bayer <= bayerEnd - 2; bayer += 2, dst += 6) {
+                dst[-1] = bayer[0];
+                dst[0] = bayer[1];
+                dst[1] = bayer[bayerStep + 1];
 
-		t0 = bayer[2];
-		t1 = bayer[bayerStep + 1];
-		dst[2] = (uint16_t) t0;
-		dst[3] = bayer[bayerStep + 2];
-		dst[4] = (uint16_t) t1;
-	    }
-	} else {
-	    for (; bayer <= bayerEnd - 2; bayer += 2, dst += 6) {
-		t0 = bayer[0];
-		t1 = bayer[1];
-		dst[1] = (uint16_t) t0;
-		dst[0] = (uint16_t) t1;
-		dst[-1] = bayer[bayerStep + 1];
+                dst[2] = bayer[2];
+                dst[3] = bayer[bayerStep + 2];
+                dst[4] = bayer[bayerStep + 1];
+            }
+        } else {
+            for (; bayer <= bayerEnd - 2; bayer += 2, dst += 6) {
+                dst[1] = bayer[0];
+                dst[0] = bayer[1];
+                dst[-1] = bayer[bayerStep + 1];
 
-		t0 = bayer[2];
-		t1 = bayer[bayerStep + 1];
-		dst[4] = (uint16_t) t0;
-		dst[3] = bayer[bayerStep + 2];
-		dst[2] = (uint16_t) t1;
-	    }
-	}
+                dst[4] = bayer[2];
+                dst[3] = bayer[bayerStep + 2];
+                dst[2] = bayer[bayerStep + 1];
+            }
+        }
 
-	if (bayer < bayerEnd) {
-	    t0 = bayer[0];
-	    t1 = bayer[1];
-	    dst[-blue] = (uint16_t) t0;
-	    dst[0] = (uint16_t) t1;
-	    dst[blue] = bayer[bayerStep + 1];
-	    bayer++;
-	    dst += 3;
-	}
+        if (bayer < bayerEnd) {
+            dst[-blue] = bayer[0];
+            dst[0] = bayer[1];
+            dst[blue] = bayer[bayerStep + 1];
+            bayer++;
+            dst += 3;
+        }
 
 	bayer -= width;
 	dst -= width * 3;
