@@ -104,6 +104,7 @@ BuildFeatureWindow(void)
 void
 BuildMainWindow(void)
 {
+  gtk_menu_item_right_justify(GTK_MENU_ITEM (lookup_widget(main_window,"help")));
   BuildPowerFrame();
   BuildServiceFrame();
   BuildTriggerFrame();

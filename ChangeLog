@@ -6,6 +6,7 @@ Changes towards version 0.99.5
    - update to match latest libdc1394 CVS.
    - fixed FPS update issue when changing mode/format
    - go around problems with Apple iSight incomplete hardware.
+   - flush help menu to the right of the window
 	
    Novmeber 15, 2003, by Damien Douxchamps
    - fixed bad F7 mode detection that caused segfault when accessing the
