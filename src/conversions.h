@@ -53,6 +53,9 @@ void
 y162uyvy (unsigned char *src, unsigned char *dest, int NumPixels);
 
 void
+y162y (unsigned char *src, unsigned char *dest, int NumPixels);
+
+void
 rgb2uyvy (unsigned char *src, unsigned char *dest, int NumPixels);
 
 void

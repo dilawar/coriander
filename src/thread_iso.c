@@ -245,6 +245,12 @@ IsoThread(void* arg)
 	{
 	case BAYER_DECODING_NEAREST:
 	  //fprintf(stderr,"Nearest decoding...");
+	  if ((iso_service->mode==MODE_640x480_MONO16)||
+	      (iso_service->mode==MODE_800x600_MONO16)||
+	      (iso_service->mode==MODE_1024x768_MONO16)||
+	      (iso_service->mode==MODE_1280x960_MONO16)||
+	      (iso_service->mode==MODE_1600x1200_MONO16))
+	    
 	  BayerNearestNeighbor((unsigned char *)info->capture.capture_buffer,
 			       iso_service->current_buffer,
 			       iso_service->width, iso_service->height);

@@ -206,6 +206,18 @@ y162uyvy (unsigned char *src, unsigned char *dest, int NumPixels) {
 }
 
 void
+y162y (unsigned char *src, unsigned char *dest, int NumPixels) {
+  register int i = (NumPixels<<1)-1;
+  register int j = NumPixels-1;
+
+  while (i > 0)
+    {
+      i--;
+      dest[j--] = src[i--];
+    }
+}
+
+void
 rgb2uyvy (unsigned char *src, unsigned char *dest, int NumPixels) {
   register int i = NumPixels + ( NumPixels << 1 )-1;
   register int j = (NumPixels << 1)-1;
