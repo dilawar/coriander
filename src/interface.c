@@ -334,8 +334,12 @@ create_main_window (void)
   GtkWidget *label59;
   GtkWidget *handlebox5;
   GtkWidget *table77;
+  GtkWidget *notebook7;
+  GtkWidget *table79;
   GtkWidget *scrolledwindow1;
   GtkWidget *main_status;
+  GtkWidget *label161;
+  GtkWidget *table78;
   GtkWidget *bandwidth_frame;
   GtkWidget *bandwidth_table;
   GtkWidget *label157;
@@ -344,6 +348,12 @@ create_main_window (void)
   GtkWidget *bandwidth1;
   GtkWidget *bandwidth2;
   GtkWidget *bandwidth3;
+  GtkWidget *scrolledwindow3;
+  GtkWidget *service_clist;
+  GtkWidget *label170;
+  GtkWidget *label171;
+  GtkWidget *label172;
+  GtkWidget *label162;
   GtkWidget *frame4;
   GtkWidget *hbox62;
   GtkWidget *table64;
@@ -2664,19 +2674,36 @@ create_main_window (void)
   gtk_widget_show (handlebox5);
   gtk_container_add (GTK_CONTAINER (notebook2), handlebox5);
 
-  table77 = gtk_table_new (3, 1, FALSE);
+  table77 = gtk_table_new (2, 1, FALSE);
   gtk_widget_ref (table77);
   gtk_object_set_data_full (GTK_OBJECT (main_window), "table77", table77,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (table77);
   gtk_container_add (GTK_CONTAINER (handlebox5), table77);
 
+  notebook7 = gtk_notebook_new ();
+  gtk_widget_ref (notebook7);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "notebook7", notebook7,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (notebook7);
+  gtk_table_attach (GTK_TABLE (table77), notebook7, 0, 1, 1, 2,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (notebook7), 5);
+
+  table79 = gtk_table_new (1, 1, FALSE);
+  gtk_widget_ref (table79);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "table79", table79,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (table79);
+  gtk_container_add (GTK_CONTAINER (notebook7), table79);
+
   scrolledwindow1 = gtk_scrolled_window_new (NULL, NULL);
   gtk_widget_ref (scrolledwindow1);
   gtk_object_set_data_full (GTK_OBJECT (main_window), "scrolledwindow1", scrolledwindow1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (scrolledwindow1);
-  gtk_table_attach (GTK_TABLE (table77), scrolledwindow1, 0, 1, 2, 3,
+  gtk_table_attach (GTK_TABLE (table79), scrolledwindow1, 0, 1, 0, 1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (scrolledwindow1), 5);
@@ -2689,12 +2716,26 @@ create_main_window (void)
   gtk_widget_show (main_status);
   gtk_container_add (GTK_CONTAINER (scrolledwindow1), main_status);
 
+  label161 = gtk_label_new (_("Messages Log"));
+  gtk_widget_ref (label161);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "label161", label161,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label161);
+  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook7), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook7), 0), label161);
+
+  table78 = gtk_table_new (2, 1, FALSE);
+  gtk_widget_ref (table78);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "table78", table78,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (table78);
+  gtk_container_add (GTK_CONTAINER (notebook7), table78);
+
   bandwidth_frame = gtk_frame_new (_("Camera bandwidth usage"));
   gtk_widget_ref (bandwidth_frame);
   gtk_object_set_data_full (GTK_OBJECT (main_window), "bandwidth_frame", bandwidth_frame,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (bandwidth_frame);
-  gtk_table_attach (GTK_TABLE (table77), bandwidth_frame, 0, 1, 0, 1,
+  gtk_table_attach (GTK_TABLE (table78), bandwidth_frame, 0, 1, 0, 1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (GTK_FILL), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (bandwidth_frame), 5);
@@ -2705,6 +2746,8 @@ create_main_window (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (bandwidth_table);
   gtk_container_add (GTK_CONTAINER (bandwidth_frame), bandwidth_table);
+  gtk_container_set_border_width (GTK_CONTAINER (bandwidth_table), 2);
+  gtk_table_set_row_spacings (GTK_TABLE (bandwidth_table), 2);
   gtk_table_set_col_spacings (GTK_TABLE (bandwidth_table), 2);
 
   label157 = gtk_label_new (_("Bus 2:"));
@@ -2764,13 +2807,62 @@ create_main_window (void)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
+  scrolledwindow3 = gtk_scrolled_window_new (NULL, NULL);
+  gtk_widget_ref (scrolledwindow3);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "scrolledwindow3", scrolledwindow3,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (scrolledwindow3);
+  gtk_table_attach (GTK_TABLE (table78), scrolledwindow3, 0, 1, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (scrolledwindow3), 5);
+
+  service_clist = gtk_clist_new (3);
+  gtk_widget_ref (service_clist);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "service_clist", service_clist,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (service_clist);
+  gtk_container_add (GTK_CONTAINER (scrolledwindow3), service_clist);
+  gtk_clist_set_column_width (GTK_CLIST (service_clist), 0, 1800);
+  gtk_clist_set_column_width (GTK_CLIST (service_clist), 1, 60);
+  gtk_clist_set_column_width (GTK_CLIST (service_clist), 2, 60);
+  gtk_clist_column_titles_show (GTK_CLIST (service_clist));
+
+  label170 = gtk_label_new (_("Service"));
+  gtk_widget_ref (label170);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "label170", label170,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label170);
+  gtk_clist_set_column_widget (GTK_CLIST (service_clist), 0, label170);
+
+  label171 = gtk_label_new (_("FPS"));
+  gtk_widget_ref (label171);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "label171", label171,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label171);
+  gtk_clist_set_column_widget (GTK_CLIST (service_clist), 1, label171);
+
+  label172 = gtk_label_new (_("Processed"));
+  gtk_widget_ref (label172);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "label172", label172,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label172);
+  gtk_clist_set_column_widget (GTK_CLIST (service_clist), 2, label172);
+
+  label162 = gtk_label_new (_("Performances"));
+  gtk_widget_ref (label162);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "label162", label162,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label162);
+  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook7), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook7), 1), label162);
+
   frame4 = gtk_frame_new (_("Cursor"));
   gtk_widget_ref (frame4);
   gtk_object_set_data_full (GTK_OBJECT (main_window), "frame4", frame4,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (frame4);
-  gtk_table_attach (GTK_TABLE (table77), frame4, 0, 1, 1, 2,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+  gtk_table_attach (GTK_TABLE (table77), frame4, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (GTK_FILL), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (frame4), 5);
 

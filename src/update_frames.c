@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2003 Damien Douxchamps  <ddouxchamps@users.sf.net>
+ * Copyright (C) 2000-2004 Damien Douxchamps  <ddouxchamps@users.sf.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -549,9 +549,65 @@ UpdateBandwidthFrame(void)
   }
   free(ports);
   free(temp);
-  
+ 
+  UpdateServiceTree();
+
 }
 
+void
+UpdateServiceTree(void)
+{
+  char **temp;
+  int i;
+  GtkCList *list;
+  camera_t* cam;
+  chain_t* service;
 
+  list=(GtkCList*)(lookup_widget(main_window,"service_clist"));
 
+  temp=(char**)malloc(3*sizeof(char*));
+  for (i=0;i<3;i++) {
+    temp[i]=(char*)malloc(STRING_SIZE*sizeof(char));
+  }
+  
+  // freeze the clist
+  gtk_clist_freeze(list);
+  
+  // clear the clist
+  gtk_clist_clear(list);
 
+  cam=cameras;
+  while(cam!=NULL) {
+    sprintf(temp[0],"%s",cam->name);
+    sprintf(temp[1]," ");
+    sprintf(temp[2]," ");
+    gtk_clist_append (list, temp);
+    for (i=SERVICE_ISO;i<=SERVICE_FTP;i++) {
+      service=GetService(cam,i);
+      if (service!=NULL) {
+	switch(i) {
+	  case 0: sprintf(temp[0],"     Receive");break;
+	  case 1: sprintf(temp[0],"     Display");break;
+	  case 2: sprintf(temp[0],"     Save   ");break;
+	  case 3: sprintf(temp[0],"     V4L    ");break;
+	  case 4: sprintf(temp[0],"     FTP    ");break;
+	  default: sprintf(temp[0],"!! Unknown service ID !!");break;
+	}
+	sprintf(temp[1],"%.5f", service->fps);
+	sprintf(temp[2],"%llu", service->processed_frames);
+	gtk_clist_append (list, temp);
+      }
+    }
+    cam=cam->next;
+  }
+
+  gtk_clist_set_column_width (list, 0, 200);
+
+  // unfreeze the clist
+  gtk_clist_thaw(list);
+
+  for (i=0;i<3;i++) {
+    free(temp[i]);
+  }
+  free(temp);
+}

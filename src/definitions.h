@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2003 Damien Douxchamps  <ddouxchamps@users.sf.net>
+ * Copyright (C) 2000-2004 Damien Douxchamps  <ddouxchamps@users.sf.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -186,8 +186,10 @@ typedef struct _Chain_T
   clock_t prev_time;
   clock_t current_time;
   int timeout_func_id;
-  int frames;
+  int fps_frames;
   float fps;
+
+  unsigned long long int processed_frames;
 
   camera_t*       camera; // the camera that uses this thread    
 } chain_t;

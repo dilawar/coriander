@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2003 Damien Douxchamps  <ddouxchamps@users.sf.net>
+ * Copyright (C) 2000-2004 Damien Douxchamps  <ddouxchamps@users.sf.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -159,7 +159,7 @@ FtpShowFPS(gpointer *data)
   if (tmp==0)
     ftp_service->fps=fabs(0.0);
   else
-    ftp_service->fps=fabs((float)ftp_service->frames/tmp);
+    ftp_service->fps=fabs((float)ftp_service->fps_frames/tmp);
 
   sprintf(tmp_string," %.3f",ftp_service->fps);
 
@@ -170,7 +170,7 @@ FtpShowFPS(gpointer *data)
   
   pthread_mutex_lock(&ftp_service->mutex_data);
   ftp_service->prev_time=ftp_service->current_time;
-  ftp_service->frames=0;
+  ftp_service->fps_frames=0;
   pthread_mutex_unlock(&ftp_service->mutex_data);
 
   free(tmp_string);
@@ -201,7 +201,8 @@ FtpThread(void* arg)
 
   // time inits:
   ftp_service->prev_time = times(&ftp_service->tms_buf);
-  ftp_service->frames=0;
+  ftp_service->fps_frames=0;
+  ftp_service->processed_frames=0;
 
   while (1) { 
     /* Clean cancel handlers */
@@ -249,7 +250,8 @@ FtpThread(void* arg)
 	      FtpPutFrame(filename_out, im, info);
 	    }
 #endif
-	    ftp_service->frames++;
+	    ftp_service->fps_frames++;
+	    ftp_service->processed_frames++;
 
 	    if (im != NULL)
 	      gdk_imlib_kill_image(im);

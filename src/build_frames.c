@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2003 Damien Douxchamps  <ddouxchamps@users.sf.net>
+ * Copyright (C) 2000-2004 Damien Douxchamps  <ddouxchamps@users.sf.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -334,6 +334,8 @@ BuildBandwidthFrame(void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (bandwidth_table);
   gtk_container_add (GTK_CONTAINER (lookup_widget(main_window,"bandwidth_frame")), bandwidth_table);
+  gtk_container_set_border_width (GTK_CONTAINER (bandwidth_table), 2);
+  gtk_table_set_row_spacings (GTK_TABLE (bandwidth_table), 2);
   gtk_table_set_col_spacings (GTK_TABLE (bandwidth_table), 2);
 
   // build each bandwidth bar:
@@ -349,9 +351,7 @@ BuildBandwidthFrame(void)
 		      (GtkAttachOptions) (GTK_FILL),
 		      (GtkAttachOptions) (0), 0, 0);
     gtk_misc_set_padding (GTK_MISC (label), 2, 2);
-
-    //adj=(GtkAdjustment*)gtk_adjustment_new(50,0,100,.1,.1,.1);
-    //bandwidth_bar = gtk_progress_bar_new_with_adjustment(adj);
+    
     bandwidth_bar = gtk_progress_bar_new();
     gtk_widget_ref (bandwidth_bar);
     sprintf(temp,"bandwidth_bar%d",i);
@@ -364,7 +364,7 @@ BuildBandwidthFrame(void)
     gtk_progress_set_show_text(GTK_PROGRESS (bandwidth_bar), 1);
     gtk_progress_set_text_alignment(GTK_PROGRESS (bandwidth_bar), .5, .5);
     gtk_progress_set_format_string(GTK_PROGRESS (bandwidth_bar),"%p %%");
-    }
+  }
 
   free(temp);
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2003 Damien Douxchamps  <ddouxchamps@users.sf.net>
+ * Copyright (C) 2000-2004 Damien Douxchamps  <ddouxchamps@users.sf.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -114,7 +114,7 @@ DisplayShowFPS(gpointer *data)
   if (tmp==0)
     display_service->fps=fabs(0.0);
   else
-    display_service->fps=fabs((float)display_service->frames/tmp);
+    display_service->fps=fabs((float)display_service->fps_frames/tmp);
 
   sprintf(tmp_string," %.3f",display_service->fps);
 
@@ -125,7 +125,7 @@ DisplayShowFPS(gpointer *data)
   
   pthread_mutex_lock(&display_service->mutex_data);
   display_service->prev_time=display_service->current_time;
-  display_service->frames=0;
+  display_service->fps_frames=0;
   pthread_mutex_unlock(&display_service->mutex_data);
 
   free(tmp_string);
@@ -153,7 +153,8 @@ DisplayThread(void* arg)
 
   // time inits:
   display_service->prev_time = times(&display_service->tms_buf);
-  display_service->frames=0;
+  display_service->fps_frames=0;
+  display_service->processed_frames=0;
 
   while (1) {
     pthread_mutex_lock(&info->mutex_cancel);
@@ -182,7 +183,8 @@ DisplayThread(void* arg)
 	      info->redraw_prev_time=times(&info->redraw_tms_buf);
 	    }
 #endif
-	  display_service->frames++;
+	  display_service->fps_frames++;
+	  display_service->processed_frames++;
 	  }
 	  else { //
 	    if (preferences.display_redraw==DISPLAY_REDRAW_ON) {

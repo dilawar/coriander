@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2003 Damien Douxchamps  <ddouxchamps@users.sf.net>
+ * Copyright (C) 2000-2004 Damien Douxchamps  <ddouxchamps@users.sf.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -139,7 +139,7 @@ SaveShowFPS(gpointer *data)
   if (tmp==0)
     save_service->fps=fabs(0.0);
   else
-    save_service->fps=fabs((float)save_service->frames/tmp);
+    save_service->fps=fabs((float)save_service->fps_frames/tmp);
 
   sprintf(tmp_string," %.3f",save_service->fps);
 
@@ -150,7 +150,7 @@ SaveShowFPS(gpointer *data)
   
   pthread_mutex_lock(&save_service->mutex_data);
   save_service->prev_time=save_service->current_time;
-  save_service->frames=0;
+  save_service->fps_frames=0;
   pthread_mutex_unlock(&save_service->mutex_data);
 
   free(tmp_string);
@@ -216,7 +216,8 @@ SaveThread(void* arg)
   
   // time inits:
   save_service->prev_time = times(&save_service->tms_buf);
-  save_service->frames=0;
+  save_service->fps_frames=0;
+  save_service->processed_frames=0;
 
   while (1) { 
     /* Clean cancel handlers */
@@ -290,8 +291,8 @@ SaveThread(void* arg)
 		}
 	      }
 	    }
-	    save_service->frames++;
-
+	    save_service->fps_frames++;
+	    save_service->processed_frames++;
 	  }
 	  else
 	    skip_counter++;

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2003 Damien Douxchamps  <ddouxchamps@users.sf.net>
+ * Copyright (C) 2000-2004 Damien Douxchamps  <ddouxchamps@users.sf.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -223,7 +223,7 @@ IsoShowFPS(gpointer *data)
   if (tmp==0)
     iso_service->fps=fabs(0.0);
   else
-    iso_service->fps=fabs((float)iso_service->frames/tmp);
+    iso_service->fps=fabs((float)iso_service->fps_frames/tmp);
 
   sprintf(tmp_string," %.3f",iso_service->fps);
   
@@ -234,7 +234,7 @@ IsoShowFPS(gpointer *data)
   
   pthread_mutex_lock(&iso_service->mutex_data);
   iso_service->prev_time=iso_service->current_time;
-  iso_service->frames=0;
+  iso_service->fps_frames=0;
   pthread_mutex_unlock(&iso_service->mutex_data);
 
   free(tmp_string);
@@ -261,7 +261,8 @@ IsoThread(void* arg)
 
   // time inits:
   iso_service->prev_time = times(&iso_service->tms_buf);
-  iso_service->frames=0;
+  iso_service->fps_frames=0;
+  iso_service->processed_frames=0;
 
   while (1) {
     pthread_testcancel();
@@ -338,7 +339,8 @@ IsoThread(void* arg)
     
     // FPS computation:
     iso_service->current_time=times(&iso_service->tms_buf);
-    iso_service->frames++;
+    iso_service->fps_frames++;
+    iso_service->processed_frames++;
     
     if ((info->receive_method == RECEIVE_METHOD_VIDEO1394)&&(dma_ok==DC1394_SUCCESS))
       dc1394_dma_done_with_buffer(&info->capture);

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2003 Damien Douxchamps  <ddouxchamps@users.sf.net>
+ * Copyright (C) 2000-2004 Damien Douxchamps  <ddouxchamps@users.sf.net>
  *                         Dan Dennedy <dan@dennedy.org>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -143,7 +143,7 @@ V4lShowFPS(gpointer *data)
   if (tmp==0)
     v4l_service->fps=fabs(0.0);
   else
-    v4l_service->fps=fabs((float)v4l_service->frames/tmp);
+    v4l_service->fps=fabs((float)v4l_service->fps_frames/tmp);
 
   sprintf(tmp_string," %.3f",v4l_service->fps);
 
@@ -154,7 +154,7 @@ V4lShowFPS(gpointer *data)
   
   pthread_mutex_lock(&v4l_service->mutex_data);
   v4l_service->prev_time=v4l_service->current_time;
-  v4l_service->frames=0;
+  v4l_service->fps_frames=0;
   pthread_mutex_unlock(&v4l_service->mutex_data);
 
   free(tmp_string);
@@ -174,6 +174,7 @@ V4lThread(void* arg)
   pthread_mutex_lock(&v4l_service->mutex_data);
   info=(v4lthread_info_t*)v4l_service->data;
   skip_counter=0;
+  v4l_service->processed_frames=0;
 
   /* These settings depend on the thread. For 100% safe deferred-cancel
    threads, I advise you use a custom thread cancel flag. See display thread.*/
@@ -183,7 +184,7 @@ V4lThread(void* arg)
   
   // time inits:
   v4l_service->prev_time = times(&v4l_service->tms_buf);
-  v4l_service->frames=0;
+  v4l_service->fps_frames=0;
 
   while (1) { 
     /* Clean cancel handlers */
@@ -206,7 +207,8 @@ V4lThread(void* arg)
 	  if (skip_counter>=(info->period-1)) {
 	    skip_counter=0;
 	    write(info->v4l_dev,info->v4l_buffer,v4l_service->current_buffer->width*v4l_service->current_buffer->height*3);
-	    v4l_service->frames++;
+	    v4l_service->fps_frames++;
+	    v4l_service->processed_frames++;
 	  }
 	  else
 	    skip_counter++;
