@@ -75,6 +75,7 @@ CopyCameraPrefs(camera_t* cam) {
   cam->prefs.display_redraw_rate    = preferences.camprefs.display_redraw_rate;
   cam->prefs.receive_method         = preferences.camprefs.receive_method;
   cam->prefs.video1394_dropframes   = preferences.camprefs.video1394_dropframes;
+  cam->prefs.dma_buffer_size        = preferences.camprefs.dma_buffer_size;
   cam->prefs.save_scratch           = preferences.camprefs.save_scratch;
   cam->prefs.save_period            = preferences.camprefs.save_period;
   cam->prefs.save_datenum           = preferences.camprefs.save_datenum;

@@ -2,6 +2,10 @@ Coriander, (c) 2000-2004 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 1.0.0
 	
+   Jul 28, 2004, by Damien Douxchamps
+   - applied a patch from Bertrand Holveck to copy the DMA buffer size during
+     CopyCameraPrefs
+	
    Jul 24, 2004, by Damien Douxchamps
    - applied a patch from Frederic Devernay to use gettimeofday instead of
      ftime
