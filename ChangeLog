@@ -2,6 +2,12 @@ Coriander, (c) 2000-2003 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 1.0.0
 	
+   December 27, 2003, by Damien Douxchamps
+   - inline format7 tab generation
+   - passwords are no longer stored
+   - camera port is shown next to camera handle
+   - misc label changes
+	
    December 25, 2003, by Damien Douxchamps
    - fixed configure scripts, at last.
    - more accurate way to get the bandwidth usage in case of format7

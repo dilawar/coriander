@@ -1063,7 +1063,7 @@
 		<widget>
 		  <class>GtkLabel</class>
 		  <name>label17</name>
-		  <label>Node:</label>
+		  <label>Node  /  Port:</label>
 		  <justify>GTK_JUSTIFY_LEFT</justify>
 		  <wrap>False</wrap>
 		  <xalign>0.5</xalign>

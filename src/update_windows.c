@@ -19,6 +19,7 @@
 #include "update_windows.h"
 
 extern camera_t* camera;
+extern unsigned int format7_tab_presence;
 
 void
 UpdateFormat7Window(void)
@@ -82,6 +83,6 @@ UpdateAllWindows(void)
   UpdateFeatureWindow();
   UpdateStatusWindow();
   UpdateCommanderWindow();
-  if (camera->format7_info.edit_mode!=-1)
+  if ((camera->format7_info.edit_mode!=-1)&&(format7_tab_presence==1))
     UpdateFormat7Window();
 }

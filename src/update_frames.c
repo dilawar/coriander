@@ -241,8 +241,9 @@ UpdateCameraStatusFrame(void)
   gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"camera_model_status"), ctxt.model_ctxt, ctxt.model_id);
   ctxt.model_id=gtk_statusbar_push( (GtkStatusbar*)lookup_widget(main_window,"camera_model_status"), ctxt.model_ctxt, temp);
 
-  // camera node:
-  sprintf(temp," %d",camera->camera_info.id);
+  // camera node/bus:
+  sw_version=dc1394_get_camera_port(camera->camera_info.handle);
+  sprintf(temp," %d  /  %d",camera->camera_info.id, sw_version);
   gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"camera_node_status"), ctxt.node_ctxt, ctxt.node_id);
   ctxt.node_id=gtk_statusbar_push( (GtkStatusbar*)lookup_widget(main_window,"camera_node_status"), ctxt.node_ctxt, temp);
 

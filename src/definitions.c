@@ -144,25 +144,25 @@ const char * phy_speed_list[4] = {
   "100 Mbps",
   "200 Mbps",
   "400 Mbps",
-  "Unknown"
+  "unknown"
 };
 
 const char * power_class_list[8] = {
-  "None",
-  "+15W",
-  "+30W",
-  "+45W",
-  "-1W",
-  "-3W",
-  "-6W",
-  "-10W"
+  "none",
+  "prov. > 15W",
+  "prov. > 30W",
+  "prov. > 45W",
+  "uses < 1W",
+  "uses < 3W",
+  "uses < 6W",
+  "uses < 10W"
 };
 
 const char * phy_delay_list[4] = {
-  "<=144ns",
-  "Unknown",
-  "Unknown",
-  "Unknown"
+  "<= 144ns",
+  "unknown",
+  "unknown",
+  "unknown"
 };
 
 

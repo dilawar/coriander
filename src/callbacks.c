@@ -826,8 +826,8 @@ on_prefs_ftp_password_changed          (GtkEditable     *editable,
                                         gpointer         user_data)
 {
   preferences.ftp_password=gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"prefs_ftp_password")));
-  gnome_config_set_string("coriander/ftp/password",preferences.ftp_password);
-  gnome_config_sync();
+  //gnome_config_set_string("coriander/ftp/password",preferences.ftp_password);
+  //gnome_config_sync();
 }
 
 

@@ -58,6 +58,7 @@ camera_t* cameras;
 
 BusInfo_t* businfo;
 
+unsigned int format7_tab_presence;
 unsigned int main_timeout_ticker;
 unsigned int WM_cancel_display;
 cursor_info_t cursor_info;
@@ -127,6 +128,7 @@ main (int argc, char *argv[])
   
   preferences_window= create_preferences_window();
   main_window = create_main_window();
+  format7_tab_presence=1;
   gtk_notebook_set_homogeneous_tabs(GTK_NOTEBOOK(lookup_widget(main_window,"notebook2")),TRUE);
   gtk_notebook_set_homogeneous_tabs(GTK_NOTEBOOK(lookup_widget(main_window,"notebook5")),TRUE);
 

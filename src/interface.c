@@ -859,7 +859,7 @@ create_main_window (void)
   gtk_label_set_justify (GTK_LABEL (label33), GTK_JUSTIFY_LEFT);
   gtk_misc_set_padding (GTK_MISC (label33), 2, 2);
 
-  label17 = gtk_label_new (_("Node:"));
+  label17 = gtk_label_new (_("Node  /  Port:"));
   gtk_widget_ref (label17);
   gtk_object_set_data_full (GTK_OBJECT (main_window), "label17", label17,
                             (GtkDestroyNotify) gtk_widget_unref);
