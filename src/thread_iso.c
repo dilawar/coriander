@@ -78,7 +78,7 @@ gint IsoStartThread(camera_t* cam)
 	if (dc1394_dma_setup_capture(cam->camera_info.handle, cam->camera_info.id, cam->misc_info.iso_channel, 
 				     cam->misc_info.format, cam->misc_info.mode, maxspeed,
 				     cam->misc_info.framerate, info->dma_buffer_size,
-				     info->video1394_dropframes,
+				     info->video1394_dropframes, 
 				     info->capture.dma_device_file, &info->capture)
 	    == DC1394_SUCCESS) {
 	  info->receive_method=RECEIVE_METHOD_VIDEO1394;
@@ -95,7 +95,7 @@ gint IsoStartThread(camera_t* cam)
 					     QUERY_FROM_CAMERA, QUERY_FROM_CAMERA,
 					     QUERY_FROM_CAMERA, QUERY_FROM_CAMERA, 
 					     info->dma_buffer_size,
-					     info->video1394_dropframes,
+					     info->video1394_dropframes, 
 					     info->capture.dma_device_file, &info->capture)
 	    == DC1394_SUCCESS) {
 	  info->receive_method=RECEIVE_METHOD_VIDEO1394;
@@ -198,23 +198,17 @@ int
 IsoShowFPS(gpointer *data)
 {
   chain_t* iso_service;
-  isothread_info_t *info;
-  float tmp;
   char *tmp_string;
 
   tmp_string=(char*)malloc(20*sizeof(char));
 
   iso_service=(chain_t*)data;
-  info=(isothread_info_t*)iso_service->data;
 
-  tmp=(float)(iso_service->current_time-iso_service->prev_time)/sysconf(_SC_CLK_TCK);
-  if (tmp==0)
-    iso_service->fps=fabs(0.0);
+  if (iso_service->fps_frames>0)
+    sprintf(tmp_string," %.3f",iso_service->fps);
   else
-    iso_service->fps=fabs((float)iso_service->fps_frames/tmp);
-
-  sprintf(tmp_string," %.3f",iso_service->fps);
-  
+    sprintf(tmp_string," %.3f",fabs(0.0));
+    
   gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_receive"),
 		       ctxt.fps_receive_ctxt, ctxt.fps_receive_id);
   ctxt.fps_receive_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_receive"),
@@ -236,7 +230,7 @@ IsoThread(void* arg)
   chain_t *iso_service;
   isothread_info_t *info;
   int dma_ok=DC1394_FAILURE;
-
+  float tmp;
   // we should only use mutex_data in this function
 
   iso_service=(chain_t*)arg;
@@ -332,6 +326,12 @@ IsoThread(void* arg)
     iso_service->fps_frames++;
     iso_service->processed_frames++;
     
+    tmp=(float)(iso_service->current_time-iso_service->prev_time)/sysconf(_SC_CLK_TCK);
+    if (tmp==0)
+      iso_service->fps=fabs(0.0);
+    else
+      iso_service->fps=fabs((float)iso_service->fps_frames/tmp);
+
     if ((info->receive_method == RECEIVE_METHOD_VIDEO1394)&&(dma_ok==DC1394_SUCCESS))
       dc1394_dma_done_with_buffer(&info->capture);
     

@@ -140,22 +140,16 @@ int
 FtpShowFPS(gpointer *data)
 {
   chain_t* ftp_service;
-  ftpthread_info_t *info;
-  float tmp;
   char *tmp_string;
 
   tmp_string=(char*)malloc(20*sizeof(char));
 
   ftp_service=(chain_t*)data;
-  info=(ftpthread_info_t*)ftp_service->data;
 
-  tmp=(float)(ftp_service->current_time-ftp_service->prev_time)/sysconf(_SC_CLK_TCK);
-  if (tmp==0)
-    ftp_service->fps=fabs(0.0);
+  if (ftp_service->fps_frames>0)
+    sprintf(tmp_string," %.3f",ftp_service->fps);
   else
-    ftp_service->fps=fabs((float)ftp_service->fps_frames/tmp);
-
-  sprintf(tmp_string," %.3f",ftp_service->fps);
+    sprintf(tmp_string," %.3f",fabs(0.0));
 
   gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_ftp"),
 		       ctxt.fps_ftp_ctxt, ctxt.fps_ftp_id);
@@ -181,6 +175,7 @@ FtpThread(void* arg)
   ftpthread_info_t *info=NULL;
   GdkImlibImage *im=NULL;
   long int skip_counter;
+  float tmp;
 
   ftp_service=(chain_t*)arg;
   pthread_mutex_lock(&ftp_service->mutex_data);
@@ -255,6 +250,12 @@ FtpThread(void* arg)
 	  
 	  // FPS display:
 	  ftp_service->current_time=times(&ftp_service->tms_buf);
+	  tmp=(float)(ftp_service->current_time-ftp_service->prev_time)/sysconf(_SC_CLK_TCK);
+	  if (tmp==0)
+	    ftp_service->fps=fabs(0.0);
+	  else
+	    ftp_service->fps=fabs((float)ftp_service->fps_frames/tmp);
+
 	}
 	pthread_mutex_unlock(&ftp_service->mutex_data);
       }

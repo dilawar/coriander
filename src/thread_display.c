@@ -94,22 +94,16 @@ int
 DisplayShowFPS(gpointer *data)
 {
   chain_t* display_service;
-  displaythread_info_t *info;
-  float tmp;
   char *tmp_string;
 
   tmp_string=(char*)malloc(20*sizeof(char));
 
   display_service=(chain_t*)data;
-  info=(displaythread_info_t*)display_service->data;
 
-  tmp=(float)(display_service->current_time-display_service->prev_time)/sysconf(_SC_CLK_TCK);
-  if (tmp==0)
-    display_service->fps=fabs(0.0);
+  if (display_service->fps_frames>0)
+    sprintf(tmp_string," %.3f",display_service->fps);
   else
-    display_service->fps=fabs((float)display_service->fps_frames/tmp);
-
-  sprintf(tmp_string," %.3f",display_service->fps);
+    sprintf(tmp_string," %.3f",fabs(0.0));
 
   gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_display"),
 		       ctxt.fps_display_ctxt, ctxt.fps_display_id);
@@ -133,6 +127,7 @@ DisplayThread(void* arg)
   chain_t* display_service=NULL;
   displaythread_info_t *info=NULL;
   long int skip_counter;
+  float tmp;
 
   // we should only use mutex_data in this function
 
@@ -189,6 +184,12 @@ DisplayThread(void* arg)
 	  }
 	  // FPS display:
 	  display_service->current_time=times(&display_service->tms_buf);
+
+	  tmp=(float)(display_service->current_time-display_service->prev_time)/sysconf(_SC_CLK_TCK);
+	  if (tmp==0)
+	    display_service->fps=fabs(0.0);
+	  else
+	    display_service->fps=fabs((float)display_service->fps_frames/tmp);
 	}
 	pthread_mutex_unlock(&display_service->mutex_data);
       }

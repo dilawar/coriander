@@ -610,7 +610,8 @@ UpdateServiceTree(void)
     cam=cam->next;
   }
 
-  gtk_clist_set_column_width (list, 0, 200);
+  //gtk_clist_set_column_width (list, 0, 200);
+  //gtk_clist_set_column_width (list, 1, 100);
 
   // unfreeze the clist
   gtk_clist_thaw(list);

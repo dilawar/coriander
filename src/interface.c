@@ -2787,6 +2787,7 @@ create_main_window (void)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (scrolledwindow3), 5);
+  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow3), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
   service_clist = gtk_clist_new (3);
   gtk_widget_ref (service_clist);

@@ -5171,8 +5171,8 @@ anything in the GUI at all...</label>
 	      <class>GtkScrolledWindow</class>
 	      <name>scrolledwindow3</name>
 	      <border_width>5</border_width>
-	      <hscrollbar_policy>GTK_POLICY_ALWAYS</hscrollbar_policy>
-	      <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
+	      <hscrollbar_policy>GTK_POLICY_AUTOMATIC</hscrollbar_policy>
+	      <vscrollbar_policy>GTK_POLICY_AUTOMATIC</vscrollbar_policy>
 	      <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
 	      <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
 	      <child>

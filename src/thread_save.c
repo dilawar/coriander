@@ -124,22 +124,16 @@ int
 SaveShowFPS(gpointer *data)
 {
   chain_t* save_service;
-  savethread_info_t *info;
-  float tmp;
   char *tmp_string;
 
   tmp_string=(char*)malloc(20*sizeof(char));
 
   save_service=(chain_t*)data;
-  info=(savethread_info_t*)save_service->data;
 
-  tmp=(float)(save_service->current_time-save_service->prev_time)/sysconf(_SC_CLK_TCK);
-  if (tmp==0)
-    save_service->fps=fabs(0.0);
+  if (save_service->fps_frames>0)
+    sprintf(tmp_string," %.3f",save_service->fps);
   else
-    save_service->fps=fabs((float)save_service->fps_frames/tmp);
-
-  sprintf(tmp_string," %.3f",save_service->fps);
+    sprintf(tmp_string," %.3f",fabs(0.0));
 
   gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_save"),
 		       ctxt.fps_save_ctxt, ctxt.fps_save_id);
@@ -184,6 +178,7 @@ SaveThread(void* arg)
   GdkImlibImage *im=NULL;
   long int skip_counter;
   FILE *fd=NULL;
+  float tmp;
 
   filename_out=(char*)malloc(STRING_SIZE*sizeof(char));
 
@@ -295,6 +290,12 @@ SaveThread(void* arg)
 	  
 	  // FPS display
 	  save_service->current_time=times(&save_service->tms_buf);
+	  tmp=(float)(save_service->current_time-save_service->prev_time)/sysconf(_SC_CLK_TCK);
+	  if (tmp==0)
+	    save_service->fps=fabs(0.0);
+	  else
+	    save_service->fps=fabs((float)save_service->fps_frames/tmp);
+
 	}
 	pthread_mutex_unlock(&save_service->mutex_data);
       }

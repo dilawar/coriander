@@ -121,22 +121,16 @@ int
 V4lShowFPS(gpointer *data)
 {
   chain_t* v4l_service;
-  v4lthread_info_t *info;
-  float tmp;
   char *tmp_string;
 
   tmp_string=(char*)malloc(20*sizeof(char));
 
   v4l_service=(chain_t*)data;
-  info=(v4lthread_info_t*)v4l_service->data;
 
-  tmp=(float)(v4l_service->current_time-v4l_service->prev_time)/sysconf(_SC_CLK_TCK);
-  if (tmp==0)
-    v4l_service->fps=fabs(0.0);
+  if (v4l_service->fps_frames>0)
+    sprintf(tmp_string," %.3f",v4l_service->fps);
   else
-    v4l_service->fps=fabs((float)v4l_service->fps_frames/tmp);
-
-  sprintf(tmp_string," %.3f",v4l_service->fps);
+    sprintf(tmp_string," %.3f",fabs(0.0));
 
   gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_v4l"),
 		       ctxt.fps_v4l_ctxt, ctxt.fps_v4l_id);
@@ -160,6 +154,7 @@ V4lThread(void* arg)
   chain_t* v4l_service=NULL;
   v4lthread_info_t *info=NULL;
   long int skip_counter;
+  float tmp;
   
   v4l_service=(chain_t*)arg;
   pthread_mutex_lock(&v4l_service->mutex_data);
@@ -206,6 +201,12 @@ V4lThread(void* arg)
 	  
 	  // FPS display
 	  v4l_service->current_time=times(&v4l_service->tms_buf);
+	  tmp=(float)(v4l_service->current_time-v4l_service->prev_time)/sysconf(_SC_CLK_TCK);
+	  if (tmp==0)
+	    v4l_service->fps=fabs(0.0);
+	  else
+	    v4l_service->fps=fabs((float)v4l_service->fps_frames/tmp);
+
 	}
 	pthread_mutex_unlock(&v4l_service->mutex_data);
       }
