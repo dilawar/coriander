@@ -66,6 +66,7 @@ UpdateCommanderWindow(void)
   UpdateFormatMenu();
   UpdateIsoFrame();
   UpdateOptionFrame();
+  UpdateServiceFrame();
 }
 
 void

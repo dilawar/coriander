@@ -659,7 +659,6 @@ void
 GetAbsValue(int feature)
 {
   char string[256];
-  char *stringp;
   float value;
  
   

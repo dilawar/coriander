@@ -352,3 +352,18 @@ UpdateOptionFrame(void)
   pthread_mutex_unlock(&uiinfo->mutex);
   
 }
+
+
+void
+UpdateServiceFrame(void)
+{
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (lookup_widget(commander_window,"service_iso")),
+			       GetService(SERVICE_ISO, current_camera)!=NULL);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (lookup_widget(commander_window,"service_display")),
+			       GetService(SERVICE_DISPLAY, current_camera)!=NULL);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (lookup_widget(commander_window,"service_save")),
+			       GetService(SERVICE_SAVE, current_camera)!=NULL);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (lookup_widget(commander_window,"service_ftp")),
+			       GetService(SERVICE_FTP, current_camera)!=NULL);
+
+}
