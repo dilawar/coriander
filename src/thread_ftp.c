@@ -133,6 +133,8 @@ FtpCleanupThread(void* arg)
   /* Mendatory cleanups: */
   pthread_mutex_unlock(&ftp_service->mutex_data);
   FtpStopThread(); // we do this in case of auto-kill from the thread.
+
+  return(NULL);
 }
   
 

@@ -116,6 +116,8 @@ SaveCleanupThread(void* arg)
 
   /* Mendatory cleanups: */
   pthread_mutex_unlock(&save_service->mutex_data);
+
+  return(NULL);
 }
 
 int

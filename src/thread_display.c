@@ -91,6 +91,8 @@ DisplayCleanupThread(void* arg)
   info=(displaythread_info_t*)display_service->data;
 
   pthread_mutex_unlock(&display_service->mutex_data);
+
+  return(NULL);
 }
 
   

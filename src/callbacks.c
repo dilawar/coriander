@@ -393,7 +393,7 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
 	if (format7_info->edit_mode==misc_info->mode) IsoFlowCheck(&state);
 	step=info->step_x;
 	adj->value=(((int)adj->value)/step)*step;
-	if (dc1394_set_format7_image_size(camera->handle,camera->id, format7_info->edit_mode, adj->value, info->size_y)!=DC1394_SUCCESS)
+	if (dc1394_set_format7_image_size(camera->handle, camera->id, format7_info->edit_mode, adj->value, info->size_y)!=DC1394_SUCCESS)
 	  MainError("Could not set Format7 image size");
 	else  {
 	  info->size_x=adj->value;

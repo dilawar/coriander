@@ -2,6 +2,11 @@ Coriander, (c) 2000-2003 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 0.32
 	
+   May 9, 2003, by Damien Douxchamps
+   - automatically set the F7 edit mode to current F7 mode when changing mode
+     or format to an F7 mode/format.
+   - added return(NULL) to XXCleanupThread functions.
+	
    May 2, 2003, by Damien Douxchamps
    - code cleanup: includes in .h, misc beautifications. This will result in
      ugly and noisy diffs!

@@ -28,6 +28,7 @@ extern dc1394_miscinfo *misc_info;
 extern PrefsInfo preferences;
 extern int camera_num;
 extern uiinfo_t* uiinfo;
+extern Format7Info *format7_info;
 
 void
 BuildCameraFrame(void)
@@ -121,6 +122,8 @@ BuildGlobalIsoFrame(void)
 void
 BuildFormat7ModeFrame(void)
 {
+  if (misc_info->format==FORMAT_SCALABLE_IMAGE_SIZE)
+    format7_info->edit_mode=misc_info->mode;
   BuildFormat7ModeMenu();
   BuildFormat7ColorMenu();
 }

@@ -163,10 +163,13 @@ ChangeModeAndFormat         (GtkMenuItem     *menuitem,
   if (dc1394_get_camera_feature_set(camera->handle, camera->id, feature_set)!=DC1394_SUCCESS)
     MainError("Could not get camera feature information!");
 
-  GetFormat7Capabilities(camera->handle, camera->id, format7_info);
+  if (format==FORMAT_SCALABLE_IMAGE_SIZE) {
+    GetFormat7Capabilities(camera->handle, camera->id, format7_info);
+    format7_info->edit_mode=mode;
+  }
+
   BuildAllWindows();
   UpdateAllWindows();
-
 }
 
 
