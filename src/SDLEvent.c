@@ -225,8 +225,8 @@ void
 OnMouseDown(chain_t *display_service, int button, int x, int y)
 {
   displaythread_info_t *info;
-  info=(displaythread_info_t*)display_service->data;
   Format7ModeInfo_t* f7info;
+  info=(displaythread_info_t*)display_service->data;
 
   if (camera->misc_info.format==FORMAT_SCALABLE_IMAGE_SIZE) {
     f7info=&camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN];

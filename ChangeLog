@@ -2,6 +2,9 @@ Coriander, (c) 2000-2004 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 1.0.0
 
+   March 15, 2004, by Damien Douxchamps
+   - fixed some declaration order issues with older compilers.
+	
    March 4, 2004, by Johan Knol
    - src/SDLEvent.c (OnKeyPressed): (partially) fixed the '<' and '>' 
 	key binding modifiers and added SDLK_PAGEUP/DOWN as an alternative 

@@ -38,12 +38,12 @@ BuildTriggerModeMenu(void)
 {
   int i, f, modes;
   quadlet_t value;
-  int k=0;
   int index[NUM_TRIGGER_MODE];
   unsigned int current_trigger_mode;
   GtkWidget* trigger_mode;
   GtkWidget* trigger_mode_menu;
   GtkWidget* glade_menuitem;
+  int k=0;
 
   gtk_widget_destroy(GTK_WIDGET (lookup_widget(main_window,"trigger_mode"))); // remove previous menu
 

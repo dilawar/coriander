@@ -130,9 +130,9 @@ UpdateRangeValue(GtkWidget* widget, int feature)
   int  err, value, valueBU, valueRV, valuegoal, valuecurrent;
   int stable, prec_value, prec_valuegoal, prec_valueBU, prec_valuecurrent, prec_valueRV;
   char *stemp;
+  GtkAdjustment* adj;
   stemp=(char*)malloc(STRING_SIZE*sizeof(char));
 
-  GtkAdjustment* adj;
   stable=0;
   err=0;
   prec_value=-1e7;// out of range data
