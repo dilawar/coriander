@@ -405,12 +405,14 @@ void
 UpdateFormat7InfoFrame(void)
 {
 
-  char *temp=NULL;
+  char *temp;
   Format7ModeInfo_t *mode;
   float bpp;
   int bytesize, grandtotal;
   
   //fprintf(stderr,"update f7 status\n");
+
+  temp=(char*)malloc(STRING_SIZE*sizeof(char));
 
   if (camera->format7_info.edit_mode!=-1) {
 
@@ -476,8 +478,7 @@ UpdateFormat7InfoFrame(void)
     gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"format7_padding"), ctxt.format7_padding_ctxt, ctxt.format7_padding_id);
     ctxt.format7_padding_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"format7_padding"), ctxt.format7_padding_ctxt,temp);
     
-    free(temp);
   }
-
+  free(temp);
 }
 

@@ -24,9 +24,13 @@ void
 UpdateFormat7Window(void)
 {
   // update ranges
+  //fprintf(stderr,"  update ranges\n");
   UpdateFormat7Ranges();
+  //fprintf(stderr,"  update bpp\n");
   UpdateFormat7BppRange();
+  //fprintf(stderr,"  update color menu\n");
   BuildFormat7ColorMenu();
+  //fprintf(stderr,"  update info\n");
   UpdateFormat7InfoFrame();
 }
 
@@ -83,5 +87,4 @@ UpdateAllWindows(void)
   UpdateCommanderWindow();
   if (camera->format7_info.edit_mode!=-1)
     UpdateFormat7Window();
-  //fprintf(stderr," Finished updating\n");
 }
