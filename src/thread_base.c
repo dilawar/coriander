@@ -30,14 +30,14 @@
 #include "thread_save.h"
 #include "conversions.h"
 
-chain_t* image_pipe=NULL;
+extern chain_t *image_pipe;
 extern dc1394_miscinfo* misc_info;
 extern GtkWidget* commander_window;
 
 chain_t*
 GetService(service_t service)
 {
-  chain_t* chain;
+  chain_t  *chain;
 
   chain=image_pipe;
 
@@ -126,21 +126,17 @@ CommonChainSetup(chain_t* chain, service_t req_service)
 	  probe_chain=probe_chain->next_chain;
 	  pthread_mutex_lock(&probe_chain->mutex_struct);
 	}
+      chain->next_chain=probe_chain->next_chain;// the chain is inserted AFTER probe_chain
+      chain->prev_chain=probe_chain;
       pthread_mutex_unlock(&probe_chain->mutex_struct);
     }
-
-  if (probe_chain==NULL) // chain is the first one
+  else // chain is the first one
     {
       //fprintf(stderr,"No break point: empty pipe\n");
       chain->next_chain=NULL;
       chain->prev_chain=NULL;
     }
-  else
-    {
-      chain->next_chain=probe_chain->next_chain;
-      chain->prev_chain=probe_chain;
-    }
-  
+
   if (chain->service==SERVICE_ISO)
     {
       info_iso=(isothread_info*)chain->data;
@@ -153,8 +149,12 @@ CommonChainSetup(chain_t* chain, service_t req_service)
   else
     { // other type. First check for 'firstness'
       if (probe_chain==NULL)
-	// we currently make an error here as ISO should be running
-	fprintf(stderr,"ISO thread not running while mounting another thread\n");
+	{
+	  chain->next_chain=NULL;
+	  chain->prev_chain=NULL;
+	  // we currently make an error here as ISO should be running
+	  fprintf(stderr,"ISO thread not running while mounting another thread!\n");
+	}
       else
 	{ // inherit properties.
 	  chain->height=chain->prev_chain->height;
@@ -233,8 +233,10 @@ RemoveChain(chain_t* chain)
   if (chain->next_chain!=NULL)// lock next_mutex if we are not the last in the line
     chain->next_chain->prev_chain=chain->prev_chain;
   if ((chain->prev_chain==NULL)&&(chain->next_chain==NULL)) // we are the only element
-    image_pipe=NULL;
-  
+    {
+      //fprintf(stderr,"Only element removed, image_pipe=NULL\n");
+      image_pipe=NULL;
+    }
   
   // UNLOCK
   if (chain->prev_chain!=NULL)// lock prev_mutex if we are not the first in the line
@@ -319,12 +321,14 @@ CleanThreads(clean_mode_t mode)
 								   "service_display")),FALSE);
       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,
 								   "service_iso")),FALSE);
+      //fprintf(stderr,"CLEAN_MODE_UI_UPDATE\n");
       break;
     case CLEAN_MODE_NO_UI_UPDATE:
       FtpStopThread();
       SaveStopThread();
       DisplayStopThread();
       IsoStopThread();
+      //fprintf(stderr,"CLEAN_MODE_NO_UI_UPDATE\n");
       break;
     case CLEAN_MODE_UI_UPDATE_NOT_ISO:
       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,
@@ -334,6 +338,7 @@ CleanThreads(clean_mode_t mode)
       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,
 								   "service_display")),FALSE);
       IsoStopThread();
+      //fprintf(stderr,"CLEAN_MODE_UI_UPDATE_NOT_ISO\n");
       break;
       
     }
