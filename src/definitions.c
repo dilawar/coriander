@@ -272,39 +272,6 @@ const char * format7_list[8]= {
   "f7_mode7"
 };
 
-const char *preferences_features[PREFERENCE_ITEMS]= {
-  "ONE_PUSH_TIMEOUT",
-  "AUTO_UPDATE",
-  "AUTO_UPDATE_FREQUENCY",
-  "DISPLAY_METHOD",
-  "DISPLAY_PERIOD",
-  "RECEIVE_METHOD",
-  "SAVE_FILENAME",
-  "SAVE_SCRATCH",
-  "SAVE_PERIOD",
-  "FTP_ADDRESS",
-  "FTP_USER",
-  "FTP_PASSWORD",
-  "FTP_FILENAME",
-  "FTP_PATH",
-  "FTP_SCRATCH",
-  "FTP_PERIOD",
-  "REAL_ADDRESS",
-  "REAL_USER",
-  "REAL_PASSWORD",
-  "REAL_FILENAME",
-  "REAL_PORT",
-  "REAL_TITLE",
-  "REAL_AUTHOR",
-  "REAL_COPYRIGHT",
-  "REAL_RECORDABLE",
-  "REAL_AUDIENCE",
-  "REAL_QUALITY",
-  "REAL_COMPATIBILITY",
-  "REAL_PERIOD",
-  "VIDEO1394_DEVICE"
-};
-
 const char *feature_menu_items_list[5]= {
   "OFF",
   "Man",

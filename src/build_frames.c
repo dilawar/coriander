@@ -308,6 +308,7 @@ BuildPrefsRealFrame(void)
   gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_real_server_frame"),FALSE);
   gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_real_infos_frame"),FALSE);
   gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_real_stream_frame"),FALSE);
+  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_real_audience_frame"),FALSE);
 #endif
 
 }

@@ -854,7 +854,7 @@ on_prefs_save_button_clicked           (GtkButton       *button,
   tmp=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_video1394_device")));
   strcpy(preferences.video1394_device,tmp);
 
-WriteConfigFile();
+  WriteConfigFile();
 }
 
 
@@ -1156,6 +1156,7 @@ on_prefs_receive_method_activate      (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
   preferences.receive_method=(int)user_data;
+  UpdatePrefsReceiveFrame();
 }
 
 void

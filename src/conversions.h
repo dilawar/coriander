@@ -76,7 +76,7 @@ y2rgb (unsigned char *YUV, unsigned char *RGB, int NumPixels);
 #include <string.h>
 #include "conversions.h"
 
-extern void swab();
+//extern void swab();
 
 inline void
 uyvy2yuyv (unsigned char *src, unsigned char *dest, int NumPixels);

@@ -21,41 +21,6 @@
 
 #include "definitions.h"
 
-#define PREFERENCE_ITEMS 30
-
-enum {
-  ONE_PUSH_TIMEOUT=0,
-  AUTO_UPDATE,
-  AUTO_UPDATE_FREQUENCY,
-  DISPLAY_KEEP_RATIO,
-  DISPLAY_PERIOD,
-  RECEIVE_METHOD,
-  SAVE_FILENAME, 
-  SAVE_SCRATCH,
-  SAVE_PERIOD,
-  FTP_ADDRESS,
-  FTP_USER,
-  FTP_PASSWORD,
-  FTP_FILENAME,
-  FTP_PATH,
-  FTP_SCRATCH,
-  FTP_PERIOD,
-  REAL_ADDRESS,
-  REAL_USER,
-  REAL_PASSWORD,
-  REAL_FILENAME,
-  REAL_PORT,
-  REAL_TITLE,
-  REAL_AUTHOR,
-  REAL_COPYRIGHT,
-  REAL_RECORDABLE,
-  REAL_AUDIENCE,
-  REAL_QUALITY,
-  REAL_COMPATIBILITY,
-  REAL_PERIOD,
-  VIDEO1394_DEVICE
-};
-
 typedef struct _PrefsInfo
 {
   float op_timeout;
@@ -64,31 +29,32 @@ typedef struct _PrefsInfo
   int display_keep_ratio;
   int display_period;
   int receive_method;
-  char save_filename[256];
+  char *video1394_device;
+  char *save_filename;
   int save_scratch;
   int save_period;
-  char ftp_address[STRING_SIZE];
-  char ftp_user[STRING_SIZE];
-  char ftp_password[STRING_SIZE];
-  char ftp_filename[STRING_SIZE];
-  char ftp_path[STRING_SIZE];
+  char *ftp_address;
+  char *ftp_user;
+  char *ftp_password;
+  char *ftp_filename;
+  char *ftp_path;
   int ftp_scratch;
   int ftp_period;
-  char real_address[STRING_SIZE];
-  char real_user[STRING_SIZE];
-  char real_password[STRING_SIZE];
-  char real_filename[STRING_SIZE];
+  char *real_address;
+  char *real_user;
+  char *real_password;
+  char *real_filename;
   int real_port;
-  char real_author[STRING_SIZE];
-  char real_title[STRING_SIZE];
-  char real_copyright[STRING_SIZE];
+  char *real_author;
+  char *real_title;
+  char *real_copyright;
   int real_recordable;
   unsigned long int real_audience;
   int real_quality;
   int real_compatibility;
   int real_period;
-  char video1394_device[STRING_SIZE];
 
+  // internal data:
   int receive_method2index[2];
 
 } PrefsInfo;
@@ -98,19 +64,10 @@ extern "C" {
 #endif
 
 void
-ParseConfigFile(FILE* fd);
-
-void
-SetPreferencesDefaults(void);
-
-void
 LoadConfigFile(void);
 
 void
 WriteConfigFile(void);
-
-char *
-GetFileName(void);
 
 #ifdef __cplusplus
 }

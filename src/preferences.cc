@@ -36,270 +36,93 @@ extern "C" {
 #include "thread_ftp.h"
 #include "tools.h"
 
-extern char * preferences_features[PREFERENCE_ITEMS];
-extern char * preferences_defaults[PREFERENCE_ITEMS];
 extern PrefsInfo preferences; 
-
-void
-SetPreferencesDefaults(void)
-{
-  preferences.op_timeout=10;
-  preferences.auto_update=0;
-  preferences.auto_update_frequency=10;
-  preferences.display_keep_ratio=0;;
-  preferences.display_period=1;
-  preferences.receive_method=RECEIVE_METHOD_RAW1394;
-  strcpy(preferences.save_filename,"test.jpg");
-  preferences.save_scratch=SAVE_SCRATCH_SEQUENTIAL;
-  preferences.save_period=1;
-  strcpy(preferences.ftp_address,"ftp.sf.net");
-  strcpy(preferences.ftp_user,"user_string");
-  strcpy(preferences.ftp_password,"password_string");
-  strcpy(preferences.ftp_filename,"hello_world.bmp");
-  strcpy(preferences.ftp_path,"/path/");
-  preferences.ftp_scratch=FTP_SCRATCH_SEQUENTIAL;
-  preferences.ftp_period=1;
-  strcpy(preferences.real_address,"your.server.address");
-  strcpy(preferences.real_user,"user_string");
-  strcpy(preferences.real_password,"password_string");
-  strcpy(preferences.real_filename,"hello_world.rm");
-  preferences.real_port=4040;
-  strcpy(preferences.real_title,"Hello_World");
-  strcpy(preferences.real_author,"Myself");
-  strcpy(preferences.real_copyright,"(c)2032_no_spaces_allowed!");
-  preferences.real_recordable=0;
-#ifdef HAVE_REALLIB
-  preferences.real_audience=REAL_AUDIENCE_LAN_HIGH;
-  preferences.real_quality=REAL_QUALITY_NORMAL;
-  preferences.real_compatibility=REAL_COMPATIBILITY_6;
-#else
-  preferences.real_audience=0;
-  preferences.real_quality=0;
-  preferences.real_compatibility=0;
-  preferences.real_period=1;
-#endif
-  strcpy(preferences.video1394_device,"/dev/video1394");
-}
 
 void
 LoadConfigFile(void)
 {
-  FILE* fd;
-  char *filename;
-
-  SetPreferencesDefaults();
-
-  filename=GetFileName();
-  fd=fopen(filename,"r");
-  free(filename);
-
-  if (fd==NULL)
-    {
-      MainStatus("No config file yet: we create a default one");
-      // file not available, we create a default one
-      WriteConfigFile(); // defaults are used.
-    }
-  else
-    {
-      ParseConfigFile(fd);
-      fclose(fd);
-    }
+  preferences.op_timeout = gnome_config_get_int("coriander/global/one_push_timeout=10");
+  preferences.auto_update = gnome_config_get_int("coriander/global/auto_update=0");
+  preferences.auto_update_frequency = gnome_config_get_float("coriander/global/auto_update_frequency=10");
+  preferences.display_keep_ratio = gnome_config_get_int("coriander/display/keep_ratio=0");
+  preferences.display_period = gnome_config_get_int("coriander/display/period=1");
+  preferences.receive_method = gnome_config_get_int("coriander/receive/method=0");
+  g_free(preferences.video1394_device);
+  preferences.video1394_device = gnome_config_get_string("coriander/receive/video1394_device=/dev/video1394");
+  preferences.save_filename = gnome_config_get_string("coriander/save/filename=test.jpg");
+  g_free(preferences.save_filename);
+  preferences.save_scratch = gnome_config_get_int("coriander/save/scratch=0");
+  preferences.save_period = gnome_config_get_int("coriander/save/period=1");
+  g_free(preferences.ftp_address);
+  preferences.ftp_address = gnome_config_get_string("coriander/ftp/address=ftp.sf.net");
+  g_free(preferences.ftp_user);
+  preferences.ftp_user = gnome_config_get_string("coriander/ftp/user=username");
+  g_free(preferences.ftp_password);
+  preferences.ftp_password = gnome_config_get_string("coriander/ftp/password=don'tyouwish");
+  g_free(preferences.ftp_filename);
+  preferences.ftp_filename = gnome_config_get_string("coriander/ftp/filename=helloworld.jpg");
+  g_free(preferences.ftp_path);
+  preferences.ftp_path = gnome_config_get_string("coriander/ftp/path=/pub/");
+  preferences.ftp_scratch = gnome_config_get_int("coriander/ftp/scratch=0");
+  preferences.ftp_period = gnome_config_get_int("coriander/ftp/period=1");
+  g_free(preferences.real_address);
+  preferences.real_address = gnome_config_get_string("coriander/real/address=your.server.address");
+  g_free(preferences.real_user);
+  preferences.real_user = gnome_config_get_string("coriander/real/user=username");
+  g_free(preferences.real_password);
+  preferences.real_password = gnome_config_get_string("coriander/real/password=don'tyouwish");
+  g_free(preferences.real_filename);
+  preferences.real_filename = gnome_config_get_string("coriander/real/filenamehelloworld.rm");
+  preferences.real_port = gnome_config_get_int("coriander/real/port=4040");
+  g_free(preferences.real_title);
+  preferences.real_title = gnome_config_get_string("coriander/real/title=my stream");
+  g_free(preferences.real_author);
+  preferences.real_author = gnome_config_get_string("coriander/real/author=Myself");
+  g_free(preferences.real_copyright);
+  preferences.real_copyright = gnome_config_get_string("coriander/real/copyright=(c)2002");
+  preferences.real_recordable = gnome_config_get_int("coriander/real/recordable=1");
+  preferences.real_audience = gnome_config_get_int("coriander/real/audience=0");
+  preferences.real_quality = gnome_config_get_int("coriander/real/quality=0");
+  preferences.real_compatibility = gnome_config_get_int("coriander/real/compatibility=0");
+  preferences.real_period = gnome_config_get_int("coriander/real/period=1");
 }
-
 
 void
 WriteConfigFile(void)
 {
-  FILE* fd;
-  char *filename;
-  
-  filename=GetFileName();
-  fd=fopen(filename,"w");
-  free(filename);
+  gnome_config_set_float("coriander/global/one_push_timeout",preferences.op_timeout);
+  gnome_config_set_float("coriander/global/auto_update",preferences.auto_update);
+  gnome_config_set_float("coriander/global/auto_update_frequency",preferences.auto_update_frequency);
+  gnome_config_set_int("coriander/display/keep_ratio",preferences.display_keep_ratio);
+  gnome_config_set_int("coriander/display/period",preferences.display_period);
+  gnome_config_set_int("coriander/receive/method",preferences.receive_method);
+  gnome_config_set_string("coriander/receive/video1394_device",preferences.video1394_device);
+  gnome_config_set_string("coriander/save/filename",preferences.save_filename);
+  gnome_config_set_int("coriander/save/scratch",preferences.save_scratch);
+  gnome_config_set_int("coriander/save/period",preferences.save_period);
+  gnome_config_set_string("coriander/ftp/address",preferences.ftp_address);
+  gnome_config_set_string("coriander/ftp/user",preferences.ftp_user);
+  gnome_config_set_string("coriander/ftp/password",preferences.ftp_password);
+  gnome_config_set_string("coriander/ftp/filename",preferences.ftp_filename);
+  gnome_config_set_string("coriander/ftp/path",preferences.ftp_path);
+  gnome_config_set_int("coriander/ftp/scratch",preferences.ftp_scratch);
+  gnome_config_set_int("coriander/ftp/period",preferences.ftp_period);
+  gnome_config_set_string("coriander/real/address",preferences.real_address);
+  gnome_config_set_string("coriander/real/user",preferences.real_user);
+  gnome_config_set_string("coriander/real/password",preferences.real_password);
+  gnome_config_set_string("coriander/real/filename",preferences.real_filename);
+  gnome_config_set_int("coriander/real/port",preferences.real_port);
+  gnome_config_set_string("coriander/real/title",preferences.real_title);
+  gnome_config_set_string("coriander/real/author",preferences.real_author);
+  gnome_config_set_string("coriander/real/copyright",preferences.real_copyright);
+  gnome_config_set_int("coriander/real/recordable",preferences.real_recordable);
+  gnome_config_set_int("coriander/real/audience",preferences.real_audience);
+  gnome_config_set_int("coriander/real/quality",preferences.real_quality);
+  gnome_config_set_int("coriander/real/compatibility",preferences.real_compatibility);
+  gnome_config_set_int("coriander/real/period",preferences.real_period);
 
-  fprintf(fd,"%s %f\n",preferences_features[0],preferences.op_timeout);
-  fprintf(fd,"%s %f\n",preferences_features[1],preferences.auto_update);
-  fprintf(fd,"%s %f\n",preferences_features[2],preferences.auto_update_frequency);
-  fprintf(fd,"%s %d\n",preferences_features[3],preferences.display_keep_ratio);
-  fprintf(fd,"%s %d\n",preferences_features[4],preferences.display_period);
-  fprintf(fd,"%s %d\n",preferences_features[5],preferences.receive_method);
-  fprintf(fd,"%s %s\n",preferences_features[6],preferences.save_filename);
-  fprintf(fd,"%s %d\n",preferences_features[7],preferences.save_scratch);
-  fprintf(fd,"%s %d\n",preferences_features[8],preferences.save_period);
-  fprintf(fd,"%s %s\n",preferences_features[9],preferences.ftp_address);
-  fprintf(fd,"%s %s\n",preferences_features[10],preferences.ftp_user);
-  fprintf(fd,"%s %s\n",preferences_features[11],preferences.ftp_password);
-  fprintf(fd,"%s %s\n",preferences_features[12],preferences.ftp_filename);
-  fprintf(fd,"%s %s\n",preferences_features[13],preferences.ftp_path);
-  fprintf(fd,"%s %d\n",preferences_features[14],preferences.ftp_scratch);
-  fprintf(fd,"%s %d\n",preferences_features[15],preferences.ftp_period);
-  fprintf(fd,"%s %s\n",preferences_features[16],preferences.real_address);
-  fprintf(fd,"%s %s\n",preferences_features[17],preferences.real_user);
-  fprintf(fd,"%s %s\n",preferences_features[18],preferences.real_password);
-  fprintf(fd,"%s %s\n",preferences_features[19],preferences.real_filename);
-  fprintf(fd,"%s %d\n",preferences_features[20],preferences.real_port);
-  fprintf(fd,"%s %s\n",preferences_features[21],preferences.real_author);
-  fprintf(fd,"%s %s\n",preferences_features[22],preferences.real_title);
-  fprintf(fd,"%s %s\n",preferences_features[23],preferences.real_copyright);
-  fprintf(fd,"%s %d\n",preferences_features[24],preferences.real_recordable);
-  fprintf(fd,"%s %ld\n",preferences_features[25],preferences.real_audience);
-  fprintf(fd,"%s %d\n",preferences_features[26],preferences.real_quality);
-  fprintf(fd,"%s %d\n",preferences_features[27],preferences.real_compatibility);
-  fprintf(fd,"%s %d\n",preferences_features[28],preferences.real_period);
-  fprintf(fd,"%s %s\n",preferences_features[29],preferences.video1394_device);
-
-  fclose(fd);
+  gnome_config_sync();// ???
 }
 
-
-void
-ParseConfigFile(FILE* fd)
-{
-
-  char feature_string[STRING_SIZE],feature_value[STRING_SIZE];
-  int check,feature_id, i;
-  char *needle;
-  /* TODO: build a better string parser */
-  check=fscanf(fd,"%s %s",feature_string, feature_value);
-
-  while(check!=EOF)
-    {
-      feature_id=-1;
-      // find the current feature for feature_string
-      for (i=0;i<PREFERENCE_ITEMS;i++)
-	{
-	  needle=strstr(feature_string,preferences_features[i]);
-	  if (needle!=NULL)
-	    feature_id=i;
-	}
-      if (feature_id<0)
-	MainError("Invalid config item");
-      else
-	{
-
-// printf("key=%s (%d), value=%s\n", feature_string, feature_id, feature_value);
-	  switch(feature_id)
-	    {
-	    case ONE_PUSH_TIMEOUT:
-	      preferences.op_timeout=atof(feature_value);
-	      break;
-	    case AUTO_UPDATE:
-	      preferences.auto_update=atoi(feature_value);
-	      break;
-	    case AUTO_UPDATE_FREQUENCY:
-	      preferences.auto_update_frequency=atof(feature_value);
-	      break;
-	    case DISPLAY_KEEP_RATIO:
-	      preferences.display_keep_ratio=atoi(feature_value);
-	      break;
-	    case DISPLAY_PERIOD:
-	      preferences.display_period=atoi(feature_value);
-	      break;
-	    case RECEIVE_METHOD:
-	      preferences.receive_method=atoi(feature_value);
-	      break;
-	    case SAVE_FILENAME:
-	      strcpy(preferences.save_filename,feature_value);
-	      break;
-	    case SAVE_SCRATCH:
-	      preferences.save_scratch=atoi(feature_value);
-	      break;
-	    case SAVE_PERIOD:
-	      preferences.save_period=atoi(feature_value);
-	      break;
-	    case FTP_ADDRESS:
-	      strcpy(preferences.ftp_address,feature_value);
-	      break;
-	    case FTP_USER:
-	      strcpy(preferences.ftp_user,feature_value);
-	      break;
-	    case FTP_PASSWORD:
-	      strcpy(preferences.ftp_password,feature_value);
-	      break;
-	    case FTP_FILENAME:
-	      strcpy(preferences.ftp_filename,feature_value);
-	      break;
-	    case FTP_PATH:
-	      strcpy(preferences.ftp_path,feature_value);
-	      break;
-	    case FTP_SCRATCH:
-	      preferences.ftp_scratch=atoi(feature_value);
-	      break;
-	    case FTP_PERIOD:
-	      preferences.ftp_period=atoi(feature_value);
-	      break;
-	    case REAL_ADDRESS:
-	      strcpy(preferences.real_address,feature_value);
-	      break;
-	    case REAL_USER:
-	      strcpy(preferences.real_user,feature_value);
-	      break;
-	    case REAL_PASSWORD:
-	      strcpy(preferences.real_password,feature_value);
-	      break;
-	    case REAL_FILENAME:
-	      strcpy(preferences.real_filename,feature_value);
-	      break;
-	    case REAL_PORT:
-	      preferences.real_port=atoi(feature_value);
-	      break;
-	    case REAL_TITLE:
-	      strcpy(preferences.real_title,feature_value);
-	      break;
-	    case REAL_AUTHOR:
-	      strcpy(preferences.real_author,feature_value);
-	      break;
-	    case REAL_COPYRIGHT:
-	      strcpy(preferences.real_copyright,feature_value);
-	      break;
-	    case REAL_RECORDABLE:
-	      preferences.real_recordable=atoi(feature_value);
-	      break;
-	    case REAL_AUDIENCE:
-	      preferences.real_audience=atoi(feature_value);
-	      break;
-	    case REAL_QUALITY:
-	      preferences.real_quality=atoi(feature_value);
-	      break;
-	    case REAL_COMPATIBILITY:
-	      preferences.real_compatibility=atoi(feature_value);
-	      break;
-	    case REAL_PERIOD:
-	      preferences.real_period=atoi(feature_value);
-		  break;
-	    case VIDEO1394_DEVICE:
-	      strcpy(preferences.video1394_device,feature_value);
-	      break;
-	    default:
-	      MainError("Invalid config item id");
-	      break;
-	    }
-	}
-      check=fscanf(fd,"%s %s",feature_string, feature_value);
-    }
- 
-}
-
-char *
-GetFileName(void)
-{
-  char *path;
-  char *out;
-  const char * filename="/.coriander";
-
-  out=(char*)malloc(STRING_SIZE*sizeof(char));
-
-  path=getenv("HOME");
-
-  if (path==NULL)
-    {
-      MainError("Can't get HOME environment variable!");
-    }
-  else
-    {
-      sprintf(out,"%s%s",path,filename);
-    }
-  return(out);
-}
 
 }

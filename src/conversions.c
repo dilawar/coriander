@@ -333,12 +333,10 @@ y2rgb (unsigned char *src, unsigned char *dest, int NumPixels) {
   register int i = NumPixels;
   register int j = NumPixels + ( NumPixels << 1 );
   register int y;
-  register int r, g, b;
 
   while (i > 0)
     {
       y = (unsigned char) src[i--];
-      //YUV2RGB (y, 0, 0, r, g, b);
       dest[j--] = y;
       dest[j--] = y;
       dest[j--] = y;
@@ -350,13 +348,11 @@ y162rgb (unsigned char *src, unsigned char *dest, int NumPixels) {
   register int i = NumPixels << 1;
   register int j = NumPixels + ( NumPixels << 1 );
   register int y;
-  register int r, g, b;
 
   while (i > 0)
     {
       i--;
       y = (unsigned char)src[i--];
-      //YUV2RGB (y, 0, 0, r, g, b);
       dest[j--] = y;
       dest[j--] = y;
       dest[j--] = y;

@@ -15,8 +15,10 @@ AC_DEFUN([AC_CHECK_LIBDC],[
  	],[
         raw1394handle_t handle;
         dc1394_camerainfo info;
+	dc1394_cameracapture capture;
 	int value;
   	dc1394_get_sw_version(info.handle, info.id, &value);
+	capture.dma_device_file=NULL;
  	],[
  	libdc1394=yes
  	])
@@ -25,7 +27,7 @@ AC_DEFUN([AC_CHECK_LIBDC],[
            LIBDC_LIBS="-ldc1394_control"
            LIBDC_CFLAGS=""
 	else
-          AC_ERROR(libdc1394 is not installed or is too old.)
+          AC_ERROR(libdc1394 is not installed or is too old. Please update at least to CVS 2002-02-01)
  	fi
 dnl	AC_CHECK_LIB(dc1394_control, dc1394_get_sw_version,
 dnl          LIBDC_LIBS="-ldc1394_control"

@@ -67,6 +67,10 @@ UpdatePrefsDisplayFrame(void)
 void
 UpdatePrefsReceiveFrame(void)
 {
+  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_video1394_device"),
+			   preferences.receive_method==RECEIVE_METHOD_VIDEO1394);
+  gtk_widget_set_sensitive(lookup_widget(preferences_window,"label84"),
+			   preferences.receive_method==RECEIVE_METHOD_VIDEO1394);
 }
 
 void

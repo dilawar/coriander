@@ -130,6 +130,7 @@ main (int argc, char *argv[])
   // Create the permanent control windows.
   // (note BTW that other windows like 'file_selector' are created
   //  and destroyed on purpose while the following windows always exist.)
+  
   preferences_window= create_preferences_window();
   commander_window = create_commander_window();
   format7_window = create_format7_window();

@@ -78,7 +78,7 @@ gint IsoStartThread(void)
 	case 2: maxspeed=SPEED_400;break;
 	default: maxspeed=SPEED_100;break;
 	}
-      
+
       switch(preferences.receive_method)
 	{
 	case RECEIVE_METHOD_VIDEO1394:
@@ -92,7 +92,7 @@ gint IsoStartThread(void)
 	    }
 	  else
 	    {
-	      MainError("Can't use VIDEO1394. Try AUTO receive mode.");
+	      MainError("Can't use VIDEO1394. Try RAW1394 receive mode.");
 	      raw1394_destroy_handle(info->handle);
 	      pthread_mutex_unlock(&iso_service->mutex_data);
 	      FreeChain(iso_service);
@@ -109,41 +109,13 @@ gint IsoStartThread(void)
 	    }
 	  else
 	    {
-	      MainError("Can't use RAW1394. Try AUTO receive mode.");
+	      MainError("Can't use RAW1394. Try VIDEO1394 receive mode.");
 	      raw1394_destroy_handle(info->handle);
 	      pthread_mutex_unlock(&iso_service->mutex_data);
 	      FreeChain(iso_service);
 	      return(-1);
 	    }
 	  break;
-	  /*	case RECEIVE_METHOD_AUTO:
-	  if (dc1394_dma_setup_capture(camera->handle, camera->id, misc_info->iso_channel, 
-					misc_info->format, misc_info->mode, maxspeed,
-					misc_info->framerate, DMA_BUFFERS, &info->capture)
-	      == DC1394_SUCCESS)
-	    {
-	      //fprintf(stderr,"Auto video1394 selection\n");
-	      info->receive_method=RECEIVE_METHOD_VIDEO1394;
-	    }
-	  else
-	    if (dc1394_setup_capture(camera->handle, camera->id, misc_info->iso_channel, 
-				     misc_info->format, misc_info->mode, maxspeed,
-				     misc_info->framerate, &info->capture)
-		== DC1394_SUCCESS)
-	      {
-		//fprintf(stderr,"Auto raw1394 selection\n");
-		info->receive_method=RECEIVE_METHOD_RAW1394;
-	      }
-	    else
-	      {
-		MainError("Can't find receive method.");
-		raw1394_destroy_handle(info->handle);
-		pthread_mutex_unlock(&iso_service->mutex_data);
-		FreeChain(iso_service);
-		//fprintf(stderr," Could not start ISO\n");
-		return(-1);
-	      }
-	  */
 	}
       //fprintf(stderr," 1394 setup OK\n");
 
