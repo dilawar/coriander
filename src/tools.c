@@ -120,6 +120,19 @@ GetFormat7ModeInfo(camera_t* cam, int mode_id)
       MainError("Got a problem querying format7 image size");
     if (dc1394_query_format7_byte_per_packet(cam->camera_info.handle,cam->camera_info.id,mode_id,&mode->bpp)!=DC1394_SUCCESS)
       MainError("Got a problem querying format7 bytes per packet");
+    if (mode->bpp==0) {
+      MainError("Camera reported a BPP of ZERO. Trying to set maximum size to correct this.");
+      if (dc1394_set_format7_image_position(cam->camera_info.handle,cam->camera_info.id,mode_id,0,0)!=DC1394_SUCCESS)
+	MainError("Got a problem setting format7 image position");
+      if (dc1394_set_format7_image_size(cam->camera_info.handle,cam->camera_info.id,mode_id,mode->max_size_x,mode->max_size_y)!=DC1394_SUCCESS)
+	MainError("Got a problem setting format7 image size");
+      if (dc1394_query_format7_byte_per_packet(cam->camera_info.handle,cam->camera_info.id,mode_id,&mode->bpp)!=DC1394_SUCCESS)
+	MainError("Got a problem querying format7 bytes per packet");
+      if (mode->bpp==0) {
+	MainError("    BPP still zero. Giving up.");
+      }
+    }
+
     if (dc1394_query_format7_packet_para(cam->camera_info.handle,cam->camera_info.id,mode_id,&mode->min_bpp,&mode->max_bpp)!=DC1394_SUCCESS)
       MainError("Got a problem querying format7 packet parameters");
     if (dc1394_query_format7_pixel_number(cam->camera_info.handle,cam->camera_info.id,mode_id,&mode->pixnum)!=DC1394_SUCCESS)

@@ -2,6 +2,12 @@ Coriander, (c) 2000-2004 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 1.0.0
 	
+   May 18, 2004, by Damien Douxchamps
+   - don't require extensions when in raw output format
+   - if BPP is zero, set the image size to the maximum value and try to get
+     BPP again. This is necessary with some AVT cameras with old firmware.
+   - first testing version of another simple bayer pattern decoder
+	
    May 4, 2004, by Damien Douxchamps
    - already a very serious fix related to preferences...
 	

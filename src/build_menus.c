@@ -568,15 +568,21 @@ BuildBayerMenu(void)
   gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
 		      GTK_SIGNAL_FUNC (on_bayer_menu_activate),
 		      (int*)BAYER_DECODING_NEAREST); 
-  // add EDGE_SENSE option
+  // add simple option
+  glade_menuitem = gtk_menu_item_new_with_label (_("Simple"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
+		      GTK_SIGNAL_FUNC (on_bayer_menu_activate),
+		      (int*)BAYER_DECODING_SIMPLE); 
+  // add edge sense option
   glade_menuitem = gtk_menu_item_new_with_label (_("Edge Sense"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
   gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
 		      GTK_SIGNAL_FUNC (on_bayer_menu_activate),
 		      (int*)BAYER_DECODING_EDGE_SENSE); 
-  
-  // add DOWNSAMPLE option
+  // add downsample option
   glade_menuitem = gtk_menu_item_new_with_label (_("Downsample"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);

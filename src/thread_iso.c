@@ -312,6 +312,10 @@ IsoThread(void* arg)
       BayerEdgeSense(info->temp, iso_service->current_buffer->image,
 		     iso_service->current_buffer->width, iso_service->current_buffer->height, iso_service->current_buffer->bayer_pattern);
       break;
+    case BAYER_DECODING_SIMPLE:
+      BayerSimple(info->temp, iso_service->current_buffer->image,
+		  iso_service->current_buffer->width, iso_service->current_buffer->height, iso_service->current_buffer->bayer_pattern);
+      break;
     case BAYER_DECODING_DOWNSAMPLE:
       BayerDownsample(info->temp, iso_service->current_buffer->image,
 		      iso_service->current_buffer->width, iso_service->current_buffer->height, iso_service->current_buffer->bayer_pattern);
@@ -453,6 +457,7 @@ IsoThreadCheckParams(chain_t *iso_service)
     break;
   case BAYER_DECODING_EDGE_SENSE:
   case BAYER_DECODING_NEAREST:
+  case BAYER_DECODING_SIMPLE:
     switch (iso_service->current_buffer->stereo_decoding) {
     case STEREO_DECODING_FIELD:
     case STEREO_DECODING_INTERLACED:

@@ -49,18 +49,25 @@ SaveStartThread(camera_t* cam)
     /* setup save_thread: handles, ...*/
     pthread_mutex_lock(&save_service->mutex_data);
     strcpy(info->filename, cam->prefs.save_filename);
-    tmp = strrchr(info->filename, '.');
+
+    // if we use conversion, look for the extension.
+    if (cam->prefs.save_convert==SAVE_CONVERT_ON) {
+      tmp = strrchr(info->filename, '.');
     
-    if (tmp==NULL) {
-      MainError("You should supply an extension");
-      pthread_mutex_unlock(&save_service->mutex_data);
-      FreeChain(save_service);
-      return(-1);
+      if (tmp==NULL) {
+	MainError("You should supply an extension");
+	pthread_mutex_unlock(&save_service->mutex_data);
+	FreeChain(save_service);
+	return(-1);
+      }
+    
+      tmp[0] = '\0';// cut filename before point
+      strcpy(info->filename_ext, strrchr(cam->prefs.save_filename, '.'));
     }
-    
-    tmp[0] = '\0';// cut filename before point
-    strcpy(info->filename_ext, strrchr(cam->prefs.save_filename, '.'));
-    
+    else { // no conversion
+      strcpy(info->filename_ext, "");
+    }
+
     info->period=cam->prefs.save_period;
     CommonChainSetup(cam, save_service,SERVICE_SAVE);
     

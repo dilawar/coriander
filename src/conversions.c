@@ -846,6 +846,110 @@ BayerDownsample(unsigned char *src, unsigned char *dest, int sx, int sy, bayer_p
   
 }
 
+void
+BayerSimple(unsigned char *src, unsigned char *dest, int sx, int sy, bayer_pattern_t type)
+{
+  unsigned char *outR, *outG, *outB;
+  register int i,j;
+  int tmp;
+
+  switch (type) {
+  case BAYER_PATTERN_GRBG:
+  case BAYER_PATTERN_BGGR:
+    outR=&dest[0];
+    outG=&dest[1];
+    outB=&dest[2];
+    break;
+  case BAYER_PATTERN_GBRG:
+  case BAYER_PATTERN_RGGB:
+    outR=&dest[2];
+    outG=&dest[1];
+    outB=&dest[0];
+    break;
+  default:
+    outR=NULL;outG=NULL;outB=NULL;
+    break;
+  }
+  
+  switch (type) {
+  case BAYER_PATTERN_GRBG://---------------------------------------------------------
+  case BAYER_PATTERN_GBRG:
+    for (i=0;i<sy-1;i+=2) {
+      for (j=0;j<sx-1;j+=2) {
+	tmp=((src[i*sx+j]+src[(i+1)*sx+(j+1)])>>1);
+	CLIP(tmp,outG[((i*sx)+j)*3]);
+	tmp=src[i*sx+j+1];
+	CLIP(tmp,outR[((i*sx)+j)*3]);
+	tmp=src[(i+1)*sx+j];
+	CLIP(tmp,outB[((i*sx)+j)*3]);
+
+	tmp=((src[i*sx+j+1]+src[(i+1)*sx+(j+2)])>>1);
+	CLIP(tmp,outG[((i*sx)+j+1)*3]);
+	tmp=src[i*sx+j+2];
+	CLIP(tmp,outR[((i*sx)+j+1)*3]);
+	tmp=src[(i+1)*sx+j+1];
+	CLIP(tmp,outB[((i*sx)+j+1)*3]);
+      }
+      i+=1;
+      for (j=0;j<sx-1;j+=2) {
+	tmp=((src[(i+1)*sx+j]+src[i*sx+(j+1)])>>1);
+	CLIP(tmp,outG[((i*sx)+j)*3]);
+	tmp=src[(i+1)*sx+j+1];
+	CLIP(tmp,outR[((i*sx)+j)*3]);
+	tmp=src[i*sx+j];
+	CLIP(tmp,outB[((i*sx)+j)*3]);
+
+	tmp=((src[(i+1)*sx+j+1]+src[i*sx+(j+2)])>>1);
+	CLIP(tmp,outG[((i*sx)+j+1)*3]);
+	tmp=src[(i+1)*sx+j+2];
+	CLIP(tmp,outR[((i*sx)+j+1)*3]);
+	tmp=src[i*sx+j+1];
+	CLIP(tmp,outB[((i*sx)+j+1)*3]);
+      }
+    }
+    break;
+  case BAYER_PATTERN_BGGR://---------------------------------------------------------
+  case BAYER_PATTERN_RGGB:
+    for (i=0;i<sy-1;i+=1) {
+      for (j=0;j<sx-1;j+=2) {
+	tmp=((src[(i+1)*sx+j]+src[i*sx+(j+1)])>>1);
+	CLIP(tmp,outG[((i*sx)+j)*3]);
+	tmp=src[(i+1)*sx+j+1];
+	CLIP(tmp,outR[((i*sx)+j)*3]);
+	tmp=src[i*sx+j];
+	CLIP(tmp,outB[((i*sx)+j)*3]);
+
+	tmp=((src[(i+1)*sx+j+1]+src[i*sx+(j+2)])>>1);
+	CLIP(tmp,outG[((i*sx)+j+1)*3]);
+	tmp=src[(i+1)*sx+j+2];
+	CLIP(tmp,outR[((i*sx)+j+1)*3]);
+	tmp=src[i*sx+j+1];
+	CLIP(tmp,outB[((i*sx)+j+1)*3]);
+      }
+      i+=1;
+      for (j=0;j<sx-1;j+=2) {
+	tmp=((src[i*sx+j]+src[(i+1)*sx+(j+1)])>>1);
+	CLIP(tmp,outG[((i*sx)+j)*3]);
+	tmp=src[i*sx+j+1];
+	CLIP(tmp,outR[((i*sx)+j)*3]);
+	tmp=src[(i+1)*sx+j];
+	CLIP(tmp,outB[((i*sx)+j)*3]);
+
+	tmp=((src[i*sx+j+1]+src[(i+1)*sx+(j+2)])>>1);
+	CLIP(tmp,outG[((i*sx)+j+1)*3]);
+	tmp=src[i*sx+j+2];
+	CLIP(tmp,outR[((i*sx)+j+1)*3]);
+	tmp=src[(i+1)*sx+j+1];
+	CLIP(tmp,outB[((i*sx)+j+1)*3]);
+      }
+    }
+    break;
+  default: //---------------------------------------------------------
+    fprintf(stderr,"Bad bayer pattern ID\n");
+    break;
+  }
+}
+
 // change a 16bit stereo image (8bit/channel) into two 8bit images on top
 // of each other
 void

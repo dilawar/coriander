@@ -28,7 +28,8 @@ typedef enum
   NO_BAYER_DECODING,
   BAYER_DECODING_NEAREST,
   BAYER_DECODING_EDGE_SENSE,
-  BAYER_DECODING_DOWNSAMPLE
+  BAYER_DECODING_DOWNSAMPLE,
+  BAYER_DECODING_SIMPLE
 } bayer_decoding_t;
 
 typedef enum
@@ -105,6 +106,9 @@ BayerEdgeSense(unsigned char *src, unsigned char *dest, int sx, int sy, bayer_pa
 
 void
 BayerDownsample(unsigned char *src, unsigned char *dest, int sx, int sy, bayer_pattern_t type);
+
+void
+BayerSimple(unsigned char *src, unsigned char *dest, int sx, int sy, bayer_pattern_t type);
 
 void
 StereoDecode(unsigned char *src, unsigned char *dest, unsigned long long int NumPixels);
