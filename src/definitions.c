@@ -32,6 +32,9 @@ const char * feature_name_list[NUM_FEATURES] = {
   "Focus",
   "Temperature",
   "Trigger",
+  "Trigger Delay",
+  "White Shading",
+  "Frame Rate",
   "Zoom",
   "Pan",
   "Tilt",
@@ -54,6 +57,9 @@ const char *feature_abs_switch_list[NUM_FEATURES] = {
   "abs_focus_switch",
   "abs_temperature_switch",
   "abs_trigger_switch",
+  "abs_trigger_delay",
+  "abs_white_shading",
+  "abs_frame_rate",
   "abs_zoom_switch",
   "abs_pan_switch",
   "abs_tilt_switch",
@@ -76,6 +82,9 @@ const char *feature_abs_label_list[NUM_FEATURES] = {
   "m",
   "-",
   "-",
+  "s",
+  "-",
+  "fps",
   "X",
   "deg",
   "deg",
@@ -116,7 +125,9 @@ const char * fps_label_list[NUM_FRAMERATES] = {
   "7.5 fps",
   "15 fps",
   "30 fps",
-  "60 fps"
+  "60 fps",
+  "120 fps",
+  "240 fps"
 };
 
 const char * format7_mode_list[NUM_MODE_FORMAT7] = {
@@ -137,13 +148,20 @@ const char * format7_color_list[NUM_COLOR_FORMAT7] = {
   "YUV 4:4:4",
   "RGB 24bpp",
   "Mono 16bpp",
-  "RGB 48bpp"
+  "RGB 48bpp",
+  "Signed Mono 16bpp",
+  "Signed RGB 48bpp",
+  "Raw 8bpp",
+  "Raw 16bpp"
 };
 
-const char * phy_speed_list[4] = {
+const char * phy_speed_list[7] = {
   "100 Mbps",
   "200 Mbps",
   "400 Mbps",
+  "800 Mbps",
+  "1600 Mbps",
+  "3200 Mbps",
   "unknown"
 };
 

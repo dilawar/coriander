@@ -101,12 +101,12 @@ struct video_window
 #define VIDIOCGUNIT            _IOR('v',21, struct video_unit)         /* Get attached units */
 #define VIDIOCGCAPTURE         _IOR('v',22, struct video_capture)      /* Get subcapture */
 #define VIDIOCSCAPTURE         _IOW('v',23, struct video_capture)      /* Set subcapture */
-#define VIDIOCSPLAYMODE                _IOW('v',24, struct video_play_mode)    /* Set output video mode/feature */
+#define VIDIOCSPLAYMODE        _IOW('v',24, struct video_play_mode)    /* Set output video mode/feature */
 #define VIDIOCSWRITEMODE       _IOW('v',25, int)                       /* Set write mode */
-#define VIDIOCGPLAYINFO                _IOR('v',26, struct video_info)         /* Get current playback info from hardware */
+#define VIDIOCGPLAYINFO        _IOR('v',26, struct video_info)         /* Get current playback info from hardware */
 #define VIDIOCSMICROCODE       _IOW('v',27, struct video_code)         /* Load microcode into hardware */
-#define        VIDIOCGVBIFMT           _IOR('v',28, struct vbi_format)         /* Get VBI information */
-#define        VIDIOCSVBIFMT           _IOW('v',29, struct vbi_format)         /* Set VBI information */
+#define VIDIOCGVBIFMT          _IOR('v',28, struct vbi_format)         /* Get VBI information */
+#define VIDIOCSVBIFMT          _IOW('v',29, struct vbi_format)         /* Set VBI information */
 
 
 #endif

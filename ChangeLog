@@ -1,6 +1,11 @@
 Coriander, (c) 2000-2004 Damien Douxchamps <ddouxchamps@users.sf.net>
 
-Changes towards version 1.0.0
+Changes since version 1.0.0
+
+   Sep 17, 2004, by Damien Douxchamps
+   - start to update coriander for IIDC 1.31
+
+Changes in version 1.0.0
 	
    Sep 14, 2004, by Damien Douxchamps
    - simplify and cleanup fps display

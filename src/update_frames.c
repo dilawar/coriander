@@ -21,7 +21,7 @@
 extern GtkWidget *main_window;
 extern GtkWidget *preferences_window;
 extern CtxtInfo_t ctxt;
-extern char* phy_speed_list[4];
+extern char* phy_speed_list[7];
 extern char* phy_delay_list[4];
 extern char* power_class_list[8];
 extern Prefs_t preferences; 

@@ -113,6 +113,9 @@ BuildEmptyRange(int feature)
     gtk_misc_set_alignment (GTK_MISC (label2), 0, 0.5);
 
     break;
+  case FEATURE_WHITE_SHADING:
+    fprintf(stderr,"Not implemented\n");
+    break;
 
   default:
     if (camera->feature_set.feature[feature-FEATURE_MIN].absolute_capable!=0) {
@@ -307,6 +310,10 @@ void BuildRange(int feature)
     // connect:
     gtk_signal_connect (GTK_OBJECT (adjustment), "value_changed", GTK_SIGNAL_FUNC (on_scale_value_changed), (int*) FEATURE_TEMPERATURE);
     break;
+  case FEATURE_WHITE_SHADING:
+    fprintf(stderr,"Not implemented\n");
+    break;
+    
   default:
     adjustment=(GtkAdjustment*)gtk_adjustment_new(camera->feature_set.feature[feature-FEATURE_MIN].min,
 						  camera->feature_set.feature[feature-FEATURE_MIN].min,

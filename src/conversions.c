@@ -454,21 +454,21 @@ y162rgb (unsigned char *src, unsigned char *dest, unsigned long long int NumPixe
  *****************************************************************/
 
 void
-BayerNearestNeighbor(unsigned char *src, unsigned char *dest, int sx, int sy, bayer_pattern_t type)
+BayerNearestNeighbor(unsigned char *src, unsigned char *dest, int sx, int sy, int type)
 {
   unsigned char *outR, *outG, *outB;
   register int i,j;
 
   // sx and sy should be even
   switch (type) {
-  case BAYER_PATTERN_GRBG:
-  case BAYER_PATTERN_BGGR:
+  case COLOR_FILTER_FORMAT7_GRBG:
+  case COLOR_FILTER_FORMAT7_BGGR:
     outR=&dest[0];
     outG=&dest[1];
     outB=&dest[2];
     break;
-  case BAYER_PATTERN_GBRG:
-  case BAYER_PATTERN_RGGB:
+  case COLOR_FILTER_FORMAT7_GBRG:
+  case COLOR_FILTER_FORMAT7_RGGB:
     outR=&dest[2];
     outG=&dest[1];
     outB=&dest[0];
@@ -479,8 +479,8 @@ BayerNearestNeighbor(unsigned char *src, unsigned char *dest, int sx, int sy, ba
   }
   
   switch (type) {
-  case BAYER_PATTERN_GRBG: //-------------------------------------------
-  case BAYER_PATTERN_GBRG:
+  case COLOR_FILTER_FORMAT7_GRBG: //-------------------------------------------
+  case COLOR_FILTER_FORMAT7_GBRG:
     // copy original RGB data to output images
     for (i=0;i<sy;i+=2) {
       for (j=0;j<sx;j+=2) {
@@ -522,8 +522,8 @@ BayerNearestNeighbor(unsigned char *src, unsigned char *dest, int sx, int sy, ba
       outG[((sy-1)*sx+j)*3]=outG[((sy-2)*sx+j)*3];
     
     break;
-  case BAYER_PATTERN_BGGR: //-------------------------------------------
-  case BAYER_PATTERN_RGGB:
+  case COLOR_FILTER_FORMAT7_BGGR: //-------------------------------------------
+  case COLOR_FILTER_FORMAT7_RGGB:
     // copy original data
     for (i=0;i<sy;i+=2) {
       for (j=0;j<sx;j+=2) {
@@ -573,7 +573,7 @@ BayerNearestNeighbor(unsigned char *src, unsigned char *dest, int sx, int sy, ba
 
 
 void
-BayerEdgeSense(unsigned char *src, unsigned char *dest, int sx, int sy, bayer_pattern_t type)
+BayerEdgeSense(unsigned char *src, unsigned char *dest, int sx, int sy, int type)
 {
   unsigned char *outR, *outG, *outB;
   register int i,j;
@@ -582,14 +582,14 @@ BayerEdgeSense(unsigned char *src, unsigned char *dest, int sx, int sy, bayer_pa
 
   // sx and sy should be even
   switch (type) {
-  case BAYER_PATTERN_GRBG:
-  case BAYER_PATTERN_BGGR:
+  case COLOR_FILTER_FORMAT7_GRBG:
+  case COLOR_FILTER_FORMAT7_BGGR:
     outR=&dest[0];
     outG=&dest[1];
     outB=&dest[2];
     break;
-  case BAYER_PATTERN_GBRG:
-  case BAYER_PATTERN_RGGB:
+  case COLOR_FILTER_FORMAT7_GBRG:
+  case COLOR_FILTER_FORMAT7_RGGB:
     outR=&dest[2];
     outG=&dest[1];
     outB=&dest[0];
@@ -600,8 +600,8 @@ BayerEdgeSense(unsigned char *src, unsigned char *dest, int sx, int sy, bayer_pa
   }
 
   switch (type) {
-  case BAYER_PATTERN_GRBG://---------------------------------------------------------
-  case BAYER_PATTERN_GBRG:
+  case COLOR_FILTER_FORMAT7_GRBG://---------------------------------------------------------
+  case COLOR_FILTER_FORMAT7_GBRG:
     // copy original RGB data to output images
     for (i=0;i<sy;i+=2) {
       for (j=0;j<sx;j+=2) {
@@ -690,8 +690,8 @@ BayerEdgeSense(unsigned char *src, unsigned char *dest, int sx, int sy, bayer_pa
     }
       break;
 
-  case BAYER_PATTERN_BGGR: //---------------------------------------------------------
-  case BAYER_PATTERN_RGGB:
+  case COLOR_FILTER_FORMAT7_BGGR: //---------------------------------------------------------
+  case COLOR_FILTER_FORMAT7_RGGB:
     // copy original RGB data to output images
     for (i=0;i<sy;i+=2) {
       for (j=0;j<sx;j+=2) {
@@ -785,7 +785,7 @@ BayerEdgeSense(unsigned char *src, unsigned char *dest, int sx, int sy, bayer_pa
 }
 
 void
-BayerDownsample(unsigned char *src, unsigned char *dest, int sx, int sy, bayer_pattern_t type)
+BayerDownsample(unsigned char *src, unsigned char *dest, int sx, int sy, int type)
 {
   unsigned char *outR, *outG, *outB;
   register int i,j;
@@ -795,14 +795,14 @@ BayerDownsample(unsigned char *src, unsigned char *dest, int sx, int sy, bayer_p
   sy*=2;
 
   switch (type) {
-  case BAYER_PATTERN_GRBG:
-  case BAYER_PATTERN_BGGR:
+  case COLOR_FILTER_FORMAT7_GRBG:
+  case COLOR_FILTER_FORMAT7_BGGR:
     outR=&dest[0];
     outG=&dest[1];
     outB=&dest[2];
     break;
-  case BAYER_PATTERN_GBRG:
-  case BAYER_PATTERN_RGGB:
+  case COLOR_FILTER_FORMAT7_GBRG:
+  case COLOR_FILTER_FORMAT7_RGGB:
     outR=&dest[2];
     outG=&dest[1];
     outB=&dest[0];
@@ -813,8 +813,8 @@ BayerDownsample(unsigned char *src, unsigned char *dest, int sx, int sy, bayer_p
   }
   
   switch (type) {
-  case BAYER_PATTERN_GRBG://---------------------------------------------------------
-  case BAYER_PATTERN_GBRG:
+  case COLOR_FILTER_FORMAT7_GRBG://---------------------------------------------------------
+  case COLOR_FILTER_FORMAT7_GBRG:
     for (i=0;i<sy;i+=2) {
       for (j=0;j<sx;j+=2) {
 	tmp=((src[i*sx+j]+src[(i+1)*sx+(j+1)])>>1);
@@ -826,8 +826,8 @@ BayerDownsample(unsigned char *src, unsigned char *dest, int sx, int sy, bayer_p
       }
     }
     break;
-  case BAYER_PATTERN_BGGR://---------------------------------------------------------
-  case BAYER_PATTERN_RGGB:
+  case COLOR_FILTER_FORMAT7_BGGR://---------------------------------------------------------
+  case COLOR_FILTER_FORMAT7_RGGB:
     for (i=0;i<sy;i+=2) {
       for (j=0;j<sx;j+=2) {
 	tmp=((src[(i+1)*sx+j]+src[i*sx+(j+1)])>>1);
@@ -847,21 +847,21 @@ BayerDownsample(unsigned char *src, unsigned char *dest, int sx, int sy, bayer_p
 }
 
 void
-BayerSimple(unsigned char *src, unsigned char *dest, int sx, int sy, bayer_pattern_t type)
+BayerSimple(unsigned char *src, unsigned char *dest, int sx, int sy, int type)
 {
   unsigned char *outR, *outG, *outB;
   register int i,j;
   int tmp, base;
 
   switch (type) {
-  case BAYER_PATTERN_GRBG:
-  case BAYER_PATTERN_BGGR:
+  case COLOR_FILTER_FORMAT7_GRBG:
+  case COLOR_FILTER_FORMAT7_BGGR:
     outR=&dest[0];
     outG=&dest[1];
     outB=&dest[2];
     break;
-  case BAYER_PATTERN_GBRG:
-  case BAYER_PATTERN_RGGB:
+  case COLOR_FILTER_FORMAT7_GBRG:
+  case COLOR_FILTER_FORMAT7_RGGB:
     outR=&dest[2];
     outG=&dest[1];
     outB=&dest[0];
@@ -872,8 +872,8 @@ BayerSimple(unsigned char *src, unsigned char *dest, int sx, int sy, bayer_patte
   }
   
   switch (type) {
-  case BAYER_PATTERN_GRBG://---------------------------------------------------------
-  case BAYER_PATTERN_GBRG:
+  case COLOR_FILTER_FORMAT7_GRBG://---------------------------------------------------------
+  case COLOR_FILTER_FORMAT7_GBRG:
     for (i=0;i<sy-1;i+=1) {
       for (j=0;j<sx-1;j+=2) {
 	base=i*sx+j;
@@ -910,8 +910,8 @@ BayerSimple(unsigned char *src, unsigned char *dest, int sx, int sy, bayer_patte
       }
     }
     break;
-  case BAYER_PATTERN_BGGR://---------------------------------------------------------
-  case BAYER_PATTERN_RGGB:
+  case COLOR_FILTER_FORMAT7_BGGR://---------------------------------------------------------
+  case COLOR_FILTER_FORMAT7_RGGB:
     for (i=0;i<sy-1;i+=1) {
       for (j=0;j<sx-1;j+=2) {
 	base=i*sx+j;

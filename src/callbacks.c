@@ -400,6 +400,10 @@ on_scale_value_changed             ( GtkAdjustment    *adj,
       }
     }
     break;
+  case FEATURE_WHITE_SHADING:
+    fprintf(stderr,"Not yet implemented\n");
+    break;
+    
   default: // includes trigger_count
     if (dc1394_set_feature_value(camera->camera_info.handle, camera->camera_info.id,(int)user_data,adj->value)!=DC1394_SUCCESS)
       MainError("Could not set feature");

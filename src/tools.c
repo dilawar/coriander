@@ -33,7 +33,7 @@
 extern GtkWidget *main_window;
 extern char* trigger_mode_list[4];
 extern char* channel_num_list[16];
-extern char* phy_speed_list[4];
+extern char* phy_speed_list[7];
 extern char* phy_delay_list[4];
 extern char* power_class_list[8];
 extern char* fps_label_list[NUM_FRAMERATES];

@@ -196,7 +196,7 @@ typedef struct _Buffer_T
   int bpp; // this bpp is used for 16bit camera that only have e.g. 12 bits.
   unsigned long long int image_bytes;
   bayer_decoding_t bayer;
-  bayer_pattern_t bayer_pattern;
+  int bayer_pattern;
   stereo_decoding_t stereo_decoding;
   int format7_color_mode;
 

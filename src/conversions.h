@@ -22,6 +22,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <libdc1394/dc1394_control.h>
 
 typedef enum
 {
@@ -38,14 +39,6 @@ typedef enum
   STEREO_DECODING_INTERLACED,
   STEREO_DECODING_FIELD
 } stereo_decoding_t;
-
-typedef enum
-{
-  BAYER_PATTERN_BGGR,
-  BAYER_PATTERN_GRBG,
-  BAYER_PATTERN_RGGB,
-  BAYER_PATTERN_GBRG
-} bayer_pattern_t;
 
 // UYVY <-> YUYV
 void
@@ -99,16 +92,16 @@ y162rgb (unsigned char *src, unsigned char *dest, unsigned long long int NumPixe
 
 // BAYER -> RGB
 void
-BayerNearestNeighbor(unsigned char *src, unsigned char *dest, int sx, int sy, bayer_pattern_t type);
+BayerNearestNeighbor(unsigned char *src, unsigned char *dest, int sx, int sy, int type);
 
 void
-BayerEdgeSense(unsigned char *src, unsigned char *dest, int sx, int sy, bayer_pattern_t type);
+BayerEdgeSense(unsigned char *src, unsigned char *dest, int sx, int sy, int type);
 
 void
-BayerDownsample(unsigned char *src, unsigned char *dest, int sx, int sy, bayer_pattern_t type);
+BayerDownsample(unsigned char *src, unsigned char *dest, int sx, int sy, int type);
 
 void
-BayerSimple(unsigned char *src, unsigned char *dest, int sx, int sy, bayer_pattern_t type);
+BayerSimple(unsigned char *src, unsigned char *dest, int sx, int sy, int type);
 
 void
 StereoDecode(unsigned char *src, unsigned char *dest, unsigned long long int NumPixels);

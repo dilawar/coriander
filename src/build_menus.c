@@ -621,34 +621,41 @@ BuildBayerPatternMenu(void)
   
   new_menu = gtk_menu_new ();
 
-  // add no BGGR option
+  // add BGGR option
   glade_menuitem = gtk_menu_item_new_with_label (_("BGGR"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
   gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
 		      GTK_SIGNAL_FUNC (on_bayer_pattern_menu_activate),
-		      (int*)BAYER_PATTERN_BGGR); 
+		      (int*)COLOR_FILTER_FORMAT7_BGGR); 
   // add GRBG option
   glade_menuitem = gtk_menu_item_new_with_label (_("GRBG"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
   gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
 		      GTK_SIGNAL_FUNC (on_bayer_pattern_menu_activate),
-		      (int*)BAYER_PATTERN_GRBG); 
-  // add no RGGB option
+		      (int*)COLOR_FILTER_FORMAT7_GRBG); 
+  // add RGGB option
   glade_menuitem = gtk_menu_item_new_with_label (_("RGGB"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
   gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
 		      GTK_SIGNAL_FUNC (on_bayer_pattern_menu_activate),
-		      (int*)BAYER_PATTERN_RGGB); 
+		      (int*)COLOR_FILTER_FORMAT7_RGGB); 
   // add GBRG option
   glade_menuitem = gtk_menu_item_new_with_label (_("GBRG"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
   gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
 		      GTK_SIGNAL_FUNC (on_bayer_pattern_menu_activate),
-		      (int*)BAYER_PATTERN_GBRG); 
+		      (int*)COLOR_FILTER_FORMAT7_GBRG); 
+  // add Auto option
+  glade_menuitem = gtk_menu_item_new_with_label (_("Auto"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
+		      GTK_SIGNAL_FUNC (on_bayer_pattern_menu_activate),
+		      (int*)-1); 
 
   gtk_option_menu_set_menu (GTK_OPTION_MENU (new_option_menu), new_menu);
 
