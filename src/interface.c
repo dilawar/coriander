@@ -2413,10 +2413,8 @@ create_about_window (void)
   const gchar *authors[] = {
     "Damien Douxchamps <douxchamps@ieee.org>",
     "Dan Dennedy <dan@dennedy.org>",
-    "Marcus Lim <marcuzlim@yahoo.com>",
-    "Andreas Micklei <andreas.micklei@ivistar.de>",
-    "Olaf Ronneberger <ronneber@informatik.uni-freiburg.de>",
-    "(see the AUTHORS file for details)",
+    "See the AUTHORS file for more authors and contributors",
+    "Special thanks to Yasutoshi Onishi of Hamamatsu Corp.",
     NULL
   };
   GtkWidget *about_window;
@@ -2424,7 +2422,7 @@ create_about_window (void)
   about_window = gnome_about_new ("Coriander", VERSION,
                         _("Copyright 2000-2002 Damien Douxchamps"),
                         authors,
-                        _("The Gnome IEEE1394 Digital Camera Controller.\nWebsite: http://sourceforge.net/projects/coriander"),
+                        _("The Gnome IEEE1394 Digital Camera Controller website is\nhttp://sourceforge.net/projects/coriander"),
                         NULL);
   gtk_object_set_data (GTK_OBJECT (about_window), "about_window", about_window);
   gtk_window_set_modal (GTK_WINDOW (about_window), TRUE);

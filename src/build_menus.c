@@ -266,7 +266,7 @@ BuildFormat7ColorMenu(void)
 	  gtk_menu_append (GTK_MENU (color_num_menu), glade_menuitem);
 	  gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",
 			      GTK_SIGNAL_FUNC (on_edit_format7_color_activate),
-			      (int*)f); // i is an int passed in a pointer variable. This is 'normal'.
+			      (int*)f); // f is an int passed in a pointer variable. This is 'normal'.
 	}
       else
 	index[i]=0;

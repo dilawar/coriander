@@ -1,9 +1,14 @@
 Authors:
 -----------
-Video overlay				-- Dan Dennedy
-Video capture				-- Dan Dennedy
-Test pattern				-- Marcus Lim
-Bus topology functions			-- Andreas Micklei
-GDK display init function missing	-- John B. Burchett
-Format7 massive debug			-- Olaf Ronneberger 
-The rest				-- Damien Douxchamps
+Dan Dennedy				-- Video overlay and capture
+Damien Douxchamps			-- The rest
+
+Contributors and Beta Testers:
+----------------------------
+Yasutoshi Onishi			-- big help debugging Format7
+Xiong Quanren				-- big help debugging Bayer
+					   decoding functions
+Marcu Lim				-- test pattern function
+Andreas Micklei				-- Bus topology functions
+Olaf Ronneberger			-- Format7 massive debug
+

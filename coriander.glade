@@ -4236,13 +4236,11 @@ GRBG
   <copyright>Copyright 2000-2002 Damien Douxchamps</copyright>
   <authors>Damien Douxchamps &lt;douxchamps@ieee.org&gt;
 Dan Dennedy &lt;dan@dennedy.org&gt;
-Marcus Lim &lt;marcuzlim@yahoo.com&gt;
-Andreas Micklei &lt;andreas.micklei@ivistar.de&gt;
-Olaf Ronneberger &lt;ronneber@informatik.uni-freiburg.de&gt;
-(see the AUTHORS file for details)
+See the AUTHORS file for more authors and contributors
+Special thanks to Yasutoshi Onishi of Hamamatsu Corp.
 </authors>
-  <comments>The Gnome IEEE1394 Digital Camera Controller.
-Website: http://sourceforge.net/projects/coriander</comments>
+  <comments>The Gnome IEEE1394 Digital Camera Controller website is
+http://sourceforge.net/projects/coriander</comments>
 </widget>
 
 <widget>
