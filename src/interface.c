@@ -48,7 +48,7 @@ static GnomeUIInfo file_menu_uiinfo[] =
     NULL,
     (gpointer) on_exit_activate, NULL, NULL,
     GNOME_APP_PIXMAP_STOCK, GNOME_STOCK_MENU_EXIT,
-    0, (GdkModifierType) 0, NULL
+    GDK_Q, (GdkModifierType) GDK_CONTROL_MASK, NULL
   },
   GNOMEUIINFO_END
 };
@@ -60,56 +60,56 @@ static GnomeUIInfo window_menu_uiinfo[] =
     NULL,
     (gpointer) on_porthole_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, (GdkModifierType) 0, NULL
+    GDK_P, (GdkModifierType) GDK_CONTROL_MASK, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("_Aperture"),
     NULL,
     (gpointer) on_aperture_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, (GdkModifierType) 0, NULL
+    GDK_A, (GdkModifierType) GDK_CONTROL_MASK, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("C_olor"),
     NULL,
     (gpointer) on_color_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, (GdkModifierType) 0, NULL
+    GDK_O, (GdkModifierType) GDK_CONTROL_MASK, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("_Capture"),
     NULL,
     (gpointer) on_capture_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, (GdkModifierType) 0, NULL
+    GDK_C, (GdkModifierType) GDK_CONTROL_MASK, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("_Status"),
     NULL,
     (gpointer) on_status_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, (GdkModifierType) 0, NULL
+    GDK_S, (GdkModifierType) GDK_CONTROL_MASK, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("_Temperature"),
     NULL,
     (gpointer) on_temp_window_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, (GdkModifierType) 0, NULL
+    GDK_T, (GdkModifierType) GDK_CONTROL_MASK, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("Format_7 Setup"),
     NULL,
     (gpointer) on_format7_window_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, (GdkModifierType) 0, NULL
+    GDK_7, (GdkModifierType) GDK_CONTROL_MASK, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("Format_6 Setup"),
     NULL,
     (gpointer) on_format6_window_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, (GdkModifierType) 0, NULL
+    GDK_6, (GdkModifierType) GDK_CONTROL_MASK, NULL
   },
   GNOMEUIINFO_END
 };
@@ -121,7 +121,7 @@ static GnomeUIInfo format_0_menu_uiinfo[] =
     NULL,
     (gpointer) on_f0_mode0_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, (GdkModifierType) 0, NULL
+    GDK_1, (GdkModifierType) GDK_CONTROL_MASK, NULL
   },
   GNOMEUIINFO_SEPARATOR,
   {
@@ -129,7 +129,7 @@ static GnomeUIInfo format_0_menu_uiinfo[] =
     NULL,
     (gpointer) on_f0_mode1_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, (GdkModifierType) 0, NULL
+    GDK_2, (GdkModifierType) GDK_CONTROL_MASK, NULL
   },
   GNOMEUIINFO_SEPARATOR,
   {
@@ -137,28 +137,28 @@ static GnomeUIInfo format_0_menu_uiinfo[] =
     NULL,
     (gpointer) on_f0_mode2_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, (GdkModifierType) 0, NULL
+    GDK_3, (GdkModifierType) GDK_CONTROL_MASK, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("640x480 YUV (4:2:2)"),
     NULL,
     (gpointer) on_f0_mode3_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, (GdkModifierType) 0, NULL
+    GDK_4, (GdkModifierType) GDK_CONTROL_MASK, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("640x480 RGB 24bpp"),
     NULL,
     (gpointer) on_f0_mode4_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, (GdkModifierType) 0, NULL
+    GDK_5, (GdkModifierType) GDK_CONTROL_MASK, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("640x480 Mono 8bpp"),
     NULL,
     (gpointer) on_f0_mode5_ativate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, (GdkModifierType) 0, NULL
+    GDK_0, (GdkModifierType) GDK_CONTROL_MASK, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("640x480 Mono 16bpp"),
@@ -498,6 +498,7 @@ create_commander_window (void)
   GtkWidget *trigger_mode;
   GtkWidget *trigger_mode_menu;
   GtkWidget *main_status;
+  GtkAccelGroup *accel_group;
 
   commander_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_object_set_data (GTK_OBJECT (commander_window), "commander_window", commander_window);
@@ -518,8 +519,10 @@ create_commander_window (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (menubar);
   gtk_box_pack_start (GTK_BOX (vbox26), menubar, FALSE, FALSE, 0);
+  accel_group = gtk_accel_group_new();
+  gtk_accel_group_attach(accel_group, GTK_OBJECT(commander_window));
   gnome_app_fill_menu (GTK_MENU_SHELL (menubar), menubar_uiinfo,
-                       NULL, FALSE, 0);
+                       accel_group, TRUE, 0);
 
   gtk_widget_ref (menubar_uiinfo[0].widget);
   gtk_object_set_data_full (GTK_OBJECT (commander_window), "file",
@@ -1288,6 +1291,9 @@ create_porthole_window (void)
   GtkWidget *zoom_op;
   GtkWidget *zoom_scale;
   GtkWidget *overlay_button;
+  GtkAccelGroup *accel_group;
+
+  accel_group = gtk_accel_group_new ();
 
   porthole_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_object_set_data (GTK_OBJECT (porthole_window), "porthole_window", porthole_window);
@@ -1655,6 +1661,9 @@ create_porthole_window (void)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 5, 0);
   gtk_container_set_border_width (GTK_CONTAINER (overlay_button), 2);
+  gtk_widget_add_accelerator (overlay_button, "toggled", accel_group,
+                              GDK_space, 0,
+                              GTK_ACCEL_VISIBLE);
 
   gtk_signal_connect (GTK_OBJECT (porthole_window), "destroy_event",
                       GTK_SIGNAL_FUNC (gtk_widget_hide),
@@ -1710,6 +1719,8 @@ create_porthole_window (void)
   gtk_signal_connect (GTK_OBJECT (overlay_button), "toggled",
                       GTK_SIGNAL_FUNC (on_overlay_button_toggled),
                       NULL);
+
+  gtk_window_add_accel_group (GTK_WINDOW (porthole_window), accel_group);
 
   return porthole_window;
 }

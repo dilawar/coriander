@@ -247,8 +247,7 @@ void SelectCamera(int i)
   selfid=&selfids[i];
 }
 
-void
-MainError(const char *string)
+void MainError(const char *string)
 {
   char temp[256];
   sprintf(temp," ERROR: %s",string);
@@ -257,11 +256,44 @@ MainError(const char *string)
 
 }
 
-void
-MainStatus(const char *string)
+void MainStatus(const char *string)
 {
   gtk_statusbar_remove( (GtkStatusbar*) lookup_widget(commander_window,"main_status"), ctxt.main_ctxt, ctxt.main_id);
   ctxt.main_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"main_status"), ctxt.main_ctxt, string);
+}
+
+static void MessageBox_clicked (GtkWidget *widget, gpointer data)
+{
+    gtk_widget_destroy( GTK_WIDGET(data));
+}
+
+static void MessageBox_destroy (GtkWidget *widget, gpointer data)
+{
+    gtk_grab_remove (GTK_WIDGET(widget));
+}
+
+void MessageBox( gchar *message)
+{
+  static GtkWidget *label;
+  GtkWidget *button;
+  GtkWidget *dialog_window;
+  
+  dialog_window = gtk_dialog_new();
+  gtk_signal_connect( GTK_OBJECT(dialog_window), "destroy", GTK_SIGNAL_FUNC(MessageBox_destroy), dialog_window);
+  gtk_window_set_title (GTK_WINDOW(dialog_window), "Coriander Message");
+  gtk_container_border_width (GTK_CONTAINER(dialog_window), 5);
+  label = gtk_label_new (message);
+  gtk_misc_set_padding (GTK_MISC(label), 10, 10);
+  gtk_box_pack_start (GTK_BOX(GTK_DIALOG(dialog_window)->vbox), label, TRUE, TRUE, 0);
+  gtk_widget_show (label);
+  button = gtk_button_new_with_label ("OK");
+  gtk_signal_connect (GTK_OBJECT(button), "clicked", GTK_SIGNAL_FUNC(MessageBox_clicked), dialog_window);
+  GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
+  gtk_box_pack_start (GTK_BOX(GTK_DIALOG(dialog_window)->action_area), button, TRUE, TRUE, 0);
+  gtk_widget_grab_default (button);
+  gtk_widget_show (button);
+  gtk_widget_show (dialog_window);
+  gtk_grab_add (dialog_window);
 }
 
 void

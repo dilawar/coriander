@@ -12,6 +12,7 @@ Changes in version 0.17-pre2, Sept 16, 2001, by Dan Dennedy:
       continually overwrite same file
     - added ftp client option to capture based upon FtpLib, which
       is detected with autoconf and handled appropriately.
+    - tools.c: added MainStatus()
       
     Sept 17:
     - capture.c: optimize re-use of porthole buffer when capturing.
@@ -20,6 +21,10 @@ Changes in version 0.17-pre2, Sept 16, 2001, by Dan Dennedy:
     - capture.c: apply speed detection code to a few more calls to
       dc1394_setup_capture.
     - capture.c, ftp: do not issue chdir if path is empty string.
+    - tools.c: added MessageBox()
+    - callbacks.c: enabling FTP without FtpLib invokes MessageBox.
+    - added menu accelerators (see src/interface.mods)
+    - removed international support from build
 
 Changes in version 0.17-pre1, July 25, 2001:
 

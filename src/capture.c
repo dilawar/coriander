@@ -34,8 +34,11 @@
 #include "raw1394support.h"
 #include <libdc1394/dc1394_control.h>
 #include <string.h>
-#include <ftplib.h>
 #include <limits.h>
+
+#ifdef HAVE_FTPLIB
+#include <ftplib.h>
+#endif
 
 /* globals required by capture */
 unsigned char g_rgb_buffer[1600*1200*3];
@@ -569,6 +572,8 @@ gboolean ftp_single_frame(gchar *filename, gchar *host, gchar *path, gchar *dest
     MainStatus("ftp: done.");
     
     FtpQuit(ftp_handle);
-#endif
     return TRUE;
+#else
+    return FALSE;
+#endif
 }
