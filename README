@@ -9,7 +9,9 @@
 ==========================================================================
 		
 
-(This README is for version 0.33)
+(This README is for version 0.99. Features additions are thus frozen until
+1.00 is out. 1.00 will also include a manual, which is definitely
+something long overdue)
 
 Hello world!
 
@@ -125,13 +127,13 @@ _______________________
 
 [1] 1394 T.A.		: http://www.1394ta.org
 [2] libdc1394		: http://sourceforge.net/projects/libdc1394
-[3] linux1394		: http://sourceforge.net/projects/linux1394
+[3] linux1394		: http://www.linux1394.org
 [4] Coriander		: http://sourceforge.net/projects/coriander
 [5] linux1394		: http://sourceforge.net/projects/libraw1394
 [6] LiViD    		: http://www.linuxvideo.org
 [7] 1394 IIDC camera list:
 	http://www.tele.ucl.ac.be/PEOPLE/DOUXCHAMPS/ieee1394/cameras/
-[8] linux1394 HOWTO,...	: http://linux1394.sourceforge.net
+[8] linux1394 HOWTO	: http://www.linux1394.org/start_req.html
 [9] ftplib 		: http://www.eclipse.net/~pfau/ftplib
 [10] Nvidia		: http://www.nvidia.com
 [11] SDL		: http://www.libsdl.org
