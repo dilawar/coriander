@@ -298,6 +298,11 @@ IsoThread(void* arg)
 	y162y((unsigned char *)info->capture.capture_buffer,info->temp,
 	      info->orig_sizex*info->orig_sizey, iso_service->current_buffer->bpp);
       }
+      else {
+	// it is necessary to put this here and not in the thread init or IsoThreadCheckParams function because
+	// the buffer might change at every capture (typically when capture is too slow and buffering is performed)
+	info->temp=(unsigned char*)info->capture.capture_buffer;
+      }
       break;
     }
 
@@ -316,9 +321,6 @@ IsoThread(void* arg)
 		      iso_service->current_buffer->width, iso_service->current_buffer->height, iso_service->current_buffer->bayer_pattern);
       break;
     case NO_BAYER_DECODING:
-      if ((unsigned char*)info->temp!=(unsigned char*)info->capture.capture_buffer) {
-	fprintf(stderr,"Kaiiii! Capture buffer changed!\n");
-      }
       // this is only necessary if no stereo was performed
       if (iso_service->current_buffer->stereo_decoding==NO_STEREO_DECODING) {
 	memcpy(iso_service->current_buffer->image, info->temp,
@@ -450,7 +452,7 @@ IsoThreadCheckParams(chain_t *iso_service)
 	AllocTempBuffer(info->orig_sizey*info->orig_sizex*sizeof(unsigned char),info);
       else {
 	AllocTempBuffer(0,info);
-	info->temp=(unsigned char *)info->capture.capture_buffer;
+	//info->temp=(unsigned char *)info->capture.capture_buffer;
       }
       break;
     }
@@ -472,7 +474,7 @@ IsoThreadCheckParams(chain_t *iso_service)
 	AllocTempBuffer(info->orig_sizey*info->orig_sizex*sizeof(unsigned char),info);
       else {
 	AllocTempBuffer(0,info);
-	info->temp=(unsigned char *)info->capture.capture_buffer;
+	//info->temp=(unsigned char *)info->capture.capture_buffer;
       }
       break;
     }
@@ -493,7 +495,7 @@ IsoThreadCheckParams(chain_t *iso_service)
     case NO_STEREO_DECODING:
       AllocImageBuffer(iso_service);
       AllocTempBuffer(0,info);
-      info->temp=(unsigned char *)info->capture.capture_buffer;
+      //info->temp=(unsigned char *)info->capture.capture_buffer;
       break;
     }
     break;

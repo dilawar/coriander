@@ -267,13 +267,13 @@ UpdateCameraStatusFrame(void)
   // IIDC software revision:
   if (dc1394_get_sw_version(camera->camera_info.handle, camera->camera_info.id, &sw_version)!=DC1394_SUCCESS) {
     MainError("Could not get the IIDC software revision");
-    sw_version=0x000000;
+    sw_version=0x0;
   }
   switch (sw_version) {
-  case 0x000100: sprintf(temp," 1.04 ");break;
-  case 0x000101: sprintf(temp," 1.20 ");break;
-  case 0x000102: sprintf(temp," 1.30 ");break;
-  case 0x000114: sprintf(temp," Point Grey 114 ");break;
+  case 0x100: sprintf(temp," 1.04 ");break;
+  case 0x101: sprintf(temp," 1.20 ");break;
+  case 0x102: sprintf(temp," 1.30 ");break;
+  case 0x114: sprintf(temp," Point Grey 114 ");break;
   default: sprintf(temp," ?? 0x%x ",sw_version);
   }
   gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"camera_dc_status"), ctxt.dc_ctxt, ctxt.dc_id);

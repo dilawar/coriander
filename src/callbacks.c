@@ -284,7 +284,10 @@ on_format7_packet_size_changed               (GtkAdjustment    *adj,
   
   value=(int)adj->value;
 
-  value=value-value%4;
+  //value=value-value%camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].min_bpp;
+  value=NearestValue(value,camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].min_bpp,
+		     camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].min_bpp,
+		     camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].max_bpp);
 
   // do something if we were called by a first generation signal:
   if (gtk_signal_n_emissions_by_name(GTK_OBJECT (adj), "changed")==0) {
@@ -294,23 +297,22 @@ on_format7_packet_size_changed               (GtkAdjustment    *adj,
     if (dc1394_set_format7_byte_per_packet(camera->camera_info.handle, camera->camera_info.id, 
 					   camera->format7_info.edit_mode, value)!=DC1394_SUCCESS)
       MainError("Could not change Format7 bytes per packet");
+
+    if (dc1394_query_format7_byte_per_packet(camera->camera_info.handle, camera->camera_info.id,
+					     camera->format7_info.edit_mode,&bpp)!=DC1394_SUCCESS) 
+      MainError("Could not query Format7 bytes per packet");
     else {
-      if (dc1394_query_format7_byte_per_packet(camera->camera_info.handle, camera->camera_info.id,
-					       camera->format7_info.edit_mode,&bpp)!=DC1394_SUCCESS) 
-	MainError("Could not query Format7 bytes per packet");
-      else {
-	camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].bpp=bpp;
-    
-	// tell the range to change its setting
-	adj->value=bpp;
-	gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
+      camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].bpp=bpp;
       
-	usleep(100e3);
-      }
+      // tell the range to change its setting
+      adj->value=bpp;
+      gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
+      
+      usleep(100e3);
     }
 
     IsoFlowResume(&state);
-
+    
   }
 } 
 
@@ -398,25 +400,41 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
 				       gpointer         user_data)
 {
   int sx, sy, px, py;
+  Format7ModeInfo* info;
   //fprintf(stderr,"%d\n",camera->format7_info.edit_mode);
   if (camera->format7_info.edit_mode>=0) { // check if F7 is supported
-    sx=camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].size_x;
-    sy=camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].size_y;
-    px=camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].pos_x;
-    py=camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].pos_y;
-    
+    info=&camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN];
+    sx=info->size_x;
+    sy=info->size_y;
+    px=info->pos_x;
+    py=info->pos_y;
+    /*
+    fprintf(stderr,"%d %d %d %d %d %d\n",info->max_size_x, info->max_size_y,
+	    info->step_x, info->step_y, 
+	    info->step_pos_x, info->step_pos_y);
+    */
     switch((int)user_data) {
     case FORMAT7_SIZE_X:
       sx=adj->value;
+      sx=NearestValue(sx,info->step_x, info->step_x, info->max_size_x);
       break;
     case FORMAT7_SIZE_Y:
       sy=adj->value;
+      sy=NearestValue(sy,info->step_y, info->step_y, info->max_size_y);
       break;
     case FORMAT7_POS_X:
       px=adj->value;
+      if (info->use_unit_pos>0)
+	px=NearestValue(px,info->step_pos_x, 0, info->max_size_x - info->step_pos_x);
+      else
+	px=NearestValue(px,info->step_x, 0, info->max_size_x - info->step_x);
       break;
     case FORMAT7_POS_Y:
       py=adj->value;
+      if (info->use_unit_pos>0)
+	py=NearestValue(py,info->step_pos_y, 0, info->max_size_y - info->step_pos_y);
+      else
+	py=NearestValue(py,info->step_y, 0, info->max_size_y - info->step_y);
       break;
     }
     SetFormat7Crop(sx,sy,px,py, camera->format7_info.edit_mode);

@@ -259,7 +259,7 @@ void IsoFlowResume(int *state)
 	MainError("ISO could not be restarted. Trying again for 5 seconds");
 	timeout=0;
 	while ((!camera->misc_info.is_iso_on)&&(timeout<50)) {
-	  usleep(500000);
+	  usleep(5000);
 	  timeout+=5;
 	  if (dc1394_start_iso_transmission(camera->camera_info.handle, camera->camera_info.id)!=DC1394_SUCCESS)
 	    // ... (if not done, restarting is no more possible)
@@ -962,25 +962,6 @@ SetFormat7Crop(int sx, int sy, int px, int py, int mode) {
 
   info=&camera->format7_info.mode[mode-MODE_FORMAT7_MIN];
 
-  // use +step/2 to 'round' instead of using 'floor'
-  // (don't do this: it breaks with bad values...)
-  //sx=sx+info->step_x/2;
-  sx=sx-sx%info->step_x;
-  //sy=sy+info->step_y/2;
-  sy=sy-sy%info->step_y;
-
-  if (info->use_unit_pos>0) {
-    //px=px+info->step_pos_x/2;
-    px=px-px%info->step_pos_x;
-    //py=py+info->step_pos_y/2;
-    py=py-py%info->step_pos_y;
-  }
-  else {
-    //px=px+info->step_x/2;
-    px=px-px%info->step_x;
-    //py=py+info->step_y/2;
-    py=py-py%info->step_y;
-  }
   adjpx=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_hposition_scale")));
   adjpy=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_vposition_scale")));
   adjsx=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_hsize_scale")));
@@ -1039,3 +1020,25 @@ SetFormat7Crop(int sx, int sy, int px, int py, int mode) {
     }
   }
 } 
+
+int
+NearestValue(int value, int step, int min, int max) {
+
+  int low, high;
+
+  if (((min-max)%step) !=0) {
+    MainError("Stange values entered in NearestValue...");
+  }
+
+  low=value-(value%step);
+  high=value-(value%step)+step;
+  if (low<min)
+    low=min;
+  if (high>max)
+    high=max;
+
+  if (abs(low-value)<abs(high-value))
+    return low;
+  else
+    return high;
+}

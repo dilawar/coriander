@@ -109,5 +109,8 @@ main_timeout_handler(gpointer* port_num);
 void
 SetFormat7Crop(int sx, int sy, int px, int py, int mode);
 
+int
+NearestValue(int value, int step, int min, int max);
+
 #endif
 
