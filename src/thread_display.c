@@ -369,7 +369,7 @@ convert_to_yuv_for_SDL(buffer_t *buffer, unsigned char *dest)
       uyyvyy2uyvy(buffer->image,dest,buffer->width*buffer->height);
       break;
     case COLOR_FORMAT7_YUV422:
-      memcpy(dest,buffer->image,buffer->width*buffer->height*2);
+      yuyv2uyvy(buffer->image,dest,buffer->width*buffer->height*2);
       break;
     case COLOR_FORMAT7_YUV444:
       uyv2uyvy(buffer->image,dest,buffer->width*buffer->height);
