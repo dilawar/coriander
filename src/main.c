@@ -40,12 +40,7 @@
 
 GtkWidget *commander_window;
 GtkWidget *porthole_window;
-GtkWidget *color_window;
-GtkWidget *status_window;
-GtkWidget *aperture_window;
 GtkWidget *about_window;
-GtkWidget *capture_window;
-GtkWidget *temperature_window;
 GtkWidget *format7_window;
 GtkWidget *preferences_window;
 
@@ -146,11 +141,6 @@ main (int argc, char *argv[])
   preferences_window= create_preferences_window();
   commander_window = create_commander_window();
   porthole_window = create_porthole_window();
-  color_window = create_color_window();
-  aperture_window = create_aperture_window();
-  status_window = create_status_window();
-  capture_window = create_capture_window();
-  temperature_window = create_temp_window();
   format7_window = create_format7_window();
 
   gtk_widget_show (commander_window); // this is the only window shown at boot-time
