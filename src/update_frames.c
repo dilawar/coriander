@@ -405,7 +405,7 @@ void
 UpdateFormat7InfoFrame(void)
 {
 
-  char *temp;
+  char *temp=NULL;
   Format7ModeInfo_t *mode;
   float bpp;
   int bytesize, grandtotal;

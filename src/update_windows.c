@@ -28,7 +28,6 @@ UpdateFormat7Window(void)
   UpdateFormat7BppRange();
   BuildFormat7ColorMenu();
   UpdateFormat7InfoFrame();
-
 }
 
 void
@@ -82,5 +81,7 @@ UpdateAllWindows(void)
   UpdateFeatureWindow();
   UpdateStatusWindow();
   UpdateCommanderWindow();
-  UpdateFormat7Window();
+  if (camera->format7_info.edit_mode!=-1)
+    UpdateFormat7Window();
+  //fprintf(stderr," Finished updating\n");
 }
