@@ -104,9 +104,6 @@ RealStopThread(void);
 int
 RealSetup(realthread_info_t *info, chain_t *service);
   
-void
-convert_to_yuv_for_real(unsigned char *src, unsigned char *dest, int mode, int width, int height, long int bytes_per_frame);
-
 #ifdef __cplusplus
 }
 #endif

@@ -192,7 +192,7 @@ RealThread(void* arg)
 		  convert_to_rgb(real_service->current_buffer,
 				 info->real_buffer, real_service->mode,
 				 real_service->width, real_service->height,
-				 real_service->format7_color_mode);// RGB
+				 real_service->format7_color_mode, real_service->bayer);// RGB
 
 		  //fprintf(stderr,"Setting pointer to sample\n");
 		  info->res = info->pSample->SetBuffer(info->real_buffer,
@@ -834,56 +834,5 @@ int RealSetup(realthread_info_t *info, chain_t *service)
   return(1);
 }
 
-void
-convert_to_yuv_real(unsigned char *src, unsigned char *dest, int mode, int width, int height, long int bytes_per_frame)
-{
-  switch(mode)
-    {
-    case MODE_160x120_YUV444:
-      uyv2uyvy(src,dest,width*height);
-      break;
-    case MODE_320x240_YUV422:
-    case MODE_640x480_YUV422:
-    case MODE_800x600_YUV422:
-    case MODE_1024x768_YUV422:
-    case MODE_1280x960_YUV422:
-    case MODE_1600x1200_YUV422:
-      memcpy(dest,src,bytes_per_frame);
-      break;
-    case MODE_640x480_YUV411:
-      uyyvyy2uyvy(src,dest,width*height);
-      break;
-    case MODE_640x480_RGB:
-    case MODE_800x600_RGB:
-    case MODE_1024x768_RGB:
-    case MODE_1280x960_RGB:
-    case MODE_1600x1200_RGB:
-      rgb2uyvy(src,dest,width*height);
-      break;
-    case MODE_640x480_MONO:
-    case MODE_800x600_MONO:
-    case MODE_1024x768_MONO:
-    case MODE_1280x960_MONO:
-    case MODE_1600x1200_MONO:
-      y2uyvy(src,dest,width*height);
-      break;
-    case MODE_640x480_MONO16:
-    case MODE_800x600_MONO16:
-    case MODE_1024x768_MONO16:
-    case MODE_1280x960_MONO16:
-    case MODE_1600x1200_MONO16:
-      y162uyvy(src,dest,width*height);
-      break;
-    case MODE_FORMAT7_0:
-    case MODE_FORMAT7_1:
-    case MODE_FORMAT7_2:
-    case MODE_FORMAT7_3:
-    case MODE_FORMAT7_4:
-    case MODE_FORMAT7_5:
-    case MODE_FORMAT7_6:
-    case MODE_FORMAT7_7:
-      break;
-    }
-}
 
 } // end extern C

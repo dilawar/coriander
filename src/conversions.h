@@ -84,4 +84,10 @@ BayerNearestNeighbor(unsigned char *src, unsigned char *dest, int sx, int sy);
 void
 BayerEdgeSense(unsigned char *src, unsigned char *dest, int sx, int sy);
 
+void
+BayerNearestNeighborPlanar(unsigned char *src, unsigned char *dest, int sx, int sy);
+
+void
+BayerEdgeSensePlanar(unsigned char *src, unsigned char *dest, int sx, int sy);
+
 #endif

@@ -1233,3 +1233,13 @@ on_prefs_receive_drop_frames_toggled   (GtkToggleButton *togglebutton,
   gnome_config_sync();
 }
 
+
+void
+on_bayer_menu_activate           (GtkMenuItem     *menuitem,
+				  gpointer         user_data)
+{
+  int tmp;
+  tmp=(int)user_data;
+  
+  uiinfo->bayer=tmp;
+}

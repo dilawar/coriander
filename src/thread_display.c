@@ -166,7 +166,7 @@ DisplayThread(void* arg)
 		      convert_to_yuv_for_SDL(display_service->current_buffer,
 					     info->SDL_overlay->pixels[0], display_service->mode,
 					     display_service->width, display_service->height,
-					     display_service->format7_color_mode);
+					     display_service->format7_color_mode, display_service->bayer);
 		      SDLDisplayArea(display_service);
 		      SDL_UnlockYUVOverlay(info->SDL_overlay);
 		      SDL_DisplayYUVOverlay(info->SDL_overlay, &info->SDL_videoRect);
@@ -320,83 +320,87 @@ sdlInit(chain_t *display_service)
 // we should optimize this for RGB too: RGB modes could use RGB-SDL instead of YUV overlay
 void
 convert_to_yuv_for_SDL(unsigned char *src, unsigned char *dest, int mode,
-		       int width, int height, int f7_colormode)
+		       int width, int height, int f7_colormode, int bayer)
 {
 
-  //f7_colormode=320;
-  switch(mode)
+  if (bayer==NO_BAYER_DECODING)
     {
-    case MODE_160x120_YUV444:
-      uyv2uyvy(src,dest,width*height);
-      break;
-    case MODE_320x240_YUV422:
-    case MODE_640x480_YUV422:
-    case MODE_800x600_YUV422:
-    case MODE_1024x768_YUV422:
-    case MODE_1280x960_YUV422:
-    case MODE_1600x1200_YUV422:
-      yuyv2uyvy(src,dest,width*height);
-      break;
-    case MODE_640x480_YUV411:
-      uyyvyy2uyvy(src,dest,width*height);
-      break;
-    case MODE_640x480_RGB:
-    case MODE_800x600_RGB:
-    case MODE_1024x768_RGB:
-    case MODE_1280x960_RGB:
-    case MODE_1600x1200_RGB:
-      rgb2uyvy(src,dest,width*height);
-      break;
-    case MODE_640x480_MONO16:
-    case MODE_800x600_MONO16:
-    case MODE_1024x768_MONO16:
-    case MODE_1280x960_MONO16:
-    case MODE_1600x1200_MONO16:
-      y162uyvy(src,dest,width*height);
-      break;
-    case MODE_640x480_MONO:
-    case MODE_800x600_MONO:
-    case MODE_1024x768_MONO:
-    case MODE_1280x960_MONO:
-    case MODE_1600x1200_MONO:
-      y2uyvy(src,dest,width*height);
-      break;
-    case MODE_FORMAT7_0:
-    case MODE_FORMAT7_1:
-    case MODE_FORMAT7_2:
-    case MODE_FORMAT7_3:
-    case MODE_FORMAT7_4:
-    case MODE_FORMAT7_5:
-    case MODE_FORMAT7_6:
-    case MODE_FORMAT7_7:
-      switch (f7_colormode)
+      switch(mode)
 	{
-	case COLOR_FORMAT7_MONO8:
-	  y2uyvy(src,dest,width*height);
-	  break;
-	case COLOR_FORMAT7_YUV411:
-	  uyyvyy2uyvy(src,dest,width*height);
-	  break;
-	case COLOR_FORMAT7_YUV422:
-	  yuyv2uyvy(src,dest,width*height);
-	  break;
-	case COLOR_FORMAT7_YUV444:
+	case MODE_160x120_YUV444:
 	  uyv2uyvy(src,dest,width*height);
 	  break;
-	case COLOR_FORMAT7_RGB8:
+	case MODE_320x240_YUV422:
+	case MODE_640x480_YUV422:
+	case MODE_800x600_YUV422:
+	case MODE_1024x768_YUV422:
+	case MODE_1280x960_YUV422:
+	case MODE_1600x1200_YUV422:
+	  yuyv2uyvy(src,dest,width*height);
+	  break;
+	case MODE_640x480_YUV411:
+	  uyyvyy2uyvy(src,dest,width*height);
+	  break;
+	case MODE_640x480_RGB:
+	case MODE_800x600_RGB:
+	case MODE_1024x768_RGB:
+	case MODE_1280x960_RGB:
+	case MODE_1600x1200_RGB:
 	  rgb2uyvy(src,dest,width*height);
 	  break;
-	case COLOR_FORMAT7_MONO16:
+	case MODE_640x480_MONO16:
+	case MODE_800x600_MONO16:
+	case MODE_1024x768_MONO16:
+	case MODE_1280x960_MONO16:
+	case MODE_1600x1200_MONO16:
 	  y162uyvy(src,dest,width*height);
 	  break;
-	case COLOR_FORMAT7_RGB16:
-	  rgb482uyvy(src,dest,width*height);
+	case MODE_640x480_MONO:
+	case MODE_800x600_MONO:
+	case MODE_1024x768_MONO:
+	case MODE_1280x960_MONO:
+	case MODE_1600x1200_MONO:
+	  y2uyvy(src,dest,width*height);
 	  break;
-	default:
-	  fprintf(stderr,"Unknown color format: %d\n",f7_colormode);
+	case MODE_FORMAT7_0:
+	case MODE_FORMAT7_1:
+	case MODE_FORMAT7_2:
+	case MODE_FORMAT7_3:
+	case MODE_FORMAT7_4:
+	case MODE_FORMAT7_5:
+	case MODE_FORMAT7_6:
+	case MODE_FORMAT7_7:
+	  switch (f7_colormode)
+	    {
+	    case COLOR_FORMAT7_MONO8:
+	      y2uyvy(src,dest,width*height);
+	      break;
+	    case COLOR_FORMAT7_YUV411:
+	      uyyvyy2uyvy(src,dest,width*height);
+	      break;
+	    case COLOR_FORMAT7_YUV422:
+	      yuyv2uyvy(src,dest,width*height);
+	      break;
+	    case COLOR_FORMAT7_YUV444:
+	      uyv2uyvy(src,dest,width*height);
+	      break;
+	    case COLOR_FORMAT7_RGB8:
+	      rgb2uyvy(src,dest,width*height);
+	      break;
+	    case COLOR_FORMAT7_MONO16:
+	      y162uyvy(src,dest,width*height);
+	      break;
+	    case COLOR_FORMAT7_RGB16:
+	      rgb482uyvy(src,dest,width*height);
+	      break;
+	    default:
+	      fprintf(stderr,"Unknown color format: %d\n",f7_colormode);
+	    }
+	  break;
 	}
-      break;
     }
+  else // we force RGB mode
+    rgb2uyvy(src,dest,width*height);
 }
 
 void

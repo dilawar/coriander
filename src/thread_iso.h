@@ -30,13 +30,11 @@ typedef enum
   RECEIVE_METHOD_VIDEO1394
 } receive_method_t;
 
-
 typedef struct
 { 
   raw1394handle_t         handle;
   receive_method_t        receive_method;
   dc1394_cameracapture    capture;
-  bayer_decoding_t        bayer;
 
 } isothread_info_t;
 

@@ -160,6 +160,7 @@ main (int argc, char *argv[])
 		    image_pipes[index]=NULL;
 		    uiinfos[index].test_pattern=0;
 		    uiinfos[index].want_to_display=0;
+		    uiinfos[index].bayer=NO_BAYER_DECODING;
 		    index++;
 		  }
 	    }

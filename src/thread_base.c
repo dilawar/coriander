@@ -36,6 +36,7 @@ extern Format7Info *format7_info;
 extern dc1394_miscinfo* misc_info;
 extern GtkWidget* commander_window;
 extern int current_camera;
+extern UIInfo *uiinfo;
 
 chain_t*
 GetService(service_t service, unsigned int camera)
@@ -153,6 +154,7 @@ CommonChainSetup(chain_t* chain, service_t req_service, unsigned int camera)
       chain->height=info_iso->capture.frame_height;
       chain->bytes_per_frame=buffer_size;
       chain->mode=misc_info->mode;
+      chain->bayer=uiinfo->bayer;
       chain->format=misc_info->format;
       if (misc_info->format==FORMAT_SCALABLE_IMAGE_SIZE)
 	chain->format7_color_mode=format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].color_coding_id;
@@ -178,14 +180,22 @@ CommonChainSetup(chain_t* chain, service_t req_service, unsigned int camera)
 	  chain->format=chain->prev_chain->format;
 	  chain->bytes_per_frame=chain->prev_chain->bytes_per_frame;
 	  buffer_size=chain->bytes_per_frame;
+	  chain->bayer=chain->prev_chain->bayer;
 	  chain->format7_color_mode=chain->prev_chain->format7_color_mode;
 	  //fprintf(stderr,"color coding (slave): %d\n",chain->format7_color_mode);
 	}
     }
 
-  chain->current_buffer=(unsigned char*)malloc(buffer_size*sizeof(unsigned char));
-  chain->next_buffer=(unsigned char*)malloc(buffer_size*sizeof(unsigned char));
-
+  if (chain->bayer==NO_BAYER_DECODING)
+    {
+      chain->current_buffer=(unsigned char*)malloc(buffer_size*sizeof(unsigned char));
+      chain->next_buffer=(unsigned char*)malloc(buffer_size*sizeof(unsigned char));
+    }
+  else // we must allocate a much larger buffer: sx*sy*3 (RGB...)
+    {
+      chain->current_buffer=(unsigned char*)malloc(chain->width*chain->height*3*sizeof(unsigned char));
+      chain->next_buffer=(unsigned char*)malloc(chain->width*chain->height*3*sizeof(unsigned char));
+    }
   if ((chain->current_buffer==NULL)||(chain->current_buffer==NULL))
     fprintf(stderr,"Empty buffers allocated!\n");
 }
@@ -272,79 +282,85 @@ FreeChain(chain_t* chain)
 
 
 void
-convert_to_rgb(unsigned char *src, unsigned char *dest, int mode, int width, int height, int f7_colormode)
+convert_to_rgb(unsigned char *src, unsigned char *dest, int mode, int width, int height, int f7_colormode, int bayer)
 {
-  switch(mode)
+  if (bayer==NO_BAYER_DECODING)
     {
-    case MODE_160x120_YUV444:
-      uyv2rgb(src,dest,width*height);
-      break;
-    case MODE_320x240_YUV422:
-    case MODE_640x480_YUV422:
-    case MODE_800x600_YUV422:
-    case MODE_1024x768_YUV422:
-    case MODE_1280x960_YUV422:
-    case MODE_1600x1200_YUV422:
-      uyvy2rgb(src,dest,width*height);
-      break;
-    case MODE_640x480_YUV411:
-      uyyvyy2rgb(src,dest,width*height);
-      break;
-    case MODE_640x480_RGB:
-    case MODE_800x600_RGB:
-    case MODE_1024x768_RGB:
-    case MODE_1280x960_RGB:
-    case MODE_1600x1200_RGB:
-      memcpy(dest,src,3*width*height);
-      break;
-    case MODE_640x480_MONO:
-    case MODE_800x600_MONO:
-    case MODE_1024x768_MONO:
-    case MODE_1280x960_MONO:
-    case MODE_1600x1200_MONO:
-      y2rgb(src,dest,width*height);
-      break;
-    case MODE_640x480_MONO16:
-    case MODE_800x600_MONO16:
-    case MODE_1024x768_MONO16:
-    case MODE_1280x960_MONO16:
-    case MODE_1600x1200_MONO16:
-      y162rgb(src,dest,width*height);
-      break;
-    case MODE_FORMAT7_0:
-    case MODE_FORMAT7_1:
-    case MODE_FORMAT7_2:
-    case MODE_FORMAT7_3:
-    case MODE_FORMAT7_4:
-    case MODE_FORMAT7_5:
-    case MODE_FORMAT7_6:
-    case MODE_FORMAT7_7:
-      switch (f7_colormode)
+      switch(mode)
 	{
-	case COLOR_FORMAT7_MONO8:
-	  y2rgb(src,dest,width*height);
-	  break;
-	case COLOR_FORMAT7_YUV411:
-	  uyyvyy2rgb(src,dest,width*height);
-	  break;
-	case COLOR_FORMAT7_YUV422:
-	  uyvy2rgb(src,dest,width*height);
-	  break;
-	case COLOR_FORMAT7_YUV444:
+	case MODE_160x120_YUV444:
 	  uyv2rgb(src,dest,width*height);
 	  break;
-	case COLOR_FORMAT7_RGB8:
+	case MODE_320x240_YUV422:
+	case MODE_640x480_YUV422:
+	case MODE_800x600_YUV422:
+	case MODE_1024x768_YUV422:
+	case MODE_1280x960_YUV422:
+	case MODE_1600x1200_YUV422:
+	  uyvy2rgb(src,dest,width*height);
+	  break;
+	case MODE_640x480_YUV411:
+	  uyyvyy2rgb(src,dest,width*height);
+	  break;
+	case MODE_640x480_RGB:
+	case MODE_800x600_RGB:
+	case MODE_1024x768_RGB:
+	case MODE_1280x960_RGB:
+	case MODE_1600x1200_RGB:
 	  memcpy(dest,src,3*width*height);
 	  break;
-	case COLOR_FORMAT7_MONO16:
+	case MODE_640x480_MONO:
+	case MODE_800x600_MONO:
+	case MODE_1024x768_MONO:
+	case MODE_1280x960_MONO:
+	case MODE_1600x1200_MONO:
+	  y2rgb(src,dest,width*height);
+	  break;
+	case MODE_640x480_MONO16:
+	case MODE_800x600_MONO16:
+	case MODE_1024x768_MONO16:
+	case MODE_1280x960_MONO16:
+	case MODE_1600x1200_MONO16:
 	  y162rgb(src,dest,width*height);
 	  break;
-	case COLOR_FORMAT7_RGB16:
-	  rgb482rgb(src,dest,width*height);
+	case MODE_FORMAT7_0:
+	case MODE_FORMAT7_1:
+	case MODE_FORMAT7_2:
+	case MODE_FORMAT7_3:
+	case MODE_FORMAT7_4:
+	case MODE_FORMAT7_5:
+	case MODE_FORMAT7_6:
+	case MODE_FORMAT7_7:
+	  switch (f7_colormode)
+	    {
+	    case COLOR_FORMAT7_MONO8:
+	      y2rgb(src,dest,width*height);
+	      break;
+	    case COLOR_FORMAT7_YUV411:
+	      uyyvyy2rgb(src,dest,width*height);
+	      break;
+	    case COLOR_FORMAT7_YUV422:
+	      uyvy2rgb(src,dest,width*height);
+	      break;
+	    case COLOR_FORMAT7_YUV444:
+	      uyv2rgb(src,dest,width*height);
+	      break;
+	    case COLOR_FORMAT7_RGB8:
+	      memcpy(dest,src,3*width*height);
+	      break;
+	    case COLOR_FORMAT7_MONO16:
+	      y162rgb(src,dest,width*height);
+	      break;
+	    case COLOR_FORMAT7_RGB16:
+	      rgb482rgb(src,dest,width*height);
+	      break;
+	    }
 	  break;
-	  }
-      break;
+	}
     }
+  else // we force RGB mode, thus use memcpy
+    memcpy(dest,src,3*width*height);
+    
 }
 
 void

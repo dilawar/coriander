@@ -21,11 +21,12 @@
 
 #include <pthread.h>
 #include "thread_base.h"
+#include "conversions.h"
 #include <libdc1394/dc1394_control.h>
 
 #define GUID_YUV12_PLANAR 0x32315659 
-#define GUID_YUY2_PACKED 0x32595559
-#define GUID_UYVY_PACKED 0x59565955
+#define GUID_YUY2_PACKED  0x32595559
+#define GUID_UYVY_PACKED  0x59565955
 #define THREAD_LOOP_SLEEP_TIME_US 1
 
 typedef enum _Service_T
@@ -55,8 +56,8 @@ typedef struct _Chain_T
   long int        bytes_per_frame;
   int             mode;
   int             format;
+  bayer_decoding_t bayer;
   int             format7_color_mode;
-
 } chain_t;
 
 
@@ -66,7 +67,6 @@ typedef enum _Clean_Mode_T
   CLEAN_MODE_UI_UPDATE,
   CLEAN_MODE_UI_UPDATE_NOT_ISO
 } clean_mode_t;
-
 
 chain_t*
 GetService(service_t service, unsigned int camera);
@@ -91,7 +91,7 @@ FreeChain(chain_t* chain);
 
 void
 convert_to_rgb(unsigned char *src, unsigned char *dest, int mode,
-	       int width, int height, int f7_colormode);
+	       int width, int height, int f7_colormode, int bayer);
 
 void
 CleanThreads(clean_mode_t mode);

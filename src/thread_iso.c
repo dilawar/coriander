@@ -162,8 +162,6 @@ gint IsoStartThread(void)
 	}
       //fprintf(stderr," 1394 setup OK\n");
 
-      info->bayer=NO_BAYER_DECODING;
-
       CommonChainSetup(iso_service, SERVICE_ISO, current_camera);
       pthread_mutex_unlock(&iso_service->mutex_data);
       
@@ -242,18 +240,22 @@ IsoThread(void* arg)
 	  dc1394_dma_single_capture(&info->capture);
 	  dc1394_dma_done_with_buffer(&info->capture);
 	}
-      // WARNING: I SHOULD ADD A CHANGE TO RGB COLOR CODING AFTER THAT.
-      switch (info->bayer)
+      pthread_mutex_lock(&iso_service->mutex_data);
+      switch (iso_service->bayer)
 	{
 	case BAYER_DECODING_NEAREST:
+	  //fprintf(stderr,"Nearest decoding...");
 	  BayerNearestNeighbor((unsigned char *)info->capture.capture_buffer,
 			       iso_service->current_buffer,
 			       iso_service->width, iso_service->height);
+	  //fprintf(stderr,"done\n");
 	  break;
 	case BAYER_DECODING_EDGE_SENSE:
+	  //fprintf(stderr,"Edge Sense decoding...");
 	  BayerEdgeSense((unsigned char *)info->capture.capture_buffer,
 			 iso_service->current_buffer,
-			       iso_service->width, iso_service->height);
+			 iso_service->width, iso_service->height);
+	  //fprintf(stderr,"done\n");
 	  break;
 	default:
 	  memcpy(iso_service->current_buffer,
@@ -261,6 +263,7 @@ IsoThread(void* arg)
 		 iso_service->bytes_per_frame);
 	  break;
 	}
+      pthread_mutex_unlock(&iso_service->mutex_data);
 	  
       pthread_mutex_lock(&iso_service->mutex_data);
       RollBuffers(iso_service);

@@ -98,6 +98,7 @@ typedef struct _UIInfo
   int all_auto;
   int all_man;
   int all_lock;
+  int bayer;
 } UIInfo;
 
 typedef struct _StatusInfo

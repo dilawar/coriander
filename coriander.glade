@@ -902,7 +902,7 @@
 
 		<widget>
 		  <class>GtkOptionMenu</class>
-		  <name>optionmenu2</name>
+		  <name>bayer_menu</name>
 		  <border_width>1</border_width>
 		  <can_focus>True</can_focus>
 		  <items>No Bayer

@@ -188,7 +188,7 @@ FtpThread(void* arg)
 		  skip_counter=0;
 		  convert_to_rgb(ftp_service->current_buffer, info->ftp_buffer,
 				 ftp_service->mode, ftp_service->width,
-				 ftp_service->height, ftp_service->format7_color_mode);
+				 ftp_service->height, ftp_service->format7_color_mode, ftp_service->bayer);
 		  if (info->ftp_scratch == FTP_SCRATCH_OVERWRITE)
 		    {
 		      sprintf(filename_out, "%s%s", info->filename,info->filename_ext);

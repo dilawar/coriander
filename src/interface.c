@@ -127,8 +127,8 @@ create_commander_window (void)
   GtkWidget *image_options_frame;
   GtkWidget *table61;
   GtkWidget *test_pattern;
-  GtkWidget *optionmenu2;
-  GtkWidget *optionmenu2_menu;
+  GtkWidget *bayer_menu;
+  GtkWidget *bayer_menu_menu;
   GtkWidget *format_frame;
   GtkWidget *table60;
   GtkWidget *format_select;
@@ -732,26 +732,26 @@ create_commander_window (void)
                     (GtkAttachOptions) (GTK_FILL), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (test_pattern), 2);
 
-  optionmenu2 = gtk_option_menu_new ();
-  gtk_widget_ref (optionmenu2);
-  gtk_object_set_data_full (GTK_OBJECT (commander_window), "optionmenu2", optionmenu2,
+  bayer_menu = gtk_option_menu_new ();
+  gtk_widget_ref (bayer_menu);
+  gtk_object_set_data_full (GTK_OBJECT (commander_window), "bayer_menu", bayer_menu,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (optionmenu2);
-  gtk_table_attach (GTK_TABLE (table61), optionmenu2, 0, 2, 1, 2,
+  gtk_widget_show (bayer_menu);
+  gtk_table_attach (GTK_TABLE (table61), bayer_menu, 0, 2, 1, 2,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (GTK_FILL), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (optionmenu2), 1);
-  optionmenu2_menu = gtk_menu_new ();
+  gtk_container_set_border_width (GTK_CONTAINER (bayer_menu), 1);
+  bayer_menu_menu = gtk_menu_new ();
   glade_menuitem = gtk_menu_item_new_with_label (_("No Bayer"));
   gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (optionmenu2_menu), glade_menuitem);
+  gtk_menu_append (GTK_MENU (bayer_menu_menu), glade_menuitem);
   glade_menuitem = gtk_menu_item_new_with_label (_("Nearest"));
   gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (optionmenu2_menu), glade_menuitem);
+  gtk_menu_append (GTK_MENU (bayer_menu_menu), glade_menuitem);
   glade_menuitem = gtk_menu_item_new_with_label (_("Edge Sense"));
   gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (optionmenu2_menu), glade_menuitem);
-  gtk_option_menu_set_menu (GTK_OPTION_MENU (optionmenu2), optionmenu2_menu);
+  gtk_menu_append (GTK_MENU (bayer_menu_menu), glade_menuitem);
+  gtk_option_menu_set_menu (GTK_OPTION_MENU (bayer_menu), bayer_menu_menu);
 
   format_frame = gtk_frame_new (_("Format"));
   gtk_widget_ref (format_frame);

@@ -400,3 +400,7 @@ on_prefs_update_scale_changed          (GtkEditable     *editable,
 void
 on_prefs_receive_drop_frames_toggled   (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
+
+void
+on_bayer_menu_activate           (GtkMenuItem     *menuitem,
+				  gpointer         user_data);

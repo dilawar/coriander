@@ -71,4 +71,7 @@ BuildPrefsDisplayFrame(void);
 void
 BuildPrefsReceiveFrame(void);
 
+void
+BuildOptionFrame(void);
+
 #endif
