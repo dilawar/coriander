@@ -71,8 +71,8 @@ DisplayStartThread()
 
 #ifdef HAVE_SDLLIB
       if (!sdlInit(display_service))
-	{
 #endif
+	{
 	  MainError("SDL is not available for display. Try Xv or GDK.");
 	  
 #ifdef HAVE_SDLLIB
