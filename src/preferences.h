@@ -70,7 +70,10 @@ void
 LoadConfigFile(void);
 
 void
-WriteConfigFile(void);
+LoadSetup(char *filename);
+
+void
+SaveSetup(char *filename);
 
 #ifdef __cplusplus
 }

@@ -142,14 +142,6 @@ typedef struct _CtxtInfo
   int main_id;
 
 } CtxtInfo;
-/*
-typedef struct
-{
-  pthread_mutex_t         mutex_cancel_event;
-  int                     cancel_event_req;
-  pthread_mutex_t         mutex_event;
-  pthread_t               event_thread;
-} EventThreadInfo_t;
-*/
+
 #endif
 

@@ -77,11 +77,11 @@ main (int argc, char *argv[])
 {
   int err, i, cam;
   nodeid_t **camera_nodes; 
-  raw1394handle_t *handles;
+  raw1394handle_t *handles, tmp_handle;
   int port;
   int index;
   int *port_camera_num;
-  int portmax=8; // Number of ports (e.g. interface cards) that we probe.
+  int portmax;
   int card_found;
 
 #ifdef ENABLE_NLS
@@ -90,9 +90,14 @@ main (int argc, char *argv[])
 #endif
   gnome_init ("coriander", VERSION, argc, argv);
 
+  tmp_handle=raw1394_new_handle();
+  portmax=raw1394_get_port_info(tmp_handle, NULL, 0);
+  raw1394_destroy_handle(tmp_handle);
+
   camera_nodes=(nodeid_t**)malloc(portmax*sizeof(nodeid_t*));
   port_camera_num=(int*)malloc(portmax*sizeof(int));
   handles=(raw1394handle_t *)malloc(portmax*sizeof(raw1394handle_t));
+  fprintf(stderr,"Coriander found %d interface card(s)\n",portmax);
 
   card_found=0;
   for (port=0;port<portmax;port++)

@@ -37,7 +37,9 @@ extern "C" {
 #include "tools.h"
 
 extern PrefsInfo preferences; 
-dc1394_camerainfo *cameras;
+extern dc1394_camerainfo *cameras;
+extern dc1394_miscinfo *misc_info;
+extern dc1394_feature_set *feature_set;
 extern int camera_num;
 
 void
@@ -101,4 +103,106 @@ LoadConfigFile(void)
     }
 }
 
+
+void
+SaveSetup(char *filename)
+{
+  FILE *fd;
+  int i;
+  fd=fopen(filename,"w");
+  if (fd==NULL)
+    MainError("Can't open file for saving");
+  else
+    {
+      fprintf(fd,"%d\n",misc_info->format);
+      fprintf(fd,"%d\n",misc_info->mode);
+      fprintf(fd,"%d\n",misc_info->framerate);
+      fprintf(fd,"%d\n",misc_info->is_iso_on);
+      fprintf(fd,"%d\n",misc_info->iso_channel);
+      fprintf(fd,"%d\n",misc_info->mem_channel_number);
+      fprintf(fd,"%d\n",misc_info->save_channel);
+      fprintf(fd,"%d\n",misc_info->load_channel);
+      for (i=0;i<NUM_FEATURES;i++)
+	{
+	  switch (i+FEATURE_MIN)
+	    { 
+	    case FEATURE_TRIGGER:
+	      fprintf(fd,"%d\n",feature_set->feature[i].auto_active);
+	      fprintf(fd,"%d\n",feature_set->feature[i].trigger_mode);
+	      fprintf(fd,"%d\n",feature_set->feature[i].trigger_polarity);
+	      fprintf(fd,"%d\n",feature_set->feature[i].value);
+	      break;
+	    case FEATURE_WHITE_BALANCE:
+	      fprintf(fd,"%d\n",feature_set->feature[i].auto_active);
+	      fprintf(fd,"%d\n",feature_set->feature[i].BU_value);
+	      fprintf(fd,"%d\n",feature_set->feature[i].RV_value);
+	      break;
+	    case FEATURE_TEMPERATURE:
+	      fprintf(fd,"%d\n",feature_set->feature[i].auto_active);
+	      fprintf(fd,"%d\n",feature_set->feature[i].target_value);
+	      fprintf(fd,"%d\n",feature_set->feature[i].value);
+	      break;
+	    default:
+	      fprintf(fd,"%d\n",feature_set->feature[i].auto_active);
+	      fprintf(fd,"%d\n",feature_set->feature[i].value);
+	      break;
+	    }
+	}
+      fclose(fd);
+    }
 }
+
+void
+LoadSetup(char *filename)
+{
+  FILE *fd;
+  int i;
+
+  fd=fopen(filename,"r");
+  if (fd==NULL)
+    MainError("Can't open file for loading");
+  else
+    {
+      fscanf(fd,"%d\n",misc_info->format);
+      fscanf(fd,"%d\n",misc_info->mode);
+      fscanf(fd,"%d\n",misc_info->framerate);
+      fscanf(fd,"%d\n",misc_info->is_iso_on);
+      fscanf(fd,"%d\n",misc_info->iso_channel);
+      fscanf(fd,"%d\n",misc_info->mem_channel_number);
+      fscanf(fd,"%d\n",misc_info->save_channel);
+      fscanf(fd,"%d\n",misc_info->load_channel);
+      for (i=0;i<NUM_FEATURES;i++)
+	{
+	  switch (i+FEATURE_MIN)
+	    { 
+	    case FEATURE_TRIGGER:
+	      fscanf(fd,"%d\n",feature_set->feature[i].auto_active);
+	      fscanf(fd,"%d\n",feature_set->feature[i].trigger_mode);
+	      fscanf(fd,"%d\n",feature_set->feature[i].trigger_polarity);
+	      fscanf(fd,"%d\n",feature_set->feature[i].value);
+	      break;
+	    case FEATURE_WHITE_BALANCE:
+	      fscanf(fd,"%d\n",feature_set->feature[i].auto_active);
+	      fscanf(fd,"%d\n",feature_set->feature[i].BU_value);
+	      fscanf(fd,"%d\n",feature_set->feature[i].RV_value);
+	      break;
+	    case FEATURE_TEMPERATURE:
+	      fscanf(fd,"%d\n",feature_set->feature[i].auto_active);
+	      fscanf(fd,"%d\n",feature_set->feature[i].target_value);
+	      fscanf(fd,"%d\n",feature_set->feature[i].value);
+	      break;
+	    default:
+	      fscanf(fd,"%d\n",feature_set->feature[i].auto_active);
+	      fscanf(fd,"%d\n",feature_set->feature[i].value);
+	      break;
+	    }
+	}
+      // REDRAW ALL HERE...
+
+      ///////
+      fclose(fd);
+    }
+}
+
+}
+
