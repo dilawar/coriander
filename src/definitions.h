@@ -21,6 +21,7 @@
 
 #include <libdc1394/dc1394_control.h>
 #include <sys/times.h>
+#include <pthread.h>
 
 #define  BU                  1000     // definitions for distinguishing the BU and RV
 #define  RV                  2000     // scales of the FEATURE_WHITE_BALANCE feature
