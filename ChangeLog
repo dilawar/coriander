@@ -2,6 +2,11 @@ Coriander, (c) 2000-2002 Damien Douxchamps <douxchamps@ieee.org>
 
 Changes towards version 0.26
 
+   August 13, 2002, by Damien Douxchamps
+   - removed format6 window prototype
+   - started integration of Bayer pattern decoding functions
+   - debugged Bayer pattern decoding functions.
+	
    August 12, 2002, by Damien Douxchamps
    - New layout: more compact
    - New format selection menu: now you can see the current format (!)

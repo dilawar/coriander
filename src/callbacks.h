@@ -33,30 +33,6 @@ on_exit_activate                       (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
 void
-on_format_activate                     (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_format_0_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_format_1_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_format_2_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_format_6_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_format_7_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
 on_help_activate                       (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
@@ -72,10 +48,6 @@ on_about_window_delete_event           (GtkWidget       *widget,
 gboolean
 on_commander_window_delete_event       (GtkWidget       *widget,
                                         GdkEvent        *event,
-                                        gpointer         user_data);
-
-void
-on_fps_menu_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
 void
@@ -160,10 +132,6 @@ on_edit_format7_color_activate         (GtkMenuItem     *menuitem,
 
 void
 on_preferences_activate                (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_format6_window_activate             (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
 void

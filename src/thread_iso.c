@@ -25,6 +25,7 @@
 #include "thread_base.h"
 #include "thread_iso.h"
 #include "preferences.h"
+#include "conversions.h"
 #include "topology.h"
 #include "definitions.h"
 #include "tools.h" 
@@ -161,6 +162,7 @@ gint IsoStartThread(void)
 	}
       //fprintf(stderr," 1394 setup OK\n");
 
+      info->bayer=NO_BAYER_DECODING;
 
       CommonChainSetup(iso_service, SERVICE_ISO, current_camera);
       pthread_mutex_unlock(&iso_service->mutex_data);
@@ -240,9 +242,26 @@ IsoThread(void* arg)
 	  dc1394_dma_single_capture(&info->capture);
 	  dc1394_dma_done_with_buffer(&info->capture);
 	}
-      memcpy(iso_service->current_buffer,
-	     info->capture.capture_buffer,
-	     iso_service->bytes_per_frame);
+      // WARNING: I SHOULD ADD A CHANGE TO RGB COLOR CODING AFTER THAT.
+      switch (info->bayer)
+	{
+	case BAYER_DECODING_NEAREST:
+	  BayerNearestNeighbor((unsigned char *)info->capture.capture_buffer,
+			       iso_service->current_buffer,
+			       iso_service->width, iso_service->height);
+	  break;
+	case BAYER_DECODING_EDGE_SENSE:
+	  BayerEdgeSense((unsigned char *)info->capture.capture_buffer,
+			 iso_service->current_buffer,
+			       iso_service->width, iso_service->height);
+	  break;
+	default:
+	  memcpy(iso_service->current_buffer,
+		 info->capture.capture_buffer,
+		 iso_service->bytes_per_frame);
+	  break;
+	}
+	  
       pthread_mutex_lock(&iso_service->mutex_data);
       RollBuffers(iso_service);
       //fprintf(stderr,"Got one frame\n");

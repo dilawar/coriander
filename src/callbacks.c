@@ -93,74 +93,11 @@ on_exit_activate                       (GtkMenuItem     *menuitem,
 
 
 void
-on_format_activate                     (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-  // function intentionnaly left almost blank: intermediate menu
-}
-
-
-void
-on_format_0_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-  // function intentionnaly left almost blank: intermediate menu
-}
-
-
-
-void
-on_format_1_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-  // function intentionnaly left almost blank: intermediate menu
-}
-
-void
-on_format_2_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-  // function intentionnaly left almost blank: intermediate menu
-}
-
-
-void
-on_format_6_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-  // function intentionnaly left almost blank: intermediate menu
-}
-
-
-void
-on_format_7_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-  // function intentionnaly left almost blank: intermediate menu
-}
-
-void
-on_help_activate                       (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-  // function intentionnaly left almost blank: intermediate menu
-}
-
-
-void
 on_about_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
   about_window = create_about_window ();
   gtk_widget_show (about_window);
-}
-
-
-void
-on_fps_menu_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-  // function intentionnaly left almost blank: intermediate menu
 }
 
 
@@ -535,14 +472,6 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
 
   // update bpp range here.
   UpdateFormat7BppRange();
-}
-
-
-void
-on_format6_window_activate             (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-  // FUTURE FEATURE
 }
 
 

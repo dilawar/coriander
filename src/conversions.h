@@ -24,8 +24,13 @@
 #endif
 
 #include <string.h>
-#include <math.h>
-#include <stdlib.h>
+
+typedef enum
+{
+  NO_BAYER_DECODING,
+  BAYER_DECODING_NEAREST,
+  BAYER_DECODING_EDGE_SENSE
+} bayer_decoding_t;
 
 // UYVY <-> YUYV
 void
@@ -77,6 +82,6 @@ void
 BayerNearestNeighbor(unsigned char *src, unsigned char *dest, int sx, int sy);
 
 void
-BayerEdgeSense2(unsigned char *src, unsigned char *dest, int sx, int sy);
+BayerEdgeSense(unsigned char *src, unsigned char *dest, int sx, int sy);
 
 #endif

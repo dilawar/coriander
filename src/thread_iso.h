@@ -17,6 +17,7 @@
  */
 
 #include <gnome.h>
+#include "conversions.h"
 
 #ifndef __THREAD_ISO_H__
 #define __THREAD_ISO_H__
@@ -35,6 +36,7 @@ typedef struct
   raw1394handle_t         handle;
   receive_method_t        receive_method;
   dc1394_cameracapture    capture;
+  bayer_decoding_t        bayer;
 
 } isothread_info_t;
 
