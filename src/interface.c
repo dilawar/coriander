@@ -3123,7 +3123,7 @@ create_about_window (void)
                         _("Copyright 2000-2004 Damien Douxchamps"),
                         authors,
                         _("The Gnome IEEE1394 Digital Camera Controller website is\nhttp://sourceforge.net/projects/coriander"),
-                        "coriander/coriander-half.png");
+                        "coriander/coriander-logo.png");
   gtk_object_set_data (GTK_OBJECT (about_window), "about_window", about_window);
   gtk_window_set_modal (GTK_WINDOW (about_window), TRUE);
 

@@ -454,6 +454,7 @@ UpdateFormat7InfoFrame(void)
       MainStatus("The camera has a strange TOTAL_BYTES value.");
       }
     */
+    //fprintf(stderr,"total bytes: %d\n",mode->total_bytes);
     if (mode->bpp!=0) {
       // if there is packet padding, take it into account
       if (mode->total_bytes%mode->bpp!=0) {

@@ -5497,7 +5497,7 @@ anything in the GUI at all...</label>
   <class>GnomeAbout</class>
   <name>about_window</name>
   <modal>True</modal>
-  <logo>coriander-half.png</logo>
+  <logo>coriander-logo.png</logo>
   <copyright>Copyright 2000-2004 Damien Douxchamps</copyright>
   <authors>Damien Douxchamps &lt;ddouxchamps@users.sf.net&gt;
 Dan Dennedy &lt;dan@dennedy.org&gt;

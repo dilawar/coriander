@@ -351,13 +351,15 @@ on_edit_format7_color_activate             (GtkMenuItem     *menuitem,
   else
     camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].color_coding_id=(int)user_data;
 
+  GetFormat7ModeInfo(camera, camera->format7_info.edit_mode);
+  UpdateOptionFrame();
+  UpdateFormat7Window();
+  /*UpdateFormat7BppRange();
+    UpdateFormat7Ranges();
+    UpdateFormat7InfoFrame();*/
+
   // if the mode is the 'live' mode:
   if (camera->format7_info.edit_mode==camera->misc_info.mode) {
-    GetFormat7ModeInfo(camera, camera->format7_info.edit_mode);
-    UpdateOptionFrame();
-    UpdateFormat7BppRange();
-    UpdateFormat7Ranges();
-    UpdateFormat7InfoFrame();
     IsoFlowResume(&state);
   }
 

@@ -100,7 +100,7 @@ GetFormat7ModeInfo(camera_t* cam, int mode_id)
       mode->unit_pos_x=0;
       mode->unit_pos_y=0;
     }
-
+    /*
     // --- the following code should not be necessary with latest libdc (14/1/2004)
     if (!((mode->unit_pos_x>0)&&(mode->unit_pos_x<mode->max_size_x)&&
 	  (mode->unit_pos_y>0)&&(mode->unit_pos_y<mode->max_size_y))) {
@@ -112,15 +112,13 @@ GetFormat7ModeInfo(camera_t* cam, int mode_id)
       //fprintf(stderr,"UNIT_POS [%d %d] is valid and will be used\n",info->mode[i].unit_pos_x,info->mode[i].unit_pos_y);
     }
     // ---
-
+    */
     if (dc1394_query_format7_image_position(cam->camera_info.handle,cam->camera_info.id,mode_id,&mode->pos_x,&mode->pos_y)!=DC1394_SUCCESS)
       MainError("Got a problem querying format7 image position");
     if (dc1394_query_format7_image_size(cam->camera_info.handle,cam->camera_info.id,mode_id,&mode->size_x,&mode->size_y)!=DC1394_SUCCESS)
       MainError("Got a problem querying format7 image size");
     if (dc1394_query_format7_byte_per_packet(cam->camera_info.handle,cam->camera_info.id,mode_id,&mode->bpp)!=DC1394_SUCCESS)
       MainError("Got a problem querying format7 bytes per packet");
-    //if (info->mode[i].bpp==0)
-    //  fprintf(stderr,"BPP is zero in %s at line %d\n",__FUNCTION__,__LINE__);
     if (dc1394_query_format7_packet_para(cam->camera_info.handle,cam->camera_info.id,mode_id,&mode->min_bpp,&mode->max_bpp)!=DC1394_SUCCESS)
       MainError("Got a problem querying format7 packet parameters");
     if (dc1394_query_format7_pixel_number(cam->camera_info.handle,cam->camera_info.id,mode_id,&mode->pixnum)!=DC1394_SUCCESS)
@@ -131,7 +129,7 @@ GetFormat7ModeInfo(camera_t* cam, int mode_id)
       MainError("Got a problem querying format7 color coding ID");
     if (dc1394_query_format7_color_coding(cam->camera_info.handle,cam->camera_info.id,mode_id,&mode->color_coding)!=DC1394_SUCCESS)
       MainError("Got a problem querying format7 color coding");
-    
+    //fprintf(stderr,"%d\n",(int)mode->total_bytes);
   }
 }
 void
