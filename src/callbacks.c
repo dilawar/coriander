@@ -274,23 +274,18 @@ void
 on_camera_select_activate              (GtkMenuItem     *menuitem,
 					gpointer         user_data)
 {
-  // stop all FPS displays:
-  StopFPSDisplay(current_camera);
-
+ 
   // close current display (we don't want display to be used by 2 threads at the same time 'cause SDL forbids it)
   DisplayStopThread(current_camera);
+
+  // stop all FPS displays:
+  StopFPSDisplay(current_camera);
 
   // set current camera pointers:
   SelectCamera((int)user_data);
 
-  pthread_mutex_lock(&uiinfo->mutex);
-  if (uiinfo->want_to_display>0) {
-    pthread_mutex_unlock(&uiinfo->mutex);
+  if (uiinfo->want_to_display>0)
     DisplayStartThread();
-  }
-  else {
-    pthread_mutex_unlock(&uiinfo->mutex);
-  }
 
   // redraw all:
   BuildAllWindows();

@@ -77,6 +77,8 @@ typedef struct _Chain_T
   buffer_t*       current_buffer;
   void*           data;
   buffer_t        local_param_copy; // not pointer: it remains in the chain.
+
+  int             camera; // index of the camera that uses this thread    
 } chain_t;
 
 

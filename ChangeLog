@@ -4,6 +4,11 @@ Changes towards version 0.32
 	
    April 30, 2003, by Damien Douxchamps
    - stop/resume FPS display when changing camera
+   - fixed big multicamera problem: all threads were sharing the same uiinfo,
+     misc_info,... Threads now use uiinfos[x_service->camera] instead, where
+     x_service->camera is a new field of the chain_t struct whih is initialized
+     at the tread creation. Thanks to Vincent Girondel for his numerous bug
+     reports! :-)
 	
    April 29, 2003, by Damien Douxchamps
    - fixed absolute value update when moving the normal control sliders

@@ -147,6 +147,8 @@ CommonChainSetup(chain_t* chain, service_t req_service, unsigned int camera)
   chain->current_buffer=(buffer_t*)malloc(sizeof(buffer_t));
   chain->next_buffer=(buffer_t*)malloc(sizeof(buffer_t));
 
+  chain->camera=camera;
+
   InitBuffer(chain->current_buffer);
   InitBuffer(chain->next_buffer);
   InitBuffer(&chain->local_param_copy);

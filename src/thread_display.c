@@ -42,7 +42,7 @@
 
 extern PrefsInfo preferences;
 extern Format7Info *format7_info;
-extern dc1394_miscinfo *misc_info;
+extern Format7Info *format7_infos;
 extern int current_camera;
 extern GtkWidget *commander_window;
 extern CtxtInfo ctxt;
@@ -348,11 +348,11 @@ SDLInit(chain_t *display_service)
   info->SDL_videoRect.w=display_service->current_buffer->width;
   info->SDL_videoRect.h=display_service->current_buffer->height;
 
-  watchthread_info.f7_step[0]=format7_info->mode[display_service->current_buffer->mode-MODE_FORMAT7_MIN].step_x;
-  watchthread_info.f7_step[1]=format7_info->mode[display_service->current_buffer->mode-MODE_FORMAT7_MIN].step_y;
-  watchthread_info.f7_step_pos[0]=format7_info->mode[display_service->current_buffer->mode-MODE_FORMAT7_MIN].step_pos_x;
-  watchthread_info.f7_step_pos[1]=format7_info->mode[display_service->current_buffer->mode-MODE_FORMAT7_MIN].step_pos_y;
-  watchthread_info.use_unit_pos=format7_info->mode[display_service->current_buffer->mode-MODE_FORMAT7_MIN].use_unit_pos;
+  watchthread_info.f7_step[0]=format7_infos[display_service->camera].mode[display_service->current_buffer->mode-MODE_FORMAT7_MIN].step_x;
+  watchthread_info.f7_step[1]=format7_infos[display_service->camera].mode[display_service->current_buffer->mode-MODE_FORMAT7_MIN].step_y;
+  watchthread_info.f7_step_pos[0]=format7_infos[display_service->camera].mode[display_service->current_buffer->mode-MODE_FORMAT7_MIN].step_pos_x;
+  watchthread_info.f7_step_pos[1]=format7_infos[display_service->camera].mode[display_service->current_buffer->mode-MODE_FORMAT7_MIN].step_pos_y;
+  watchthread_info.use_unit_pos=format7_infos[display_service->camera].mode[display_service->current_buffer->mode-MODE_FORMAT7_MIN].use_unit_pos;
 
   SDLEventStartThread(display_service);
 

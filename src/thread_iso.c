@@ -33,15 +33,18 @@
 #include "definitions.h"
 #include "tools.h" 
 
+extern Format7Info *format7_infos;
 extern Format7Info *format7_info;
+extern dc1394_miscinfo *misc_infos;
 extern dc1394_miscinfo *misc_info;
-extern dc1394_camerainfo *camera;
 extern SelfIdPacket_t *selfid;
 extern PrefsInfo preferences; 
 extern GtkWidget *commander_window;
 extern int current_camera;
 extern CtxtInfo ctxt;
 extern uiinfo_t *uiinfo;
+extern uiinfo_t *uiinfos;
+extern dc1394_camerainfo *camera;
 
 gint IsoStartThread(void)
 {
@@ -413,14 +416,15 @@ IsoThreadCheckParams(chain_t *iso_service)
   int temp_requested_size=0;
   info=(isothread_info_t*)iso_service->data;
   // copy harmless parameters anyway:
-  pthread_mutex_lock(&uiinfo->mutex);
-  iso_service->current_buffer->bpp=uiinfo->bpp;
-  iso_service->current_buffer->bayer_pattern=uiinfo->bayer_pattern;
+  pthread_mutex_lock(&uiinfos[iso_service->camera].mutex);
+  iso_service->current_buffer->bpp=uiinfos[iso_service->camera].bpp;
+  iso_service->current_buffer->bayer_pattern=uiinfo[iso_service->camera].bayer_pattern;
 
   if (iso_service->current_buffer->width==-1) {
     // we have to allocate something and get the parameters: it's the first pass:
     change_detected+=1;
   }
+
   // check sizes. This depends on Bayer decoding
   if (iso_service->current_buffer->bayer==BAYER_DECODING_DOWNSAMPLE) {
     
@@ -444,15 +448,15 @@ IsoThreadCheckParams(chain_t *iso_service)
     }
   }
   // check mode and format:
-  change_detected+=iso_service->current_buffer->mode!=misc_info->mode;
-  change_detected+=iso_service->current_buffer->format!=misc_info->format;
+  change_detected+=iso_service->current_buffer->mode!=misc_infos[iso_service->camera].mode;
+  change_detected+=iso_service->current_buffer->format!=misc_infos[iso_service->camera].format;
   // check F7 color mode change
   change_detected+=((iso_service->current_buffer->format==FORMAT_SCALABLE_IMAGE_SIZE)&&
-		    (iso_service->current_buffer->format7_color_mode!=format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].color_coding_id));
+		    (iso_service->current_buffer->format7_color_mode!=format7_infos[iso_service->camera].mode[misc_infos[iso_service->camera].mode-MODE_FORMAT7_MIN].color_coding_id));
   // check stereo decoding
-  change_detected+=iso_service->current_buffer->stereo_decoding!=uiinfo->stereo;
+  change_detected+=iso_service->current_buffer->stereo_decoding!=uiinfos[iso_service->camera].stereo;
   // check bayer decoding
-  change_detected+=iso_service->current_buffer->bayer!=uiinfo->bayer;
+  change_detected+=iso_service->current_buffer->bayer!=uiinfos[iso_service->camera].bayer;
 
   // (note: there is no check in bytes_per_frame as this mearly reflects some changes for other parameters)
 
@@ -463,11 +467,11 @@ IsoThreadCheckParams(chain_t *iso_service)
       iso_service->current_buffer->width=info->capture.frame_width;
       iso_service->current_buffer->height=info->capture.frame_height;
       iso_service->current_buffer->bytes_per_frame=info->capture.quadlets_per_frame*4;
-      iso_service->current_buffer->mode=misc_info->mode;
-      iso_service->current_buffer->format=misc_info->format;
-      iso_service->current_buffer->format7_color_mode=format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].color_coding_id;
-      iso_service->current_buffer->stereo_decoding=uiinfo->stereo;
-      iso_service->current_buffer->bayer=uiinfo->bayer;
+      iso_service->current_buffer->mode=misc_infos[iso_service->camera].mode;
+      iso_service->current_buffer->format=misc_infos[iso_service->camera].format;
+      iso_service->current_buffer->format7_color_mode=format7_infos[iso_service->camera].mode[misc_infos[iso_service->camera].mode-MODE_FORMAT7_MIN].color_coding_id;
+      iso_service->current_buffer->stereo_decoding=uiinfos[iso_service->camera].stereo;
+      iso_service->current_buffer->bayer=uiinfos[iso_service->camera].bayer;
       info->orig_sizex=iso_service->current_buffer->width;
       info->orig_sizey=iso_service->current_buffer->height;
 
@@ -563,7 +567,9 @@ IsoThreadCheckParams(chain_t *iso_service)
     info->temp=(unsigned char *)info->capture.capture_buffer;
   }
 
-  pthread_mutex_unlock(&uiinfo->mutex);
+  //fprintf(stderr,"ISO size: %dx%d\n",iso_service->current_buffer->width,iso_service->current_buffer->height);
+
+  pthread_mutex_unlock(&uiinfos[iso_service->camera].mutex);
 
 }
 

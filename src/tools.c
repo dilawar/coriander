@@ -772,4 +772,3 @@ ResumeFPSDisplay(int camera)
     //fprintf(stderr,"done: id= %d\n",infoftp->timeout_func_id);
   }
 }
-      
