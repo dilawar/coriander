@@ -309,11 +309,12 @@ IsoThread(void* arg)
       BayerDownsample(info->temp, iso_service->current_buffer->image,
 		      iso_service->current_buffer->width, iso_service->current_buffer->height, iso_service->current_buffer->bayer_pattern);
       break;
-    default:
+    case NO_BAYER_DECODING:
       //fprintf(stderr,"memcopy\n");
-      memcpy(iso_service->current_buffer->image, info->temp,
-	     iso_service->current_buffer->bytes_per_frame);
-      
+      // this is only necessary if no stereo was performed
+      if (iso_service->current_buffer->stereo_decoding==NO_STEREO_DECODING)
+	memcpy(iso_service->current_buffer->image, info->temp,
+	       iso_service->current_buffer->bytes_per_frame);
       break;
     }
     
@@ -390,164 +391,162 @@ IsoThreadCheckParams(chain_t *iso_service)
 {
 
   isothread_info_t *info;
-  int change_detected=0;
-  int temp_requested_size=0;
   info=(isothread_info_t*)iso_service->data;
   // copy harmless parameters anyway:
   pthread_mutex_lock(&iso_service->camera->uimutex);
+
   iso_service->current_buffer->bpp=iso_service->camera->bpp;
   iso_service->current_buffer->bayer_pattern=iso_service->camera->bayer_pattern;
+  iso_service->current_buffer->width=info->capture.frame_width;
+  iso_service->current_buffer->height=info->capture.frame_height;
+  iso_service->current_buffer->bytes_per_frame=info->capture.quadlets_per_frame*4;
+  iso_service->current_buffer->mode=iso_service->camera->misc_info.mode;
+  iso_service->current_buffer->format=iso_service->camera->misc_info.format;
+  iso_service->current_buffer->format7_color_mode=iso_service->camera->format7_info.mode[iso_service->camera->misc_info.mode-MODE_FORMAT7_MIN].color_coding_id;
+  iso_service->current_buffer->stereo_decoding=iso_service->camera->stereo;
+  iso_service->current_buffer->bayer=iso_service->camera->bayer;
+  info->orig_sizex=iso_service->current_buffer->width;
+  info->orig_sizey=iso_service->current_buffer->height;
 
-  if (iso_service->current_buffer->width==-1) {
-    // we have to allocate something and get the parameters: it's the first pass:
-    change_detected+=1;
-  }
-
-  // check sizes. This depends on Bayer decoding
-  if (iso_service->current_buffer->bayer==BAYER_DECODING_DOWNSAMPLE) {  
-    // allow size to differ, this is normal operation.
-    change_detected+=iso_service->current_buffer->width          !=(info->capture.frame_width)/2;
-    if (iso_service->current_buffer->stereo_decoding!=NO_STEREO_DECODING){
-      change_detected+=iso_service->current_buffer->height       !=(info->capture.frame_height);
-    }
-    else {
-      change_detected+=iso_service->current_buffer->height       !=(info->capture.frame_height)/2;
-    }
+  if (iso_service->current_buffer->format!=FORMAT_SCALABLE_IMAGE_SIZE) {
+    info->cond16bit=((iso_service->current_buffer->mode==MODE_640x480_MONO16)||
+		     (iso_service->current_buffer->mode==MODE_800x600_MONO16)||
+		     (iso_service->current_buffer->mode==MODE_1024x768_MONO16)||
+		     (iso_service->current_buffer->mode==MODE_1280x960_MONO16)||
+		     (iso_service->current_buffer->mode==MODE_1600x1200_MONO16));
   }
   else {
-    // size should be equal, or a change occured.
-    change_detected+=iso_service->current_buffer->width          !=info->capture.frame_width;
-    if (iso_service->current_buffer->stereo_decoding!=NO_STEREO_DECODING) {
-      change_detected+=iso_service->current_buffer->height       !=info->capture.frame_height*2;
-    }
-    else {
-      change_detected+=iso_service->current_buffer->height       !=info->capture.frame_height;
-    }
+    // warning: little change, might have big effect
+    info->cond16bit=(iso_service->camera->format7_info.mode[iso_service->current_buffer->mode-MODE_FORMAT7_MIN].color_coding_id==COLOR_FORMAT7_MONO16);
   }
-  // check mode and format:
-  change_detected+=iso_service->current_buffer->mode!=iso_service->camera->misc_info.mode;
-  change_detected+=iso_service->current_buffer->format!=iso_service->camera->misc_info.format;
-  // check F7 color mode change
-  change_detected+=((iso_service->current_buffer->format==FORMAT_SCALABLE_IMAGE_SIZE)&&
-		    (iso_service->current_buffer->format7_color_mode!=iso_service->camera->format7_info.mode[iso_service->camera->misc_info.mode-MODE_FORMAT7_MIN].color_coding_id));
-  // check stereo decoding
-  change_detected+=iso_service->current_buffer->stereo_decoding!=iso_service->camera->stereo;
-  // check bayer decoding
-  change_detected+=iso_service->current_buffer->bayer!=iso_service->camera->bayer;
 
-  // (note: there is no check in bytes_per_frame as this mearly reflects some changes for other parameters)
-
-  if (change_detected>0) {
-    //fprintf(stderr,"Parameter change detected, updating... ------------------- \n");
-    // copy all new parameters:
-    iso_service->current_buffer->width=info->capture.frame_width;
-    iso_service->current_buffer->height=info->capture.frame_height;
-    iso_service->current_buffer->bytes_per_frame=info->capture.quadlets_per_frame*4;
-    iso_service->current_buffer->mode=iso_service->camera->misc_info.mode;
-    iso_service->current_buffer->format=iso_service->camera->misc_info.format;
-    iso_service->current_buffer->format7_color_mode=iso_service->camera->format7_info.mode[iso_service->camera->misc_info.mode-MODE_FORMAT7_MIN].color_coding_id;
-    iso_service->current_buffer->stereo_decoding=iso_service->camera->stereo;
-    iso_service->current_buffer->bayer=iso_service->camera->bayer;
-    info->orig_sizex=iso_service->current_buffer->width;
-    info->orig_sizey=iso_service->current_buffer->height;
-    
-    // CHECK TEMP BUFFER -----------------------------
-    //fprintf(stderr," == TEMP ==\n");
-    if (iso_service->current_buffer->format!=FORMAT_SCALABLE_IMAGE_SIZE)
-      info->cond16bit=((iso_service->current_buffer->mode==MODE_640x480_MONO16)||
-		       (iso_service->current_buffer->mode==MODE_800x600_MONO16)||
-		       (iso_service->current_buffer->mode==MODE_1024x768_MONO16)||
-		       (iso_service->current_buffer->mode==MODE_1280x960_MONO16)||
-		       (iso_service->current_buffer->mode==MODE_1600x1200_MONO16));
-    else
-      // warning: little change, might have big effect
-      info->cond16bit=(iso_service->camera->format7_info.mode[iso_service->current_buffer->mode-MODE_FORMAT7_MIN].color_coding_id==COLOR_FORMAT7_MONO16);
-    
-    if (iso_service->current_buffer->stereo_decoding!=NO_STEREO_DECODING)
-      temp_requested_size=iso_service->current_buffer->width*iso_service->current_buffer->height*2*sizeof(unsigned char);
-    else {
-      if ((info->cond16bit!=0)&&(iso_service->current_buffer->bayer!=NO_BAYER_DECODING)) {
-	temp_requested_size=iso_service->current_buffer->width*iso_service->current_buffer->height*sizeof(unsigned char);
+  // the buffer sizes. If a size is not good, re-allocate.
+  switch (iso_service->current_buffer->bayer) {
+  case BAYER_DECODING_DOWNSAMPLE:
+    switch (iso_service->current_buffer->stereo_decoding) {
+    case STEREO_DECODING_FIELD:
+    case STEREO_DECODING_INTERLACED:
+      // height is the same (/2 downsampling, *2 stereo decoding)
+      iso_service->current_buffer->width/=2;
+      iso_service->current_buffer->bytes_per_frame=iso_service->current_buffer->width*iso_service->current_buffer->height*3; // RGB buffer -> *3
+      AllocImageBuffer(iso_service);
+      AllocTempBuffer(info->orig_sizey*info->orig_sizex*2*sizeof(unsigned char),info);
+      break;
+    case NO_STEREO_DECODING:
+      iso_service->current_buffer->width/=2;
+      iso_service->current_buffer->height/=2;
+      iso_service->current_buffer->bytes_per_frame=iso_service->current_buffer->width*iso_service->current_buffer->height*3; // RGB buffer -> *3
+      AllocImageBuffer(iso_service);
+      if (info->cond16bit!=0)
+	AllocTempBuffer(info->orig_sizey*info->orig_sizex*sizeof(unsigned char),info);
+      else {
+	AllocTempBuffer(0,info);
+	info->temp=(unsigned char *)info->capture.capture_buffer;
       }
-      else
-	temp_requested_size=0;
+      break;
     }
-    
-    if (temp_requested_size==0) {
+    break;
+  case BAYER_DECODING_EDGE_SENSE:
+  case BAYER_DECODING_NEAREST:
+    switch (iso_service->current_buffer->stereo_decoding) {
+    case STEREO_DECODING_FIELD:
+    case STEREO_DECODING_INTERLACED:
+      iso_service->current_buffer->height*=2;
+      iso_service->current_buffer->bytes_per_frame=iso_service->current_buffer->width*iso_service->current_buffer->height*3; // RGB buffer -> *3
+      AllocImageBuffer(iso_service);
+      AllocTempBuffer(info->orig_sizey*info->orig_sizex*2*sizeof(unsigned char),info);
+      break;
+    case NO_STEREO_DECODING:
+      iso_service->current_buffer->bytes_per_frame=iso_service->current_buffer->width*iso_service->current_buffer->height*3; // RGB buffer -> *3
+      AllocImageBuffer(iso_service);
+      if (info->cond16bit!=0)
+	AllocTempBuffer(info->orig_sizey*info->orig_sizex*sizeof(unsigned char),info);
+      else {
+	AllocTempBuffer(0,info);
+	info->temp=(unsigned char *)info->capture.capture_buffer;
+      }
+      break;
+    }
+    break;
+  case NO_BAYER_DECODING:
+    switch (iso_service->current_buffer->stereo_decoding) {
+    case STEREO_DECODING_FIELD:
+    case STEREO_DECODING_INTERLACED:
+      iso_service->current_buffer->height*=2;
+      iso_service->current_buffer->bytes_per_frame=iso_service->current_buffer->width*iso_service->current_buffer->height; // GRAY output only (8bpp)
+      AllocImageBuffer(iso_service);
+      AllocTempBuffer(0,info);
+      //fprintf(stderr,"info->temp linked to curent image buffer\n");
+      // it is very important to allocate the image buffer before the following
+      // assignation because the image allocation might change the buffer pointer! 
+      info->temp=(unsigned char *)iso_service->current_buffer->image;
+      break;
+    case NO_STEREO_DECODING:
+      AllocImageBuffer(iso_service);
+      AllocTempBuffer(0,info);
+      info->temp=(unsigned char *)info->capture.capture_buffer;
+      break;
+    }
+    break;
+  }
+  /*
+  fprintf(stderr,"Buffer sizes: temp=%lld image=%lld\n",info->temp_size,iso_service->current_buffer->bytes_per_frame);
+
+
+  if (iso_service->current_buffer->image==NULL)
+    fprintf(stderr,"Normal buffer not allocated. Segfault expected!\n");
+  if (info->temp==NULL)
+    fprintf(stderr,"Temp buffer nor allocated nor set. Segfault expected!\n");
+  */
+  SetColorMode(iso_service->current_buffer);
+  
+  pthread_mutex_unlock(&iso_service->camera->uimutex);
+
+}
+
+void
+AllocTempBuffer(long long unsigned int requested_size, isothread_info_t* info) 
+{
+  if (requested_size==0) {
+    if (info->temp_allocated>0) {
+      free(info->temp);
+      //fprintf(stderr,"temp freed\n");
+    }
+    info->temp_allocated=0;
+    info->temp_size=0;
+    //fprintf(stderr,"dummy temp used, no malloc\n");
+    }
+  else { // some allocated space is required
+    if (requested_size!=info->temp_size) { // req and actual size don't not match
       if (info->temp_allocated>0) {
 	free(info->temp);
 	//fprintf(stderr,"temp freed\n");
       }
-      info->temp_allocated=0;
-      info->temp_size=0;
-      info->temp=(unsigned char *)info->capture.capture_buffer;
-      //fprintf(stderr,"dummy temp used, no malloc\n");
+      info->temp=(unsigned char *)malloc(requested_size*sizeof(unsigned char));
+      info->temp_allocated=1;
+      info->temp_size=requested_size;
+      //fprintf(stderr,"temp allocated with size %d at 0x%x for a resolution of %d x %d\n",temp_requested_size,info->temp,
+      //  iso_service->current_buffer->width,iso_service->current_buffer->height);
     }
-    else { // some allocated space is required
-      if (temp_requested_size!=info->temp_size) { // req and actual size don't not match
-	if (info->temp_allocated>0) {
-	  free(info->temp);
-	  //fprintf(stderr,"temp freed\n");
-	}
-	info->temp=(unsigned char *)malloc(temp_requested_size*sizeof(unsigned char));
-	info->temp_allocated=1;
-	info->temp_size=temp_requested_size;
-	//fprintf(stderr,"temp allocated with size %d at 0x%x for a resolution of %d x %d\n",temp_requested_size,info->temp,
-	//  iso_service->current_buffer->width,iso_service->current_buffer->height);
-      }
-    }
-    
-    // CHECK STANDARD BUFFER -------------------------
-    //fprintf(stderr," == BUFFER ==\n");
-    // if bayer decoding, we force a RGB24 buffer size
-    if (iso_service->current_buffer->bayer!=NO_BAYER_DECODING) {
-      iso_service->current_buffer->bytes_per_frame=iso_service->current_buffer->width*iso_service->current_buffer->height*3;
-    }
-    // if we use downsampling, buffer should be /4
-    if (iso_service->current_buffer->bayer==BAYER_DECODING_DOWNSAMPLE) {
-      iso_service->current_buffer->width/=2;
-      iso_service->current_buffer->height/=2;
-      iso_service->current_buffer->bytes_per_frame/=4;
-    }
-    // if it's stereo decoding, height is multiplied by 2
-    if (iso_service->current_buffer->stereo_decoding!=NO_STEREO_DECODING) {
-      iso_service->current_buffer->height*=2;
-      // if we are no more in raw 16bit mode, we should *2. Otherwise, the factor is already in bytes_per_frame.
-      if (iso_service->current_buffer->bayer!=NO_BAYER_DECODING) {
-	iso_service->current_buffer->bytes_per_frame*=2;
-      }
-    }
-    
+  }
+}
+
+void
+AllocImageBuffer(chain_t* iso_service) 
+{
+  // ============ Allocate standard buffer ===============
+  if (iso_service->current_buffer->buffer_size!=iso_service->current_buffer->bytes_per_frame) {
+    // (re)allocation is necessary
+    //fprintf(stderr,"(re-)allocation...\n");
     if (iso_service->current_buffer->image!=NULL) {
       free(iso_service->current_buffer->image);
+      //fprintf(stderr,"image buffer freed\n");
       iso_service->current_buffer->image=NULL;
     }
-    
     iso_service->current_buffer->image=(unsigned char*)malloc(iso_service->current_buffer->bytes_per_frame*sizeof(unsigned char));
-    //fprintf(stderr,"buffer allocated with size %d at 0x%x for a resolution of %d x %d\n",iso_service->current_buffer->bytes_per_frame,iso_service->current_buffer->image,
-    //      iso_service->current_buffer->width,iso_service->current_buffer->height);
-    
-    if ((iso_service->current_buffer->image==NULL)||(info->temp==NULL))
-      fprintf(stderr,"Can't allocate image buffers! Aiiie!\n");
-    
-    /*fprintf(stderr,"Final parameters:\n Size: %d x %d\n BPF: %ld\n Orig Size: %d x %d\n",
-      iso_service->current_buffer->width,iso_service->current_buffer->height,
-      iso_service->current_buffer->bytes_per_frame,
-      info->orig_sizex, info->orig_sizey);
-    */
-    SetColorMode(iso_service->current_buffer);
-    
+    //fprintf(stderr,"0x%lx\n",(unsigned long int)iso_service->current_buffer->image);
+    iso_service->current_buffer->buffer_size=iso_service->current_buffer->bytes_per_frame;
   }
-  
-  if (info->temp_allocated==0) {
-    // temp not allocated. it is a dummy pointer to the capture buffer and must be updated anyway.
-    info->temp=(unsigned char *)info->capture.capture_buffer;
-  }
-  
-  //fprintf(stderr,"ISO size: %dx%d\n",iso_service->current_buffer->width,iso_service->current_buffer->height);
-
-  pthread_mutex_unlock(&iso_service->camera->uimutex);
-
 }
 
 void

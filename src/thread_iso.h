@@ -35,8 +35,6 @@
 #include "definitions.h"
 #include "tools.h" 
 
-#define DMA_BUFFERS 4
-
 typedef enum
 {
   RECEIVE_METHOD_RAW1394=0, 
@@ -58,7 +56,7 @@ typedef struct
   int timeout_func_id;
 
   unsigned char *temp;
-  int temp_size;
+  long long unsigned int temp_size;
   int temp_allocated;
 
   int orig_sizex;
@@ -88,6 +86,12 @@ IsoStopThread(camera_t* camera);
 
 void
 IsoThreadCheckParams(chain_t *iso_service);
+
+void
+AllocTempBuffer(long long unsigned int requested_size, isothread_info_t* info);
+
+void
+AllocImageBuffer(chain_t* iso_service);
 
 void
 SetColorMode(buffer_t *buffer);

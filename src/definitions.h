@@ -145,19 +145,20 @@ typedef struct _Buffer_T
   unsigned char *image;
   int width;
   int height;
-  long int bytes_per_frame; // this is the bytes per frame, including padding.
+  unsigned long long int bytes_per_frame; // this is the bytes per frame, including padding.
   int mode;
   int format;
   int bpp; // this bpp is used for 16bit camera that only have e.g. 12 bits.
-  int image_bytes;
+  unsigned long long int image_bytes;
   bayer_decoding_t bayer;
   bayer_pattern_t bayer_pattern;
   stereo_decoding_t stereo_decoding;
   int format7_color_mode;
 
   int buffer_color_mode;
-  float buffer_image_bytes; // this is the true size of the image, without padding.
+  unsigned long long int buffer_image_bytes; // this is the true size of the image, without padding.
 
+  unsigned long long int buffer_size; // this is the allocated memory space size of the image field
   // information about the time the frame was captured by the ISO thread.
   struct tm captime;
   int captime_millisec;
