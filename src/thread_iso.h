@@ -97,3 +97,5 @@ void
 SetColorMode(buffer_t *buffer);
 
 #endif
+
+

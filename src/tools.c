@@ -670,6 +670,7 @@ StopFPSDisplay(void)
   chain_t *service;
   isothread_info_t* infoiso;
   savethread_info_t* infosave;
+  displaythread_info_t* infodisplay;
   ftpthread_info_t* infoftp;
   v4lthread_info_t* infov4l;
 
@@ -681,11 +682,16 @@ StopFPSDisplay(void)
 			 ctxt.fps_receive_ctxt, ctxt.fps_receive_id);
     ctxt.fps_receive_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_receive"),
 					   ctxt.fps_receive_ctxt, "");
-  
-  } 
-
-  // we don't need to stop DISPLAY service FPS: the thread is completely disabled if necessary.
-  
+  }  
+  service=GetService(camera, SERVICE_DISPLAY);
+  if (service!=NULL) {
+    infodisplay=(displaythread_info_t*)service->data;
+    gtk_timeout_remove(infodisplay->timeout_func_id);
+    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_display"),
+			 ctxt.fps_display_ctxt, ctxt.fps_display_id);
+    ctxt.fps_display_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_display"),
+					   ctxt.fps_display_ctxt, "");
+  }
   service=GetService(camera, SERVICE_SAVE);
   if (service!=NULL) {
     infosave=(savethread_info_t*)service->data;
@@ -721,29 +727,38 @@ ResumeFPSDisplay(void)
   chain_t *service;
   isothread_info_t* infoiso;
   savethread_info_t* infosave;
+  displaythread_info_t* infodisplay;
   ftpthread_info_t* infoftp;
   v4lthread_info_t* infov4l;
 
   service=GetService(camera, SERVICE_ISO);
   if (service!=NULL) {
     infoiso=(isothread_info_t*)service->data;
+    gtk_timeout_remove(infoiso->timeout_func_id);
     infoiso->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)IsoShowFPS, (gpointer*) service);
   } 
-  // we don't restart display FPS because if necessary the thread will be restarted anyway.
-  
+  service=GetService(camera, SERVICE_DISPLAY);
+  if (service!=NULL) {
+    infodisplay=(displaythread_info_t*)service->data;
+    gtk_timeout_remove(infodisplay->timeout_func_id);
+    infodisplay->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)DisplayShowFPS, (gpointer*) service);
+  } 
   service=GetService(camera, SERVICE_SAVE);
   if (service!=NULL) {
     infosave=(savethread_info_t*)service->data;
+    gtk_timeout_remove(infosave->timeout_func_id);
     infosave->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)SaveShowFPS, (gpointer*) service);
   }
   service=GetService(camera, SERVICE_FTP);
   if (service!=NULL) {
     infoftp=(ftpthread_info_t*)service->data;
+    gtk_timeout_remove(infoftp->timeout_func_id);
     infoftp->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)FtpShowFPS, (gpointer*) service);
   }
   service=GetService(camera, SERVICE_V4L);
   if (service!=NULL) {
     infov4l=(v4lthread_info_t*)service->data;
+    gtk_timeout_remove(infov4l->timeout_func_id);
     infov4l->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)V4lShowFPS, (gpointer*) service);
   }
 }
@@ -757,29 +772,36 @@ int
 bus_reset_handler(raw1394handle_t handle, unsigned int generation) {
 
   BusInfo_t bi; // WHY NOT USE THE BUS_INFO GLOBAL VARIABLE HERE???
-  int i;
+  int i, ic, icfound, channel, speed;
   int port;
-  camera_t* camera_ptr;
+  camera_t *camera_ptr, *cp2;
   camera_t* new_camera;
   int index;
+  dc1394bool_t iso_status;
   dc1394_camerainfo camera_info;
   unsigned long long int new_guids[128];
 
   bi.handles=NULL;
   bi.port_camera_num=NULL;
   bi.camera_nodes=NULL;
-  //fprintf(stderr,"Bus reset detected by gtk timeout. Generation: %d\n",generation);
+  MainStatus("Bus reset detected");
 
   gtk_widget_set_sensitive(main_window,FALSE);
 
-  usleep(5000); // sleep some time (5ms) to allow the cam to warm-up/boot
+  usleep(100000); // sleep some time (100ms) to allow the cam to warm-up/boot
 
   raw1394_update_generation(handle, generation);
   // Now we have to deal with this bus reset...
 
   // get camera nodes:
   GetCameraNodes(&bi);
-
+  /*
+  cp2=cameras;
+  while(cp2!=NULL) {
+    fprintf(stderr,"Channel %d used\n",cp2->misc_info.iso_channel);
+    cp2=cp2->next;
+  }
+  */
   // ADD NEW CAMERAS AND UPDATE PREVIOUS ONES ---------------------------------
 
   // try to match the GUID with previous cameras
@@ -788,29 +810,59 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation) {
       for (i=0;i<bi.port_camera_num[port];i++) {
 	if (dc1394_get_camera_info(bi.handles[port], bi.camera_nodes[port][i], &camera_info)!=DC1394_SUCCESS)
 	  MainError("Can't get camera basic information in bus-reset handler");
-	//fprintf(stderr, "current GUID: 0x%llx\n", camera_info.euid_64);
+	//fprintf(stderr, " current GUID: 0x%llx\n", camera_info.euid_64);
 
 	// was the current GUID already there?
 	camera_ptr=cameras;
 	while(camera_ptr!=NULL) {
 	  if (camera_ptr->camera_info.euid_64==camera_info.euid_64) { // yes, the camera was there
-	    //fprintf(stderr,"camera was already there, updating...\n");
+	    //fprintf(stderr,"  camera was already there, updating...\n");
 	    if (dc1394_get_camera_info(bi.handles[port], bi.camera_nodes[port][i], &camera_ptr->camera_info)!=DC1394_SUCCESS)
 	      MainError("Could not update camera basic information in bus reset handler");
-	    // If ISO is on, stop it and restart it.
-	    if (GetService(camera_ptr,SERVICE_ISO)!=NULL) {
+	    // If ISO service is on, stop it and restart it.
+	    /*if (GetService(camera_ptr,SERVICE_ISO)!=NULL) {
+	      fprintf(stderr,"  Restarting ISO service\n");
 	      IsoStopThread(camera_ptr);
+	      fprintf(stderr,"   stop\n");
 	      usleep(5000);
 	      IsoStartThread(camera_ptr);
-	    }
+	      fprintf(stderr,"   start\n");
+	      }*/
 	    break;
 	  }
 	  camera_ptr=camera_ptr->next;
 	}
 	if (camera_ptr==NULL) { // the camera is new
-	  //fprintf(stderr,"A new camera was added\n");
+	  //fprintf(stderr,"  A new camera was added\n");
 	  new_camera=NewCamera();
 	  GetCameraData(bi.handles[port], bi.camera_nodes[port][i], new_camera);
+
+	  // set ISO channel for this camera
+	  ic=0;
+	  icfound=0;
+	  while(icfound!=1) {
+	    //fprintf(stderr,"    Trying channel %d...\n",ic);
+	    cp2=cameras;
+	    while(cp2!=NULL) {
+	      if (cp2->misc_info.iso_channel==ic) {
+		//fprintf(stderr,"    Found a cam with channel %d\n",channel);
+		break;
+	      }
+	      cp2=cp2->next;
+	    }
+	    if (cp2==NULL)
+	      icfound=1;
+	    else
+	      ic++;
+	  }
+	  if (dc1394_get_iso_channel_and_speed(new_camera->camera_info.handle, new_camera->camera_info.id,
+					       &channel, &speed)!=DC1394_SUCCESS)
+	    MainError("Can't get iso channel and speed");
+	  //fprintf(stderr,"   Channel was %d\n",channel);
+	  if (dc1394_set_iso_channel_and_speed(new_camera->camera_info.handle, new_camera->camera_info.id,
+					       ic, speed)!=DC1394_SUCCESS)
+	    MainError("Can't set iso channel and speed");
+	  //fprintf(stderr,"   Channel set to %d\n",ic);
 	  AppendCamera(new_camera);
 	}	
       }
@@ -820,6 +872,7 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation) {
   // CLEAR REMOVED CAMERAS -----------------------------
 
   index=0;
+  //fprintf(stderr,"Getting new GUIDs\n");
   // get all new guids
   for (port=0;port<bi.port_num;port++) {
     if (bi.handles[port]!=0) {
@@ -841,9 +894,9 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation) {
     if (camera_ptr->camera_info.euid_64!=new_guids[i]) { // the camera "camera_ptr" was unplugged
       //fprintf(stderr,"found a camera to remove\n");
       if (camera->camera_info.euid_64==camera_ptr->camera_info.euid_64) {
-	//fprintf(stderr,"The current camera was unplugged\n");
+	//fprintf(stderr," The current camera was unplugged\n");
 	if (bi.camera_num==0) { // the only camera was removed. Close GUI and revert to camera wait prompt
-	  //fprintf(stderr,"... and it was the only camera!\n");
+	  //fprintf(stderr," ... and it was the only camera!\n");
 	  waiting_camera_window=create_waiting_camera_window();
 	  gtk_widget_show(waiting_camera_window);
 
@@ -852,7 +905,7 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation) {
 
 	}
 	else {
-	  //fprintf(stderr,"Selecting the first non-removed camera as current camera\n");
+	  //fprintf(stderr,"  Selecting the first non-removed camera as current camera\n");
 	  if (cameras->camera_info.euid_64==camera_ptr->camera_info.euid_64) { // is the first camera the one to be removed?
 	    // use second cam as current cam
 	    SetCurrentCamera(cameras->next->camera_info.euid_64);
@@ -864,6 +917,7 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation) {
 	  // close and remove dead camera
 	  RemoveCamera(camera_ptr->camera_info.euid_64);
 	}
+	//fprintf(stderr," removed dead camera\n");
       } // end if we are deleting the current camera
       else { // we delete another camera. This is easy.
 	RemoveCamera(camera_ptr->camera_info.euid_64);
@@ -877,35 +931,70 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation) {
   }
   //fprintf(stderr,"Removed all dead camera structs\n");
 
+  // restart ISO if necessary
+  cp2=cameras;
+  while(cp2!=NULL) {
+    if (dc1394_get_iso_status(cp2->camera_info.handle,cp2->camera_info.id,&iso_status)!=DC1394_SUCCESS) {
+      MainError("Could not read ISO status");
+    }
+    else {
+      //fprintf(stderr,"iso is %d and should be %d\n", iso_status,cp2->misc_info.is_iso_on);
+      if ((cp2->misc_info.is_iso_on==DC1394_TRUE)&&(iso_status==DC1394_FALSE)) {
+	if (dc1394_start_iso_transmission(cp2->camera_info.handle,cp2->camera_info.id)!=DC1394_SUCCESS) {
+	  MainError("Could start ISO");
+	}
+	usleep(50000);
+      }
+    }
+    cp2=cp2->next;
+  }
+
   if (bi.camera_num>0) {
     //fprintf(stderr,"build/refresh GUI\n");
-    //fprintf(stderr,"0x%x\n",waiting_camera_window);
     if (waiting_camera_window!=NULL) {
       gtk_widget_destroy(GTK_WIDGET(waiting_camera_window));
       waiting_camera_window=NULL;
+      //fprintf(stderr," destroyed win\n");
     }
 
-    //fprintf(stderr,"destroyed win\n");
     BuildAllWindows();
     //fprintf(stderr,"finished building GUI\n");
     UpdateAllWindows();
     //fprintf(stderr,"finished updating GUI\n");
-    // Build/refresh GUI
+
     if (camera->want_to_display>0)
       DisplayStartThread(camera);
     
-    // resume all FPS displays:
     ResumeFPSDisplay();
 
     gtk_widget_set_sensitive(main_window,TRUE);
   }
 
-  // re-set ISO channels. This might be necessary before restarting the iso threads
+  GrabSelfIds(bi.handles, bi.port_num);
+
+  /*
+  fprintf(stderr,"Reseting ISO channels\n");
+  // re-set ISO channels.
   SetChannels();
 
+  fprintf(stderr,"Restarting ISO\n");
+  // Restart all ISO threads
+  camera_ptr=cameras;
+  while (camera_ptr!=NULL) {
+    if (GetService(camera_ptr,SERVICE_ISO)!=NULL) {
+      IsoStopThread(camera_ptr);
+      usleep(50000);
+      IsoStartThread(camera_ptr);
+    }
+    camera_ptr=camera_ptr->next;
+  }
+  */
   free(bi.handles);
   free(bi.port_camera_num);
   free(bi.camera_nodes);
+
+  
+  //fprintf(stderr,"Finished handling bus reset\n");
 
   return(1);
 }

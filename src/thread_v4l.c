@@ -96,7 +96,9 @@ V4lStartThread(camera_t* cam)
       FreeChain(v4l_service);
       return(-1);
     }
-    info->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)V4lShowFPS, (gpointer*) v4l_service);
+    if (cam==camera) {
+      info->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)V4lShowFPS, (gpointer*) v4l_service);
+    }
     pthread_mutex_unlock(&v4l_service->mutex_struct);
     pthread_mutex_unlock(&v4l_service->mutex_data);
     
@@ -246,11 +248,11 @@ V4lStopThread(camera_t* cam)
     
     pthread_mutex_lock(&v4l_service->mutex_data);
     pthread_mutex_lock(&v4l_service->mutex_struct);
-    
-    gtk_timeout_remove(info->timeout_func_id);
-    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_v4l"), ctxt.fps_v4l_ctxt, ctxt.fps_v4l_id);
-    ctxt.fps_v4l_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_v4l"), ctxt.fps_v4l_ctxt, "");
-    
+    if (cam==camera) {
+      gtk_timeout_remove(info->timeout_func_id);
+      gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_v4l"), ctxt.fps_v4l_ctxt, ctxt.fps_v4l_id);
+      ctxt.fps_v4l_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_v4l"), ctxt.fps_v4l_ctxt, "");
+    }
     RemoveChain(cam,v4l_service);
     
     /* Do custom cleanups here...*/

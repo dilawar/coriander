@@ -3,6 +3,11 @@ Coriander, (c) 2000-2003 Damien Douxchamps <ddouxchamps@users.sf.net>
 Changes towards version 1.0.0
 
    December 16, 2003, by Damien Douxchamps
+   - properly restart ISO after camera removal
+   - fix problem when switching images sizes with 'm' key
+   - echo bus reset notification in status window
+	
+   December 16, 2003, by Damien Douxchamps
    - update the way interactive boxes are defined (F7 cropping)
    - fixed some other issues, including some serious ones.
 	

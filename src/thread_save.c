@@ -109,7 +109,9 @@ SaveStartThread(camera_t* cam)
       FreeChain(save_service);
       return(-1);
     }
-    info->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)SaveShowFPS, (gpointer*) save_service);
+    if (camera==camera) {
+      info->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)SaveShowFPS, (gpointer*) save_service);
+    }
     pthread_mutex_unlock(&save_service->mutex_struct);
     pthread_mutex_unlock(&save_service->mutex_data);
     
@@ -342,11 +344,11 @@ SaveStopThread(camera_t* cam)
     
     pthread_mutex_lock(&save_service->mutex_data);
     pthread_mutex_lock(&save_service->mutex_struct);
-    
-    gtk_timeout_remove(info->timeout_func_id);
-    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_save"), ctxt.fps_save_ctxt, ctxt.fps_save_id);
-    ctxt.fps_save_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_save"), ctxt.fps_save_ctxt, "");
-    
+    if (cam==camera) {
+      gtk_timeout_remove(info->timeout_func_id);
+      gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_save"), ctxt.fps_save_ctxt, ctxt.fps_save_id);
+      ctxt.fps_save_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_save"), ctxt.fps_save_ctxt, "");
+    }
     RemoveChain(cam,save_service);
     
     /* Do custom cleanups here...*/

@@ -45,9 +45,6 @@ typedef struct
   int             second[2];
   int             pos[2];
   int             size[2];
-  //int             f7_step[2];
-  //int             f7_step_pos[2];
-  //int             use_unit_pos;
   int             draw;
   int             mouse_down;
   int             crop;

@@ -69,7 +69,9 @@ DisplayStartThread(camera_t* cam)
       FreeChain(display_service);
       return(-1);
     }
-    info->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)DisplayShowFPS, (gpointer*) display_service);
+    if (cam==camera) {
+      info->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)DisplayShowFPS, (gpointer*) display_service);
+    }
     pthread_mutex_unlock(&display_service->mutex_struct);
     pthread_mutex_unlock(&display_service->mutex_data);
     //fprintf(stderr," DISPLAY service started\n");
@@ -255,12 +257,11 @@ DisplayStopThread(camera_t* cam)
     
     pthread_mutex_lock(&display_service->mutex_data);
     pthread_mutex_lock(&display_service->mutex_struct);
-    gtk_timeout_remove(info->timeout_func_id);
-    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_display"),
-			 ctxt.fps_display_ctxt, ctxt.fps_display_id);
-    ctxt.fps_display_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_display"),
-					   ctxt.fps_display_ctxt, "");
-    
+    if (cam==camera) {
+      gtk_timeout_remove(info->timeout_func_id);
+      gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_display"), ctxt.fps_display_ctxt, ctxt.fps_display_id);
+      ctxt.fps_display_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_display"), ctxt.fps_display_ctxt, "");
+    }
     RemoveChain(cam,display_service);
     SDLQuit(display_service);
     

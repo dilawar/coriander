@@ -256,19 +256,16 @@ on_camera_select_activate              (GtkMenuItem     *menuitem,
 {
   camera_t* camera_ptr;
   
-  camera_ptr=(camera_t*)user_data;
-
   // close current display (we don't want display to be used by 2 threads at the same time 'cause SDL forbids it)
   DisplayStopThread(camera);
-  //fprintf(stderr,"display stopped\n");
 
   // stop all FPS displays:
   StopFPSDisplay();
-  //fprintf(stderr,"FPS display stopped\n");
+
+  camera_ptr=(camera_t*)user_data;
 
   // set current camera pointers:
   SetCurrentCamera(camera_ptr->camera_info.euid_64);
-  //fprintf(stderr,"camera selected\n");
 
   watchthread_info.draw=0;
   watchthread_info.mouse_down=0;
@@ -276,16 +273,13 @@ on_camera_select_activate              (GtkMenuItem     *menuitem,
 
   if (camera->want_to_display>0)
     DisplayStartThread(camera);
-  //fprintf(stderr,"display restarted\n");
 
   // redraw all:
   BuildAllWindows();
   UpdateAllWindows();
-  //fprintf(stderr,"GUI redraw\n");
 
   // resume all FPS displays:
   ResumeFPSDisplay();
-  //fprintf(stderr,"FPS display resumed\n");
 }
 
 void
@@ -298,7 +292,6 @@ on_format7_packet_size_changed               (GtkAdjustment    *adj,
   
   value=(int)adj->value;
 
-  //value=value-value%camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].min_bpp;
   value=NearestValue(value,camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].min_bpp,
 		     camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].min_bpp,
 		     camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].max_bpp);
@@ -322,7 +315,7 @@ on_format7_packet_size_changed               (GtkAdjustment    *adj,
       adj->value=bpp;
       gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
       
-      usleep(100e3);
+      usleep(50e3);
     }
 
     IsoFlowResume(&state);

@@ -408,6 +408,7 @@ void
 SDLSetMaxSize(chain_t *display_service)
 {
   pthread_mutex_lock(&watchthread_info.mutex_area);
+  watchthread_info.draw=0;
   if (display_service->current_buffer->format==FORMAT_SCALABLE_IMAGE_SIZE) {
     watchthread_info.crop=1;
     watchthread_info.pos[0]=0;

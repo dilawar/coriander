@@ -26,6 +26,7 @@ extern camera_t* camera;
 gint IsoStartThread(camera_t* cam)
 {
   int maxspeed;
+  //int channel, speed;
   chain_t* iso_service=NULL;
   isothread_info_t *info=NULL;
 
@@ -165,14 +166,19 @@ gint IsoStartThread(camera_t* cam)
       return(-1);
     }
     else {
-      info->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)IsoShowFPS, (gpointer*) iso_service);
-      
+      if (cam==camera) {
+	info->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)IsoShowFPS, (gpointer*) iso_service);
+      }
       pthread_mutex_unlock(&iso_service->mutex_struct);
       pthread_mutex_unlock(&iso_service->mutex_data);
     }
     //fprintf(stderr,"   ISO thread started\n");
   }
-
+  /*
+  if (dc1394_get_iso_channel_and_speed(cam->camera_info.handle, cam->camera_info.id,&channel, &speed)!=DC1394_SUCCESS)
+    MainError("Can't get iso channel and speed");
+  fprintf(stderr,"Channel %d used for ISO\n",channel);
+  */
   return (1);
 }
 
@@ -360,11 +366,11 @@ gint IsoStopThread(camera_t* cam)
     pthread_join(iso_service->thread, NULL);
     pthread_mutex_lock(&iso_service->mutex_data);
     pthread_mutex_lock(&iso_service->mutex_struct);
-    
-    gtk_timeout_remove(info->timeout_func_id);
-    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_receive"), ctxt.fps_receive_ctxt, ctxt.fps_receive_id);
-    ctxt.fps_receive_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_receive"), ctxt.fps_receive_ctxt, "");
-    
+    if (cam==camera) {
+      gtk_timeout_remove(info->timeout_func_id);
+      gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_receive"), ctxt.fps_receive_ctxt, ctxt.fps_receive_id);
+      ctxt.fps_receive_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_receive"), ctxt.fps_receive_ctxt, "");
+    }
     RemoveChain(cam,iso_service);
     
     if ((info->temp!=NULL)&&(info->temp_allocated>0)) {
