@@ -99,7 +99,8 @@ gint IsoStartThread(void)
 		FreeChain(iso_service);
 		return(-1);
 	      }
-	  else
+	  else {
+	    info->capture.dma_device_file = preferences.video1394_device;
 	    if (dc1394_dma_setup_format7_capture(camera->handle, camera->id, misc_info->iso_channel, 
 						 misc_info->mode, maxspeed, QUERY_FROM_CAMERA,
 						 QUERY_FROM_CAMERA, QUERY_FROM_CAMERA,
@@ -117,6 +118,7 @@ gint IsoStartThread(void)
 		FreeChain(iso_service);
 		return(-1);
 	      }
+	  }
 	  break;
 	case RECEIVE_METHOD_RAW1394:
 	  if (misc_info->format!=FORMAT_SCALABLE_IMAGE_SIZE)

@@ -2,6 +2,13 @@ Coriander, (c) 2000-2002 Damien Douxchamps <douxchamps@ieee.org>
 
 Changes towards version 0.25
 
+   July 2, 2002, by Damien Douxchamps
+   - Capture bugfixes from Clay Kunz.
+	
+   July 1, 2002, by Damien Douxchamps
+   - added a basic function fo Bayer pattern decoding (for Basler
+     cameras)
+	
    Apr 15, 2002, by Damien Douxchamps
    - changed the raw output selection: it is now an option in the
      preferences window. The 'raw' extention is no longer mendatory. 
