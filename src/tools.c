@@ -632,7 +632,7 @@ BuildAbsControl(int feature)
 }
 
 void
-GetAbsValue(int feature)
+SetAbsValue(int feature)
 {
   char string[256];
   char *stringp;
@@ -652,5 +652,22 @@ GetAbsValue(int feature)
 	sprintf(string,"%.8f",value);
 	gtk_entry_set_text(GTK_ENTRY(lookup_widget(absolute_settings_window,feature_abs_entry_list[feature-FEATURE_MIN])),string);
       }
+  }
+}
+
+void
+GetAbsValue(int feature)
+{
+  char string[256];
+  char *stringp;
+  float value;
+ 
+  
+  if (dc1394_query_absolute_feature_value(camera->handle, camera->id, feature, &value)!=DC1394_SUCCESS) {
+    MainError("Can't get absolute value!");
+  }
+  else {
+    sprintf(string,"%.8f",value);
+    gtk_entry_set_text(GTK_ENTRY(lookup_widget(absolute_settings_window,feature_abs_entry_list[feature-FEATURE_MIN])),string);
   }
 }

@@ -2,6 +2,9 @@ Coriander, (c) 2000-2003 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 0.32
 
+   April 25, 2003, by Damien Douxchamps
+   - absolute values are updated when moving the normal control sliders
+	
    April 22, 2003, by Damien Douxchamps
    - removed most of err=dc1394... schemes by if (dc1394...!=DC1394_SUCCESS)
    - removed Real service, as it never worked and now all the Real system

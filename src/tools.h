@@ -89,8 +89,10 @@ dc1394bool_t
 BuildAbsControl(int feature);
 
 void
-GetAbsValue(int feature);
+SetAbsValue(int feature);
 
+void
+GetAbsValue(int feature);
 
 #endif
 

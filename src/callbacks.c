@@ -360,7 +360,6 @@ void
 on_scale_value_changed             ( GtkAdjustment    *adj,
 				     gpointer         user_data)
 {
-
   switch((int)user_data)
     {
       case FEATURE_TEMPERATURE:
@@ -372,20 +371,34 @@ on_scale_value_changed             ( GtkAdjustment    *adj,
       case FEATURE_WHITE_BALANCE+BU*4: // why oh why is there a *4?
 	if (dc1394_set_white_balance(camera->handle,camera->id,adj->value, feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].RV_value)!=DC1394_SUCCESS)
 	  MainError("Could not set B/U white balance");
-	else
+	else {
 	  feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].BU_value=adj->value;
+	  if (feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].absolute_capable!=0) {
+	    GetAbsValue(FEATURE_TEMPERATURE);
+	  }
+	}
 	break;
       case FEATURE_WHITE_BALANCE+RV*4: // why oh why is there a *4?
 	if (dc1394_set_white_balance(camera->handle,camera->id, feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].BU_value, adj->value)!=DC1394_SUCCESS)
 	  MainError("Could not set R/V white balance");
-	else
+	else {
 	  feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].RV_value=adj->value;
+	  if (feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].absolute_capable!=0) {
+	    GetAbsValue(FEATURE_TEMPERATURE);
+	  }
+	}
 	break;
       default: // includes trigger_count
 	if (dc1394_set_feature_value(camera->handle,camera->id,(int)user_data,adj->value)!=DC1394_SUCCESS)
 	  MainError("Could not set feature");
-	else
+	else {
 	  feature_set->feature[(int)user_data-FEATURE_MIN].value=adj->value;
+	  if ((int)user_data!=FEATURE_TRIGGER) {
+	    if (feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].absolute_capable!=0) {
+	      GetAbsValue(FEATURE_TEMPERATURE);
+	    }
+	  } 
+	}
     }
 }
 
@@ -1158,7 +1171,7 @@ void
 on_abs_zoom_entry_activate              (GtkEditable     *editable,
                                         gpointer         user_data)
 { 
-  GetAbsValue(FEATURE_ZOOM);
+  SetAbsValue(FEATURE_ZOOM);
 }
 
 
@@ -1166,7 +1179,7 @@ void
 on_abs_focus_entry_activate             (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  GetAbsValue(FEATURE_FOCUS);
+  SetAbsValue(FEATURE_FOCUS);
 }
 
 
@@ -1174,7 +1187,7 @@ void
 on_abs_tilt_entry_activate              (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  GetAbsValue(FEATURE_TILT);
+  SetAbsValue(FEATURE_TILT);
 }
 
 
@@ -1182,7 +1195,7 @@ void
 on_abs_pan_entry_activate               (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  GetAbsValue(FEATURE_PAN);
+  SetAbsValue(FEATURE_PAN);
 }
 
 
@@ -1190,7 +1203,7 @@ void
 on_abs_whitebal_entry_activate          (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  GetAbsValue(FEATURE_WHITE_BALANCE);
+  SetAbsValue(FEATURE_WHITE_BALANCE);
 }
 
 
@@ -1198,7 +1211,7 @@ void
 on_abs_saturation_entry_activate        (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  GetAbsValue(FEATURE_SATURATION);
+  SetAbsValue(FEATURE_SATURATION);
 }
 
 
@@ -1206,14 +1219,14 @@ void
 on_abs_hue_entry_activate               (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  GetAbsValue(FEATURE_HUE);
+  SetAbsValue(FEATURE_HUE);
 }
 
 void
 on_abs_autoexp_entry_activate           (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  GetAbsValue(FEATURE_EXPOSURE);
+  SetAbsValue(FEATURE_EXPOSURE);
 }
 
 
@@ -1221,7 +1234,7 @@ void
 on_abs_iris_entry_activate              (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  GetAbsValue(FEATURE_IRIS);
+  SetAbsValue(FEATURE_IRIS);
 }
 
 
@@ -1229,7 +1242,7 @@ void
 on_abs_shutter_entry_activate           (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  GetAbsValue(FEATURE_SHUTTER);
+  SetAbsValue(FEATURE_SHUTTER);
 }
 
 
@@ -1237,7 +1250,7 @@ void
 on_abs_gain_entry_activate              (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  GetAbsValue(FEATURE_GAIN);
+  SetAbsValue(FEATURE_GAIN);
 }
 
 
@@ -1245,5 +1258,5 @@ void
 on_abs_brightness_entry_activate        (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  GetAbsValue(FEATURE_BRIGHTNESS);
+  SetAbsValue(FEATURE_BRIGHTNESS);
 }
