@@ -4,8 +4,9 @@ Changes towards version 1.0.2
 
    Jan 26, 2005, by Damien Douxchamps
    - more efficient V4l thread for black and white mode
-   - save-to-dir is completed. This code is based on the patch of 'AW'
-     (sorry, forgot the name)
+   - save-to-dir is completed. This code is based on the patch of
+     Anthony Wesley which was modified to accomodate the cleaned-up
+     thread_save.
 	
    Jan 18, 2005, by Damien Douxchamps
    - continue cleanup
