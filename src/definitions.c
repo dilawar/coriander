@@ -233,6 +233,8 @@ const char *feature_menu_items_list[5]= {
 const char *help_key_bindings_keys[KEY_BINDINGS_NUM]= {
   "c",
   "n",
+  "PAGE_UP",
+  "PAGE_DOWN",
   ">",
   "<",
   "f",
@@ -244,8 +246,10 @@ const char *help_key_bindings_keys[KEY_BINDINGS_NUM]= {
 const char *help_key_bindings_functions[KEY_BINDINGS_NUM]= {
   "Set the WOI",
   "Set image zoom to normal (1:1)",
-  "Zoom image, factor 2",
-  "Shrink image, factor 2",
+  "Zoom image by 10%",
+  "Shrink image by 10%",
+  "Zoom image by 100%",
+  "Shrink image by 50%",
   "Toggle full-screen mode",
   "Switch to maximum size (Format7)",
   "Display the current pixel value & coordinates",

@@ -30,7 +30,7 @@
 #define  NO                 FALSE
 #define  YES                 TRUE
 #define  STRING_SIZE         1024
-#define  KEY_BINDINGS_NUM       8
+#define  KEY_BINDINGS_NUM      10
 #define  DELAY              50000
 
 enum 
