@@ -1,7 +1,7 @@
 _______________________________________________________________________________
 
-	                    Open issues for Coriander 0.25 ...
-	   Damien Douxchamps <douxchamps@ieee.org> , June 2, 2002
+	                    Open issues for Coriander 0.26 ...
+	   Damien Douxchamps <douxchamps@ieee.org> , October 21, 2002
 _______________________________________________________________________________
 
 - video:
@@ -11,13 +11,12 @@ _______________________________________________________________________________
 	- regularly update ranges in auto-mode
 - multi-camera:
 	- control-lock function for stereo cameras
-	- when GUID will be there, a custom name could be
-	  attached to each cam.
 - features:
 	- add FORMAT_6 capabilities
 	- add auto-lock, man-lock and current-setup-lock functions
 	- hot plug capability (detect and handle bus reset)
 	- some status window features missing
+	- absolute feature control
 - misc stuff:
 	- add some artwork in the buttons for clearer presentation
 - services:

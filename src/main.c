@@ -86,7 +86,7 @@ main (int argc, char *argv[])
   int *port_camera_num=NULL;
   int portmax=0;
   int card_found;
-  float tmp;
+  //float tmp;
   
 #ifdef ENABLE_NLS
   bindtextdomain (PACKAGE, PACKAGE_LOCALE_DIR);

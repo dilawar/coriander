@@ -513,7 +513,7 @@ AutoWhiteBalance(void* arg)
 
       // wait for buffer pointer to change
       prev_ptr=service->current_buffer;
-      fprintf(stderr,"prev buffer: 0x%x\n",prev_ptr);
+      //fprintf(stderr,"prev buffer: 0x%x\n",prev_ptr);
       while (prev_ptr==service->current_buffer)
 	usleep(10000);// .01 sec
       
