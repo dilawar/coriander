@@ -527,14 +527,8 @@ DisplayThreadCheckParams(chain_t *display_service)
     display_service->local_param_copy.buffer_image_bytes=display_service->current_buffer->buffer_image_bytes;
     
     // DO SOMETHING
-    // if the width is not -1, that is if some image has already reached the thread
+    // if the width is not -1, that is if some image has already reached the thread and the size has changed
     if ((display_service->local_param_copy.width!=-1)&&(size_change!=0)) {
-#if 0 // please don't create a new window and obscure the focus
-      if (!first_time) {
-	SDLQuit(display_service);
-      }
-      SDLInit(display_service);
-#else
       if (first_time) {
 	SDLInit(display_service);
       } else {
@@ -546,15 +540,7 @@ DisplayThreadCheckParams(chain_t *display_service)
 	SDLResizeDisplay(display_service,
 			 display_service->current_buffer->width*prev_overlay_size[0]/prev_image_size[0],
 			 display_service->current_buffer->height*prev_overlay_size[1]/prev_image_size[1]);
-	/*SDL_FreeYUVOverlay(info->sdloverlay);
-	info->sdloverlay=
-	  SDL_CreateYUVOverlay(display_service->current_buffer->width,
-			       display_service->current_buffer->height,
-			       SDL_YUY2_OVERLAY,
-			       info->sdlvideo);
-	*/
       }
-#endif
     }
   }
 
