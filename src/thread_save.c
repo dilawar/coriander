@@ -508,6 +508,7 @@ void
 InitVideoFile(chain_t *save_service, FILE *fd, char *filename_out)
 {
   savethread_info_t *info;
+  info=(savethread_info_t*)save_service->data;
 
   info->fmt = NULL;///////////////////////////
   info->oc = NULL;
@@ -517,8 +518,6 @@ InitVideoFile(chain_t *save_service, FILE *fd, char *filename_out)
   info->tmp_picture_yuv422 = NULL;
   
   info->fdts = 0;///////////////////////////
-
-  info=(savethread_info_t*)save_service->data;
 
   // (JG) if extension is PVN, write PVN header here
   if ((info->format==SAVE_FORMAT_PVN) && (info->use_ram_buffer==FALSE)) {
