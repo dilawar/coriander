@@ -2,6 +2,10 @@ Coriander, (c) 2000-2002 Damien Douxchamps <douxchamps@ieee.org>
 
 Changes towards version 0.27
 
+   November 20, 2002, by Damien Douxchamps
+   - Make a full update of the camera capabilities when we change the
+     mode or format.
+	
    November 19, 2002, by Damien Douxchamps
    - Use gnome timeout functions to display FPS.
 	

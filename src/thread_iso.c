@@ -299,12 +299,12 @@ IsoThread(void* arg)
     {
       pthread_testcancel();
       pthread_cleanup_push((void*)IsoCleanupThread, (void*)iso_service);
+
       if (info->receive_method == RECEIVE_METHOD_RAW1394)
 	dc1394_single_capture(info->handle, &info->capture);
       else
-	{
-	  dc1394_dma_single_capture(&info->capture);
-	}
+	dc1394_dma_single_capture(&info->capture);
+
       pthread_mutex_lock(&iso_service->mutex_data);
       
       if (iso_service->stereo_decoding==STEREO_DECODING)
@@ -346,9 +346,9 @@ IsoThread(void* arg)
       info->current_time=times(&info->tms_buf);
       info->frames++;
 
-      if (info->receive_method == RECEIVE_METHOD_VIDEO1394) {
+      if (info->receive_method == RECEIVE_METHOD_VIDEO1394)
         dc1394_dma_done_with_buffer(&info->capture);
-      }
+    
       pthread_mutex_unlock(&iso_service->mutex_data);
 	  
       pthread_mutex_lock(&iso_service->mutex_data);

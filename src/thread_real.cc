@@ -19,13 +19,7 @@
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
-/*
-#include <iostream>
-#include <stdio.h>
-#include <assert.h>
-#include <unistd.h>
-#include <sys/time.h>
-*/
+
 #ifdef HAVE_REALLIB
 #include "pntypes.h"
 #include "RealGuids.h"

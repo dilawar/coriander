@@ -26,6 +26,8 @@
 #include "tools.h"
 #include "build_menus.h" 
 #include "update_frames.h"
+#include "update_windows.h"
+#include "build_windows.h"
 #include "update_ranges.h"
 #include "raw1394support.h"
 #include "topology.h"
@@ -171,11 +173,23 @@ ChangeModeAndFormat         (GtkMenuItem     *menuitem,
     MainError("Could not set video mode");
   else
     misc_info->mode=mode;
-  
+ 
+  // REPROBE EVERYTHING
+  if (dc1394_get_camera_info(camera->handle, camera->id, camera)!=DC1394_SUCCESS)
+    MainError("Could not get camera basic information!");
+  if (dc1394_get_camera_misc_info(camera->handle, camera->id, misc_info)!=DC1394_SUCCESS)
+    MainError("Could not get camera misc information!");
+  if (dc1394_get_camera_feature_set(camera->handle, camera->id, feature_set)!=DC1394_SUCCESS)
+    MainError("Could not get camera feature information!");
+  GetFormat7Capabilities(camera->handle, camera->id, format7_info);
+  BuildAllWindows();
+  UpdateAllWindows();
+  /*
   BuildFpsMenu();
   UpdateTriggerFrame();
   UpdateOptionFrame();
-
+  BuildAbsoluteSettingsWindow();
+  */
   IsoFlowResume(state);
 }
 
