@@ -288,7 +288,6 @@ UpdateCameraStatusFrame(void)
   ctxt.pwclass_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"camera_pwclass_status"), ctxt.pwclass_ctxt,temp);
 
   // camera name: 
-  //fprintf(stderr,"name: %s\n",camera->name);
   gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window,"camera_name_text")), camera->name);
 
   free(temp);
@@ -413,8 +412,6 @@ UpdateFormat7InfoFrame(void)
   float bpp;
   int bytesize, grandtotal;
   
-  //fprintf(stderr,"update f7 status\n");
-
   temp=(char*)malloc(STRING_SIZE*sizeof(char));
 
   if (camera->format7_info.edit_mode!=-1) {

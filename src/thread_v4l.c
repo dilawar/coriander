@@ -36,7 +36,6 @@ V4lStartThread(camera_t* cam)
   v4l_service=GetService(camera, SERVICE_V4L);
 
   if (v4l_service==NULL) { // if no V4L service running...
-    //fprintf(stderr,"No V4L service found, inserting new one\n");
     v4l_service=(chain_t*)malloc(sizeof(chain_t));
     v4l_service->current_buffer=NULL;
     v4l_service->next_buffer=NULL;
@@ -74,15 +73,9 @@ V4lStartThread(camera_t* cam)
       return(-1);
     }
 
-    //pthread_mutex_unlock(&v4l_service->mutex_data);
-    
     /* Insert chain and start service*/
     pthread_mutex_lock(&v4l_service->mutex_struct);
     InsertChain(cam, v4l_service);
-    //pthread_mutex_unlock(&v4l_service->mutex_struct);
-    
-    //pthread_mutex_lock(&v4l_service->mutex_data);
-    //pthread_mutex_lock(&v4l_service->mutex_struct);
     if (pthread_create(&v4l_service->thread, NULL, V4lThread,(void*) v4l_service)) {
       /* error starting thread. You should cleanup here
 	 (free, unset global vars,...):*/
@@ -104,7 +97,6 @@ V4lStartThread(camera_t* cam)
     pthread_mutex_unlock(&v4l_service->mutex_data);
     
   }
-  //fprintf(stderr," V4L service started\n");
   free(stemp);
   return (1);
 }
@@ -239,7 +231,6 @@ V4lStopThread(camera_t* cam)
   v4l_service=GetService(cam,SERVICE_V4L);
 
   if (v4l_service!=NULL) { // if V4L service running...
-    //fprintf(stderr,"V4L service found, stopping\n");
     info=(v4lthread_info_t*)v4l_service->data;
     /* Clean cancel handler: */
     pthread_mutex_lock(&info->mutex_cancel);
@@ -271,7 +262,6 @@ V4lStopThread(camera_t* cam)
     pthread_mutex_unlock(&v4l_service->mutex_data);
     FreeChain(v4l_service);
     
-    //fprintf(stderr," V4L service stopped\n");
   }
   
   return (1);
@@ -338,7 +328,7 @@ V4lThreadCheckParams(chain_t *v4l_service)
 	fprintf(stderr,"Can't allocate buffer! Aiiieee!\n");
       }
       
-      // STOP PIPE MIGHT BE NECESSARY HERE
+      // STOPING THE PIPE MIGHT BE NECESSARY HERE
 
       // "start pipe"      
       if (ioctl (info->v4l_dev, VIDIOCGCAP, &info->vid_caps) == -1) {
@@ -368,7 +358,6 @@ swap_rb(unsigned char *image, int i) {
 
   unsigned char t;
   i--;
-  //fprintf(stderr,"first image index: %d\n",i);
 
   while (i>0) {
     t=image[i];

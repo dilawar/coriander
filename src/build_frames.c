@@ -45,7 +45,7 @@ BuildServiceFrame(void)
 #else
   gtk_widget_set_sensitive(lookup_widget(main_window,"service_display"),FALSE);
 #endif
-  // ADD V4L
+  // add V4L test here ??
 
 }
 
@@ -73,7 +73,7 @@ BuildPowerFrame(void)
   gtk_widget_set_sensitive(lookup_widget(main_window,"power_reset"),TRUE);
 
   // activate if camera capable of power on/off:
-  if (dc1394_query_basic_functionality(camera->camera_info.handle,camera->camera_info.id,&basic_funcs)!=DC1394_SUCCESS)
+  if (dc1394_query_basic_functionality(camera->camera_info.handle,camera->camera_info.id, &basic_funcs)!=DC1394_SUCCESS)
     MainError("Could not query basic functionalities");
 
   gtk_widget_set_sensitive(lookup_widget(main_window,"power_on"),(basic_funcs & 0x1<<16));
@@ -97,7 +97,7 @@ void
 BuildIsoFrame(void)
 {
   // TODO: only if ISO capable
-  if (dc1394_get_iso_status(camera->camera_info.handle,camera->camera_info.id,&camera->misc_info.is_iso_on)!=DC1394_SUCCESS)
+  if (dc1394_get_iso_status(camera->camera_info.handle,camera->camera_info.id, &camera->misc_info.is_iso_on)!=DC1394_SUCCESS)
     MainError("Can't get ISO status");
   gtk_widget_set_sensitive(lookup_widget(main_window,"iso_frame"),TRUE);
   gtk_widget_set_sensitive(lookup_widget(main_window,"iso_start"),!camera->misc_info.is_iso_on);
@@ -315,7 +315,6 @@ BuildBandwidthFrame(void)
   GtkWidget *bandwidth_table;
   GtkWidget *label;
   GtkWidget *bandwidth_bar;
-  //GtkAdjustment *adj;
   char* temp;
   int nports, i;
 

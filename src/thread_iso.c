@@ -33,7 +33,6 @@ gint IsoStartThread(camera_t* cam)
   iso_service=GetService(cam, SERVICE_ISO);
 
   if (iso_service==NULL) { // if no ISO service running...
-    //fprintf(stderr,"*** No ISO service found, inserting new one\n");
     iso_service=(chain_t*)malloc(sizeof(chain_t));
     iso_service->current_buffer=NULL;
     iso_service->next_buffer=NULL;
@@ -62,7 +61,6 @@ gint IsoStartThread(camera_t* cam)
     case 2: maxspeed=SPEED_400;break;
     default: maxspeed=SPEED_100;break;
     }
-    //fprintf(stderr,"    Setting up capture\n");
 
     // copy params if we are the current camera
     if (cam==camera) {
@@ -141,7 +139,6 @@ gint IsoStartThread(camera_t* cam)
       }
       break;
     }
-    //fprintf(stderr,"   1394 setup OK\n");
     
     pthread_mutex_lock(&iso_service->mutex_data);
     CommonChainSetup(cam, iso_service, SERVICE_ISO);
@@ -150,14 +147,9 @@ gint IsoStartThread(camera_t* cam)
     info->temp_size=0;
     info->temp_allocated=0;
 
-    //pthread_mutex_unlock(&iso_service->mutex_data);
-    
     pthread_mutex_lock(&iso_service->mutex_struct);
     InsertChain(cam,iso_service);
-    //pthread_mutex_unlock(&iso_service->mutex_struct);
-    
-    //pthread_mutex_lock(&iso_service->mutex_data);
-    //pthread_mutex_lock(&iso_service->mutex_struct);
+
     iso_service->timeout_func_id=-1;
     if (pthread_create(&iso_service->thread, NULL, IsoThread,(void*) iso_service)) {
       RemoveChain(cam, iso_service);
@@ -173,13 +165,8 @@ gint IsoStartThread(camera_t* cam)
       pthread_mutex_unlock(&iso_service->mutex_struct);
       pthread_mutex_unlock(&iso_service->mutex_data);
     }
-    //fprintf(stderr,"   ISO thread started\n");
   }
-  /*
-  if (dc1394_get_iso_channel_and_speed(cam->camera_info.handle, cam->camera_info.id,&channel, &speed)!=DC1394_SUCCESS)
-    MainError("Can't get iso channel and speed");
-  fprintf(stderr,"Channel %d used for ISO\n",channel);
-  */
+
   return (1);
 }
 
@@ -363,7 +350,6 @@ gint IsoStopThread(camera_t* cam)
   iso_service=GetService(cam,SERVICE_ISO);  
 
   if (iso_service!=NULL) { // if ISO service running...
-    //fprintf(stderr,"ISO service found, stopping\n");
     info=(isothread_info_t*)iso_service->data;
     pthread_cancel(iso_service->thread);
     pthread_join(iso_service->thread, NULL);
@@ -379,7 +365,6 @@ gint IsoStopThread(camera_t* cam)
     
     if ((info->temp!=NULL)&&(info->temp_allocated>0)) {
       free(info->temp);
-      //fprintf(stderr,"temp freed\n");
       info->temp=NULL;
       info->temp_allocated=0;
       info->temp_size=0;
@@ -399,7 +384,6 @@ gint IsoStopThread(camera_t* cam)
     pthread_mutex_unlock(&iso_service->mutex_data);
     
     FreeChain(iso_service);
-    //fprintf(stderr," ISO service stopped\n");
     
   }
   
@@ -462,7 +446,6 @@ IsoThreadCheckParams(chain_t *iso_service)
 	AllocTempBuffer(info->orig_sizey*info->orig_sizex*sizeof(unsigned char),info);
       else {
 	AllocTempBuffer(0,info);
-	//info->temp=(unsigned char *)info->capture.capture_buffer;
       }
       break;
     }
@@ -484,7 +467,6 @@ IsoThreadCheckParams(chain_t *iso_service)
 	AllocTempBuffer(info->orig_sizey*info->orig_sizex*sizeof(unsigned char),info);
       else {
 	AllocTempBuffer(0,info);
-	//info->temp=(unsigned char *)info->capture.capture_buffer;
       }
       break;
     }
@@ -505,20 +487,10 @@ IsoThreadCheckParams(chain_t *iso_service)
     case NO_STEREO_DECODING:
       AllocImageBuffer(iso_service);
       AllocTempBuffer(0,info);
-      //info->temp=(unsigned char *)info->capture.capture_buffer;
       break;
     }
     break;
   }
-  /*
-  fprintf(stderr,"Buffer sizes: temp=%lld image=%lld\n",info->temp_size,iso_service->current_buffer->bytes_per_frame);
-
-
-  if (iso_service->current_buffer->image==NULL)
-    fprintf(stderr,"Normal buffer not allocated. Segfault expected!\n");
-  if (info->temp==NULL)
-    fprintf(stderr,"Temp buffer nor allocated nor set. Segfault expected!\n");
-  */
   SetColorMode(iso_service->current_buffer);
   
   pthread_mutex_unlock(&iso_service->camera->uimutex);
@@ -531,23 +503,18 @@ AllocTempBuffer(long long unsigned int requested_size, isothread_info_t* info)
   if (requested_size==0) {
     if (info->temp_allocated>0) {
       free(info->temp);
-      //fprintf(stderr,"temp freed\n");
     }
     info->temp_allocated=0;
     info->temp_size=0;
-    //fprintf(stderr,"dummy temp used, no malloc\n");
     }
   else { // some allocated space is required
     if (requested_size!=info->temp_size) { // req and actual size don't not match
       if (info->temp_allocated>0) {
 	free(info->temp);
-	//fprintf(stderr,"temp freed\n");
       }
       info->temp=(unsigned char *)malloc(requested_size*sizeof(unsigned char));
       info->temp_allocated=1;
       info->temp_size=requested_size;
-      //fprintf(stderr,"temp allocated with size %d at 0x%x for a resolution of %d x %d\n",temp_requested_size,info->temp,
-      //  iso_service->current_buffer->width,iso_service->current_buffer->height);
     }
   }
 }
@@ -558,14 +525,11 @@ AllocImageBuffer(chain_t* iso_service)
   // ============ Allocate standard buffer ===============
   if (iso_service->current_buffer->buffer_size!=iso_service->current_buffer->bytes_per_frame) {
     // (re)allocation is necessary
-    //fprintf(stderr,"(re-)allocation...\n");
     if (iso_service->current_buffer->image!=NULL) {
       free(iso_service->current_buffer->image);
-      //fprintf(stderr,"image buffer freed\n");
       iso_service->current_buffer->image=NULL;
     }
     iso_service->current_buffer->image=(unsigned char*)malloc(iso_service->current_buffer->bytes_per_frame*sizeof(unsigned char));
-    //fprintf(stderr,"0x%lx\n",(unsigned long int)iso_service->current_buffer->image);
     iso_service->current_buffer->buffer_size=iso_service->current_buffer->bytes_per_frame;
   }
 }
@@ -680,6 +644,5 @@ SetColorMode(buffer_t *buffer)
     fprintf(stderr,"ERROR: BPP is -1!!\n");
 
   buffer->buffer_image_bytes=(int)(buffer->width*buffer->height*bpp);
-  //fprintf(stderr,"Color mode set to %d\n",buffer->buffer_color_mode);
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2003 Damien Douxchamps  <ddouxchamps@users.sf.net>
+ * Copyright (C) 2000-2004 Damien Douxchamps  <ddouxchamps@users.sf.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,13 +55,11 @@ GetCameraNodes(BusInfo_t* bi) {
       fprintf(stderr,"ERROR allocating bus info structures!\n");
     }
     
-    //fprintf(stderr,"portnum: %d\n",bi->port_num);
     for (port=0;port<bi->port_num;port++) {
       // get a handle to the current interface card
       bi->handles[port]=dc1394_create_handle(port);
       if (bi->handles[port]!=0) { // if the card is present
 	bi->card_found=1;
-	//fprintf(stderr,"card found\n");
 	// probe the IEEE1394 bus for DC camera:
 	bi->camera_nodes[port]=dc1394_get_camera_nodes(bi->handles[port], &(bi->port_camera_num[port]), 0); // 0 not to show the cams.
 	bi->camera_num+=bi->port_camera_num[port];
@@ -82,7 +80,6 @@ GetCamerasInfo(BusInfo_t* bi) {
 	camera_ptr=NewCamera();
 	GetCameraData(bi->handles[port], bi->camera_nodes[port][i], camera_ptr);
 	AppendCamera(camera_ptr);
-	//fprintf(stderr,"Got camera info\n");
       }
     }
   }
@@ -114,7 +111,6 @@ GetCameraData(raw1394handle_t handle, nodeid_t node, camera_t* cam) {
   cam->bayer=NO_BAYER_DECODING;
   cam->stereo=NO_STEREO_DECODING;
   cam->bpp=8;
-  //fprintf(stderr,"Got camera data\n");
   pthread_mutex_unlock(&cam->uimutex);
 
 }
@@ -203,30 +199,4 @@ FreeCamera(camera_t* cam) {
   cam=NULL;
 
 }
-/*
-int GetCameraBusUsage(camera_t* cam) {
 
-  dc1394bool_t iso;
-  unsigned long int bps;
-  // upadte iso status
-  
-  if (dc1394_get_iso_status(camera->camera_info.handle, camera->camera_info.id, &iso)!=DC1394_SUCCESS) {
-    MainError("Could not read camera iso status");
-  }
-  else {
-    camera->misc_info.is_iso_on = iso;
-    if (camera==cam) {
-      UpdateIsoFrame();
-    }
-  }
-
-  // if ISO is off, return zero immediately
-  if (camera->misc_info.is_iso_on==DC1394_FALSE) {
-    return(0);
-  }
-
-  // ISO is ON, let's see what we use.
-
-
-}
-*/

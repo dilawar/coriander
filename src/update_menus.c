@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2003 Damien Douxchamps  <ddouxchamps@users.sf.net>
+ * Copyright (C) 2000-2004 Damien Douxchamps  <ddouxchamps@users.sf.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,7 +38,6 @@ void UpdateFormatMenu(void)
 
   // also disable 'window menu' items (this should go in another function, I know...)
   gtk_widget_set_sensitive(lookup_widget(main_window,"vbox34"),formats & (0x1<<24) );
-  //gtk_widget_set_sensitive(lookup_widget(commander_window,"format6_window"),formats & (0x1<<25) );
   gtk_widget_set_sensitive(lookup_widget(main_window,"temperature_frame"),
 			   camera->feature_set.feature[FEATURE_TEMPERATURE-FEATURE_MIN].available );
   

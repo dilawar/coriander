@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2003 Damien Douxchamps  <ddouxchamps@users.sf.net>
+ * Copyright (C) 2000-2004 Damien Douxchamps  <ddouxchamps@users.sf.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -230,7 +230,6 @@ UpdateFormat7BppRange(void)
 
   if (dc1394_query_format7_byte_per_packet(camera->camera_info.handle,camera->camera_info.id,camera->format7_info.edit_mode, &info->bpp)==DC1394_SUCCESS) {
     if (dc1394_query_format7_packet_para(camera->camera_info.handle,camera->camera_info.id,camera->format7_info.edit_mode, &info->min_bpp,&info->max_bpp)==DC1394_SUCCESS) {
-      //fprintf(stderr,"min %d max %d\n",info->min_bpp,info->max_bpp);
       adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_packet_size")));
       adj->upper=info->max_bpp;
       adj->lower=info->min_bpp;
@@ -244,10 +243,6 @@ UpdateFormat7BppRange(void)
   }
   else
     MainError("Can't get bpp info from camera");
-  //fprintf(stderr,"mode %d, bpp: %d, max: %d, min: %d\n",
-  //format7_info->edit_mode,format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].bpp,
-  //format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].max_bpp,
-  //format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].min_bpp);
 }
 
 void
@@ -257,7 +252,6 @@ UpdateFormat7Ranges(void)
   Format7ModeInfo_t *info;
   info=&camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN];
 
-  //fprintf(stderr,"size: %d %d\n",info->max_size_x,info->max_size_y);
   // define the adjustments for the 4 format7 controls. Note that (pos_x+size_x)<=max_size_x which yields some inter-dependencies
 
   // define adjustement for X-position

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2003 Damien Douxchamps  <ddouxchamps@users.sf.net>
+ * Copyright (C) 2000-2004 Damien Douxchamps  <ddouxchamps@users.sf.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -84,7 +84,6 @@ BuildFormat7Window(void)
   if (format7_tab_presence==1) {
     gtk_notebook_remove_page(GTK_NOTEBOOK(notebook2),3);
     format7_tab_presence=0;
-    //fprintf(stderr,"page removed\n");
   }
 
   if (camera->format7_info.edit_mode>=0) {
@@ -96,18 +95,15 @@ BuildFormat7Window(void)
     gtk_object_set_data_full (GTK_OBJECT (main_window), "handlebox1", handlebox1,
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (handlebox1);
-    //fprintf(stderr,"handlebox set\n");
 
     label = gtk_label_new (_("Format 7"));
     gtk_widget_ref (label);
     gtk_object_set_data_full (GTK_OBJECT (main_window), "label_format7_page", label,
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (label);
-    //fprintf(stderr,"label set\n");
 
     // the format7 tab should be placed in position 3 here:
     gtk_notebook_insert_page(GTK_NOTEBOOK (notebook2), GTK_WIDGET(handlebox1),label, 3);
-    //fprintf(stderr,"new page added\n");
 
     // big vbox for the whole tab
     vbox = gtk_vbox_new (FALSE, 0);

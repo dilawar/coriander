@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2003 Damien Douxchamps  <ddouxchamps@users.sf.net>
+ * Copyright (C) 2000-2004 Damien Douxchamps  <ddouxchamps@users.sf.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -207,7 +207,7 @@ const char * format2_list[NUM_FORMAT2_MODES]= {
 };
 
 const char * format6_list[NUM_FORMAT6_MODES]= {
-  "Mode_0: EXIF"
+  "Mode_0: EXIF (not supported)"
 };
 
 const char * format7_list[NUM_MODE_FORMAT7]= {

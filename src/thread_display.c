@@ -36,7 +36,6 @@ DisplayStartThread(camera_t* cam)
   display_service=GetService(camera,SERVICE_DISPLAY);
 
   if (display_service==NULL) {// if no display service running...
-    //fprintf(stderr,"No DISPLAY service found, inserting new one\n");
     display_service=(chain_t*)malloc(sizeof(chain_t));
     display_service->current_buffer=NULL;
     display_service->next_buffer=NULL;
@@ -54,14 +53,9 @@ DisplayStartThread(camera_t* cam)
     info->period=preferences.display_period;
     CommonChainSetup(cam, display_service,SERVICE_DISPLAY);
     
-    //pthread_mutex_unlock(&display_service->mutex_data);
-    
     pthread_mutex_lock(&display_service->mutex_struct);
     InsertChain(cam, display_service);
-    //pthread_mutex_unlock(&display_service->mutex_struct);
     
-    //pthread_mutex_lock(&display_service->mutex_data);
-    //pthread_mutex_lock(&display_service->mutex_struct);
     if (pthread_create(&display_service->thread, NULL, DisplayThread, (void*)display_service)) {
       RemoveChain(cam, display_service);
       pthread_mutex_unlock(&display_service->mutex_struct);
@@ -75,7 +69,6 @@ DisplayStartThread(camera_t* cam)
     }
     pthread_mutex_unlock(&display_service->mutex_struct);
     pthread_mutex_unlock(&display_service->mutex_data);
-    //fprintf(stderr," DISPLAY service started\n");
     
   }
   return (1);
@@ -233,7 +226,6 @@ ConditionalTimeoutRedraw(chain_t* service)
 	SDL_DisplayYUVOverlay(info->sdloverlay, &info->sdlvideorect);
       }
 #endif
-      //fprintf(stderr,"Display redrawn with time interval of %.3f sec\n",interval);
       info->redraw_prev_time=times(&info->redraw_tms_buf);
     }
   }
@@ -247,7 +239,6 @@ DisplayStopThread(camera_t* cam)
   display_service=GetService(cam,SERVICE_DISPLAY);
   
   if (display_service!=NULL) { // if display service running... 
-    //fprintf(stderr,"DISPLAY service found, stopping\n");
     info=(displaythread_info_t*)display_service->data;
     
     // send request for cancellation:
@@ -261,21 +252,17 @@ DisplayStopThread(camera_t* cam)
     pthread_mutex_lock(&display_service->mutex_data);
     pthread_mutex_lock(&display_service->mutex_struct);
     if ((cam==camera)&&(display_service->timeout_func_id!=-1)) {
-      //fprintf(stderr,"remove fps display\n");
       gtk_timeout_remove(display_service->timeout_func_id);
       gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_display"), ctxt.fps_display_ctxt, ctxt.fps_display_id);
       ctxt.fps_display_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_display"), ctxt.fps_display_ctxt, "");
       display_service->timeout_func_id=-1;
     }
     RemoveChain(cam,display_service);
-    //fprintf(stderr,"chain removed\n");
     SDLQuit(display_service);
-    //fprintf(stderr,"SDL closed\n");
     
     pthread_mutex_unlock(&display_service->mutex_struct);
     pthread_mutex_unlock(&display_service->mutex_data);
     FreeChain(display_service);
-    //fprintf(stderr," DISPLAY service stopped\n");
   }
   return (1);
 }
@@ -354,7 +341,7 @@ SDLInit(chain_t *display_service)
   // set window title:
   SDL_WM_SetCaption(camera->name,"");
 
-  // this line broke everything for unknown reasons so I just rmove it.
+  // this line broke everything for unknown reasons so I just remove it.
   //info->sdlvideo->format->BytesPerPixel=2;
 
   // Create YUV Overlay
@@ -371,13 +358,7 @@ SDLInit(chain_t *display_service)
   info->sdlvideorect.y=0;
   info->sdlvideorect.w=display_service->current_buffer->width;
   info->sdlvideorect.h=display_service->current_buffer->height;
-  /*
-  watchthread_info.f7_step[0]=display_service->camera->format7_info.mode[display_service->current_buffer->mode-MODE_FORMAT7_MIN].step_x;
-  watchthread_info.f7_step[1]=display_service->camera->format7_info.mode[display_service->current_buffer->mode-MODE_FORMAT7_MIN].step_y;
-  watchthread_info.f7_step_pos[0]=display_service->camera->format7_info.mode[display_service->current_buffer->mode-MODE_FORMAT7_MIN].step_pos_x;
-  watchthread_info.f7_step_pos[1]=display_service->camera->format7_info.mode[display_service->current_buffer->mode-MODE_FORMAT7_MIN].step_pos_y;
-  watchthread_info.use_unit_pos=display_service->camera->format7_info.mode[display_service->current_buffer->mode-MODE_FORMAT7_MIN].use_unit_pos;
-  */
+
   SDLEventStartThread(display_service);
 
   return(1);
@@ -387,7 +368,6 @@ SDLInit(chain_t *display_service)
 void
 convert_to_yuv_for_SDL(buffer_t *buffer, unsigned char *dest)
 {
-  //fprintf(stderr,"bpp:%d\n",buffer->bpp);
   switch(buffer->buffer_color_mode) {
   case COLOR_FORMAT7_MONO8:
     y2uyvy(buffer->image,dest,buffer->width*buffer->height);
@@ -465,10 +445,8 @@ SDLQuit(chain_t *display_service)
   info=(displaythread_info_t*)display_service->data;
 
 #ifdef HAVE_SDLLIB
-  //fprintf(stderr,"about to shutdown SDL stuff\n");
   // if width==-1, SDL was never initialized so we do nothing
   if (display_service->current_buffer->width!=-1) {
-    //fprintf(stderr,"event stopped\n");
     SDLEventStopThread(display_service);
     SDL_FreeYUVOverlay(info->sdloverlay);
     SDL_FreeSurface(info->sdlvideo);
@@ -490,7 +468,7 @@ DisplayThreadCheckParams(chain_t *display_service)
   display_service->local_param_copy.bpp=display_service->current_buffer->bpp;
   display_service->local_param_copy.bayer_pattern=display_service->current_buffer->bayer_pattern;
   if (display_service->current_buffer->width==-1)
-    fprintf(stderr,"Display size: %dx%d\n",display_service->current_buffer->width,display_service->current_buffer->height);
+    fprintf(stderr,"Error: display size: %dx%d\n",display_service->current_buffer->width,display_service->current_buffer->height);
 
   // if some parameters changed, we need to re-allocate the local buffers and restart the display
   if ((display_service->current_buffer->width!=display_service->local_param_copy.width)||
@@ -516,7 +494,6 @@ DisplayThreadCheckParams(chain_t *display_service)
     if ((display_service->current_buffer->width!=display_service->local_param_copy.width)||
 	(display_service->current_buffer->height!=display_service->local_param_copy.height)) {
       size_change=1;
-      //fprintf(stderr,"Display size change: %d x %d\n",display_service->current_buffer->width,display_service->current_buffer->height);
     }
     else {
       size_change=0;
@@ -537,13 +514,9 @@ DisplayThreadCheckParams(chain_t *display_service)
     // if the width is not -1, that is if some image has already reached the thread
     if ((display_service->local_param_copy.width!=-1)&&(size_change!=0)) {
       if (!first_time) {
-	//fprintf(stderr,"Not the first time, kill current SDL\n");
 	SDLQuit(display_service);
-	//usleep(500000);
       }
-      //fprintf(stderr,"Init SDL\n");
       SDLInit(display_service);
-      //usleep(500000);
     }
   }
 }

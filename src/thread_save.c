@@ -33,7 +33,6 @@ SaveStartThread(camera_t* cam)
   save_service=GetService(camera, SERVICE_SAVE);
 
   if (save_service==NULL) { // if no SAVE service running...
-    //fprintf(stderr,"No SAVE service found, inserting new one\n");
     save_service=(chain_t*)malloc(sizeof(chain_t));
     save_service->current_buffer=NULL;
     save_service->next_buffer=NULL;
@@ -88,15 +87,9 @@ SaveStartThread(camera_t* cam)
       }
     }
 
-    //pthread_mutex_unlock(&save_service->mutex_data);
-    
     /* Insert chain and start service*/
     pthread_mutex_lock(&save_service->mutex_struct);
     InsertChain(cam, save_service);
-    //pthread_mutex_unlock(&save_service->mutex_struct);
-    
-    //pthread_mutex_lock(&save_service->mutex_data);
-    //pthread_mutex_lock(&save_service->mutex_struct);
     if (pthread_create(&save_service->thread, NULL, SaveThread,(void*) save_service)) {
       /* error starting thread. You should cleanup here
 	 (free, unset global vars,...):*/
@@ -117,7 +110,6 @@ SaveStartThread(camera_t* cam)
     pthread_mutex_unlock(&save_service->mutex_data);
     
   }
-  //fprintf(stderr," SAVE service started\n");
   
   return (1);
 }
@@ -173,8 +165,6 @@ SaveCleanupThread(void* arg)
 
   /* Mendatory cleanups: */
   //pthread_mutex_unlock(&save_service->mutex_data);
-
-  //fprintf(stderr,"cleanup thread!<n");
 
   return(NULL);
 }
@@ -334,7 +324,6 @@ SaveStopThread(camera_t* cam)
   save_service=GetService(cam,SERVICE_SAVE);
 
   if (save_service!=NULL) { // if SAVE service running...
-    //fprintf(stderr,"SAVE service found, stopping\n");
     info=(savethread_info_t*)save_service->data;
     /* Clean cancel handler: */
     pthread_mutex_lock(&info->mutex_cancel);
@@ -365,7 +354,6 @@ SaveStopThread(camera_t* cam)
     pthread_mutex_unlock(&save_service->mutex_data);
     FreeChain(save_service);
     
-    //fprintf(stderr," SAVE service stopped\n");
   }
   
   return (1);

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2003 Damien Douxchamps  <ddouxchamps@users.sf.net>
+ * Copyright (C) 2000-2004 Damien Douxchamps  <ddouxchamps@users.sf.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -256,12 +256,8 @@ on_camera_select_activate              (GtkMenuItem     *menuitem,
 {
   camera_t* camera_ptr;
   
-  //fprintf(stderr,"Changing camera\n");
-
   // close current display (we don't want display to be used by 2 threads at the same time 'cause SDL forbids it)
   DisplayStopThread(camera);
-
-  //fprintf(stderr,"Display stopped\n");
 
   // stop all FPS displays:
   StopFPSDisplay();
@@ -275,7 +271,6 @@ on_camera_select_activate              (GtkMenuItem     *menuitem,
   watchthread_info.mouse_down=0;
   watchthread_info.crop=0;
 
-  //fprintf(stderr,"Want to display: %d\n",camera->want_to_display);
   if (camera->want_to_display>0)
     DisplayStartThread(camera);
 
@@ -418,7 +413,7 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
 {
   int sx, sy, px, py;
   Format7ModeInfo_t* info;
-  //fprintf(stderr,"%d\n",camera->format7_info.edit_mode);
+
   if (camera->format7_info.edit_mode>=0) { // check if F7 is supported
     info=&camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN];
     sx=info->size_x;
@@ -869,7 +864,6 @@ on_prefs_save_seq_toggled              (GtkToggleButton *togglebutton,
   if (togglebutton->active) {
     preferences.save_scratch=SAVE_SCRATCH_SEQUENTIAL;
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window,"use_ram_buffer")),0);
-    //fprintf(stderr,"setting save mode to sequential: %d\n",preferences.save_scratch);
     gnome_config_set_int("coriander/save/scratch",preferences.save_scratch);
     gnome_config_sync();
     UpdatePrefsSaveFrame();
@@ -891,7 +885,6 @@ on_prefs_save_scratch_toggled          (GtkToggleButton *togglebutton,
   if (togglebutton->active) {
     preferences.save_scratch=SAVE_SCRATCH_OVERWRITE;
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window,"use_ram_buffer")),0);
-    //fprintf(stderr,"setting save mode to overwrite: %d\n",preferences.save_scratch);
     gnome_config_set_int("coriander/save/scratch",preferences.save_scratch);
     gnome_config_sync();
     UpdatePrefsSaveFrame();
@@ -912,7 +905,6 @@ on_prefs_save_video_toggled            (GtkToggleButton *togglebutton,
   chain_t* service;
   if (togglebutton->active) {
     preferences.save_scratch=SAVE_SCRATCH_VIDEO;
-    //fprintf(stderr,"setting save mode to video: %d\n",preferences.save_scratch);
     gnome_config_set_int("coriander/save/scratch",preferences.save_scratch);
     gnome_config_sync();
     UpdatePrefsSaveFrame();
@@ -1102,9 +1094,7 @@ on_bayer_pattern_menu_activate           (GtkMenuItem     *menuitem,
   int tmp;
   tmp=(int)user_data;
   
-  //pthread_mutex_unlock(&camera->uimutex);
   camera->bayer_pattern=tmp;
-  //pthread_mutex_unlock(&camera->uimutex);
 }
 
 void
@@ -1114,9 +1104,7 @@ on_stereo_menu_activate               (GtkToggleButton *menuitem,
   int tmp;
   tmp=(int)user_data;
   
-  //pthread_mutex_unlock(&camera->uimutex);
   camera->stereo=tmp;
-  //pthread_mutex_unlock(&camera->uimutex);
 
   UpdateOptionFrame();
 
@@ -1143,11 +1131,8 @@ on_mono16_bpp_changed                  (GtkEditable     *editable,
 {
   int value;
   value=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(main_window,"mono16_bpp")));
-  // thread locking does seem to lock everything indeed...
-  //pthread_mutex_lock(&camera->uimutex);
+
   camera->bpp=value;
-  //fprintf(stderr,"uiinfo->bpp = %d\n",uiinfo->bpp);
-  //pthread_mutex_unlock(&camera->uimutex);
 }
 
 
@@ -1168,13 +1153,11 @@ on_global_iso_stop_clicked             (GtkButton       *button,
   camera_t* camera_ptr;
   camera_ptr=cameras;
   while (camera_ptr!=NULL) {
-    //fprintf(stderr,"Trying to stop camera\n");
     if (camera_ptr->misc_info.is_iso_on==DC1394_TRUE) {
       if (dc1394_stop_iso_transmission(camera_ptr->camera_info.handle,camera_ptr->camera_info.id)!=DC1394_SUCCESS) {
 	MainError("Could not stop ISO transmission");
       }
       else {
-	//fprintf(stderr," ISO stopped\n");
 	camera_ptr->misc_info.is_iso_on=DC1394_FALSE;
       } 
       if (camera_ptr==camera) {
@@ -1205,13 +1188,11 @@ on_global_iso_start_clicked            (GtkButton       *button,
   camera_t* camera_ptr;
   camera_ptr=cameras;
   while (camera_ptr!=NULL) {
-    //fprintf(stderr,"Trying to start camera\n");
     if (camera_ptr->misc_info.is_iso_on==DC1394_FALSE) {
       if (dc1394_start_iso_transmission(camera_ptr->camera_info.handle,camera_ptr->camera_info.id)!=DC1394_SUCCESS) {
 	MainError("Could not stop ISO transmission");
       }
       else {
-	//fprintf(stderr," ISO started\n");
 	camera_ptr->misc_info.is_iso_on=DC1394_TRUE;
       } 
       if (camera_ptr==camera) {
@@ -1354,7 +1335,6 @@ on_dma_buffer_size_changed             (GtkEditable     *editable,
   preferences.dma_buffer_size=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(main_window,"dma_buffer_size")));
   gnome_config_set_int("coriander/receive/dma_buffer_size",preferences.dma_buffer_size);
   gnome_config_sync();
-  //UpdatePrefsReceiveFrame();
 }
 
 

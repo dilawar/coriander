@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2003 Damien Douxchamps  <ddouxchamps@users.sf.net>
+ * Copyright (C) 2000-2004 Damien Douxchamps  <ddouxchamps@users.sf.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -72,7 +72,6 @@ GetFormat7Capabilities(raw1394handle_t handle, nodeid_t node, Format7Info_t *inf
       }
     }
     else { // format7 is not supported!!
-      //fprintf(stderr,"F7 not supported\n");
       for (i=0,f=MODE_FORMAT7_MIN;f<=MODE_FORMAT7_MAX;f++,i++) {
 	info->mode[i].present=0;
       }
@@ -117,9 +116,6 @@ GetFormat7ModeInfo(raw1394handle_t handle, nodeid_t node, int mode, Format7Info_
       MainError("Got a problem querying format7 color coding ID");
     if (dc1394_query_format7_color_coding(handle,node,mode,&info->mode[i].color_coding)!=DC1394_SUCCESS)
       MainError("Got a problem querying format7 color coding");
-    
-    //fprintf(stderr,"color coding for mode %d: 0x%x, current: %d\n", i,
-    //	      info->mode[i].color_coding, info->mode[i].color_coding_id);
     
   }
 }
@@ -315,7 +311,6 @@ void GetContextStatus()
   ctxt.iso_channel_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(main_window,"iso_channel_status"), ctxt.iso_channel_ctxt, "");
 
   // note: these empty messages will be replaced after the execution of update_frame for status window
-
   ctxt.cursor_pos_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(main_window,"cursor_pos"),"");
   ctxt.cursor_rgb_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(main_window,"cursor_rgb"),"");
   ctxt.cursor_yuv_ctxt=gtk_statusbar_get_context_id( (GtkStatusbar*) lookup_widget(main_window,"cursor_yuv"),"");
@@ -913,7 +908,7 @@ main_timeout_handler(gpointer* port_num) {
   // --------------------------------------------------------------------------------------
   // cancel display thread if asked by the SDL/WM
   // We must do this here because it is not allowed to call a GTK function from a thread. At least if we do
-  // so the program progressively breaks with strange GUI behavior/look.
+  // so the program progressively breaks with strange GUI behaviour/look.
   if (!(main_timeout_ticker%100)) { // every 100ms
     if (WM_cancel_display>0) {
       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (lookup_widget(main_window,"service_display")), FALSE);
@@ -1007,10 +1002,6 @@ SetFormat7Crop(int sx, int sy, int px, int py, int mode) {
     
     usleep(100e3);
 
-    //int ppf;
-    //dc1394_query_format7_packet_per_frame(camera->camera_info.handle,camera->camera_info.id,0,&ppf);
-    //fprintf(stderr,"ppf: %d, theoretical framerate= %.2f\n",ppf,1/((float)ppf*125e-6));
-    
     if (mode==camera->misc_info.mode) {
       IsoFlowResume(&state);
     }

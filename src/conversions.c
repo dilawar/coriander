@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2003 Damien Douxchamps  <ddouxchamps@users.sf.net>
+ * Copyright (C) 2000-2004 Damien Douxchamps  <ddouxchamps@users.sf.net>
  *                         Dan Dennedy  <dan@dennedy.org>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -29,7 +29,7 @@ extern void swab();
 // color conversion functions from Bart Nabbe.
 // corrected by Damien: bad coeficients in YUV2RGB
 #define YUV2RGB(y, u, v, r, g, b)\
-  r = y + ((v*1436) >>10);\
+  r = y + ((v*1436) >> 10);\
   g = y - ((u*352 + v*731) >> 10);\
   b = y + ((u*1814) >> 10);\
   r = r < 0 ? 0 : r;\
@@ -181,9 +181,7 @@ y162uyvy (unsigned char *src, unsigned char *dest, unsigned long long int NumPix
   register int i = (NumPixels << 1)-1;
   register int j = (NumPixels << 1)-1;
   register int y0, y1;
-  //fprintf(stderr,"Conv: Pix: %d Bpp: %d\n",NumPixels, bits);
   while (i > 0) {
-    //fprintf(stderr,"%d ",i);
     y1 = src[i--];
     y1 = (y1 + (((int)src[i--])<<8))>>(bits-8);
     y0 = src[i--];
@@ -416,14 +414,14 @@ y162rgb (unsigned char *src, unsigned char *dest, unsigned long long int NumPixe
   }
 }
 
-/****************************************************************
- *     Color conversion functions for cameras that can          * 
- * output raw-Bayer pattern images, such as some Basler and     *
- * Point Grey camera. Most of the algos presented here com from *
- * http://ise0.Stanford.EDU/~tingchen/main.htm and have been    *
- * converted from Matlab to C and extended to all elementary    *
- * patterns.                                                    *
- ****************************************************************/
+/*****************************************************************
+ *     Color conversion functions for cameras that can           * 
+ * output raw-Bayer pattern images, such as some Basler and      *
+ * Point Grey camera. Most of the algos presented here come from *
+ * http://ise0.Stanford.EDU/~tingchen/main.htm and have been     *
+ * converted from Matlab to C and extended to all elementary     *
+ * patterns.                                                     *
+ *****************************************************************/
 
 void
 BayerNearestNeighbor(unsigned char *src, unsigned char *dest, int sx, int sy, bayer_pattern_t type)
@@ -826,7 +824,7 @@ StereoDecode(unsigned char *src, unsigned char *dest, unsigned long long int Num
   register int i = NumPixels-1;
   register int j = (NumPixels>>1)-1;
   register int k = NumPixels-1;
-  //fprintf(stderr,"NumPixels: %d\n",NumPixels);
+
   while (i > 0) {
     dest[k--] = src[i--];
     dest[j--] = src[i--];

@@ -17,7 +17,7 @@ AC_DEFUN([AC_CHECK_LIBDC],[
  	if test x$libdc1394 = xno; then
           AC_ERROR(libdc1394 is not installed.  
 **************************************************************************
-**   Please install libdc1394 version > 0.9.2                            **
+**   Please install libdc1394 version > 0.9.2                           **
 **   Source tarball and CVS at:  http://www.sf.net/projects/libdc1394   **
 **************************************************************************)
  	fi
@@ -33,7 +33,7 @@ AC_DEFUN([AC_CHECK_LIBDC_VERSION],[
 	else
           AC_ERROR(libdc1394 is too old. 
 **************************************************************************
-**   Please update to the current CVS or to a version > 0.9.2           **
+**   Please upgrade to the current CVS or to a version > 0.9.2          **
 **   Source tarball and CVS at:  http://www.sf.net/projects/libdc1394   **
 **************************************************************************)
  	fi
@@ -52,7 +52,7 @@ AC_DEFUN([AC_CHECK_LIBRAW],[
  	if test x$libraw1394 = xno; then
           AC_ERROR(libraw1394 is not installed.
 **************************************************************************
-**   Please install version 0.9.0 or later.                             **
+**   Please install version >= 0.9.0                                    **
 **   Source tarball and CVS at:  http://www.sf.net/projects/libraw1394  **
 **************************************************************************)
 	fi
@@ -68,7 +68,7 @@ AC_DEFUN([AC_CHECK_LIBRAW_VERSION],[
 	else
           AC_ERROR(libraw1394 is too old.
 **************************************************************************
-**   Please update to at least version 0.9.0                            **
+**   Please upgrade to a version >= 0.9.0                               **
 **   Source tarball and CVS at:  http://www.sf.net/projects/libraw1394  **
 **************************************************************************)
 	fi

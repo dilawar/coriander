@@ -5538,7 +5538,7 @@ anything in the GUI at all...</label>
   <class>GnomeAbout</class>
   <name>about_window</name>
   <modal>True</modal>
-  <copyright>Copyright 2000-2003 Damien Douxchamps</copyright>
+  <copyright>Copyright 2000-2004 Damien Douxchamps</copyright>
   <authors>Damien Douxchamps &lt;ddouxchamps@users.sf.net&gt;
 Dan Dennedy &lt;dan@dennedy.org&gt;
 See the AUTHORS file for more authors and contributors

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2003 Damien Douxchamps  <ddouxchamps@users.sf.net>
+ * Copyright (C) 2000-2004 Damien Douxchamps  <ddouxchamps@users.sf.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,7 +54,6 @@ RollBuffers(chain_t* chain)
 {
   buffer_t* tmp_buffer;
   int new_current=0;
-  //fprintf(stderr,"rolling buffers...");
   if (chain->service==SERVICE_ISO) {
     // 1 - 2 - 3 -> 1 - 3 - 2 (publish for next service, ISO only)
     tmp_buffer=chain->current_buffer;
@@ -87,7 +86,6 @@ RollBuffers(chain_t* chain)
     }
   }
 
-  //fprintf(stderr,"done: %d\n",new_current);
   return(new_current);
   
 }
@@ -197,7 +195,6 @@ RemoveChain(camera_t* cam, chain_t* chain)
   if (chain->next_chain!=NULL)// lock next_mutex if we are not the last in the line
     pthread_mutex_unlock(&chain->next_chain->mutex_struct);
 
-  //fprintf(stderr,"pipe: 0x%x\n",image_pipes[camera]);
 
 }
 
@@ -205,7 +202,6 @@ void
 FreeChain(chain_t* chain)
 {
 
-  //fprintf(stderr,"FreeChain...\n");
   if (chain!=NULL) {
     if (chain->data!=NULL)
       free(chain->data);
@@ -222,7 +218,6 @@ FreeChain(chain_t* chain)
     }
     free(chain);
   }
-  //fprintf(stderr,"done\n");
 }
 
 

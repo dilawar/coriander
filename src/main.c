@@ -3,7 +3,7 @@
  *
  *            -- The IEEE-1394 Digital Camera controller --
  *
- * Copyright (C) 2000-2003 Damien Douxchamps  <ddouxchamps@users.sf.net>
+ * Copyright (C) 2000-2004 Damien Douxchamps  <ddouxchamps@users.sf.net>
  *               Ftp and conversions by Dan Dennedy <ddennedy@coolsite.net>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -134,11 +134,8 @@ main (int argc, char *argv[])
 
   // Setup the GUI in accordance with the camera capabilities
   GetContextStatus();
-  //fprintf(stderr,"Building all windows...\n");
   BuildAllWindows();
-  //fprintf(stderr,"Updating all windows...\n");
   UpdateAllWindows();
-  //fprintf(stderr,"Starting GUI...\n");
 
   MainStatus("Welcome to Coriander...");
   gtk_widget_show (main_window); // this is the only window shown at boot-time
