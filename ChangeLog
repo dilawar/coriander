@@ -2,6 +2,10 @@ Coriander, (c) 2000-2002 Damien Douxchamps <douxchamps@ieee.org>
 
 Changes towards version 0.26
 
+   September 7, 2002, by Damien Douxchamps
+   - corrected a bug in RGB to UYVY conversion function (column
+     swapping)
+	
    September 4, 2002, by Damien Douxchamps
    - set sensitiveness of stereo decoding button
    - use custom names for display window title

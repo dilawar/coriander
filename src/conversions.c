@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2000-2001 Dan Dennedy  <dan@dennedy.org>
+ *               2001-2002 Damien Douxchamps <ddouxchamps@users.sf.net>         
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -236,13 +237,13 @@ rgb2uyvy (unsigned char *src, unsigned char *dest, int NumPixels) {
       RGB2YUV (r, g, b, y1, u1 , v1);
 #ifdef YUYV
       dest[j--] = (v0+v1) >> 1;
-      dest[j--] = y1;
+      dest[j--] = y0;
       dest[j--] = (u0+u1) >> 1;
-      dest[j--] = y0;
-#else // UYVY
       dest[j--] = y1;
-      dest[j--] = (v0+v1) >> 1;
+#else // UYVY
       dest[j--] = y0;
+      dest[j--] = (v0+v1) >> 1;
+      dest[j--] = y1;
       dest[j--] = (u0+u1) >> 1;
 #endif
     }
@@ -274,13 +275,13 @@ rgb482uyvy (unsigned char *src, unsigned char *dest, int NumPixels) {
 
 #ifdef YUYV
       dest[j--] = (v0+v1) >> 1;
-      dest[j--] = y1;
+      dest[j--] = y0;
       dest[j--] = (u0+u1) >> 1;
-      dest[j--] = y0;
-#else // UYVY
       dest[j--] = y1;
-      dest[j--] = (v0+v1) >> 1;
+#else // UYVY
       dest[j--] = y0;
+      dest[j--] = (v0+v1) >> 1;
+      dest[j--] = y1;
       dest[j--] = (u0+u1) >> 1;
 #endif
     }
