@@ -1,7 +1,7 @@
 Coriander, (c) 2000-2001 Damien Douxchamps <douxchamps@ieee.org>
 
 Changes towards version 0.20:
-
+	
     Nov 26, by Damien Douxchamps:
     - added handle release and thread cleanup at the end of main.c
 	
@@ -18,6 +18,11 @@ Changes towards version 0.20:
     - change of formats and fps now works.
     - did some more cleanup of the code.
 
+Changes in version 0.19b:
+
+    Nov 26, by Damien Douxchamps:
+    - new layout using "notebook" widget
+	
 Changes in version 0.19:
 
     Nov 6, by Damien Douxchamps:
