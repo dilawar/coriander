@@ -356,6 +356,7 @@ FtpThreadCheckParams(chain_t *ftp_service)
     ftp_service->local_param_copy.format7_color_mode=ftp_service->current_buffer->format7_color_mode;
     ftp_service->local_param_copy.stereo_decoding=ftp_service->current_buffer->stereo_decoding;
     ftp_service->local_param_copy.bayer=ftp_service->current_buffer->bayer;
+    ftp_service->local_param_copy.buffer_image_bytes=ftp_service->current_buffer->buffer_image_bytes;
     
     // DO SOMETHING
     if (buffer_size_change!=0) {

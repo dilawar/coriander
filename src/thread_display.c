@@ -471,6 +471,7 @@ DisplayThreadCheckParams(chain_t *display_service)
     display_service->local_param_copy.format7_color_mode=display_service->current_buffer->format7_color_mode;
     display_service->local_param_copy.stereo_decoding=display_service->current_buffer->stereo_decoding;
     display_service->local_param_copy.bayer=display_service->current_buffer->bayer;
+    display_service->local_param_copy.buffer_image_bytes=display_service->current_buffer->buffer_image_bytes;
     
     // DO SOMETHING
     // if the width is not -1, that is if some image has already reached the thread

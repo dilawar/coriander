@@ -270,4 +270,5 @@ InitBuffer(buffer_t *buffer)
   buffer->format7_color_mode=-1;
   buffer->buffer_color_mode=-1;
   buffer->image=NULL;
+  buffer->buffer_image_bytes=-1;
 }

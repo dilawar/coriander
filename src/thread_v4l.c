@@ -306,6 +306,7 @@ V4lThreadCheckParams(chain_t *v4l_service)
     v4l_service->local_param_copy.format7_color_mode=v4l_service->current_buffer->format7_color_mode;
     v4l_service->local_param_copy.stereo_decoding=v4l_service->current_buffer->stereo_decoding;
     v4l_service->local_param_copy.bayer=v4l_service->current_buffer->bayer;
+    v4l_service->local_param_copy.buffer_image_bytes=v4l_service->current_buffer->buffer_image_bytes;
     
     // DO SOMETHING
     if (buffer_size_change!=0) {

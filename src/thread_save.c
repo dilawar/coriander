@@ -251,9 +251,9 @@ SaveThread(void* arg)
 	    
 	    // rambuffer operation
 	    if (info->use_ram_buffer>0) {
-	      if (info->ram_buffer_size-info->bigbuffer_position>=save_service->current_buffer->bytes_per_frame) {
-		memcpy(&info->bigbuffer[info->bigbuffer_position], save_service->current_buffer->image, save_service->current_buffer->bytes_per_frame);
-		info->bigbuffer_position+=save_service->current_buffer->bytes_per_frame;
+	      if (info->ram_buffer_size-info->bigbuffer_position>=save_service->current_buffer->buffer_image_bytes) {
+		memcpy(&info->bigbuffer[info->bigbuffer_position], save_service->current_buffer->image, save_service->current_buffer->buffer_image_bytes);
+		info->bigbuffer_position+=save_service->current_buffer->buffer_image_bytes;
 		//fprintf(stderr,"remains: %ld bytes\n",info->ram_buffer_size-info->bigbuffer_position);
 	      }
 	      else {
@@ -265,7 +265,7 @@ SaveThread(void* arg)
 	    else {
 	      if (info->rawdump>0) {
 		if (info->scratch==SAVE_SCRATCH_SEQUENCE) {
-		  fwrite(save_service->current_buffer->image, 1, save_service->current_buffer->bytes_per_frame, fd);
+		  fwrite(save_service->current_buffer->image, 1, save_service->current_buffer->buffer_image_bytes, fd);
 		}
 		else {
 		  Dump2File(filename_out,save_service);
@@ -375,7 +375,7 @@ Dump2File(char *name, chain_t *service)
   if (fd==NULL)
     MainError("Can't open file for saving");
   else {
-    fwrite(service->current_buffer->image, 1, service->current_buffer->bytes_per_frame, fd);
+    fwrite(service->current_buffer->image, 1, service->current_buffer->buffer_image_bytes, fd);
     fclose(fd);
   }
 }
@@ -423,6 +423,7 @@ SaveThreadCheckParams(chain_t *save_service)
     save_service->local_param_copy.format7_color_mode=save_service->current_buffer->format7_color_mode;
     save_service->local_param_copy.stereo_decoding=save_service->current_buffer->stereo_decoding;
     save_service->local_param_copy.bayer=save_service->current_buffer->bayer;
+    save_service->local_param_copy.buffer_image_bytes=save_service->current_buffer->buffer_image_bytes;
     
     // DO SOMETHING
     if (buffer_size_change!=0) {
