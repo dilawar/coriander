@@ -2,6 +2,9 @@ Coriander, (c) 2000-2002 Damien Douxchamps <douxchamps@ieee.org>
 
 Changes towards version 0.26
 
+   August 6, 2002, by Damien Douxchamps
+   - more fixes for initial segfault when no card/modules are present
+	
    August 5, 2002, by Damien Douxchamps
    - updated macros/coriander-macros.m4 to check for latest changes
      in libdc1394.

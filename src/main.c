@@ -77,12 +77,13 @@ int
 main (int argc, char *argv[])
 {
   int err, i, cam;
-  nodeid_t **camera_nodes; 
-  raw1394handle_t *handles, tmp_handle;
+  nodeid_t **camera_nodes=NULL; 
+  raw1394handle_t *handles=NULL;
+  raw1394handle_t tmp_handle;
   int port;
   int index;
-  int *port_camera_num;
-  int portmax;
+  int *port_camera_num=NULL;
+  int portmax=0;
   int card_found;
 
   
@@ -92,25 +93,28 @@ main (int argc, char *argv[])
 #endif
   gnome_init ("coriander", VERSION, argc, argv);
 
-    tmp_handle=raw1394_new_handle();
-  portmax=raw1394_get_port_info(tmp_handle, NULL, 0);
-  raw1394_destroy_handle(tmp_handle);
-
-  camera_nodes=(nodeid_t**)malloc(portmax*sizeof(nodeid_t*));
-  port_camera_num=(int*)malloc(portmax*sizeof(int));
-  handles=(raw1394handle_t *)malloc(portmax*sizeof(raw1394handle_t));
-  
   card_found=0;
-  for (port=0;port<portmax;port++)
+  tmp_handle=raw1394_new_handle();
+  if (tmp_handle!=NULL)
     {
-      // get a handle to the current interface card
-      handles[port]=dc1394_create_handle(port);
-      if (handles[port]!=0) // if the card is present
+      portmax=raw1394_get_port_info(tmp_handle, NULL, 0);
+      raw1394_destroy_handle(tmp_handle);
+
+      camera_nodes=(nodeid_t**)malloc(portmax*sizeof(nodeid_t*));
+      port_camera_num=(int*)malloc(portmax*sizeof(int));
+      handles=(raw1394handle_t *)malloc(portmax*sizeof(raw1394handle_t));
+  
+      for (port=0;port<portmax;port++)
 	{
-	  card_found=1;
-	  // probe the IEEE1394 bus for DC camera:
-	  camera_nodes[port]=dc1394_get_camera_nodes(handles[port], &port_camera_num[port], 0); // 0 not to show the cams.
-	  camera_num+=port_camera_num[port];
+	  // get a handle to the current interface card
+	  handles[port]=dc1394_create_handle(port);
+	  if (handles[port]!=0) // if the card is present
+	    {
+	      card_found=1;
+	      // probe the IEEE1394 bus for DC camera:
+	      camera_nodes[port]=dc1394_get_camera_nodes(handles[port], &port_camera_num[port], 0); // 0 not to show the cams.
+	      camera_num+=port_camera_num[port];
+	    }
 	}
     }
   if (card_found==0)
