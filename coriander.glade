@@ -31,7 +31,7 @@
     <handler>on_commander_window_delete_event</handler>
     <last_modification_time>Tue, 26 Dec 2000 12:06:25 GMT</last_modification_time>
   </signal>
-  <title>Coriander 0.17</title>
+  <title>Coriander 0.18</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_NONE</position>
   <modal>False</modal>
@@ -72,56 +72,11 @@
 
 	  <widget>
 	    <class>GtkPixmapMenuItem</class>
-	    <name>load_setup</name>
-	    <signal>
-	      <name>activate</name>
-	      <handler>on_load_setup_activate</handler>
-	      <last_modification_time>Mon, 25 Dec 2000 09:57:02 GMT</last_modification_time>
-	    </signal>
-	    <label>_Load Setup</label>
-	    <right_justify>False</right_justify>
-	    <stock_icon>GNOME_STOCK_MENU_OPEN</stock_icon>
-	  </widget>
-
-	  <widget>
-	    <class>GtkPixmapMenuItem</class>
-	    <name>save_setup</name>
-	    <signal>
-	      <name>activate</name>
-	      <handler>on_save_setup_activate</handler>
-	      <last_modification_time>Mon, 25 Dec 2000 09:57:25 GMT</last_modification_time>
-	    </signal>
-	    <label>_Save Setup</label>
-	    <right_justify>False</right_justify>
-	    <stock_icon>GNOME_STOCK_MENU_SAVE</stock_icon>
-	  </widget>
-
-	  <widget>
-	    <class>GtkPixmapMenuItem</class>
-	    <name>save_setup_as</name>
-	    <signal>
-	      <name>activate</name>
-	      <handler>on_save_setup_as_activate</handler>
-	      <last_modification_time>Mon, 25 Dec 2000 09:57:35 GMT</last_modification_time>
-	    </signal>
-	    <label>Save Setup _As</label>
-	    <right_justify>False</right_justify>
-	    <stock_icon>GNOME_STOCK_MENU_SAVE_AS</stock_icon>
-	  </widget>
-
-	  <widget>
-	    <class>GtkMenuItem</class>
-	    <name>separator10</name>
-	    <right_justify>False</right_justify>
-	  </widget>
-
-	  <widget>
-	    <class>GtkPixmapMenuItem</class>
 	    <name>preferences</name>
 	    <signal>
 	      <name>activate</name>
-	      <handler>on_preferences_activate</handler>
-	      <last_modification_time>Sat, 24 Mar 2001 14:39:52 GMT</last_modification_time>
+	      <handler>on_preferences_window_activate</handler>
+	      <last_modification_time>Sat, 27 Oct 2001 13:25:23 GMT</last_modification_time>
 	    </signal>
 	    <stock_item>GNOMEUIINFO_MENU_PREFERENCES_ITEM</stock_item>
 	  </widget>
@@ -4137,107 +4092,6 @@ V-field:</label>
 </widget>
 
 <widget>
-  <class>GtkFileSelection</class>
-  <name>file_selector_window</name>
-  <border_width>10</border_width>
-  <signal>
-    <name>delete_event</name>
-    <handler>on_file_selector_window_delete_event</handler>
-    <last_modification_time>Mon, 25 Dec 2000 13:35:55 GMT</last_modification_time>
-  </signal>
-  <signal>
-    <name>destroy_event</name>
-    <handler>gtk_widget_destroy</handler>
-    <last_modification_time>Tue, 26 Dec 2000 12:24:53 GMT</last_modification_time>
-  </signal>
-  <signal>
-    <name>destroy</name>
-    <handler>gtk_widget_destroy</handler>
-    <last_modification_time>Tue, 26 Dec 2000 12:25:13 GMT</last_modification_time>
-  </signal>
-  <title>File Selector</title>
-  <type>GTK_WINDOW_TOPLEVEL</type>
-  <position>GTK_WIN_POS_NONE</position>
-  <modal>False</modal>
-  <allow_shrink>False</allow_shrink>
-  <allow_grow>True</allow_grow>
-  <auto_shrink>False</auto_shrink>
-  <show_file_op_buttons>True</show_file_op_buttons>
-
-  <widget>
-    <class>GtkButton</class>
-    <child_name>FileSel:ok_button</child_name>
-    <name>ok_button1</name>
-    <can_default>True</can_default>
-    <can_focus>True</can_focus>
-    <label>OK</label>
-    <relief>GTK_RELIEF_NORMAL</relief>
-  </widget>
-
-  <widget>
-    <class>GtkButton</class>
-    <child_name>FileSel:cancel_button</child_name>
-    <name>cancel_button1</name>
-    <can_default>True</can_default>
-    <can_focus>True</can_focus>
-    <label>Cancel</label>
-    <relief>GTK_RELIEF_NORMAL</relief>
-  </widget>
-</widget>
-
-<widget>
-  <class>GtkWindow</class>
-  <name>configure_window</name>
-  <signal>
-    <name>delete_event</name>
-    <handler>gtk_widget_hide</handler>
-    <last_modification_time>Tue, 26 Dec 2000 12:15:04 GMT</last_modification_time>
-  </signal>
-  <signal>
-    <name>destroy_event</name>
-    <handler>gtk_widget_hide</handler>
-    <last_modification_time>Tue, 26 Dec 2000 12:15:10 GMT</last_modification_time>
-  </signal>
-  <signal>
-    <name>destroy</name>
-    <handler>gtk_widget_hide</handler>
-    <last_modification_time>Tue, 26 Dec 2000 12:15:20 GMT</last_modification_time>
-  </signal>
-  <title>Configure</title>
-  <type>GTK_WINDOW_TOPLEVEL</type>
-  <position>GTK_WIN_POS_NONE</position>
-  <modal>False</modal>
-  <allow_shrink>False</allow_shrink>
-  <allow_grow>False</allow_grow>
-  <auto_shrink>False</auto_shrink>
-
-  <widget>
-    <class>GtkFrame</class>
-    <name>configure_frame</name>
-    <border_width>6</border_width>
-    <label>Please wait while the IEEE1394 bus is probed...</label>
-    <label_xalign>0</label_xalign>
-    <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
-
-    <widget>
-      <class>GtkProgressBar</class>
-      <name>configure_bar</name>
-      <width>400</width>
-      <value>0</value>
-      <lower>0</lower>
-      <upper>100</upper>
-      <bar_style>GTK_PROGRESS_CONTINUOUS</bar_style>
-      <orientation>GTK_PROGRESS_LEFT_TO_RIGHT</orientation>
-      <activity_mode>False</activity_mode>
-      <show_text>True</show_text>
-      <format>%P %%</format>
-      <text_xalign>0.5</text_xalign>
-      <text_yalign>0.5</text_yalign>
-    </widget>
-  </widget>
-</widget>
-
-<widget>
   <class>GtkWindow</class>
   <name>status_window</name>
   <width>250</width>
@@ -6853,345 +6707,6 @@ controlled with the AV/C protocol, please refer to http://linux1394.sourceforge.
 </widget>
 
 <widget>
-  <class>GtkWindow</class>
-  <name>preferences_window</name>
-  <width>350</width>
-  <height>250</height>
-  <title>Preferences</title>
-  <type>GTK_WINDOW_TOPLEVEL</type>
-  <position>GTK_WIN_POS_NONE</position>
-  <modal>False</modal>
-  <allow_shrink>False</allow_shrink>
-  <allow_grow>True</allow_grow>
-  <auto_shrink>False</auto_shrink>
-
-  <widget>
-    <class>GtkNotebook</class>
-    <name>pref_notebook</name>
-    <can_focus>True</can_focus>
-    <show_tabs>True</show_tabs>
-    <show_border>True</show_border>
-    <tab_pos>GTK_POS_TOP</tab_pos>
-    <scrollable>False</scrollable>
-    <tab_hborder>2</tab_hborder>
-    <tab_vborder>2</tab_vborder>
-    <popup_enable>False</popup_enable>
-
-    <widget>
-      <class>GtkVBox</class>
-      <name>vbox46</name>
-      <homogeneous>False</homogeneous>
-      <spacing>0</spacing>
-
-      <widget>
-	<class>GtkFrame</class>
-	<name>timeout_frame</name>
-	<border_width>5</border_width>
-	<label>Timeout for One-Push Auto [s]</label>
-	<label_xalign>0</label_xalign>
-	<shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
-	<child>
-	  <padding>0</padding>
-	  <expand>False</expand>
-	  <fill>True</fill>
-	</child>
-
-	<widget>
-	  <class>GtkHBox</class>
-	  <name>hbox45</name>
-	  <border_width>2</border_width>
-	  <homogeneous>False</homogeneous>
-	  <spacing>0</spacing>
-
-	  <widget>
-	    <class>GtkHScale</class>
-	    <name>timout_scale</name>
-	    <can_focus>True</can_focus>
-	    <draw_value>True</draw_value>
-	    <value_pos>GTK_POS_TOP</value_pos>
-	    <digits>1</digits>
-	    <policy>GTK_UPDATE_DELAYED</policy>
-	    <value>0</value>
-	    <lower>0</lower>
-	    <upper>100</upper>
-	    <step>0.1</step>
-	    <page>5</page>
-	    <page_size>0</page_size>
-	    <child>
-	      <padding>0</padding>
-	      <expand>True</expand>
-	      <fill>True</fill>
-	    </child>
-	  </widget>
-	</widget>
-      </widget>
-
-      <widget>
-	<class>GtkFrame</class>
-	<name>update_rate_frame</name>
-	<border_width>5</border_width>
-	<label>Update rate [Hz]</label>
-	<label_xalign>0</label_xalign>
-	<shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
-	<child>
-	  <padding>0</padding>
-	  <expand>False</expand>
-	  <fill>True</fill>
-	</child>
-
-	<widget>
-	  <class>GtkHBox</class>
-	  <name>hbox44</name>
-	  <border_width>2</border_width>
-	  <homogeneous>False</homogeneous>
-	  <spacing>0</spacing>
-
-	  <widget>
-	    <class>GtkCheckButton</class>
-	    <name>update_power</name>
-	    <can_focus>True</can_focus>
-	    <label>Update</label>
-	    <active>False</active>
-	    <draw_indicator>True</draw_indicator>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkHScale</class>
-	    <name>update_rate_scale</name>
-	    <can_focus>True</can_focus>
-	    <draw_value>True</draw_value>
-	    <value_pos>GTK_POS_TOP</value_pos>
-	    <digits>1</digits>
-	    <policy>GTK_UPDATE_DELAYED</policy>
-	    <value>0</value>
-	    <lower>0</lower>
-	    <upper>10</upper>
-	    <step>0.1</step>
-	    <page>1</page>
-	    <page_size>0</page_size>
-	    <child>
-	      <padding>0</padding>
-	      <expand>True</expand>
-	      <fill>True</fill>
-	    </child>
-	  </widget>
-	</widget>
-      </widget>
-
-      <widget>
-	<class>Placeholder</class>
-      </widget>
-
-      <widget>
-	<class>Placeholder</class>
-      </widget>
-
-      <widget>
-	<class>Placeholder</class>
-      </widget>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <child_name>Notebook:tab</child_name>
-      <name>label24</name>
-      <label>General</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkVBox</class>
-      <name>vbox47</name>
-      <homogeneous>False</homogeneous>
-      <spacing>0</spacing>
-
-      <widget>
-	<class>GtkHBox</class>
-	<name>hbox43</name>
-	<homogeneous>True</homogeneous>
-	<spacing>0</spacing>
-	<child>
-	  <padding>0</padding>
-	  <expand>False</expand>
-	  <fill>True</fill>
-	</child>
-
-	<widget>
-	  <class>GtkFrame</class>
-	  <name>capture_method_frame</name>
-	  <border_width>5</border_width>
-	  <label>Capture method:</label>
-	  <label_xalign>0</label_xalign>
-	  <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
-	  <child>
-	    <padding>0</padding>
-	    <expand>True</expand>
-	    <fill>True</fill>
-	  </child>
-
-	  <widget>
-	    <class>GtkVBox</class>
-	    <name>vbox48</name>
-	    <homogeneous>True</homogeneous>
-	    <spacing>0</spacing>
-
-	    <widget>
-	      <class>GtkRadioButton</class>
-	      <name>method_raw1394</name>
-	      <can_focus>True</can_focus>
-	      <label>raw1394</label>
-	      <active>False</active>
-	      <draw_indicator>True</draw_indicator>
-	      <group>cap_method</group>
-	      <child>
-		<padding>0</padding>
-		<expand>False</expand>
-		<fill>False</fill>
-	      </child>
-	    </widget>
-
-	    <widget>
-	      <class>GtkRadioButton</class>
-	      <name>method_video1394</name>
-	      <can_focus>True</can_focus>
-	      <label>video1394 (DMA)</label>
-	      <active>False</active>
-	      <draw_indicator>True</draw_indicator>
-	      <group>cap_method</group>
-	      <child>
-		<padding>0</padding>
-		<expand>False</expand>
-		<fill>False</fill>
-	      </child>
-	    </widget>
-
-	    <widget>
-	      <class>GtkRadioButton</class>
-	      <name>method_auto</name>
-	      <can_focus>True</can_focus>
-	      <label>AUTO</label>
-	      <active>False</active>
-	      <draw_indicator>True</draw_indicator>
-	      <group>cap_method</group>
-	      <child>
-		<padding>0</padding>
-		<expand>False</expand>
-		<fill>False</fill>
-	      </child>
-	    </widget>
-	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkFrame</class>
-	  <name>display_method_frame</name>
-	  <border_width>5</border_width>
-	  <label>Display method:</label>
-	  <label_xalign>0</label_xalign>
-	  <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
-	  <child>
-	    <padding>0</padding>
-	    <expand>True</expand>
-	    <fill>True</fill>
-	  </child>
-
-	  <widget>
-	    <class>GtkVBox</class>
-	    <name>vbox49</name>
-	    <homogeneous>True</homogeneous>
-	    <spacing>0</spacing>
-
-	    <widget>
-	      <class>GtkRadioButton</class>
-	      <name>gdk_button</name>
-	      <can_focus>True</can_focus>
-	      <label>GDK</label>
-	      <active>False</active>
-	      <draw_indicator>True</draw_indicator>
-	      <group>disp_method</group>
-	      <child>
-		<padding>0</padding>
-		<expand>False</expand>
-		<fill>False</fill>
-	      </child>
-	    </widget>
-
-	    <widget>
-	      <class>GtkRadioButton</class>
-	      <name>xv_button</name>
-	      <can_focus>True</can_focus>
-	      <label>Xv</label>
-	      <active>False</active>
-	      <draw_indicator>True</draw_indicator>
-	      <group>disp_method</group>
-	      <child>
-		<padding>0</padding>
-		<expand>False</expand>
-		<fill>False</fill>
-	      </child>
-	    </widget>
-
-	    <widget>
-	      <class>GtkRadioButton</class>
-	      <name>AUTO</name>
-	      <can_focus>True</can_focus>
-	      <label>AUTO</label>
-	      <active>False</active>
-	      <draw_indicator>True</draw_indicator>
-	      <group>disp_method</group>
-	      <child>
-		<padding>0</padding>
-		<expand>False</expand>
-		<fill>False</fill>
-	      </child>
-	    </widget>
-	  </widget>
-	</widget>
-      </widget>
-
-      <widget>
-	<class>Placeholder</class>
-      </widget>
-
-      <widget>
-	<class>Placeholder</class>
-      </widget>
-
-      <widget>
-	<class>Placeholder</class>
-      </widget>
-
-      <widget>
-	<class>Placeholder</class>
-      </widget>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <child_name>Notebook:tab</child_name>
-      <name>label25</name>
-      <label>Overlay</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-  </widget>
-</widget>
-
-<widget>
   <class>GtkFileSelection</class>
   <name>save_single_dialog</name>
   <border_width>10</border_width>
@@ -7286,6 +6801,439 @@ controlled with the AV/C protocol, please refer to http://linux1394.sourceforge.
     </signal>
     <label>Cancel</label>
     <relief>GTK_RELIEF_NORMAL</relief>
+  </widget>
+</widget>
+
+<widget>
+  <class>GtkWindow</class>
+  <name>preferences_window</name>
+  <signal>
+    <name>destroy_event</name>
+    <handler>gtk_widget_hide</handler>
+    <last_modification_time>Mon, 29 Oct 2001 09:00:37 GMT</last_modification_time>
+  </signal>
+  <signal>
+    <name>delete_event</name>
+    <handler>gtk_widget_hide</handler>
+    <last_modification_time>Mon, 29 Oct 2001 09:00:49 GMT</last_modification_time>
+  </signal>
+  <signal>
+    <name>destroy</name>
+    <handler>gtk_widget_hide</handler>
+    <last_modification_time>Mon, 29 Oct 2001 09:01:12 GMT</last_modification_time>
+  </signal>
+  <title>Preferences</title>
+  <type>GTK_WINDOW_TOPLEVEL</type>
+  <position>GTK_WIN_POS_NONE</position>
+  <modal>False</modal>
+  <allow_shrink>False</allow_shrink>
+  <allow_grow>True</allow_grow>
+  <auto_shrink>False</auto_shrink>
+
+  <widget>
+    <class>GtkVBox</class>
+    <name>vbox51</name>
+    <homogeneous>False</homogeneous>
+    <spacing>0</spacing>
+
+    <widget>
+      <class>GtkNotebook</class>
+      <child_name>GnomePropertyBox:notebook</child_name>
+      <name>notebook1</name>
+      <border_width>10</border_width>
+      <can_focus>True</can_focus>
+      <show_tabs>True</show_tabs>
+      <show_border>True</show_border>
+      <tab_pos>GTK_POS_TOP</tab_pos>
+      <scrollable>False</scrollable>
+      <tab_hborder>2</tab_hborder>
+      <tab_vborder>2</tab_vborder>
+      <popup_enable>False</popup_enable>
+      <child>
+	<padding>0</padding>
+	<expand>True</expand>
+	<fill>True</fill>
+      </child>
+
+      <widget>
+	<class>GtkVBox</class>
+	<name>vbox46</name>
+	<homogeneous>False</homogeneous>
+	<spacing>0</spacing>
+
+	<widget>
+	  <class>GtkFrame</class>
+	  <name>timeout_frame</name>
+	  <border_width>5</border_width>
+	  <label>Timeout for One-Push Auto [s]</label>
+	  <label_xalign>0</label_xalign>
+	  <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+	  <child>
+	    <padding>0</padding>
+	    <expand>False</expand>
+	    <fill>True</fill>
+	  </child>
+
+	  <widget>
+	    <class>GtkHBox</class>
+	    <name>hbox45</name>
+	    <border_width>2</border_width>
+	    <homogeneous>False</homogeneous>
+	    <spacing>0</spacing>
+
+	    <widget>
+	      <class>GtkHScale</class>
+	      <name>prefs_timeout_scale</name>
+	      <can_focus>True</can_focus>
+	      <draw_value>True</draw_value>
+	      <value_pos>GTK_POS_TOP</value_pos>
+	      <digits>1</digits>
+	      <policy>GTK_UPDATE_DELAYED</policy>
+	      <value>0</value>
+	      <lower>0</lower>
+	      <upper>100</upper>
+	      <step>0.1</step>
+	      <page>5</page>
+	      <page_size>0</page_size>
+	      <child>
+		<padding>0</padding>
+		<expand>True</expand>
+		<fill>True</fill>
+	      </child>
+	    </widget>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkFrame</class>
+	  <name>update_rate_frame</name>
+	  <border_width>5</border_width>
+	  <label>Update rate [Hz]</label>
+	  <label_xalign>0</label_xalign>
+	  <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+	  <child>
+	    <padding>0</padding>
+	    <expand>False</expand>
+	    <fill>True</fill>
+	  </child>
+
+	  <widget>
+	    <class>GtkHBox</class>
+	    <name>hbox44</name>
+	    <border_width>2</border_width>
+	    <homogeneous>False</homogeneous>
+	    <spacing>0</spacing>
+
+	    <widget>
+	      <class>GtkCheckButton</class>
+	      <name>prefs_update_power</name>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>toggled</name>
+		<handler>on_prefs_update_power_toggled</handler>
+		<last_modification_time>Sat, 27 Oct 2001 13:15:20 GMT</last_modification_time>
+	      </signal>
+	      <label>Update</label>
+	      <active>False</active>
+	      <draw_indicator>True</draw_indicator>
+	      <child>
+		<padding>0</padding>
+		<expand>False</expand>
+		<fill>False</fill>
+	      </child>
+	    </widget>
+
+	    <widget>
+	      <class>GtkHScale</class>
+	      <name>prefs_update_scale</name>
+	      <can_focus>True</can_focus>
+	      <draw_value>True</draw_value>
+	      <value_pos>GTK_POS_TOP</value_pos>
+	      <digits>1</digits>
+	      <policy>GTK_UPDATE_DELAYED</policy>
+	      <value>1</value>
+	      <lower>0</lower>
+	      <upper>10</upper>
+	      <step>0.1</step>
+	      <page>1</page>
+	      <page_size>0</page_size>
+	      <child>
+		<padding>0</padding>
+		<expand>True</expand>
+		<fill>True</fill>
+	      </child>
+	    </widget>
+	  </widget>
+	</widget>
+      </widget>
+
+      <widget>
+	<class>GtkLabel</class>
+	<child_name>Notebook:tab</child_name>
+	<name>label49</name>
+	<label>General</label>
+	<justify>GTK_JUSTIFY_CENTER</justify>
+	<wrap>False</wrap>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+      </widget>
+
+      <widget>
+	<class>GtkVBox</class>
+	<name>vbox47</name>
+	<homogeneous>False</homogeneous>
+	<spacing>0</spacing>
+
+	<widget>
+	  <class>GtkHBox</class>
+	  <name>hbox43</name>
+	  <homogeneous>True</homogeneous>
+	  <spacing>0</spacing>
+	  <child>
+	    <padding>0</padding>
+	    <expand>False</expand>
+	    <fill>True</fill>
+	  </child>
+
+	  <widget>
+	    <class>GtkFrame</class>
+	    <name>capture_method_frame</name>
+	    <border_width>5</border_width>
+	    <label>Capture method:</label>
+	    <label_xalign>0</label_xalign>
+	    <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+	    <child>
+	      <padding>0</padding>
+	      <expand>True</expand>
+	      <fill>True</fill>
+	    </child>
+
+	    <widget>
+	      <class>GtkVBox</class>
+	      <name>vbox48</name>
+	      <homogeneous>True</homogeneous>
+	      <spacing>0</spacing>
+
+	      <widget>
+		<class>GtkRadioButton</class>
+		<name>prefs_capture_raw1394</name>
+		<can_focus>True</can_focus>
+		<signal>
+		  <name>toggled</name>
+		  <handler>on_prefs_capture_raw1394_toggled</handler>
+		  <last_modification_time>Sat, 27 Oct 2001 13:15:40 GMT</last_modification_time>
+		</signal>
+		<label>raw1394</label>
+		<active>False</active>
+		<draw_indicator>True</draw_indicator>
+		<group>cap_method</group>
+		<child>
+		  <padding>0</padding>
+		  <expand>False</expand>
+		  <fill>False</fill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkRadioButton</class>
+		<name>prefs_capture_video1394</name>
+		<can_focus>True</can_focus>
+		<signal>
+		  <name>toggled</name>
+		  <handler>on_prefs_capture_video1394_toggled</handler>
+		  <last_modification_time>Sat, 27 Oct 2001 13:15:43 GMT</last_modification_time>
+		</signal>
+		<label>video1394 (DMA)</label>
+		<active>False</active>
+		<draw_indicator>True</draw_indicator>
+		<group>cap_method</group>
+		<child>
+		  <padding>0</padding>
+		  <expand>False</expand>
+		  <fill>False</fill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkRadioButton</class>
+		<name>prefs_capture_auto</name>
+		<can_focus>True</can_focus>
+		<signal>
+		  <name>toggled</name>
+		  <handler>on_prefs_capture_auto_toggled</handler>
+		  <last_modification_time>Sat, 27 Oct 2001 13:15:47 GMT</last_modification_time>
+		</signal>
+		<label>AUTO</label>
+		<active>False</active>
+		<draw_indicator>True</draw_indicator>
+		<group>cap_method</group>
+		<child>
+		  <padding>0</padding>
+		  <expand>False</expand>
+		  <fill>False</fill>
+		</child>
+	      </widget>
+	    </widget>
+	  </widget>
+
+	  <widget>
+	    <class>GtkFrame</class>
+	    <name>display_method_frame</name>
+	    <border_width>5</border_width>
+	    <label>Display method:</label>
+	    <label_xalign>0</label_xalign>
+	    <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+	    <child>
+	      <padding>0</padding>
+	      <expand>True</expand>
+	      <fill>True</fill>
+	    </child>
+
+	    <widget>
+	      <class>GtkVBox</class>
+	      <name>vbox49</name>
+	      <homogeneous>True</homogeneous>
+	      <spacing>0</spacing>
+
+	      <widget>
+		<class>GtkRadioButton</class>
+		<name>prefs_display_gdk</name>
+		<can_focus>True</can_focus>
+		<signal>
+		  <name>toggled</name>
+		  <handler>on_prefs_display_gdk_toggled</handler>
+		  <last_modification_time>Sat, 27 Oct 2001 13:15:51 GMT</last_modification_time>
+		</signal>
+		<label>GDK</label>
+		<active>False</active>
+		<draw_indicator>True</draw_indicator>
+		<group>disp_method</group>
+		<child>
+		  <padding>0</padding>
+		  <expand>False</expand>
+		  <fill>False</fill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkRadioButton</class>
+		<name>prefs_display_xv</name>
+		<can_focus>True</can_focus>
+		<signal>
+		  <name>toggled</name>
+		  <handler>on_prefs_display_xv_toggled</handler>
+		  <last_modification_time>Sat, 27 Oct 2001 13:27:31 GMT</last_modification_time>
+		</signal>
+		<label>Xv</label>
+		<active>False</active>
+		<draw_indicator>True</draw_indicator>
+		<group>disp_method</group>
+		<child>
+		  <padding>0</padding>
+		  <expand>False</expand>
+		  <fill>False</fill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkRadioButton</class>
+		<name>prefs_display_auto</name>
+		<can_focus>True</can_focus>
+		<signal>
+		  <name>toggled</name>
+		  <handler>on_prefs_display_auto_toggled</handler>
+		  <last_modification_time>Sat, 27 Oct 2001 13:15:58 GMT</last_modification_time>
+		</signal>
+		<label>AUTO</label>
+		<active>False</active>
+		<draw_indicator>True</draw_indicator>
+		<group>disp_method</group>
+		<child>
+		  <padding>0</padding>
+		  <expand>False</expand>
+		  <fill>False</fill>
+		</child>
+	      </widget>
+	    </widget>
+	  </widget>
+	</widget>
+      </widget>
+
+      <widget>
+	<class>GtkLabel</class>
+	<child_name>Notebook:tab</child_name>
+	<name>label50</name>
+	<label>Overlay</label>
+	<justify>GTK_JUSTIFY_CENTER</justify>
+	<wrap>False</wrap>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator1</name>
+      <child>
+	<padding>0</padding>
+	<expand>True</expand>
+	<fill>True</fill>
+      </child>
+    </widget>
+
+    <widget>
+      <class>GtkHBox</class>
+      <name>hbox48</name>
+      <homogeneous>False</homogeneous>
+      <spacing>0</spacing>
+      <child>
+	<padding>6</padding>
+	<expand>False</expand>
+	<fill>True</fill>
+      </child>
+
+      <widget>
+	<class>GtkButton</class>
+	<name>prefs_save_button</name>
+	<border_width>6</border_width>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>clicked</name>
+	  <handler>on_prefs_save_button_clicked</handler>
+	  <last_modification_time>Mon, 29 Oct 2001 09:00:06 GMT</last_modification_time>
+	</signal>
+	<stock_button>GNOME_STOCK_BUTTON_APPLY</stock_button>
+	<relief>GTK_RELIEF_NORMAL</relief>
+	<child>
+	  <padding>0</padding>
+	  <expand>True</expand>
+	  <fill>False</fill>
+	</child>
+      </widget>
+
+      <widget>
+	<class>GtkButton</class>
+	<name>prefs_close_button</name>
+	<border_width>6</border_width>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>clicked</name>
+	  <handler>on_prefs_close_button_clicked</handler>
+	  <last_modification_time>Mon, 29 Oct 2001 09:00:11 GMT</last_modification_time>
+	</signal>
+	<stock_button>GNOME_STOCK_BUTTON_CLOSE</stock_button>
+	<relief>GTK_RELIEF_NORMAL</relief>
+	<child>
+	  <padding>0</padding>
+	  <expand>True</expand>
+	  <fill>False</fill>
+	</child>
+      </widget>
+    </widget>
   </widget>
 </widget>
 

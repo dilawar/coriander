@@ -21,20 +21,25 @@
 #endif
 
 #include <gnome.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <string.h>
 #include "update_frames.h"
 #include "support.h"
 #include "build_menus.h"
 #include "definitions.h"
+#include "preferences.h"
 #include "tools.h"
 #include "capture.h"
 #include "build_ranges.h"
-#include <string.h>
 #include <libdc1394/dc1394_control.h>
 #include "raw1394support.h"
 
 extern GtkWidget *commander_window;
 extern GtkWidget *status_window;
 extern GtkWidget *capture_window;
+extern GtkWidget *preferences_window;
 extern dc1394_miscinfo *misc_info;
 extern dc1394_feature_set *feature_set;
 extern CtxtInfo ctxt;
@@ -44,6 +49,84 @@ extern char* phy_delay_list[4];
 extern char* power_class_list[8];
 extern SelfIdPacket_t *selfid;
 extern capture_info ci;
+extern PrefsInfo preferences; 
+
+void
+UpdatePrefsUpdateFrame(void)
+{
+
+}
+
+
+void
+UpdatePrefsDisplayFrame(void)
+{
+  struct stat statstruct;
+  int video_ok=0;
+
+  // DISPLAY =====
+
+  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_display_gdk"),TRUE);// GDK always available  
+#ifdef HAVE_X11_EXTENSIONS_XVLIB_H
+  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_display_xv"),TRUE);
+  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_display_auto"),TRUE);
+  switch (preferences.display_method)
+    {
+    case DISPLAY_METHOD_GDK:
+      gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(preferences_window,"prefs_display_gdk"),TRUE);
+      break;
+    case DISPLAY_METHOD_XV:
+      gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(preferences_window,"prefs_display_xv"),TRUE);
+      break;
+    case DISPLAY_METHOD_AUTO:
+      gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(preferences_window,"prefs_display_auto"),TRUE);
+      break;
+    }
+#else
+  // XV is not available. we force the use of GDK.
+  preferences.display_method==DISPLAY_METHOD_GDK;
+  gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(preferences_window,"prefs_display_gdk"), TRUE);
+  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_display_auto"),FALSE);
+  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_display_xv"),FALSE);
+#endif
+
+
+  // CAPTURE =====
+
+  // blank sensitiveness
+  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_capture_raw1394"),TRUE);// RAW1394 always available
+
+  if(stat("/dev/video1394",&statstruct)==0)
+    {
+      // the device is there, check RW permissions
+      if ((statstruct.st_mode&&S_IRUSR)&&(statstruct.st_mode&&S_IWUSR))
+	{
+	  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_capture_video1394"),TRUE);
+	  video_ok=1;
+	}
+      else
+	preferences.receive_method=RECEIVE_METHOD_RAW1394;
+    }
+
+  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_capture_video1394"),video_ok);
+  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_capture_auto"),video_ok);
+
+  switch (preferences.receive_method)
+    {
+    case RECEIVE_METHOD_VIDEO1394:
+      gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(preferences_window,"prefs_capture_video1394"),TRUE);
+      break;
+    case RECEIVE_METHOD_RAW1394:
+      gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(preferences_window,"prefs_capture_raw1394"),TRUE);
+      break;
+    case RECEIVE_METHOD_AUTO:
+      gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(preferences_window,"prefs_capture_auto"),TRUE);
+      break;
+    }
+
+  // REM: automatic changes done to the config should be saved to .coriander
+  WriteConfigFile();
+}
 
 void
 UpdateCameraFrame(void)
@@ -249,7 +332,17 @@ UpdateFTPFrame(void)
 
   GtkWidget *window = gtk_widget_get_toplevel(lookup_widget(capture_window,"checkbutton_capture_ftp"));
 
+
+#ifdef HAVE_FTPLIB
+
   ci.ftp_enable = gtk_toggle_button_get_active((GtkToggleButton *)(lookup_widget(window,"checkbutton_capture_ftp")));
+
+#else
+
+  ci.ftp_enable = 0;
+  gtk_widget_set_sensitive( lookup_widget(window, "checkbutton_capture_ftp"), 0);
+
+#endif
 
   gtk_widget_set_sensitive( lookup_widget(window, "entry_capture_ftp_address"), ci.ftp_enable);
   gtk_widget_set_sensitive( lookup_widget(window, "entry_capture_ftp_path"), ci.ftp_enable);
@@ -259,4 +352,7 @@ UpdateFTPFrame(void)
   gtk_widget_set_sensitive( lookup_widget(window, "label_capture_ftp_path"), ci.ftp_enable);
   gtk_widget_set_sensitive( lookup_widget(window, "label_capture_ftp_user"), ci.ftp_enable);
   gtk_widget_set_sensitive( lookup_widget(window, "label_capture_ftp_passwd"), ci.ftp_enable);
+
+
 }
+

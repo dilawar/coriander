@@ -20,10 +20,13 @@
 #define __DEFINITIONS_H__
 
 #include <libdc1394/dc1394_control.h>
-#define  LOOP_RETRIES          20     // # of tries before timeout, thus timeout is LOOP_RETRIES*LOOP_SLEEP
+#define  LOOP_RETRIES          20     // # of tries before timeout,
+                                      // thus timeout is LOOP_RETRIES*LOOP_SLEEP
 #define  LOOP_SLEEP        500000     // .5 second
-#define  BU                  1000     // definitions for distinguishing the BU and RV scales of
-#define  RV                  2000     //      the FEATURE_WHITE_BALANCE feature
+#define  BU                  1000     // definitions for distinguishing the BU and RV
+#define  RV                  2000     // scales of the FEATURE_WHITE_BALANCE feature
+#define  NO                 FALSE
+#define  YES                 TRUE
 
 
 enum 
@@ -124,11 +127,13 @@ typedef struct _CtxtInfo
 
 typedef struct _PrefsInfo
 {
-  int capure_method;
+  float op_timeout;
+  int auto_update;
+  float auto_update_frequency;
   int display_method;
-  int range_update_interval;
-  int auto_op_timeout;
+  int receive_method;
 
 } PrefsInfo;
 
 #endif
+

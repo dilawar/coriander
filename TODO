@@ -1,7 +1,7 @@
 _______________________________________________________________________________
 
 	                    Open issues for Coriander 0.18 ...
-	   Damien Douxchamps <douxchamps@ieee.org> , October 26, 2001
+	   Damien Douxchamps <douxchamps@ieee.org> , October 29, 2001
 _______________________________________________________________________________
 
 - video:
@@ -12,16 +12,17 @@ _______________________________________________________________________________
 	- control-lock function for stereo cameras
 	- indicate node number in menu (else you can't distinguish two cameras
 	  of the same model)
+	- give a different channel number to each camera.
 - features:
-	- add FORMAT_6 capabilities  
-	- save/load setup file
-	- add auto-lock, man-lock and setup-lock functions
-	- hot plug capability (-> detect and handle bus reset)
+	- add FORMAT_6 capabilities
+	- add auto-lock, man-lock and current-setup-lock functions
+	- hot plug capability (detect and handle bus reset)
 	- some status window features missing
 - misc stuff:
 	- add some artwork in the buttons for clearer presentation
 - long term:
 	- add advanced features capability. This would probably require a
-	  DB of the supported cameras
+	  DB of the supported cameras (Is there any cam supporting this
+	  anyway?)
 	- record and play 'scenario' files (files containing a list of
 	  timed commands)

@@ -52,6 +52,14 @@ UpdateFormat7Window(void)
 }
 
 void
+UpdatePreferencesWindow(void)
+{
+  UpdatePrefsDisplayFrame();
+  UpdatePrefsUpdateFrame();     
+  UpdatePrefsRanges();
+}
+
+void
 UpdateCommanderWindow(void)
 {
   UpdateCameraFrame();
@@ -60,7 +68,6 @@ UpdateCommanderWindow(void)
   UpdatePowerFrame();
   UpdateMemoryFrame();
   UpdateFormatMenu();
-
 }
 
 void
@@ -70,7 +77,6 @@ UpdatePortholeWindow(void)
   UpdateRange(porthole_window, FEATURE_PAN);
   UpdateRange(porthole_window, FEATURE_TILT);
   UpdateRange(porthole_window, FEATURE_ZOOM);
-
 }
 
 void
@@ -82,7 +88,6 @@ UpdateColorWindow(void)
   UpdateRange(color_window, FEATURE_HUE);
   UpdateRange(color_window, FEATURE_WHITE_BALANCE);
   UpdateRange(color_window, FEATURE_SHARPNESS);
-
 }
 
 void
@@ -93,14 +98,12 @@ UpdateApertureWindow(void)
   UpdateRange(aperture_window, FEATURE_SHUTTER);
   UpdateRange(aperture_window, FEATURE_GAIN);
   UpdateRange(aperture_window, FEATURE_OPTICAL_FILTER);
-
 }
 
 void
 UpdateTemperatureWindow(void)
 {
   UpdateRange(temperature_window, FEATURE_TEMPERATURE);
-
 }
 
 void
@@ -119,12 +122,12 @@ UpdateCaptureWindow(void)
   UpdateCaptureFrame();
   UpdateIsoFrame();
   UpdateFTPFrame();
-
 }
 
 void
 UpdateAllWindows(void)
 {
+  UpdatePreferencesWindow();
   UpdatePortholeWindow();
   UpdateColorWindow();
   UpdateApertureWindow();
@@ -132,7 +135,6 @@ UpdateAllWindows(void)
   UpdateTemperatureWindow();
   UpdateStatusWindow();
   UpdateCommanderWindow();
-
 }
 
 

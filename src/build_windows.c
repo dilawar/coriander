@@ -28,6 +28,7 @@
 #include "build_ranges.h"
 #include "build_frames.h"
 #include "build_windows.h"
+#include "preferences.h"
 #include "definitions.h"
 #include <libdc1394/dc1394_control.h>
 
@@ -35,15 +36,22 @@ extern GtkWidget *porthole_window;
 extern GtkWidget *color_window;
 extern GtkWidget *aperture_window;
 extern GtkWidget *capture_window;
+extern GtkWidget *preferences_window;
 extern GtkWidget *temperature_window;
 extern GtkWidget *status_window;
 extern UIInfo *uiinfo;
 
 void
+BuildPreferencesWindow(void)
+{
+  LoadConfigFile();
+  BuildPrefsRanges();
+}
+
+void
 BuildFormat7Window(void)
 {
   BuildFormat7ModeFrame();
-
 }
 
 void
@@ -55,7 +63,6 @@ BuildColorWindow(void)
   BuildRange(color_window, FEATURE_HUE);
   BuildRange(color_window, FEATURE_WHITE_BALANCE);
   BuildRange(color_window, FEATURE_SHARPNESS);
-
 }
 
 void
@@ -67,7 +74,6 @@ BuildPortholeWindow(void)
   BuildRange(porthole_window, FEATURE_ZOOM);
 
   uiinfo->overlay_power=0;
-
 }
 
 void
@@ -78,7 +84,6 @@ BuildApertureWindow(void)
   BuildRange(aperture_window, FEATURE_SHUTTER);
   BuildRange(aperture_window, FEATURE_GAIN);
   BuildRange(aperture_window, FEATURE_OPTICAL_FILTER);
-
 }
 
 void
@@ -89,7 +94,6 @@ BuildCommanderWindow(void)
   BuildIsoFrame();
   BuildCameraFrame();
   BuildMemoryFrame();
-
 }
 
 void
@@ -98,14 +102,12 @@ BuildCaptureWindow(void)
   BuildCaptureFrame();
   BuildRange(capture_window, FEATURE_CAPTURE_SIZE);
   BuildRange(capture_window, FEATURE_CAPTURE_QUALITY);
-
 }
 
 void
 BuildTemperatureWindow(void)
 {
   BuildRange(temperature_window, FEATURE_TEMPERATURE);
-
 }
 
 void
@@ -118,6 +120,7 @@ BuildStatusWindow(void)
 void
 BuildAllWindows(void)
 {
+  BuildPreferencesWindow();
   BuildCommanderWindow();
   BuildPortholeWindow();
   BuildColorWindow();
@@ -126,5 +129,4 @@ BuildAllWindows(void)
   BuildTemperatureWindow();
   BuildFormat7Window();
   BuildStatusWindow();
-
 }

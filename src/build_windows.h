@@ -18,8 +18,12 @@
 
 #ifndef __BUILDWINDOWS_H__
 #define __BUILDWINDOWS_H__
+
 void
 BuildFormat7Window(void);
+
+void
+BuildPreferencesWindow(void);
 
 void
 BuildColorWindow(void);

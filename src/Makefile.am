@@ -27,7 +27,8 @@ coriander_SOURCES = \
 	callback_proc.c callback_proc.h \
 	conversions.c conversions.h \
 	capture.c capture.h \
-	topology.c topology.h
+	topology.c topology.h \
+	preferences.c preferences.h
 
 coriander_LDADD = $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(INTLLIBS) $(PTHREAD_LIB) \
 	$(XV_LIB) $(FTP_LIB) -ldc1394_control -lraw1394 -lgthread

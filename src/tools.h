@@ -53,7 +53,4 @@ MainStatus(const char *string);
 void
 MessageBox( gchar *message);
 
-void
-UpdateIdler(void);
-
 #endif

@@ -18,6 +18,11 @@
 
 #ifndef __UPDATEFRAMES_H__
 #define __UPDATEFRAMES_H__
+void
+UpdatePrefsUpdateFrame(void);
+
+void
+UpdatePrefsDisplayFrame(void);
 
 void
 UpdateCameraFrame(void);

@@ -45,28 +45,34 @@ extern unsigned char g_rgb_buffer[640*480*3];
 extern dc1394_cameracapture g_single_capture;
 extern gchar g_filename[256];
 extern gchar g_ext[256];
+extern PrefsInfo preferences; 
 
 void OpRangeProcedure(GtkButton* widget, int feature)
 {
-  int err, timeout;
+  int err;
+  float timeout_bin=0;
+  float step;
   dc1394bool_t value=TRUE;
-  timeout=LOOP_RETRIES;
+
+  step=1.0/preferences.auto_update_frequency;
+
   err=dc1394_start_one_push_operation(camera->handle, camera->id, feature);
   if (!err) MainError("Could not start one-push operation");
   else
     {
       gtk_widget_set_sensitive(GTK_WIDGET (widget), FALSE);
-      while ( value & (timeout>0) )
+      while ( value && (timeout_bin<preferences.op_timeout) )
 	{
-	  usleep(LOOP_SLEEP);
+	  sleep(step);
 	  err=dc1394_is_one_push_in_operation(camera->handle, camera->id, feature, &value);
 	  if (!err) MainError("Could not query one-push operation");
-	  // the next line is not working: only the last update occurs
-	  UpdateRangeValue(GTK_WIDGET (widget),feature);
-	  timeout--;
+	  // the next line is not working: only the last update occurs (this is a Sony bug...)
+	  if (preferences.auto_update)
+	    UpdateRangeValue(GTK_WIDGET (widget),feature);
+	  timeout_bin+=step;
 	}
-      if (timeout==0)
-	MainError("One-Push function timed-out!\n");
+      if (timeout_bin>=preferences.op_timeout)
+	MainStatus("One-Push function timed-out!\n");
       gtk_widget_set_sensitive(GTK_WIDGET (widget),TRUE);
     }
 }

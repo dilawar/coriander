@@ -26,6 +26,9 @@ void
 UpdateCommanderWindow(void);
 
 void
+UpdatePreferencesWindow(void);
+
+void
 UpdatePortholeWindow(void);
 
 void

@@ -41,12 +41,11 @@ GtkWidget *porthole_window;
 GtkWidget *color_window;
 GtkWidget *status_window;
 GtkWidget *aperture_window;
-GtkWidget *file_selector_window;
-GtkWidget *configure_window;
 GtkWidget *about_window;
 GtkWidget *capture_window;
 GtkWidget *temperature_window;
 GtkWidget *format7_window;
+GtkWidget *preferences_window;
 
 dc1394_camerainfo *camera;
 dc1394_camerainfo *cameras;
@@ -65,6 +64,7 @@ StatusInfo *statusinfo;
 CtxtInfo ctxt;
 SelfIdPacket_t *selfid;
 SelfIdPacket_t *selfids;
+PrefsInfo preferences;
 
 int camera_num;
 int current_camera;
@@ -133,6 +133,7 @@ main (int argc, char *argv[])
   // Create the permanent control windows.
   // (note BTW that other windows like 'file_selector' are created
   //  and destroyed on purpose while the following windows always exist.)
+  preferences_window= create_preferences_window();
   commander_window = create_commander_window();
   porthole_window = create_porthole_window();
   color_window = create_color_window();

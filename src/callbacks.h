@@ -675,3 +675,50 @@ on_radiobutton_capture_mode_over_clicked
 void
 on_checkbutton_capture_ftp_toggled     (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
+
+void
+on_prefs_update_power_toggled          (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_prefs_capture_raw1394_toggled       (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_prefs_capture_video1394_toggled     (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_prefs_capture_auto_toggled          (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_prefs_display_gdk_toggled           (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_prefs_display_xv_toggled            (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_prefs_display_auto_toggled          (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_preferences_window_activate         (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_prefs_save_button_clicked           (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_prefs_close_button_clicked          (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_prefs_update_value_changed          (GtkAdjustment    *adj,
+					gpointer         user_data);
+void
+on_prefs_timeout_value_changed         (GtkAdjustment    *adj,
+					gpointer         user_data);

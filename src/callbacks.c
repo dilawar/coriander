@@ -27,17 +27,19 @@
 #include "support.h"
 #include "build_menus.h"
 #include "update_frames.h"
+#include "update_ranges.h"
 #include "build_windows.h"
 #include "update_windows.h"
 #include "definitions.h"
+#include "preferences.h"
 #include "capture.h"
 #include "callback_proc.h"
 #include "tools.h"
 #include <libdc1394/dc1394_control.h>
 
-#define EEPROM_CNFG 0xF00U
-#define TEST_CNFG 0xF04U
-#define CCR_BASE  0xFFFFF0F00000ULL
+#define EEPROM_CNFG       0xF00U
+#define TEST_CNFG         0xF04U
+#define CCR_BASE          0xFFFFF0F00000ULL
 
 extern GtkWidget *capture_window;
 extern GtkWidget *format7_window;
@@ -46,6 +48,7 @@ extern GtkWidget *temperature_window;
 extern GtkWidget *about_window;
 extern GtkWidget *commander_window;
 extern GtkWidget *aperture_window;
+extern GtkWidget *preferences_window;
 extern GtkWidget *color_window;
 extern GtkWidget *porthole_window;
 extern dc1394_camerainfo *camera;
@@ -65,6 +68,7 @@ extern porthole_info pi;
 extern capture_info ci;
 extern isothread_info it;
 extern guint gCaptureIdleID;
+extern PrefsInfo preferences; 
 
 gboolean
 on_commander_window_delete_event       (GtkWidget       *widget,
@@ -81,38 +85,6 @@ on_file_activate                       (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
   // function intentionnaly left almost blank: intermediate menu
-}
-
-
-void
-on_load_setup_activate                 (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-  GtkWidget *dialog = create_file_selector_window();
-  gtk_window_set_title (GTK_WINDOW (dialog), "Select a setup file to load...");
-  gtk_widget_show(dialog);
-
-  // to be continued...
-}
-
-
-void
-on_save_setup_activate                 (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-  // TO BE FILLED
-}
-
-
-void
-on_save_setup_as_activate              (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-  GtkWidget *dialog = create_file_selector_window();
-  gtk_window_set_title (GTK_WINDOW (dialog), "Save setup as...");
-  gtk_widget_show(dialog);
-
-  // to be continued...
 }
 
 
@@ -1315,13 +1287,6 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
     }
 }
 
-void
-on_preferences_activate                (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-  // FUTURE FEATURE
-}
-
 
 void
 on_format6_window_activate             (GtkMenuItem     *menuitem,
@@ -1482,26 +1447,23 @@ on_test_pattern_activate               (GtkMenuItem     *menuitem,
 
 
 void
-on_radiobutton_capture_freq_immediate_clicked
-                                        (GtkButton       *button,
-                                        gpointer         user_data)
+on_radiobutton_capture_freq_immediate_clicked(GtkButton       *button,
+					      gpointer         user_data)
 {
   ci.frequency = CAPTURE_FREQ_IMMEDIATE;
 }
 
 
 void
-on_radiobutton_capture_freq_periodioc_clicked
-                                        (GtkButton       *button,
-                                        gpointer         user_data)
+on_radiobutton_capture_freq_periodioc_clicked(GtkButton       *button,
+					      gpointer         user_data)
 {
   ci.frequency = CAPTURE_FREQ_PERIODIC;
 }
 
 
 void
-on_radiobutton_capture_mode_seq_clicked
-                                        (GtkButton       *button,
+on_radiobutton_capture_mode_seq_clicked(GtkButton       *button,
                                         gpointer         user_data)
 {
   ci.mode = CAPTURE_MODE_SEQUENTIAL;
@@ -1509,9 +1471,8 @@ on_radiobutton_capture_mode_seq_clicked
 
 
 void
-on_radiobutton_capture_mode_over_clicked
-                                        (GtkButton       *button,
-                                        gpointer         user_data)
+on_radiobutton_capture_mode_over_clicked(GtkButton       *button,
+					 gpointer         user_data)
 {
   ci.mode = CAPTURE_MODE_OVERWRITE;
 }
@@ -1530,3 +1491,104 @@ on_checkbutton_capture_ftp_toggled     (GtkToggleButton *togglebutton,
 #endif
 }
 
+
+void
+on_prefs_update_power_toggled          (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  preferences.auto_update=togglebutton->active;
+  UpdatePrefsRanges();
+}
+
+
+void
+on_prefs_capture_raw1394_toggled       (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  if (togglebutton->active)
+    preferences.receive_method=RECEIVE_METHOD_RAW1394;
+}
+
+
+void
+on_prefs_capture_video1394_toggled     (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  if (togglebutton->active)
+    preferences.receive_method=RECEIVE_METHOD_VIDEO1394;
+}
+
+
+void
+on_prefs_capture_auto_toggled          (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  if (togglebutton->active)
+    preferences.receive_method=RECEIVE_METHOD_AUTO;
+}
+
+
+void
+on_prefs_display_gdk_toggled           (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  if (togglebutton->active)
+    preferences.display_method=DISPLAY_METHOD_GDK;
+}
+
+
+void
+on_prefs_display_xv_toggled            (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  if (togglebutton->active)
+    preferences.display_method=DISPLAY_METHOD_XV;
+}
+
+
+void
+on_prefs_display_auto_toggled          (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  if (togglebutton->active)
+    preferences.display_method=DISPLAY_METHOD_AUTO;
+}
+
+
+void
+on_preferences_window_activate         (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+  gtk_widget_show(preferences_window);
+}
+
+
+void
+on_prefs_save_button_clicked           (GtkButton       *button,
+                                        gpointer         user_data)
+{
+  WriteConfigFile();
+}
+
+
+void
+on_prefs_close_button_clicked          (GtkButton       *button,
+                                        gpointer         user_data)
+{
+  gtk_widget_hide(preferences_window);
+}
+
+void
+on_prefs_update_value_changed( GtkAdjustment    *adj,
+			       gpointer         user_data)
+{
+  preferences.auto_update_frequency=adj->value;
+}
+
+
+void
+on_prefs_timeout_value_changed( GtkAdjustment    *adj,
+			       gpointer         user_data)
+{
+  preferences.op_timeout=adj->value;
+}

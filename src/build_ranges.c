@@ -24,6 +24,7 @@
 #include "callbacks.h"
 #include "support.h"
 #include "definitions.h"
+#include "preferences.h"
 #include "update_ranges.h"
 #include "build_ranges.h"
 #include <libdc1394/dc1394_control.h>
@@ -31,6 +32,7 @@
 
 extern dc1394_feature_set *feature_set;
 extern GtkWidget *format7_window;
+extern GtkWidget *preferences_window;
 extern Format7Info *format7_info;
 extern char* feature_op_list[NUM_FEATURES];
 extern char* feature_frame_list[NUM_FEATURES];
@@ -125,5 +127,21 @@ BuildFormat7Ranges(void)
   adjustment_sy=(GtkAdjustment*)gtk_adjustment_new(info->size_y,1,info->max_size_y-info->pos_y,1,info->step_y,0);
   gtk_range_set_adjustment((GtkRange*)lookup_widget(format7_window, "format7_vsize_scale"),adjustment_sy);
   gtk_signal_connect(GTK_OBJECT (adjustment_sy), "value_changed", GTK_SIGNAL_FUNC (on_format7_value_changed), (int*) FORMAT7_SIZE_Y);
+
+}
+
+
+void
+BuildPrefsRanges(void)
+{
+  GtkAdjustment  *adj_update, *adj_timeout;
+
+  adj_update=(GtkAdjustment*)gtk_adjustment_new(.1,.1,20,.1,2,0);
+  gtk_range_set_adjustment((GtkRange*)lookup_widget(preferences_window, "prefs_update_scale"),adj_update);
+  gtk_signal_connect(GTK_OBJECT (adj_update), "value_changed", GTK_SIGNAL_FUNC (on_prefs_update_value_changed), NULL);
+
+  adj_timeout=(GtkAdjustment*)gtk_adjustment_new(.1,.1,100,.1,5,0);
+  gtk_range_set_adjustment((GtkRange*)lookup_widget(preferences_window, "prefs_timeout_scale"),adj_timeout);
+  gtk_signal_connect(GTK_OBJECT (adj_timeout), "value_changed", GTK_SIGNAL_FUNC (on_prefs_timeout_value_changed), NULL);
 
 }

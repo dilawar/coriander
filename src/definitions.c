@@ -317,3 +317,19 @@ const char * format7_list[8]= {
   "f7_mode6",
   "f7_mode7"
 };
+
+const char * preferences_features[5]= {
+  "ONE_PUSH_TIMEOUT",
+  "AUTO_UPDATE",
+  "AUTO_UPDATE_FREQUENCY",
+  "DISPLAY_METHOD",
+  "RECEIVE_METHOD"
+};
+
+const char * preferences_defaults[5]= {
+  "10",
+  "NO",
+  "10",
+  "AUTO",
+  "AUTO"
+};

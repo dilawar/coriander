@@ -45,12 +45,14 @@
 
 typedef enum
 {
+  RECEIVE_METHOD_AUTO=0,
   RECEIVE_METHOD_RAW1394,
   RECEIVE_METHOD_VIDEO1394
 } receive_method_t;
 
 typedef enum
 {
+  DISPLAY_METHOD_AUTO=0,
   DISPLAY_METHOD_XV,
   DISPLAY_METHOD_GDK
 } display_method_t;
@@ -144,13 +146,7 @@ typedef struct
   gchar                  *ftp_passwd;
   
 } capture_info;
-/*
-void
-convert_to_yuv( dc1394_cameracapture *capture, unsigned char *src, unsigned char *dest, int mode);
 
-void
-convert_to_rgb( dc1394_cameracapture *capture, unsigned char *src, unsigned char *dest, int mode);
-*/
 gint
 IsoStartThread(void);
 

@@ -31,8 +31,10 @@ extern char* feature_scale_list[NUM_FEATURES];
 extern char* feature_man_list[NUM_FEATURES];
 extern char* feature_auto_list[NUM_FEATURES];
 extern char* feature_power_list[NUM_FEATURES];
+extern GtkWidget *preferences_window;
 extern dc1394_camerainfo *camera;
 extern dc1394_feature_set *feature_set;
+extern PrefsInfo preferences;
 
 
 void
@@ -128,5 +130,20 @@ UpdateRangeValue(GtkWidget* widget, int feature)
 	    }
       }
     }
+
+}
+
+
+void
+UpdatePrefsRanges(void)
+{
+  GtkAdjustment* adj;
+  adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(preferences_window, "prefs_timeout_scale")));
+  gtk_adjustment_set_value(adj, preferences.op_timeout);
+
+  adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(preferences_window, "prefs_update_scale")));
+  gtk_adjustment_set_value(adj, preferences.auto_update_frequency);
+
+  gtk_widget_set_sensitive(lookup_widget(preferences_window, "prefs_update_scale"),preferences.auto_update);
 
 }

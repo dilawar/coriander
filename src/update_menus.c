@@ -44,12 +44,6 @@ void UpdateFormatMenu(void)
   int err,i;
   quadlet_t modes, formats;
 
-  // disable things that are not ready yet:
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"load_setup"), 0  );// it's not ready yet.
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"save_setup"), 0  );// it's not ready yet.
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"save_setup_as"), 0  );// it's not ready yet.
-  gtk_widget_set_sensitive(lookup_widget(commander_window,"preferences"), 0  );// it's not ready yet.
-
   err= dc1394_query_supported_formats(camera->handle, camera->id, &formats);
   if (!err)
     {

@@ -296,13 +296,4 @@ void MessageBox( gchar *message)
   gtk_grab_add (dialog_window);
 }
 
-void
-UpdateIdler(void)
-{
-  // grab latest camera info
-  // - ranges
-  // - basic capabilities
-
-  // update all windows
-}
 

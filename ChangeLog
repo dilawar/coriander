@@ -1,5 +1,13 @@
 Coriander, (c) 2000-2001 Damien Douxchamps <douxchamps@ieee.org>
 
+Changes towards version 0.19:
+	
+    Oct 29, by Damien Douxchamps:
+    - little cleanup/update of threads
+    - first implementation of the preferences window. Use of a config
+      file (~/.coriander).
+    - removed unused items in menus like file saving.
+	
 Changes in version 0.18:
 
     Oct 26, by Damien Douxchamps:

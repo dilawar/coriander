@@ -24,17 +24,17 @@ switched off).
 				**********
 
 IMPORTANT NOTE: Coriander will NOT work with consumer-grade DV
-cameras(e.g. cameras in which you can insert a tape). These cameras
+cameras (e.g. cameras in which you can insert a tape). These cameras
 should be controlled with he AV/C protocol, please refer to [8]. Also,
 not all industrial cameras are DC specs-compliant. Check [7] to have a
 list of currently supported cameras.
 
 				**********
 
-Most image processing scientists using 1394 cameras under linux know
+Most image processing scientists using 1394 cameras under Linux know
 about the libdc1394 library [2]. However, it's a real problem when you
 need to quickly setup a demo or get some frames for testing. If, just
-like me, you also have this problem, Coriander is for you [4]!
+like me, you also had this problem, Coriander is for you [4]!
 
 This version can be considered as 'stable but with room for
 improvements'. Please have a look at the TODO, ChangeLog and BUGS

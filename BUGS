@@ -1,17 +1,11 @@
-Things that are still under heavy development (if developed at all):
-
-- load/save setups on disk
-- format7
-- format6
-- lock the controls of 2 cameras (stereo lock)
-- all auto/man/lock
-
 Known bugs:
 
 - The Sony DFW-VL500 has several bugs in its early software versions. This is
-  mentionned in the camera user's manual. These bugs are:
+  mentionned in the camera user's manual (which is not supplied with the
+  camera!). These bugs are:
         - whitebal controls only work when a previous 'load factory setup' has
           been done
         - the RESET function is not working
 	- saving setups is not fully working
-- The test pattern generation is only working with some cameras. 
+- The test pattern generation is only working with some cameras.
+- FTP was reported not to be working. 'Have to do more testing on that.

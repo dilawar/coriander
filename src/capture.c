@@ -59,6 +59,7 @@ extern dc1394_miscinfo *misc_info;
 extern dc1394_camerainfo *camera;
 extern Format7Info *format7_info;
 extern GtkWidget *porthole_window;
+extern PrefsInfo preferences; 
 
 static inline void
 //void
@@ -163,8 +164,8 @@ gint IsoStartThread(void)
 
   if (activity.isothread==0)
     {
-      pthread_mutex_init(&(activity.mutex_capture), NULL);
-      pthread_mutex_lock(&(activity.mutex_capture));
+      pthread_mutex_init(&activity.mutex_capture, NULL);
+      pthread_mutex_lock(&activity.mutex_capture);
 
       /* currently FORMAT_STILL_IMAGE is not supported*/
       if (misc_info->format == FORMAT_STILL_IMAGE)
@@ -186,16 +187,26 @@ gint IsoStartThread(void)
 	case 2: maxspeed=SPEED_400;break;
 	default: maxspeed=SPEED_100;break;
 	}
-      
-      if (dc1394_dma_setup_capture( camera->handle, camera->id, misc_info->iso_channel, 
-				    misc_info->format, misc_info->mode, maxspeed,
-				    misc_info->framerate, DMA_BUFFERS, capture)
-	  == DC1394_SUCCESS)
+
+      switch(preferences.receive_method)
 	{
-	  it.receive_method=RECEIVE_METHOD_VIDEO1394;
-	}
-      else 
-	{
+	case RECEIVE_METHOD_VIDEO1394:
+	  if (dc1394_dma_setup_capture(camera->handle, camera->id, misc_info->iso_channel, 
+					misc_info->format, misc_info->mode, maxspeed,
+					misc_info->framerate, DMA_BUFFERS, capture)
+	      == DC1394_SUCCESS)
+	    {
+	      it.receive_method=RECEIVE_METHOD_VIDEO1394;
+	    }
+	  else
+	    {
+	      MainError("Can't use VIDEO1394. Try AUTO receive mode.");
+	      raw1394_destroy_handle(it.handle);
+	      pthread_mutex_unlock(&(activity.mutex_capture));
+	      return(-1);
+	    }
+	  break;
+	case RECEIVE_METHOD_RAW1394:
 	  if ((g_single_capture.capture_buffer == NULL) &&
 	      (dc1394_setup_capture(camera->handle, camera->id, misc_info->iso_channel, 
 				    misc_info->format, misc_info->mode, maxspeed,
@@ -206,42 +217,69 @@ gint IsoStartThread(void)
 	    }
 	  else
 	    {
+	      MainError("Can't use RAW1394. Try AUTO receive mode.");
 	      raw1394_destroy_handle(it.handle);
 	      pthread_mutex_unlock(&(activity.mutex_capture));
 	      return(-1);
 	    }
-    
+	  break;
+	case RECEIVE_METHOD_AUTO:
+	  if (dc1394_dma_setup_capture(camera->handle, camera->id, misc_info->iso_channel, 
+					misc_info->format, misc_info->mode, maxspeed,
+					misc_info->framerate, DMA_BUFFERS, capture)
+	      == DC1394_SUCCESS)
+	    {
+	      it.receive_method=RECEIVE_METHOD_VIDEO1394;
+	    }
+	  else
+	    if ((g_single_capture.capture_buffer == NULL) &&
+		(dc1394_setup_capture(camera->handle, camera->id, misc_info->iso_channel, 
+				      misc_info->format, misc_info->mode, maxspeed,
+				      misc_info->framerate, capture)
+		 == DC1394_SUCCESS))
+	      {
+		it.receive_method=RECEIVE_METHOD_RAW1394;
+	      }
+	    else
+	      {
+		MainError("Can't find receive method.");
+		raw1394_destroy_handle(it.handle);
+		pthread_mutex_unlock(&activity.mutex_capture);
+		return(-1);
+	      }
 	}
+	  
+    
       if (dc1394_start_iso_transmission(camera->handle,camera->id)==DC1394_FAILURE)
 	{
 	  MainError("Could not start ISO transmission");
-	  pthread_mutex_unlock(&(activity.mutex_capture));
+	  pthread_mutex_unlock(&activity.mutex_capture);
 	  return(-1);
 	}
       else
-	if (!pthread_create(&it.thread, NULL, IsoReceiveThread, NULL))
+	if (!pthread_create(&it.thread, NULL, IsoReceiveThread,(void*) NULL))
 	  {
 	    activity.isothread=1;
 	    misc_info->is_iso_on=DC1394_TRUE;
-	    //fprintf(stderr,"ISO Receive Thread created...\n");
 	  }
 	else
 	  {
 	    misc_info->is_iso_on=DC1394_FALSE;
-	    pthread_mutex_unlock(&(activity.mutex_capture));
+	    pthread_mutex_unlock(&activity.mutex_capture);
 	    return(-1);
 	  }
-      pthread_mutex_unlock(&(activity.mutex_capture));
+      pthread_mutex_unlock(&activity.mutex_capture);
     }
 
   return (1);
 }
 
-void* IsoReceiveThreadCleanup(void* arg)
+void* IsoReceiveThreadCleanup(void* arg) 
 {
   if (it.receive_method == RECEIVE_METHOD_RAW1394)
     dc1394_dma_done_with_buffer(capture);
-  pthread_mutex_unlock(&(activity.mutex_capture));
+  pthread_mutex_unlock(&activity.mutex_capture);
+
 }
 
 void* IsoReceiveThread(void* arg)
@@ -252,8 +290,8 @@ void* IsoReceiveThread(void* arg)
   while (1)
     {
       pthread_testcancel();
-      pthread_cleanup_push(IsoReceiveThreadCleanup, NULL);
-      pthread_mutex_lock(&(activity.mutex_capture));
+      pthread_cleanup_push((void*)IsoReceiveThreadCleanup, NULL);
+      pthread_mutex_lock(&activity.mutex_capture);
       if (it.receive_method == RECEIVE_METHOD_RAW1394)
 	dc1394_single_capture(it.handle, capture);
       else
@@ -262,7 +300,7 @@ void* IsoReceiveThread(void* arg)
 	  dc1394_dma_done_with_buffer(capture);
 	}
       it.buffer_updated=1;
-      pthread_mutex_unlock(&(activity.mutex_capture));
+      pthread_mutex_unlock(&activity.mutex_capture);
       pthread_cleanup_pop(0);
     }
 }
@@ -275,7 +313,7 @@ gint IsoStopThread(void)
       pthread_cancel(it.thread);
       pthread_join(it.thread, NULL);
       activity.isothread=0;
-      pthread_mutex_lock(&(activity.mutex_capture));
+      pthread_mutex_lock(&activity.mutex_capture);
 
       if (it.receive_method == RECEIVE_METHOD_VIDEO1394)
 	{
@@ -288,7 +326,7 @@ gint IsoStopThread(void)
       raw1394_destroy_handle(it.handle);
       it.handle = NULL;
       it.receive_method = RECEIVE_METHOD_RAW1394;
-      pthread_mutex_unlock(&(activity.mutex_capture));
+      pthread_mutex_unlock(&activity.mutex_capture);
     }
 
   return (1);
@@ -300,21 +338,41 @@ PortholeStartThread()
 {
   if (activity.porthole==0)
     {
-      pthread_mutex_init(&(pi.mutex), NULL);
-      pthread_mutex_lock(&(pi.mutex));
-      pthread_mutex_lock(&(activity.mutex_capture));
+      pthread_mutex_init(&pi.mutex, NULL);
+      pthread_mutex_lock(&pi.mutex);
+      pthread_mutex_lock(&activity.mutex_capture);
       pi.gdk_buffer = NULL;
       pi.drawable = (GtkWidget*)lookup_widget(porthole_window, "camera_scope");
 
+      switch(preferences.display_method)
+	{
+	case DISPLAY_METHOD_XV:
 #ifdef HAVE_X11_EXTENSIONS_XVLIB_H
-      if (xvInit())
-	pi.display_method=DISPLAY_METHOD_XV;
-      else
+	  if (xvInit())
+	    pi.display_method=DISPLAY_METHOD_XV;
+	  else
 #endif
-	{ 
-	  pi.display_method=DISPLAY_METHOD_GDK;
-	  gdk_rgb_init();
-	  pi.gdk_buffer=malloc(capture->frame_width * capture->frame_height * 3);
+	    {
+	      MainError("Xv is not available for display. Try GDK or AUTO.");
+	      return(-1);
+	    }
+	  break;
+	case DISPLAY_METHOD_GDK:
+	    pi.display_method=DISPLAY_METHOD_GDK;
+	    gdk_rgb_init();
+	    pi.gdk_buffer=malloc(capture->frame_width * capture->frame_height * 3);
+	    break;
+	case DISPLAY_METHOD_AUTO:
+#ifdef HAVE_X11_EXTENSIONS_XVLIB_H
+	  if (xvInit())
+	    pi.display_method=DISPLAY_METHOD_XV;
+	  else
+#endif
+	    { 
+	      pi.display_method=DISPLAY_METHOD_GDK;
+	      gdk_rgb_init();
+	      pi.gdk_buffer=malloc(capture->frame_width * capture->frame_height * 3);
+	    }
 	}
   
       gtk_widget_set_usize(pi.drawable, capture->frame_width, capture->frame_height);
@@ -323,9 +381,8 @@ PortholeStartThread()
       activity.cancel_display_thread=0;
       pthread_mutex_unlock(&activity.mutex_cancel_display);
 
-      if (!pthread_create(&pi.thread, NULL, PortholeDisplayThread, misc_info->mode))
+      if (!pthread_create(&pi.thread, NULL, PortholeDisplayThread, (void*)misc_info->mode))
 	{
-	  //fprintf(stderr,"  Display Thread created...\n");
 	  activity.porthole=1;
 	}
       pthread_mutex_unlock(&activity.mutex_capture);
@@ -339,7 +396,6 @@ PortholeStartThread()
 void*
 DisplayThreadCleanup(void* arg)
 {
-  //fprintf(stderr,"cleanup display thread\n");
   pthread_mutex_unlock(&(activity.mutex_capture));
   pthread_mutex_unlock(&(pi.mutex));
 }
@@ -356,21 +412,15 @@ PortholeDisplayThread(void* arg)
 
   while (1)
     {
-      //pthread_testcancel();
-      //pthread_cleanup_push(DisplayThreadCleanup, NULL);
-      pthread_mutex_lock(&(pi.mutex));
-      pthread_mutex_lock(&(activity.mutex_capture));
+      pthread_mutex_lock(&pi.mutex);
+      pthread_mutex_lock(&activity.mutex_capture);
       if (it.buffer_updated)
 	{
 #ifdef HAVE_X11_EXTENSIONS_XVLIB_H
 	  if (pi.display_method == DISPLAY_METHOD_XV)
 	    {
 	      convert_to_yuv(capture, (unsigned char *) capture->capture_buffer, pi.xv_image->data, mode);
-	      //fprintf(stderr," YO 4\n");
-	      //sleep(1);
 	      xvPut();
-	      //fprintf(stderr," YO 4b\n");
-	      //sleep(1);
 	    }
 	  else
 #endif
@@ -380,8 +430,6 @@ PortholeDisplayThread(void* arg)
 	    }
 	  it.buffer_updated=0;
 	}
-      //fprintf(stderr," YO 5\n");
-      //sleep(1);
       pthread_mutex_unlock(&activity.mutex_capture);
       pthread_mutex_unlock(&pi.mutex);
       pthread_mutex_lock(&activity.mutex_cancel_display);
@@ -392,8 +440,6 @@ PortholeDisplayThread(void* arg)
 	}
       else
 	pthread_mutex_unlock(&activity.mutex_cancel_display);
-      //pthread_cleanup_pop(0);
-      
     }
 }
 
@@ -403,38 +449,30 @@ PortholeStopThread(void)
 {
 
   if (activity.porthole)
-    { //fprintf(stderr,"  Display Thread cancelling...\n");
+    { 
       pthread_mutex_lock(&activity.mutex_cancel_display);
       activity.cancel_display_thread=1;
       pthread_mutex_unlock(&activity.mutex_cancel_display);
-      //pthread_cancel(pi.thread);
       pthread_join(pi.thread, NULL);
       pthread_mutex_lock(&pi.mutex);
       pthread_mutex_lock(&activity.mutex_capture);
       activity.porthole=0;
 
 #ifdef HAVE_X11_EXTENSIONS_XVLIB_H
-
-      if (pi.xv_image != NULL)
-	{ //fprintf(stderr,"  Display Thread cancelling: Begin XV cleanup...\n");
+      if ((pi.display_method=DISPLAY_METHOD_XV)&&(pi.xv_image != NULL))
+	{ 
 	  XvStopVideo(pi.display, pi.xv_port, pi.window);
-	  //fprintf(stderr,"  Display Thread cancelling: Xv stopped...\n");
 	  XShmDetach(pi.display, &pi.xv_shm_info);
-	  //fprintf(stderr,"  Display Thread cancelling: Xshm detached...\n");
 	  shmdt(pi.xv_shm_info.shmaddr);
-	  //fprintf(stderr,"  Display Thread cancelling: shmdt...\n");
 	  shmctl(pi.xv_shm_info.shmid, IPC_RMID, 0);
-	  //fprintf(stderr,"  Display Thread cancelling: shmctl...\n");
-	  XFree(pi.xv_image);
-	  //fprintf(stderr,"  Display Thread cancelling: XFree...\n");
+	  XFree(pi.xv_image);  
 	}
+      else
 #endif
-      
-      if (pi.gdk_buffer != NULL)
-	free(pi.gdk_buffer);
+	if ((pi.display_method=DISPLAY_METHOD_GDK)&&(pi.gdk_buffer != NULL))
+	  free(pi.gdk_buffer);
       pthread_mutex_unlock(&pi.mutex);
       pthread_mutex_unlock(&activity.mutex_capture);
-      //fprintf(stderr,"  Display Thread cancelled\n");
     }
   return (1);
 }
@@ -468,8 +506,9 @@ gint xvInit(void)
 	{
 	  xv_name[4]=0;
 	  memcpy( xv_name, &formats[j].id, 4);
-	  if ( (misc_info->mode == MODE_640x480_YUV422 || misc_info->mode == MODE_320x240_YUV422) &&
-	       formats[j].id ==  GUID_UYVY_PACKED) 
+	  if (((misc_info->mode == MODE_640x480_YUV422) ||
+	       (misc_info->mode == MODE_320x240_YUV422))
+	       && formats[j].id ==  GUID_UYVY_PACKED) 
 	    {
 	      pi.xv_port = adaptor_info[i].base_id;
 	      pi.xv_format = GUID_UYVY_PACKED;
@@ -490,8 +529,9 @@ gint xvInit(void)
     }
     else
     {
-      pi.xv_image = (XvImage *) XvShmCreateImage( pi.display, pi.xv_port,
-						  pi.xv_format, 0, capture->frame_width, capture->frame_height, &pi.xv_shm_info);
+      pi.xv_image = (XvImage *) XvShmCreateImage(pi.display, pi.xv_port,pi.xv_format, 0,
+						 capture->frame_width, capture->frame_height,
+						 &pi.xv_shm_info);
       pi.xv_shm_info.shmid = shmget( IPC_PRIVATE, pi.xv_image->data_size, IPC_CREAT|0777);
       pi.xv_shm_info.shmaddr = shmat( pi.xv_shm_info.shmid, 0, 0);
       pi.xv_image->data = pi.xv_shm_info.shmaddr;
@@ -510,10 +550,10 @@ gint xvInit(void)
 
 void xvPut(void)
 {
-  XvShmPutImage( pi.display, pi.xv_port, pi.window, pi.xv_gc, pi.xv_image,
-		 0,0, capture->frame_width, capture->frame_height,
-		 0,0, capture->frame_width, capture->frame_height, False);
-  XFlush( pi.display);
+  XvShmPutImage(pi.display, pi.xv_port, pi.window, pi.xv_gc, pi.xv_image,
+		0,0, capture->frame_width, capture->frame_height,
+		0,0, capture->frame_width, capture->frame_height, False);
+  XFlush(pi.display);
 }
 
 #endif
@@ -541,7 +581,8 @@ gboolean capture_single_frame(void)
   
   if (it.handle != NULL)
     {
-      convert_to_rgb( capture, (unsigned char *) capture->capture_buffer, g_rgb_buffer, misc_info->mode);
+      convert_to_rgb( capture, (unsigned char *) capture->capture_buffer,
+		      g_rgb_buffer, misc_info->mode);
       return TRUE;
     
     }
@@ -550,7 +591,8 @@ gboolean capture_single_frame(void)
              misc_info->framerate, &g_single_capture) == DC1394_SUCCESS) 
     {
        dc1394_single_capture( camera->handle, &g_single_capture);
-       convert_to_rgb( &g_single_capture, (unsigned char *) g_single_capture.capture_buffer, g_rgb_buffer, misc_info->mode);
+       convert_to_rgb(&g_single_capture, (unsigned char *) g_single_capture.capture_buffer,
+		      g_rgb_buffer, misc_info->mode);
        dc1394_release_camera(camera->handle, &g_single_capture);
        return TRUE;
      }
@@ -606,24 +648,28 @@ gint capture_idler(gpointer p)
 
   if (ci.mode == CAPTURE_MODE_OVERWRITE || ci.counter < ULONG_MAX) {
     if (it.handle != NULL) { /* get the porthole's buffer */
-      convert_to_rgb( capture, (unsigned char *) capture->capture_buffer, g_rgb_buffer, misc_info->mode);
+      convert_to_rgb(capture, (unsigned char *) capture->capture_buffer, g_rgb_buffer,
+		     misc_info->mode);
     } else {  /* fall back on the distinct raw capturer */
-      dc1394_single_capture( camera->handle, &g_single_capture);
-      convert_to_rgb( &g_single_capture, (unsigned char *) g_single_capture.capture_buffer, g_rgb_buffer, misc_info->mode);
+      dc1394_single_capture(camera->handle, &g_single_capture);
+      convert_to_rgb(&g_single_capture, (unsigned char *) g_single_capture.capture_buffer,
+		     g_rgb_buffer, misc_info->mode);
     }
 
     if (ci.mode == CAPTURE_MODE_SEQUENTIAL)     
     {
-      sprintf( filename_out, "%s_%10.10li%s", g_filename, ci.counter++, g_ext);
-      save_single_frame( filename_out);
+      sprintf(filename_out, "%s_%10.10li%s", g_filename, ci.counter++, g_ext);
+      save_single_frame(filename_out);
       if (ci.ftp_enable)
-        ftp_single_frame( filename_out, ci.ftp_address, ci.ftp_path, filename_out, ci.ftp_user, ci.ftp_passwd);
+        ftp_single_frame(filename_out, ci.ftp_address, ci.ftp_path, filename_out,
+			 ci.ftp_user, ci.ftp_passwd);
     } 
     else
     {
-      save_single_frame( g_filename);
+      save_single_frame(g_filename);
       if (ci.ftp_enable)
-        ftp_single_frame( g_filename, ci.ftp_address, ci.ftp_path, g_filename, ci.ftp_user, ci.ftp_passwd);
+        ftp_single_frame(g_filename, ci.ftp_address, ci.ftp_path, g_filename,
+			 ci.ftp_user, ci.ftp_passwd);
     }
 
     return 1;
@@ -686,52 +732,58 @@ void save_single_frame(gchar *filename)
   if (im != NULL) gdk_imlib_kill_image(im);
 }
 
-gboolean ftp_single_frame(gchar *filename, gchar *host, gchar *path, gchar *dest_filename, gchar *user, gchar *passwd) {
+gboolean ftp_single_frame(gchar *filename, gchar *host, gchar *path,
+			  gchar *dest_filename, gchar *user, gchar *passwd)
+{
 #ifdef HAVE_FTPLIB
-    netbuf *ftp_handle;
-    char  tmp[256];
-    
-    FtpInit();
-    
-    MainStatus("ftp: starting...\n");
-    if (!FtpConnect(host, &ftp_handle)) {
-        MainError("failed to connect to ftp server.");
-        return FALSE;
+  netbuf *ftp_handle;
+  char  tmp[256];
+  
+  FtpInit();
+  
+  MainStatus("ftp: starting...\n");
+  if (!FtpConnect(host, &ftp_handle))
+    {
+      MainError("failed to connect to ftp server.");
+      return FALSE;
     }
-    sprintf(tmp, "ftp: connected to %s", host);
-    MainStatus(tmp);
+  sprintf(tmp, "ftp: connected to %s", host);
+  MainStatus(tmp);
     
-    if (FtpLogin(user, passwd, ftp_handle) != 1) {
-        MainError("ftp: login failed.");
-        return FALSE;
+  if (FtpLogin(user, passwd, ftp_handle) != 1)
+    {
+      MainError("ftp: login failed.");
+      return FALSE;
     }
-    sprintf(tmp, "ftp: logged in as %s", user);
-    MainStatus(tmp);
-    
-    if (path != NULL && strcmp(path,"")) {
+  sprintf(tmp, "ftp: logged in as %s", user);
+  MainStatus(tmp);
+  
+  if (path != NULL && strcmp(path,""))
+    {
       if (!FtpChdir(path, ftp_handle))
-      {
-        MainError("ftp chdir failed");
-        return FALSE;
-      }
+	{
+	  MainError("ftp chdir failed");
+	  return FALSE;
+	}
       sprintf(tmp, "ftp: chdir %s", path);
       MainStatus(tmp);
     }
-    
-    strcpy( tmp, strrchr( dest_filename, '/'));
-
-    if (FtpPut(filename, tmp, FTPLIB_IMAGE, ftp_handle) < 0) {
-        MainError("ftp failed to put file.");
-        return FALSE;
+  
+  strcpy( tmp, strrchr( dest_filename, '/'));
+  
+  if (FtpPut(filename, tmp, FTPLIB_IMAGE, ftp_handle) < 0)
+    {
+      MainError("ftp failed to put file.");
+      return FALSE;
     }
-    sprintf(tmp, "ftp: put %s", tmp);
-    MainStatus(tmp);
-    
-    MainStatus("ftp: done.");
-    
-    FtpQuit(ftp_handle);
-    return TRUE;
+  sprintf(tmp, "ftp: put %s", tmp);
+  MainStatus(tmp);
+  
+  MainStatus("ftp: done.");
+  
+  FtpQuit(ftp_handle);
+  return TRUE;
 #else
-    return FALSE;
+  return FALSE;
 #endif
 }
