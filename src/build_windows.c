@@ -74,8 +74,6 @@ BuildPortholeWindow(void)
   BuildRange(porthole_window, FEATURE_PAN);
   BuildRange(porthole_window, FEATURE_TILT);
   BuildRange(porthole_window, FEATURE_ZOOM);
-
-  uiinfo->overlay_power=0;
 }
 
 void
