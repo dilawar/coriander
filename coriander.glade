@@ -5921,7 +5921,7 @@ V-field:</label>
   <class>GnomeAbout</class>
   <name>about_window</name>
   <modal>True</modal>
-  <logo>coriander_big.xpm</logo>
+  <logo>coriander-big.png</logo>
   <copyright>Copyright 2000-2001 Damien Douxchamps</copyright>
   <authors>Damien Douxchamps &lt;douxchamps@ieee.org&gt;
 Dan Dennedy &lt;dan@dennedy.org&gt;
