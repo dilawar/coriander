@@ -553,7 +553,7 @@ IsoThreadCheckParams(chain_t *iso_service)
 	iso_service->current_buffer->image=NULL;
       }
 
-      iso_service->current_buffer->image=(unsigned char*)malloc(iso_service->current_buffer->bytes_per_frame*sizeof(unsigned char)*10);
+      iso_service->current_buffer->image=(unsigned char*)malloc(iso_service->current_buffer->bytes_per_frame*sizeof(unsigned char));
       //fprintf(stderr,"buffer allocated with size %d at 0x%x for a resolution of %d x %d\n",iso_service->current_buffer->bytes_per_frame,iso_service->current_buffer->image,
       //      iso_service->current_buffer->width,iso_service->current_buffer->height);
 

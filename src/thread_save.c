@@ -202,6 +202,9 @@ SaveThread(void* arg)
       pthread_mutex_lock(&info->mutex_cancel_save);
       if (info->cancel_save_req>0)
 	{
+	  if ((info->save_scratch==SAVE_SCRATCH_SEQUENCE)&&(fd!=NULL)) {
+	    fclose(fd);
+	  }
 	  pthread_mutex_unlock(&info->mutex_cancel_save);
 	  return ((void*)1);
 	}
@@ -240,7 +243,6 @@ SaveThread(void* arg)
 		    if (info->rawdump) {
 		      if (info->save_scratch==SAVE_SCRATCH_SEQUENCE) {
 			fwrite(save_service->current_buffer->image, 1, save_service->current_buffer->bytes_per_frame, fd);
-			fclose(fd);
 		      }
 		      else {
 			Dump2File(filename_out,save_service);
@@ -310,7 +312,7 @@ SaveStopThread(void)
 	free(info->save_buffer);
 	info->save_buffer=NULL;
       }
-      
+            
       /* Mendatory cleanups: */
       pthread_mutex_unlock(&save_service->mutex_struct);
       pthread_mutex_unlock(&save_service->mutex_data);
