@@ -52,48 +52,61 @@ GetFormat7Capabilities(raw1394handle_t handle, nodeid_t node, Format7Info *info)
   int i, f;
   quadlet_t value;
   
-  if (dc1394_query_supported_modes(handle, node, FORMAT_SCALABLE_IMAGE_SIZE, &value)!=DC1394_SUCCESS)
-    MainError("Could not query Format7 supported modes");
+  if (dc1394_query_supported_formats(handle, node, &value)!=DC1394_SUCCESS)
+    MainError("Could not query supported formats");
   else {
-    for (i=0,f=MODE_FORMAT7_MIN;f<=MODE_FORMAT7_MAX;f++,i++) {
-      info->mode[i].present= (value & (0x1<<(31-i)) );
-      if (info->mode[i].present) { // check for mode presence before query
-	if (dc1394_query_format7_max_image_size(handle,node,f,&info->mode[i].max_size_x,&info->mode[i].max_size_y)!=DC1394_SUCCESS)
-	  MainError("Got a problem querying format7 max image size");
-	if (dc1394_query_format7_unit_size(handle,node,f,&info->mode[i].step_x,&info->mode[i].step_y)!=DC1394_SUCCESS)
-	  MainError("Got a problem querying format7 unit size");
-	// quick hack to keep size/position even. If pos/size is ODD, strange color/distorsions occur on some cams
-	// (e.g. Basler cams). This will have to really fixed later.
-	// REM: this is fixed by using the unit_position:
-	// fprintf(stderr,"Using pos units = %d %d\n",info->mode[i].step_pos_x,info->mode[i].step_pos_y);
-	if (dc1394_query_format7_unit_position(handle,node,f,&info->mode[i].step_pos_x,&info->mode[i].step_pos_y)!=DC1394_SUCCESS)
-	  MainError("Got a problem querying format7 unit position");
-	info->mode[i].use_unit_pos=((info->mode[i].step_pos_x>0)&&(info->mode[i].step_pos_x<info->mode[i].max_size_x)&&
-				    (info->mode[i].step_pos_y>0)&&(info->mode[i].step_pos_y<info->mode[i].max_size_y));
-	
-	if (dc1394_query_format7_image_position(handle,node,f,&info->mode[i].pos_x,&info->mode[i].pos_y)!=DC1394_SUCCESS)
-	  MainError("Got a problem querying format7 image position");
-	if (dc1394_query_format7_image_size(handle,node,f,&info->mode[i].size_x,&info->mode[i].size_y)!=DC1394_SUCCESS)
-	  MainError("Got a problem querying format7 image size");
-	if (dc1394_query_format7_pixel_number(handle,node,f,&info->mode[i].pixnum)!=DC1394_SUCCESS)
-	  MainError("Got a problem querying format7 pixel number");
-	if (dc1394_query_format7_byte_per_packet(handle,node,f,&info->mode[i].bpp)!=DC1394_SUCCESS)
-	  MainError("Got a problem querying format7 bytes per packet");
-	if (dc1394_query_format7_packet_para(handle,node,f,&info->mode[i].min_bpp,&info->mode[i].max_bpp)!=DC1394_SUCCESS)
-	  MainError("Got a problem querying format7 packet parameters");
-	if (dc1394_query_format7_total_bytes(handle,node,f,&info->mode[i].total_bytes)!=DC1394_SUCCESS)
-	  MainError("Got a problem querying format7 total bytes per frame");
-	if (dc1394_query_format7_color_coding_id(handle,node,f,&info->mode[i].color_coding_id)!=DC1394_SUCCESS)
-	  MainError("Got a problem querying format7 color coding ID");
-	if (dc1394_query_format7_color_coding(handle,node,f,&info->mode[i].color_coding)!=DC1394_SUCCESS)
-	  MainError("Got a problem querying format7 color coding");
-	
-	//fprintf(stderr,"color coding for mode %d: 0x%x, current: %d\n", i,
-	//	      info->mode[i].color_coding, info->mode[i].color_coding_id);
-	
+    if (value & (0x1<<24)) { // is format7 supported?
+      if (dc1394_query_supported_modes(handle, node, FORMAT_SCALABLE_IMAGE_SIZE, &value)!=DC1394_SUCCESS) {
+	MainError("Could not query Format7 supported modes");
+      }
+      else {
+	for (i=0,f=MODE_FORMAT7_MIN;f<=MODE_FORMAT7_MAX;f++,i++) {
+	  info->mode[i].present= (value & (0x1<<(31-i)) );
+	  if (info->mode[i].present) { // check for mode presence before query
+	    if (dc1394_query_format7_max_image_size(handle,node,f,&info->mode[i].max_size_x,&info->mode[i].max_size_y)!=DC1394_SUCCESS)
+	      MainError("Got a problem querying format7 max image size");
+	    if (dc1394_query_format7_unit_size(handle,node,f,&info->mode[i].step_x,&info->mode[i].step_y)!=DC1394_SUCCESS)
+	      MainError("Got a problem querying format7 unit size");
+	    // quick hack to keep size/position even. If pos/size is ODD, strange color/distorsions occur on some cams
+	    // (e.g. Basler cams). This will have to really fixed later.
+	    // REM: this is fixed by using the unit_position:
+	    // fprintf(stderr,"Using pos units = %d %d\n",info->mode[i].step_pos_x,info->mode[i].step_pos_y);
+	    if (dc1394_query_format7_unit_position(handle,node,f,&info->mode[i].step_pos_x,&info->mode[i].step_pos_y)!=DC1394_SUCCESS)
+	      MainError("Got a problem querying format7 unit position");
+	    info->mode[i].use_unit_pos=((info->mode[i].step_pos_x>0)&&(info->mode[i].step_pos_x<info->mode[i].max_size_x)&&
+					(info->mode[i].step_pos_y>0)&&(info->mode[i].step_pos_y<info->mode[i].max_size_y));
+	    
+	    if (dc1394_query_format7_image_position(handle,node,f,&info->mode[i].pos_x,&info->mode[i].pos_y)!=DC1394_SUCCESS)
+	      MainError("Got a problem querying format7 image position");
+	    if (dc1394_query_format7_image_size(handle,node,f,&info->mode[i].size_x,&info->mode[i].size_y)!=DC1394_SUCCESS)
+	      MainError("Got a problem querying format7 image size");
+	    if (dc1394_query_format7_pixel_number(handle,node,f,&info->mode[i].pixnum)!=DC1394_SUCCESS)
+	      MainError("Got a problem querying format7 pixel number");
+	    if (dc1394_query_format7_byte_per_packet(handle,node,f,&info->mode[i].bpp)!=DC1394_SUCCESS)
+	      MainError("Got a problem querying format7 bytes per packet");
+	    if (dc1394_query_format7_packet_para(handle,node,f,&info->mode[i].min_bpp,&info->mode[i].max_bpp)!=DC1394_SUCCESS)
+	      MainError("Got a problem querying format7 packet parameters");
+	    if (dc1394_query_format7_total_bytes(handle,node,f,&info->mode[i].total_bytes)!=DC1394_SUCCESS)
+	      MainError("Got a problem querying format7 total bytes per frame");
+	    if (dc1394_query_format7_color_coding_id(handle,node,f,&info->mode[i].color_coding_id)!=DC1394_SUCCESS)
+	      MainError("Got a problem querying format7 color coding ID");
+	    if (dc1394_query_format7_color_coding(handle,node,f,&info->mode[i].color_coding)!=DC1394_SUCCESS)
+	      MainError("Got a problem querying format7 color coding");
+	    
+	    //fprintf(stderr,"color coding for mode %d: 0x%x, current: %d\n", i,
+	    //	      info->mode[i].color_coding, info->mode[i].color_coding_id);
+	    
+	  }
+	}
       }
     }
-  }
+    else { // format7 is not supported!!
+      for (i=0,f=MODE_FORMAT7_MIN;f<=MODE_FORMAT7_MAX;f++,i++) {
+	info->mode[i].present=0;
+      }
+    }
+  }  
+      
   //info->edit_mode = MODE_FORMAT7_MIN;
 }
 

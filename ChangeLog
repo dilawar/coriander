@@ -2,6 +2,11 @@ Coriander, (c) 2000-2003 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 0.99.3
 
+   August 7, 2003, by Damien Douxchamps
+   - F7 available modes are probed correctly. There was a bug in the
+     F7 detection after a unplug/replug event. Thanks to Arne Caspari
+     for spotting this.
+	
    July 18, 2003, by Damien Douxchamps
    - format7 mode 7 could not be seen in the F7 tab/mode selector
    - added format tags for mode names in the format menu
