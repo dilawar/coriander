@@ -76,12 +76,12 @@ RollBuffers(chain_t* chain)
   if (chain->prev_chain==NULL)
     {
       // 1 - 2 - 3 -> 1 - 3 - 2 (publish for next service)
-      pthread_mutex_lock(&chain->prev_chain->mutex_data);
+      //pthread_mutex_lock(&chain->prev_chain->mutex_data);
       tmp_buffer=chain->current_buffer;
       chain->current_buffer=chain->next_buffer;
       chain->next_buffer=tmp_buffer;
       chain->updated=1;
-      pthread_mutex_unlock(&chain->prev_chain->mutex_data);
+      //pthread_mutex_unlock(&chain->prev_chain->mutex_data);
     }
   else
     {
