@@ -510,8 +510,8 @@ DisplayThreadCheckParams(chain_t *display_service)
 {
 
   displaythread_info_t *info;
-  info=(displaythread_info_t*)display_service->data;
   int first_time=0;
+  info=(displaythread_info_t*)display_service->data;
 
   // copy harmless parameters anyway:
   display_service->local_param_copy.bpp=display_service->current_buffer->bpp;
