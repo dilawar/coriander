@@ -35,7 +35,6 @@
 #include "tools.h"
 #include "thread_iso.h"
 #include "thread_display.h"
-//#include "thread_real.h"
 #include "thread_save.h"
 #include "thread_ftp.h"
 #include "thread_base.h"
@@ -823,19 +822,19 @@ on_prefs_save_button_clicked           (GtkButton       *button,
 
 #ifdef HAVE_REALLIB
   g_free(preferences.real_address);
-  tmp=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_address")));
+  preferences.real_address=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_address")));
   g_free(preferences.real_user);
-  tmp=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_user")));
+  preferences.real_user=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_user")));
   g_free(preferences.real_password);
-  tmp=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_password")));
-  g_free(preferences.real_fielname);
-  tmp=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_filename")));
+  preferences.real_password=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_password")));
+  g_free(preferences.real_filename);
+  preferences.real_filename=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_filename")));
   g_free(preferences.real_title);
-  tmp=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_title")));
+  preferences.real_title=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_title")));
   g_free(preferences.real_author);
-  tmp=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_author")));
+  preferences.real_author=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_author")));
   g_free(preferences.real_copyright);
-  tmp=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_copyright")));
+  preferences.real_copyright=gtk_entry_get_text(GTK_ENTRY(lookup_widget(preferences_window, "prefs_real_copyright")));
 #endif
 
   preferences.op_timeout = gtk_spin_button_get_value_as_float(GTK_SPIN_BUTTON(lookup_widget(GTK_WIDGET(preferences_window), "prefs_op_timeout_scale")));

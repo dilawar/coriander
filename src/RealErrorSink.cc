@@ -1129,4 +1129,4 @@ void RealErrorSink::printError (PN_RESULT res)
   //fprintf(stderr, catString << ", cat. " << static_cast<int> (cat) << " (" << errString << " - errcode " << (res - ((res >> 6) << 6)) << ") !");
 
 }
-#endif //HAVE_REALLIB
+#endif
