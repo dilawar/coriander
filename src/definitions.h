@@ -70,6 +70,9 @@ typedef struct _Format7ModeInfo
 
   unsigned int step_x;
   unsigned int step_y;
+  unsigned int step_pos_x;
+  unsigned int step_pos_y;
+  dc1394bool_t use_unit_pos;
 
   unsigned int color_coding_id;
   quadlet_t color_coding;

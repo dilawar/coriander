@@ -36,6 +36,8 @@ typedef struct
   int             upper_left[2];
   int             lower_right[2];
   int             f7_step[2];
+  int             f7_step_pos[2];
+  int             use_unit_pos;
   int             draw;
   int             mouse_down;
   int             crop;

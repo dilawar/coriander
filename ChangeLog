@@ -2,8 +2,11 @@ Coriander, (c) 2000-2002 Damien Douxchamps <douxchamps@ieee.org>
 
 Changes towards version 0.27
 
+   October 24, 2002, by Damien Douxchamps
+   - updates to take unit_position into account.
+	
    October 23, 2002, by Damien Douxchamps
-   - added an absolute setting functionality though a new
+   - added an absolute setting functionality through a new
      "Absolute Settings" window.
 	
 Changes in version 0.26

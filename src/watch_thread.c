@@ -118,9 +118,14 @@ WatchThread(void *arg)
 		  lower_right[1]=upper_left[1];
 		  upper_left[1]=tmp;
 		}
-	      
-	      pos[0]=(upper_left[0]/info->f7_step[0])*info->f7_step[0];
-	      pos[1]=(upper_left[1]/info->f7_step[1])*info->f7_step[1];
+	      if (info->use_unit_pos>0) {
+		pos[0]=(upper_left[0]/info->f7_step_pos[0])*info->f7_step_pos[0];
+		pos[1]=(upper_left[1]/info->f7_step_pos[1])*info->f7_step_pos[1];
+	      }
+	      else {
+		pos[0]=(upper_left[0]/info->f7_step[0])*info->f7_step[0];
+		pos[1]=(upper_left[1]/info->f7_step[1])*info->f7_step[1];
+	      }
 	      size[0]=((lower_right[0]-upper_left[0])/info->f7_step[0])*info->f7_step[0];
 	      size[1]=((lower_right[1]-upper_left[1])/info->f7_step[1])*info->f7_step[1];
 	      /*

@@ -98,11 +98,12 @@ GetFormat7Capabilities(raw1394handle_t handle, nodeid_t node, Format7Info *info)
 	      if (err<0) MainError("Got a problem querying format7 unit size");
 	      // quick hack to keep size/position even. If pos/size is ODD, strange color/distorsions occur on some cams
 	      // (e.g. Basler cams). This will have to really fixed later.
-	      //fprintf(stderr,"mode %d, step: [%d %d]\n",i,info->mode[i].step_x,info->mode[i].step_y);
-	      /*if (info->mode[i].step_x<2)
-		info->mode[i].step_x=2;
-	      if (info->mode[i].step_y<2)
-	      info->mode[i].step_y=2;*/
+	      // REM: this is fixed by using the unit_position:
+	      err=dc1394_query_format7_unit_position(handle,node,f,&info->mode[i].step_pos_x,&info->mode[i].step_pos_y);
+	      //fprintf(stderr,"Using pos units = %d %d\n",info->mode[i].step_pos_x,info->mode[i].step_pos_y);
+	      if (err<0) MainError("Got a problem querying format7 unit position");
+	      info->mode[i].use_unit_pos=((info->mode[i].step_pos_x>0)&&(info->mode[i].step_pos_x<info->mode[i].max_size_x)&&
+					  (info->mode[i].step_pos_y>0)&&(info->mode[i].step_pos_y<info->mode[i].max_size_y));
 
 	      err=dc1394_query_format7_image_position(handle,node,f,&info->mode[i].pos_x,&info->mode[i].pos_y);
 	      if (err<0) MainError("Got a problem querying format7 image position");
@@ -122,6 +123,8 @@ GetFormat7Capabilities(raw1394handle_t handle, nodeid_t node, Format7Info *info)
 	      if (err<0) MainError("Got a problem querying format7 color coding ID");
 	      err=dc1394_query_format7_color_coding(handle,node,f,&info->mode[i].color_coding);
 	      if (err<0) MainError("Got a problem querying format7 color coding");
+
+
 	      //fprintf(stderr,"color coding for mode %d: 0x%x, current: %d\n", i,
 	      //	      info->mode[i].color_coding, info->mode[i].color_coding_id);
 

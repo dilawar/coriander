@@ -337,6 +337,9 @@ sdlInit(chain_t *display_service)
 
   watchthread_info.f7_step[0]=format7_info->mode[display_service->mode-MODE_FORMAT7_MIN].step_x;
   watchthread_info.f7_step[1]=format7_info->mode[display_service->mode-MODE_FORMAT7_MIN].step_y;
+  watchthread_info.f7_step_pos[0]=format7_info->mode[display_service->mode-MODE_FORMAT7_MIN].step_pos_x;
+  watchthread_info.f7_step_pos[1]=format7_info->mode[display_service->mode-MODE_FORMAT7_MIN].step_pos_y;
+  watchthread_info.use_unit_pos=format7_info->mode[display_service->mode-MODE_FORMAT7_MIN].use_unit_pos;
 
   SDLEventStartThread(display_service);
 
