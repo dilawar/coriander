@@ -32,11 +32,7 @@
 #include <libdc1394/dc1394_control.h>
 
 extern GtkWidget *porthole_window;
-extern GtkWidget *color_window;
-extern GtkWidget *aperture_window;
-extern GtkWidget *capture_window;
-extern GtkWidget *temperature_window;
-extern GtkWidget *status_window;
+extern GtkWidget *commander_window;
 
 void
 UpdateFormat7Window(void)
@@ -85,28 +81,28 @@ UpdatePortholeWindow(void)
 void
 UpdateColorWindow(void)
 {
-  UpdateRange(color_window, FEATURE_BRIGHTNESS);
-  UpdateRange(color_window, FEATURE_GAMMA);
-  UpdateRange(color_window, FEATURE_SATURATION);
-  UpdateRange(color_window, FEATURE_HUE);
-  UpdateRange(color_window, FEATURE_WHITE_BALANCE);
-  UpdateRange(color_window, FEATURE_SHARPNESS);
+  UpdateRange(commander_window, FEATURE_BRIGHTNESS);
+  UpdateRange(commander_window, FEATURE_GAMMA);
+  UpdateRange(commander_window, FEATURE_SATURATION);
+  UpdateRange(commander_window, FEATURE_HUE);
+  UpdateRange(commander_window, FEATURE_WHITE_BALANCE);
+  UpdateRange(commander_window, FEATURE_SHARPNESS);
 }
 
 void
 UpdateApertureWindow(void)
 {
-  UpdateRange(aperture_window, FEATURE_EXPOSURE);
-  UpdateRange(aperture_window, FEATURE_IRIS);
-  UpdateRange(aperture_window, FEATURE_SHUTTER);
-  UpdateRange(aperture_window, FEATURE_GAIN);
-  UpdateRange(aperture_window, FEATURE_OPTICAL_FILTER);
+  UpdateRange(commander_window, FEATURE_EXPOSURE);
+  UpdateRange(commander_window, FEATURE_IRIS);
+  UpdateRange(commander_window, FEATURE_SHUTTER);
+  UpdateRange(commander_window, FEATURE_GAIN);
+  UpdateRange(commander_window, FEATURE_OPTICAL_FILTER);
 }
 
 void
 UpdateTemperatureWindow(void)
 {
-  UpdateRange(temperature_window, FEATURE_TEMPERATURE);
+  UpdateRange(commander_window, FEATURE_TEMPERATURE);
 }
 
 void
@@ -119,8 +115,8 @@ UpdateStatusWindow(void)
 void
 UpdateCaptureWindow(void)
 {
-  UpdateRange(capture_window, FEATURE_CAPTURE_SIZE);
-  UpdateRange(capture_window, FEATURE_CAPTURE_QUALITY);
+  UpdateRange(commander_window, FEATURE_CAPTURE_SIZE);
+  UpdateRange(commander_window, FEATURE_CAPTURE_QUALITY);
 
 }
 
