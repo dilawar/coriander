@@ -26,22 +26,22 @@
 #endif
 
 #include <gnome.h> 
+#include <libraw1394/raw1394.h>
+#include <libdc1394/dc1394_control.h>
+#include "raw1394support.h"
 #include "interface.h"
 #include "support.h"
+#include "definitions.h"
+#include "thread_base.h"
 #include "build_windows.h"
 #include "update_windows.h"
-#include "definitions.h"
 #include "tools.h"
 #include "watch_thread.h"
 #include "preferences.h"
-#include "thread_base.h"
 #include "thread_iso.h"
 #include "thread_save.h"
 #include "thread_ftp.h"
 #include "thread_display.h"
-#include "raw1394support.h"
-#include <libraw1394/raw1394.h>
-#include <libdc1394/dc1394_control.h>
 
 GtkWidget *commander_window;
 GtkWidget *absolute_settings_window;

@@ -19,8 +19,18 @@
 #ifndef __PREFERENCES_H__
 #define __PREFERENCES_H__
 
+#include <gnome.h>
 #include "definitions.h"
-
+#include "tools.h"
+/*
+#include "thread_display.h"
+#include "thread_iso.h"
+#include "thread_save.h"
+#include "thread_ftp.h"
+#include <libdc1394/dc1394_control.h>
+#include "callbacks.h"
+#include "support.h" 
+*/
 typedef struct _PrefsInfo
 {
   float op_timeout;

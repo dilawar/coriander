@@ -19,6 +19,10 @@
 #ifndef __WATCH_THREAD_H__
 #define __WATCH_THREAD_H__
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
 #ifdef HAVE_SDLLIB
 
 #include <pthread.h>

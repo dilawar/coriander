@@ -19,7 +19,6 @@
 #ifndef __DEFINITIONS_H__
 #define __DEFINITIONS_H__
 
-#include "preferences.h"
 #include <libdc1394/dc1394_control.h>
 #include <sys/times.h>
 

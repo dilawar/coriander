@@ -19,6 +19,10 @@
 #ifndef __SDLEVENT_H__
 #define __SDLEVENT_H__
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
 #ifdef HAVE_SDLLIB
 
 #include <gnome.h>

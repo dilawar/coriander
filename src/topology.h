@@ -1,4 +1,4 @@
-/* $Id: topology.h,v 1.1 2001-08-08 16:47:48 moorman Exp $
+/* $Id: topology.h,v 1.2 2003-05-02 14:56:02 ddouxchamps Exp $
  *
  * topology.c - Linux IEEE-1394 topology map fetching routine.
  * This routine serves as a temporary replacement for the
@@ -25,10 +25,12 @@
 #ifndef __TOPOLOGY_H__
 #define __TOPOLOGY_H__
 
-#include "raw1394support.h"
-#include <libraw1394/raw1394.h>
-#include <stdio.h>
 #include <stdlib.h>
+#include <libraw1394/raw1394.h>
+#include <netinet/in.h>
+#include <unistd.h>
+#include <errno.h>
+#include "raw1394support.h"
 
 #define SHIFT_START	30
 #define WIDTH_START	2

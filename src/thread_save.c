@@ -16,18 +16,7 @@
  * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif
-
-#include <pthread.h>
-#include <libdc1394/dc1394_control.h>
-#include <math.h>
-#include "thread_base.h"
 #include "thread_save.h" 
-#include "definitions.h"
-#include "preferences.h"
-#include "tools.h"
 
 extern PrefsInfo preferences;
 extern int current_camera;

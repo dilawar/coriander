@@ -20,11 +20,6 @@
  * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <libraw1394/raw1394.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <errno.h>
-#include <netinet/in.h>
 #include "topology.h"
 
 #define MAXTRIES 20

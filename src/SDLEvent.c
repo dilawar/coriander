@@ -16,13 +16,9 @@
  * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif
+#include "SDLEvent.h"
 
 #ifdef HAVE_SDLLIB
-
-#include "SDLEvent.h"
 
 extern PrefsInfo preferences;
 extern Format7Info *format7_info;

@@ -19,6 +19,10 @@
 #ifndef __THREAD_ISO_H__
 #define __THREAD_ISO_H__
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
 #include <gnome.h>
 #include <pthread.h>
 #include <sys/times.h>
