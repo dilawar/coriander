@@ -117,7 +117,7 @@ DisplayStartThread()
 	}
       pthread_mutex_unlock(&display_service->mutex_struct);
       pthread_mutex_unlock(&display_service->mutex_data);
-      //fprintf(stderr," DISPLAY thread may now start...\n");
+      //fprintf(stderr," DISPLAY service started\n");
       
     }
   
@@ -147,26 +147,35 @@ DisplayThread(void* arg)
   // we should only use mutex_data in this function
 
   display_service=(chain_t*)arg;
+  //fprintf(stderr,"Outside loop, locking mutex\n");
   pthread_mutex_lock(&display_service->mutex_data);
   info=(displaythread_info*)display_service->data;
   pthread_setcancelstate(PTHREAD_CANCEL_DISABLE,NULL);
   pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED,NULL);
   pthread_mutex_unlock(&display_service->mutex_data);
+  //fprintf(stderr,"Outside loop, mutex unlocked\n");
+
 
   while (1)
     {
+      //fprintf(stderr," Locking cancel mutex\n");
       pthread_mutex_lock(&info->mutex_cancel_display);
       if (info->cancel_display_req>0)
 	{
 	  pthread_mutex_unlock(&info->mutex_cancel_display);
+	  //fprintf(stderr," cancel mutex unlocked\n");
 	  return ((void*)1);
 	}
       else
 	{
+	  //fprintf(stderr," cancel mutex unlocked\n");
 	  pthread_mutex_unlock(&info->mutex_cancel_display);
+	  //fprintf(stderr," Locking data mutex\n");
 	  pthread_mutex_lock(&display_service->mutex_data);
 	  if(RollBuffers(display_service)) // have buffers been rolled?
 	    {
+	      //fprintf(stderr," data mutex unlocked\n");
+	      pthread_mutex_unlock(&display_service->mutex_data);
 #ifdef HAVE_X11_EXTENSIONS_XVLIB_H
 	      if (info->display_method == DISPLAY_METHOD_XV)
 		{
@@ -186,8 +195,11 @@ DisplayThread(void* arg)
 		  gdkPut(display_service);
 		}
 	    }
-	  pthread_mutex_unlock(&display_service->mutex_data);
-	  //fprintf(stderr,"DISP: unlocked\n");
+	  else
+	    {
+	      //fprintf(stderr," data mutex unlocked\n");
+	      pthread_mutex_unlock(&display_service->mutex_data);
+	    }
 	}
     }
 }
@@ -202,7 +214,7 @@ DisplayStopThread(void)
   
   if (display_service!=NULL)// if display service running...
     { 
-      //fprintf(stderr,"DISPLAY service found, removing...\n");
+      //fprintf(stderr,"DISPLAY service found, stopping\n");
       info=(displaythread_info*)display_service->data;
 
       // send request for cancellation:
@@ -234,7 +246,7 @@ DisplayStopThread(void)
       pthread_mutex_unlock(&display_service->mutex_struct);
       pthread_mutex_unlock(&display_service->mutex_data);
       FreeChain(display_service);
-      //fprintf(stderr," DISPLAY service removed\n");
+      //fprintf(stderr," DISPLAY service stopped\n");
     }
   return (1);
 }
