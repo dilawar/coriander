@@ -1,7 +1,11 @@
 Coriander, (c) 2000-2004 Damien Douxchamps <ddouxchamps@users.sf.net>
 
-Changes in version 1.0.0-pre1
+   Februari 2, 2004, by Johan Knol
+   - now builds without sdllib (and thus without the display service ;( )
+   - resizing from the format7 tab now redraws the live display in the bg
 	
+Changes in version 1.0.0-pre1
+
    January 31, 2004, by Damien Douxchamps
    - added an X check for the maximum overlay size.
 
