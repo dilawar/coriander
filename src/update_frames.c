@@ -400,8 +400,8 @@ UpdateOptionFrame(void)
     }
   else
     {
-      cond16=(format7_info->mode[misc_info->mode].color_coding_id==COLOR_FORMAT7_MONO16);
-      cond8=(format7_info->mode[misc_info->mode].color_coding_id==COLOR_FORMAT7_MONO8);
+      cond16=(format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].color_coding_id==COLOR_FORMAT7_MONO16);
+      cond8=(format7_info->mode[misc_info->mode-MODE_FORMAT7_MIN].color_coding_id==COLOR_FORMAT7_MONO8);
     }
   gtk_widget_set_sensitive(lookup_widget(commander_window,"pattern_menu"),(cond8||cond16));
   gtk_widget_set_sensitive(lookup_widget(commander_window,"bayer_menu"),(cond8||cond16));
