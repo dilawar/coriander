@@ -129,46 +129,87 @@ UpdateRangeValue(GtkWidget* widget, int feature)
   //       Moreover, we must WRITE the value read in the "feature_set" 'value' field.
 
   int  err, value, valueBU, valueRV, valuegoal, valuecurrent;
+  int stable, prec_value, prec_valuegoal, prec_valueBU, prec_valuecurrent, prec_valueRV;
   GtkAdjustment* adj;
+  stable=0;
+  err=0;
+  prec_value=-1e7;// out of range data
+  prec_valuegoal=-1e7;
+  prec_valuecurrent=-1e7;
+  prec_valueBU=-1e7;
+  prec_valueRV=-1e7;
 
   // grab&set range value if readable:
   if (feature_set->feature[feature-FEATURE_MIN].readout_capable)
     { switch(feature)
       {
         case FEATURE_WHITE_BALANCE:
-	  err=dc1394_get_white_balance(camera->handle,camera->id,&valueBU,&valueRV);
+	  while(!stable)
+	    {
+	      err=dc1394_get_white_balance(camera->handle,camera->id,&valueBU,&valueRV);
+	      if (((valueBU==prec_valueBU)&&(valueRV==prec_valueRV))||(!err))
+		stable=1;
+	      else
+		{
+		  prec_valueBU=valueBU;
+		  prec_valueRV=valueRV;
+		  usleep(100000);// wait 1/10 sec
+		}
+	    }
 	  if (!err) MainError("Could not get white balance value");
 	  else
 	    {
 	      adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(widget, "white_balance_BU_scale")));
-	      gtk_adjustment_set_value(adj, valueBU);
-	      feature_set->feature[feature-FEATURE_MIN].BU_value=valueBU;
+	      adj->value=valueBU;
+	      gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
 	      adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(widget, "white_balance_RV_scale")));
-	      gtk_adjustment_set_value(adj, valueRV);
-	      feature_set->feature[feature-FEATURE_MIN].RV_value=valueRV;
+	      adj->value=valueRV;
+	      gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
 	    }
 	  break;
         case FEATURE_TEMPERATURE:
-          err=dc1394_get_temperature(camera->handle,camera->id,&valuegoal,&valuecurrent);
+	  while(!stable)
+	    {
+	      err=dc1394_get_temperature(camera->handle,camera->id,&valuegoal,&valuecurrent);
+	      if (((valuegoal==prec_valuegoal)&&(valuecurrent==prec_valuecurrent))||(!err))
+		stable=1;
+	      else
+		{
+		  prec_valuegoal=valuegoal;
+		  prec_valuecurrent=valuecurrent;
+		  usleep(100000);// wait 1/10 sec
+		}
+	    }
 	  if (!err) MainError("Could not get temperature value");
 	  else
 	    {
 	      adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(widget, "temperature_target_scale")));
-	      gtk_adjustment_set_value(adj, valuegoal);
-	      feature_set->feature[feature-FEATURE_MIN].target_value=valuegoal;
+	      adj->value=valuegoal;
+	      gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
 	      adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(widget, "temperature_current_scale")));
-	      gtk_adjustment_set_value(adj, value);
-	      feature_set->feature[feature-FEATURE_MIN].value=value;
+	      adj->value=valuecurrent;
+	      gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
 	    }
 	  break;
         default:
-	  err=dc1394_get_feature_value(camera->handle,camera->id,feature,&value);
+	  while(!stable)
+	    {
+	      err=dc1394_get_feature_value(camera->handle,camera->id,feature,&value);
+	      if ((value==prec_value)||(!err))
+		stable=1;
+	      else
+		{
+		  prec_value=value;
+		  usleep(100000);// wait 1/10 sec
+		}
+	    }
 	  if (!err) MainError("Could not get feature value");
 	  else
 	    {
 	      adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(widget, feature_scale_list[feature-FEATURE_MIN])));
-	      gtk_adjustment_set_value(adj, value);
-	      feature_set->feature[feature-FEATURE_MIN].value=value;
+	      adj->value=value;
+	      gtk_signal_emit_by_name(GTK_OBJECT (adj), "changed");
+	      
 	    }
 	  break;
       }
