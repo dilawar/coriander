@@ -52,8 +52,8 @@ extern char* phy_speed_list[4];
 extern char* phy_delay_list[4];
 extern char* power_class_list[8];
 extern SelfIdPacket_t *selfid;
-//extern capture_info ci;
 extern PrefsInfo preferences; 
+extern int silent_ui_update;
 
 void
 UpdatePrefsUpdateFrame(void)
@@ -203,11 +203,13 @@ UpdateTriggerFrame(void)
   gtk_widget_set_sensitive(lookup_widget(commander_window,"trigger_count"),
 			   (feature_set->feature[FEATURE_TRIGGER-FEATURE_MIN].available) &&
 			   (feature_set->feature[FEATURE_TRIGGER-FEATURE_MIN].is_on) && 
-			   (feature_set->feature[FEATURE_TRIGGER-FEATURE_MIN].trigger_mode >> 1)); // 2 or 3 means 2nd bit=1 => >>1==1
+			   (feature_set->feature[FEATURE_TRIGGER-FEATURE_MIN].trigger_mode >> 1));
+  // 2 or 3 means 2nd bit=1 => >>1==1
   gtk_widget_set_sensitive(lookup_widget(commander_window, "label16"),
 			   (feature_set->feature[FEATURE_TRIGGER-FEATURE_MIN].available) &&
 			   (feature_set->feature[FEATURE_TRIGGER-FEATURE_MIN].is_on) && 
-			   (feature_set->feature[FEATURE_TRIGGER-FEATURE_MIN].trigger_mode >> 1)); // 2 or 3 means 2nd bit=1 => >>1==1
+			   (feature_set->feature[FEATURE_TRIGGER-FEATURE_MIN].trigger_mode >> 1));
+  // 2 or 3 means 2nd bit=1 => >>1==1
 
 }
 
@@ -358,6 +360,28 @@ UpdateTransferStatusFrame(void)
   gtk_statusbar_remove( (GtkStatusbar*) lookup_widget(status_window,"iso_status_status"), ctxt.iso_status_ctxt, ctxt.iso_status_id);
   ctxt.iso_status_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(status_window,"iso_status_status"), ctxt.iso_status_ctxt, temp);
 
+  err=dc1394_get_iso_channel_and_speed(camera->handle, camera->id, &misc_info->iso_channel, &misc_info->iso_speed);
+  sprintf(temp," %d",misc_info->iso_channel);
+
+  gtk_statusbar_remove( (GtkStatusbar*) lookup_widget(status_window,"iso_channel_status"), ctxt.iso_channel_ctxt, ctxt.iso_channel_id);
+  ctxt.iso_channel_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(status_window,"iso_channel_status"), ctxt.iso_channel_ctxt, temp);
+
 }
 
 
+void
+UpdateServicesFrame(void)
+{
+  silent_ui_update=1;
+
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"service_iso")),
+			       GetService(SERVICE_ISO)!=NULL);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"service_display")),
+			       GetService(SERVICE_DISPLAY)!=NULL);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"service_save")),
+			       GetService(SERVICE_SAVE)!=NULL);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"service_ftp")),
+			       GetService(SERVICE_FTP)!=NULL);
+  silent_ui_update=0;
+
+}
