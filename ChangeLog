@@ -1,6 +1,11 @@
 Coriander, (c) 2000-2004 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 1.0.0
+
+   February 16, 2004, by Damien Douxchamps
+   - check adaptor presence during Xv adaptor probe (suggested by
+     Arne Caspari)
+   - set Xv sizes to -1 by default before Xv adaptor probe.
 	
    February 5, 2004, by Damien Douxchamps
    - updated the linux1394 URL

@@ -1076,6 +1076,9 @@ GetXvInfo(xvinfo_t *xvinfo) {
   unsigned int ver, rev, eventB, reqB, errorB; 
   int i, j, n; 
 
+  xvinfo->max_height=-1;
+  xvinfo->max_width=-1;
+
   if(!(xvinfo->dpy = XOpenDisplay(NULL))) {
     MainError("Unable to open display");
     return;
@@ -1088,6 +1091,10 @@ GetXvInfo(xvinfo_t *xvinfo) {
 
   i=0; // 0: we use only the first screen
   XvQueryAdaptors(xvinfo->dpy, RootWindow(xvinfo->dpy, i), &xvinfo->nadaptors, &xvinfo->ainfo);
+  if( !xvinfo->nadaptors || !xvinfo->ainfo ){        
+    MainError( "xvinfo: No adpators present\n" );        
+    return;
+  }
   j=0; // 0: we use only the first adaptor
   XvQueryEncodings(xvinfo->dpy, xvinfo->ainfo[j].base_id, &xvinfo->nencode, &xvinfo->encodings);
 
