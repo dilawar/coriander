@@ -64,12 +64,12 @@ extern void swab();
  *
  **********************************************************************/
 
-inline void
+void
 uyvy2yuyv (unsigned char *src, unsigned char *dest, int NumPixels) {
 	swab(src, dest, NumPixels << 1);
 }
 
-inline void
+void
 yuyv2uyvy (unsigned char *src, unsigned char *dest, int NumPixels) {
 	swab(src, dest, NumPixels << 1);
 }
@@ -81,10 +81,10 @@ yuyv2uyvy (unsigned char *src, unsigned char *dest, int NumPixels) {
  **********************************************************************/
 
 
-inline void
+void
 uyyvyy2uyvy (unsigned char *src, unsigned char *dest, int NumPixels) {
-  register int i=NumPixels + (NumPixels >> 1);
-  register int j=NumPixels << 1;
+  register int i=NumPixels + (NumPixels >> 1)-1;
+  register int j=(NumPixels << 1)-1;
   register int y0, y1, y2, y3, u, v;
 
   while (i > 0)
@@ -96,23 +96,23 @@ uyyvyy2uyvy (unsigned char *src, unsigned char *dest, int NumPixels) {
       y0 = src[i--];
       u  = src[i--];
 
+      dest[j--] = v;
       dest[j--] = y3;
-      dest[j--] = v;
+      dest[j--] = u;
       dest[j--] = y2;
-      dest[j--] = u;
 
-      dest[j--] = y1;
       dest[j--] = v;
-      dest[j--] = y0;
+      dest[j--] = y1;
       dest[j--] = u;
+      dest[j--] = y0;
 
     }
 }
 
-inline void
+void
 uyv2uyvy (unsigned char *src, unsigned char *dest, int NumPixels) {
-  register int i = NumPixels + (NumPixels << 1);
-  register int j = NumPixels << 1;
+  register int i = NumPixels + (NumPixels << 1)-1;
+  register int j = (NumPixels << 1)-1;
   register int y0, y1, u0, u1, v0, v1;
 
   while (i > 0)
@@ -124,17 +124,18 @@ uyv2uyvy (unsigned char *src, unsigned char *dest, int NumPixels) {
       y0 = src[i--];
       u0 = src[i--];
 
-      dest[j--] = y1;
       dest[j--] = (v0+v1) >> 1;
-      dest[j--] = y0;
+      dest[j--] = y1;
       dest[j--] = (u0+u1) >> 1;
+      dest[j--] = y0;
     }
 }
 
-inline void
+
+void
 y2uyvy (unsigned char *src, unsigned char *dest, int NumPixels) {
-  register int i= NumPixels;
-  register int j = NumPixels << 1;
+  register int i= NumPixels-1;
+  register int j = (NumPixels << 1)-1;
   register int y0, y1;
 
   while (i > 0)
@@ -142,17 +143,17 @@ y2uyvy (unsigned char *src, unsigned char *dest, int NumPixels) {
       y1 = src[i--];
       y0 = src[i--];
 
+      dest[j--] = 128;
       dest[j--] = y1;
       dest[j--] = 128;
       dest[j--] = y0;
-      dest[j--] = 128;
     }
 }
 
-inline void
+void
 y162uyvy (unsigned char *src, unsigned char *dest, int NumPixels) {
-  register int i = NumPixels << 1;
-  register int j = NumPixels << 1;
+  register int i = (NumPixels << 1)-1;
+  register int j = (NumPixels << 1)-1;
   register int y0, y1;
 
   while (i > 0)
@@ -162,17 +163,17 @@ y162uyvy (unsigned char *src, unsigned char *dest, int NumPixels) {
       i--;
       y0   = src[i--];
 
+      dest[j--] = 128;
       dest[j--] = y1;
       dest[j--] = 128;
       dest[j--] = y0;
-      dest[j--] = 128;
     }
 }
 
-inline void
+void
 rgb2uyvy (unsigned char *src, unsigned char *dest, int NumPixels) {
-  register int i = NumPixels + ( NumPixels << 1 );
-  register int j = NumPixels << 1;
+  register int i = NumPixels + ( NumPixels << 1 )-1;
+  register int j = (NumPixels << 1)-1;
   register int y0, y1, u0, u1, v0, v1 ;
   register int r, g, b;
 
@@ -187,17 +188,17 @@ rgb2uyvy (unsigned char *src, unsigned char *dest, int NumPixels) {
       r = (unsigned char) src[i--];
       RGB2YUV (r, g, b, y1, u1 , v1);
 
-      dest[j--] = y1;
       dest[j--] = (v0+v1) >> 1;
-      dest[j--] = y0;
+      dest[j--] = y1;
       dest[j--] = (u0+u1) >> 1;
+      dest[j--] = y0;
     }
 }
 
-inline void
+void
 rgb482uyvy (unsigned char *src, unsigned char *dest, int NumPixels) {
-  register int i = (NumPixels + ( NumPixels << 1 )) << 1;
-  register int j = NumPixels << 1;
+  register int i = ( (NumPixels + ( NumPixels << 1 )) << 1 ) -1;
+  register int j = (NumPixels << 1)-1;
   register int y0, y1, u0, u1, v0, v1 ;
   register int r, g, b;
 
@@ -218,10 +219,10 @@ rgb482uyvy (unsigned char *src, unsigned char *dest, int NumPixels) {
       r = (unsigned char) src[i--];
       RGB2YUV (r, g, b, y1, u1 , v1);
 
-      dest[j--] = y1;
       dest[j--] = (v0+v1) >> 1;
-      dest[j--] = y0;
+      dest[j--] = y1;
       dest[j--] = (u0+u1) >> 1;
+      dest[j--] = y0;
     }
 }
 
@@ -231,10 +232,10 @@ rgb482uyvy (unsigned char *src, unsigned char *dest, int NumPixels) {
  *
  **********************************************************************/
 
-inline void
+void
 rgb482rgb (unsigned char *src, unsigned char *dest, int NumPixels) {
-  register int i = (NumPixels + ( NumPixels << 1 )) << 1;
-  register int j = NumPixels + ( NumPixels << 1 );
+  register int i = ((NumPixels + ( NumPixels << 1 )) << 1)-1;
+  register int j = NumPixels + ( NumPixels << 1 ) -1;
 
   while (i > 0)
     {
@@ -248,11 +249,11 @@ rgb482rgb (unsigned char *src, unsigned char *dest, int NumPixels) {
 }
 
 
-inline void
+void
 uyv2rgb (unsigned char *src, unsigned char *dest, int NumPixels)
 {
-  register int i = NumPixels << 1;
-  register int j = NumPixels + ( NumPixels << 1 );
+  register int i = (NumPixels << 1)-1;
+  register int j = NumPixels + ( NumPixels << 1 ) -1;
   register int y, u, v;
   register int r, g, b;
 
@@ -269,10 +270,10 @@ uyv2rgb (unsigned char *src, unsigned char *dest, int NumPixels)
     }
 }
 
-inline void
+void
 uyvy2rgb (unsigned char *src, unsigned char *dest, int NumPixels) {
-  register int i = NumPixels << 1;
-  register int j = NumPixels + ( NumPixels << 1 );
+  register int i = (NumPixels << 1)-1;
+  register int j = NumPixels + ( NumPixels << 1 ) -1;
   register int y0, y1, u, v;
   register int r, g, b;
 
@@ -294,10 +295,10 @@ uyvy2rgb (unsigned char *src, unsigned char *dest, int NumPixels) {
 }
 
 
-inline void
+void
 uyyvyy2rgb (unsigned char *src, unsigned char *dest, int NumPixels) {
-  register int i = NumPixels + ( NumPixels >> 1 );
-  register int j = NumPixels + ( NumPixels << 1 );
+  register int i = NumPixels + ( NumPixels >> 1 )-1;
+  register int j = NumPixels + ( NumPixels << 1 )-1;
   register int y0, y1, y2, y3, u, v;
   register int r, g, b;
   
@@ -328,10 +329,10 @@ uyyvyy2rgb (unsigned char *src, unsigned char *dest, int NumPixels) {
     }
 }
 
-inline void
+void
 y2rgb (unsigned char *src, unsigned char *dest, int NumPixels) {
-  register int i = NumPixels;
-  register int j = NumPixels + ( NumPixels << 1 );
+  register int i = NumPixels-1;
+  register int j = NumPixels + ( NumPixels << 1 )-1;
   register int y;
 
   while (i > 0)
@@ -343,10 +344,10 @@ y2rgb (unsigned char *src, unsigned char *dest, int NumPixels) {
     }
 }
 
-inline void
+void
 y162rgb (unsigned char *src, unsigned char *dest, int NumPixels) {
-  register int i = NumPixels << 1;
-  register int j = NumPixels + ( NumPixels << 1 );
+  register int i = (NumPixels << 1)-1;
+  register int j = NumPixels + ( NumPixels << 1 )-1;
   register int y;
 
   while (i > 0)

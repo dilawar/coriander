@@ -239,7 +239,8 @@ sdlInit(chain_t *display_service)
     }
 
   // Set requested video mode
-  info->SDL_video = SDL_SetVideoMode(display_service->width, display_service->height, info->SDL_bpp, info->SDL_flags);
+  info->SDL_video = SDL_SetVideoMode(display_service->width, display_service->height, 
+				     info->SDL_bpp, info->SDL_flags);
   // (0 is bpp)
   if (info->SDL_video == NULL)
     {
@@ -258,8 +259,7 @@ sdlInit(chain_t *display_service)
 
   // Create YUV Overlay
   info->SDL_overlay = SDL_CreateYUVOverlay(display_service->width, display_service->height, 
-					   GetSDLVideoMode(display_service->mode),
-					   info->SDL_video);
+					   SDL_UYVY_OVERLAY,info->SDL_video);
   if (info->SDL_overlay == NULL)
     {
       SDL_Quit();
@@ -277,46 +277,6 @@ sdlInit(chain_t *display_service)
   return(1);
 }
 
-int
-GetSDLVideoMode(int mode)
-{
-  switch(mode)
-    {
-    case MODE_320x240_YUV422:
-    case MODE_640x480_YUV422:
-    case MODE_800x600_YUV422:
-    case MODE_1024x768_YUV422:
-    case MODE_1280x960_YUV422:
-    case MODE_1600x1200_YUV422:
-      return(SDL_UYVY_OVERLAY);
-      break;
-    case MODE_160x120_YUV444:
-    case MODE_640x480_YUV411:
-    case MODE_640x480_RGB:
-    case MODE_800x600_RGB:
-    case MODE_1024x768_RGB:
-    case MODE_1280x960_RGB:
-    case MODE_1600x1200_RGB:
-    case MODE_640x480_MONO:
-    case MODE_800x600_MONO:
-    case MODE_1024x768_MONO:
-    case MODE_1280x960_MONO:
-    case MODE_1600x1200_MONO:
-    case MODE_FORMAT7_0:
-    case MODE_FORMAT7_1:
-    case MODE_FORMAT7_2:
-    case MODE_FORMAT7_3:
-    case MODE_FORMAT7_4:
-    case MODE_FORMAT7_5:
-    case MODE_FORMAT7_6:
-    case MODE_FORMAT7_7:
-      return(SDL_UYVY_OVERLAY);
-      break;
-    }
-
-  return(-1);
-}
-
 // we should optimize this for RGB too...
 void
 convert_to_yuv_for_SDL(unsigned char *src, unsigned char *dest, int mode, int width, int height)
@@ -332,7 +292,7 @@ convert_to_yuv_for_SDL(unsigned char *src, unsigned char *dest, int mode, int wi
     case MODE_1024x768_YUV422:
     case MODE_1280x960_YUV422:
     case MODE_1600x1200_YUV422:
-      memcpy(dest,src,2*width*height);
+      yuyv2uyvy(src,dest,width*height);
       break;
     case MODE_640x480_YUV411:
       uyyvyy2uyvy(src,dest,width*height);

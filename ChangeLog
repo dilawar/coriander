@@ -2,7 +2,7 @@ Coriander, (c) 2000-2002 Damien Douxchamps <douxchamps@ieee.org>
 
 Changes towards version 0.23:
 
-   Feb 7, 2002, by Damien Douxchamps
+   Feb 8, 2002, by Damien Douxchamps
    - more configure macros update: added MMX/SSE/SSE2 detection for
      future assembler-optimized conversion functions. Also separate
      presence/version detection for libdc1394 and libraw1394
@@ -11,6 +11,7 @@ Changes towards version 0.23:
      into the file, without any processing. This should be useful for
      people having 10 or 12 bit cameras.
    - updated some string alloc/free introduced by gnome-config
+   - corrected some more conversions errors.
 	
    Feb 6, 2002, by Damien Douxchamps
    - small changes to configure macros.
