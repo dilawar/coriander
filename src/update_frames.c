@@ -71,7 +71,7 @@ UpdatePrefsFtpFrame(void)
 {
   gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_ftp_date_tag"),
 			   preferences.ftp_scratch==FTP_SCRATCH_SEQUENTIAL);
-  gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_save_num_tag"),
+  gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_ftp_num_tag"),
 			   preferences.ftp_scratch==FTP_SCRATCH_SEQUENTIAL);
 }
 

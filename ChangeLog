@@ -4,6 +4,7 @@ Changes towards version 0.99
 
    June 11, 2003, by Damien Douxchamps
    - added a choice between date and numbers tags for sequential save/ftp.
+   - fixed bug from the above change.
 	
    June 5, 2003, by Damien Douxchamps
    - fixed segfault when no card/modules were present
