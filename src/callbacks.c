@@ -68,9 +68,8 @@ extern Format7Info *format7_infos;
 extern UIInfo *uiinfo;
 extern UIInfo *uiinfos;
 extern int current_camera;
-//extern capture_info ci;
-extern guint gCaptureIdleID;
 extern PrefsInfo preferences; 
+extern int silent_ui_update;
 extern int porthole_is_open;
 
 gboolean
@@ -105,8 +104,7 @@ on_porthole_activate                   (GtkMenuItem     *menuitem,
 {
   gtk_widget_show (porthole_window);
   porthole_is_open=TRUE;
-  if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,
-								   "service_display"))))
+  if (uiinfo->want_display>0)
     DisplayStartThread();
 }
 
@@ -439,14 +437,20 @@ void
 on_fps_activate                    (GtkMenuItem     *menuitem,
 				    gpointer         user_data)
 {
-  int err;
   int state[4];
+  
   IsoFlowCheck(state);
-  err=dc1394_set_video_framerate(camera->handle, camera->id, (int)user_data+FRAMERATE_MIN);
-  if (!err) MainError("Could not set framerate");
+  
+  
+  if(!dc1394_set_video_framerate(camera->handle, camera->id, (int)user_data))
+    MainError("Could not set framerate");
   else
     misc_info->framerate=(int)user_data;
+
   IsoFlowResume(state);
+
+
+
 }
 
 
@@ -454,9 +458,8 @@ void
 on_power_on_clicked                    (GtkButton       *button,
                                         gpointer         user_data)
 {
-  int err;
-  err=dc1394_camera_on(camera->handle, camera->id);
-  if (!err) MainError("Could not set camera 'on'");
+  if(!dc1394_camera_on(camera->handle, camera->id))
+    MainError("Could not set camera 'on'");
 }
 
 
@@ -464,9 +467,8 @@ void
 on_power_off_clicked                   (GtkButton       *button,
                                         gpointer         user_data)
 {
-  int err;
-  err=dc1394_camera_off(camera->handle, camera->id);
-  if (!err) MainError("Could not set camera 'off'");
+  if(!dc1394_camera_off(camera->handle, camera->id))
+    MainError("Could not set camera 'off'");
 }
 
 
@@ -474,19 +476,18 @@ void
 on_power_reset_clicked                 (GtkButton       *button,
                                         gpointer         user_data)
 {
-  int err;
-  err=dc1394_init_camera(camera->handle, camera->id);
-  if (!err) MainError("Could not initilize camera");
+  if (!dc1394_init_camera(camera->handle, camera->id))
+    MainError("Could not initilize camera");
 }
 
 void
 on_trigger_polarity_toggled            (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-  int err;
-  err=dc1394_set_trigger_polarity(camera->handle,camera->id,togglebutton->active);
-  if (!err) MainError("Cannot set trigger polarity");
-  else feature_set->feature[FEATURE_TRIGGER-FEATURE_MIN].trigger_polarity=(int)togglebutton->active;
+  if (!dc1394_set_trigger_polarity(camera->handle,camera->id,togglebutton->active))
+    MainError("Cannot set trigger polarity");
+  else
+    feature_set->feature[FEATURE_TRIGGER-FEATURE_MIN].trigger_polarity=(int)togglebutton->active;
 }
 
 
@@ -854,21 +855,21 @@ void
 on_trigger_mode_activate              (GtkMenuItem     *menuitem,
 				       gpointer         user_data)
 {
-  int err;
-  err=dc1394_set_trigger_mode(camera->handle, camera->id, (int)user_data);
-  if (!err) MainError("Could not set trigger mode");
-  else feature_set->feature[FEATURE_TRIGGER-FEATURE_MIN].trigger_mode=(int)user_data;
-  //UpdateTriggerFrame();
+  if (!dc1394_set_trigger_mode(camera->handle, camera->id, (int)user_data))
+    MainError("Could not set trigger mode");
+  else
+    feature_set->feature[FEATURE_TRIGGER-FEATURE_MIN].trigger_mode=(int)user_data;
+  UpdateTriggerFrame();
 }
 
 void
 on_trigger_external_toggled            (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-  int err;
-  err=dc1394_feature_on_off(camera->handle, camera->id, FEATURE_TRIGGER, togglebutton->active);
-  if (!err) MainError("Could not set external trigger source");
-  else feature_set->feature[FEATURE_TRIGGER-FEATURE_MIN].is_on=togglebutton->active;
+  if (!dc1394_feature_on_off(camera->handle, camera->id, FEATURE_TRIGGER, togglebutton->active))
+    MainError("Could not set external trigger source");
+  else
+    feature_set->feature[FEATURE_TRIGGER-FEATURE_MIN].is_on=togglebutton->active;
   UpdateTriggerFrame();
 }
 
@@ -981,11 +982,8 @@ void
 on_load_mem_clicked                    (GtkButton       *button,
                                         gpointer         user_data)
 {
-  int err;
-  //int temp;
-  err=dc1394_memory_load(camera->handle,camera->id, misc_info->load_channel);
-  if (!err) MainError("Cannot load memory channel");
-  //err=dc1394_get_memory_load_ch(camera->handle,camera->id, &temp);
+  if (!dc1394_memory_load(camera->handle,camera->id, misc_info->load_channel))
+    MainError("Cannot load memory channel");
   UpdateAllWindows();
 
 }
@@ -994,18 +992,18 @@ void
 on_save_mem_clicked                    (GtkButton       *button,
                                         gpointer         user_data)
 { 
-  int err, timeout;
+  int timeout;
   dc1394bool_t boolean;
-  err=dc1394_set_memory_save_ch(camera->handle,camera->id, misc_info->save_channel);
-  if (!err) MainError("Could not set memory save channel");
+  if (!dc1394_set_memory_save_ch(camera->handle,camera->id, misc_info->save_channel))
+    MainError("Could not set memory save channel");
   else
     { 
-      err=dc1394_memory_save(camera->handle,camera->id);
-      if (!err) MainError("Could not save setup to memory channel");
+      if (!dc1394_memory_save(camera->handle,camera->id))
+	MainError("Could not save setup to memory channel");
       else
 	{
-	  err=dc1394_get_memory_save_ch(camera->handle,camera->id,&timeout);
-	  if (!err) MainError("Could not query memory save channel");
+	  if (!dc1394_get_memory_save_ch(camera->handle,camera->id,&timeout))
+	    MainError("Could not query memory save channel");
 	  else
 	    {
 	      boolean=TRUE;
@@ -1013,8 +1011,8 @@ on_save_mem_clicked                    (GtkButton       *button,
 	      while(boolean & (timeout>0))
 		{ // wait for save to be completed:
 		  usleep(LOOP_SLEEP);
-		  err=dc1394_is_memory_save_in_operation(camera->handle,camera->id, &boolean);
-		  if (!err) MainError("Could not query if memory save is in operation");
+		  if (!dc1394_is_memory_save_in_operation(camera->handle,camera->id, &boolean))
+		    MainError("Could not query if memory save is in operation");
 		  timeout--;
 		}
 	      if (timeout==0)
@@ -1028,10 +1026,7 @@ void
 on_iso_start_clicked                   (GtkButton       *button,
                                         gpointer         user_data)
 {
-  int err;
-
-  err=dc1394_start_iso_transmission(camera->handle,camera->id);
-  if (!err)
+  if (!dc1394_start_iso_transmission(camera->handle,camera->id))
     MainError("Could not start ISO transmission");
   else
     {
@@ -1046,10 +1041,7 @@ void
 on_iso_stop_clicked                    (GtkButton       *button,
                                         gpointer         user_data)
 {
-  int err;
-
-  err=dc1394_stop_iso_transmission(camera->handle,camera->id);
-  if (!err)
+  if (!dc1394_stop_iso_transmission(camera->handle,camera->id))
     MainError("Could not stop ISO transmission");
   else
     {
@@ -1072,14 +1064,21 @@ on_iso_restart_clicked                 (GtkButton       *button,
 
 void
 on_camera_select_activate              (GtkMenuItem     *menuitem,
-					 gpointer         user_data)
+					gpointer         user_data)
 {
+  // close current display (we don't want this thread to be executed twice at the same time)
+  DisplayStopThread();
+
   // set current camera pointers: 
   SelectCamera((int)user_data);
+
+  if (uiinfo->want_display>0)
+    DisplayStartThread();
 
   // redraw all:
   BuildAllWindows();
   UpdateAllWindows();
+
 }
 
 void
@@ -1092,7 +1091,7 @@ on_edit_format7_mode_activate             (GtkMenuItem     *menuitem,
 
 void
 on_edit_format7_color_activate             (GtkMenuItem     *menuitem,
-					 gpointer         user_data)
+					    gpointer         user_data)
 {
   //TODO
 }
@@ -1148,29 +1147,32 @@ void
 on_scale_value_changed             ( GtkAdjustment    *adj,
 				     gpointer         user_data)
 {
-  int err;
 
   switch((int)user_data)
     {
       case FEATURE_TEMPERATURE:
-	err=dc1394_set_temperature(camera->handle,camera->id,adj->value);
-	if (!err) MainError("Could not set temperature");
-	else feature_set->feature[FEATURE_TEMPERATURE-FEATURE_MIN].target_value=adj->value;
+	if (!dc1394_set_temperature(camera->handle,camera->id,adj->value))
+	  MainError("Could not set temperature");
+	else
+	  feature_set->feature[FEATURE_TEMPERATURE-FEATURE_MIN].target_value=adj->value;
 	break;
       case FEATURE_WHITE_BALANCE+BU*4: // why oh why is there a *4?
-	err=dc1394_set_white_balance(camera->handle,camera->id,adj->value, feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].RV_value);
-	if (!err) MainError("Could not set B/U white balance");
-	else feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].BU_value=adj->value;
+	if (!dc1394_set_white_balance(camera->handle,camera->id,adj->value, feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].RV_value))
+	  MainError("Could not set B/U white balance");
+	else
+	  feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].BU_value=adj->value;
 	break;
       case FEATURE_WHITE_BALANCE+RV*4: // why oh why is there a *4?
-	err=dc1394_set_white_balance(camera->handle,camera->id,feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].BU_value, adj->value);
-	if (!err) MainError("Could not set R/V white balance");
-	else feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].RV_value=adj->value;
+	if (!dc1394_set_white_balance(camera->handle,camera->id,feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].BU_value, adj->value))
+	  MainError("Could not set R/V white balance");
+	else
+	  feature_set->feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].RV_value=adj->value;
 	break;
       default: // includes trigger_count
-	err=dc1394_set_feature_value(camera->handle,camera->id,(int)user_data,adj->value);
-	if (!err) MainError("Could not set feature");
-	else feature_set->feature[(int)user_data-FEATURE_MIN].value=adj->value;
+	if (!dc1394_set_feature_value(camera->handle,camera->id,(int)user_data,adj->value))
+	  MainError("Could not set feature");
+	else
+	  feature_set->feature[(int)user_data-FEATURE_MIN].value=adj->value;
     }
 }
 
@@ -1178,7 +1180,6 @@ void
 on_format7_value_changed             ( GtkAdjustment    *adj,
 				       gpointer         user_data)
 {
-  int err;
   GtkAdjustment* adj2;
 
   //printf("User data: %d\n",(int)(int*)(int)user_data);
@@ -1186,9 +1187,9 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
     {
       //printf("User data: %d\n",(int)user_data);
       case FORMAT7_SIZE_X:
-	err=dc1394_set_format7_image_size(camera->handle,camera->id, format7_info->edit_mode,
-					  adj->value, format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].size_y);
-	if (!err) MainError("Could not set Format7 image size");
+	if (!dc1394_set_format7_image_size(camera->handle,camera->id, format7_info->edit_mode,
+					   adj->value, format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].size_y))
+	  MainError("Could not set Format7 image size");
 	else 
 	  {
 	    format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].size_x=adj->value;
@@ -1201,9 +1202,9 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
 	break;
 
       case FORMAT7_SIZE_Y:
-	err=dc1394_set_format7_image_size(camera->handle,camera->id, format7_info->edit_mode,
-					  format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].size_x, adj->value);
-	if (!err) MainError("Could not set Format7 image size");
+	if (!dc1394_set_format7_image_size(camera->handle,camera->id, format7_info->edit_mode,
+					   format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].size_x, adj->value))
+	  MainError("Could not set Format7 image size");
 	else
 	  {
 	    format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].size_y=adj->value;
@@ -1215,9 +1216,9 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
 	break;
 
       case FORMAT7_POS_X:
-	err=dc1394_set_format7_image_position(camera->handle,camera->id, format7_info->edit_mode,
-					      adj->value, format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].pos_y);
-	if (!err) MainError("Could not set Format7 image position");
+	if (!dc1394_set_format7_image_position(camera->handle,camera->id, format7_info->edit_mode,
+					      adj->value, format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].pos_y))
+	  MainError("Could not set Format7 image position");
 	else
 	  {
 	    format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].pos_x=adj->value;
@@ -1229,9 +1230,9 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
 	break;
 
       case FORMAT7_POS_Y:
-	err=dc1394_set_format7_image_position(camera->handle,camera->id, format7_info->edit_mode,
-					      format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].pos_x, adj->value);
-	if (!err) MainError("Cannot set Format7 image position");
+	if (!dc1394_set_format7_image_position(camera->handle,camera->id, format7_info->edit_mode,
+					      format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].pos_x, adj->value))
+	  MainError("Cannot set Format7 image position");
 	else
 	  {
 	    format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].pos_y=adj->value;
@@ -1257,21 +1258,18 @@ on_format6_window_activate             (GtkMenuItem     *menuitem,
 }
 
 
-
 void
 on_test_pattern_activate               (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-
-    int err;
     quadlet_t value;
     int state[4];
 
     IsoFlowCheck(state);
     
     value= htonl(0x12345678ULL);
-    err= raw1394_write(camera->handle, 0xffc0 | camera->id, CCR_BASE + EEPROM_CNFG, 4, &value);
-    if (!err) MainError("Could not set test pattern registers");
+    if (!raw1394_write(camera->handle, 0xffc0 | camera->id, CCR_BASE + EEPROM_CNFG, 4, &value))
+      MainError("Could not set test pattern registers");
     if (uiinfo->test_pattern==0)
       {
 	value= htonl(0x80000000ULL);
@@ -1282,11 +1280,11 @@ on_test_pattern_activate               (GtkMenuItem     *menuitem,
 	value= htonl(0x00000000ULL);
 	uiinfo->test_pattern=0;
       }
-    err= raw1394_write(camera->handle, 0xffc0 | camera->id, CCR_BASE + TEST_CNFG, 4, &value);
-    if (!err) MainError("Could not set test pattern registers");
+    if (!raw1394_write(camera->handle, 0xffc0 | camera->id, CCR_BASE + TEST_CNFG, 4, &value))
+    MainError("Could not set test pattern registers");
     value= htonl(0x00000000ULL);
-    err= raw1394_write(camera->handle, 0xffc0 | camera->id, CCR_BASE + EEPROM_CNFG, 4, &value);
-    if (!err) MainError("Could not set test pattern registers");
+    if (!raw1394_write(camera->handle, 0xffc0 | camera->id, CCR_BASE + EEPROM_CNFG, 4, &value))
+    MainError("Could not set test pattern registers");
 
     BuildFpsMenu();
     UpdateTriggerFrame();
@@ -1415,20 +1413,17 @@ void
 on_service_iso_toggled                 (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-
-  if (togglebutton->active)
-    IsoStartThread();
-  else
+  if (!silent_ui_update)
     {
-      // BUG: ISO service cannot be stopped if ISO transmission is OFF. This is because we
-      // probe the service list for ISO service presence (GetService in IsoStopThread),
-      // while the ISO service thread is locked up waiting for data. The thread can't
-      // release its mutex, and prevent GetService from completing his job.
-      // THUS: GetService should be able to run WITHOUT locking mutexes! I have thus
-      // removed the mutex lock in GetService, BUT THIS COULD YIELD UNSTABLE SITUATIONS.
-
-      // cleanup services (start with slowest, as defined in thread_base.h, service_t):);
-      CleanThreads(CLEAN_MODE_UI_UPDATE_NOT_ISO);
+      if (togglebutton->active)
+	IsoStartThread();
+      else
+	{
+	  // cleanup services (start with slowest, as defined in thread_base.h, service_t):);
+	  //IsoStopThread();
+	  //fprintf(stderr,"Ooops, stopping ISO thread...\n");
+	  CleanThreads(CLEAN_MODE_UI_UPDATE_NOT_ISO);
+	}
     }
 
 }
@@ -1438,16 +1433,23 @@ void
 on_service_display_toggled             (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-  if (!togglebutton->active)
-    DisplayStopThread();
-  else
+  if (!silent_ui_update)
     {
-      if (GetService(SERVICE_ISO)==NULL) // start ISO if not started yet
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,
-								     "service_iso")),TRUE);
-      if (porthole_is_open)
-	DisplayStartThread();
-    } 
+      if (togglebutton->active)
+	{
+	  if (GetService(SERVICE_ISO)==NULL)
+	    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"service_iso")), TRUE);
+	  if (porthole_is_open)
+	    DisplayStartThread();
+	  
+	  uiinfo->want_display=1;
+	} 
+      else
+	{
+	  DisplayStopThread();
+	  uiinfo->want_display=0;
+	} 
+    }
 }
 
 
@@ -1455,16 +1457,17 @@ void
 on_service_save_toggled                (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-
-  if (togglebutton->active)
+  if (!silent_ui_update)
     {
-      if (GetService(SERVICE_ISO)==NULL) // start ISO if not started yet
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,
-								     "service_iso")),TRUE);
-      SaveStartThread();
+      if (togglebutton->active)
+	{
+	  if (GetService(SERVICE_ISO)==NULL)
+	    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"service_iso")), TRUE);
+	  SaveStartThread();
+	}
+      else
+	SaveStopThread();
     }
-  else
-    SaveStopThread();
 }
 
 
@@ -1472,18 +1475,17 @@ void
 on_service_ftp_toggled                 (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-
-  if (togglebutton->active)
+  if (!silent_ui_update)
     {
-      if (GetService(SERVICE_ISO)==NULL) // start ISO if not started yet
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,
-								     "service_iso")),TRUE);
-      FtpStartThread();
+      if (togglebutton->active)
+	{
+	  if (GetService(SERVICE_ISO)==NULL)
+	    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"service_iso")), TRUE);
+	  FtpStartThread();
+	}
+      else
+	FtpStopThread();
     }
-  else
-    FtpStopThread();
-    
-  
 }
 
 
