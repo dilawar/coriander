@@ -230,7 +230,7 @@ typedef struct _Chain_T
   struct tms tms_buf;
   clock_t prev_time;
   clock_t current_time;
-  int timeout_func_id;
+  //int timeout_func_id;
   int fps_frames;
   float fps;
 

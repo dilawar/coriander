@@ -151,7 +151,7 @@ gint IsoStartThread(camera_t* cam)
     pthread_mutex_lock(&iso_service->mutex_struct);
     InsertChain(cam,iso_service);
 
-    iso_service->timeout_func_id=-1;
+    //iso_service->timeout_func_id=-1;
     if (pthread_create(&iso_service->thread, NULL, IsoThread,(void*) iso_service)) {
       RemoveChain(cam, iso_service);
       pthread_mutex_unlock(&iso_service->mutex_struct);
@@ -160,9 +160,6 @@ gint IsoStartThread(camera_t* cam)
       return(-1);
     }
     else {
-      if ((cam==camera)&&(iso_service->timeout_func_id==-1)) {
-	iso_service->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)IsoShowFPS, (gpointer*) iso_service);
-      }
       pthread_mutex_unlock(&iso_service->mutex_struct);
       pthread_mutex_unlock(&iso_service->mutex_data);
     }
@@ -194,36 +191,6 @@ IsoCleanupThread(void* arg)
 
 }
  
-int
-IsoShowFPS(gpointer *data)
-{
-  chain_t* iso_service;
-  char *tmp_string;
-
-  tmp_string=(char*)malloc(20*sizeof(char));
-
-  iso_service=(chain_t*)data;
-
-  if (iso_service->fps_frames>0)
-    sprintf(tmp_string," %.3f",iso_service->fps);
-  else
-    sprintf(tmp_string," %.3f",fabs(0.0));
-    
-  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_receive"),
-		       ctxt.fps_receive_ctxt, ctxt.fps_receive_id);
-  ctxt.fps_receive_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_receive"),
-					 ctxt.fps_receive_ctxt, tmp_string);
-  
-  pthread_mutex_lock(&iso_service->mutex_data);
-  iso_service->prev_time=iso_service->current_time;
-  iso_service->fps_frames=0;
-  pthread_mutex_unlock(&iso_service->mutex_data);
-
-  free(tmp_string);
-
-  return 1;
-}
-
 void*
 IsoThread(void* arg)
 {
@@ -358,12 +325,7 @@ gint IsoStopThread(camera_t* cam)
     pthread_join(iso_service->thread, NULL);
     pthread_mutex_lock(&iso_service->mutex_data);
     pthread_mutex_lock(&iso_service->mutex_struct);
-    if ((cam==camera)&&(iso_service->timeout_func_id!=-1)) {
-      gtk_timeout_remove(iso_service->timeout_func_id);
-      gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_receive"), ctxt.fps_receive_ctxt, ctxt.fps_receive_id);
-      ctxt.fps_receive_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_receive"), ctxt.fps_receive_ctxt, "");
-      iso_service->timeout_func_id=-1;
-    }
+
     RemoveChain(cam,iso_service);
     
     if ((info->temp!=NULL)&&(info->temp_allocated>0)) {

@@ -70,9 +70,6 @@ typedef struct
 
 } displaythread_info_t;
 
-int
-DisplayShowFPS(gpointer *data);
-
 gint
 DisplayStartThread(camera_t* cam);
 

@@ -87,9 +87,6 @@ FtpThread(void* arg);
 gint
 FtpStopThread(camera_t* cam);
 
-int
-FtpShowFPS(gpointer *data);
-
 void
 FtpThreadCheckParams(chain_t *ftp_service);
 

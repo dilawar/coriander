@@ -71,9 +71,6 @@ typedef struct
 
 } savethread_info_t;
 
-int
-SaveShowFPS(gpointer *data);
-
 gint
 SaveStartThread(camera_t* cam);
 

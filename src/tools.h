@@ -110,12 +110,6 @@ SetAbsValue(int feature);
 void
 GetAbsValue(int feature);
 
-void
-StopFPSDisplay(void);
-
-void
-ResumeFPSDisplay(void);
-
 int
 bus_reset_handler(raw1394handle_t handle, unsigned int generation);
 

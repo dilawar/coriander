@@ -63,9 +63,6 @@ typedef struct
 
 } isothread_info_t;
 
-int
-IsoShowFPS(gpointer *data);
-
 gint
 IsoStartThread(camera_t* cam);
 

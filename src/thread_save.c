@@ -108,10 +108,7 @@ SaveStartThread(camera_t* cam)
       FreeChain(save_service);
       return(-1);
     }
-    save_service->timeout_func_id=-1;
-    if ((cam==camera)&&(save_service->timeout_func_id==-1)) {
-      save_service->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)SaveShowFPS, (gpointer*) save_service);
-    }
+
     pthread_mutex_unlock(&save_service->mutex_struct);
     pthread_mutex_unlock(&save_service->mutex_data);
     
@@ -119,37 +116,6 @@ SaveStartThread(camera_t* cam)
   
   return (1);
 }
-
-int
-SaveShowFPS(gpointer *data)
-{
-  chain_t* save_service;
-  char *tmp_string;
-
-  tmp_string=(char*)malloc(20*sizeof(char));
-
-  save_service=(chain_t*)data;
-
-  if (save_service->fps_frames>0)
-    sprintf(tmp_string," %.3f",save_service->fps);
-  else
-    sprintf(tmp_string," %.3f",fabs(0.0));
-
-  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_save"),
-		       ctxt.fps_save_ctxt, ctxt.fps_save_id);
-  ctxt.fps_save_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_save"),
-					 ctxt.fps_save_ctxt, tmp_string);
-  
-  pthread_mutex_lock(&save_service->mutex_data);
-  save_service->prev_time=save_service->current_time;
-  save_service->fps_frames=0;
-  pthread_mutex_unlock(&save_service->mutex_data);
-
-  free(tmp_string);
-
-  return 1;
-}
-
 
 void*
 SaveCleanupThread(void* arg) 
@@ -342,12 +308,6 @@ SaveStopThread(camera_t* cam)
     
     pthread_mutex_lock(&save_service->mutex_data);
     pthread_mutex_lock(&save_service->mutex_struct);
-    if ((cam==camera)&&(save_service->timeout_func_id!=-1)) {
-      gtk_timeout_remove(save_service->timeout_func_id);
-      gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_save"), ctxt.fps_save_ctxt, ctxt.fps_save_id);
-      ctxt.fps_save_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_save"), ctxt.fps_save_ctxt, "");
-      save_service->timeout_func_id=-1;
-    }
     RemoveChain(cam,save_service);
     
     /* Do custom cleanups here...*/

@@ -571,6 +571,7 @@ UpdateServiceTree(void)
   GtkCList *list;
   camera_t* cam;
   chain_t* service;
+  char tmp_string[20];
 
   list=(GtkCList*)(lookup_widget(main_window,"service_clist"));
 
@@ -594,17 +595,122 @@ UpdateServiceTree(void)
     for (i=SERVICE_ISO;i<=SERVICE_FTP;i++) {
       service=GetService(cam,i);
       if (service!=NULL) {
-	switch(i) {
-	  case 0: sprintf(temp[0],"     Receive");break;
-	  case 1: sprintf(temp[0],"     Display");break;
-	  case 2: sprintf(temp[0],"     Save   ");break;
-	  case 3: sprintf(temp[0],"     V4L    ");break;
-	  case 4: sprintf(temp[0],"     FTP    ");break;
-	  default: sprintf(temp[0],"!! Unknown service ID !!");break;
+
+	if (service->fps_frames>0) {
+	  sprintf(tmp_string," %.3f",service->fps);
+	  sprintf(temp[1],"%.5f", service->fps);
 	}
-	sprintf(temp[1],"%.5f", service->fps);
+	else {
+	  sprintf(tmp_string," %.3f",fabs(0.0));
+	  sprintf(temp[1],"%.5f", fabs(0.0));
+	}
+
+	switch(i) {
+	case SERVICE_ISO:
+	  sprintf(temp[0],"     Receive");
+	  if (cam==camera) {
+	    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_receive"),
+				 ctxt.fps_receive_ctxt, ctxt.fps_receive_id);
+	    ctxt.fps_receive_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_receive"),
+						   ctxt.fps_receive_ctxt, tmp_string);
+	  }
+	  break;
+	case SERVICE_DISPLAY:
+	  sprintf(temp[0],"     Display");
+	  if (cam==camera) {
+	    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_display"),
+				 ctxt.fps_display_ctxt, ctxt.fps_display_id);
+	    ctxt.fps_receive_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_display"),
+						   ctxt.fps_display_ctxt, tmp_string);
+	    }
+	  break;
+	case SERVICE_SAVE:
+	  sprintf(temp[0],"     Save   ");
+	  if (cam==camera) {
+	    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_save"),
+				 ctxt.fps_save_ctxt, ctxt.fps_save_id);
+	    ctxt.fps_receive_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_save"),
+						   ctxt.fps_save_ctxt, tmp_string);
+	  }
+	  break;
+	case SERVICE_V4L:
+	  sprintf(temp[0],"     V4L    ");
+	  if (cam==camera) {
+	    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_v4l"),
+				 ctxt.fps_v4l_ctxt, ctxt.fps_v4l_id);
+	    ctxt.fps_receive_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_v4l"),
+						   ctxt.fps_v4l_ctxt, tmp_string);
+	  }
+	  break;
+	case SERVICE_FTP:
+	  sprintf(temp[0],"     FTP    ");
+	  if (cam==camera) {
+	    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_ftp"),
+				 ctxt.fps_ftp_ctxt, ctxt.fps_ftp_id);
+	    ctxt.fps_receive_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_ftp"),
+						   ctxt.fps_ftp_ctxt, tmp_string);
+	  }
+	  break;
+	default:
+	  sprintf(temp[0],"!! Unknown service ID !!");
+	  break;
+	}
+	
+	pthread_mutex_lock(&service->mutex_data);
+	service->prev_time=service->current_time;
+	service->fps_frames=0;
+	pthread_mutex_unlock(&service->mutex_data);
+
 	sprintf(temp[2],"%llu", service->processed_frames);
 	gtk_clist_append (list, temp);
+      }
+      else {
+	switch(i) {
+	case SERVICE_ISO:
+	  if (cam==camera) {
+	    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_receive"),
+				 ctxt.fps_receive_ctxt, ctxt.fps_receive_id);
+	    ctxt.fps_receive_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_receive"),
+						   ctxt.fps_receive_ctxt, "");
+	  }
+	  break;
+	case SERVICE_DISPLAY:
+	  if (cam==camera) {
+	    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_display"),
+				 ctxt.fps_display_ctxt, ctxt.fps_display_id);
+	    ctxt.fps_receive_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_display"),
+						   ctxt.fps_display_ctxt, "");
+	    }
+	  break;
+	case SERVICE_SAVE:
+	  if (cam==camera) {
+	    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_save"),
+				 ctxt.fps_save_ctxt, ctxt.fps_save_id);
+	    ctxt.fps_receive_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_save"),
+						   ctxt.fps_save_ctxt, "");
+	  }
+	  break;
+	case SERVICE_V4L:
+	  if (cam==camera) {
+	    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_v4l"),
+				 ctxt.fps_v4l_ctxt, ctxt.fps_v4l_id);
+	    ctxt.fps_receive_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_v4l"),
+						   ctxt.fps_v4l_ctxt, "");
+	  }
+	  break;
+	case SERVICE_FTP:
+	  if (cam==camera) {
+	    gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_ftp"),
+				 ctxt.fps_ftp_ctxt, ctxt.fps_ftp_id);
+	    ctxt.fps_receive_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_ftp"),
+						   ctxt.fps_ftp_ctxt,"");
+	  }
+	  break;
+	default:
+	  sprintf(temp[0],"!! Unknown service ID !!");
+	  break;
+	}
+
       }
     }
     cam=cam->next;

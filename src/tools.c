@@ -571,111 +571,6 @@ GetAbsValue(int feature)
   free(string);
 }
 
-
-void
-StopFPSDisplay(void)
-{
-  chain_t *service;
-
-  service=GetService(camera, SERVICE_ISO);
-  if (service!=NULL) {
-    if (service->timeout_func_id!=-1) {
-      gtk_timeout_remove(service->timeout_func_id);
-      gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_receive"),
-			   ctxt.fps_receive_ctxt, ctxt.fps_receive_id);
-      ctxt.fps_receive_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_receive"),
-					     ctxt.fps_receive_ctxt, "");
-      service->timeout_func_id=-1;
-    }  
-  }
-  service=GetService(camera, SERVICE_DISPLAY);
-  if (service!=NULL) {
-    if (service->timeout_func_id!=-1) {
-      gtk_timeout_remove(service->timeout_func_id);
-      gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_display"),
-			   ctxt.fps_display_ctxt, ctxt.fps_display_id);
-      ctxt.fps_display_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_display"),
-					     ctxt.fps_display_ctxt, "");
-      service->timeout_func_id=-1;
-    }
-  }
-  service=GetService(camera, SERVICE_SAVE);
-  if (service!=NULL) {
-    if (service->timeout_func_id!=-1) {
-      gtk_timeout_remove(service->timeout_func_id);
-      gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_save"),
-			   ctxt.fps_save_ctxt, ctxt.fps_save_id);
-      ctxt.fps_save_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_save"),
-					  ctxt.fps_save_ctxt, "");
-      service->timeout_func_id=-1;
-    }
-  }
-  service=GetService(camera, SERVICE_FTP);
-  if (service!=NULL) {
-    if (service->timeout_func_id!=-1) {
-      gtk_timeout_remove(service->timeout_func_id);
-      gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_ftp"),
-			   ctxt.fps_ftp_ctxt, ctxt.fps_ftp_id);
-      ctxt.fps_ftp_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_ftp"),
-					 ctxt.fps_ftp_ctxt, "");
-      service->timeout_func_id=-1;
-    }
-  }
-  service=GetService(camera, SERVICE_V4L);
-  if (service!=NULL) {
-    if (service->timeout_func_id!=-1) {
-      gtk_timeout_remove(service->timeout_func_id);
-      gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_v4l"),
-			   ctxt.fps_v4l_ctxt, ctxt.fps_v4l_id);
-      ctxt.fps_v4l_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_v4l"),
-					 ctxt.fps_v4l_ctxt, "");
-      service->timeout_func_id=-1;
-    }
-  }
-}
-
-void
-ResumeFPSDisplay(void)
-{
-  chain_t *service;
-
-  service=GetService(camera, SERVICE_ISO);
-  if (service!=NULL) {
-    if (service->timeout_func_id!=-1) {
-      gtk_timeout_remove(service->timeout_func_id);
-    }
-    service->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)IsoShowFPS, (gpointer*) service);
-  }
-  service=GetService(camera, SERVICE_DISPLAY);
-  if (service!=NULL) {
-    if (service->timeout_func_id!=-1) {
-      gtk_timeout_remove(service->timeout_func_id);
-    }
-    service->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)DisplayShowFPS, (gpointer*) service); 
-  }
-  service=GetService(camera, SERVICE_SAVE);
-  if (service!=NULL) {
-    if (service->timeout_func_id!=-1) {
-      gtk_timeout_remove(service->timeout_func_id);
-    }
-    service->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)SaveShowFPS, (gpointer*) service);
-  }
-  service=GetService(camera, SERVICE_FTP);
-  if (service!=NULL) {
-    if (service->timeout_func_id!=-1) {
-      gtk_timeout_remove(service->timeout_func_id);
-    }
-    service->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)FtpShowFPS, (gpointer*) service);
-  }
-  service=GetService(camera, SERVICE_V4L);
-  if (service!=NULL) {
-    if (service->timeout_func_id!=-1) {
-      gtk_timeout_remove(service->timeout_func_id);
-    }
-    service->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)V4lShowFPS, (gpointer*) service);
-  }
-}
-
 /*
   The timeout/bus_reset handling technique is 'strongly inspired' by the code found in
   GScanbus by Andreas Micklei.
@@ -698,9 +593,6 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation) {
   bi.port_camera_num=NULL;
   bi.camera_nodes=NULL;
   MainStatus("Bus reset detected");
-
-  if (camera!=NULL)
-    StopFPSDisplay();
 
   gtk_widget_set_sensitive(main_window,FALSE);
 
@@ -930,9 +822,6 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation) {
   free(bi.port_camera_num);
   free(bi.camera_nodes);
 
-  if (camera!=NULL)
-    ResumeFPSDisplay();
-    
   //fprintf(stderr,"resumed fps display\n");
 
   //fprintf(stderr,"Finished handling bus reset\n");

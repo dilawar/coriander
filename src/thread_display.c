@@ -63,10 +63,7 @@ DisplayStartThread(camera_t* cam)
       FreeChain(display_service);
       return(-1);
     }
-    display_service->timeout_func_id=-1;
-    if ((cam==camera)&&(display_service->timeout_func_id==-1)) {
-      display_service->timeout_func_id=gtk_timeout_add(1000, (GtkFunction)DisplayShowFPS, (gpointer*) display_service);
-    }
+
     pthread_mutex_unlock(&display_service->mutex_struct);
     pthread_mutex_unlock(&display_service->mutex_data);
     
@@ -87,37 +84,6 @@ DisplayCleanupThread(void* arg)
   pthread_mutex_unlock(&display_service->mutex_data);
 
   return(NULL);
-}
-
-  
-int
-DisplayShowFPS(gpointer *data)
-{
-  chain_t* display_service;
-  char *tmp_string;
-
-  tmp_string=(char*)malloc(20*sizeof(char));
-
-  display_service=(chain_t*)data;
-
-  if (display_service->fps_frames>0)
-    sprintf(tmp_string," %.3f",display_service->fps);
-  else
-    sprintf(tmp_string," %.3f",fabs(0.0));
-
-  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_display"),
-		       ctxt.fps_display_ctxt, ctxt.fps_display_id);
-  ctxt.fps_display_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_display"),
-					 ctxt.fps_display_ctxt, tmp_string);
-  
-  pthread_mutex_lock(&display_service->mutex_data);
-  display_service->prev_time=display_service->current_time;
-  display_service->fps_frames=0;
-  pthread_mutex_unlock(&display_service->mutex_data);
-
-  free(tmp_string);
-
-  return 1;
 }
 
 
@@ -254,12 +220,6 @@ DisplayStopThread(camera_t* cam)
     
     pthread_mutex_lock(&display_service->mutex_data);
     pthread_mutex_lock(&display_service->mutex_struct);
-    if ((cam==camera)&&(display_service->timeout_func_id!=-1)) {
-      gtk_timeout_remove(display_service->timeout_func_id);
-      gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"fps_display"), ctxt.fps_display_ctxt, ctxt.fps_display_id);
-      ctxt.fps_display_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"fps_display"), ctxt.fps_display_ctxt, "");
-      display_service->timeout_func_id=-1;
-    }
     RemoveChain(cam,display_service);
 #ifdef HAVE_SDLLIB
     SDLQuit(display_service);

@@ -55,10 +55,6 @@ typedef struct
 
 } v4lthread_info_t;
 
-
-int
-V4lShowFPS(gpointer *data);
-
 gint
 V4lStartThread(camera_t* cam);
 
