@@ -33,6 +33,7 @@
 #include "definitions.h"
 #include "tools.h"
 #include "preferences.h"
+#include "thread_base.h"
 #include "raw1394support.h"
 #include <libdc1394/dc1394_control.h>
 #include <libraw1394/raw1394.h>
@@ -54,8 +55,10 @@ dc1394_feature_set *feature_set;
 dc1394_feature_set *feature_sets;
 dc1394_miscinfo *misc_info;
 dc1394_miscinfo *misc_infos;
-dc1394_cameracapture *capture;
-dc1394_cameracapture *captures;
+//dc1394_cameracapture *capture;
+//dc1394_cameracapture *captures;
+chain_t **image_pipes;
+chain_t *image_pipe;
 Format7Info *format7_infos;
 Format7Info *format7_info;
 UIInfo *uiinfos;
@@ -67,6 +70,7 @@ SelfIdPacket_t *selfid;
 SelfIdPacket_t *selfids;
 PrefsInfo preferences;
 int porthole_is_open;
+int silent_ui_update;
 
 int camera_num;
 int current_camera;
@@ -111,7 +115,7 @@ main (int argc, char *argv[])
   cameras=(dc1394_camerainfo*)calloc(camera_num,sizeof(dc1394_camerainfo));
   feature_sets=(dc1394_feature_set*)calloc(camera_num,sizeof(dc1394_feature_set));
   misc_infos=(dc1394_miscinfo*)calloc(camera_num,sizeof(dc1394_miscinfo));
-  captures=(dc1394_cameracapture*)calloc(camera_num,sizeof(dc1394_cameracapture));
+  image_pipes=(chain_t**)calloc(camera_num,sizeof(chain_t*));
   format7_infos=(Format7Info*)calloc(camera_num,sizeof(Format7Info));
   uiinfos=(UIInfo*)calloc(camera_num,sizeof(UIInfo));
   selfids=(SelfIdPacket_t*)calloc(camera_num,sizeof(SelfIdPacket_t));
@@ -121,13 +125,19 @@ main (int argc, char *argv[])
     {
       err*=dc1394_get_camera_misc_info(handle, camera_nodes[i], &misc_infos[i]);
       err*=dc1394_get_camera_info(handle, camera_nodes[i], &cameras[i]);
-      err*=dc1394_get_camera_feature_set(cameras[i].handle, cameras[i].id, &feature_sets[i]);
+      err*=dc1394_get_camera_feature_set(handle, cameras[i].id, &feature_sets[i]);
       if (!err) MainError("Could not get camera basic informations!");
-      GetFormat7Capabilities(handle, camera_nodes[i], &format7_infos[i]);
+      GetFormat7Capabilities(handle, cameras[i].id, &format7_infos[i]);
+      image_pipes[i]=NULL;
       uiinfos[i].test_pattern=0;
-      uiinfos[i].overlay_power=0;
+      uiinfos[i].want_display=0;
     }
   GrabSelfIds(handle);
+
+  silent_ui_update=0;
+
+  for (i=0;i<camera_num;i++)
+    SetChannel(i);
 
   // current camera is the first camera:
   SelectCamera(0);
@@ -163,7 +173,7 @@ main (int argc, char *argv[])
   free(cameras);
   free(feature_sets);
   free(misc_infos);
-  free(captures);
+  free(image_pipes);
   free(format7_infos);
   free(uiinfos);
   free(selfids);
