@@ -53,6 +53,7 @@ LoadConfigFile(void)
   preferences.save_filename = gnome_config_get_string("coriander/save/filename=test.jpg");
   preferences.save_scratch = gnome_config_get_int("coriander/save/scratch=0");
   preferences.save_period = gnome_config_get_int("coriander/save/period=1");
+  preferences.save_convert = gnome_config_get_int("coriander/save/convert=1");
   g_free(preferences.ftp_address);
   preferences.ftp_address = gnome_config_get_string("coriander/ftp/address=ftp.sf.net");
   g_free(preferences.ftp_user);
@@ -100,6 +101,7 @@ WriteConfigFile(void)
   gnome_config_set_string("coriander/save/filename",preferences.save_filename);
   gnome_config_set_int("coriander/save/scratch",preferences.save_scratch);
   gnome_config_set_int("coriander/save/period",preferences.save_period);
+  gnome_config_set_int("coriander/save/convert",preferences.save_convert);
   gnome_config_set_string("coriander/ftp/address",preferences.ftp_address);
   gnome_config_set_string("coriander/ftp/user",preferences.ftp_user);
   gnome_config_set_string("coriander/ftp/password",preferences.ftp_password);
@@ -121,7 +123,7 @@ WriteConfigFile(void)
   gnome_config_set_int("coriander/real/compatibility",preferences.real_compatibility);
   gnome_config_set_int("coriander/real/period",preferences.real_period);
 
-  gnome_config_sync();// ???
+  gnome_config_sync();// ??? is necessary, but don't know why...
 }
 
 

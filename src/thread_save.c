@@ -80,7 +80,7 @@ SaveStartThread(void)
       info->counter=0;
       info->save_scratch=preferences.save_scratch;
       // if format extension is ".raw", we dump raw data on the file and perform no conversion
-      info->rawdump=(strstr(".raw",info->filename_ext)!=NULL);
+      info->rawdump=preferences.save_convert;
        
       pthread_mutex_unlock(&save_service->mutex_data);
 
@@ -137,6 +137,7 @@ SaveThread(void* arg)
   savethread_info_t *info=NULL;
   GdkImlibImage *im=NULL;
   long int skip_counter;
+  FILE *fd=NULL;
 
   save_service=(chain_t*)arg;
   pthread_mutex_lock(&save_service->mutex_data);
@@ -148,6 +149,14 @@ SaveThread(void* arg)
   pthread_setcancelstate(PTHREAD_CANCEL_DISABLE,NULL);
   pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED,NULL);
   pthread_mutex_unlock(&save_service->mutex_data);
+
+  if (info->save_scratch==SAVE_SCRATCH_SEQUENCE)
+   {
+     sprintf(filename_out, "%s%s", info->filename,info->filename_ext);
+     fd=fopen(filename_out,"w");
+     if (fd==NULL)
+       MainError("Can't open file for saving");
+   }
 
   while (1)
     { 
@@ -167,19 +176,27 @@ SaveThread(void* arg)
 	      if (skip_counter==(info->period-1))
 		{
 		  skip_counter=0;
-		  if (info->save_scratch == SAVE_SCRATCH_OVERWRITE)
+		  // get filename
+		  switch (info->save_scratch)
 		    {
+		    case SAVE_SCRATCH_OVERWRITE:
 		      sprintf(filename_out, "%s%s", info->filename,info->filename_ext);
+		      break;
+		    case SAVE_SCRATCH_SEQUENTIAL:
+		      sprintf(filename_out, "%s_%10.10li%s", info->filename,
+			      info->counter++, info->filename_ext);
+		      break;
+		    default:
+		      break;
 		    }
-		  else
-		    if (info->save_scratch == SAVE_SCRATCH_SEQUENTIAL)
-		      {
-			sprintf(filename_out, "%s_%10.10li%s", info->filename,
-				info->counter++, info->filename_ext);
-		      }
-		  
+
 		  if (info->rawdump)
-		    Dump2File(filename_out,save_service);
+		    {
+		      if (info->save_scratch==SAVE_SCRATCH_SEQUENCE)
+			fwrite(save_service->current_buffer, 1, save_service->bytes_per_frame, fd);
+		      else
+			Dump2File(filename_out,save_service);
+		    }
 		  else
 		    {
 		      convert_to_rgb(save_service->current_buffer, info->save_buffer,
@@ -202,6 +219,8 @@ SaveThread(void* arg)
 	    }
 	}
     }
+  if (info->save_scratch==SAVE_SCRATCH_SEQUENCE)
+    fclose(fd);
 }
 
 
@@ -243,7 +262,7 @@ SaveStopThread(void)
 }
 
 void
-Dump2File( char *name, chain_t *service)
+Dump2File(char *name, chain_t *service)
 {
   FILE *fd;
   fd=fopen(name,"w");

@@ -2,6 +2,15 @@ Coriander, (c) 2000-2002 Damien Douxchamps <douxchamps@ieee.org>
 
 Changes towards version 0.25
 
+   Apr 15, 2002, by Damien Douxchamps
+   - changed the raw output selection: it is now an option in the
+     preferences window. The 'raw' extention is no longer mendatory. 
+   - added a 'sequence' option in the scratch options for saving.
+     Selecting this option will let you write continuous video
+     sequences to disk. This mode is only available with raw dumping
+     option. 
+   - updated and applied Dan's patch for interface.c.
+	
    Apr 08, 2002, by Damien Douxchamps
    - Fixed a serious bug in propagation of images within the image
      pipe. This leaded to duplicate images in file saving,...

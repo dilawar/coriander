@@ -1011,6 +1011,7 @@ on_prefs_save_seq_toggled              (GtkToggleButton *togglebutton,
 {
   if (togglebutton->active)
     preferences.save_scratch=SAVE_SCRATCH_SEQUENTIAL;
+  UpdatePrefsSaveFrame();
 }
 
 
@@ -1020,6 +1021,36 @@ on_prefs_save_scratch_toggled          (GtkToggleButton *togglebutton,
 {
   if (togglebutton->active)
     preferences.save_scratch=SAVE_SCRATCH_OVERWRITE;
+  UpdatePrefsSaveFrame();
+}
+
+
+void
+on_prefs_save_video_toggled            (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  if (togglebutton->active)
+    preferences.save_scratch=SAVE_SCRATCH_SEQUENCE;
+  UpdatePrefsSaveFrame();
+}
+
+void
+on_prefs_save_convert_toggled          (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  if (togglebutton->active)
+    preferences.save_convert=SAVE_CONVERT_ON;
+  UpdatePrefsSaveFrame();
+}
+
+
+void
+on_prefs_save_noconvert_toggled        (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  if (togglebutton->active)
+    preferences.save_convert=SAVE_CONVERT_OFF;
+  UpdatePrefsSaveFrame();
 }
 
 
@@ -1316,4 +1347,5 @@ on_key_bindings_activate               (GtkMenuItem     *menuitem,
   BuildHelpWindow();
   gtk_widget_show(help_window);
 }
+
 

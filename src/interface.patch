@@ -1,6 +1,6 @@
---- interface.c.orig	Tue Jan 29 22:48:48 2002
-+++ interface.c	Tue Jan 29 22:51:34 2002
-@@ -580,6 +580,10 @@ create_commander_window (void)
+--- interface.c.orig	Mon Apr 15 09:59:20 2002
++++ interface.c	Mon Apr 15 10:22:32 2002
+@@ -587,6 +587,10 @@
    GtkWidget *label83;
    GtkWidget *main_status;
  
@@ -10,8 +10,8 @@
 +
    commander_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
    gtk_object_set_data (GTK_OBJECT (commander_window), "commander_window", commander_window);
-   gtk_window_set_title (GTK_WINDOW (commander_window), _("Coriander 0.22"));
-@@ -598,8 +602,15 @@ create_commander_window (void)
+   gtk_window_set_title (GTK_WINDOW (commander_window), _("Coriander 0.24"));
+@@ -605,8 +609,15 @@
                              (GtkDestroyNotify) gtk_widget_unref);
    gtk_widget_show (menubar);
    gtk_box_pack_start (GTK_BOX (vbox26), menubar, FALSE, FALSE, 0);

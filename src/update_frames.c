@@ -78,6 +78,10 @@ UpdatePrefsReceiveFrame(void)
 void
 UpdatePrefsSaveFrame(void)
 {
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (lookup_widget(preferences_window,"prefs_save_noconvert")),
+			       preferences.save_scratch==SAVE_SCRATCH_SEQUENCE);
+  gtk_widget_set_sensitive(lookup_widget(preferences_window,"prefs_save_convert"),
+			   preferences.save_scratch!=SAVE_SCRATCH_SEQUENCE);
 }
 
 

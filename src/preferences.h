@@ -33,6 +33,7 @@ typedef struct _PrefsInfo
   char *save_filename;
   int save_scratch;
   int save_period;
+  int save_convert;
   char *ftp_address;
   char *ftp_user;
   char *ftp_password;

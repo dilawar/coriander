@@ -29,8 +29,16 @@
 typedef enum
 {
   SAVE_SCRATCH_SEQUENTIAL,
-  SAVE_SCRATCH_OVERWRITE
+  SAVE_SCRATCH_OVERWRITE,
+  SAVE_SCRATCH_SEQUENCE
 } save_scratch_t;
+
+
+typedef enum
+{
+  SAVE_CONVERT_ON,
+  SAVE_CONVERT_OFF
+} save_convert_t;
 
 
 typedef struct

@@ -452,3 +452,15 @@ on_format7_packet_size_changed               (GtkAdjustment    *adj,
 void
 on_key_bindings_activate               (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
+
+void
+on_prefs_save_video_toggled            (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_prefs_save_convert_toggled          (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_prefs_save_noconvert_toggled        (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);

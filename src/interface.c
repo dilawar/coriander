@@ -587,6 +587,10 @@ create_commander_window (void)
   GtkWidget *label83;
   GtkWidget *main_status;
 
+  /* BEGIN additions by Dan Dennedy via interface.patch */
+  GtkAccelGroup *accel_group;
+  /* END additions */
+
   commander_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_object_set_data (GTK_OBJECT (commander_window), "commander_window", commander_window);
   gtk_window_set_title (GTK_WINDOW (commander_window), _("Coriander 0.24"));
@@ -605,8 +609,15 @@ create_commander_window (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (menubar);
   gtk_box_pack_start (GTK_BOX (vbox26), menubar, FALSE, FALSE, 0);
+  
+  /* BEGIN additions by Dan Dennedy via interface.patch */
+  accel_group = gtk_accel_group_new();
+  gtk_accel_group_attach(accel_group, GTK_OBJECT(commander_window));
+  /* END additions */
+  
+  /* modified by Dan Dennedy for menu accellerators */
   gnome_app_fill_menu (GTK_MENU_SHELL (menubar), menubar_uiinfo,
-                       NULL, FALSE, 0);
+                       accel_group, TRUE, 0);
 
   gtk_widget_ref (menubar_uiinfo[0].widget);
   gtk_object_set_data_full (GTK_OBJECT (commander_window), "file",
@@ -3152,6 +3163,12 @@ create_preferences_window (void)
   GSList *save_mode_group = NULL;
   GtkWidget *prefs_save_seq;
   GtkWidget *prefs_save_scratch;
+  GtkWidget *prefs_save_video;
+  GtkWidget *prefs_save_convert_frame;
+  GtkWidget *vbox71;
+  GSList *save_convert_group = NULL;
+  GtkWidget *prefs_save_convert;
+  GtkWidget *prefs_save_noconvert;
   GtkWidget *prefs_save_file_frame;
   GtkWidget *hbox51;
   GtkWidget *prefs_save_filename;
@@ -3585,6 +3602,46 @@ create_preferences_window (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (prefs_save_scratch);
   gtk_box_pack_start (GTK_BOX (vbox_capture_mode), prefs_save_scratch, FALSE, FALSE, 0);
+
+  prefs_save_video = gtk_radio_button_new_with_label (save_mode_group, _("Write a video sequence"));
+  save_mode_group = gtk_radio_button_group (GTK_RADIO_BUTTON (prefs_save_video));
+  gtk_widget_ref (prefs_save_video);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "prefs_save_video", prefs_save_video,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (prefs_save_video);
+  gtk_box_pack_start (GTK_BOX (vbox_capture_mode), prefs_save_video, FALSE, FALSE, 0);
+
+  prefs_save_convert_frame = gtk_frame_new (_("Conversions"));
+  gtk_widget_ref (prefs_save_convert_frame);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "prefs_save_convert_frame", prefs_save_convert_frame,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (prefs_save_convert_frame);
+  gtk_box_pack_start (GTK_BOX (vbox54), prefs_save_convert_frame, TRUE, TRUE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (prefs_save_convert_frame), 5);
+
+  vbox71 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_ref (vbox71);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "vbox71", vbox71,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (vbox71);
+  gtk_container_add (GTK_CONTAINER (prefs_save_convert_frame), vbox71);
+
+  prefs_save_convert = gtk_radio_button_new_with_label (save_convert_group, _("Convert image using ImLib"));
+  save_convert_group = gtk_radio_button_group (GTK_RADIO_BUTTON (prefs_save_convert));
+  gtk_widget_ref (prefs_save_convert);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "prefs_save_convert", prefs_save_convert,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (prefs_save_convert);
+  gtk_box_pack_start (GTK_BOX (vbox71), prefs_save_convert, FALSE, FALSE, 0);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (prefs_save_convert), TRUE);
+
+  prefs_save_noconvert = gtk_radio_button_new_with_label (save_convert_group, _("No conversion: dump raw data"));
+  save_convert_group = gtk_radio_button_group (GTK_RADIO_BUTTON (prefs_save_noconvert));
+  gtk_widget_ref (prefs_save_noconvert);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "prefs_save_noconvert", prefs_save_noconvert,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (prefs_save_noconvert);
+  gtk_box_pack_start (GTK_BOX (vbox71), prefs_save_noconvert, FALSE, FALSE, 0);
 
   prefs_save_file_frame = gtk_frame_new (_("Filename"));
   gtk_widget_ref (prefs_save_file_frame);
@@ -4347,6 +4404,15 @@ create_preferences_window (void)
                       NULL);
   gtk_signal_connect (GTK_OBJECT (prefs_save_scratch), "toggled",
                       GTK_SIGNAL_FUNC (on_prefs_save_scratch_toggled),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (prefs_save_video), "toggled",
+                      GTK_SIGNAL_FUNC (on_prefs_save_video_toggled),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (prefs_save_convert), "toggled",
+                      GTK_SIGNAL_FUNC (on_prefs_save_convert_toggled),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (prefs_save_noconvert), "toggled",
+                      GTK_SIGNAL_FUNC (on_prefs_save_noconvert_toggled),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (prefs_save_choose), "clicked",
                       GTK_SIGNAL_FUNC (on_prefs_save_choose_clicked),
