@@ -138,14 +138,14 @@ gint IsoStartThread(camera_t* cam)
     info->temp_size=0;
     info->temp_allocated=0;
 
-    pthread_mutex_unlock(&iso_service->mutex_data);
+    //pthread_mutex_unlock(&iso_service->mutex_data);
     
     pthread_mutex_lock(&iso_service->mutex_struct);
     InsertChain(cam,iso_service);
-    pthread_mutex_unlock(&iso_service->mutex_struct);
+    //pthread_mutex_unlock(&iso_service->mutex_struct);
     
-    pthread_mutex_lock(&iso_service->mutex_data);
-    pthread_mutex_lock(&iso_service->mutex_struct);
+    //pthread_mutex_lock(&iso_service->mutex_data);
+    //pthread_mutex_lock(&iso_service->mutex_struct);
     if (pthread_create(&iso_service->thread, NULL, IsoThread,(void*) iso_service)) {
       RemoveChain(cam, iso_service);
       pthread_mutex_unlock(&iso_service->mutex_struct);

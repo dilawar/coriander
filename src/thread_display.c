@@ -54,14 +54,14 @@ DisplayStartThread(camera_t* cam)
     info->period=preferences.display_period;
     CommonChainSetup(cam, display_service,SERVICE_DISPLAY);
     
-    pthread_mutex_unlock(&display_service->mutex_data);
+    //pthread_mutex_unlock(&display_service->mutex_data);
     
     pthread_mutex_lock(&display_service->mutex_struct);
     InsertChain(cam, display_service);
-    pthread_mutex_unlock(&display_service->mutex_struct);
+    //pthread_mutex_unlock(&display_service->mutex_struct);
     
-    pthread_mutex_lock(&display_service->mutex_data);
-    pthread_mutex_lock(&display_service->mutex_struct);
+    //pthread_mutex_lock(&display_service->mutex_data);
+    //pthread_mutex_lock(&display_service->mutex_struct);
     if (pthread_create(&display_service->thread, NULL, DisplayThread, (void*)display_service)) {
       RemoveChain(cam, display_service);
       pthread_mutex_unlock(&display_service->mutex_struct);
@@ -276,7 +276,7 @@ SDLInit(chain_t *display_service)
     return(0);
   }
   
-  if ( (SDL_SetColorKey( info->SDL_video, SDL_SRCCOLORKEY, 0x0) < 0 ) ) {
+  if (SDL_SetColorKey( info->SDL_video, SDL_SRCCOLORKEY, 0x0) < 0 ) {
     MainError("Failed to set SDL surface key color");
   }
   
@@ -424,7 +424,8 @@ DisplayThreadCheckParams(chain_t *display_service)
   // copy harmless parameters anyway:
   display_service->local_param_copy.bpp=display_service->current_buffer->bpp;
   display_service->local_param_copy.bayer_pattern=display_service->current_buffer->bayer_pattern;
-  //fprintf(stderr,"Display size: %dx%d\n",display_service->current_buffer->width,display_service->current_buffer->height);
+  if (display_service->current_buffer->width==-1)
+    fprintf(stderr,"Display size: %dx%d\n",display_service->current_buffer->width,display_service->current_buffer->height);
 
   // if some parameters changed, we need to re-allocate the local buffers and restart the display
   if ((display_service->current_buffer->width!=display_service->local_param_copy.width)||

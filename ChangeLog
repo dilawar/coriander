@@ -2,6 +2,10 @@ Coriander, (c) 2000-2003 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 0.33
 
+   June 2, 2003, by Damien Douxchamps
+   - fixed uninitialized 'updated' field in the chain_t struct. This sometimes
+     caused crashes when changing mode/format/F7 parameters.
+	
    June 1, 2003, by Damien Douxchamps
    - first implementation of a bus-reset handling process
 	

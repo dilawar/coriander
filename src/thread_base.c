@@ -135,6 +135,8 @@ CommonChainSetup(camera_t* cam, chain_t* chain, service_t req_service)
   InitBuffer(chain->current_buffer);
   InitBuffer(chain->next_buffer);
   InitBuffer(&chain->local_param_copy);
+
+  chain->updated=0;
 }
 
 

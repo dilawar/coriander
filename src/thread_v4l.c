@@ -73,15 +73,15 @@ V4lStartThread(camera_t* cam)
       return(-1);
     }
 
-    pthread_mutex_unlock(&v4l_service->mutex_data);
+    //pthread_mutex_unlock(&v4l_service->mutex_data);
     
     /* Insert chain and start service*/
     pthread_mutex_lock(&v4l_service->mutex_struct);
     InsertChain(cam, v4l_service);
-    pthread_mutex_unlock(&v4l_service->mutex_struct);
+    //pthread_mutex_unlock(&v4l_service->mutex_struct);
     
-    pthread_mutex_lock(&v4l_service->mutex_data);
-    pthread_mutex_lock(&v4l_service->mutex_struct);
+    //pthread_mutex_lock(&v4l_service->mutex_data);
+    //pthread_mutex_lock(&v4l_service->mutex_struct);
     if (pthread_create(&v4l_service->thread, NULL, V4lThread,(void*) v4l_service)) {
       /* error starting thread. You should cleanup here
 	 (free, unset global vars,...):*/

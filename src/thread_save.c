@@ -72,15 +72,15 @@ SaveStartThread(camera_t* cam)
     // if format extension is ".raw", we dump raw data on the file and perform no conversion
     info->rawdump=preferences.save_convert;
     
-    pthread_mutex_unlock(&save_service->mutex_data);
+    //pthread_mutex_unlock(&save_service->mutex_data);
     
     /* Insert chain and start service*/
     pthread_mutex_lock(&save_service->mutex_struct);
     InsertChain(cam, save_service);
-    pthread_mutex_unlock(&save_service->mutex_struct);
+    //pthread_mutex_unlock(&save_service->mutex_struct);
     
-    pthread_mutex_lock(&save_service->mutex_data);
-    pthread_mutex_lock(&save_service->mutex_struct);
+    //pthread_mutex_lock(&save_service->mutex_data);
+    //pthread_mutex_lock(&save_service->mutex_struct);
     if (pthread_create(&save_service->thread, NULL, SaveThread,(void*) save_service)) {
       /* error starting thread. You should cleanup here
 	 (free, unset global vars,...):*/

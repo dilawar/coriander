@@ -89,15 +89,15 @@ FtpStartThread(camera_t* cam)
     FreeChain(ftp_service);
     return(0);
 #endif
-    pthread_mutex_unlock(&ftp_service->mutex_data);
+    //pthread_mutex_unlock(&ftp_service->mutex_data);
     
     /* Insert chain and start service*/
     pthread_mutex_lock(&ftp_service->mutex_struct);
     InsertChain(cam, ftp_service);
-    pthread_mutex_unlock(&ftp_service->mutex_struct);
+    //pthread_mutex_unlock(&ftp_service->mutex_struct);
     
-    pthread_mutex_lock(&ftp_service->mutex_data);
-    pthread_mutex_lock(&ftp_service->mutex_struct);
+    //pthread_mutex_lock(&ftp_service->mutex_data);
+    //pthread_mutex_lock(&ftp_service->mutex_struct);
     if (pthread_create(&ftp_service->thread, NULL, FtpThread,(void*) ftp_service)) {
       /* error starting thread. You should cleanup here
 	 (free, unset global vars,...):*/
