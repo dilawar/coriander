@@ -1,7 +1,7 @@
 _______________________________________________________________________________
 
-	                    Open issues for Coriander 0.24 ...
-	   Damien Douxchamps <douxchamps@ieee.org> , March 20, 2002
+	                    Open issues for Coriander 0.25 ...
+	   Damien Douxchamps <douxchamps@ieee.org> , June 2, 2002
 _______________________________________________________________________________
 
 - video:
@@ -28,3 +28,4 @@ _______________________________________________________________________________
 	  anyway?)
 	- record and play 'scenario' files (files containing a list of
 	  timed commands)
+	- record and recall setup files

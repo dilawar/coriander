@@ -416,9 +416,9 @@ BayerNearestNeighbor(unsigned char *src, unsigned char *dest, int sx, int sy)
   // G R G R G R G R
   // B G B G B G B G
   // G R G R G R G R
-  outR=dest[0];
-  outG=dest[sx*sy];
-  outB=dest[sx*sy*2];
+  outR=&dest[0];
+  outG=&dest[sx*sy];
+  outB=&dest[sx*sy*2];
 
   // R channel
   for (i=0;i<sy;i+=2)//every two lines
