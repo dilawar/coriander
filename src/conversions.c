@@ -25,20 +25,13 @@
 
 extern void swab();
 
-/*macro used to convert a YUV pixel to RGB format
-  from Bart Nabbe
 
-  v*1434 / 2048
-  (u*406 - v*595)/2048
-  u*2078 / 2048
-  bitshift performance enhanced by Damien Douxchamps
-*/
-
+// color conversion functions from Bart Nabbe.
+// corrected by Damien: bad coeficients in YUV2RGB
 #define YUV2RGB(y, u, v, r, g, b)\
-  r = y + ( ((v << 10) + (v << 8) + (v << 7) + (v << 4) + (v << 3) + (v << 1)) >> 11);\
-  g = y - ( ((u << 8) + (u << 7) + (u << 4) + (u << 2) + (u << 1)) >> 11 ) - \
-          ( ((v << 9) + (v << 6) + (v << 4) + (v << 1) + v) >> 11 );\
-  b = y + ( ((u << 11) + (u << 5) - (u << 1)) >> 11);\
+  r = y + ((v*1436) >>10);\
+  g = y - ((u*352 + v*731) >> 10);\
+  b = y + ((u*1814) >> 10);\
   r = r < 0 ? 0 : r;\
   g = g < 0 ? 0 : g;\
   b = b < 0 ? 0 : b;\
@@ -48,9 +41,9 @@ extern void swab();
   
 
 #define RGB2YUV(r, g, b, y, u, v)\
-  y = (9798*r + 19235*g + 3736*b)  >> 15;\
-  u = ((-4784*r - 9437*g + 14221*b) >> 15)  + 128;\
-  v = ((20218*r - 16941*g - 3277*b) >> 15) + 128;\
+  y = (306*r + 601*g + 117*b)  >> 10;\
+  u = ((-172*r - 340*g + 512*b) >> 10)  + 128;\
+  v = ((512*r - 429*g - 83*b) >> 10) + 128;\
   y = y < 0 ? 0 : y;\
   u = u < 0 ? 0 : u;\
   v = v < 0 ? 0 : v;\
