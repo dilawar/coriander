@@ -51,9 +51,10 @@ BuildFormat7Window(void)
   // if we are NOT using F7, check if an F7 mode is supported and use the first one as default
   else { 
     // get first supported F7 mode
-    f=MODE_FORMAT7_MIN;
-    while ((camera->format7_info.mode[f].present==0)&&(f<=MODE_FORMAT7_MAX))
-      f++;
+    for (f=MODE_FORMAT7_MIN;f<=MODE_FORMAT7_MAX;f++) {
+      if (camera->format7_info.mode[f-MODE_FORMAT7_MIN].present>0)
+	break;
+    }
     
     if (camera->format7_info.mode[f].present==0) {
       // F7 not supported. don't build anything
