@@ -1,10 +1,10 @@
-Authors:
+Author:
 -----------
-Dan Dennedy				-- V4L, first video overlay and capture
-Damien Douxchamps			-- The rest
+Damien Douxchamps
 
 Contributors:
 --------------
+Dan Dennedy				-- V4L, first video overlay and capture
 Yasutoshi Onishi			-- big help debugging Format7
 Xiong Quanren				-- big help debugging Bayer decoding functions
 Marcus Lim				-- test pattern function (discontinued)
@@ -14,3 +14,6 @@ Johan Knol				-- debug, additions, and some hot stuff for version 1.1...
 Jacob (Jack) Gryn                       -- PVN saving capability
 Konstantinos G. Derpanis                -- PVN saving capability
 Frederic Devernay			-- Several bug fixes and enhancements
+Anthony Westley				-- save-to-dir, V4L enhancements
+
+If you contributed and your name is not included please let me know! :-)

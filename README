@@ -6,34 +6,32 @@
 
 	      The Gnome IEEE-1394 Digital Camera Controller
 
-     (C) 2000-2004 by Damien Douxchamps <ddouxchamps@users.sf.net>
+     (C) 2000-2005 by Damien Douxchamps <ddouxchamps@users.sf.net>
 
 ==========================================================================
 		
 
 Hello world!
 
-Coriander is a GUI for controlling a Digital Camera (in the sense of
-the IIDC specs issued by the 1394 Trade Association [1]). Due to the
-properties of the IEEE1394 protocol, Coriander can control an IEEE1394
-camera without interferring with the image flow from that camera. It
-can thus be used to setup a camera with Coriander while the video flow
-is used by another application (at least if the image reception is
-switched off).
-
-Coriander offers full camera control (including Format_7 and absolute
-settings), live video display, images and streams saving, images posting
-with FTP and last but not least video4linux (V4L) export. The latter
-service allows you to use Coriander as a V4L video generator for popular
-applications like GnomeMeeting, Effectv,...
+Coriander is a GUI for controlling a Digital Camera (compatible with
+the IIDC specs issued by the 1394 Trade Association [1]). Coriander
+offers full camera control (including Format_7 and absolute settings),
+live video display, images and streams saving, images posting with FTP
+and last but not least video4linux (V4L) export. The latter service
+allows you to use Coriander as a V4L video generator for popular
+applications like GnomeMeeting, Effectv,... Due to the properties of
+the IEEE1394 protocol, Coriander can even control an IEEE1394 camera
+without interferring with the image flow from that camera. You can
+thus setup a camera with Coriander while the video flow is used by
+another application.
 
 				**********
 
-IMPORTANT NOTE: Coriander will NOT work with consumer-grade DV
-cameras (e.g. cameras in which you can insert a tape). These cameras
-should be controlled with he AV/C protocol, please refer to [8]. Also,
-not all industrial cameras are IIDC specs-compliant. Check [7] to have a
-list of currently supported cameras.
+IMPORTANT NOTE: Coriander will NOT work with consumer-grade DV cameras
+(e.g. cameras in which you can insert a tape). These cameras should be
+controlled with he AV/C protocol, please refer to [8]. Also, not all
+industrial cameras are IIDC specs-compliant. Check [7] to have a list
+of currently supported cameras.
 
 				**********
 
@@ -51,8 +49,8 @@ The latest version can be found on the SourceForge website:
 
 http://sourceforge.net/projects/coriander
 
-There is a user manual available at the same URL. Please read it before
-sending tons-o-emails to me!! ;-)
+There is a user manual available at the same URL. Please read it
+before sending tons-o-emails to me!! ;-)
 
 As I can only test Coriander with the cameras I have which means some
 features have not been tested. If you have another camera, please test
@@ -104,8 +102,8 @@ checked.
 - ftplib installed for FTP support [9]
 - SDL installed for display support [11]
 - Glade (for development only)
-- automake 1.4
-- autoconf 2.13
+- automake 1.4 (for development only)
+- autoconf 2.13 (for development only)
 - vloopback module v 0.92 for v4l support [12]. You should apply the patch
   found in the nice effectv program [13] the 0.90 version in order to have
   it working. Effectv can be used to check that v4l is working. Note that
@@ -115,7 +113,6 @@ checked.
 
 In order to have Xv support within SDL, you will maybe need some custom
 drivers, e.g. for Nvidia chipsets [10] or for ATI Rage chipsets [6].
-
 
 References:
 _______________________

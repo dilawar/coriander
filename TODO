@@ -1,6 +1,6 @@
 _______________________________________________________________________________
 
-	              Open issues for Coriander 1.0.0-pre3 ...
+	              Open issues for Coriander 1.0.1 ...
 	          Damien Douxchamps <ddouxchamps@users.sf.net>
 _______________________________________________________________________________
 
@@ -14,7 +14,6 @@ _______________________________________________________________________________
     	- add a button somewhere to quickly capture an image and save it to
 	  disk (this was previously called "capture single").
 	- use available XV color modes to avoid conversions
-	- allow downsampling for every service
 
 - refresh/update:
 	- regularly update ranges in auto-mode
@@ -22,7 +21,6 @@ _______________________________________________________________________________
 - misc stuff:
 	- add autofocus, autowhitebalance and autoexposure (autocontrast)
 	  in software
-	- allow broadcast mode (usefull for sync...)
 
 - services:
 	- add an SHM service
