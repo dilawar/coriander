@@ -1,0 +1,119 @@
+==========================================================================
+
+  		       C   O   R   I   A   N   D   E   R
+
+	         The Gnome IEEE-1394 Digital Camera controller
+
+	           by Damien Douxchamps <douxchamps@ieee.org>
+
+==========================================================================
+		
+
+(This README is for version 0.17)
+
+Hello world!
+
+Coriander is a GUI for controlling a Digital Camera (in the sense of
+the IIDC specs issued by the 1394 Trade Association [1]). Due to the
+properties of the IEEE1394 protocol, Coriander can control an IEEE1394
+camera without interferring with the image flow from that camera. It
+can thus be used to setup a camera with Coriander while the video flow
+is used by another application (at least if the porthole display is
+switched off).
+
+				**********
+
+IMPORTANT NOTE: Coriander will NOT work with consumer-grade DV
+cameras(e.g. cameras in which you can insert a tape). These cameras
+should be controlled with he AV/C protocol, please refer to [8]. Also,
+not all industrial cameras are DC specs-compliant. Check [7] to have a
+list of currently supported cameras.
+
+				**********
+
+Most image processing scientists using 1394 cameras under linux know
+about the libdc1394 library [2]. However, it's a real problem when you
+need to quickly setup a demo or get some frames for testing. If, just
+like me, you also have this problem, Coriander is for you [4]!
+
+This version can be considered as 'stable but with room for
+improvements'. Please have a look at the TODO, ChangeLog and BUGS
+files to see the current status of the project. Contributors are most
+welcome so if you're interrested in making this program better don't
+hesitate to contact me.
+
+The latest version can be found on the SourceForge website:
+
+http://sourceforge.net/projects/coriander
+
+If you're wondering about a user manual, I'm afraid there's nothing
+close to that available right now. I don't think it's absolutely
+necessary: the GUI should be self-explanatory.
+
+As I can only test Coriander with the camera I have (a DFW-VL500 from
+Sony), a lot of features have NOT been tested, and I just can't do it
+in an easy way.  If you have another camera, please test Coriander and
+send me an email with the bugs you identified.
+
+'Hope you enjoy this software (well if you don't, just contribute to
+make it better! ;-)
+
+
+Damien
+
+
+Install instructions:
+_______________________
+
+Basically, you should just type:
+
+./autogen.sh
+make
+make install
+
+If you have troubles, please read the INSTALL file provided.
+
+
+
+Hardware requirements:
+_______________________
+
+- A linux box,
+- an 1394 interface card (PCI, CardBus, whatever...). Try to get an
+  OHCI card as their support is better under linux.
+- a digital camera compatible with DC specs v1.20 or later.
+
+
+
+Software requirements:
+_______________________
+
+- a kernel with 1394 support [3], preferably at least a 2.4.1
+  WITH latest CVS for ieee1394 (very important)
+- XFree 3.3.6 (XFree 4.0.3 recommended for video overlay)
+- Gtk 1.2 & Gtk-devel
+- Glade (for development only)
+- libraw1394 installed, VERSION 0.8.2, not later! [5]
+- libdc1394 installed (latest CVS from sourceforge)
+- kernel modules: ieee1394, ohci1394, raw1394 and video1394
+- automake 1.4
+- autoconf 2.13
+
+In order to have Xv support you will maybe need some custom drivers
+[6].
+
+
+References:
+_______________________
+
+[1] 1394 T.A.	: http://www.1394ta.org
+[2] libdc1394	: http://sourceforge.net/projects/libdc1394
+[3] linux1394	: http://sourceforge.net/projects/linux1394
+[4] Coriander	: http://sourceforge.net/projects/coriander
+[5] linux1394	: http://sourceforge.net/projects/libraw1394
+[6] LiViD    	: http://www.linuxvideo.org
+[7] 1394 IIDC camera list:
+	http://www.tele.ucl.ac.be/PEOPLE/DOUXCHAMPS/ieee1394/cameras/
+[8] linux1394 HOWTO,...	: http://linux1394.sourceforge.net
+
+

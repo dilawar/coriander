@@ -1,0 +1,757 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2001-07-25 10:53-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: ENCODING\n"
+
+#: src/interface.c:23
+msgid "_Load Setup"
+msgstr ""
+
+#: src/interface.c:30
+msgid "_Save Setup"
+msgstr ""
+
+#: src/interface.c:37
+msgid "Save Setup _As"
+msgstr ""
+
+#: src/interface.c:47
+msgid "E_xit"
+msgstr ""
+
+#: src/interface.c:59
+msgid "_Porthole"
+msgstr ""
+
+#: src/interface.c:66
+msgid "_Aperture"
+msgstr ""
+
+#: src/interface.c:73
+msgid "C_olor"
+msgstr ""
+
+#: src/interface.c:80
+msgid "_Capture"
+msgstr ""
+
+#: src/interface.c:87
+msgid "_Status"
+msgstr ""
+
+#: src/interface.c:94
+msgid "_Temperature"
+msgstr ""
+
+#: src/interface.c:101
+msgid "Format_7 Setup"
+msgstr ""
+
+#: src/interface.c:108
+msgid "Format_6 Setup"
+msgstr ""
+
+#: src/interface.c:120
+msgid "160x120 YUV (4:4:4)"
+msgstr ""
+
+#: src/interface.c:128
+msgid "320x240 YUV (4:2:2)"
+msgstr ""
+
+#: src/interface.c:136
+msgid "640x480 YUV (4:1:1)"
+msgstr ""
+
+#: src/interface.c:143
+msgid "640x480 YUV (4:2:2)"
+msgstr ""
+
+#: src/interface.c:150
+msgid "640x480 RGB 24bpp"
+msgstr ""
+
+#: src/interface.c:157
+msgid "640x480 Mono 8bpp"
+msgstr ""
+
+#: src/interface.c:164
+msgid "640x480 Mono 16bpp"
+msgstr ""
+
+#: src/interface.c:176
+msgid "800x600 YUV (4:2:2)"
+msgstr ""
+
+#: src/interface.c:183
+msgid "800x600 RGB 24bpp"
+msgstr ""
+
+#: src/interface.c:190
+msgid "800x600 Mono 8bpp"
+msgstr ""
+
+#: src/interface.c:197
+msgid "800x600 Mono 16bpp"
+msgstr ""
+
+#: src/interface.c:205
+msgid "1024x768 YUV (4:2:2)"
+msgstr ""
+
+#: src/interface.c:212
+msgid "1024x768 RGB 24bpp"
+msgstr ""
+
+#: src/interface.c:219
+msgid "1024x768 Mono 8bpp"
+msgstr ""
+
+#: src/interface.c:226
+msgid "1024x768 Mono 16bpp"
+msgstr ""
+
+#: src/interface.c:238
+msgid "1280x960 YUV (4:2:2)"
+msgstr ""
+
+#: src/interface.c:245
+msgid "1280x960 RGB 24bpp"
+msgstr ""
+
+#: src/interface.c:252
+msgid "1280x960 Mono 8bpp"
+msgstr ""
+
+#: src/interface.c:259
+msgid "1280x960 Mono 16bpp"
+msgstr ""
+
+#: src/interface.c:267
+msgid "1600x1200 YUV (4:2:2)"
+msgstr ""
+
+#: src/interface.c:274
+msgid "1600x1200 RGB 24bpp"
+msgstr ""
+
+#: src/interface.c:281
+msgid "1600x1200 Mono 8bpp"
+msgstr ""
+
+#: src/interface.c:288
+msgid "1600x1200 Mono 16bpp"
+msgstr ""
+
+#: src/interface.c:300
+msgid "Exif"
+msgstr ""
+
+#: src/interface.c:312
+msgid "Mode 0"
+msgstr ""
+
+#: src/interface.c:319
+msgid "Mode 1"
+msgstr ""
+
+#: src/interface.c:326
+msgid "Mode 2"
+msgstr ""
+
+#: src/interface.c:333
+msgid "Mode 3"
+msgstr ""
+
+#: src/interface.c:340
+msgid "Mode 4"
+msgstr ""
+
+#: src/interface.c:347
+msgid "Mode 5"
+msgstr ""
+
+#: src/interface.c:354
+msgid "Mode 6"
+msgstr ""
+
+#: src/interface.c:361
+msgid "Mode 7"
+msgstr ""
+
+#: src/interface.c:373
+msgid "Format 0"
+msgstr ""
+
+#: src/interface.c:380
+msgid "Format 1"
+msgstr ""
+
+#: src/interface.c:387
+msgid "Format 2"
+msgstr ""
+
+#: src/interface.c:395
+msgid "Format 6"
+msgstr ""
+
+#: src/interface.c:403
+msgid "Format 7"
+msgstr ""
+
+#: src/interface.c:411
+msgid "Test Pattern"
+msgstr ""
+
+#: src/interface.c:429
+msgid "_File"
+msgstr ""
+
+#: src/interface.c:436
+msgid "_Window"
+msgstr ""
+
+#: src/interface.c:443
+msgid "Forma_t"
+msgstr ""
+
+#: src/interface.c:505
+msgid "Coriander 0.17"
+msgstr ""
+
+#: src/interface.c:856
+msgid "Camera Select"
+msgstr ""
+
+#: src/interface.c:871 src/interface.c:2981
+msgid "Node:"
+msgstr ""
+
+#: src/interface.c:882
+msgid "Lock:"
+msgstr ""
+
+#: src/interface.c:904
+msgid "Node 0: Sony DFW-VL500"
+msgstr ""
+
+#: src/interface.c:920 src/interface.c:1151 src/interface.c:1188
+msgid "N/A"
+msgstr ""
+
+#: src/interface.c:923
+msgid "Sony DFW-VL500"
+msgstr ""
+
+#: src/interface.c:926
+msgid "..."
+msgstr ""
+
+#: src/interface.c:938
+msgid "Power"
+msgstr ""
+
+#: src/interface.c:954 src/interface.c:1380 src/interface.c:1501
+#: src/interface.c:1537 src/interface.c:1602 src/interface.c:1864
+#: src/interface.c:1948 src/interface.c:2032 src/interface.c:2116
+#: src/interface.c:2157 src/interface.c:2286 src/interface.c:2447
+#: src/interface.c:2510 src/interface.c:2573 src/interface.c:2636
+#: src/interface.c:2699 src/interface.c:3324 src/interface.c:3408
+#: src/interface.c:3607
+msgid "ON"
+msgstr ""
+
+#: src/interface.c:963
+msgid "OFF"
+msgstr ""
+
+#: src/interface.c:972
+msgid "RESET"
+msgstr ""
+
+#: src/interface.c:981
+msgid "Lock features"
+msgstr ""
+
+#: src/interface.c:997
+msgid "ALL AUTO"
+msgstr ""
+
+#: src/interface.c:1006
+msgid "ALL MAN"
+msgstr ""
+
+#: src/interface.c:1015
+msgid "LOCK SETUP"
+msgstr ""
+
+#: src/interface.c:1038
+msgid "Memory channels"
+msgstr ""
+
+#: src/interface.c:1065
+msgid "Factory"
+msgstr ""
+
+#: src/interface.c:1068
+msgid "1..."
+msgstr ""
+
+#: src/interface.c:1073
+msgid "LOAD"
+msgstr ""
+
+#: src/interface.c:1083
+msgid "SAVE"
+msgstr ""
+
+#: src/interface.c:1101
+msgid "Trigger"
+msgstr ""
+
+#: src/interface.c:1117
+msgid "Count : "
+msgstr ""
+
+#: src/interface.c:1156
+msgid "External"
+msgstr ""
+
+#: src/interface.c:1167
+msgid "Polarity"
+msgstr ""
+
+#: src/interface.c:1294
+msgid "Porthole"
+msgstr ""
+
+#: src/interface.c:1312
+msgid "Pan"
+msgstr ""
+
+#: src/interface.c:1337 src/interface.c:1458 src/interface.c:1546
+#: src/interface.c:1611 src/interface.c:1821 src/interface.c:1905
+#: src/interface.c:1989 src/interface.c:2073 src/interface.c:2166
+#: src/interface.c:2243 src/interface.c:2456 src/interface.c:2519
+#: src/interface.c:2582 src/interface.c:2645 src/interface.c:2708
+#: src/interface.c:3281 src/interface.c:3365 src/interface.c:3616
+msgid "Man"
+msgstr ""
+
+#: src/interface.c:1349 src/interface.c:1470 src/interface.c:1556
+#: src/interface.c:1621 src/interface.c:1833 src/interface.c:1917
+#: src/interface.c:2001 src/interface.c:2085 src/interface.c:2176
+#: src/interface.c:2255 src/interface.c:2466 src/interface.c:2529
+#: src/interface.c:2592 src/interface.c:2655 src/interface.c:2718
+#: src/interface.c:3293 src/interface.c:3377 src/interface.c:3626
+msgid "Auto"
+msgstr ""
+
+#: src/interface.c:1360 src/interface.c:1481 src/interface.c:1565
+#: src/interface.c:1630 src/interface.c:1844 src/interface.c:1928
+#: src/interface.c:2012 src/interface.c:2096 src/interface.c:2186
+#: src/interface.c:2266 src/interface.c:2475 src/interface.c:2538
+#: src/interface.c:2601 src/interface.c:2664 src/interface.c:2727
+#: src/interface.c:3304 src/interface.c:3388 src/interface.c:3635
+#: src/interface.c:4394 src/interface.c:4433
+msgid "AUTO"
+msgstr ""
+
+#: src/interface.c:1398
+msgid "Camera Scope"
+msgstr ""
+
+#: src/interface.c:1434
+msgid "Focus"
+msgstr ""
+
+#: src/interface.c:1519
+msgid "Tilt"
+msgstr ""
+
+#: src/interface.c:1584
+msgid "Zoom"
+msgstr ""
+
+#: src/interface.c:1649
+msgid ""
+"Video\n"
+"Overlay"
+msgstr ""
+
+#: src/interface.c:1787
+msgid "Color"
+msgstr ""
+
+#: src/interface.c:1798
+msgid "Brightness"
+msgstr ""
+
+#: src/interface.c:1882
+msgid "Gamma"
+msgstr ""
+
+#: src/interface.c:1966
+msgid "Saturation"
+msgstr ""
+
+#: src/interface.c:2050
+msgid "Hue"
+msgstr ""
+
+#: src/interface.c:2134
+msgid "White Balance"
+msgstr ""
+
+#: src/interface.c:2220
+msgid "Sharpness"
+msgstr ""
+
+#: src/interface.c:2420
+msgid "Aperture"
+msgstr ""
+
+#: src/interface.c:2431
+msgid "AutoExp"
+msgstr ""
+
+#: src/interface.c:2494
+msgid "Iris"
+msgstr ""
+
+#: src/interface.c:2557
+msgid "Shutter"
+msgstr ""
+
+#: src/interface.c:2620
+msgid "Gain"
+msgstr ""
+
+#: src/interface.c:2683
+msgid "Filter"
+msgstr ""
+
+#: src/interface.c:2811
+msgid "File Selector"
+msgstr ""
+
+#: src/interface.c:2847
+msgid "Configure"
+msgstr ""
+
+#: src/interface.c:2850
+msgid "Please wait while the IEEE1394 bus is probed..."
+msgstr ""
+
+#: src/interface.c:2921
+msgid "Camera Status"
+msgstr ""
+
+#: src/interface.c:2931
+msgid "Camera"
+msgstr ""
+
+#: src/interface.c:2954
+msgid "Vendor:"
+msgstr ""
+
+#: src/interface.c:2963
+msgid "Model:"
+msgstr ""
+
+#: src/interface.c:2972
+msgid "Handle:"
+msgstr ""
+
+#: src/interface.c:2990
+msgid "GUID:"
+msgstr ""
+
+#: src/interface.c:2999
+msgid "PHY speed:"
+msgstr ""
+
+#: src/interface.c:3008
+msgid "PHY delay:"
+msgstr ""
+
+#: src/interface.c:3017
+msgid "IIDC specs:"
+msgstr ""
+
+#: src/interface.c:3026
+msgid "Power class:"
+msgstr ""
+
+#: src/interface.c:3114
+msgid "Transfer"
+msgstr ""
+
+#: src/interface.c:3137
+msgid "Channel:"
+msgstr ""
+
+#: src/interface.c:3146
+msgid "Speed:"
+msgstr ""
+
+#: src/interface.c:3155
+msgid "Status:"
+msgstr ""
+
+#: src/interface.c:3247 src/interface.c:3426
+msgid "Capture"
+msgstr ""
+
+#: src/interface.c:3258
+msgid "Capture Quality"
+msgstr ""
+
+#: src/interface.c:3342
+msgid "Capture Size"
+msgstr ""
+
+#: src/interface.c:3442 src/interface.c:3485
+msgid "START"
+msgstr ""
+
+#: src/interface.c:3451 src/interface.c:3494
+msgid "STOP"
+msgstr ""
+
+#: src/interface.c:3460
+msgid "SINGLE"
+msgstr ""
+
+#: src/interface.c:3469
+msgid "Isochronous Control"
+msgstr ""
+
+#: src/interface.c:3503
+msgid "RESTART"
+msgstr ""
+
+#: src/interface.c:3580
+msgid "Temperature Monitor"
+msgstr ""
+
+#: src/interface.c:3584
+msgid "Temperature"
+msgstr ""
+
+#: src/interface.c:3703
+msgid "Copyright 2000-2001 Damien Douxchamps"
+msgstr ""
+
+#: src/interface.c:3705
+msgid ""
+"The Gnome IEEE1394 Digital Camera Controller.\n"
+"Website: http://sourceforge.net/projects/coriander"
+msgstr ""
+
+#: src/interface.c:3748
+msgid "Format_7 Editor"
+msgstr ""
+
+#: src/interface.c:3765
+msgid "Current mode"
+msgstr ""
+
+#: src/interface.c:3790
+msgid "Mode: N/A"
+msgstr ""
+
+#: src/interface.c:3795
+msgid "Coding:"
+msgstr ""
+
+#: src/interface.c:3816
+msgid "Color: N/A"
+msgstr ""
+
+#: src/interface.c:3828
+msgid "Packet size"
+msgstr ""
+
+#: src/interface.c:3846
+msgid "Frame info"
+msgstr ""
+
+#: src/interface.c:3861
+msgid "Pixels per frame :  "
+msgstr ""
+
+#: src/interface.c:3871
+msgid "Bytes per frame :  "
+msgstr ""
+
+#: src/interface.c:3899
+msgid "Horizontal setup"
+msgstr ""
+
+#: src/interface.c:3930
+msgid "Vertical setup"
+msgstr ""
+
+#: src/interface.c:3974
+msgid ""
+"Warning: could not get a handle to your IEEE1394 card.\n"
+"\n"
+"Please check that:\n"
+"- the card is present\n"
+"- the IEEE1394 modules are loaded\n"
+"- you have read/write permissions on the raw1394 and video1394 devices."
+msgstr ""
+
+#: src/interface.c:3977 src/interface.c:4016
+msgid "Coriander Warning"
+msgstr ""
+
+#: src/interface.c:3985 src/interface.c:4024
+msgid "QUIT"
+msgstr ""
+
+#: src/interface.c:4013
+msgid ""
+"Warning: could not find a Digital Camera on the bus.\n"
+"\n"
+"Please check that:\n"
+"- the cables are properly set\n"
+"- the bus and/or camera are powered\n"
+"- the repeaters/hubs are powered\n"
+"- your camera is compliant with the Digital Camera specs v1.20 or later (see "
+"http://www.1394ta.org).\n"
+"\n"
+"NOTICE:\n"
+"All consumer grade cameras in which you can insert a video tape are NOT "
+"compliant with the above-\n"
+"mentionned specifications and therefor cannot be controlled with Coriander. "
+"(These cameras can be\n"
+"controlled with the AV/C protocol, please refer to "
+"http://linux1394.sourceforge.net)"
+msgstr ""
+
+#: src/interface.c:4072
+msgid "Format_6 Controls"
+msgstr ""
+
+#: src/interface.c:4081
+msgid "Media Status"
+msgstr ""
+
+#: src/interface.c:4096
+msgid "Current fill status:"
+msgstr ""
+
+#: src/interface.c:4106
+msgid "Expected remain: "
+msgstr ""
+
+#: src/interface.c:4124
+msgid "%P %%: %V/%U"
+msgstr ""
+
+#: src/interface.c:4142
+msgid "Picture select"
+msgstr ""
+
+#: src/interface.c:4177
+msgid "Current:"
+msgstr ""
+
+#: src/interface.c:4187
+msgid "Thru:"
+msgstr ""
+
+#: src/interface.c:4196
+msgid "Actions"
+msgstr ""
+
+#: src/interface.c:4211
+msgid "Load"
+msgstr ""
+
+#: src/interface.c:4219
+msgid "Save"
+msgstr ""
+
+#: src/interface.c:4227
+msgid "Delete"
+msgstr ""
+
+#: src/interface.c:4271
+msgid "Preferences"
+msgstr ""
+
+#: src/interface.c:4287
+msgid "Timeout for One-Push Auto [s]"
+msgstr ""
+
+#: src/interface.c:4311
+msgid "Update rate [Hz]"
+msgstr ""
+
+#: src/interface.c:4327
+msgid "Update"
+msgstr ""
+
+#: src/interface.c:4342
+msgid "General"
+msgstr ""
+
+#: src/interface.c:4363
+msgid "Capture method:"
+msgstr ""
+
+#: src/interface.c:4378
+msgid "raw1394"
+msgstr ""
+
+#: src/interface.c:4386
+msgid "video1394 (DMA)"
+msgstr ""
+
+#: src/interface.c:4402
+msgid "Display method:"
+msgstr ""
+
+#: src/interface.c:4417
+msgid "GDK"
+msgstr ""
+
+#: src/interface.c:4425
+msgid "Xv"
+msgstr ""
+
+#: src/interface.c:4441
+msgid "Overlay"
+msgstr ""
+
+#: src/interface.c:4458
+msgid "Save Single Frame"
+msgstr ""
+
+#: src/interface.c:4492
+msgid "Save Multiple Frames"
+msgstr ""
+
+#: src/support.c:100 src/support.c:138
+#, c-format
+msgid "Couldn't find pixmap file: %s"
+msgstr ""
+
+#: src/support.c:116
+#, c-format
+msgid "Couldn't create pixmap from file: %s"
+msgstr ""

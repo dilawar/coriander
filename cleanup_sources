@@ -1,0 +1,1 @@
+rm -rf aclocal.m4 config.* configure stamp-h src/*.o src/coriander src/*.bak src/*.*~ src/Makefile src/Makefile.in src/.deps NEWS ABOUT_NLS install-sh missing mkinstalldirs Makefile Makefile.in COPYING po/Makefile po/Makefile.in macros/Makefile macros/Makefile.in intl/ ABOUT-NLS *~ *.*~ *.bak

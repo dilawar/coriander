@@ -1,0 +1,159 @@
+Coriander, (c) 2000-2001 Damien Douxchamps <douxchamps@ieee.org>
+
+Changes in version 0.17-pre1, July 25, 2001:
+
+	- true error handling: data not used when an error is detected.
+	- Bug fix: added "gdk_rgb_init();" in IsoStartThread() (capture.c)
+	  Thanks to John B. Burchett and Dan Dennedy.
+	- due to the lack of updates I have removed the Japanese translation
+	  files (besides, I've failed to integrate these for some time)
+	- Corrected some format7 code thanks to Olaf Ronneberger: in
+	  BuildFormat7ColorMenu and GetFormat7Capabilities, index like
+	  (0x1 << i) must be changed to (0x1 << (31-i)) (total: 2 occurences)
+	
+Changes in version 0.16, June 25, 2001:
+
+        - added first Status window implementation. Enabled status window
+	  menu item in update_menus.c:line 42.
+	- removed 250 lines in callbacks.c by creating ChangeModeAndFormat
+	  function in tools.c
+	- added a notice in the 'no camera found' warning window for those
+	  who don't understand why their DV cameras are not detected (this
+	  should people from sending stop tons of emails)
+	- moved iso_check/resume functions to tools.c
+	- added a checkbox in the test pattern menu item.
+	- repaired capture button enable when iso restart is clicked.
+	- added maximal speed detection for devices on the bus: no more
+	  hard-typed SPEED_400!!!
+	- first implementation of the status bar of the main window. This bar
+	  is currently only for error reporting.
+	
+Changes in version 0.15, May 23, 2001:
+
+	- added Dan's patch for capture & overlay
+	- added Marcus Lim code for test pattern display
+	
+Changes in version 0.14, May 16, 2001:
+
+        - fixes several bugs related to multi-camera support.
+	- removed cameras dc1394_init in main()
+	- added an overlay enable button for the used for whom the overlay
+	  does not work well.
+	
+Changes in version 0.13, May 8, 2001:
+
+	- Heavy code cleanup & bug fixes for overlay and capture. Thanks Dan!
+	- some more bug fixes for multiple camera support. Note that overlay
+	  does not work with multiple cameras.
+	
+Changes in version 0.12, April 25, 2001:
+
+        - added Japanese language support
+	- upgraded for compatibility with latest libdc1394
+	- added some more format6 and format7 preliminary stuff
+	- some more bug fixes
+	
+Changes in version 0.11, March 29, 2001:
+
+	- Code update from Dan Dennedy for video overlay: much better threads
+	  handeling.
+	- First Format_6 window prototype
+	- single/multi frame capture added by Dan Dennedy
+          
+Changes in version 0.10, March 19, 2001:
+
+	- MASSIVE code update, cleanup and beautification. Functions of
+	  different kinds are defined: update and build. These operate on
+	  different objects: ranges, menus, frames and windows. This looks
+	  more and more like C++... Build functions all end up by the
+	  associated update function. Apart from that, build functions include
+	  the building of their 'sons'.
+	- Addition of a video overlay in the porthole window. Many thanks to
+	  Dan Dennedy!! :-)
+	- first implementation of Format_7 controls
+	
+Changes in version 0.09, Feb. 08, 2001:
+
+	- changed several functions prototype to ...(void) instead of ...().
+	  This implied several changes to the callbacks.c file.
+	- added configure to the sources to try solving a compatibility
+	  problem
+	- corrected a window-size problem (Format_7 window)
+	
+Changes in version 0.08, Jan. 13, 2001:
+
+	- iso flow control added in capture window: start/stop/restart
+	- changed layout of main window
+	- added the 'value' parameter for the external trigger ('count').
+	  Trigger is now 99.9% completed (only testing remains)
+	- added a little logo on the main window
+	- replaced global feature & camera structures by global pointers to
+	  these structures
+	- introduced the camera selector menu
+	- main.c now downloads data of all DC on the bus in a big structure.
+	- changed all 'vboxes' that contained dynamic menus to 'tables' because
+	  it allows correct positioning of dynamicaly created widgets.
+	- introduced a new structure: dc1394_misc_info
+	- check that all 'set' commands also set the 3 global camera structures
+	- finished vectorization and multi-camera switching
+	- option menus are now coherent with the camera setup even at boot.
+	- framerate menu check that current framerate is available for 
+	  format/mode. If not available, it switches to the nearest, preferably
+	  lowest framerate available
+	- changed several constant index/boundaries and use instead DC1394
+	  definitions (like NUM_FRAMERATES,...)
+	
+Changes in version 0.07, Jan. 08, 2001:
+
+	- intoduced Format_7 window
+	- fixed a bug in auto/man mode: each one issued a callback at
+	  each state change so I removed the callbacks of AUTO mode and
+	  generalized the MAN mode callback.
+	- iso flow is interrupted before fps/format/mode change and retored
+	  after the change. This avoids hangups in other programs using the
+	  iso flow.
+	- update ranges when exiting from auto mode (ONLY WORKING FOR WHITEBAL
+	  when using DFW-VL500 bacause it seems this camera does not update all
+	  its registers in auto mode !)
+	- removed disable of iris/gain/shutter during auto exposure (it was
+	  meaningless)
+
+	
+Changes in version 0.06, Jan. 04, 2001:
+
+	- corrected trigger features: now 99.9% operational
+	- corrected load/save memory feature: now 100% operational
+	- uses new functions of libdc1394 for trigger, memory and Format_7
+	- simplified fps menu generation & update
+	- changed some functions names (Build-)
+	- use of the dc1394_feature_set structure throughout the program
+	  as an information repository (synch'd w/ camera)
+	- clearly dinstinguish ACTIVATE (at boot or camera select) and
+	  UPDATE (changing values)
+	- DO NOT set any control in update functions (this yields a callback,
+          then an update, thus a callback,... == infinite loop!)
+	- auto exposure disables iris, gain and shutter
+	- callback functions data as pointers to avoid warnings
+
+	
+Changes in version 0.05, Jan. 02, 2001:
+
+	- ( first release )
+	- introduced the "Coriander" name (_that_ was a difficult change!)
+	- improved 0.02 in many ways
+	- temperature settings
+	- capture settings
+	- OP auto: momentary disable the command while working
+	- auto mode: disable range value (it should be updated regularly)
+	- dynamic option menus for fps and trigger mode
+	- new 'About' window (Gnome default look)
+
+
+Changes in version 0.02, Dec. 29, 2000:
+
+        - first signal connections for scale widgets (?)
+
+	
+Changes in version 0.01, Dec. 27, 2000:
+
+        - first alpha version, still a lot of stuff missing...
