@@ -37,7 +37,7 @@
 
 typedef enum
 {
-  DISPLAY_REDRAW_OFF,
+  DISPLAY_REDRAW_OFF=0,
   DISPLAY_REDRAW_ON
 } display_redraw_t;
 

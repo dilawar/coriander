@@ -40,13 +40,13 @@
 
 typedef enum
 {
-  FTP_SCRATCH_SEQUENTIAL,
+  FTP_SCRATCH_SEQUENTIAL=0,
   FTP_SCRATCH_OVERWRITE
 } ftp_scratch_t;
  
 typedef enum
 {
-  FTP_TAG_DATE,
+  FTP_TAG_DATE=0,
   FTP_TAG_NUMBER
 } ftp_tag_t;
  

@@ -46,7 +46,7 @@ LoadConfigFile(void)
   preferences.save_filename = gnome_config_get_string("coriander/save/filename=test.jpg");
   preferences.save_scratch = gnome_config_get_int("coriander/save/scratch=0");
   preferences.save_period = gnome_config_get_int("coriander/save/period=1");
-  preferences.save_convert = gnome_config_get_int("coriander/save/convert=1");
+  preferences.save_convert = gnome_config_get_int("coriander/save/convert=0");
   preferences.save_datenum = gnome_config_get_int("coriander/save/datenum=1");
   preferences.use_ram_buffer = gnome_config_get_int("coriander/save/use_ram_buffer=0");
   preferences.ram_buffer_size = gnome_config_get_int("coriander/save/ram_buffer_size=100");

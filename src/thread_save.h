@@ -30,21 +30,21 @@
 
 typedef enum
 {
-  SAVE_SCRATCH_SEQUENTIAL,
+  SAVE_SCRATCH_SEQUENTIAL=0,
   SAVE_SCRATCH_OVERWRITE,
   SAVE_SCRATCH_VIDEO
 } save_scratch_t;
 
 typedef enum
 {
-  SAVE_TAG_DATE,
+  SAVE_TAG_DATE=0,
   SAVE_TAG_NUMBER
 } save_tag_t;
  
 
 typedef enum
 {
-  SAVE_CONVERT_ON,
+  SAVE_CONVERT_ON=0,
   SAVE_CONVERT_OFF
 } save_convert_t;
 
