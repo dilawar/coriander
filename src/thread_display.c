@@ -169,7 +169,7 @@ DisplayThread(void* arg)
 	    skip_counter=0;
 #ifdef HAVE_SDLLIB
 	    if (SDL_LockYUVOverlay(info->sdloverlay) == 0) {
-	      convert_to_yuv_for_SDL(display_service->current_buffer, info->sdloverlay->pixels[0]);
+	      convert_to_yuv_for_SDL(display_service->current_buffer, info->sdloverlay);
 	      
 	      SDLDisplayArea(display_service);
 	      
@@ -223,7 +223,7 @@ ConditionalTimeoutRedraw(chain_t* service)
 #ifdef HAVE_SDLLIB
       if (SDL_LockYUVOverlay(info->sdloverlay) == 0) {
 	//MainStatus("Conditional display redraw");
-	convert_to_yuv_for_SDL(service->current_buffer, info->sdloverlay->pixels[0]);
+	convert_to_yuv_for_SDL(service->current_buffer, info->sdloverlay);
 	SDLDisplayArea(service);
 	SDL_UnlockYUVOverlay(info->sdloverlay);
 	SDL_DisplayYUVOverlay(info->sdloverlay, &info->sdlvideorect);
@@ -385,11 +385,14 @@ SDLInit(chain_t *display_service)
 
 // we should optimize this for RGB too: RGB modes could use RGB-SDL instead of YUV overlay
 void
-convert_to_yuv_for_SDL(buffer_t *buffer, unsigned char *dest)
+convert_to_yuv_for_SDL(buffer_t *buffer, SDL_Overlay *sdloverlay)
 {
+  unsigned char *dest=sdloverlay->pixels[0];
+
   switch(buffer->buffer_color_mode) {
   case COLOR_FORMAT7_MONO8:
-    y2uyvy(buffer->image,dest,buffer->width*buffer->height);
+    y2uyvy(buffer->image, dest, buffer->width, buffer->height, 
+	   sdloverlay->pitches[0]);
     break;
   case COLOR_FORMAT7_YUV411:
     uyyvyy2uyvy(buffer->image,dest,buffer->width*buffer->height);

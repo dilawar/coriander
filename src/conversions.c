@@ -150,29 +150,59 @@ uyv2uyvy (unsigned char *src, unsigned char *dest, unsigned long long int NumPix
     }
 }
 
-
 void
-y2uyvy (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels)
+y2uyvy (unsigned char *src, unsigned char *dest, 
+	unsigned long src_width, unsigned long src_height,
+	unsigned long dest_pitch)
 {
-  register int i= NumPixels-1;
-  register int j = (NumPixels << 1)-1;
-  register int y0, y1;
-
-  while (i > 0) {
-    y1 = src[i--];
-    y0 = src[i--];
+  if ((src_width*2) == dest_pitch) {
+    // do it the quick way
+    register int i = src_width*src_height - 1;
+    register int j = (src_width*src_height << 1) - 1;
+    register int y0, y1;
+    
+    while (i > 0) {
+      y1 = src[i--];
+      y0 = src[i--];
 #ifdef YUYV
-    dest[j--] = 128;
-    dest[j--] = y1;
-    dest[j--] = 128;
-    dest[j--] = y0;
+      dest[j--] = 128;
+      dest[j--] = y1;
+      dest[j--] = 128;
+      dest[j--] = y0;
 #else // UYVY
-    dest[j--] = y1;
-    dest[j--] = 128;
-    dest[j--] = y0;
-    dest[j--] = 128;
+      dest[j--] = y1;
+      dest[j--] = 128;
+      dest[j--] = y0;
+      dest[j--] = 128;
 #endif
     }
+  } else { // src_width*2 != dest_pitch
+    register int x, y;
+
+    //assert ((dest_pitch - 2*src_width)==1);
+
+    y=src_height;
+    while (y--) {
+      x=src_width;
+      while (x--) {
+#ifdef YUYV
+	*dest++ = *src++;
+	*dest++ = 128;
+#else
+	*dest++ = 128;
+	*dest++ = *src++;
+#endif
+      }
+      // padding required, duplicate last collumn
+#ifdef YUYV
+      *dest++ = *(src-1);
+      *dest++ = 128;
+#else
+      *dest++ = 128;
+      *dest++ = *(src-1);
+#endif
+    }
+  }
 }
 
 void

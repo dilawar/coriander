@@ -61,7 +61,9 @@ void
 uyv2uyvy (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels);
 
 void
-y2uyvy (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels);
+y2uyvy (unsigned char *src, unsigned char *dest, 
+	unsigned long src_width, unsigned long src_height,
+	unsigned long dest_pitch);
 
 void
 y162uyvy (unsigned char *src, unsigned char *dest, unsigned long long int NumPixels, int bits);

@@ -94,7 +94,7 @@ int
 SDLInit(chain_t *display_service);
 
 void
-convert_to_yuv_for_SDL(buffer_t *buffer, unsigned char *dest);
+convert_to_yuv_for_SDL(buffer_t *buffer, SDL_Overlay *sdloverlay);
 
 void
 SDLDisplayArea(chain_t *display_service);
