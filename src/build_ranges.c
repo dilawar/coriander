@@ -28,12 +28,12 @@ extern char* feature_abs_label_list[NUM_FEATURES];
 void
 BuildEmptyRange(int feature)
 {
-  GtkWidget *table, *frame, *label1, *label2;
+  GtkWidget *table, *frame, *label1, *label2, *frame_title;
   char *stemp;
 
   stemp=(char*)malloc(STRING_SIZE*sizeof(char));
 
-  frame = gtk_frame_new (_(feature_name_list[feature-FEATURE_MIN]));
+  frame = gtk_frame_new (NULL);
   gtk_widget_ref (frame);
   sprintf(stemp,"feature_%d_frame",feature);
   gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, frame,
@@ -42,6 +42,14 @@ BuildEmptyRange(int feature)
   gtk_box_pack_start (GTK_BOX (lookup_widget(main_window,"vbox_features")), frame, FALSE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (frame), 5);
   gtk_widget_set_sensitive (frame, TRUE);
+
+  sprintf(stemp,"<b>%s</b>",feature_name_list[feature-FEATURE_MIN]);
+  frame_title = gtk_label_new (_(stemp));
+  sprintf(stemp,"feature_%d_frame_label",feature);
+  gtk_widget_set_name (frame_title, stemp);
+  gtk_widget_show (frame_title);
+  gtk_frame_set_label_widget (GTK_FRAME (frame), frame_title);
+  gtk_label_set_use_markup (GTK_LABEL (frame_title), TRUE);
 
   switch (feature) {
   case FEATURE_TEMPERATURE:
@@ -64,7 +72,8 @@ BuildEmptyRange(int feature)
 		      (GtkAttachOptions) (0), 0, 0);
     gtk_label_set_justify (GTK_LABEL (label1), GTK_JUSTIFY_RIGHT);
     gtk_misc_set_alignment (GTK_MISC (label1), 0, 0.5);
-
+    gtk_misc_set_padding (GTK_MISC (label1), 2, 2);
+    
     label2 = gtk_label_new (_("Target:"));
     gtk_widget_ref (label2);
     gtk_object_set_data_full (GTK_OBJECT (main_window), "label_temp_scale_target", label2,
@@ -75,6 +84,7 @@ BuildEmptyRange(int feature)
 		      (GtkAttachOptions) (0), 0, 0);
     gtk_label_set_justify (GTK_LABEL (label2), GTK_JUSTIFY_RIGHT);
     gtk_misc_set_alignment (GTK_MISC (label2), 0, 0.5);
+    gtk_misc_set_padding (GTK_MISC (label2), 2, 2);
 
     break;
   case FEATURE_WHITE_BALANCE:
@@ -97,6 +107,7 @@ BuildEmptyRange(int feature)
 		      (GtkAttachOptions) (0), 0, 0);
     gtk_label_set_justify (GTK_LABEL (label1), GTK_JUSTIFY_RIGHT);
     gtk_misc_set_alignment (GTK_MISC (label1), 0, 0.5);
+    gtk_misc_set_padding (GTK_MISC (label1), 2, 2);
 
     label2 = gtk_label_new (_("Red/V:"));
     gtk_widget_ref (label2);
@@ -108,6 +119,7 @@ BuildEmptyRange(int feature)
 		      (GtkAttachOptions) (0), 0, 0);
     gtk_label_set_justify (GTK_LABEL (label2), GTK_JUSTIFY_RIGHT);
     gtk_misc_set_alignment (GTK_MISC (label2), 0, 0.5);
+    gtk_misc_set_padding (GTK_MISC (label2), 2, 2);
 
     break;
   case FEATURE_WHITE_SHADING:

@@ -6,9 +6,11 @@ Changes towards version 2.0.0
    - first port to Gnome 2.x. Still on the todo list:
 	+ remove the two pango warnings at startup
 	+ replace GdkImLib which is deprecated
+   - the pango and slider bugs were actually machine-related. I don't have
+     any problem on an up-to-date machine. GdkImlib still missing though...
+   - UI adaptation to Gnome2
+   - minor UI beautification
 	
-Changes towards version 1.0.2
-
    Mar 18, 2005, by Damien Douxchamps
    - fixed error messages in on_global_iso_start_clicked (thanks to Oscar
      Pizarro for spotting this)

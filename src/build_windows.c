@@ -42,6 +42,7 @@ BuildFormat7Window(void)
   GtkWidget* table;
   GtkWidget* frame;
   GtkWidget* label;
+  GtkWidget* frame_title;
   GtkWidget* bar;
   GtkWidget* scale;
 
@@ -99,13 +100,18 @@ BuildFormat7Window(void)
     gtk_notebook_insert_page(GTK_NOTEBOOK (notebook2), GTK_WIDGET(vbox),label, 3);
 
     // mode frame
-    frame = gtk_frame_new (_("Current mode"));
+    frame = gtk_frame_new (NULL);
     gtk_widget_ref (frame);
     gtk_object_set_data_full (GTK_OBJECT (main_window), "format7_mode_frame", frame,
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (frame);
     gtk_box_pack_start (GTK_BOX (vbox), frame, FALSE, TRUE, 0);
     gtk_container_set_border_width (GTK_CONTAINER (frame), 5);
+
+    frame_title = gtk_label_new (_("<b>Current mode</b>"));
+    gtk_widget_show (frame_title);
+    gtk_frame_set_label_widget (GTK_FRAME (frame), frame_title);
+    gtk_label_set_use_markup (GTK_LABEL (frame_title), TRUE);
 
     table = gtk_table_new (1, 3, FALSE);
     gtk_widget_ref (table);
@@ -126,13 +132,18 @@ BuildFormat7Window(void)
     gtk_misc_set_padding (GTK_MISC (label), 6, 0);
 
     // bytes_per_packet tab
-    frame = gtk_frame_new (_("Packet size"));
+    frame = gtk_frame_new (NULL);
     gtk_widget_ref (frame);
     gtk_object_set_data_full (GTK_OBJECT (main_window), "format7_packet_frame", frame,
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (frame);
     gtk_box_pack_start (GTK_BOX (vbox), frame, FALSE, TRUE, 0);
     gtk_container_set_border_width (GTK_CONTAINER (frame), 5);
+
+    frame_title = gtk_label_new (_("<b>Packet size</b>"));
+    gtk_widget_show (frame_title);
+    gtk_frame_set_label_widget (GTK_FRAME (frame), frame_title);
+    gtk_label_set_use_markup (GTK_LABEL (frame_title), TRUE);
 
     hbox = gtk_hbox_new (FALSE, 0);
     gtk_widget_ref (hbox);
@@ -150,7 +161,7 @@ BuildFormat7Window(void)
     gtk_scale_set_digits (GTK_SCALE (scale), 0);
 
     // horizontal setup
-    frame = gtk_frame_new (_("Horizontal setup"));
+    frame = gtk_frame_new (NULL);
     gtk_widget_ref (frame);
     gtk_object_set_data_full (GTK_OBJECT (main_window), "format7_horizontal_frame", frame,
 			      (GtkDestroyNotify) gtk_widget_unref);
@@ -158,6 +169,11 @@ BuildFormat7Window(void)
     gtk_box_pack_start (GTK_BOX (vbox), frame, FALSE, TRUE, 0);
     gtk_container_set_border_width (GTK_CONTAINER (frame), 5);
     
+    frame_title = gtk_label_new (_("<b>Horizontal setup</b>"));
+    gtk_widget_show (frame_title);
+    gtk_frame_set_label_widget (GTK_FRAME (frame), frame_title);
+    gtk_label_set_use_markup (GTK_LABEL (frame_title), TRUE);
+
     table = gtk_table_new (2, 2, FALSE);
     gtk_widget_ref (table);
     gtk_object_set_data_full (GTK_OBJECT (main_window), "table70", table,
@@ -208,13 +224,18 @@ BuildFormat7Window(void)
     gtk_scale_set_digits (GTK_SCALE (scale), 0);
 
     // vertical setup
-    frame = gtk_frame_new (_("Vertical setup"));
+    frame = gtk_frame_new (NULL);
     gtk_widget_ref (frame);
     gtk_object_set_data_full (GTK_OBJECT (main_window), "format7_vertical_frame", frame,
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (frame);
     gtk_box_pack_start (GTK_BOX (vbox), frame, FALSE, TRUE, 0);
     gtk_container_set_border_width (GTK_CONTAINER (frame), 5);
+
+    frame_title = gtk_label_new (_("<b>Vertical setup</b>"));
+    gtk_widget_show (frame_title);
+    gtk_frame_set_label_widget (GTK_FRAME (frame), frame_title);
+    gtk_label_set_use_markup (GTK_LABEL (frame_title), TRUE);
 
     table = gtk_table_new (2, 2, FALSE);
     gtk_widget_ref (table);
@@ -267,7 +288,7 @@ BuildFormat7Window(void)
 
 
     // information frame
-    frame = gtk_frame_new (_("Frame info [bytes]"));
+    frame = gtk_frame_new (NULL);
     gtk_widget_ref (frame);
     gtk_object_set_data_full (GTK_OBJECT (main_window), "format7_frame_info_frame", frame,
 			      (GtkDestroyNotify) gtk_widget_unref);
@@ -275,6 +296,11 @@ BuildFormat7Window(void)
     gtk_box_pack_start (GTK_BOX (vbox), frame, FALSE, TRUE, 0);
     gtk_container_set_border_width (GTK_CONTAINER (frame), 5);
     
+    frame_title = gtk_label_new (_("<b>Frame info [bytes]</b>"));
+    gtk_widget_show (frame_title);
+    gtk_frame_set_label_widget (GTK_FRAME (frame), frame_title);
+    gtk_label_set_use_markup (GTK_LABEL (frame_title), TRUE);
+
     table = gtk_table_new (2, 4, TRUE);
     gtk_widget_ref (table);
     gtk_object_set_data_full (GTK_OBJECT (main_window), "table15", table,

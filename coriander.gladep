@@ -4,5 +4,6 @@
 <glade-project>
   <name>Coriander</name>
   <program_name>coriander</program_name>
+  <use_widget_names>TRUE</use_widget_names>
   <backup_source_files>FALSE</backup_source_files>
 </glade-project>
