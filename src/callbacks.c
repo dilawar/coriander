@@ -1447,6 +1447,7 @@ on_capture_multi_dialog_ok_clicked     (GtkButton       *button,
         ci.ftp_path = gtk_entry_get_text( GTK_ENTRY(lookup_widget(window, "entry_capture_ftp_path")));
         ci.ftp_user = gtk_entry_get_text( GTK_ENTRY(lookup_widget(window, "entry_capture_ftp_user")));
         ci.ftp_passwd = gtk_entry_get_text( GTK_ENTRY(lookup_widget(window, "entry_capture_ftp_passwd")));
+        ftp_single_frame(filename, ci.ftp_address, ci.ftp_path, filename, ci.ftp_user, ci.ftp_passwd);
       }
 
       if (ci.frequency == CAPTURE_FREQ_IMMEDIATE)
