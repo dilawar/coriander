@@ -1,4 +1,4 @@
- /* $Id: topology.c,v 1.2 2001-09-24 08:41:23 ddouxchamps Exp $
+ /* $Id: topology.c,v 1.3 2001-12-10 10:29:03 ddouxchamps Exp $
  *
  * topology.c - Linux IEEE-1394 topology map fetching routine.
  * This routine serves as a temporary replacement for the
@@ -27,7 +27,6 @@
 #include <errno.h>
 #include <netinet/in.h>
 #include "topology.h"
-//#include "tools.h"
 
 #define MAXTRIES 20
 #define DELAY 10000

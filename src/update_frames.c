@@ -41,8 +41,6 @@
 #include "raw1394support.h"
 
 extern GtkWidget *commander_window;
-extern GtkWidget *status_window;
-extern GtkWidget *capture_window;
 extern GtkWidget *preferences_window;
 extern dc1394_miscinfo *misc_info;
 extern dc1394_feature_set *feature_set;
@@ -260,50 +258,50 @@ UpdateCameraStatusFrame(void)
 
   // vendor:
   sprintf(temp," %s",camera->vendor);
-  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(status_window,"camera_vendor_status"),
+  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"camera_vendor_status"),
 		       ctxt.vendor_ctxt, ctxt.vendor_id);
-  ctxt.vendor_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(status_window,"camera_vendor_status"),
+  ctxt.vendor_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(commander_window,"camera_vendor_status"),
 				    ctxt.vendor_ctxt, temp);
 
   // camera model:
   sprintf(temp," %s",camera->model);
-  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(status_window,"camera_model_status"),
+  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"camera_model_status"),
 		       ctxt.model_ctxt, ctxt.model_id);
-  ctxt.model_id=gtk_statusbar_push( (GtkStatusbar*)lookup_widget(status_window,"camera_model_status"),
+  ctxt.model_id=gtk_statusbar_push( (GtkStatusbar*)lookup_widget(commander_window,"camera_model_status"),
 				    ctxt.model_ctxt, temp);
 
   // camera node:
   sprintf(temp," %d",camera->id);
-  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(status_window,"camera_node_status"),
+  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"camera_node_status"),
 		       ctxt.node_ctxt, ctxt.node_id);
-  ctxt.node_id=gtk_statusbar_push( (GtkStatusbar*)lookup_widget(status_window,"camera_node_status"),
+  ctxt.node_id=gtk_statusbar_push( (GtkStatusbar*)lookup_widget(commander_window,"camera_node_status"),
 				   ctxt.node_ctxt, temp);
 
   // camera handle:
   sprintf(temp," 0x%x",(unsigned int)camera->handle);
-  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(status_window,"camera_handle_status"),
+  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"camera_handle_status"),
 		       ctxt.handle_ctxt, ctxt.handle_id);
-  ctxt.handle_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(status_window,"camera_handle_status"),
+  ctxt.handle_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(commander_window,"camera_handle_status"),
 				    ctxt.handle_ctxt, temp);
 
   // camera GUID:
-  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(status_window,"camera_guid_status"),
+  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"camera_guid_status"),
 		       ctxt.guid_ctxt, ctxt.guid_id);
-  ctxt.guid_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(status_window,"camera_guid_status"),
+  ctxt.guid_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(commander_window,"camera_guid_status"),
 				  ctxt.guid_ctxt, " <Future Feature>");
 
   // camera maximal PHY speed:
   sprintf(temp," %s",phy_speed_list[selfid->packetZero.phySpeed]);
-  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(status_window,"camera_maxiso_status"),
+  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"camera_maxiso_status"),
 		       ctxt.max_iso_ctxt, ctxt.max_iso_id);
-  ctxt.max_iso_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(status_window,"camera_maxiso_status"),
+  ctxt.max_iso_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(commander_window,"camera_maxiso_status"),
 				     ctxt.max_iso_ctxt, temp);
 
   // camera maximal PHY delay:
   sprintf(temp," %s",phy_delay_list[selfid->packetZero.phyDelay]);
-  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(status_window,"camera_delay_status"),
+  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"camera_delay_status"),
 		       ctxt.delay_ctxt, ctxt.delay_id);
-  ctxt.delay_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(status_window,"camera_delay_status"),
+  ctxt.delay_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(commander_window,"camera_delay_status"),
 				     ctxt.delay_ctxt, temp);
 
   // IIDC software revision:
@@ -320,16 +318,16 @@ UpdateCameraStatusFrame(void)
     case 0x000102: sprintf(temp," 1.30");break;
     default: sprintf(temp," Unknown IIDC Specs version");
     }
-  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(status_window,"camera_dc_status"),
+  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"camera_dc_status"),
 		       ctxt.dc_ctxt, ctxt.dc_id);
-  ctxt.dc_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(status_window,"camera_dc_status"),
+  ctxt.dc_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(commander_window,"camera_dc_status"),
 				     ctxt.dc_ctxt, temp);
 
   // power class:
   sprintf(temp," %s",power_class_list[selfid->packetZero.powerClass]);
-  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(status_window,"camera_pwclass_status"),
+  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(commander_window,"camera_pwclass_status"),
 		       ctxt.pwclass_ctxt, ctxt.pwclass_id);
-  ctxt.pwclass_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(status_window,"camera_pwclass_status"),
+  ctxt.pwclass_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(commander_window,"camera_pwclass_status"),
 				     ctxt.pwclass_ctxt,temp);
 
 }
@@ -342,13 +340,13 @@ UpdateTransferStatusFrame(void)
   int err;
   sprintf(temp," %d",misc_info->iso_channel);
 
-  gtk_statusbar_remove( (GtkStatusbar*) lookup_widget(status_window,"iso_channel_status"), ctxt.iso_channel_ctxt, ctxt.iso_channel_id);
-  ctxt.iso_channel_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(status_window,"iso_channel_status"), ctxt.iso_channel_ctxt, temp);
+  gtk_statusbar_remove( (GtkStatusbar*) lookup_widget(commander_window,"iso_channel_status"), ctxt.iso_channel_ctxt, ctxt.iso_channel_id);
+  ctxt.iso_channel_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"iso_channel_status"), ctxt.iso_channel_ctxt, temp);
 
   sprintf(temp," %d",misc_info->iso_speed);
 
-  gtk_statusbar_remove( (GtkStatusbar*) lookup_widget(status_window,"iso_speed_status"), ctxt.iso_speed_ctxt, ctxt.iso_speed_id);
-  ctxt.iso_speed_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(status_window,"iso_speed_status"), ctxt.iso_speed_ctxt, " <Future Feature>");
+  gtk_statusbar_remove( (GtkStatusbar*) lookup_widget(commander_window,"iso_speed_status"), ctxt.iso_speed_ctxt, ctxt.iso_speed_id);
+  ctxt.iso_speed_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"iso_speed_status"), ctxt.iso_speed_ctxt, " <Future Feature>");
 
   // we perform an update of the ISO local info here. Just to avoid possible incoherencies.
   err=dc1394_get_iso_status(camera->handle, camera->id, &misc_info->is_iso_on);
@@ -357,14 +355,14 @@ UpdateTransferStatusFrame(void)
   else
     sprintf(temp," No ISO transmission");
 
-  gtk_statusbar_remove( (GtkStatusbar*) lookup_widget(status_window,"iso_status_status"), ctxt.iso_status_ctxt, ctxt.iso_status_id);
-  ctxt.iso_status_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(status_window,"iso_status_status"), ctxt.iso_status_ctxt, temp);
+  gtk_statusbar_remove( (GtkStatusbar*) lookup_widget(commander_window,"iso_status_status"), ctxt.iso_status_ctxt, ctxt.iso_status_id);
+  ctxt.iso_status_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"iso_status_status"), ctxt.iso_status_ctxt, temp);
 
   err=dc1394_get_iso_channel_and_speed(camera->handle, camera->id, &misc_info->iso_channel, &misc_info->iso_speed);
   sprintf(temp," %d",misc_info->iso_channel);
 
-  gtk_statusbar_remove( (GtkStatusbar*) lookup_widget(status_window,"iso_channel_status"), ctxt.iso_channel_ctxt, ctxt.iso_channel_id);
-  ctxt.iso_channel_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(status_window,"iso_channel_status"), ctxt.iso_channel_ctxt, temp);
+  gtk_statusbar_remove( (GtkStatusbar*) lookup_widget(commander_window,"iso_channel_status"), ctxt.iso_channel_ctxt, ctxt.iso_channel_id);
+  ctxt.iso_channel_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(commander_window,"iso_channel_status"), ctxt.iso_channel_ctxt, temp);
 
 }
 
