@@ -45,16 +45,9 @@ typedef struct
 
   long unsigned int SDL_flags;
   int SDL_bpp;
-
-  SDL_Surface *SDL_video;
-  // video surface
-
-  SDL_Overlay *SDL_overlay;
-  // video overlay surface
-
-  SDL_Rect SDL_videoRect;
-  // video rectangle for overlay surface blitting to video surface
- 
+  SDL_Surface *SDL_video;   // video surface
+  SDL_Overlay *SDL_overlay; // video overlay surface
+  SDL_Rect SDL_videoRect;   // video rectangle for overlay surface
   pthread_mutex_t         mutex_cancel_event;
   int                     cancel_event_req;
 
@@ -82,7 +75,8 @@ int
 sdlInit(chain_t *display_service);
 
 void
-convert_to_yuv_for_SDL(unsigned char *src, unsigned char *dest, int mode, int width, int height);
+convert_to_yuv_for_SDL(unsigned char *src, unsigned char *dest, int mode,
+		       int width, int height, int f7_colormode);
 #endif
 
 #endif

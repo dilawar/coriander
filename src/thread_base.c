@@ -32,6 +32,7 @@
 
 extern chain_t *image_pipe;
 extern chain_t **image_pipes;
+extern Format7Info *format7_info;
 extern dc1394_miscinfo* misc_info;
 extern GtkWidget* commander_window;
 extern int current_camera;
@@ -143,6 +144,10 @@ CommonChainSetup(chain_t* chain, service_t req_service, unsigned int camera)
       chain->height=info_iso->capture.frame_height;
       chain->bytes_per_frame=buffer_size;
       chain->mode=misc_info->mode;
+      if (misc_info->format==FORMAT_SCALABLE_IMAGE_SIZE)
+	chain->format7_color_mode=format7_info->mode[misc_info->mode].color_coding_id;
+      else
+	chain->format7_color_mode=-1;
     }
   else
     { // other type. First check for 'firstness'
@@ -252,7 +257,7 @@ FreeChain(chain_t* chain)
 
 
 void
-convert_to_rgb(unsigned char *src, unsigned char *dest, int mode, int width, int height)
+convert_to_rgb(unsigned char *src, unsigned char *dest, int mode, int width, int height, int f7_colormode)
 {
   switch(mode)
     {
@@ -299,6 +304,30 @@ convert_to_rgb(unsigned char *src, unsigned char *dest, int mode, int width, int
     case MODE_FORMAT7_5:
     case MODE_FORMAT7_6:
     case MODE_FORMAT7_7:
+      switch (f7_colormode)
+	{
+	case COLOR_FORMAT7_MONO8:
+	  y2rgb(src,dest,width*height);
+	  break;
+	case COLOR_FORMAT7_YUV411:
+	  uyyvyy2rgb(src,dest,width*height);
+	  break;
+	case COLOR_FORMAT7_YUV422:
+	  uyvy2rgb(src,dest,width*height);
+	  break;
+	case COLOR_FORMAT7_YUV444:
+	  uyv2rgb(src,dest,width*height);
+	  break;
+	case COLOR_FORMAT7_RGB8:
+	  memcpy(dest,src,3*width*height);
+	  break;
+	case COLOR_FORMAT7_MONO16:
+	  y162rgb(src,dest,width*height);
+	  break;
+	case COLOR_FORMAT7_RGB16:
+	  rgb482rgb(src,dest,width*height);
+	  break;
+	  }
       break;
     }
 }

@@ -25,6 +25,10 @@
 
 extern void swab();
 
+// The following #define is there for the users who experience green/purple
+// images in the display. This seems to be a videocard driver problem.
+
+#define YUYV // instead of the standard UYVY
 
 // color conversion functions from Bart Nabbe.
 // corrected by Damien: bad coeficients in YUV2RGB
@@ -53,27 +57,27 @@ extern void swab();
 
 /**********************************************************************
  *
- *  CONVERSION FUNCTIONS BETWEEN       UYVY    AND    YUYV
- *
- **********************************************************************/
-
-void
-uyvy2yuyv (unsigned char *src, unsigned char *dest, int NumPixels) {
-	swab(src, dest, NumPixels << 1);
-}
-
-void
-yuyv2uyvy (unsigned char *src, unsigned char *dest, int NumPixels) {
-	swab(src, dest, NumPixels << 1);
-}
-
-/**********************************************************************
- *
  *  CONVERSION FUNCTIONS TO UYVY 
  *
  **********************************************************************/
 
+void
+yuyv2uyvy(unsigned char *src, unsigned char *dest, int NumPixels) {
+#ifdef YUYV
+  swab(src, dest, NumPixels << 1);
+#else
+  memcpy(dest,src, NumPixels<<1);
+#endif
+}
 
+void
+uyvy2yuyv(unsigned char *src, unsigned char *dest, int NumPixels) {
+#ifdef YUYV
+  swab(src, dest, NumPixels << 1);
+#else
+  memcpy(dest,src, NumPixels<<1);
+#endif
+}
 void
 uyyvyy2uyvy (unsigned char *src, unsigned char *dest, int NumPixels) {
   register int i=NumPixels + (NumPixels >> 1)-1;
@@ -88,7 +92,17 @@ uyyvyy2uyvy (unsigned char *src, unsigned char *dest, int NumPixels) {
       y1 = src[i--];
       y0 = src[i--];
       u  = src[i--];
+#ifdef YUYV
+      dest[j--] = v;
+      dest[j--] = y3;
+      dest[j--] = u;
+      dest[j--] = y2;
 
+      dest[j--] = v;
+      dest[j--] = y1;
+      dest[j--] = u;
+      dest[j--] = y0;
+#else // UYVY
       dest[j--] = y3;
       dest[j--] = v;
       dest[j--] = y2;
@@ -98,6 +112,7 @@ uyyvyy2uyvy (unsigned char *src, unsigned char *dest, int NumPixels) {
       dest[j--] = v;
       dest[j--] = y0;
       dest[j--] = u;
+#endif
     }
 }
 
@@ -116,10 +131,17 @@ uyv2uyvy (unsigned char *src, unsigned char *dest, int NumPixels) {
       y0 = src[i--];
       u0 = src[i--];
 
+#ifdef YUYV
+      dest[j--] = (v0+v1) >> 1;
+      dest[j--] = y1;
+      dest[j--] = (u0+u1) >> 1;
+      dest[j--] = y0;
+#else // UYVY
       dest[j--] = y1;
       dest[j--] = (v0+v1) >> 1;
       dest[j--] = y0;
       dest[j--] = (u0+u1) >> 1;
+#endif
     }
 }
 
@@ -134,11 +156,17 @@ y2uyvy (unsigned char *src, unsigned char *dest, int NumPixels) {
     {
       y1 = src[i--];
       y0 = src[i--];
-
+#ifdef YUYV
+      dest[j--] = 128;
+      dest[j--] = y1;
+      dest[j--] = 128;
+      dest[j--] = y0;
+#else // UYVY
       dest[j--] = y1;
       dest[j--] = 128;
       dest[j--] = y0;
       dest[j--] = 128;
+#endif
     }
 }
 
@@ -154,11 +182,17 @@ y162uyvy (unsigned char *src, unsigned char *dest, int NumPixels) {
       y1   = src[i--];
       i--;
       y0   = src[i--];
-
+#ifdef YUYV
+      dest[j--] = 128;
+      dest[j--] = y1;
+      dest[j--] = 128;
+      dest[j--] = y0;
+#else // UYVY
       dest[j--] = y1;
       dest[j--] = 128;
       dest[j--] = y0;
       dest[j--] = 128;
+#endif
     }
 }
 
@@ -179,11 +213,17 @@ rgb2uyvy (unsigned char *src, unsigned char *dest, int NumPixels) {
       g = (unsigned char) src[i--];
       r = (unsigned char) src[i--];
       RGB2YUV (r, g, b, y1, u1 , v1);
-
+#ifdef YUYV
+      dest[j--] = (v0+v1) >> 1;
+      dest[j--] = y1;
+      dest[j--] = (u0+u1) >> 1;
+      dest[j--] = y0;
+#else // UYVY
       dest[j--] = y1;
       dest[j--] = (v0+v1) >> 1;
       dest[j--] = y0;
       dest[j--] = (u0+u1) >> 1;
+#endif
     }
 }
 
@@ -211,10 +251,17 @@ rgb482uyvy (unsigned char *src, unsigned char *dest, int NumPixels) {
       r = (unsigned char) src[i--];
       RGB2YUV (r, g, b, y1, u1 , v1);
 
+#ifdef YUYV
+      dest[j--] = (v0+v1) >> 1;
+      dest[j--] = y1;
+      dest[j--] = (u0+u1) >> 1;
+      dest[j--] = y0;
+#else // UYVY
       dest[j--] = y1;
       dest[j--] = (v0+v1) >> 1;
       dest[j--] = y0;
       dest[j--] = (u0+u1) >> 1;
+#endif
     }
 }
 

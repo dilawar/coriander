@@ -1,7 +1,17 @@
 Coriander, (c) 2000-2002 Damien Douxchamps <douxchamps@ieee.org>
 
+
+	
 Changes towards version 0.24:
 
+   Feb 27, 2002, by Damien Douxchamps
+   - added some code to the color conversion functions so that
+     they now work with format7.
+   - updated the color conversion functions, again... The problems
+     encountered by some users are related to the video card, so
+     I set the default SDL mode to YUY2, and changed the color
+     conversion accordingly.
+	
    Feb 19, 2002, by Damien Douxchamps
    - Updated the Real functions that would not compile anymore.
 	

@@ -191,7 +191,8 @@ RealThread(void* arg)
 		  // similar Real mode in order to avoid unecessary CPU load.
 		  convert_to_rgb(real_service->current_buffer,
 				 info->real_buffer, real_service->mode,
-				 real_service->width, real_service->height);// RGB
+				 real_service->width, real_service->height,
+				 real_service->format7_color_mode);// RGB
 
 		  //fprintf(stderr,"Setting pointer to sample\n");
 		  info->res = info->pSample->SetBuffer(info->real_buffer,

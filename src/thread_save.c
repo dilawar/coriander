@@ -184,7 +184,7 @@ SaveThread(void* arg)
 		    {
 		      convert_to_rgb(save_service->current_buffer, info->save_buffer,
 				     save_service->mode, save_service->width,
-				     save_service->height);
+				     save_service->height, save_service->format7_color_mode);
 		      im=gdk_imlib_create_image_from_data(info->save_buffer,NULL,
 							  save_service->width, save_service->height);
 		      gdk_imlib_save_image(im, filename_out, NULL);

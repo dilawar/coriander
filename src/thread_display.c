@@ -162,7 +162,8 @@ DisplayThread(void* arg)
 		    {
 		      convert_to_yuv_for_SDL(display_service->current_buffer,
 					     info->SDL_overlay->pixels[0], display_service->mode,
-					     display_service->width, display_service->height);
+					     display_service->width, display_service->height,
+					     display_service->format7_color_mode);
 		      SDL_UnlockYUVOverlay(info->SDL_overlay);
 		      SDL_DisplayYUVOverlay(info->SDL_overlay, &info->SDL_videoRect);
 		    }
@@ -226,9 +227,10 @@ sdlInit(chain_t *display_service)
 {
   char tmp[STRING_SIZE];
   displaythread_info_t *info;
+  const SDL_VideoInfo *sdl_videoinfo;
   info=(displaythread_info_t*)display_service->data;
 
-  info->SDL_bpp=0;
+  info->SDL_bpp=16;
   info->SDL_flags=SDL_ANYFORMAT | SDL_RESIZABLE;
 
   // Initialize the SDL library (video subsystem)
@@ -237,11 +239,25 @@ sdlInit(chain_t *display_service)
       fprintf(stderr,"Couldn't initialize SDL video subsystem\n");
       return(0);
     }
+  
+  sdl_videoinfo = SDL_GetVideoInfo();
+  if (sdl_videoinfo->hw_available)
+    info->SDL_flags=info->SDL_flags | SDL_HWSURFACE;
 
   // Set requested video mode
+  info->SDL_bpp=SDL_VideoModeOK(display_service->width, display_service->height, 
+				info->SDL_bpp, info->SDL_flags);
+  
+  ////////////// BPP ////////////// 
+  //if (info->SDL_bpp>0)
+  //  fprintf(stderr,"mode OK: %d bpp\n",info->SDL_bpp);
+  //else
+  //  fprintf(stderr,"mode KO: %d bpp\n",info->SDL_bpp);
+  /////////////////////////////////
+
   info->SDL_video = SDL_SetVideoMode(display_service->width, display_service->height, 
 				     info->SDL_bpp, info->SDL_flags);
-  // (0 is bpp)
+
   if (info->SDL_video == NULL)
     {
       SDL_Quit();
@@ -249,20 +265,28 @@ sdlInit(chain_t *display_service)
       return(0);
     }
 
-  // Hide cursor
+  // Show cursor
   SDL_ShowCursor(1);
   
   // set window title:
   sprintf(tmp,"Node %d: %s %s",camera->id,camera->vendor,camera->model);
   SDL_WM_SetCaption(tmp,"");
-  
 
   // Create YUV Overlay
   info->SDL_overlay = SDL_CreateYUVOverlay(display_service->width, display_service->height, 
 					   SDL_YUY2_OVERLAY,info->SDL_video);
 
-  fprintf(stderr,"0x%x\n",info->SDL_overlay->format);
+  ////////////// HW SURFACE /////////////
+  //if (info->SDL_overlay->hw_overlay)
+  //  fprintf(stderr,"HW available\n");
+  //else
+  //  fprintf(stderr,"HW not available\n");
+  ///////////////////////////////////////
 
+  //////////////// FORMAT ///////////////
+  //fprintf(stderr,"format : 0x%x\n",info->SDL_overlay->format);
+  ///////////////////////////////////////
+  
   if (info->SDL_overlay == NULL)
     {
       SDL_Quit();
@@ -282,7 +306,8 @@ sdlInit(chain_t *display_service)
 
 // we should optimize this for RGB too: RGB modes could use RGB-SDL instead of YUV overlay
 void
-convert_to_yuv_for_SDL(unsigned char *src, unsigned char *dest, int mode, int width, int height)
+convert_to_yuv_for_SDL(unsigned char *src, unsigned char *dest, int mode,
+		       int width, int height, int f7_colormode)
 {
   switch(mode)
     {
@@ -295,7 +320,7 @@ convert_to_yuv_for_SDL(unsigned char *src, unsigned char *dest, int mode, int wi
     case MODE_1024x768_YUV422:
     case MODE_1280x960_YUV422:
     case MODE_1600x1200_YUV422:
-      memcpy(dest,src,width*height*2);
+      yuyv2uyvy(src,dest,width*height);
       break;
     case MODE_640x480_YUV411:
       uyyvyy2uyvy(src,dest,width*height);
@@ -329,6 +354,30 @@ convert_to_yuv_for_SDL(unsigned char *src, unsigned char *dest, int mode, int wi
     case MODE_FORMAT7_5:
     case MODE_FORMAT7_6:
     case MODE_FORMAT7_7:
+      switch (f7_colormode)
+	{
+	case COLOR_FORMAT7_MONO8:
+	  y2uyvy(src,dest,width*height);
+	  break;
+	case COLOR_FORMAT7_YUV411:
+	  uyyvyy2uyvy(src,dest,width*height);
+	  break;
+	case COLOR_FORMAT7_YUV422:
+	  yuyv2uyvy(src,dest,width*height);
+	  break;
+	case COLOR_FORMAT7_YUV444:
+	  uyv2uyvy(src,dest,width*height);
+	  break;
+	case COLOR_FORMAT7_RGB8:
+	  rgb2uyvy(src,dest,width*height);
+	  break;
+	case COLOR_FORMAT7_MONO16:
+	  y162uyvy(src,dest,width*height);
+	  break;
+	case COLOR_FORMAT7_RGB16:
+	  rgb482uyvy(src,dest,width*height);
+	  break;
+	}
       break;
     }
 }
