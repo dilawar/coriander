@@ -71,7 +71,6 @@ BuildTriggerModeMenu(void)
 
   trigger_mode_menu = gtk_menu_new ();
 
-  //fprintf(stderr,"modes trigger: %d\n",modes);
   if (modes) // at least one mode present
     { // external trigger available:
       for (f=TRIGGER_MODE_MIN,i=0;f<=TRIGGER_MODE_MAX;i++,f++)
@@ -93,10 +92,8 @@ BuildTriggerModeMenu(void)
     }
   gtk_option_menu_set_menu (GTK_OPTION_MENU (trigger_mode), trigger_mode_menu);
 
-  //fprintf(stderr,"modes trigger: %d\n",modes);
   // sets the active menu item:
   gtk_option_menu_set_history (GTK_OPTION_MENU (trigger_mode), index[feature_set->feature[FEATURE_TRIGGER-FEATURE_MIN].trigger_mode]);
-  //fprintf(stderr,"modes trigger: %d\n",modes);
 }
 
 
@@ -137,7 +134,6 @@ BuildMemoryChannelMenu(void)
 
   // sets the active menu item:
   gtk_option_menu_set_history (GTK_OPTION_MENU (channel_num), misc_info->load_channel);
-  //printf("load channel: %d\n", misc_info->load_channel);
 }
 
 void
@@ -148,6 +144,7 @@ BuildCameraMenu(void)
   GtkWidget* camera_id;
   GtkWidget* camera_id_menu;
   GtkWidget* glade_menuitem;
+  char tmp[256];
 
   gtk_widget_destroy(GTK_WIDGET (lookup_widget(commander_window,"camera_select"))); // remove previous menu
 
@@ -161,10 +158,10 @@ BuildCameraMenu(void)
 
   camera_id_menu = gtk_menu_new ();
 
-  //fprintf(stderr,"%d\n",camera_num);
   for (i=0;i<camera_num;i++)
     {
-      glade_menuitem = gtk_menu_item_new_with_label (_(cameras[i].model));
+      sprintf(tmp,"Node %d: %s %s",cameras[i].id, cameras[i].vendor, cameras[i].model);
+      glade_menuitem = gtk_menu_item_new_with_label (_(tmp));
       gtk_widget_show (glade_menuitem);
       gtk_menu_append (GTK_MENU (camera_id_menu), glade_menuitem);
       gtk_signal_connect (GTK_OBJECT (glade_menuitem), "activate",

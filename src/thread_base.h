@@ -88,7 +88,7 @@ void
 FreeChain(chain_t* chain);
 
 void
-convert_to_rgb(unsigned char *src, unsigned char *dest, int mode, int width, int height, long int bytes_per_frame);
+convert_to_rgb(unsigned char *src, unsigned char *dest, int mode, int width, int height);
 
 void
 CleanThreads(clean_mode_t mode);

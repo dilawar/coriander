@@ -191,8 +191,7 @@ RealThread(void* arg)
 		  // similar Real mode in order to avoid unecessary CPU load.
 		  convert_to_rgb(real_service->current_buffer,
 				 info->real_buffer, real_service->mode,
-				 real_service->width, real_service->height,
-				 real_service->bytes_per_frame);// RGB
+				 real_service->width, real_service->height);// RGB
 
 		  fprintf(stderr,"Setting pointer to sample\n");
 		  info->res = info->pSample->SetBuffer(info->real_buffer,
@@ -602,37 +601,40 @@ int RealSetup(realthread_info_t *info, chain_t *service)
 	info->res = pBasicSettings->RemoveAllTargetAudiences();
 		    
       //
-      // Add target audiences as specified in audienceFlags constructor arg.
+      // Add target audiences as specified in preferences.real_audience:
       //
 
       if(SUCCEEDED(info->res))
-	switch(info->audienceFlags)
-	  {
-	  case REAL_AUDIENCE_28_MODEM:
-	    info->res = pBasicSettings->AddTargetAudience(ENC_TARGET_28_MODEM);
-	    break;
-	  case REAL_AUDIENCE_56_MODEM:
-	    info->res = pBasicSettings->AddTargetAudience(ENC_TARGET_56_MODEM);
-	    break;
-	  case REAL_AUDIENCE_SINGLE_ISDN:
-	    info->res = pBasicSettings->AddTargetAudience(ENC_TARGET_SINGLE_ISDN);
-	    break;
-	  case REAL_AUDIENCE_DUAL_ISDN:
-	    info->res = pBasicSettings->AddTargetAudience(ENC_TARGET_DUAL_ISDN);
-	    break;
-	  case REAL_AUDIENCE_LAN_HIGH:
-	    info->res = pBasicSettings->AddTargetAudience(ENC_TARGET_LAN_HIGH);
-	    break;
-	  case REAL_AUDIENCE_256_DSL_CABLE:
-	    info->res = pBasicSettings->AddTargetAudience(ENC_TARGET_256_DSL_CABLE);
-	    break;
-	  case REAL_AUDIENCE_384_DSL_CABLE:
-	    info->res = pBasicSettings->AddTargetAudience(ENC_TARGET_384_DSL_CABLE);
-	    break;
-	  case REAL_AUDIENCE_512_DSL_CABLE:
-	    info->res = pBasicSettings->AddTargetAudience(ENC_TARGET_512_DSL_CABLE);
-	    break;
-	  }
+	if (preferences.real_audience & REAL_AUDIENCE_28_MODEM)
+	  info->res = pBasicSettings->AddTargetAudience(ENC_TARGET_28_MODEM);
+	  
+      if(SUCCEEDED(info->res))
+	if (preferences.real_audience & REAL_AUDIENCE_56_MODEM)
+	  info->res = pBasicSettings->AddTargetAudience(ENC_TARGET_56_MODEM);
+
+      if(SUCCEEDED(info->res))
+	if (preferences.real_audience & REAL_AUDIENCE_SINGLE_ISDN)
+	  info->res = pBasicSettings->AddTargetAudience(ENC_TARGET_SINGLE_ISDN);
+
+      if(SUCCEEDED(info->res))
+	if (preferences.real_audience & REAL_AUDIENCE_DUAL_ISDN)
+	  info->res = pBasicSettings->AddTargetAudience(ENC_TARGET_DUAL_ISDN);
+
+      if(SUCCEEDED(info->res))
+	if (preferences.real_audience & REAL_AUDIENCE_LAN_HIGH)
+	  info->res = pBasicSettings->AddTargetAudience(ENC_TARGET_LAN_HIGH);
+
+      if(SUCCEEDED(info->res))
+	if (preferences.real_audience & REAL_AUDIENCE_256_DSL_CABLE)
+	  info->res = pBasicSettings->AddTargetAudience(ENC_TARGET_256_DSL_CABLE);
+
+      if(SUCCEEDED(info->res))
+	if (preferences.real_audience & REAL_AUDIENCE_384_DSL_CABLE)
+	  info->res = pBasicSettings->AddTargetAudience(ENC_TARGET_384_DSL_CABLE);
+
+      if(SUCCEEDED(info->res))
+	if (preferences.real_audience & REAL_AUDIENCE_512_DSL_CABLE)
+	  info->res = pBasicSettings->AddTargetAudience(ENC_TARGET_512_DSL_CABLE);
       /*
       //
       // select audio optimized for content containing mostly music
@@ -735,9 +737,6 @@ int RealSetup(realthread_info_t *info, chain_t *service)
     }	
 	
 
-  // this comes from the 'run' part on altersources //////////////////////////////////
-
-
     //////////////////////////////////////////////////////////
     //
     // Prepare the build engine for encoding
@@ -745,9 +744,7 @@ int RealSetup(realthread_info_t *info, chain_t *service)
     //////////////////////////////////////////////////////////
 
     if(SUCCEEDED(info->res))
-    {
-	info->res = info->pBuildEngine->PrepareToEncode();
-    }
+      info->res = info->pBuildEngine->PrepareToEncode();
 
     /*
     //////////////////////////////////////////////////////////

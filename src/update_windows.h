@@ -29,7 +29,7 @@ void
 UpdatePreferencesWindow(void);
 
 void
-UpdatePortholeWindow(void);
+UpdatePositionWindow(void);
 
 void
 UpdateColorWindow(void);

@@ -41,23 +41,18 @@ GetService(service_t service, unsigned int camera)
 {
   chain_t  *chain;
 
-  //fprintf(stderr,"Probing services for camera %d\n",camera);
-
   chain=image_pipes[camera];
 
   if (chain==NULL)
     {
-      //fprintf(stderr,"No service: empty chain\n");
       return(NULL);
     }
   else
     while(chain!=NULL)
       { 
 	pthread_mutex_lock(&chain->mutex_struct); // WARNING: see callbacks.c, on_service_iso_toggled
-	//fprintf(stderr,"service probed: %d\n",chain->service);
 	if (service==chain->service)
 	  {
-	    //fprintf(stderr,"service found\n");
 	    pthread_mutex_unlock(&chain->mutex_struct); // WARNING: see callbacks.c, on_service_iso_toggled
 	    return(chain);
 	  }
@@ -136,7 +131,6 @@ CommonChainSetup(chain_t* chain, service_t req_service, unsigned int camera)
     }
   else // chain is the first one
     {
-      //fprintf(stderr,"No break point: empty pipe\n");
       chain->next_chain=NULL;
       chain->prev_chain=NULL;
     }
@@ -183,10 +177,8 @@ InsertChain(chain_t* chain, unsigned int camera)
 
   // we should only use mutex_struct in this function
 
-  //fprintf(stderr,"Inserting chain\n");
   if ((chain->next_chain==NULL)&&(chain->prev_chain==NULL))
     {
-      //fprintf(stderr," Insert chain: empty pipe\n");
       // the pipe is empty
       image_pipes[camera]=chain;
     }
@@ -207,7 +199,6 @@ InsertChain(chain_t* chain, unsigned int camera)
       if (chain->next_chain!=NULL)
 	pthread_mutex_unlock(&chain->next_chain->mutex_struct);
   
-      //fprintf(stderr," Chain inserted\n");
     }
 }
 
@@ -218,25 +209,21 @@ RemoveChain(chain_t* chain, unsigned int camera)
 
   // we should only use mutex_struct in this function
 
-  //fprintf(stderr,"Removing...\n");
   // LOCK
   if (chain->prev_chain!=NULL)// lock prev_mutex if we are not the first in the line
     pthread_mutex_lock(&chain->prev_chain->mutex_struct);
   if (chain->next_chain!=NULL)// lock next_mutex if we are not the last in the line
     pthread_mutex_lock(&chain->next_chain->mutex_struct);
 
-  //fprintf(stderr," Removing: mutex locked\n");
   // note that we want simultaneous lock of the prev AND next chains before we disconnect
   // the current chain.
   
-  //fprintf(stderr," Removing: cutting\n");
   if (chain->prev_chain!=NULL)// lock prev_mutex if we are not the first in the line
     chain->prev_chain->next_chain=chain->next_chain;
   if (chain->next_chain!=NULL)// lock next_mutex if we are not the last in the line
     chain->next_chain->prev_chain=chain->prev_chain;
   if ((chain->prev_chain==NULL)&&(chain->next_chain==NULL)) // we are the only element
     {
-      //fprintf(stderr,"Only element removed, image_pipe=NULL\n");
       image_pipes[camera]=NULL;
     }
   
@@ -245,7 +232,6 @@ RemoveChain(chain_t* chain, unsigned int camera)
     pthread_mutex_unlock(&chain->prev_chain->mutex_struct);
   if (chain->next_chain!=NULL)// lock next_mutex if we are not the last in the line
     pthread_mutex_unlock(&chain->next_chain->mutex_struct);
-  //fprintf(stderr," Removing: mutex unlocked\n");
 
 }
 
@@ -266,7 +252,7 @@ FreeChain(chain_t* chain)
 
 
 void
-convert_to_rgb(unsigned char *src, unsigned char *dest, int mode, int width, int height, long int bytes_per_frame)
+convert_to_rgb(unsigned char *src, unsigned char *dest, int mode, int width, int height)
 {
   switch(mode)
     {
@@ -289,7 +275,7 @@ convert_to_rgb(unsigned char *src, unsigned char *dest, int mode, int width, int
     case MODE_1024x768_RGB:
     case MODE_1280x960_RGB:
     case MODE_1600x1200_RGB:
-      memcpy(dest,src,bytes_per_frame);
+      memcpy(dest,src,3*width*height);
       break;
     case MODE_640x480_MONO:
     case MODE_800x600_MONO:
@@ -325,14 +311,11 @@ CleanThreads(clean_mode_t mode)
 								   "service_display")),FALSE);
       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,
 								   "service_iso")),FALSE);
-      //fprintf(stderr,"CLEAN_MODE_UI_UPDATE\n");
       break;
     case CLEAN_MODE_NO_UI_UPDATE:
       RealStopThread();
       FtpStopThread();
-      //fprintf(stderr,"CLEAN_MODE_NO_UI_UPDATE\n");
       SaveStopThread();
-      //fprintf(stderr,"CLEAN_MODE_NO_UI_UPDATE\n");
       DisplayStopThread(current_camera);
       IsoStopThread();
       break;
@@ -346,7 +329,6 @@ CleanThreads(clean_mode_t mode)
       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,
 								   "service_display")),FALSE);
       IsoStopThread();
-      //fprintf(stderr,"CLEAN_MODE_UI_UPDATE_NOT_ISO\n");
       break;
       
     }

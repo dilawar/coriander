@@ -25,7 +25,7 @@ enum {
   ONE_PUSH_TIMEOUT=0,
   AUTO_UPDATE,
   AUTO_UPDATE_FREQUENCY,
-  DISPLAY_METHOD,
+  DISPLAY_KEEP_RATIO,
   DISPLAY_PERIOD,
   RECEIVE_METHOD,
   SAVE_FILENAME, 
@@ -58,7 +58,7 @@ typedef struct _PrefsInfo
   float op_timeout;
   int auto_update;
   float auto_update_frequency;
-  int display_method;
+  int display_keep_ratio;
   int display_period;
   int receive_method;
   char save_filename[256];
@@ -80,14 +80,11 @@ typedef struct _PrefsInfo
   char real_title[256];
   char real_copyright[256];
   int real_recordable;
-  int real_audience;
+  unsigned long int real_audience;
   int real_quality;
   int real_compatibility;
   int real_period;
 
-  //int display_index2method[3];// display[menu_index]=DISPLAY_METHOD_XX
-  //int receive_index2method[2];
-  int display_method2index[3];// display[METHOD]=index
   int receive_method2index[2];
 
 } PrefsInfo;

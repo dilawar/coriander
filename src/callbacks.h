@@ -65,11 +65,6 @@ on_about_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
 gboolean
-on_porthole_window_close               (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data);
-
-gboolean
 on_about_window_delete_event           (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data);
@@ -390,16 +385,8 @@ on_service_real_toggled                (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
 
 void
-on_prefs_real_record_yes_toggled       (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
-
-void
 on_range_menu_activate                 (GtkMenuItem     *menuitem,
 				        gpointer         user_data);
-
-void
-on_prefs_real_audience_activate        (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
 
 void
 on_prefs_real_quality_activate         (GtkToggleButton *togglebutton,
@@ -410,11 +397,47 @@ on_prefs_real_compatibility_activate   (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
 
 void
-on_prefs_display_method_activate       (GtkToggleButton *togglebutton,
+on_prefs_receive_method_activate       (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
 
 void
-on_prefs_receive_method_activate       (GtkToggleButton *togglebutton,
+on_prefs_display_keep_ratio_toggled    (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_prefs_real_recordable_toggled       (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_prefs_real_audience_28k_toggled     (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_prefs_real_audience_56k_toggled     (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_prefs_real_audience_sisdn_toggled   (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_prefs_real_audience_disdn_toggled   (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_prefs_real_audience_lan_toggled     (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_prefs_real_audience_dsl256_toggled  (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_prefs_real_audience_dsl384_toggled  (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_prefs_real_audience_dsl512_toggled  (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
 
 #endif

@@ -20,14 +20,22 @@
 #define __DEFINITIONS_H__
 
 #include <libdc1394/dc1394_control.h>
-#define  LOOP_RETRIES          20     // # of tries before timeout,
-                                      // thus timeout is LOOP_RETRIES*LOOP_SLEEP
-#define  LOOP_SLEEP        500000     // .5 second
 #define  BU                  1000     // definitions for distinguishing the BU and RV
 #define  RV                  2000     // scales of the FEATURE_WHITE_BALANCE feature
 #define  NO                 FALSE
 #define  YES                 TRUE
  
+typedef enum {
+  REAL_AUDIENCE_28_MODEM=1,    // 20 kbps
+  REAL_AUDIENCE_56_MODEM=2,      // 34 kbps
+  REAL_AUDIENCE_SINGLE_ISDN=4,   // 45 kbps
+  REAL_AUDIENCE_DUAL_ISDN=8,     // 80 kbps
+  REAL_AUDIENCE_LAN_HIGH=16,      // 150 kbps
+  REAL_AUDIENCE_256_DSL_CABLE=32, // 225 kbps
+  REAL_AUDIENCE_384_DSL_CABLE=64, // 350 kbps
+  REAL_AUDIENCE_512_DSL_CABLE=128  // 450 kbps
+} RealAudience;
+
 enum 
 {
     RANGE_MENU_OFF = 0,
@@ -85,7 +93,6 @@ typedef struct _UIInfo
 {
   int want_to_display;
   int test_pattern;
-  //  int porthole_is_open;
   int all_auto;
   int all_man;
   int all_lock;

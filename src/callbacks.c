@@ -35,6 +35,7 @@
 #include "tools.h"
 #include "thread_iso.h"
 #include "thread_display.h"
+//#include "thread_real.h"
 #include "thread_save.h"
 #include "thread_ftp.h"
 #include "thread_base.h"
@@ -48,8 +49,6 @@ extern GtkWidget *format7_window;
 extern GtkWidget *about_window;
 extern GtkWidget *commander_window;
 extern GtkWidget *preferences_window;
-extern GtkWidget *porthole_window;
-//extern GtkWidget **porthole_windows;
 extern dc1394_camerainfo *camera;
 extern dc1394_feature_set *feature_set;
 extern dc1394_camerainfo *cameras;
@@ -65,7 +64,6 @@ extern UIInfo *uiinfos;
 extern int current_camera;
 extern PrefsInfo preferences; 
 extern int silent_ui_update;
-extern int porthole_is_open;
 extern char* feature_scale_list[NUM_FEATURES];
 
 gboolean
@@ -91,23 +89,6 @@ on_exit_activate                       (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
   gtk_exit(0);
-}
-
-
-gboolean
-on_porthole_window_close       (GtkWidget       *widget,
-				GdkEvent        *event,
-				gpointer         user_data)
-{
-
-  // this should be done for cam i only...
-  //fprintf(stderr,"%d\n",(int)user_data);
-  DisplayStopThread((int)user_data);
-  gtk_widget_hide(widget);
-  uiinfo->want_to_display=0;
-  if (((int)user_data)==current_camera)
-    UpdateServicesFrame();
-  return TRUE;
 }
 
 
@@ -499,8 +480,11 @@ void
 on_save_mem_clicked                    (GtkButton       *button,
                                         gpointer         user_data)
 { 
-  int timeout;
-  dc1394bool_t boolean;
+  unsigned long int timeout_bin=0;
+  unsigned long int step;
+  dc1394bool_t value=TRUE;
+  step=(unsigned long int)(1000000.0/preferences.auto_update_frequency);
+
   if (!dc1394_set_memory_save_ch(camera->handle,camera->id, misc_info->save_channel))
     MainError("Could not set memory save channel");
   else
@@ -509,22 +493,15 @@ on_save_mem_clicked                    (GtkButton       *button,
 	MainError("Could not save setup to memory channel");
       else
 	{
-	  if (!dc1394_get_memory_save_ch(camera->handle,camera->id,&timeout))
-	    MainError("Could not query memory save channel");
-	  else
+	  while ( value && (timeout_bin<(unsigned long int)(preferences.op_timeout*1000000.0)) )
 	    {
-	      boolean=TRUE;
-	      timeout=LOOP_RETRIES;
-	      while(boolean & (timeout>0))
-		{ // wait for save to be completed:
-		  usleep(LOOP_SLEEP);
-		  if (!dc1394_is_memory_save_in_operation(camera->handle,camera->id, &boolean))
-		    MainError("Could not query if memory save is in operation");
-		  timeout--;
-		}
-	      if (timeout==0)
-		MainError("Save operation function timed-out!\n");
+	      usleep(step);
+	      if (!dc1394_is_memory_save_in_operation(camera->handle,camera->id, &value))
+		MainError("Could not query if memory save is in operation");
+	      timeout_bin+=step;
 	    }
+	  if (timeout_bin>=(unsigned long int)(preferences.op_timeout*1000000.0))
+	    MainStatus("Save operation function timed-out!\n"); 
 	}
     }
 }
@@ -573,19 +550,25 @@ void
 on_camera_select_activate              (GtkMenuItem     *menuitem,
 					gpointer         user_data)
 {
-  // close current display (we don't want this thread to be executed twice at the same time)
+  // close current display (we don't want display to be used by 2 threads at the same time 'cause SDL forbids it)
 
+  //fprintf(stderr,"1\n");
   DisplayStopThread(current_camera);
 
-  // set current camera pointers: 
+  //fprintf(stderr,"2\n");
+  // set current camera pointers:
   SelectCamera((int)user_data);
+  //fprintf(stderr,"3\n");
 
   if (uiinfo->want_to_display>0)
     DisplayStartThread();
+  //fprintf(stderr,"4\n");
 
   // redraw all:
   BuildAllWindows();
+  //fprintf(stderr,"5\n");
   UpdateAllWindows();
+  //fprintf(stderr,"6\n");
 
 
 }
@@ -691,10 +674,8 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
 {
   GtkAdjustment* adj2;
 
-  //printf("User data: %d\n",(int)(int*)(int)user_data);
   switch((int)user_data)
     {
-      //printf("User data: %d\n",(int)user_data);
       case FORMAT7_SIZE_X:
 	if (!dc1394_set_format7_image_size(camera->handle,camera->id, format7_info->edit_mode,
 					   adj->value, format7_info->mode[format7_info->edit_mode-MODE_FORMAT7_MIN].size_y))
@@ -907,16 +888,12 @@ on_service_display_toggled             (GtkToggleButton *togglebutton,
 	{
 	  if (GetService(SERVICE_ISO,current_camera)==NULL)
 	    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(commander_window,"service_iso")), TRUE);
-	  if (preferences.display_method!=DISPLAY_METHOD_SDL)
-	    gtk_widget_show(porthole_window);
 	  uiinfo->want_to_display=1;
 	  DisplayStartThread();
 	} 
       else
 	{
 	  DisplayStopThread(current_camera);
-	  if (preferences.display_method!=DISPLAY_METHOD_SDL)
-	    gtk_widget_hide(porthole_window);
 	  uiinfo->want_to_display=0;
 	} 
     }
@@ -982,8 +959,8 @@ void
 on_prefs_save_seq_toggled              (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-  preferences.save_scratch=SAVE_SCRATCH_SEQUENTIAL;
-  UpdatePrefsSaveFrame();
+  if (togglebutton->active)
+    preferences.save_scratch=SAVE_SCRATCH_SEQUENTIAL;
 }
 
 
@@ -991,8 +968,8 @@ void
 on_prefs_save_scratch_toggled          (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-  preferences.save_scratch=SAVE_SCRATCH_OVERWRITE;
-  UpdatePrefsSaveFrame();
+  if (togglebutton->active)
+    preferences.save_scratch=SAVE_SCRATCH_OVERWRITE;
 }
 
 
@@ -1028,8 +1005,8 @@ void
 on_prefs_ftp_seq_toggled               (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-  preferences.ftp_scratch=FTP_SCRATCH_SEQUENTIAL;
-  UpdatePrefsFtpFrame();
+  if (togglebutton->active)
+    preferences.ftp_scratch=FTP_SCRATCH_SEQUENTIAL;
 }
 
 
@@ -1037,17 +1014,10 @@ void
 on_prefs_ftp_scratch_toggled           (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-  preferences.ftp_scratch=FTP_SCRATCH_OVERWRITE;
-  UpdatePrefsFtpFrame();
+  if (togglebutton->active)
+    preferences.ftp_scratch=FTP_SCRATCH_OVERWRITE;
 }
 
-
-void
-on_prefs_real_record_yes_toggled       (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-  preferences.real_recordable=togglebutton->active;
-}
 
 void
 on_range_menu_activate             (GtkMenuItem     *menuitem,
@@ -1064,8 +1034,6 @@ on_range_menu_activate             (GtkMenuItem     *menuitem,
 
   action=((int)user_data)%1000;
   feature=(((int)user_data)-action)/1000;
-
-  //fprintf(stderr,"data: %d feature: %d, action: %d\n",(int)user_data,feature-FEATURE_MIN, action);
 
   switch (action)
     {
@@ -1152,13 +1120,6 @@ on_range_menu_activate             (GtkMenuItem     *menuitem,
     }
 }
 
-void
-on_prefs_real_audience_activate        (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-  preferences.real_audience=(int)user_data;
-}
-
 void 
 on_prefs_real_quality_activate         (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
@@ -1174,15 +1135,123 @@ on_prefs_real_compatibility_activate   (GtkToggleButton *togglebutton,
 }
 
 void
-on_prefs_display_method_activate       (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-  preferences.display_method=(int)user_data;
-}
-
-void
 on_prefs_receive_method_activate      (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
   preferences.receive_method=(int)user_data;
 }
+
+void
+on_prefs_display_keep_ratio_toggled    (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  preferences.display_keep_ratio=togglebutton->active;
+}
+
+
+void
+on_prefs_real_recordable_toggled       (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  if (togglebutton->active)
+    preferences.real_recordable=1;
+  else
+    preferences.real_recordable=0;
+}
+
+
+void
+on_prefs_real_audience_28k_toggled     (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  if (togglebutton->active)
+    preferences.real_audience=(preferences.real_audience | REAL_AUDIENCE_28_MODEM);
+  else
+    preferences.real_audience=(preferences.real_audience & (~REAL_AUDIENCE_28_MODEM));
+  //fprintf(stderr,"audience flags: 0x%x\n",preferences.real_audience);
+}
+
+
+void
+on_prefs_real_audience_56k_toggled     (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  if (togglebutton->active)
+    preferences.real_audience=(preferences.real_audience | REAL_AUDIENCE_56_MODEM);
+  else
+    preferences.real_audience=(preferences.real_audience & (~REAL_AUDIENCE_56_MODEM));
+  //fprintf(stderr,"audience flags: 0x%x\n",preferences.real_audience);
+}
+
+
+void
+on_prefs_real_audience_sisdn_toggled   (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  if (togglebutton->active)
+    preferences.real_audience=(preferences.real_audience | REAL_AUDIENCE_SINGLE_ISDN);
+  else
+    preferences.real_audience=(preferences.real_audience & (~REAL_AUDIENCE_SINGLE_ISDN));
+  //fprintf(stderr,"audience flags: 0x%x\n",preferences.real_audience);
+}
+
+
+void
+on_prefs_real_audience_disdn_toggled   (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  if (togglebutton->active)
+    preferences.real_audience=(preferences.real_audience | REAL_AUDIENCE_DUAL_ISDN);
+  else
+    preferences.real_audience=(preferences.real_audience & (~REAL_AUDIENCE_DUAL_ISDN));
+  //fprintf(stderr,"audience flags: 0x%x\n",preferences.real_audience);
+}
+
+
+void
+on_prefs_real_audience_lan_toggled     (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  if (togglebutton->active)
+    preferences.real_audience=(preferences.real_audience | REAL_AUDIENCE_LAN_HIGH);
+  else
+    preferences.real_audience=(preferences.real_audience & (~REAL_AUDIENCE_LAN_HIGH));
+  //fprintf(stderr,"audience flags: 0x%x\n",preferences.real_audience);
+}
+
+
+void
+on_prefs_real_audience_dsl256_toggled  (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  if (togglebutton->active)
+    preferences.real_audience=(preferences.real_audience | REAL_AUDIENCE_256_DSL_CABLE);
+  else
+    preferences.real_audience=(preferences.real_audience & (~REAL_AUDIENCE_256_DSL_CABLE));
+  //fprintf(stderr,"audience flags: 0x%x\n",preferences.real_audience);
+}
+
+
+void
+on_prefs_real_audience_dsl384_toggled  (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  if (togglebutton->active)
+    preferences.real_audience=(preferences.real_audience | REAL_AUDIENCE_384_DSL_CABLE);
+  else
+    preferences.real_audience=(preferences.real_audience & (~REAL_AUDIENCE_384_DSL_CABLE));
+  //fprintf(stderr,"audience flags: 0x%x\n",preferences.real_audience);
+}
+
+
+void
+on_prefs_real_audience_dsl512_toggled  (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  if (togglebutton->active)
+    preferences.real_audience=(preferences.real_audience | REAL_AUDIENCE_512_DSL_CABLE);
+  else
+    preferences.real_audience=(preferences.real_audience & (~REAL_AUDIENCE_512_DSL_CABLE));
+  //fprintf(stderr,"audience flags: 0x%x\n",preferences.real_audience);
+}
+

@@ -1,18 +1,17 @@
 _______________________________________________________________________________
 
-	                    Open issues for Coriander 0.20 ...
-	   Damien Douxchamps <douxchamps@ieee.org> , December 21, 2001
+	                    Open issues for Coriander 0.22 ...
+	   Damien Douxchamps <douxchamps@ieee.org> , December 29, 2001
 _______________________________________________________________________________
 
 - video:
-    	- I will add a button in the porthole window to quickly capture a file
-      	  and save it to disk (this was previously called "capture single").
+    	- I will add a button somewhere to quickly capture an image 
+     	  and save it to disk (this was previously called "capture single").
 - refresh/update:
 	- regularly update ranges in auto-mode
 - multi-camera:
 	- control-lock function for stereo cameras
-	- indicate node number in menu (else you can't distinguish two cameras
-	  of the same model) When GUID will be there, a custom name could be
+	- when GUID will be there, a custom name could be
 	  attached to each cam.
 - features:
 	- add FORMAT_6 capabilities
@@ -21,10 +20,8 @@ _______________________________________________________________________________
 	- some status window features missing
 - misc stuff:
 	- add some artwork in the buttons for clearer presentation
-- threads:
-	- Real streaming thread testing
-	- failsafe thread manipulation: some checks should be performed
-	  (typically during operation).
+- services:
+	- Real streaming service testing
 - long term:
 	- add advanced features capability. This would probably require a
 	  DB of the supported cameras (Is there any cam supporting this

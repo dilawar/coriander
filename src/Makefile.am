@@ -19,6 +19,7 @@ coriander_SOURCES = \
 	definitions.c definitions.h \
 	thread_base.c thread_base.h \
 	thread_iso.c thread_iso.h \
+	SDLEvent.c SDLEvent.h \
 	thread_display.c thread_display.h \
 	thread_ftp.c thread_ftp.h \
 	thread_save.c thread_save.h \
@@ -41,6 +42,6 @@ coriander_SOURCES = \
 LDFLAGS += -Xlinker --export-dynamic
 
 coriander_LDADD = $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(INTLLIBS) $(PTHREAD_LIB) \
-	$(XV_LIB) $(FTP_LIB) $(REAL_LIB) $(SDL_LIB) -ldc1394_control -lraw1394 -lgthread
+	 $(FTP_LIB) $(REAL_LIB) $(SDL_LIB) -ldc1394_control -lraw1394 -lgthread
 
 

@@ -16,11 +16,6 @@
  * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-// these defs are a little changed compared to the dc1394 files
-// but it is necessary for the use of this interface...
-
-// the following lists are all the 'standard' controls available through the interface
-
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif

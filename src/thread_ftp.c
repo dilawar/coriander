@@ -161,7 +161,6 @@ FtpThread(void* arg)
   pthread_mutex_lock(&ftp_service->mutex_data);
   info=(ftpthread_info_t*)ftp_service->data;
   skip_counter=0;
- //fprintf(stderr,"Entered FTP thread\n");
   /* These settings depend on the thread. For 100% safe deferred-cancel
    threads, I advise you use a custom thread cancel flag. See display thread.*/
   pthread_setcancelstate(PTHREAD_CANCEL_DISABLE,NULL);
@@ -189,7 +188,7 @@ FtpThread(void* arg)
 		  skip_counter=0;
 		  convert_to_rgb(ftp_service->current_buffer, info->ftp_buffer,
 				 ftp_service->mode, ftp_service->width,
-				 ftp_service->height, ftp_service->bytes_per_frame);
+				 ftp_service->height);
 		  if (info->ftp_scratch == FTP_SCRATCH_OVERWRITE)
 		    {
 		      sprintf(filename_out, "%s%s", info->filename,info->filename_ext);
@@ -201,13 +200,10 @@ FtpThread(void* arg)
 				info->counter++, info->filename_ext);
 		      }
 
-		  //fprintf(stderr,"making image\n");
 		  im=gdk_imlib_create_image_from_data(info->ftp_buffer, NULL, ftp_service->width, ftp_service->height);
-		  //fprintf(stderr,"checking connection\n");
 #ifdef HAVE_FTPLIB
 		  if (!CheckFtpConnection(info))
 		    {
-		      //fprintf(stderr,"Connection lost\n");
 		      MainError("Ftp connection lost for good");
 		      // AUTO CANCEL THREAD
 		      pthread_mutex_lock(&info->mutex_cancel_ftp);
@@ -216,7 +212,6 @@ FtpThread(void* arg)
 		    }
 		  else
 		    {
-		      //fprintf(stderr,"putting frame\n");
 		      FtpPutFrame(filename_out, im, info);
 		    }
 #endif

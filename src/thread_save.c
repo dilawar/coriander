@@ -160,7 +160,6 @@ SaveThread(void* arg)
 	{
 	  pthread_mutex_unlock(&info->mutex_cancel_save);
 	  pthread_mutex_lock(&save_service->mutex_data);
-	  //fprintf(stderr,"Rolling buffers\n");
 	  if(RollBuffers(save_service)) // have buffers been rolled?
 	    {
 	      if (skip_counter==(info->period-1))
@@ -168,7 +167,7 @@ SaveThread(void* arg)
 		  skip_counter=0;
 		  convert_to_rgb(save_service->current_buffer, info->save_buffer,
 				 save_service->mode, save_service->width,
-				 save_service->height, save_service->bytes_per_frame);
+				 save_service->height);
 		  if (info->save_scratch == SAVE_SCRATCH_OVERWRITE)
 		    {
 		      sprintf(filename_out, "%s%s", info->filename,info->filename_ext);
@@ -214,7 +213,6 @@ SaveStopThread(void)
       pthread_mutex_lock(&info->mutex_cancel_save);
       info->cancel_save_req=1;
       pthread_mutex_unlock(&info->mutex_cancel_save);
-      //fprintf(stderr,"cancel req. ack\n");
 
       /* common handlers...*/
       pthread_join(save_service->thread, NULL);

@@ -27,17 +27,6 @@
 #include "RealErrorSink.h"
 
 typedef enum {
-  REAL_AUDIENCE_28_MODEM=0,    // 20 kbps
-  REAL_AUDIENCE_56_MODEM,      // 34 kbps
-  REAL_AUDIENCE_SINGLE_ISDN,   // 45 kbps
-  REAL_AUDIENCE_DUAL_ISDN,     // 80 kbps
-  REAL_AUDIENCE_LAN_HIGH,      // 150 kbps
-  REAL_AUDIENCE_256_DSL_CABLE, // 225 kbps
-  REAL_AUDIENCE_384_DSL_CABLE, // 350 kbps
-  REAL_AUDIENCE_512_DSL_CABLE  // 450 kbps
-} RealAudience;
-
-typedef enum {
   REAL_COMPATIBILITY_0=0,
   REAL_COMPATIBILITY_1,
   REAL_COMPATIBILITY_2,

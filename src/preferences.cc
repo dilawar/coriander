@@ -46,7 +46,7 @@ SetPreferencesDefaults(void)
   preferences.op_timeout=10;
   preferences.auto_update=0;
   preferences.auto_update_frequency=10;
-  preferences.display_method=DISPLAY_METHOD_SDL;
+  preferences.display_keep_ratio=0;;
   preferences.display_period=1;
   preferences.receive_method=RECEIVE_METHOD_RAW1394;
   strcpy(preferences.save_filename,"test.jpg");
@@ -100,10 +100,8 @@ LoadConfigFile(void)
     }
   else
     {
-      //fprintf(stderr,"Parsing config...\n");
       ParseConfigFile(fd);
       fclose(fd);
-      //fprintf(stderr,"Parsed config...\n");
     }
 }
 
@@ -119,14 +117,9 @@ WriteConfigFile(void)
   free(filename);
 
   fprintf(fd,"%s %f\n",preferences_features[0],preferences.op_timeout);
-
-  if (preferences.auto_update)
-    fprintf(fd,"%s YES\n",preferences_features[1]);
-  else
-    fprintf(fd,"%s NO\n",preferences_features[1]);
-
+  fprintf(fd,"%s %f\n",preferences_features[1],preferences.auto_update);
   fprintf(fd,"%s %f\n",preferences_features[2],preferences.auto_update_frequency);
-  fprintf(fd,"%s %d\n",preferences_features[3],preferences.display_method);
+  fprintf(fd,"%s %d\n",preferences_features[3],preferences.display_keep_ratio);
   fprintf(fd,"%s %d\n",preferences_features[4],preferences.display_period);
   fprintf(fd,"%s %d\n",preferences_features[5],preferences.receive_method);
   fprintf(fd,"%s %s\n",preferences_features[6],preferences.save_filename);
@@ -147,17 +140,10 @@ WriteConfigFile(void)
   fprintf(fd,"%s %s\n",preferences_features[21],preferences.real_author);
   fprintf(fd,"%s %s\n",preferences_features[22],preferences.real_title);
   fprintf(fd,"%s %s\n",preferences_features[23],preferences.real_copyright);
-
-  if (preferences.real_recordable)
-    fprintf(fd,"%s YES\n",preferences_features[24]);
-  else
-    fprintf(fd,"%s NO\n",preferences_features[24]);
-
-  fprintf(fd,"%s %d\n",preferences_features[25],preferences.real_audience);
+  fprintf(fd,"%s %s\n",preferences_features[24],preferences.real_recordable);
+  fprintf(fd,"%s %ld\n",preferences_features[25],preferences.real_audience);
   fprintf(fd,"%s %d\n",preferences_features[26],preferences.real_quality);
   fprintf(fd,"%s %d\n",preferences_features[27],preferences.real_compatibility);
-
-  //fprintf(fd,"%s %d\n",preferences_features[28],preferences.real_period);
 
   fclose(fd);
 }
@@ -192,14 +178,13 @@ ParseConfigFile(FILE* fd)
 	      preferences.op_timeout=atof(feature_value);
 	      break;
 	    case AUTO_UPDATE:
-	      needle=strstr(feature_value,"YES");
-	      preferences.auto_update=(needle!=NULL);
+	      preferences.auto_update=atoi(feature_value);
 	      break;
 	    case AUTO_UPDATE_FREQUENCY:
 	      preferences.auto_update_frequency=atof(feature_value);
 	      break;
-	    case DISPLAY_METHOD:
-	      preferences.display_method=atoi(feature_value);
+	    case DISPLAY_KEEP_RATIO:
+	      preferences.display_keep_ratio=atoi(feature_value);
 	      break;
 	    case DISPLAY_PERIOD:
 	      preferences.display_period=atoi(feature_value);
@@ -262,8 +247,7 @@ ParseConfigFile(FILE* fd)
 	      strcpy(preferences.real_copyright,feature_value);
 	      break;
 	    case REAL_RECORDABLE:
-	      needle=strstr(feature_value,"YES");
-	      preferences.real_recordable=(needle!=NULL);
+	      preferences.real_recordable=atoi(feature_value);
 	      break;
 	    case REAL_AUDIENCE:
 	      preferences.real_audience=atoi(feature_value);
@@ -278,7 +262,6 @@ ParseConfigFile(FILE* fd)
 	      preferences.real_period=atoi(feature_value);
 	    default:
 	      MainError("Invalid config item id");
-	      //fprintf(stderr,"feature_id: %d\n",feature_id);
 	      break;
 	    }
 	}

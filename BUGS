@@ -1,15 +1,6 @@
-Known bugs for version 0.20:
+Known bugs for version 0.22:
 
-- The Sony DFW-VL500 has several bugs in its early software versions. This is
-  mentionned in the camera user's manual (which is not supplied with the
-  camera!). These bugs are:
-        - whitebal controls only work when a previous 'load factory setup' has
-          been done
-        - the RESET function is not working
-	- saving setups is not fully working
-- The test pattern generation is only working with some cameras.
-- The new thread mechanism is working but needs more testing.
 - The REAL service is untested and only runs with some distros. It does not
   work on RH-7.2
-- Display is a little bit bugged but I think it's due to my 1394 subsystem
-  version.
+- ISO has some problems with multi camera: some flows are mixed or don't show
+  up correctly.

@@ -38,8 +38,6 @@
 #include "thread_base.h"
 
 extern GtkWidget *commander_window;
-extern GtkWidget *porthole_window;
-extern GtkWidget **porthole_windows;
 extern dc1394_camerainfo *camera;
 extern dc1394_camerainfo *cameras;
 extern dc1394_miscinfo *misc_info;
@@ -145,8 +143,6 @@ void IsoFlowCheck(int *state)
   state[2]=(GetService(SERVICE_SAVE,current_camera)!=NULL);
   state[3]=(GetService(SERVICE_FTP,current_camera)!=NULL);
   state[4]=(GetService(SERVICE_REAL,current_camera)!=NULL);
-
-  //fprintf(stderr,"state: %d %d %d %d %d\n",state[0],state[1],state[2],state[3],state[4]);
 
   CleanThreads(CLEAN_MODE_NO_UI_UPDATE);
 
@@ -255,7 +251,6 @@ void GrabSelfIds(raw1394handle_t handle)
 void SelectCamera(int i)
 {
   current_camera=i;
-  //fprintf(stderr,"select_camera in:\n");
   //DisplayActiveServices();//////////
   image_pipe=image_pipes[current_camera];
   camera=&cameras[current_camera];
@@ -265,8 +260,6 @@ void SelectCamera(int i)
   uiinfo=&uiinfos[current_camera];
   selfid=&selfids[current_camera];
   image_pipe=image_pipes[current_camera];
-  porthole_window=porthole_windows[current_camera];
-  //fprintf(stderr,"select_camera out:\n");
   //DisplayActiveServices();//////////
 }
 
@@ -277,18 +270,13 @@ SetChannel(int camera_index)
   int finished=0, i;
   unsigned int channel, speed;
 
-  //fprintf(stderr,"Entering channel selection for camera #%d\n",camera_index);
   forbid=(int*)malloc(camera_num*sizeof(int));
   
   for (i=0;i<camera_num;i++)
     {
-      //fprintf(stderr,"Probing channel for camera #%d\n",i);
       if (dc1394_get_iso_channel_and_speed(cameras[i].handle, cameras[i].id, &forbid[i], &speed)!=DC1394_SUCCESS)
 	MainError("Can't get iso channel and speed");
-      //fprintf(stderr," Probed channel for camera #%d\n",i);
     }
-  
-  //fprintf(stderr,"Finished probing\n");
 
   channel=0;
   while (finished!=1)
@@ -299,13 +287,10 @@ SetChannel(int camera_index)
 	  {
 	    channel++;
 	    finished=0;
-	    //fprintf(stderr,"Channel #%d already used.\n",channel-1);
 	  }
     }
   free(forbid);
 
-  //fprintf(stderr,"Using channel #%d for camera %d\n",channel,camera_index);
-  
   if(dc1394_set_iso_channel_and_speed(cameras[camera_index].handle, cameras[camera_index].id, channel, speed)!=DC1394_SUCCESS)
     MainError("Can't set iso channel and speed");
 

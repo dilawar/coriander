@@ -1,5 +1,41 @@
 Coriander, (c) 2000-2001 Damien Douxchamps <douxchamps@ieee.org>
 
+Changes in version 0.22:
+   
+   Dec 29, by Damien Douxchamps
+   - updated the real_audience preference: it should be a set of
+     flags, not a single value.
+   - node number and vendor added in camera name within the camera menu.
+
+   Dec 28, by Damien Douxchamps
+   - Added "keep aspect ratio" option for SDL resize
+   - Moved some code from UpdatePrefs*Frames to BuildPrefs*Frame to
+     avoid lockups
+	
+   Dec 25, by Damien Douxchamps
+   - removed Xv and GDK display methods and associated controls
+	
+Changes in version 0.21:
+   
+   Dec 24, by Damien Douxchamps
+   - SDL #ifdef debugged by !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+   - screen can be resized in SDL.
+   - added some keybindings to the SDL display:
+     >: double size
+     <: half size
+     n: normal size
+     f: toggle fullscreen mode
+   - WARNING: due to the flexibility, stability, functionalities,
+     performance (MMX optimized!) and ease of use of SDL, further
+     versions of coriander will ONLY use it for display. This should
+     not be a major issue because:
+     - SDL nicely integrates overlay like Xv (for those who used Xv)
+     - GDK display does not work on multithreaded programs anyway.
+       Those who could not even use GDK will thus enjoy SDL.
+     - SDL is available on every major platform.
+     Coriander 0.21 is thus the last version to use Xv and GDK
+     explicitely.
+	
 Changes in version 0.20:
 
     Dec 21, by Damien Douxchamps

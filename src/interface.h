@@ -3,7 +3,6 @@
  */
 
 GtkWidget* create_commander_window (void);
-GtkWidget* create_porthole_window (void);
 GtkWidget* create_about_window (void);
 GtkWidget* create_format7_window (void);
 GtkWidget* create_no_handle_window (void);

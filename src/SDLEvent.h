@@ -16,37 +16,44 @@
  * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __BUILDWINDOWS_H__
-#define __BUILDWINDOWS_H__
+#ifndef __SDLEVENT_H__
+#define __SDLEVENT_H__
+
+#ifdef HAVE_SDLLIB
+
+#include "SDL.h"
+#include "thread_display.h"
+#include "thread_base.h"
+
+#define EVENTS_SLEEP_MS 50
+
+int
+SDLEventStartThread(chain_t *display_service);
+
+void*
+SDLEventThread(void *arg);
 
 void
-BuildFormat7Window(void);
+SDLEventStopThread(chain_t *display_service);
+
+int
+SDLHandleEvent(chain_t *display_service);
 
 void
-BuildPreferencesWindow(void);
+SDLResizeDisplay(chain_t *display_service, int width, int height);
 
 void
-BuildColorWindow(void);
+OnKeyPressed(chain_t *display_service, int key, int mod);
 
 void
-BuildPositionWindow(void);
+OnKeyReleased(chain_t *display_service, int key, int mod);
 
 void
-BuildApertureWindow(void);
+OnMouseDown(chain_t *display_service, int button, int x, int y);
 
 void
-BuildCommanderWindow(void);
+OnMouseUp(chain_t *display_service, int button, int x, int y);
 
-void
-BuildCaptureWindow(void);
-
-void
-BuildTemperatureWindow(void);
-
-void
-BuildStatusWindow(void);
-
-void
-BuildAllWindows(void);
+#endif
 
 #endif

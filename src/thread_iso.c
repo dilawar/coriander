@@ -59,7 +59,6 @@ gint IsoStartThread(void)
 	{
 	  FreeChain(iso_service);
 	  pthread_mutex_unlock(&iso_service->mutex_data);
-	  //fprintf(stderr," Could not start ISO\n");
 	  return(-1);
 	}
       
@@ -72,7 +71,6 @@ gint IsoStartThread(void)
 	  pthread_mutex_unlock(&iso_service->mutex_data);
 	  return(-1);
 	}
-      //fprintf(stderr," Got Handle\n");
 
       switch (selfid->packetZero.phySpeed)
 	{
@@ -89,7 +87,6 @@ gint IsoStartThread(void)
 				       misc_info->framerate, DMA_BUFFERS, &info->capture)
 	      == DC1394_SUCCESS)
 	    {
-	      //fprintf(stderr,"Manual video1394 selection\n");
 	      info->receive_method=RECEIVE_METHOD_VIDEO1394;
 	    }
 	  else
@@ -98,7 +95,6 @@ gint IsoStartThread(void)
 	      raw1394_destroy_handle(info->handle);
 	      pthread_mutex_unlock(&iso_service->mutex_data);
 	      FreeChain(iso_service);
-	      //fprintf(stderr," Could not start ISO\n");
 	      return(-1);
 	    }
 	  break;
@@ -108,7 +104,6 @@ gint IsoStartThread(void)
 				    misc_info->framerate, &info->capture)
 	      == DC1394_SUCCESS)
 	    {
-	      //fprintf(stderr,"Manual raw1394 selection\n");
 	      info->receive_method=RECEIVE_METHOD_RAW1394;
 	    }
 	  else
@@ -117,7 +112,6 @@ gint IsoStartThread(void)
 	      raw1394_destroy_handle(info->handle);
 	      pthread_mutex_unlock(&iso_service->mutex_data);
 	      FreeChain(iso_service);
-	      //fprintf(stderr," Could not start ISO\n");
 	      return(-1);
 	    }
 	  break;
@@ -152,7 +146,6 @@ gint IsoStartThread(void)
 	}
       //fprintf(stderr," 1394 setup OK\n");
 
-      //info->cleanup_status=RECEIVE_CLEANUP_NONE;
 
       CommonChainSetup(iso_service, SERVICE_ISO, current_camera);
       pthread_mutex_unlock(&iso_service->mutex_data);
@@ -169,7 +162,6 @@ gint IsoStartThread(void)
 	  pthread_mutex_unlock(&iso_service->mutex_struct);
 	  pthread_mutex_unlock(&iso_service->mutex_data);
 	  FreeChain(iso_service);
-	  //fprintf(stderr," Could not start ISO\n");
 	  return(-1);
 	}
       else
@@ -188,8 +180,6 @@ IsoCleanupThread(void* arg)
   chain_t* iso_service;
   isothread_info_t *info;
 
-  //fprintf(stderr,"ISO auto Cleanup\n");
-
   iso_service=(chain_t*)arg;
   info=(isothread_info_t*)iso_service->data;
 
@@ -204,7 +194,6 @@ IsoCleanupThread(void* arg)
 
     pthread_mutex_unlock(&iso_service->mutex_data);
 
-    //fprintf(stderr," ISO auto Cleanup finished\n");
   
   return(NULL);
 
@@ -229,7 +218,6 @@ IsoThread(void* arg)
     {
       pthread_testcancel();
       pthread_cleanup_push((void*)IsoCleanupThread, (void*)iso_service);
-      //fprintf(stderr,"capture...\n");
       if (info->receive_method == RECEIVE_METHOD_RAW1394)
 	dc1394_single_capture(info->handle, &info->capture);
       else
@@ -240,11 +228,9 @@ IsoThread(void* arg)
       memcpy(iso_service->current_buffer,
 	     info->capture.capture_buffer,
 	     iso_service->bytes_per_frame);
-      //fprintf(stderr,"ISO: trying to roll\n");
       pthread_mutex_lock(&iso_service->mutex_data);
       RollBuffers(iso_service);
       pthread_mutex_unlock(&iso_service->mutex_data);
-      //fprintf(stderr,"ISO: unlocked\n");
       pthread_cleanup_pop(0);
     }
 }

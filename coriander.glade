@@ -30,7 +30,7 @@
     <handler>on_commander_window_delete_event</handler>
     <last_modification_time>Tue, 26 Dec 2000 12:06:25 GMT</last_modification_time>
   </signal>
-  <title>Coriander 0.20</title>
+  <title>Coriander 0.22</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_NONE</position>
   <modal>False</modal>
@@ -801,7 +801,7 @@
 	      <border_width>1</border_width>
 	      <sensitive>False</sensitive>
 	      <can_focus>True</can_focus>
-	      <items>Node 0: Sony DFW-VL500
+	      <items>
 </items>
 	      <initial_choice>0</initial_choice>
 	      <child>
@@ -1170,8 +1170,7 @@
 		  <border_width>1</border_width>
 		  <sensitive>False</sensitive>
 		  <can_focus>True</can_focus>
-		  <items>Factory
-1...
+		  <items>
 </items>
 		  <initial_choice>0</initial_choice>
 		  <child>
@@ -1354,7 +1353,7 @@
 		<name>fps_menu</name>
 		<border_width>1</border_width>
 		<can_focus>True</can_focus>
-		<items>N/A
+		<items>
 </items>
 		<initial_choice>0</initial_choice>
 		<child>
@@ -1438,7 +1437,7 @@
 		<name>trigger_mode</name>
 		<border_width>1</border_width>
 		<can_focus>True</can_focus>
-		<items>N/A
+		<items>
 </items>
 		<initial_choice>0</initial_choice>
 		<child>
@@ -1542,10 +1541,7 @@
 		<class>GtkOptionMenu</class>
 		<name>auto_exposure_menu</name>
 		<can_focus>True</can_focus>
-		<items>Off
-Man
-Auto
-Single
+		<items>
 </items>
 		<initial_choice>0</initial_choice>
 		<child>
@@ -1624,10 +1620,7 @@ Single
 		<class>GtkOptionMenu</class>
 		<name>iris_menu</name>
 		<can_focus>True</can_focus>
-		<items>Off
-Man
-Auto
-Single
+		<items>
 </items>
 		<initial_choice>0</initial_choice>
 		<child>
@@ -1706,10 +1699,7 @@ Single
 		<class>GtkOptionMenu</class>
 		<name>shutter_menu</name>
 		<can_focus>True</can_focus>
-		<items>Off
-Man
-Auto
-Single
+		<items>
 </items>
 		<initial_choice>0</initial_choice>
 		<child>
@@ -1788,10 +1778,7 @@ Single
 		<class>GtkOptionMenu</class>
 		<name>gain_menu</name>
 		<can_focus>True</can_focus>
-		<items>Off
-Man
-Auto
-Single
+		<items>
 </items>
 		<initial_choice>0</initial_choice>
 		<child>
@@ -1870,10 +1857,7 @@ Single
 		<class>GtkOptionMenu</class>
 		<name>filter_menu</name>
 		<can_focus>True</can_focus>
-		<items>Off
-Man
-Auto
-Single
+		<items>
 </items>
 		<initial_choice>0</initial_choice>
 		<child>
@@ -1941,10 +1925,7 @@ Single
 		<class>GtkOptionMenu</class>
 		<name>hue_menu</name>
 		<can_focus>True</can_focus>
-		<items>Off
-Man
-Auto
-Single
+		<items>
 </items>
 		<initial_choice>0</initial_choice>
 		<child>
@@ -2023,10 +2004,7 @@ Single
 		<class>GtkOptionMenu</class>
 		<name>saturation_menu</name>
 		<can_focus>True</can_focus>
-		<items>Off
-Man
-Auto
-Single
+		<items>
 </items>
 		<initial_choice>0</initial_choice>
 		<child>
@@ -2167,10 +2145,7 @@ Single
 		<class>GtkOptionMenu</class>
 		<name>white_balance_menu</name>
 		<can_focus>True</can_focus>
-		<items>Off
-Man
-Auto
-Single
+		<items>
 </items>
 		<initial_choice>0</initial_choice>
 		<child>
@@ -2290,10 +2265,7 @@ Single
 		<class>GtkOptionMenu</class>
 		<name>brightness_menu</name>
 		<can_focus>True</can_focus>
-		<items>Off
-Man
-Auto
-Single
+		<items>
 </items>
 		<initial_choice>0</initial_choice>
 		<child>
@@ -2372,10 +2344,7 @@ Single
 		<class>GtkOptionMenu</class>
 		<name>gamma_menu</name>
 		<can_focus>True</can_focus>
-		<items>Off
-Man
-Auto
-Single
+		<items>
 </items>
 		<initial_choice>0</initial_choice>
 		<child>
@@ -2454,10 +2423,7 @@ Single
 		<class>GtkOptionMenu</class>
 		<name>sharpness_menu</name>
 		<can_focus>True</can_focus>
-		<items>Off
-Man
-Auto
-Single
+		<items>
 </items>
 		<initial_choice>0</initial_choice>
 		<child>
@@ -2618,10 +2584,7 @@ Single
 		<class>GtkOptionMenu</class>
 		<name>temperature_menu</name>
 		<can_focus>True</can_focus>
-		<items>Off
-Man
-Auto
-Single
+		<items>
 </items>
 		<initial_choice>0</initial_choice>
 		<child>
@@ -2721,10 +2684,7 @@ Single
 		<class>GtkOptionMenu</class>
 		<name>capture_quality_menu</name>
 		<can_focus>True</can_focus>
-		<items>Off
-Man
-Auto
-Single
+		<items>
 </items>
 		<initial_choice>0</initial_choice>
 		<child>
@@ -2803,10 +2763,7 @@ Single
 		<class>GtkOptionMenu</class>
 		<name>capture_size_menu</name>
 		<can_focus>True</can_focus>
-		<items>Off
-Man
-Auto
-Single
+		<items>
 </items>
 		<initial_choice>0</initial_choice>
 		<child>
@@ -3353,10 +3310,7 @@ Single
 		<class>GtkOptionMenu</class>
 		<name>zoom_menu</name>
 		<can_focus>True</can_focus>
-		<items>Off
-Man
-Auto
-Single
+		<items>
 </items>
 		<initial_choice>0</initial_choice>
 		<child>
@@ -3435,10 +3389,7 @@ Single
 		<class>GtkOptionMenu</class>
 		<name>focus_menu</name>
 		<can_focus>True</can_focus>
-		<items>Off
-Man
-Auto
-Single
+		<items>
 </items>
 		<initial_choice>0</initial_choice>
 		<child>
@@ -3517,10 +3468,7 @@ Single
 		<class>GtkOptionMenu</class>
 		<name>tilt_menu</name>
 		<can_focus>True</can_focus>
-		<items>Off
-Man
-Auto
-Single
+		<items>
 </items>
 		<initial_choice>0</initial_choice>
 		<child>
@@ -3599,10 +3547,7 @@ Single
 		<class>GtkOptionMenu</class>
 		<name>pan_menu</name>
 		<can_focus>True</can_focus>
-		<items>Off
-Man
-Auto
-Single
+		<items>
 </items>
 		<initial_choice>0</initial_choice>
 		<child>
@@ -3679,50 +3624,6 @@ Single
 	<expand>False</expand>
 	<fill>False</fill>
       </child>
-    </widget>
-  </widget>
-</widget>
-
-<widget>
-  <class>GtkWindow</class>
-  <name>porthole_window</name>
-  <title>Porthole</title>
-  <type>GTK_WINDOW_TOPLEVEL</type>
-  <position>GTK_WIN_POS_NONE</position>
-  <modal>False</modal>
-  <allow_shrink>False</allow_shrink>
-  <allow_grow>True</allow_grow>
-  <auto_shrink>False</auto_shrink>
-
-  <widget>
-    <class>GtkScrolledWindow</class>
-    <name>scrolledwindow1</name>
-    <border_width>5</border_width>
-    <width>334</width>
-    <height>254</height>
-    <hscrollbar_policy>GTK_POLICY_AUTOMATIC</hscrollbar_policy>
-    <vscrollbar_policy>GTK_POLICY_AUTOMATIC</vscrollbar_policy>
-    <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
-    <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
-
-    <widget>
-      <class>GtkViewport</class>
-      <name>viewport1</name>
-      <shadow_type>GTK_SHADOW_IN</shadow_type>
-
-      <widget>
-	<class>GtkAlignment</class>
-	<name>alignment11</name>
-	<xalign>0.5</xalign>
-	<yalign>0.5</yalign>
-	<xscale>1</xscale>
-	<yscale>1</yscale>
-
-	<widget>
-	  <class>GtkDrawingArea</class>
-	  <name>camera_scope</name>
-	</widget>
-      </widget>
     </widget>
   </widget>
 </widget>
@@ -4829,7 +4730,7 @@ controlled with the AV/C protocol, please refer to http://linux1394.sourceforge.
 	      <page_size>10</page_size>
 	      <child>
 		<padding>5</padding>
-		<expand>True</expand>
+		<expand>False</expand>
 		<fill>True</fill>
 	      </child>
 	    </widget>
@@ -4999,9 +4900,7 @@ controlled with the AV/C protocol, please refer to http://linux1394.sourceforge.
 	      <name>prefs_receive_method_menu</name>
 	      <border_width>1</border_width>
 	      <can_focus>True</can_focus>
-	      <items>raw1394
-video1394 (DMA)
-AUTO
+	      <items>
 </items>
 	      <initial_choice>0</initial_choice>
 	      <child>
@@ -5123,9 +5022,9 @@ AUTO
 
 	<widget>
 	  <class>GtkFrame</class>
-	  <name>prefs_display_method_frame</name>
+	  <name>frame1</name>
 	  <border_width>5</border_width>
-	  <label>Method</label>
+	  <label>SDL options</label>
 	  <label_xalign>0</label_xalign>
 	  <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
 	  <child>
@@ -5135,39 +5034,36 @@ AUTO
 	  </child>
 
 	  <widget>
-	    <class>GtkTable</class>
-	    <name>table44</name>
-	    <rows>1</rows>
-	    <columns>1</columns>
+	    <class>GtkVBox</class>
+	    <name>vbox64</name>
 	    <homogeneous>False</homogeneous>
-	    <row_spacing>0</row_spacing>
-	    <column_spacing>0</column_spacing>
+	    <spacing>0</spacing>
 
 	    <widget>
-	      <class>GtkOptionMenu</class>
-	      <name>prefs_display_method_menu</name>
-	      <border_width>1</border_width>
+	      <class>GtkCheckButton</class>
+	      <name>prefs_display_keep_ratio</name>
 	      <can_focus>True</can_focus>
-	      <items>GDK
-Xv (single camera only)
-SDL
-AUTO
-</items>
-	      <initial_choice>0</initial_choice>
+	      <signal>
+		<name>toggled</name>
+		<handler>on_prefs_display_keep_ratio_toggled</handler>
+		<last_modification_time>Fri, 28 Dec 2001 18:53:00 GMT</last_modification_time>
+	      </signal>
+	      <label>Keep aspect ration when resizing</label>
+	      <active>False</active>
+	      <draw_indicator>True</draw_indicator>
 	      <child>
-		<left_attach>0</left_attach>
-		<right_attach>1</right_attach>
-		<top_attach>0</top_attach>
-		<bottom_attach>1</bottom_attach>
-		<xpad>0</xpad>
-		<ypad>0</ypad>
-		<xexpand>True</xexpand>
-		<yexpand>True</yexpand>
-		<xshrink>False</xshrink>
-		<yshrink>False</yshrink>
-		<xfill>True</xfill>
-		<yfill>False</yfill>
+		<padding>0</padding>
+		<expand>False</expand>
+		<fill>False</fill>
 	      </child>
+	    </widget>
+
+	    <widget>
+	      <class>Placeholder</class>
+	    </widget>
+
+	    <widget>
+	      <class>Placeholder</class>
 	    </widget>
 	  </widget>
 	</widget>
@@ -6325,206 +6221,297 @@ AUTO
 	  </child>
 
 	  <widget>
-	    <class>GtkTable</class>
-	    <name>table26</name>
-	    <rows>4</rows>
-	    <columns>2</columns>
+	    <class>GtkVBox</class>
+	    <name>vbox66</name>
 	    <homogeneous>False</homogeneous>
-	    <row_spacing>0</row_spacing>
-	    <column_spacing>0</column_spacing>
+	    <spacing>0</spacing>
 
 	    <widget>
-	      <class>GtkLabel</class>
-	      <name>label70</name>
-	      <label>Recordable: </label>
-	      <justify>GTK_JUSTIFY_RIGHT</justify>
-	      <wrap>False</wrap>
-	      <xalign>1</xalign>
-	      <yalign>0.5</yalign>
-	      <xpad>2</xpad>
-	      <ypad>0</ypad>
-	      <child>
-		<left_attach>0</left_attach>
-		<right_attach>1</right_attach>
-		<top_attach>0</top_attach>
-		<bottom_attach>1</bottom_attach>
-		<xpad>0</xpad>
-		<ypad>0</ypad>
-		<xexpand>False</xexpand>
-		<yexpand>False</yexpand>
-		<xshrink>False</xshrink>
-		<yshrink>False</yshrink>
-		<xfill>True</xfill>
-		<yfill>False</yfill>
-	      </child>
-	    </widget>
-
-	    <widget>
-	      <class>GtkLabel</class>
-	      <name>label71</name>
-	      <label>Audience: </label>
-	      <justify>GTK_JUSTIFY_RIGHT</justify>
-	      <wrap>False</wrap>
-	      <xalign>1</xalign>
-	      <yalign>0.5</yalign>
-	      <xpad>2</xpad>
-	      <ypad>0</ypad>
-	      <child>
-		<left_attach>0</left_attach>
-		<right_attach>1</right_attach>
-		<top_attach>1</top_attach>
-		<bottom_attach>2</bottom_attach>
-		<xpad>0</xpad>
-		<ypad>0</ypad>
-		<xexpand>False</xexpand>
-		<yexpand>False</yexpand>
-		<xshrink>False</xshrink>
-		<yshrink>False</yshrink>
-		<xfill>True</xfill>
-		<yfill>False</yfill>
-	      </child>
-	    </widget>
-
-	    <widget>
-	      <class>GtkLabel</class>
-	      <name>label72</name>
-	      <label>Quality: </label>
-	      <justify>GTK_JUSTIFY_RIGHT</justify>
-	      <wrap>False</wrap>
-	      <xalign>1</xalign>
-	      <yalign>0.5</yalign>
-	      <xpad>2</xpad>
-	      <ypad>0</ypad>
-	      <child>
-		<left_attach>0</left_attach>
-		<right_attach>1</right_attach>
-		<top_attach>2</top_attach>
-		<bottom_attach>3</bottom_attach>
-		<xpad>0</xpad>
-		<ypad>0</ypad>
-		<xexpand>False</xexpand>
-		<yexpand>False</yexpand>
-		<xshrink>False</xshrink>
-		<yshrink>False</yshrink>
-		<xfill>True</xfill>
-		<yfill>False</yfill>
-	      </child>
-	    </widget>
-
-	    <widget>
-	      <class>GtkLabel</class>
-	      <name>label73</name>
-	      <label>Compatibility: </label>
-	      <justify>GTK_JUSTIFY_CENTER</justify>
-	      <wrap>False</wrap>
-	      <xalign>1</xalign>
-	      <yalign>0.5</yalign>
-	      <xpad>2</xpad>
-	      <ypad>0</ypad>
-	      <child>
-		<left_attach>0</left_attach>
-		<right_attach>1</right_attach>
-		<top_attach>3</top_attach>
-		<bottom_attach>4</bottom_attach>
-		<xpad>0</xpad>
-		<ypad>0</ypad>
-		<xexpand>False</xexpand>
-		<yexpand>False</yexpand>
-		<xshrink>False</xshrink>
-		<yshrink>False</yshrink>
-		<xfill>True</xfill>
-		<yfill>False</yfill>
-	      </child>
-	    </widget>
-
-	    <widget>
-	      <class>GtkOptionMenu</class>
-	      <name>prefs_real_audience</name>
-	      <border_width>1</border_width>
+	      <class>GtkCheckButton</class>
+	      <name>prefs_real_recordable</name>
 	      <can_focus>True</can_focus>
-	      <items>28KBps Modem (20Kbps)
-56 KBps Modem (34Kbps)
-Single ISDN (45Kbps)
-Dual ISDN (80Kbps)
-LAN (150Kbps)
-256 DSL (225Kbps)
-384 DSL (350Kbps)
-512 DSL (450Kbps)
-</items>
-	      <initial_choice>0</initial_choice>
+	      <signal>
+		<name>toggled</name>
+		<handler>on_prefs_real_recordable_toggled</handler>
+		<last_modification_time>Sat, 29 Dec 2001 17:03:38 GMT</last_modification_time>
+	      </signal>
+	      <label>Recordable</label>
+	      <active>False</active>
+	      <draw_indicator>True</draw_indicator>
 	      <child>
-		<left_attach>1</left_attach>
-		<right_attach>2</right_attach>
-		<top_attach>1</top_attach>
-		<bottom_attach>2</bottom_attach>
-		<xpad>0</xpad>
-		<ypad>0</ypad>
-		<xexpand>True</xexpand>
-		<yexpand>True</yexpand>
-		<xshrink>False</xshrink>
-		<yshrink>False</yshrink>
-		<xfill>True</xfill>
-		<yfill>True</yfill>
+		<padding>0</padding>
+		<expand>False</expand>
+		<fill>False</fill>
 	      </child>
 	    </widget>
 
 	    <widget>
-	      <class>GtkOptionMenu</class>
-	      <name>prefs_real_quality</name>
-	      <border_width>1</border_width>
-	      <can_focus>True</can_focus>
-	      <items>Smooth motion
+	      <class>GtkTable</class>
+	      <name>table26</name>
+	      <rows>2</rows>
+	      <columns>2</columns>
+	      <homogeneous>False</homogeneous>
+	      <row_spacing>0</row_spacing>
+	      <column_spacing>0</column_spacing>
+	      <child>
+		<padding>0</padding>
+		<expand>True</expand>
+		<fill>True</fill>
+	      </child>
+
+	      <widget>
+		<class>GtkOptionMenu</class>
+		<name>prefs_real_quality</name>
+		<border_width>1</border_width>
+		<can_focus>True</can_focus>
+		<items>Smooth motion
 Normal
 Sharp image
 Slideshow
 </items>
-	      <initial_choice>0</initial_choice>
+		<initial_choice>0</initial_choice>
+		<child>
+		  <left_attach>1</left_attach>
+		  <right_attach>2</right_attach>
+		  <top_attach>0</top_attach>
+		  <bottom_attach>1</bottom_attach>
+		  <xpad>0</xpad>
+		  <ypad>0</ypad>
+		  <xexpand>True</xexpand>
+		  <yexpand>True</yexpand>
+		  <xshrink>False</xshrink>
+		  <yshrink>False</yshrink>
+		  <xfill>True</xfill>
+		  <yfill>True</yfill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkOptionMenu</class>
+		<name>prefs_real_compatibility</name>
+		<border_width>1</border_width>
+		<can_focus>True</can_focus>
+		<items>RealPlayer 2.0
+RealPlayer 6.0 (G2)
+</items>
+		<initial_choice>0</initial_choice>
+		<child>
+		  <left_attach>1</left_attach>
+		  <right_attach>2</right_attach>
+		  <top_attach>1</top_attach>
+		  <bottom_attach>2</bottom_attach>
+		  <xpad>0</xpad>
+		  <ypad>0</ypad>
+		  <xexpand>True</xexpand>
+		  <yexpand>True</yexpand>
+		  <xshrink>False</xshrink>
+		  <yshrink>False</yshrink>
+		  <xfill>True</xfill>
+		  <yfill>True</yfill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkLabel</class>
+		<name>label72</name>
+		<label>Quality: </label>
+		<justify>GTK_JUSTIFY_RIGHT</justify>
+		<wrap>False</wrap>
+		<xalign>1</xalign>
+		<yalign>0.5</yalign>
+		<xpad>2</xpad>
+		<ypad>0</ypad>
+		<child>
+		  <left_attach>0</left_attach>
+		  <right_attach>1</right_attach>
+		  <top_attach>0</top_attach>
+		  <bottom_attach>1</bottom_attach>
+		  <xpad>0</xpad>
+		  <ypad>0</ypad>
+		  <xexpand>False</xexpand>
+		  <yexpand>False</yexpand>
+		  <xshrink>False</xshrink>
+		  <yshrink>False</yshrink>
+		  <xfill>True</xfill>
+		  <yfill>False</yfill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkLabel</class>
+		<name>label73</name>
+		<label>Compatibility: </label>
+		<justify>GTK_JUSTIFY_CENTER</justify>
+		<wrap>False</wrap>
+		<xalign>1</xalign>
+		<yalign>0.5</yalign>
+		<xpad>2</xpad>
+		<ypad>0</ypad>
+		<child>
+		  <left_attach>0</left_attach>
+		  <right_attach>1</right_attach>
+		  <top_attach>1</top_attach>
+		  <bottom_attach>2</bottom_attach>
+		  <xpad>0</xpad>
+		  <ypad>0</ypad>
+		  <xexpand>False</xexpand>
+		  <yexpand>False</yexpand>
+		  <xshrink>False</xshrink>
+		  <yshrink>False</yshrink>
+		  <xfill>True</xfill>
+		  <yfill>False</yfill>
+		</child>
+	      </widget>
+	    </widget>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkFrame</class>
+	  <name>prefs_real_audience_frame</name>
+	  <border_width>5</border_width>
+	  <label>Audience</label>
+	  <label_xalign>0</label_xalign>
+	  <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+	  <child>
+	    <padding>0</padding>
+	    <expand>True</expand>
+	    <fill>True</fill>
+	  </child>
+
+	  <widget>
+	    <class>GtkTable</class>
+	    <name>table46</name>
+	    <rows>4</rows>
+	    <columns>2</columns>
+	    <homogeneous>True</homogeneous>
+	    <row_spacing>0</row_spacing>
+	    <column_spacing>0</column_spacing>
+
+	    <widget>
+	      <class>GtkCheckButton</class>
+	      <name>prefs_real_audience_28k</name>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>toggled</name>
+		<handler>on_prefs_real_audience_28k_toggled</handler>
+		<last_modification_time>Sat, 29 Dec 2001 17:03:03 GMT</last_modification_time>
+	      </signal>
+	      <label>Modem 28Kbps (20Kbps)</label>
+	      <active>False</active>
+	      <draw_indicator>True</draw_indicator>
 	      <child>
-		<left_attach>1</left_attach>
-		<right_attach>2</right_attach>
+		<left_attach>0</left_attach>
+		<right_attach>1</right_attach>
+		<top_attach>0</top_attach>
+		<bottom_attach>1</bottom_attach>
+		<xpad>0</xpad>
+		<ypad>0</ypad>
+		<xexpand>False</xexpand>
+		<yexpand>False</yexpand>
+		<xshrink>False</xshrink>
+		<yshrink>False</yshrink>
+		<xfill>True</xfill>
+		<yfill>False</yfill>
+	      </child>
+	    </widget>
+
+	    <widget>
+	      <class>GtkCheckButton</class>
+	      <name>prefs_real_audience_56k</name>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>toggled</name>
+		<handler>on_prefs_real_audience_56k_toggled</handler>
+		<last_modification_time>Sat, 29 Dec 2001 17:03:07 GMT</last_modification_time>
+	      </signal>
+	      <label>Modem 56Kbps (34Kbps)</label>
+	      <active>False</active>
+	      <draw_indicator>True</draw_indicator>
+	      <child>
+		<left_attach>0</left_attach>
+		<right_attach>1</right_attach>
+		<top_attach>1</top_attach>
+		<bottom_attach>2</bottom_attach>
+		<xpad>0</xpad>
+		<ypad>0</ypad>
+		<xexpand>False</xexpand>
+		<yexpand>False</yexpand>
+		<xshrink>False</xshrink>
+		<yshrink>False</yshrink>
+		<xfill>True</xfill>
+		<yfill>False</yfill>
+	      </child>
+	    </widget>
+
+	    <widget>
+	      <class>GtkCheckButton</class>
+	      <name>prefs_real_audience_sisdn</name>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>toggled</name>
+		<handler>on_prefs_real_audience_sisdn_toggled</handler>
+		<last_modification_time>Sat, 29 Dec 2001 17:03:12 GMT</last_modification_time>
+	      </signal>
+	      <label>Single ISDN (45Kbps)</label>
+	      <active>False</active>
+	      <draw_indicator>True</draw_indicator>
+	      <child>
+		<left_attach>0</left_attach>
+		<right_attach>1</right_attach>
 		<top_attach>2</top_attach>
 		<bottom_attach>3</bottom_attach>
 		<xpad>0</xpad>
 		<ypad>0</ypad>
-		<xexpand>True</xexpand>
-		<yexpand>True</yexpand>
+		<xexpand>False</xexpand>
+		<yexpand>False</yexpand>
 		<xshrink>False</xshrink>
 		<yshrink>False</yshrink>
 		<xfill>True</xfill>
-		<yfill>True</yfill>
+		<yfill>False</yfill>
 	      </child>
 	    </widget>
 
 	    <widget>
-	      <class>GtkOptionMenu</class>
-	      <name>prefs_real_compatibility</name>
-	      <border_width>1</border_width>
+	      <class>GtkCheckButton</class>
+	      <name>prefs_real_audience_disdn</name>
 	      <can_focus>True</can_focus>
-	      <items>RealPlayer 2.0
-RealPlayer 6.0 (G2)
-</items>
-	      <initial_choice>1</initial_choice>
+	      <signal>
+		<name>toggled</name>
+		<handler>on_prefs_real_audience_disdn_toggled</handler>
+		<last_modification_time>Sat, 29 Dec 2001 17:03:16 GMT</last_modification_time>
+	      </signal>
+	      <label>Dual ISDN (80Kbps)</label>
+	      <active>False</active>
+	      <draw_indicator>True</draw_indicator>
 	      <child>
-		<left_attach>1</left_attach>
-		<right_attach>2</right_attach>
+		<left_attach>0</left_attach>
+		<right_attach>1</right_attach>
 		<top_attach>3</top_attach>
 		<bottom_attach>4</bottom_attach>
 		<xpad>0</xpad>
 		<ypad>0</ypad>
-		<xexpand>True</xexpand>
-		<yexpand>True</yexpand>
+		<xexpand>False</xexpand>
+		<yexpand>False</yexpand>
 		<xshrink>False</xshrink>
 		<yshrink>False</yshrink>
 		<xfill>True</xfill>
-		<yfill>True</yfill>
+		<yfill>False</yfill>
 	      </child>
 	    </widget>
 
 	    <widget>
-	      <class>GtkHBox</class>
-	      <name>hbox54</name>
-	      <homogeneous>False</homogeneous>
-	      <spacing>0</spacing>
+	      <class>GtkCheckButton</class>
+	      <name>prefs_real_audience_lan</name>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>toggled</name>
+		<handler>on_prefs_real_audience_lan_toggled</handler>
+		<last_modification_time>Sat, 29 Dec 2001 17:03:20 GMT</last_modification_time>
+	      </signal>
+	      <label>LAN (150Kbps)</label>
+	      <active>False</active>
+	      <draw_indicator>True</draw_indicator>
 	      <child>
 		<left_attach>1</left_attach>
 		<right_attach>2</right_attach>
@@ -6537,43 +6524,92 @@ RealPlayer 6.0 (G2)
 		<xshrink>False</xshrink>
 		<yshrink>False</yshrink>
 		<xfill>True</xfill>
-		<yfill>True</yfill>
+		<yfill>False</yfill>
 	      </child>
+	    </widget>
 
-	      <widget>
-		<class>GtkRadioButton</class>
-		<name>prefs_real_record_yes</name>
-		<can_focus>True</can_focus>
-		<signal>
-		  <name>toggled</name>
-		  <handler>on_prefs_real_record_yes_toggled</handler>
-		  <last_modification_time>Wed, 12 Dec 2001 11:24:51 GMT</last_modification_time>
-		</signal>
-		<label>Yes</label>
-		<active>False</active>
-		<draw_indicator>True</draw_indicator>
-		<group>prefs_real_record</group>
-		<child>
-		  <padding>0</padding>
-		  <expand>True</expand>
-		  <fill>True</fill>
-		</child>
-	      </widget>
+	    <widget>
+	      <class>GtkCheckButton</class>
+	      <name>prefs_real_audience_dsl256</name>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>toggled</name>
+		<handler>on_prefs_real_audience_dsl256_toggled</handler>
+		<last_modification_time>Sat, 29 Dec 2001 17:03:24 GMT</last_modification_time>
+	      </signal>
+	      <label>DSL 256K (225Kbps)</label>
+	      <active>False</active>
+	      <draw_indicator>True</draw_indicator>
+	      <child>
+		<left_attach>1</left_attach>
+		<right_attach>2</right_attach>
+		<top_attach>1</top_attach>
+		<bottom_attach>2</bottom_attach>
+		<xpad>0</xpad>
+		<ypad>0</ypad>
+		<xexpand>False</xexpand>
+		<yexpand>False</yexpand>
+		<xshrink>False</xshrink>
+		<yshrink>False</yshrink>
+		<xfill>True</xfill>
+		<yfill>False</yfill>
+	      </child>
+	    </widget>
 
-	      <widget>
-		<class>GtkRadioButton</class>
-		<name>prefs_real_record_no</name>
-		<can_focus>True</can_focus>
-		<label>No</label>
-		<active>True</active>
-		<draw_indicator>True</draw_indicator>
-		<group>prefs_real_record</group>
-		<child>
-		  <padding>0</padding>
-		  <expand>True</expand>
-		  <fill>True</fill>
-		</child>
-	      </widget>
+	    <widget>
+	      <class>GtkCheckButton</class>
+	      <name>prefs_real_audience_dsl384</name>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>toggled</name>
+		<handler>on_prefs_real_audience_dsl384_toggled</handler>
+		<last_modification_time>Sat, 29 Dec 2001 17:03:28 GMT</last_modification_time>
+	      </signal>
+	      <label>DSL 384K (350Kbps)</label>
+	      <active>False</active>
+	      <draw_indicator>True</draw_indicator>
+	      <child>
+		<left_attach>1</left_attach>
+		<right_attach>2</right_attach>
+		<top_attach>2</top_attach>
+		<bottom_attach>3</bottom_attach>
+		<xpad>0</xpad>
+		<ypad>0</ypad>
+		<xexpand>False</xexpand>
+		<yexpand>False</yexpand>
+		<xshrink>False</xshrink>
+		<yshrink>False</yshrink>
+		<xfill>True</xfill>
+		<yfill>False</yfill>
+	      </child>
+	    </widget>
+
+	    <widget>
+	      <class>GtkCheckButton</class>
+	      <name>prefs_real_audience_dsl512</name>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>toggled</name>
+		<handler>on_prefs_real_audience_dsl512_toggled</handler>
+		<last_modification_time>Sat, 29 Dec 2001 17:03:33 GMT</last_modification_time>
+	      </signal>
+	      <label>DSL 512K (450Kbps)</label>
+	      <active>False</active>
+	      <draw_indicator>True</draw_indicator>
+	      <child>
+		<left_attach>1</left_attach>
+		<right_attach>2</right_attach>
+		<top_attach>3</top_attach>
+		<bottom_attach>4</bottom_attach>
+		<xpad>0</xpad>
+		<ypad>0</ypad>
+		<xexpand>False</xexpand>
+		<yexpand>False</yexpand>
+		<xshrink>False</xshrink>
+		<yshrink>False</yshrink>
+		<xfill>True</xfill>
+		<yfill>False</yfill>
+	      </child>
 	    </widget>
 	  </widget>
 	</widget>

@@ -21,7 +21,7 @@
 #ifndef __THREAD_ISO_H__
 #define __THREAD_ISO_H__
 
-#define DMA_BUFFERS 10
+#define DMA_BUFFERS 4
 
 typedef enum
 {

@@ -35,38 +35,17 @@
 #include <gtk/gtk.h>
 #include "thread_base.h" 
 
-
-typedef enum
-{
-  DISPLAY_METHOD_XV=0,
-  DISPLAY_METHOD_GDK,
-  //DISPLAY_METHOD_AUTO,
-  DISPLAY_METHOD_SDL
-} display_method_t;
-
 typedef struct
 {
-  gboolean                is_open;
-  GtkWidget              *drawable;
-  display_method_t        display_method;
-#ifdef HAVE_X11_EXTENSIONS_XVLIB_H
-  Display                *display;
-  Window                  window;
-  unsigned long           xv_format;
-  XvImage                *xv_image;
-  int                     xv_port;
-  XShmSegmentInfo         xv_shm_info;
-  GC                      xv_gc;
-#endif
   long int                period;
-  char                   *gdk_buffer;
   pthread_mutex_t         mutex_cancel_display;
   int                     cancel_display_req;
 
-  int SDL_flags;
-  //  SDL flags
-
 #ifdef HAVE_SDLLIB
+
+  long unsigned int SDL_flags;
+  int SDL_bpp;
+
   SDL_Surface *SDL_video;
   // video surface
 
@@ -76,6 +55,12 @@ typedef struct
   SDL_Rect SDL_videoRect;
   // video rectangle for overlay surface blitting to video surface
  
+  pthread_mutex_t         mutex_cancel_event;
+  int                     cancel_event_req;
+
+  pthread_mutex_t         mutex_event;
+  pthread_t               event_thread;
+
 #endif
 
 } displaythread_info_t;
@@ -91,22 +76,6 @@ DisplayThread(void* arg);
 
 gint
 DisplayStopThread(unsigned int camera);
-
-#ifdef HAVE_X11_EXTENSIONS_XVLIB_H
-
-gint
-xvInit(chain_t *display_service);
-
-void
-xvPut(chain_t *display_service);
-
-void
-convert_to_yuv_for_xv(unsigned char *src, unsigned char *dest, int mode, int width, int height, int xv_format);
-
-#endif
-
-void
-gdkPut(chain_t *display_service);
 
 #ifdef HAVE_SDLLIB
 int

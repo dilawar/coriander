@@ -31,7 +31,6 @@
 #include "tools.h"
 #include <libdc1394/dc1394_control.h> 
 
-extern GtkWidget *porthole_window;
 extern GtkWidget *commander_window;
 
 void
@@ -71,7 +70,7 @@ UpdateCommanderWindow(void)
 }
 
 void
-UpdatePortholeWindow(void)
+UpdatePositionWindow(void)
 {
   UpdateRange(commander_window, FEATURE_FOCUS);
   UpdateRange(commander_window, FEATURE_PAN);
@@ -125,7 +124,7 @@ void
 UpdateAllWindows(void)
 {
   UpdatePreferencesWindow();
-  UpdatePortholeWindow();
+  UpdatePositionWindow();
   UpdateColorWindow();
   UpdateApertureWindow();
   UpdateCaptureWindow();

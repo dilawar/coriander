@@ -32,8 +32,6 @@
 #include "definitions.h"
 #include <libdc1394/dc1394_control.h>
 
-extern GtkWidget *porthole_window;
-extern GtkWidget *preferences_window;
 extern GtkWidget *commander_window;
 extern UIInfo *uiinfo;
 extern int camera_num;
@@ -66,7 +64,7 @@ BuildColorWindow(void)
 }
 
 void
-BuildPortholeWindow(void)
+BuildPositionWindow(void)
 {
   BuildRange(commander_window, FEATURE_FOCUS);
   BuildRange(commander_window, FEATURE_PAN);
@@ -120,7 +118,7 @@ BuildAllWindows(void)
 {
   BuildPreferencesWindow();
   BuildCommanderWindow();
-  BuildPortholeWindow();
+  BuildPositionWindow();
   BuildColorWindow();
   BuildApertureWindow();
   BuildCaptureWindow();

@@ -57,32 +57,27 @@ UpdateRange(GtkWidget* current_window, int feature)
       if ((!feature_set->feature[feature-FEATURE_MIN].is_on)&& // off
 	  (feature_set->feature[feature-FEATURE_MIN].on_off_capable))
 	{
-	  //fprintf(stderr,"off position detected\n");
 	  index=0;
 	}
       else
 	if ((!feature_set->feature[feature-FEATURE_MIN].auto_active)&& // man
 	    (feature_set->feature[feature-FEATURE_MIN].manual_capable))
 	  {
-	    //fprintf(stderr,"man position detected\n");
 	    index=1*(feature_set->feature[feature-FEATURE_MIN].on_off_capable>0);
 	  }
         else
 	  if ((feature_set->feature[feature-FEATURE_MIN].auto_active)&& // auto
 	      (feature_set->feature[feature-FEATURE_MIN].auto_capable))
 	    {
-	      //fprintf(stderr,"auto position detected\n");
 	      index=1*(feature_set->feature[feature-FEATURE_MIN].on_off_capable)+
 		1*(feature_set->feature[feature-FEATURE_MIN].manual_capable);
 	    }
 	  else
 	    {
-	      //fprintf(stderr,"op position detected\n");
 	      index=1*(feature_set->feature[feature-FEATURE_MIN].on_off_capable)+// single
 		1*(feature_set->feature[feature-FEATURE_MIN].manual_capable)+
 		1*(feature_set->feature[feature-FEATURE_MIN].auto_capable);
 	    }
-      //fprintf(stderr,"feature: %d index:%d\n",feature-FEATURE_MIN,index);
       
       // sets the active menu item:
       gtk_option_menu_set_history (GTK_OPTION_MENU (lookup_widget(current_window,feature_menu_list[feature-FEATURE_MIN])), index);
@@ -145,10 +140,8 @@ UpdateRangeValue(GtkWidget* widget, int feature)
 	      adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(widget, "white_balance_BU_scale")));
 	      gtk_adjustment_set_value(adj, valueBU);
 	      feature_set->feature[feature-FEATURE_MIN].BU_value=valueBU;
-	      //printf("valueBU: %d\n",valueBU);
 	      adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(widget, "white_balance_RV_scale")));
 	      gtk_adjustment_set_value(adj, valueRV);
-	      //printf("valueRV: %d\n",valueRV);
 	      feature_set->feature[feature-FEATURE_MIN].RV_value=valueRV;
 	    }
 	  break;
@@ -172,7 +165,6 @@ UpdateRangeValue(GtkWidget* widget, int feature)
 	    {
 	      adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(widget, feature_scale_list[feature-FEATURE_MIN])));
 	      gtk_adjustment_set_value(adj, value);
-	      //printf("value: %d\n",value);
 	      feature_set->feature[feature-FEATURE_MIN].value=value;
 	    }
 	  break;

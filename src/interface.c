@@ -582,7 +582,7 @@ create_commander_window (void)
 
   commander_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_object_set_data (GTK_OBJECT (commander_window), "commander_window", commander_window);
-  gtk_window_set_title (GTK_WINDOW (commander_window), _("Coriander 0.20"));
+  gtk_window_set_title (GTK_WINDOW (commander_window), _("Coriander 0.22"));
   gtk_window_set_policy (GTK_WINDOW (commander_window), FALSE, TRUE, TRUE);
 
   vbox26 = gtk_vbox_new (FALSE, 0);
@@ -916,7 +916,7 @@ create_commander_window (void)
   gtk_container_set_border_width (GTK_CONTAINER (camera_select), 1);
   gtk_widget_set_sensitive (camera_select, FALSE);
   camera_select_menu = gtk_menu_new ();
-  glade_menuitem = gtk_menu_item_new_with_label (_("Node 0: Sony DFW-VL500"));
+  glade_menuitem = gtk_menu_item_new_with_label ("");
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (camera_select_menu), glade_menuitem);
   gtk_option_menu_set_menu (GTK_OPTION_MENU (camera_select), camera_select_menu);
@@ -1110,10 +1110,7 @@ create_commander_window (void)
   gtk_container_set_border_width (GTK_CONTAINER (memory_channel), 1);
   gtk_widget_set_sensitive (memory_channel, FALSE);
   memory_channel_menu = gtk_menu_new ();
-  glade_menuitem = gtk_menu_item_new_with_label (_("Factory"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (memory_channel_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("1..."));
+  glade_menuitem = gtk_menu_item_new_with_label ("");
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (memory_channel_menu), glade_menuitem);
   gtk_option_menu_set_menu (GTK_OPTION_MENU (memory_channel), memory_channel_menu);
@@ -1196,7 +1193,7 @@ create_commander_window (void)
                     (GtkAttachOptions) (0), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (fps_menu), 1);
   fps_menu_menu = gtk_menu_new ();
-  glade_menuitem = gtk_menu_item_new_with_label (_("N/A"));
+  glade_menuitem = gtk_menu_item_new_with_label ("");
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (fps_menu_menu), glade_menuitem);
   gtk_option_menu_set_menu (GTK_OPTION_MENU (fps_menu), fps_menu_menu);
@@ -1233,7 +1230,7 @@ create_commander_window (void)
                     (GtkAttachOptions) (0), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (trigger_mode), 1);
   trigger_mode_menu = gtk_menu_new ();
-  glade_menuitem = gtk_menu_item_new_with_label (_("N/A"));
+  glade_menuitem = gtk_menu_item_new_with_label ("");
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (trigger_mode_menu), glade_menuitem);
   gtk_option_menu_set_menu (GTK_OPTION_MENU (trigger_mode), trigger_mode_menu);
@@ -1288,16 +1285,7 @@ create_commander_window (void)
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
   auto_exposure_menu_menu = gtk_menu_new ();
-  glade_menuitem = gtk_menu_item_new_with_label (_("Off"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (auto_exposure_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Man"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (auto_exposure_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Auto"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (auto_exposure_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Single"));
+  glade_menuitem = gtk_menu_item_new_with_label ("");
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (auto_exposure_menu_menu), glade_menuitem);
   gtk_option_menu_set_menu (GTK_OPTION_MENU (auto_exposure_menu), auto_exposure_menu_menu);
@@ -1338,16 +1326,7 @@ create_commander_window (void)
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
   iris_menu_menu = gtk_menu_new ();
-  glade_menuitem = gtk_menu_item_new_with_label (_("Off"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (iris_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Man"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (iris_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Auto"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (iris_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Single"));
+  glade_menuitem = gtk_menu_item_new_with_label ("");
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (iris_menu_menu), glade_menuitem);
   gtk_option_menu_set_menu (GTK_OPTION_MENU (iris_menu), iris_menu_menu);
@@ -1388,16 +1367,7 @@ create_commander_window (void)
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
   shutter_menu_menu = gtk_menu_new ();
-  glade_menuitem = gtk_menu_item_new_with_label (_("Off"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (shutter_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Man"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (shutter_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Auto"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (shutter_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Single"));
+  glade_menuitem = gtk_menu_item_new_with_label ("");
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (shutter_menu_menu), glade_menuitem);
   gtk_option_menu_set_menu (GTK_OPTION_MENU (shutter_menu), shutter_menu_menu);
@@ -1438,16 +1408,7 @@ create_commander_window (void)
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
   gain_menu_menu = gtk_menu_new ();
-  glade_menuitem = gtk_menu_item_new_with_label (_("Off"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (gain_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Man"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (gain_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Auto"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (gain_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Single"));
+  glade_menuitem = gtk_menu_item_new_with_label ("");
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (gain_menu_menu), glade_menuitem);
   gtk_option_menu_set_menu (GTK_OPTION_MENU (gain_menu), gain_menu_menu);
@@ -1488,16 +1449,7 @@ create_commander_window (void)
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
   filter_menu_menu = gtk_menu_new ();
-  glade_menuitem = gtk_menu_item_new_with_label (_("Off"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (filter_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Man"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (filter_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Auto"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (filter_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Single"));
+  glade_menuitem = gtk_menu_item_new_with_label ("");
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (filter_menu_menu), glade_menuitem);
   gtk_option_menu_set_menu (GTK_OPTION_MENU (filter_menu), filter_menu_menu);
@@ -1541,16 +1493,7 @@ create_commander_window (void)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   hue_menu_menu = gtk_menu_new ();
-  glade_menuitem = gtk_menu_item_new_with_label (_("Off"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (hue_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Man"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (hue_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Auto"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (hue_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Single"));
+  glade_menuitem = gtk_menu_item_new_with_label ("");
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (hue_menu_menu), glade_menuitem);
   gtk_option_menu_set_menu (GTK_OPTION_MENU (hue_menu), hue_menu_menu);
@@ -1591,16 +1534,7 @@ create_commander_window (void)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   saturation_menu_menu = gtk_menu_new ();
-  glade_menuitem = gtk_menu_item_new_with_label (_("Off"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (saturation_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Man"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (saturation_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Auto"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (saturation_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Single"));
+  glade_menuitem = gtk_menu_item_new_with_label ("");
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (saturation_menu_menu), glade_menuitem);
   gtk_option_menu_set_menu (GTK_OPTION_MENU (saturation_menu), saturation_menu_menu);
@@ -1663,16 +1597,7 @@ create_commander_window (void)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   white_balance_menu_menu = gtk_menu_new ();
-  glade_menuitem = gtk_menu_item_new_with_label (_("Off"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (white_balance_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Man"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (white_balance_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Auto"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (white_balance_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Single"));
+  glade_menuitem = gtk_menu_item_new_with_label ("");
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (white_balance_menu_menu), glade_menuitem);
   gtk_option_menu_set_menu (GTK_OPTION_MENU (white_balance_menu), white_balance_menu_menu);
@@ -1738,16 +1663,7 @@ create_commander_window (void)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   brightness_menu_menu = gtk_menu_new ();
-  glade_menuitem = gtk_menu_item_new_with_label (_("Off"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (brightness_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Man"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (brightness_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Auto"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (brightness_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Single"));
+  glade_menuitem = gtk_menu_item_new_with_label ("");
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (brightness_menu_menu), glade_menuitem);
   gtk_option_menu_set_menu (GTK_OPTION_MENU (brightness_menu), brightness_menu_menu);
@@ -1788,16 +1704,7 @@ create_commander_window (void)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gamma_menu_menu = gtk_menu_new ();
-  glade_menuitem = gtk_menu_item_new_with_label (_("Off"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (gamma_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Man"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (gamma_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Auto"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (gamma_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Single"));
+  glade_menuitem = gtk_menu_item_new_with_label ("");
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (gamma_menu_menu), glade_menuitem);
   gtk_option_menu_set_menu (GTK_OPTION_MENU (gamma_menu), gamma_menu_menu);
@@ -1838,16 +1745,7 @@ create_commander_window (void)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   sharpness_menu_menu = gtk_menu_new ();
-  glade_menuitem = gtk_menu_item_new_with_label (_("Off"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (sharpness_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Man"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (sharpness_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Auto"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (sharpness_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Single"));
+  glade_menuitem = gtk_menu_item_new_with_label ("");
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (sharpness_menu_menu), glade_menuitem);
   gtk_option_menu_set_menu (GTK_OPTION_MENU (sharpness_menu), sharpness_menu_menu);
@@ -1924,16 +1822,7 @@ create_commander_window (void)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   temperature_menu_menu = gtk_menu_new ();
-  glade_menuitem = gtk_menu_item_new_with_label (_("Off"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (temperature_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Man"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (temperature_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Auto"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (temperature_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Single"));
+  glade_menuitem = gtk_menu_item_new_with_label ("");
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (temperature_menu_menu), glade_menuitem);
   gtk_option_menu_set_menu (GTK_OPTION_MENU (temperature_menu), temperature_menu_menu);
@@ -1985,16 +1874,7 @@ create_commander_window (void)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   capture_quality_menu_menu = gtk_menu_new ();
-  glade_menuitem = gtk_menu_item_new_with_label (_("Off"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (capture_quality_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Man"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (capture_quality_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Auto"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (capture_quality_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Single"));
+  glade_menuitem = gtk_menu_item_new_with_label ("");
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (capture_quality_menu_menu), glade_menuitem);
   gtk_option_menu_set_menu (GTK_OPTION_MENU (capture_quality_menu), capture_quality_menu_menu);
@@ -2035,16 +1915,7 @@ create_commander_window (void)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   capture_size_menu_menu = gtk_menu_new ();
-  glade_menuitem = gtk_menu_item_new_with_label (_("Off"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (capture_size_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Man"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (capture_size_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Auto"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (capture_size_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Single"));
+  glade_menuitem = gtk_menu_item_new_with_label ("");
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (capture_size_menu_menu), glade_menuitem);
   gtk_option_menu_set_menu (GTK_OPTION_MENU (capture_size_menu), capture_size_menu_menu);
@@ -2377,16 +2248,7 @@ create_commander_window (void)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   zoom_menu_menu = gtk_menu_new ();
-  glade_menuitem = gtk_menu_item_new_with_label (_("Off"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (zoom_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Man"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (zoom_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Auto"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (zoom_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Single"));
+  glade_menuitem = gtk_menu_item_new_with_label ("");
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (zoom_menu_menu), glade_menuitem);
   gtk_option_menu_set_menu (GTK_OPTION_MENU (zoom_menu), zoom_menu_menu);
@@ -2427,16 +2289,7 @@ create_commander_window (void)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   focus_menu_menu = gtk_menu_new ();
-  glade_menuitem = gtk_menu_item_new_with_label (_("Off"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (focus_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Man"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (focus_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Auto"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (focus_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Single"));
+  glade_menuitem = gtk_menu_item_new_with_label ("");
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (focus_menu_menu), glade_menuitem);
   gtk_option_menu_set_menu (GTK_OPTION_MENU (focus_menu), focus_menu_menu);
@@ -2477,16 +2330,7 @@ create_commander_window (void)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   tilt_menu_menu = gtk_menu_new ();
-  glade_menuitem = gtk_menu_item_new_with_label (_("Off"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (tilt_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Man"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (tilt_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Auto"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (tilt_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Single"));
+  glade_menuitem = gtk_menu_item_new_with_label ("");
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (tilt_menu_menu), glade_menuitem);
   gtk_option_menu_set_menu (GTK_OPTION_MENU (tilt_menu), tilt_menu_menu);
@@ -2527,16 +2371,7 @@ create_commander_window (void)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   pan_menu_menu = gtk_menu_new ();
-  glade_menuitem = gtk_menu_item_new_with_label (_("Off"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (pan_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Man"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (pan_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Auto"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (pan_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Single"));
+  glade_menuitem = gtk_menu_item_new_with_label ("");
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (pan_menu_menu), glade_menuitem);
   gtk_option_menu_set_menu (GTK_OPTION_MENU (pan_menu), pan_menu_menu);
@@ -2623,53 +2458,6 @@ create_commander_window (void)
                       NULL);
 
   return commander_window;
-}
-
-GtkWidget*
-create_porthole_window (void)
-{
-  GtkWidget *porthole_window;
-  GtkWidget *scrolledwindow1;
-  GtkWidget *viewport1;
-  GtkWidget *alignment11;
-  GtkWidget *camera_scope;
-
-  porthole_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-  gtk_object_set_data (GTK_OBJECT (porthole_window), "porthole_window", porthole_window);
-  gtk_window_set_title (GTK_WINDOW (porthole_window), _("Porthole"));
-
-  scrolledwindow1 = gtk_scrolled_window_new (NULL, NULL);
-  gtk_widget_ref (scrolledwindow1);
-  gtk_object_set_data_full (GTK_OBJECT (porthole_window), "scrolledwindow1", scrolledwindow1,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (scrolledwindow1);
-  gtk_container_add (GTK_CONTAINER (porthole_window), scrolledwindow1);
-  gtk_widget_set_usize (scrolledwindow1, 334, 254);
-  gtk_container_set_border_width (GTK_CONTAINER (scrolledwindow1), 5);
-  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow1), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-
-  viewport1 = gtk_viewport_new (NULL, NULL);
-  gtk_widget_ref (viewport1);
-  gtk_object_set_data_full (GTK_OBJECT (porthole_window), "viewport1", viewport1,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (viewport1);
-  gtk_container_add (GTK_CONTAINER (scrolledwindow1), viewport1);
-
-  alignment11 = gtk_alignment_new (0.5, 0.5, 1, 1);
-  gtk_widget_ref (alignment11);
-  gtk_object_set_data_full (GTK_OBJECT (porthole_window), "alignment11", alignment11,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (alignment11);
-  gtk_container_add (GTK_CONTAINER (viewport1), alignment11);
-
-  camera_scope = gtk_drawing_area_new ();
-  gtk_widget_ref (camera_scope);
-  gtk_object_set_data_full (GTK_OBJECT (porthole_window), "camera_scope", camera_scope,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (camera_scope);
-  gtk_container_add (GTK_CONTAINER (alignment11), camera_scope);
-
-  return porthole_window;
 }
 
 GtkWidget*
@@ -3317,10 +3105,9 @@ create_preferences_window (void)
   GtkObject *prefs_display_period_adj;
   GtkWidget *prefs_display_period;
   GtkWidget *label74;
-  GtkWidget *prefs_display_method_frame;
-  GtkWidget *table44;
-  GtkWidget *prefs_display_method_menu;
-  GtkWidget *prefs_display_method_menu_menu;
+  GtkWidget *frame1;
+  GtkWidget *vbox64;
+  GtkWidget *prefs_display_keep_ratio;
   GtkWidget *label51;
   GtkWidget *vbox54;
   GtkWidget *prefs_save_framedrop;
@@ -3387,21 +3174,25 @@ create_preferences_window (void)
   GtkWidget *prefs_real_author;
   GtkWidget *prefs_real_copyright;
   GtkWidget *prefs_real_stream_frame;
+  GtkWidget *vbox66;
+  GtkWidget *prefs_real_recordable;
   GtkWidget *table26;
-  GtkWidget *label70;
-  GtkWidget *label71;
-  GtkWidget *label72;
-  GtkWidget *label73;
-  GtkWidget *prefs_real_audience;
-  GtkWidget *prefs_real_audience_menu;
   GtkWidget *prefs_real_quality;
   GtkWidget *prefs_real_quality_menu;
   GtkWidget *prefs_real_compatibility;
   GtkWidget *prefs_real_compatibility_menu;
-  GtkWidget *hbox54;
-  GSList *prefs_real_record_group = NULL;
-  GtkWidget *prefs_real_record_yes;
-  GtkWidget *prefs_real_record_no;
+  GtkWidget *label72;
+  GtkWidget *label73;
+  GtkWidget *prefs_real_audience_frame;
+  GtkWidget *table46;
+  GtkWidget *prefs_real_audience_28k;
+  GtkWidget *prefs_real_audience_56k;
+  GtkWidget *prefs_real_audience_sisdn;
+  GtkWidget *prefs_real_audience_disdn;
+  GtkWidget *prefs_real_audience_lan;
+  GtkWidget *prefs_real_audience_dsl256;
+  GtkWidget *prefs_real_audience_dsl384;
+  GtkWidget *prefs_real_audience_dsl512;
   GtkWidget *label61;
   GtkWidget *hseparator1;
   GtkWidget *hbox48;
@@ -3457,7 +3248,7 @@ create_preferences_window (void)
   gtk_object_set_data_full (GTK_OBJECT (preferences_window), "prefs_op_timeout_scale", prefs_op_timeout_scale,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (prefs_op_timeout_scale);
-  gtk_box_pack_start (GTK_BOX (hbox56), prefs_op_timeout_scale, TRUE, TRUE, 5);
+  gtk_box_pack_start (GTK_BOX (hbox56), prefs_op_timeout_scale, FALSE, TRUE, 5);
   gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (prefs_op_timeout_scale), TRUE);
   gtk_spin_button_set_update_policy (GTK_SPIN_BUTTON (prefs_op_timeout_scale), GTK_UPDATE_IF_VALID);
 
@@ -3558,13 +3349,7 @@ create_preferences_window (void)
                     (GtkAttachOptions) (GTK_EXPAND), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (prefs_receive_method_menu), 1);
   prefs_receive_method_menu_menu = gtk_menu_new ();
-  glade_menuitem = gtk_menu_item_new_with_label (_("raw1394"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (prefs_receive_method_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("video1394 (DMA)"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (prefs_receive_method_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("AUTO"));
+  glade_menuitem = gtk_menu_item_new_with_label ("");
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (prefs_receive_method_menu_menu), glade_menuitem);
   gtk_option_menu_set_menu (GTK_OPTION_MENU (prefs_receive_method_menu), prefs_receive_method_menu_menu);
@@ -3625,44 +3410,27 @@ create_preferences_window (void)
   gtk_box_pack_start (GTK_BOX (hbox55), label74, FALSE, FALSE, 2);
   gtk_misc_set_padding (GTK_MISC (label74), 5, 8);
 
-  prefs_display_method_frame = gtk_frame_new (_("Method"));
-  gtk_widget_ref (prefs_display_method_frame);
-  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "prefs_display_method_frame", prefs_display_method_frame,
+  frame1 = gtk_frame_new (_("SDL options"));
+  gtk_widget_ref (frame1);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "frame1", frame1,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (prefs_display_method_frame);
-  gtk_box_pack_start (GTK_BOX (vbox53), prefs_display_method_frame, FALSE, TRUE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (prefs_display_method_frame), 5);
+  gtk_widget_show (frame1);
+  gtk_box_pack_start (GTK_BOX (vbox53), frame1, FALSE, TRUE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (frame1), 5);
 
-  table44 = gtk_table_new (1, 1, FALSE);
-  gtk_widget_ref (table44);
-  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "table44", table44,
+  vbox64 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_ref (vbox64);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "vbox64", vbox64,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (table44);
-  gtk_container_add (GTK_CONTAINER (prefs_display_method_frame), table44);
+  gtk_widget_show (vbox64);
+  gtk_container_add (GTK_CONTAINER (frame1), vbox64);
 
-  prefs_display_method_menu = gtk_option_menu_new ();
-  gtk_widget_ref (prefs_display_method_menu);
-  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "prefs_display_method_menu", prefs_display_method_menu,
+  prefs_display_keep_ratio = gtk_check_button_new_with_label (_("Keep aspect ration when resizing"));
+  gtk_widget_ref (prefs_display_keep_ratio);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "prefs_display_keep_ratio", prefs_display_keep_ratio,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (prefs_display_method_menu);
-  gtk_table_attach (GTK_TABLE (table44), prefs_display_method_menu, 0, 1, 0, 1,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (GTK_EXPAND), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (prefs_display_method_menu), 1);
-  prefs_display_method_menu_menu = gtk_menu_new ();
-  glade_menuitem = gtk_menu_item_new_with_label (_("GDK"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (prefs_display_method_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Xv (single camera only)"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (prefs_display_method_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("SDL"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (prefs_display_method_menu_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("AUTO"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (prefs_display_method_menu_menu), glade_menuitem);
-  gtk_option_menu_set_menu (GTK_OPTION_MENU (prefs_display_method_menu), prefs_display_method_menu_menu);
+  gtk_widget_show (prefs_display_keep_ratio);
+  gtk_box_pack_start (GTK_BOX (vbox64), prefs_display_keep_ratio, FALSE, FALSE, 0);
 
   label51 = gtk_label_new (_("Display"));
   gtk_widget_ref (label51);
@@ -4227,102 +3995,33 @@ create_preferences_window (void)
   gtk_box_pack_start (GTK_BOX (vbox61), prefs_real_stream_frame, TRUE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (prefs_real_stream_frame), 5);
 
-  table26 = gtk_table_new (4, 2, FALSE);
+  vbox66 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_ref (vbox66);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "vbox66", vbox66,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (vbox66);
+  gtk_container_add (GTK_CONTAINER (prefs_real_stream_frame), vbox66);
+
+  prefs_real_recordable = gtk_check_button_new_with_label (_("Recordable"));
+  gtk_widget_ref (prefs_real_recordable);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "prefs_real_recordable", prefs_real_recordable,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (prefs_real_recordable);
+  gtk_box_pack_start (GTK_BOX (vbox66), prefs_real_recordable, FALSE, FALSE, 0);
+
+  table26 = gtk_table_new (2, 2, FALSE);
   gtk_widget_ref (table26);
   gtk_object_set_data_full (GTK_OBJECT (preferences_window), "table26", table26,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (table26);
-  gtk_container_add (GTK_CONTAINER (prefs_real_stream_frame), table26);
-
-  label70 = gtk_label_new (_("Recordable: "));
-  gtk_widget_ref (label70);
-  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "label70", label70,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label70);
-  gtk_table_attach (GTK_TABLE (table26), label70, 0, 1, 0, 1,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_label_set_justify (GTK_LABEL (label70), GTK_JUSTIFY_RIGHT);
-  gtk_misc_set_alignment (GTK_MISC (label70), 1, 0.5);
-  gtk_misc_set_padding (GTK_MISC (label70), 2, 0);
-
-  label71 = gtk_label_new (_("Audience: "));
-  gtk_widget_ref (label71);
-  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "label71", label71,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label71);
-  gtk_table_attach (GTK_TABLE (table26), label71, 0, 1, 1, 2,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_label_set_justify (GTK_LABEL (label71), GTK_JUSTIFY_RIGHT);
-  gtk_misc_set_alignment (GTK_MISC (label71), 1, 0.5);
-  gtk_misc_set_padding (GTK_MISC (label71), 2, 0);
-
-  label72 = gtk_label_new (_("Quality: "));
-  gtk_widget_ref (label72);
-  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "label72", label72,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label72);
-  gtk_table_attach (GTK_TABLE (table26), label72, 0, 1, 2, 3,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_label_set_justify (GTK_LABEL (label72), GTK_JUSTIFY_RIGHT);
-  gtk_misc_set_alignment (GTK_MISC (label72), 1, 0.5);
-  gtk_misc_set_padding (GTK_MISC (label72), 2, 0);
-
-  label73 = gtk_label_new (_("Compatibility: "));
-  gtk_widget_ref (label73);
-  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "label73", label73,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label73);
-  gtk_table_attach (GTK_TABLE (table26), label73, 0, 1, 3, 4,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_misc_set_alignment (GTK_MISC (label73), 1, 0.5);
-  gtk_misc_set_padding (GTK_MISC (label73), 2, 0);
-
-  prefs_real_audience = gtk_option_menu_new ();
-  gtk_widget_ref (prefs_real_audience);
-  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "prefs_real_audience", prefs_real_audience,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (prefs_real_audience);
-  gtk_table_attach (GTK_TABLE (table26), prefs_real_audience, 1, 2, 1, 2,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (prefs_real_audience), 1);
-  prefs_real_audience_menu = gtk_menu_new ();
-  glade_menuitem = gtk_menu_item_new_with_label (_("28KBps Modem (20Kbps)"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (prefs_real_audience_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("56 KBps Modem (34Kbps)"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (prefs_real_audience_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Single ISDN (45Kbps)"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (prefs_real_audience_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("Dual ISDN (80Kbps)"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (prefs_real_audience_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("LAN (150Kbps)"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (prefs_real_audience_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("256 DSL (225Kbps)"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (prefs_real_audience_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("384 DSL (350Kbps)"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (prefs_real_audience_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("512 DSL (450Kbps)"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (prefs_real_audience_menu), glade_menuitem);
-  gtk_option_menu_set_menu (GTK_OPTION_MENU (prefs_real_audience), prefs_real_audience_menu);
+  gtk_box_pack_start (GTK_BOX (vbox66), table26, TRUE, TRUE, 0);
 
   prefs_real_quality = gtk_option_menu_new ();
   gtk_widget_ref (prefs_real_quality);
   gtk_object_set_data_full (GTK_OBJECT (preferences_window), "prefs_real_quality", prefs_real_quality,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (prefs_real_quality);
-  gtk_table_attach (GTK_TABLE (table26), prefs_real_quality, 1, 2, 2, 3,
+  gtk_table_attach (GTK_TABLE (table26), prefs_real_quality, 1, 2, 0, 1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (prefs_real_quality), 1);
@@ -4346,7 +4045,7 @@ create_preferences_window (void)
   gtk_object_set_data_full (GTK_OBJECT (preferences_window), "prefs_real_compatibility", prefs_real_compatibility,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (prefs_real_compatibility);
-  gtk_table_attach (GTK_TABLE (table26), prefs_real_compatibility, 1, 2, 3, 4,
+  gtk_table_attach (GTK_TABLE (table26), prefs_real_compatibility, 1, 2, 1, 2,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (prefs_real_compatibility), 1);
@@ -4358,33 +4057,116 @@ create_preferences_window (void)
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (prefs_real_compatibility_menu), glade_menuitem);
   gtk_option_menu_set_menu (GTK_OPTION_MENU (prefs_real_compatibility), prefs_real_compatibility_menu);
-  gtk_option_menu_set_history (GTK_OPTION_MENU (prefs_real_compatibility), 1);
 
-  hbox54 = gtk_hbox_new (FALSE, 0);
-  gtk_widget_ref (hbox54);
-  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "hbox54", hbox54,
+  label72 = gtk_label_new (_("Quality: "));
+  gtk_widget_ref (label72);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "label72", label72,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (hbox54);
-  gtk_table_attach (GTK_TABLE (table26), hbox54, 1, 2, 0, 1,
+  gtk_widget_show (label72);
+  gtk_table_attach (GTK_TABLE (table26), label72, 0, 1, 0, 1,
                     (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_label_set_justify (GTK_LABEL (label72), GTK_JUSTIFY_RIGHT);
+  gtk_misc_set_alignment (GTK_MISC (label72), 1, 0.5);
+  gtk_misc_set_padding (GTK_MISC (label72), 2, 0);
 
-  prefs_real_record_yes = gtk_radio_button_new_with_label (prefs_real_record_group, _("Yes"));
-  prefs_real_record_group = gtk_radio_button_group (GTK_RADIO_BUTTON (prefs_real_record_yes));
-  gtk_widget_ref (prefs_real_record_yes);
-  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "prefs_real_record_yes", prefs_real_record_yes,
+  label73 = gtk_label_new (_("Compatibility: "));
+  gtk_widget_ref (label73);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "label73", label73,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (prefs_real_record_yes);
-  gtk_box_pack_start (GTK_BOX (hbox54), prefs_real_record_yes, TRUE, TRUE, 0);
+  gtk_widget_show (label73);
+  gtk_table_attach (GTK_TABLE (table26), label73, 0, 1, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label73), 1, 0.5);
+  gtk_misc_set_padding (GTK_MISC (label73), 2, 0);
 
-  prefs_real_record_no = gtk_radio_button_new_with_label (prefs_real_record_group, _("No"));
-  prefs_real_record_group = gtk_radio_button_group (GTK_RADIO_BUTTON (prefs_real_record_no));
-  gtk_widget_ref (prefs_real_record_no);
-  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "prefs_real_record_no", prefs_real_record_no,
+  prefs_real_audience_frame = gtk_frame_new (_("Audience"));
+  gtk_widget_ref (prefs_real_audience_frame);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "prefs_real_audience_frame", prefs_real_audience_frame,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (prefs_real_record_no);
-  gtk_box_pack_start (GTK_BOX (hbox54), prefs_real_record_no, TRUE, TRUE, 0);
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (prefs_real_record_no), TRUE);
+  gtk_widget_show (prefs_real_audience_frame);
+  gtk_box_pack_start (GTK_BOX (vbox61), prefs_real_audience_frame, TRUE, TRUE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (prefs_real_audience_frame), 5);
+
+  table46 = gtk_table_new (4, 2, TRUE);
+  gtk_widget_ref (table46);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "table46", table46,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (table46);
+  gtk_container_add (GTK_CONTAINER (prefs_real_audience_frame), table46);
+
+  prefs_real_audience_28k = gtk_check_button_new_with_label (_("Modem 28Kbps (20Kbps)"));
+  gtk_widget_ref (prefs_real_audience_28k);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "prefs_real_audience_28k", prefs_real_audience_28k,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (prefs_real_audience_28k);
+  gtk_table_attach (GTK_TABLE (table46), prefs_real_audience_28k, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  prefs_real_audience_56k = gtk_check_button_new_with_label (_("Modem 56Kbps (34Kbps)"));
+  gtk_widget_ref (prefs_real_audience_56k);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "prefs_real_audience_56k", prefs_real_audience_56k,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (prefs_real_audience_56k);
+  gtk_table_attach (GTK_TABLE (table46), prefs_real_audience_56k, 0, 1, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  prefs_real_audience_sisdn = gtk_check_button_new_with_label (_("Single ISDN (45Kbps)"));
+  gtk_widget_ref (prefs_real_audience_sisdn);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "prefs_real_audience_sisdn", prefs_real_audience_sisdn,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (prefs_real_audience_sisdn);
+  gtk_table_attach (GTK_TABLE (table46), prefs_real_audience_sisdn, 0, 1, 2, 3,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  prefs_real_audience_disdn = gtk_check_button_new_with_label (_("Dual ISDN (80Kbps)"));
+  gtk_widget_ref (prefs_real_audience_disdn);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "prefs_real_audience_disdn", prefs_real_audience_disdn,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (prefs_real_audience_disdn);
+  gtk_table_attach (GTK_TABLE (table46), prefs_real_audience_disdn, 0, 1, 3, 4,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  prefs_real_audience_lan = gtk_check_button_new_with_label (_("LAN (150Kbps)"));
+  gtk_widget_ref (prefs_real_audience_lan);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "prefs_real_audience_lan", prefs_real_audience_lan,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (prefs_real_audience_lan);
+  gtk_table_attach (GTK_TABLE (table46), prefs_real_audience_lan, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  prefs_real_audience_dsl256 = gtk_check_button_new_with_label (_("DSL 256K (225Kbps)"));
+  gtk_widget_ref (prefs_real_audience_dsl256);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "prefs_real_audience_dsl256", prefs_real_audience_dsl256,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (prefs_real_audience_dsl256);
+  gtk_table_attach (GTK_TABLE (table46), prefs_real_audience_dsl256, 1, 2, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  prefs_real_audience_dsl384 = gtk_check_button_new_with_label (_("DSL 384K (350Kbps)"));
+  gtk_widget_ref (prefs_real_audience_dsl384);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "prefs_real_audience_dsl384", prefs_real_audience_dsl384,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (prefs_real_audience_dsl384);
+  gtk_table_attach (GTK_TABLE (table46), prefs_real_audience_dsl384, 1, 2, 2, 3,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  prefs_real_audience_dsl512 = gtk_check_button_new_with_label (_("DSL 512K (450Kbps)"));
+  gtk_widget_ref (prefs_real_audience_dsl512);
+  gtk_object_set_data_full (GTK_OBJECT (preferences_window), "prefs_real_audience_dsl512", prefs_real_audience_dsl512,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (prefs_real_audience_dsl512);
+  gtk_table_attach (GTK_TABLE (table46), prefs_real_audience_dsl512, 1, 2, 3, 4,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
 
   label61 = gtk_label_new (_("Real"));
   gtk_widget_ref (label61);
@@ -4435,6 +4217,9 @@ create_preferences_window (void)
   gtk_signal_connect (GTK_OBJECT (prefs_update_power), "toggled",
                       GTK_SIGNAL_FUNC (on_prefs_update_power_toggled),
                       NULL);
+  gtk_signal_connect (GTK_OBJECT (prefs_display_keep_ratio), "toggled",
+                      GTK_SIGNAL_FUNC (on_prefs_display_keep_ratio_toggled),
+                      NULL);
   gtk_signal_connect (GTK_OBJECT (prefs_save_seq), "toggled",
                       GTK_SIGNAL_FUNC (on_prefs_save_seq_toggled),
                       NULL);
@@ -4450,8 +4235,32 @@ create_preferences_window (void)
   gtk_signal_connect (GTK_OBJECT (prefs_ftp_scratch), "toggled",
                       GTK_SIGNAL_FUNC (on_prefs_ftp_scratch_toggled),
                       NULL);
-  gtk_signal_connect (GTK_OBJECT (prefs_real_record_yes), "toggled",
-                      GTK_SIGNAL_FUNC (on_prefs_real_record_yes_toggled),
+  gtk_signal_connect (GTK_OBJECT (prefs_real_recordable), "toggled",
+                      GTK_SIGNAL_FUNC (on_prefs_real_recordable_toggled),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (prefs_real_audience_28k), "toggled",
+                      GTK_SIGNAL_FUNC (on_prefs_real_audience_28k_toggled),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (prefs_real_audience_56k), "toggled",
+                      GTK_SIGNAL_FUNC (on_prefs_real_audience_56k_toggled),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (prefs_real_audience_sisdn), "toggled",
+                      GTK_SIGNAL_FUNC (on_prefs_real_audience_sisdn_toggled),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (prefs_real_audience_disdn), "toggled",
+                      GTK_SIGNAL_FUNC (on_prefs_real_audience_disdn_toggled),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (prefs_real_audience_lan), "toggled",
+                      GTK_SIGNAL_FUNC (on_prefs_real_audience_lan_toggled),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (prefs_real_audience_dsl256), "toggled",
+                      GTK_SIGNAL_FUNC (on_prefs_real_audience_dsl256_toggled),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (prefs_real_audience_dsl384), "toggled",
+                      GTK_SIGNAL_FUNC (on_prefs_real_audience_dsl384_toggled),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (prefs_real_audience_dsl512), "toggled",
+                      GTK_SIGNAL_FUNC (on_prefs_real_audience_dsl512_toggled),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (prefs_save_button), "clicked",
                       GTK_SIGNAL_FUNC (on_prefs_save_button_clicked),
