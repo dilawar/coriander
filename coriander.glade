@@ -30,7 +30,7 @@
     <handler>on_commander_window_delete_event</handler>
     <last_modification_time>Tue, 26 Dec 2000 12:06:25 GMT</last_modification_time>
   </signal>
-  <title>Coriander 0.31</title>
+  <title>Coriander 0.32</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_NONE</position>
   <modal>False</modal>

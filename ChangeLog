@@ -1,6 +1,10 @@
 Coriander, (c) 2000-2003 Damien Douxchamps <ddouxchamps@users.sf.net>
 
-Changes towards version 0.32
+Changes in version 0.32
+	
+   May 13, 2003, by Damien Douxchamps
+   - switched to "configure" instead of "autogen.sh" for building Coriander
+     from a tar.gz file. CVS is not changed.
 	
    May 12, 2003, by Damien Douxchamps
    - more F7 mode selection update

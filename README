@@ -9,7 +9,7 @@
 ==========================================================================
 		
 
-(This README is for version 0.31)
+(This README is for version 0.32)
 
 Hello world!
 
@@ -67,7 +67,7 @@ _______________________
 
 Basically, you should just type:
 
-./autogen.sh
+./configure
 make
 make install
 

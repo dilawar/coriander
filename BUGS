@@ -1,3 +1,4 @@
-Known bugs for version 0.31:
+Known bugs for version 0.32:
 
-- Multi-camera grabbing can be a little bit erratic.
+- Format_7 has some bugs, these will be fixed before 1.0 release.
+
