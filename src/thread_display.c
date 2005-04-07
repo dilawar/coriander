@@ -449,10 +449,15 @@ SDLDisplayPattern(chain_t *display_service)
   unsigned char *pimage;
   int sx = display_service->current_buffer->width;
   int sy = display_service->current_buffer->height;
-  int y,u,v;
+  int y,u,v,is,ie,js,je;
   unsigned char block[4];
   register int i;
   register int j;
+
+  is = (7*sx)/16; is = is-is%2;
+  ie = (9*sx)/16; ie = ie-ie%2;
+  js = (7*sy)/16;
+  je = (9*sy)/16;
 
   RGB2YUV(camera->prefs.overlay_color_r,camera->prefs.overlay_color_g,camera->prefs.overlay_color_b,y,u,v);
 
@@ -496,159 +501,138 @@ SDLDisplayPattern(chain_t *display_service)
     break;
   case OVERLAY_PATTERN_RECTANGLE:
     if (display_service->camera->prefs.overlay_type==OVERLAY_TYPE_INVERT) {
-      j=(7*sy)/16;
-      j=j-j%4;
-      for (i=(7*sx)/16;i<=(9*sx)/16;i+=2) {
+      j=js;
+      for (i=is;i<=ie;i+=2) {
 	INVPIX(pimage, ((j*sx+i)<<1));
 	INVPIX(pimage, (((j-1)*sx+i)<<1));
       }
-      j=(9*sy)/16;
-      j=j-j%4;
-      for (i=(7*sx)/16;i<=(9*sx)/16;i+=2) {
-	INVPIX(pimage, ((j*sx+i)<<1));
+      j=je;
+      for (i=is;i<=ie;i+=2) {
+	INVPIX(pimage,  ((j*sx+i)<<1));
 	INVPIX(pimage, (((j+1)*sx+i)<<1));
       }
-      j=(7*sx)/16;
-      j=j-j%4;
-      for (i=(7*sy)/16;i<=(9*sy)/16;i++) {
-	INVPIX(pimage, ((i*sx+j)<<1));
+      i=is;
+      for (j=js;j<=je;j++) {
+	INVPIX(pimage, ((j*sx+i)<<1));
       }
-      j=(9*sx)/16;
-      j=j-j%4;
-      for (i=(7*sy)/16;i<=(9*sy)/16;i++) {
-	INVPIX(pimage, ((i*sx+j)<<1));
+      i=ie;
+      for (j=js;j<=je;j++) {
+	INVPIX(pimage, ((j*sx+i)<<1));
       }
     }
     else {
-      j=(7*sy)/16;
-      j=j-j%4;
-      for (i=(7*sx)/16;i<=(9*sx)/16;i+=2) {
+      j=js;
+      for (i=is;i<=ie;i+=2) {
 	REPLPIX(pimage, block, ((j*sx+i)<<1));
 	REPLPIX(pimage, block, (((j-1)*sx+i)<<1));
       }
-      j=(9*sy)/16;
-      j=j-j%4;
-      for (i=(7*sx)/16;i<=(9*sx)/16;i+=2) {
+      j=je;
+      for (i=is;i<=ie;i+=2) {
 	REPLPIX(pimage, block, ((j*sx+i)<<1));
 	REPLPIX(pimage, block, (((j+1)*sx+i)<<1));
       }
-      j=(7*sx)/16;
-      j=j-j%4;
-      for (i=(7*sy)/16;i<=(9*sy)/16;i++) {
-	REPLPIX(pimage, block, ((i*sx+j)<<1));
+      i=is;
+      for (j=js;j<=je;j++) {
+	REPLPIX(pimage, block, ((j*sx+i)<<1));
       }
-      j=(9*sx)/16;
-      j=j-j%4;
-      for (i=(7*sy)/16;i<=(9*sy)/16;i++) {
-	REPLPIX(pimage, block, ((i*sx+j)<<1));
+      i=ie;
+      for (j=js;j<=je;j++) {
+	REPLPIX(pimage, block, ((j*sx+i)<<1));
       }
     }
     break;
   case OVERLAY_PATTERN_SMALL_CROSS:
     if (display_service->camera->prefs.overlay_type==OVERLAY_TYPE_INVERT) {
-      j=sy/2;
-      j=j-j%4;
-      for (i=(7*sx)/16;i<=(9*sx)/16;i+=2) {
+      j=sy/2; 
+      for (i=is;i<=ie;i+=2) {
 	INVPIX(pimage, ((j*sx+i)<<1));
 	INVPIX(pimage, (((j-1)*sx+i)<<1));
       }
-      j=sx/2;
-      j=j-j%4;
-      for (i=(7*sy)/16;i<=(9*sy)/16;i++) {
-	INVPIX(pimage, ((i*sx+j)<<1));
+      i=sx/2; i=i-i%2;
+      for (j=js;j<=je;j++) {
+	INVPIX(pimage, ((j*sx+i)<<1));
       }
     }
     else {
       j=sy/2;
-      j=j-j%4;
-      for (i=(7*sx)/16;i<=(9*sx)/16;i+=2) {
+      for (i=is;i<=ie;i+=2) {
 	REPLPIX(pimage, block, ((j*sx+i)<<1));
 	REPLPIX(pimage, block, (((j-1)*sx+i)<<1));
       }
-      j=sx/2;
-      j=j-j%4;
-      for (i=(7*sy)/16;i<=(9*sy)/16;i++) {
-	REPLPIX(pimage, block, ((i*sx+j)<<1));
+      i=sx/2; i=i-i%2;
+      for (j=js;j<=je;j++) {
+	REPLPIX(pimage, block, ((j*sx+i)<<1));
       }
     }
     break;
   case OVERLAY_PATTERN_LARGE_CROSS:
     if (display_service->camera->prefs.overlay_type==OVERLAY_TYPE_INVERT) {
       j=sy/2;
-      j=j-j%4;
       for (i=0;i<sx;i+=2) {
 	INVPIX(pimage, ((j*sx+i)<<1));
 	INVPIX(pimage, (((j-1)*sx+i)<<1));
       }
-      j=sx/2;
-      j=j-j%4;
-      for (i=0;i<sy;i++) {
-	INVPIX(pimage, ((i*sx+j)<<1));
+      i=sx/2; i=i-i%2;
+      for (j=0;j<sy;j++) {
+	INVPIX(pimage, ((j*sx+i)<<1));
       }
     }
     else {
       j=sy/2;
-      j=j-j%4;
       for (i=0;i<sx;i+=2) {
 	REPLPIX(pimage, block, ((j*sx+i)<<1));
 	REPLPIX(pimage, block, (((j-1)*sx+i)<<1));
       }
-      j=sx/2;
-      j=j-j%4;
-      for (i=0;i<sy;i++) {
-	REPLPIX(pimage, block, ((i*sx+j)<<1));
+      i=sx/2; i=i-i%2;
+      for (j=0;j<sy;j++) {
+	REPLPIX(pimage, block, ((j*sx+i)<<1));
       }
     }
     break;
   case OVERLAY_PATTERN_GOLDEN_MEAN:
     if (display_service->camera->prefs.overlay_type==OVERLAY_TYPE_INVERT) {
       j=sy/3;
-      j=j-j%4;
       for (i=0;i<sx;i+=2) {
 	INVPIX(pimage, ((j*sx+i)<<1));
 	INVPIX(pimage, (((j-1)*sx+i)<<1));
       }
-      j=2*sy/3;
-      j=j-j%4;
+      j=(2*sy)/3;
       for (i=0;i<sx;i+=2) {
 	INVPIX(pimage, ((j*sx+i)<<1));
 	INVPIX(pimage, (((j-1)*sx+i)<<1));
       }
-      j=sx/3;
-      j=j-j%4;
-      for (i=0;i<sy;i++) {
-	INVPIX(pimage, ((i*sx+j)<<1));
+      i=sx/3;
+      i=i-i%2;
+      for (j=0;j<sy;j++) {
+	INVPIX(pimage, ((j*sx+i)<<1));
       }
-      j=2*sx/3;
-      j=j-j%4;
-      for (i=0;i<sy;i++) {
-	INVPIX(pimage, ((i*sx+j)<<1));
+      i=(2*sx)/3;
+      i=i-i%2;
+      for (j=0;j<sy;j++) {
+	INVPIX(pimage, ((j*sx+i)<<1));
       }
     }
     else {
       j=sy/3;
-      j=j-j%4;
       for (i=0;i<sx;i+=2) {
 	REPLPIX(pimage, block, ((j*sx+i)<<1));
 	REPLPIX(pimage, block, (((j-1)*sx+i)<<1));
       }
-      j=2*sy/3;
-      j=j-j%4;
+      j=(2*sy)/3;
       for (i=0;i<sx;i+=2) {
 	REPLPIX(pimage, block, ((j*sx+i)<<1));
 	REPLPIX(pimage, block, (((j-1)*sx+i)<<1));
       }
-      j=sx/3;
-      j=j-j%4;
-      for (i=0;i<sy;i++) {
-	REPLPIX(pimage, block, ((i*sx+j)<<1));
+      i=sx/3;
+      i=i-i%2;
+      for (j=0;j<sy;j++) {
+	REPLPIX(pimage, block, ((j*sx+i)<<1));
       }
-      j=2*sx/3;
-      j=j-j%4;
-      for (i=0;i<sy;i++) {
-	REPLPIX(pimage, block, ((i*sx+j)<<1));
+      i=(2*sx)/3;
+      i=i-i%2;
+      for (j=0;j<sy;j++) {
+	REPLPIX(pimage, block, ((j*sx+i)<<1));
       }
-      
     }
     break;
   case OVERLAY_PATTERN_IMAGE:

@@ -5,6 +5,7 @@ Changes towards version 1.2.0
    Apr 7, 2005, by Damien Douxchamps
    - added -Wall as compiler option; cleaned up what was reported
    - added 'case' statements for some signed formats
+   - upgraded and fixed the pattern overlay
 
    Apr 6, 2005, by Damien Douxchamps
    - services cleanup: removed mode, format and f7 members from the buffer_t
