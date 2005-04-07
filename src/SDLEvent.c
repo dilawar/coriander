@@ -20,14 +20,6 @@
 
 #ifdef HAVE_SDLLIB
 
-//extern GtkWidget *main_window;
-//extern watchthread_info_t watchthread_info;
-//extern camera_t* camera;
-//extern int WM_cancel_display;
-//extern cursor_info_t cursor_info;
-//extern xvinfo_t xvinfo;
-//extern whitebal_data_t* whitebal_data;
-
 // This should be probed automatically.
 // This limitation might come from the video RAM.
 #define MAX_DISPLAY_WIDTH  8192

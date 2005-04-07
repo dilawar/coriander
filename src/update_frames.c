@@ -562,7 +562,7 @@ UpdateServiceTree(void)
   GtkTreeModel *model;
   GtkTreeStore *store;
   GtkTreeView *view;
-  GtkTreeIter first_cam, cam_leaf, first_service, service_leaf;
+  GtkTreeIter cam_leaf, service_leaf;
 
   view  = (GtkTreeView*)lookup_widget(main_window,"service_tree");
   model = gtk_tree_view_get_model(view);

@@ -404,7 +404,7 @@ BuildSeviceTreeFrame(void)
   GtkCellRenderer   *renderer;
   GtkTreeView       *tree_view;
   GtkTreeStore      *treestore;
-  GtkTreeIter       toplevel, child;
+  GtkTreeIter       toplevel;
   GtkTreeModel      *model;
 
   //fprintf(stderr,"Start building tree...");

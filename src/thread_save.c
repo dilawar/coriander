@@ -192,6 +192,7 @@ isColor(int buffer_color_mode)
   case COLOR_FORMAT7_YUV444:
   case COLOR_FORMAT7_RGB8:
   case COLOR_FORMAT7_RGB16:
+  case COLOR_FORMAT7_RGB16S:
     return(TRUE);
     break;
   default:
@@ -220,6 +221,7 @@ needsConversionForPVN(int buffer_color_mode)
   case COLOR_FORMAT7_RGB16:
   case COLOR_FORMAT7_RAW8:
   case COLOR_FORMAT7_RAW16:
+  case COLOR_FORMAT7_RGB16S:
     return(FALSE);
     break;
   default:

@@ -23,8 +23,6 @@ dnl Add the languages which your application supports here.
 ALL_LINGUAS=""
 AM_GLIB_GNU_GETTEXT
 
-dnl CORIANDER CHECKING FUNCTIONS
-
 AC_DEFUN([AC_CHECK_LIBDC],[
 	AC_MSG_CHECKING(for libdc1394)
  	AC_TRY_CPP([
@@ -333,7 +331,6 @@ AC_DEFUN([AC_CHECK_FFMPEG],[
 
 # CUSTOM CHECKS    ###########################################################
 AC_CHECK_LFS
-dnl AC_CHECK_GDK_PIXBUF
 AC_CHECK_XV
 AC_CHECK_MMX
 AC_CHECK_SSE
@@ -346,10 +343,12 @@ AC_CHECK_LIBDC_VERSION_FUNCTION
 AC_CHECK_FTPLIB
 AC_CHECK_SDLLIB
 AC_CHECK_FFMPEG
-
+dnl deprecated:
+dnl AC_CHECK_GDK_PIXBUF
 
 AC_OUTPUT([
 Makefile
+macros/Makefile
 src/Makefile
 po/Makefile.in
 ])
