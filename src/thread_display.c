@@ -667,7 +667,7 @@ DisplayThreadCheckParams(chain_t *display_service)
 
   displaythread_info_t *info;
   int first_time=0;
-  int size_change;
+  //int size_change;
   int prev_image_size[2];
   int prev_overlay_size[2];
   info=(displaythread_info_t*)display_service->data;
@@ -686,19 +686,21 @@ DisplayThreadCheckParams(chain_t *display_service)
 	  display_service->current_buffer->bytes_per_frame,
 	  display_service->current_buffer->buffer_color_mode);
   */
-  // if some parameters changed, we need to re-allocate the local buffers and restart the display
+  // if some parameters changed, we need to restart the display
   if ((display_service->current_buffer->width!=display_service->local_param_copy.width)||
-      (display_service->current_buffer->height!=display_service->local_param_copy.height)||
-      (display_service->current_buffer->bytes_per_frame!=display_service->local_param_copy.bytes_per_frame)||
-      (display_service->current_buffer->buffer_color_mode!=display_service->local_param_copy.buffer_color_mode)||
+      (display_service->current_buffer->height!=display_service->local_param_copy.height)//||
+      //only a change in the image size requires to restart the display
+      //(display_service->current_buffer->buffer_color_mode!=display_service->local_param_copy.buffer_color_mode)||
+      //(display_service->current_buffer->bytes_per_frame!=display_service->local_param_copy.bytes_per_frame)||
       // check bayer and stereo decoding
-      (display_service->current_buffer->stereo_decoding!=display_service->local_param_copy.stereo_decoding)||
-      (display_service->current_buffer->bayer!=display_service->local_param_copy.bayer)
+      //(display_service->current_buffer->stereo_decoding!=display_service->local_param_copy.stereo_decoding)||
+      //(display_service->current_buffer->bayer!=display_service->local_param_copy.bayer)
       ) {
 
+    fprintf(stderr,"Parameters changed...\n");
     first_time=((display_service->local_param_copy.width==-1)&&(display_service->current_buffer->width!=-1));
-    size_change=((display_service->current_buffer->width!=display_service->local_param_copy.width)||
-		 (display_service->current_buffer->height!=display_service->local_param_copy.height));
+    //size_change=((display_service->current_buffer->width!=display_service->local_param_copy.width)||
+    //		 (display_service->current_buffer->height!=display_service->local_param_copy.height));
     
     prev_image_size[0]=display_service->local_param_copy.width;
     prev_image_size[1]=display_service->local_param_copy.height;
@@ -714,7 +716,7 @@ DisplayThreadCheckParams(chain_t *display_service)
     
     // DO SOMETHING
     // if the width is not -1, that is if some image has already reached the thread and the size has changed
-    if ((display_service->local_param_copy.width!=-1)&&(size_change!=0)) {
+    if (display_service->local_param_copy.width!=-1) { //&&(size_change!=0)) {
       if (first_time) {
 	SDLInit(display_service);
       } else {
@@ -723,11 +725,14 @@ DisplayThreadCheckParams(chain_t *display_service)
 	prev_overlay_size[0]=info->sdlvideorect.w;
 	prev_overlay_size[1]=info->sdlvideorect.h;
 	watchthread_info.draw=0;
+	//SDLEventStopThread(display_service);
 	SDLResizeDisplay(display_service,
 			 display_service->current_buffer->width*prev_overlay_size[0]/prev_image_size[0],
 			 display_service->current_buffer->height*prev_overlay_size[1]/prev_image_size[1]);
+	//SDLEventStartThread(display_service);
       }
     }
+    fprintf(stderr,"SDL updated.\n");
   }
 
 }

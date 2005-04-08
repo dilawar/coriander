@@ -318,11 +318,11 @@ IsoThread(void* arg)
       if ((info->receive_method == RECEIVE_METHOD_VIDEO1394)&&(dma_ok==DC1394_SUCCESS))
 	dc1394_dma_done_with_buffer(&info->capture);
     
+      //fprintf(stderr,"Buffer soon rolled in ISO\n");
       pthread_mutex_unlock(&iso_service->mutex_data);
     }
     pthread_mutex_lock(&iso_service->mutex_data);
     RollBuffers(iso_service);
-    //printf("Buffers rolled in ISO\n");
     pthread_mutex_unlock(&iso_service->mutex_data);
     pthread_cleanup_pop(0);
   }
@@ -480,7 +480,6 @@ IsoThreadCheckParams(chain_t *iso_service)
     temp=-1;
   }
   SetColorMode(iso_service->camera->misc_info.mode,iso_service->current_buffer,temp);
-
   /*
   fprintf(stderr,"S:[%d %d] BPF:%lli ColMode:%d\n",
 	  iso_service->current_buffer->width, iso_service->current_buffer->height,

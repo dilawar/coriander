@@ -148,6 +148,7 @@ OnKeyPressed(chain_t *display_service, int key, int mod)
   switch (key) {
   case SDLK_n:
     // set display to normal size
+    fprintf(stderr,"Gaa! resize called!\n");
     SDLResizeDisplay(display_service, display_service->current_buffer->width, display_service->current_buffer->height);
     break;
   case SDLK_f:
@@ -362,6 +363,9 @@ SDLResizeDisplay(chain_t *display_service, int width, int height)
     info->sdlvideorect.h = height;
   }
 
+  info->sdlvideorect.x = 0;
+  info->sdlvideorect.y = 0;
+
   // maximize display size to XV size if necessary
   if ((xvinfo.max_width!=-1)&&(xvinfo.max_height!=-1)) {
     if (info->sdlvideorect.w>xvinfo.max_width) {
@@ -372,32 +376,57 @@ SDLResizeDisplay(chain_t *display_service, int width, int height)
     }
   }
 
+  fprintf(stderr,"SDLResize: prev size: [%d %d], videorect size [%d %d]\n",prev_width, prev_height, info->sdlvideorect.w, info->sdlvideorect.h);
 
   // if size change is effective, re-set SDL stuff
   if ((prev_width!=info->sdlvideorect.w)||(prev_height!=info->sdlvideorect.h)) {
 
     // Free overlay & video surface
+    fprintf(stderr,"Freeing overlay...");
     SDL_FreeYUVOverlay(info->sdloverlay);
+    fprintf(stderr,"and video...");
     SDL_FreeSurface(info->sdlvideo);
-    
+    fprintf(stderr,"done\n");
+
     // new video mode
-    info->sdlvideo = SDL_SetVideoMode(info->sdlvideorect.w, info->sdlvideorect.h,
-				      info->sdlbpp, info->sdlflags);
+    fprintf(stderr,"create new video mode with size [%d %d], bpp %d and flags 0x%x...\n",info->sdlvideorect.w, info->sdlvideorect.h, info->sdlbpp, info->sdlflags);
+    //info->sdlbpp = SDL_VideoModeOK(info->sdlvideorect.w, info->sdlvideorect.h, info->sdlbpp, info->sdlflags); // not necessary
+    info->sdlvideo = SDL_SetVideoMode(info->sdlvideorect.w, info->sdlvideorect.h, info->sdlbpp, info->sdlflags); // THIS LINE SOMETIME SUCKS WHEN CHANGING FORMAT W/H
     if (info->sdlvideo == NULL) {
       MainError(SDL_GetError());
       SDL_Quit();
       return;
     }
     
+    //if (SDL_SetColorKey(info->sdlvideo, SDL_SRCCOLORKEY, 0x0) < 0 ) {
+    //  MainError(SDL_GetError());
+    //}
+    
+    fprintf(stderr,"create overlay with size [%d %d]...\n",display_service->current_buffer->width,display_service->current_buffer->height);
+    
     // Create YUV Overlay  
-    info->sdloverlay = SDL_CreateYUVOverlay(display_service->current_buffer->width,
-					    display_service->current_buffer->height,
-					    SDL_YUY2_OVERLAY, info->sdlvideo);
+    switch(preferences.overlay_byte_order) {
+    case OVERLAY_BYTE_ORDER_YUYV:
+      info->sdloverlay = SDL_CreateYUVOverlay(display_service->current_buffer->width,
+					      display_service->current_buffer->height,
+					      SDL_YUY2_OVERLAY,info->sdlvideo);
+      break;
+    case OVERLAY_BYTE_ORDER_UYVY:
+      info->sdloverlay = SDL_CreateYUVOverlay(display_service->current_buffer->width,
+					      display_service->current_buffer->height,
+					      SDL_UYVY_OVERLAY,info->sdlvideo);
+      break;
+    default:
+      fprintf(stderr,"Invalid overlay byte order\n");
+      break;
+    }
     if (info->sdloverlay==NULL) {
       MainError(SDL_GetError());
       SDL_Quit();
       return;
     }
+    
+    fprintf(stderr,"Update completed\n");
 
   }
   
