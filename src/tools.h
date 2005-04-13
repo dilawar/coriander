@@ -62,15 +62,6 @@ void
 SetChannels(void);
 
 void
-MainError(const char *string);
-
-void
-MainStatus(const char *string);
-
-void
-MessageBox(gchar *message);
-
-void
 SetScaleSensitivity(GtkWidget* widget, int feature, dc1394bool_t sense);
 
 void

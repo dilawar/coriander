@@ -440,4 +440,8 @@ void
 on_save_to_stdout_toggled              (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
 
+void
+on_error_popup_button_activate         (GtkButton       *button,
+                                        gpointer         user_data);
+
 #endif // __CALLBACKS_H__

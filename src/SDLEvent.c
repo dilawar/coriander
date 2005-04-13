@@ -389,7 +389,7 @@ SDLResizeDisplay(chain_t *display_service, int width, int height)
     fprintf(stderr,"done\n");
 
     // new video mode
-    fprintf(stderr,"create new video mode with size [%d %d], bpp %d and flags 0x%x...\n",info->sdlvideorect.w, info->sdlvideorect.h, info->sdlbpp, info->sdlflags);
+    fprintf(stderr,"create new video mode with size [%d %d], bpp %d and flags 0x%lx...\n",info->sdlvideorect.w, info->sdlvideorect.h, info->sdlbpp, info->sdlflags);
     //info->sdlbpp = SDL_VideoModeOK(info->sdlvideorect.w, info->sdlvideorect.h, info->sdlbpp, info->sdlflags); // not necessary
     info->sdlvideo = SDL_SetVideoMode(info->sdlvideorect.w, info->sdlvideorect.h, info->sdlbpp, info->sdlflags); // THIS LINE SOMETIME SUCKS WHEN CHANGING FORMAT W/H
     if (info->sdlvideo == NULL) {

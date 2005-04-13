@@ -549,63 +549,6 @@ SetChannels(void)
   }
 }
 
-void MainError(const char *string)
-{
-  char *temp;
-  temp=(char*)malloc(STRING_SIZE*sizeof(char));
-
-  sprintf(temp,"ERROR: %s\n",string);
-  if (main_window !=NULL) {
-    gtk_text_buffer_set_text(gtk_text_view_get_buffer(GTK_TEXT_VIEW(lookup_widget(main_window,"main_status"))),string, -1);
-  }
-  free(temp);
-}
-
-void MainStatus(const char *string)
-{
-  char *temp;
-  temp=(char*)malloc(STRING_SIZE*sizeof(char));
-  sprintf(temp,"%s\n",string);
-  if (main_window !=NULL) {
-    gtk_text_buffer_set_text(gtk_text_view_get_buffer(GTK_TEXT_VIEW(lookup_widget(main_window,"main_status"))),string, -1);
-  }
-  free(temp);
-}
-
-static void MessageBox_clicked (GtkWidget *widget, gpointer data)
-{
-    gtk_widget_destroy( GTK_WIDGET(data));
-}
-
-static void MessageBox_destroy (GtkWidget *widget, gpointer data)
-{
-    gtk_grab_remove (GTK_WIDGET(widget));
-}
-
-void MessageBox( gchar *message)
-{
-  static GtkWidget *label;
-  GtkWidget *button;
-  GtkWidget *dialog_window;
-  
-  dialog_window = gtk_dialog_new();
-  g_signal_connect( (gpointer)dialog_window, "destroy", G_CALLBACK (MessageBox_destroy), dialog_window);
-  gtk_window_set_title (GTK_WINDOW(dialog_window), "Coriander Message");
-  gtk_container_border_width (GTK_CONTAINER(dialog_window), 5);
-  label = gtk_label_new (message);
-  gtk_misc_set_padding (GTK_MISC(label), 10, 10);
-  gtk_box_pack_start (GTK_BOX(GTK_DIALOG(dialog_window)->vbox), label, TRUE, TRUE, 0);
-  gtk_widget_show (label);
-  button = gtk_button_new_with_label ("OK");
-  g_signal_connect ((gpointer) button, "clicked", G_CALLBACK (MessageBox_clicked), dialog_window);
-  GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
-  gtk_box_pack_start (GTK_BOX(GTK_DIALOG(dialog_window)->action_area), button, TRUE, TRUE, 0);
-  gtk_widget_grab_default (button);
-  gtk_widget_show (button);
-  gtk_widget_show (dialog_window);
-  gtk_grab_add (dialog_window);
-}
-
 void
 SetScaleSensitivity(GtkWidget* widget, int feature, dc1394bool_t sense)
 { 

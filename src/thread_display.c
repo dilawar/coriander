@@ -243,7 +243,7 @@ SDLInit(chain_t *display_service)
 
   // Initialize the SDL library (video subsystem)
   if ( SDL_Init(SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE) == -1) {
-    fprintf(stderr,"Couldn't initialize SDL video subsystem\n");
+    ErrorPopup("Couldn't initialize SDL video subsystem");
     return(0);
   }
   
@@ -275,12 +275,12 @@ SDLInit(chain_t *display_service)
   modes=SDL_ListModes(NULL,info->sdlflags);
   if (modes!=(SDL_Rect**)-1) {
     // not all resolutions are OK for this video card. For safety we switch to software accel
-    fprintf(stderr,"No SDL mode available with hardware accel. Trying without HWSURFACE\n");
+    MainStatus("No SDL mode available with hardware accel. Trying without HWSURFACE");
     info->sdlflags&= ~SDL_HWSURFACE;
     info->sdlflags&= ~SDL_HWACCEL;
     modes=SDL_ListModes(NULL,info->sdlflags);
     if (modes!=(SDL_Rect**)-1) {
-      fprintf(stderr,"Still no modes available. Can't start SDL!\n");
+      ErrorPopup("No video modes available, even without hardware acceleration. Can't start SDL!");
       SDL_Quit();
       return(0);
     }

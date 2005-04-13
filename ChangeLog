@@ -2,6 +2,9 @@ Coriander, (c) 2000-2005 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 1.2.0
 	
+   Apr 13, 2005, by Damien Douxchamps
+   - added an ErrorPopup function to display popup warnings. Not used yet.
+	
    Apr 11, 2005, by Damien Douxchamps
    - added balloons all over the place.
    - fixed minor GUI aspects

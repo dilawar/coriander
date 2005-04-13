@@ -1570,6 +1570,8 @@ on_save_filename_subentry_changed      (GtkEditable     *editable,
   //BuildSaveModeMenu();
   UpdateSaveFilenameFrame();
 
+  //if (camera->prefs.save_format==SAVE_FORMAT_PPMPGM)
+  //ErrorPopup("Not supported with the new Gnome2 interface");
 }
 
 
@@ -1639,5 +1641,18 @@ on_save_to_stdout_toggled              (GtkToggleButton *togglebutton,
   gnome_config_set_int("coriander/save/save_to_stdout",camera->prefs.save_to_stdout);
   gnome_config_sync();
   UpdatePrefsSaveFrame();
+}
+
+
+void
+on_error_popup_button_activate         (GtkButton       *button,
+                                        gpointer         user_data)
+{
+  // close popup window
+  // (automatic)
+
+  // reset main window sensitiveness
+  gtk_widget_set_sensitive(main_window,1);
+
 }
 

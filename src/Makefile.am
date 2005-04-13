@@ -8,6 +8,7 @@ coriander_SOURCES = \
 	main.c coriander.h \
 	support.c support.h \
 	interface.c interface.h \
+	error.c error.h \
 	definitions.c definitions.h \
 	camera.c camera.h \
 	thread_base.c thread_base.h \

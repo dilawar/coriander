@@ -882,9 +882,9 @@ SaveThread(void* arg)
 	      case SAVE_FORMAT_PPMPGM:
 	      case SAVE_FORMAT_XPM:
 	      case SAVE_FORMAT_EIM:
-		convert_to_rgb(save_service->current_buffer, info->buffer);
 		// V20***
-		/*im=gdk_imlib_create_image_from_data(info->buffer,NULL, save_service->current_buffer->width, save_service->current_buffer->height); // V20***
+		/*convert_to_rgb(save_service->current_buffer, info->buffer);
+		im=gdk_imlib_create_image_from_data(info->buffer,NULL, save_service->current_buffer->width, save_service->current_buffer->height); // V20***
 		if (im != NULL) {
 		  if (gdk_imlib_save_image(im, filename_out, NULL)==0) {
 		    MainError("Can't save image with Imlib!");

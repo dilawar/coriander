@@ -78,6 +78,7 @@
 
 #include "video_encode.h"
 
+#include "error.h"
 #include "build_frames.h"
 #include "build_menus.h"
 #include "build_ranges.h"
