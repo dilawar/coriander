@@ -2329,7 +2329,7 @@ create_main_window (void)
   gtk_widget_show (overlay_file_subentry);
   gtk_tooltips_set_tip (tooltips, overlay_file_subentry, _("NOT WORKING YET"), NULL);
 
-  label160 = gtk_label_new (_("<b>Overlay</b>"));
+  label160 = gtk_label_new (_("<b>Pattern overlay</b>"));
   gtk_widget_set_name (label160, "label160");
   gtk_widget_show (label160);
   gtk_frame_set_label_widget (GTK_FRAME (frame11), label160);

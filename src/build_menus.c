@@ -907,23 +907,28 @@ BuildSaveFormatMenu(void)
 		      G_CALLBACK (UpdateSaveFilenameFrame),
 		      (void*)0);
   
-  // 
+  // not available without gdkimlib
+  /* 
   glade_menuitem = gtk_menu_item_new_with_label (_("png"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
   g_signal_connect ((gpointer) glade_menuitem, "activate",
 		      G_CALLBACK (on_save_format_menu_activate),
 		      (int*)SAVE_FORMAT_PNG);
-  
-  // 
+  */
+
+#ifdef HAVE_FFMPEG
+  // only available with ffmpeg since we don;t have imlib anymore
   glade_menuitem = gtk_menu_item_new_with_label (_("jpeg"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
   g_signal_connect ((gpointer) glade_menuitem, "activate",
 		      G_CALLBACK (on_save_format_menu_activate),
 		      (int*)SAVE_FORMAT_JPEG);
-  
-  // 
+#endif  
+
+  // not available without gdkimlib
+  /* 
   glade_menuitem = gtk_menu_item_new_with_label (_("tiff"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
@@ -954,6 +959,7 @@ BuildSaveFormatMenu(void)
   g_signal_connect ((gpointer) glade_menuitem, "activate",
 		      G_CALLBACK (on_save_format_menu_activate),
 		      (int*)SAVE_FORMAT_EIM);
+  */
   
   // 
   glade_menuitem = gtk_menu_item_new_with_label (_("raw (still)"));

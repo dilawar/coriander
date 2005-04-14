@@ -105,6 +105,9 @@ UpdatePrefsSaveFrame(void)
   gtk_widget_set_sensitive(lookup_widget(main_window,"save_append_menu"), !camera->prefs.save_to_stdout);
   gtk_widget_set_sensitive(lookup_widget(main_window,"save_filename_entry"), !camera->prefs.save_to_stdout);
   gtk_widget_set_sensitive(lookup_widget(main_window,"save_to_dir"), !camera->prefs.save_to_stdout);
+
+  // not working yet
+  gtk_widget_set_sensitive(lookup_widget(main_window,"grab_now_frame"), 0);
 }
 
 
