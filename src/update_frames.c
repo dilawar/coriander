@@ -791,12 +791,10 @@ UpdateSaveFilenameFrame(void)
 
   // update the filename string
   switch (camera->prefs.save_format) {
-  case SAVE_FORMAT_PNG:
+#ifdef HAVE_FFMPEG
   case SAVE_FORMAT_JPEG:
-  case SAVE_FORMAT_TIFF:
+#endif
   case SAVE_FORMAT_PPMPGM:
-  case SAVE_FORMAT_XPM:
-  case SAVE_FORMAT_EIM:
   case SAVE_FORMAT_RAW:
     // first handle the case of save-to-dir
     if (camera->prefs.save_to_dir==0) {

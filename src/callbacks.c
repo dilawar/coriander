@@ -1534,32 +1534,19 @@ on_save_filename_subentry_changed      (GtkEditable     *editable,
   if (strncasecmp(camera->prefs.save_filename_ext, "pvn",3)==0) {
     camera->prefs.save_format=SAVE_FORMAT_PVN;
   }
-  else if ((strncasecmp(camera->prefs.save_filename_ext, "jpg",3)==0)||
-	   (strncasecmp(camera->prefs.save_filename_ext, "jpeg",4)==0)) {
-    camera->prefs.save_format=SAVE_FORMAT_JPEG;
-  }
-  else if ((strncasecmp(camera->prefs.save_filename_ext, "tif",3)==0)||
-	   (strncasecmp(camera->prefs.save_filename_ext, "tiff",4)==0)) {
-    camera->prefs.save_format=SAVE_FORMAT_TIFF;
-  }
 #ifdef HAVE_FFMPEG
   else if ((strncasecmp(camera->prefs.save_filename_ext, "mpg",3)==0)||
 	   (strncasecmp(camera->prefs.save_filename_ext, "mpeg",4)==0)) {
     camera->prefs.save_format=SAVE_FORMAT_MPEG;
   }
+  else if ((strncasecmp(camera->prefs.save_filename_ext, "jpg",3)==0)||
+	   (strncasecmp(camera->prefs.save_filename_ext, "jpeg",4)==0)) {
+    camera->prefs.save_format=SAVE_FORMAT_JPEG;
+  }
 #endif
   else if ((strncasecmp(camera->prefs.save_filename_ext, "pgm",3)==0)||
 	   (strncasecmp(camera->prefs.save_filename_ext, "ppm",3)==0)) {
     camera->prefs.save_format=SAVE_FORMAT_PPMPGM;
-  }
-  else if (strncasecmp(camera->prefs.save_filename_ext, "png",3)==0) {
-    camera->prefs.save_format=SAVE_FORMAT_PNG;
-  }
-  else if (strncasecmp(camera->prefs.save_filename_ext, "eim",3)==0) {
-    camera->prefs.save_format=SAVE_FORMAT_EIM;
-  }
-  else if (strncasecmp(camera->prefs.save_filename_ext, "xpm",3)==0) {
-    camera->prefs.save_format=SAVE_FORMAT_XPM;
   }
   else if (strncasecmp(camera->prefs.save_filename_ext, "raw",3)==0) {
     // don't switch to still if we were in video mode

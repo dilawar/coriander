@@ -226,7 +226,7 @@ FreeChain(chain_t* chain)
 void
 convert_to_rgb(buffer_t *buffer, unsigned char *dest)
 {
-  switch(buffer->buffer_color_mode) {
+  switch(buffer->color_mode) {
   case COLOR_FORMAT7_MONO8:
   case COLOR_FORMAT7_RAW8:
     y2rgb(buffer->image,dest,buffer->width*buffer->height);
@@ -264,7 +264,7 @@ InitBuffer(buffer_t *buffer)
   buffer->bpp=-1;
   buffer->bayer_pattern=-1; //COLOR_FILTER_FORMAT7_BGGR
   buffer->stereo_decoding=-1;
-  buffer->buffer_color_mode=-1;
+  buffer->color_mode=-1;
   buffer->image=NULL;
   buffer->buffer_image_bytes=-1;
   buffer->buffer_size=0;

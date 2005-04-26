@@ -2,6 +2,12 @@ Coriander, (c) 2000-2005 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 1.2.0
 	
+   Apr 26, 2005, by Damien Douxchamps
+   - removed references to TIFF, PNG, EIM and XPM formats. Fixed related bugs
+     with the format menu (which was not working at all)
+   - added PPM/PGM support using custom code
+   - fixed an important bug in the save thread: missing fd=NULL after fclose(fd)
+
    Apr 14, 2005, by Damien Douxchamps
    - disabled what is not working yet and what is not working anymore
      (tiff, png, ...)

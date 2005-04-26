@@ -321,6 +321,7 @@ IsoThread(void* arg)
       //fprintf(stderr,"Buffer soon rolled in ISO\n");
       pthread_mutex_unlock(&iso_service->mutex_data);
     }
+    //fprintf(stderr,"got frame %.7f\n",iso_service->fps);
     pthread_mutex_lock(&iso_service->mutex_data);
     RollBuffers(iso_service);
     pthread_mutex_unlock(&iso_service->mutex_data);
@@ -484,7 +485,7 @@ IsoThreadCheckParams(chain_t *iso_service)
   fprintf(stderr,"S:[%d %d] BPF:%lli ColMode:%d\n",
 	  iso_service->current_buffer->width, iso_service->current_buffer->height,
 	  iso_service->current_buffer->bytes_per_frame,
-	  iso_service->current_buffer->buffer_color_mode);
+	  iso_service->current_buffer->color_mode);
   */
   pthread_mutex_unlock(&iso_service->camera->uimutex);
 
@@ -535,7 +536,7 @@ SetColorMode(int mode, buffer_t *buffer, int f7_color)
   if (buffer->bayer==NO_BAYER_DECODING) {
     switch(mode) {
     case MODE_160x120_YUV444:
-      buffer->buffer_color_mode=COLOR_FORMAT7_YUV444;
+      buffer->color_mode=COLOR_FORMAT7_YUV444;
       bpp=3;
       break;
     case MODE_320x240_YUV422:
@@ -545,16 +546,16 @@ SetColorMode(int mode, buffer_t *buffer, int f7_color)
     case MODE_1280x960_YUV422:
     case MODE_1600x1200_YUV422:
       if (buffer->stereo_decoding!=NO_STEREO_DECODING) {
-	buffer->buffer_color_mode=COLOR_FORMAT7_MONO8;
+	buffer->color_mode=COLOR_FORMAT7_MONO8;
 	bpp=1;
       }
       else {
-	buffer->buffer_color_mode=COLOR_FORMAT7_YUV422;
+	buffer->color_mode=COLOR_FORMAT7_YUV422;
 	bpp=2;
       }
       break;
     case MODE_640x480_YUV411:
-      buffer->buffer_color_mode=COLOR_FORMAT7_YUV411;
+      buffer->color_mode=COLOR_FORMAT7_YUV411;
       bpp=1.5;
       break;
     case MODE_640x480_RGB:
@@ -562,7 +563,7 @@ SetColorMode(int mode, buffer_t *buffer, int f7_color)
     case MODE_1024x768_RGB:
     case MODE_1280x960_RGB:
     case MODE_1600x1200_RGB:
-      buffer->buffer_color_mode=COLOR_FORMAT7_RGB8;
+      buffer->color_mode=COLOR_FORMAT7_RGB8;
       bpp=3;
       break;
     case MODE_640x480_MONO:
@@ -570,7 +571,7 @@ SetColorMode(int mode, buffer_t *buffer, int f7_color)
     case MODE_1024x768_MONO:
     case MODE_1280x960_MONO:
     case MODE_1600x1200_MONO:
-      buffer->buffer_color_mode=COLOR_FORMAT7_MONO8;
+      buffer->color_mode=COLOR_FORMAT7_MONO8;
       bpp=1;
       break;
     case MODE_640x480_MONO16:
@@ -579,11 +580,11 @@ SetColorMode(int mode, buffer_t *buffer, int f7_color)
     case MODE_1280x960_MONO16:
     case MODE_1600x1200_MONO16:
       if (buffer->stereo_decoding!=NO_STEREO_DECODING) {
-	buffer->buffer_color_mode=COLOR_FORMAT7_MONO8;
+	buffer->color_mode=COLOR_FORMAT7_MONO8;
 	bpp=1;
       }
       else {
-	buffer->buffer_color_mode=COLOR_FORMAT7_MONO16;
+	buffer->color_mode=COLOR_FORMAT7_MONO16;
 	bpp=2;
       }
       break;
@@ -598,12 +599,12 @@ SetColorMode(int mode, buffer_t *buffer, int f7_color)
       if (f7_color==-1)
 	fprintf(stderr,"ERROR: format7 asked but color mode is -1\n");
       if ((f7_color==COLOR_FORMAT7_MONO16)&&(buffer->stereo_decoding!=NO_STEREO_DECODING)) {
-	buffer->buffer_color_mode=COLOR_FORMAT7_MONO8;
+	buffer->color_mode=COLOR_FORMAT7_MONO8;
 	bpp=1;
       }
       else {
-	buffer->buffer_color_mode=f7_color;
-	switch (buffer->buffer_color_mode) {
+	buffer->color_mode=f7_color;
+	switch (buffer->color_mode) {
 	case COLOR_FORMAT7_MONO8:
 	case COLOR_FORMAT7_RAW8:
 	  bpp=1;
@@ -631,7 +632,7 @@ SetColorMode(int mode, buffer_t *buffer, int f7_color)
     }
   }
   else  { // we force RGB mode
-    buffer->buffer_color_mode=COLOR_FORMAT7_RGB8;
+    buffer->color_mode=COLOR_FORMAT7_RGB8;
     bpp=3;
   }
 
@@ -640,5 +641,5 @@ SetColorMode(int mode, buffer_t *buffer, int f7_color)
 
   buffer->buffer_image_bytes=(int)((float)(buffer->width*buffer->height)*bpp);
 
-  //fprintf(stderr,"%d\n",buffer->buffer_color_mode);
+  //fprintf(stderr,"%d\n",buffer->color_mode);
 }

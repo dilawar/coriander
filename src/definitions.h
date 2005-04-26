@@ -207,7 +207,7 @@ typedef struct _Buffer_T
   int bayer_pattern;
   stereo_decoding_t stereo_decoding;
 
-  int buffer_color_mode;
+  int color_mode;
   unsigned long long int buffer_image_bytes; // this is the true size of the image, without padding.
 
   unsigned long long int buffer_size; // this is the allocated memory space size of the image field

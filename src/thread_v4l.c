@@ -150,8 +150,8 @@ V4lThread(void* arg)
 	
 	/* IF we have mono data then set V4L for mono(grey) output */
 	/* Only do this ONCE before writing the first frame */
-	if (((v4l_service->current_buffer->buffer_color_mode == COLOR_FORMAT7_MONO8) ||
-	     (v4l_service->current_buffer->buffer_color_mode == COLOR_FORMAT7_RAW8)) && v4l_service->processed_frames==0) {
+	if (((v4l_service->current_buffer->color_mode == COLOR_FORMAT7_MONO8) ||
+	     (v4l_service->current_buffer->color_mode == COLOR_FORMAT7_RAW8)) && v4l_service->processed_frames==0) {
 	  MainStatus("Setting V4L device to GREY palette");
 	  if (ioctl(info->v4l_dev,VIDIOCGPICT,&p) < 0) 
 	    MainError("ioctl(VIDIOCGPICT) error");
@@ -163,8 +163,8 @@ V4lThread(void* arg)
 	}
 
 	// Convert to RGB unless we are using direct GREY palette
-	if ((v4l_service->current_buffer->buffer_color_mode != COLOR_FORMAT7_MONO8) ||
-	    (v4l_service->current_buffer->buffer_color_mode != COLOR_FORMAT7_RAW8)) {
+	if ((v4l_service->current_buffer->color_mode != COLOR_FORMAT7_MONO8) ||
+	    (v4l_service->current_buffer->color_mode != COLOR_FORMAT7_RAW8)) {
 	  convert_to_rgb(v4l_service->current_buffer, info->v4l_buffer);
 	  swap_rb(info->v4l_buffer, v4l_service->current_buffer->width*v4l_service->current_buffer->height*3);
 	}
@@ -172,8 +172,8 @@ V4lThread(void* arg)
 	if (v4l_service->current_buffer->width!=-1) {
 	  if (skip_counter>=(info->period-1)) {
 	    skip_counter=0;
-	    if ((v4l_service->current_buffer->buffer_color_mode != COLOR_FORMAT7_MONO8) ||
-		(v4l_service->current_buffer->buffer_color_mode != COLOR_FORMAT7_RAW8))
+	    if ((v4l_service->current_buffer->color_mode != COLOR_FORMAT7_MONO8) ||
+		(v4l_service->current_buffer->color_mode != COLOR_FORMAT7_RAW8))
 	      write(info->v4l_dev,info->v4l_buffer,v4l_service->current_buffer->width*v4l_service->current_buffer->height*3);
 	    else
 	      write(info->v4l_dev,v4l_service->current_buffer->image,v4l_service->current_buffer->width*v4l_service->current_buffer->height);
@@ -261,7 +261,7 @@ V4lThreadCheckParams(chain_t *v4l_service)
   if ((v4l_service->current_buffer->width!=v4l_service->local_param_copy.width)||
       (v4l_service->current_buffer->height!=v4l_service->local_param_copy.height)||
       (v4l_service->current_buffer->bytes_per_frame!=v4l_service->local_param_copy.bytes_per_frame)||
-      (v4l_service->current_buffer->buffer_color_mode!=v4l_service->local_param_copy.buffer_color_mode)||
+      (v4l_service->current_buffer->color_mode!=v4l_service->local_param_copy.color_mode)||
       // check bayer and stereo decoding
       (v4l_service->current_buffer->stereo_decoding!=v4l_service->local_param_copy.stereo_decoding)||
       (v4l_service->current_buffer->bayer!=v4l_service->local_param_copy.bayer)
@@ -280,7 +280,7 @@ V4lThreadCheckParams(chain_t *v4l_service)
     v4l_service->local_param_copy.bytes_per_frame=v4l_service->current_buffer->bytes_per_frame;
     v4l_service->local_param_copy.stereo_decoding=v4l_service->current_buffer->stereo_decoding;
     v4l_service->local_param_copy.bayer=v4l_service->current_buffer->bayer;
-    v4l_service->local_param_copy.buffer_color_mode=v4l_service->current_buffer->buffer_color_mode;
+    v4l_service->local_param_copy.color_mode=v4l_service->current_buffer->color_mode;
     v4l_service->local_param_copy.buffer_image_bytes=v4l_service->current_buffer->buffer_image_bytes;
     
     // DO SOMETHING

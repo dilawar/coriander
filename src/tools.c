@@ -910,6 +910,8 @@ main_timeout_handler(gpointer* port_num) {
   // the main_timeout_ticker can be consulted.
   main_timeout_ticker=(main_timeout_ticker+10)%1000;
 
+  //fprintf(stderr,"Got timeout\n");
+
   // --------------------------------------------------------------------------------------
   // cancel display thread if asked by the SDL/WM
   // We must do this here because it is not allowed to call a GTK function from a thread. At least if we do
@@ -949,6 +951,7 @@ main_timeout_handler(gpointer* port_num) {
     }
   }
 #endif
+  //fprintf(stderr,"timeout processed\n");
   return(1);
 }
 
