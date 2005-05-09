@@ -314,7 +314,9 @@ ChangeModeAndFormat         (GtkMenuItem     *menuitem,
   unsigned int *framerates;
   unsigned int numfps;
   
-  mode=(int)user_data;
+  //eprint("change mode\n");
+
+  mode=(unsigned int)user_data;
 
   IsoFlowCheck(&state);
   
@@ -322,10 +324,10 @@ ChangeModeAndFormat         (GtkMenuItem     *menuitem,
     MainError("Could not set video mode");
   else
     camera->camera_info.mode=mode;
- 
+  
   // check consistancy of framerate:
-  if ((camera->camera_info.mode >= MODE_FORMAT7_MIN) &&
-      (camera->camera_info.mode <= MODE_FORMAT7_MAX)) {
+  if (!((camera->camera_info.mode >= MODE_FORMAT7_MIN) &&
+	(camera->camera_info.mode <= MODE_FORMAT7_MAX))) {
     if (dc1394_query_supported_framerates(&camera->camera_info, mode, &framerates, &numfps)!=DC1394_SUCCESS)
       MainError("Could not read supported framerates");
     else {
@@ -334,13 +336,13 @@ ChangeModeAndFormat         (GtkMenuItem     *menuitem,
 	  break;
       }
       if (camera->camera_info.framerate!=framerates[i]) {
+	//eprint("need to switch\n");
 	i=SwitchToNearestFPS(framerates, numfps, camera->camera_info.framerate);
       }
+      free(framerates);
     }
   }
   
-  free(framerates);
-
   IsoFlowResume(&state);
 
   // REPROBE EVERYTHING
@@ -349,14 +351,17 @@ ChangeModeAndFormat         (GtkMenuItem     *menuitem,
 
   if (dc1394_get_camera_feature_set(&camera->camera_info, &camera->feature_set)!=DC1394_SUCCESS)
     MainError("Could not get camera feature information!");
-
+  
   if ((camera->camera_info.mode >= MODE_FORMAT7_MIN) &&
       (camera->camera_info.mode <= MODE_FORMAT7_MAX)) {
     GetFormat7Capabilities(camera);
   }
-
+  
+  //eprint("buildall\n");
   BuildAllWindows();
+  //eprint("updateall\n");
   UpdateAllWindows();
+  //eprint("change mode finished\n");
 }
 
 
@@ -661,6 +666,8 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation)
   bi.camera_nodes=NULL;
   MainStatus("Bus reset detected");
 
+  eprint("bus reset detected\n");
+
   gtk_widget_set_sensitive(main_window,FALSE);
 
   usleep(DELAY); // sleep some time (50ms) to allow the cam to warm-up/boot
@@ -884,17 +891,16 @@ main_timeout_handler(gpointer* tmp)
 
   // --------------------------------------------------------------------------------------
   // performs a dummy read on all handles to detect bus resets
-
   int i;
   quadlet_t quadlet;
   raw1394handle_t handle;
-  if (!(main_timeout_ticker%1000)) { // every second
+  if (!(main_timeout_ticker%1000)) { // every 1/2 second
     handle=raw1394_new_handle();
     for (i=0;i<port_num;i++) {
       raw1394_set_port(handle,i);
       //fprintf(stderr,"bus reset detection for port %d\n",i);
       cooked1394_read(handle, 0xffc0 | raw1394_get_local_id(handle),
-      	      CSR_REGISTER_BASE + CSR_CYCLE_TIME, 4, (quadlet_t *) &quadlet);
+		      CSR_REGISTER_BASE + CSR_CYCLE_TIME, 4, (quadlet_t *) &quadlet);
     }
     raw1394_destroy_handle(handle);
     //fprintf(stderr,"dummy read\n");

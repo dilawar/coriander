@@ -80,8 +80,8 @@ gint IsoStartThread(camera_t* cam)
 
     switch(info->receive_method) {
     case RECEIVE_METHOD_VIDEO1394:
-      if ((cam->camera_info.mode >= MODE_FORMAT7_MIN) &&
-	  (cam->camera_info.mode <= MODE_FORMAT7_MAX)) {
+      if (!((cam->camera_info.mode >= MODE_FORMAT7_MIN) &&
+	    (cam->camera_info.mode <= MODE_FORMAT7_MAX))) {
 	if (dc1394_dma_setup_capture(&cam->camera_info, cam->camera_info.iso_channel, 
 				     cam->camera_info.mode, maxspeed,
 				     cam->camera_info.framerate, info->dma_buffer_size,
@@ -117,8 +117,8 @@ gint IsoStartThread(camera_t* cam)
       }
       break;
     case RECEIVE_METHOD_RAW1394:
-      if ((cam->camera_info.mode >= MODE_FORMAT7_MIN) &&
-	  (cam->camera_info.mode <= MODE_FORMAT7_MAX)) {
+      if (!((cam->camera_info.mode >= MODE_FORMAT7_MIN) &&
+	    (cam->camera_info.mode <= MODE_FORMAT7_MAX))) {
 	if (dc1394_setup_capture(&cam->camera_info, cam->camera_info.iso_channel, 
 				 cam->camera_info.mode, maxspeed,
 				 cam->camera_info.framerate, &info->capture)

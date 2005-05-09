@@ -160,6 +160,7 @@ BuildCameraMenu(void)
 
   gtk_widget_destroy(GTK_WIDGET (lookup_widget(main_window,"camera_select"))); // remove previous menu
 
+  //eprint("yuk\n");
   camera_id = gtk_option_menu_new ();
   gtk_widget_ref (camera_id);
   gtk_object_set_data_full ((gpointer) main_window, "camera_select", camera_id,
@@ -170,6 +171,7 @@ BuildCameraMenu(void)
 
   camera_id_menu = gtk_menu_new (); 
 
+  //eprint("333333\n");
   camera_ptr=cameras;
   i=0;
   current_camera_id=0;
@@ -186,11 +188,15 @@ BuildCameraMenu(void)
     camera_ptr=camera_ptr->next;
     i++;
   }
+  //eprint("garb\n");
+
   gtk_option_menu_set_menu (GTK_OPTION_MENU (camera_id), camera_id_menu);
 
+  //eprint("uioyiuyb\n");
   // sets the active menu item:
   gtk_option_menu_set_history (GTK_OPTION_MENU (camera_id) , current_camera_id);
 
+  //eprint("exit\n");
 }
 
 
@@ -350,9 +356,10 @@ BuildFpsMenu(void)
     }
     // sets the active menu item:
     gtk_option_menu_set_history (GTK_OPTION_MENU (fps), i);
+
+    free(framerates);
   }
   
-  free(framerates);
   //eprint("finnished building framerates menu\n");
 }
 
@@ -381,7 +388,9 @@ BuildFormatMenu(void)
 
   mode_num_menu = gtk_menu_new ();
 
-  // get supported formats
+  //eprint("check\n");
+
+  // get supported modes
   if (dc1394_query_supported_modes(&camera->camera_info, &modes, &nummodes)<0) {
     MainError("Could not query supported formats");
     return;
@@ -402,6 +411,7 @@ BuildFormatMenu(void)
     }
     else if ((modes[i]>=MODE_FORMAT7_MIN)&&(modes[i]<=MODE_FORMAT7_MAX)) {
       glade_menuitem = gtk_menu_item_new_with_label (_(format7_list[modes[i]-MODE_FORMAT7_MIN]));
+      //eprint("menuitem ok\n");
     }
     else {
       eprint("Invalid mode\n");
@@ -412,7 +422,7 @@ BuildFormatMenu(void)
     gtk_menu_append (GTK_MENU (mode_num_menu), glade_menuitem);
     g_signal_connect ((gpointer) glade_menuitem, "activate",
 		      G_CALLBACK (ChangeModeAndFormat),
-		      (unsigned int*)modes[i]);
+		      (int*)modes[i]);
   }
   for (i=0;i<nummodes;i++) {
     if (camera->camera_info.mode==modes[i])
@@ -423,6 +433,7 @@ BuildFormatMenu(void)
   // sets the active menu item:
   gtk_option_menu_set_history (GTK_OPTION_MENU (mode_num), i);
 
+  //eprint("free\n");
   free(modes);
 
   //eprint("finished building format menu\n");

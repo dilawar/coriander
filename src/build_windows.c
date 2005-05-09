@@ -443,17 +443,27 @@ BuildFeatureWindow(void)
 
 void
 BuildMainWindow(void)
-{
+{ 
+  //eprint("testin\n");
+
   gtk_menu_item_right_justify(GTK_MENU_ITEM (lookup_widget(main_window,"help")));
   BuildPowerFrame();
   BuildServiceFrame();
   BuildTriggerFrame();
+  //eprint("testout\n");
   BuildIsoFrame();
+  //eprint("testoutg\n");
   BuildGlobalIsoFrame();
+  //eprint("testout\n");
   BuildCameraFrame();
+  //eprint("testoutw\n");
   BuildMemoryFrame();
+  //eprint("testout\n");
   BuildFormatMenu();
   BuildOptionFrame();
+
+  //eprint("testoute\n");
+
 }
 
 void
