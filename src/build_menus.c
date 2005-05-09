@@ -268,7 +268,10 @@ BuildFormat7ColorMenu(void)
 
   color_num_menu = gtk_menu_new ();
 
-  for (i=0;i<=camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].color_codings_num;i++) {
+  //eprint("ready to add\n");
+
+  for (i=0;i<camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].color_codings_num;i++) {
+    //eprint("%d\n",camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].color_codings[i]);
     glade_menuitem = gtk_menu_item_new_with_label (_(format7_color_list[camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].color_codings[i]-COLOR_FORMAT_MIN]));
     gtk_widget_show (glade_menuitem);
     gtk_menu_append (GTK_MENU (color_num_menu), glade_menuitem);
@@ -299,6 +302,7 @@ BuildFpsMenu(void)
   quadlet_t value;
   unsigned int *framerates;
   int numfps;
+  //eprint("building framerates menu\n");
 
   if ((camera->camera_info.mode >= MODE_FORMAT7_MIN) &&
       (camera->camera_info.mode <= MODE_FORMAT7_MAX)) {
@@ -349,6 +353,7 @@ BuildFpsMenu(void)
   }
   
   free(framerates);
+  //eprint("finnished building framerates menu\n");
 }
 
 
@@ -361,6 +366,8 @@ BuildFormatMenu(void)
   GtkWidget* glade_menuitem;
   unsigned int *modes;
   int nummodes;
+
+  //eprint("building format menu\n");
 
   gtk_widget_destroy(GTK_WIDGET (lookup_widget(main_window,"format_select"))); // remove previous menu
 
@@ -397,7 +404,7 @@ BuildFormatMenu(void)
       glade_menuitem = gtk_menu_item_new_with_label (_(format7_list[modes[i]-MODE_FORMAT7_MIN]));
     }
     else {
-      fprintf(stderr,"Invalid mode\n");
+      eprint("Invalid mode\n");
       return;
     }
 
@@ -417,6 +424,8 @@ BuildFormatMenu(void)
   gtk_option_menu_set_history (GTK_OPTION_MENU (mode_num), i);
 
   free(modes);
+
+  //eprint("finished building format menu\n");
 }
 
 

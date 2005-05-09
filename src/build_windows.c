@@ -46,6 +46,8 @@ BuildFormat7Window(void)
   GtkWidget* bar;
   GtkWidget* scale;
 
+  //eprint("building F7 window\n");
+
   // this window is built only if the camera supports F7. If there is a support,
   // the default edit mode is either the currently selected mode (F7 active) or
   // the first available mode (F7 inactive)
@@ -74,21 +76,26 @@ BuildFormat7Window(void)
       camera->format7_info.edit_mode=f;
     }
   }
+  //eprint("finished edit mode seletion: %d\n",camera->format7_info.edit_mode);
 
   notebook2=lookup_widget(main_window,"notebook2");
   // if the page exists, remove it:
   if (format7_tab_presence==1) {
+    //eprint("page exists, removing\n");
     gtk_notebook_remove_page(GTK_NOTEBOOK(notebook2),3);
     format7_tab_presence=0;
   }
 
+  //eprint("check 0\n");
   if (camera->format7_info.edit_mode>=0) {
 
+    //eprint("check 0b\n");
     label = gtk_label_new (_("Format 7"));
     gtk_widget_ref (label);
     gtk_object_set_data_full (GTK_OBJECT (main_window), "label_format7_page", label,
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (label);
+    //eprint("check 1\n");
 
     // big vbox for the whole tab
     vbox = gtk_vbox_new (FALSE, 0);
@@ -132,6 +139,7 @@ BuildFormat7Window(void)
     gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_RIGHT);
     gtk_misc_set_padding (GTK_MISC (label), 6, 0);
 
+    //eprint("check 2\n");
     // bytes_per_packet tab
     frame = gtk_frame_new (NULL);
     gtk_widget_ref (frame);
@@ -161,6 +169,7 @@ BuildFormat7Window(void)
     gtk_box_pack_start (GTK_BOX (hbox), scale, TRUE, TRUE, 0);
     gtk_scale_set_digits (GTK_SCALE (scale), 0);
 
+    //eprint("check 3\n");
     // horizontal setup
     frame = gtk_frame_new (NULL);
     gtk_widget_ref (frame);
@@ -193,6 +202,7 @@ BuildFormat7Window(void)
     gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
     gtk_misc_set_padding (GTK_MISC (label), 2, 2);
 
+    //eprint("check 4\n");
     label = gtk_label_new (_("Position"));
     gtk_widget_ref (label);
     gtk_object_set_data_full (GTK_OBJECT (main_window), "label140", label,
@@ -224,6 +234,7 @@ BuildFormat7Window(void)
 		      (GtkAttachOptions) (GTK_FILL), 0, 0);
     gtk_scale_set_digits (GTK_SCALE (scale), 0);
 
+    //eprint("check 5\n");
     // vertical setup
     frame = gtk_frame_new (NULL);
     gtk_widget_ref (frame);
@@ -288,6 +299,7 @@ BuildFormat7Window(void)
     gtk_scale_set_digits (GTK_SCALE (scale), 0);
 
 
+    //eprint("check 6\n");
     // information frame
     frame = gtk_frame_new (NULL);
     gtk_widget_ref (frame);
@@ -389,13 +401,19 @@ BuildFormat7Window(void)
 		      (GtkAttachOptions) (GTK_FILL),
 		      (GtkAttachOptions) (0), 0, 0);
     
+    //eprint("check 7\n");
 
     // now build the ranges and menus for this frame:
+    //eprint("check 8\n");
     BuildFormat7ModeFrame();
+    //eprint("check 9\n");
     BuildFormat7Ranges();
+    //eprint("check 10\n");
     BuildFormat7BppRange();
+    //eprint("check 11\n");
     format7_tab_presence=1;
   }
+  //eprint("finished building F7 window\n");
 
 }
 
@@ -450,11 +468,17 @@ BuildStatusWindow(void)
 void
 BuildAllWindows(void)
 {
+  //eprint("building windows:\n");
   BuildPreferencesWindow();
+  //eprint("  preferences\n");
   BuildMainWindow();
+  //eprint("  main\n");
   BuildFeatureWindow();
+  //eprint("  features\n");
   BuildFormat7Window();
+  //eprint("  F7\n");
   BuildStatusWindow();
+  //eprint("  status\n");
 }
 
 void

@@ -188,13 +188,17 @@ GetFormat7Capabilities(camera_t* cam)
   for (i=0;i<MODE_FORMAT7_NUM;i++) {
     cam->format7_info.mode[i].present=0;
   }
+  
+  //eprint("F7 presence set to 0\n");
 
   if (dc1394_query_supported_modes(&cam->camera_info, &formats, &numformats)!=DC1394_SUCCESS)
     MainError("Could not query supported formats");
   else {
     // find a mode which is F7:
+    //eprint("found %d formats\n",numformats)
     for (i=0;i<numformats;i++) {
       if ((formats[i]>=MODE_FORMAT7_MIN)&&(formats[i]<=MODE_FORMAT7_MAX)) {
+	//eprint("format %d is F7\n",formats[i])
 	cam->format7_info.mode[formats[i]-MODE_FORMAT7_MIN].present= 1;
 	GetFormat7ModeInfo(cam, formats[i]);
 	check=1;
@@ -204,6 +208,8 @@ GetFormat7Capabilities(camera_t* cam)
   if (check==0) { // F7 not supported
     cam->format7_info.edit_mode=-1;
   }
+
+  free(formats);
 }
 
 void
@@ -215,8 +221,10 @@ GetFormat7ModeInfo(camera_t* cam, int mode_id)
   mode=&cam->format7_info.mode[mode_id-MODE_FORMAT7_MIN];
 
   if (mode->present>0) { // check for mode presence before query
+    //eprint("ready to get image size\n");
     if (dc1394_query_format7_max_image_size(&cam->camera_info,mode_id,&mode->max_size_x,&mode->max_size_y)!=DC1394_SUCCESS)
       MainError("Got a problem querying format7 max image size");
+    //eprint("got image size\n");
     if (dc1394_query_format7_unit_size(&cam->camera_info,mode_id,&mode->unit_size_x,&mode->unit_size_y)!=DC1394_SUCCESS)
       MainError("Got a problem querying format7 unit size");
     // quick hack to keep size/position even. If pos/size is ODD, strange color/distorsions occur on some cams
@@ -234,7 +242,10 @@ GetFormat7ModeInfo(camera_t* cam, int mode_id)
       MainError("Got a problem querying format7 image size");
     if (dc1394_query_format7_byte_per_packet(&cam->camera_info,mode_id,&mode->bpp)!=DC1394_SUCCESS)
       MainError("Got a problem querying format7 bytes per packet");
+    //eprint("got some stuff\n");
+    
     if (mode->bpp==0) {
+      //eprint("bpp=0: setting some params\n");
       // sometimes a camera will not set the bpp register until a valid image size has been set after boot. If BPP is zero, we therefor
       // try again after setting the image size to the maximum size.
       MainError("Camera reported a BPP of ZERO. Trying to set maximum size to correct this.");
@@ -249,7 +260,8 @@ GetFormat7ModeInfo(camera_t* cam, int mode_id)
 	MainError("    BPP still zero. Giving up.");
       }
     }
-
+    
+    //eprint("got almost everything\n");
     if (dc1394_query_format7_packet_para(&cam->camera_info,mode_id,&mode->min_bpp,&mode->max_bpp)!=DC1394_SUCCESS)
       MainError("Got a problem querying format7 packet parameters");
     if (dc1394_query_format7_pixel_number(&cam->camera_info,mode_id,&mode->pixnum)!=DC1394_SUCCESS)
@@ -258,13 +270,16 @@ GetFormat7ModeInfo(camera_t* cam, int mode_id)
       MainError("Got a problem querying format7 total bytes per frame");
     if (dc1394_query_format7_color_coding_id(&cam->camera_info,mode_id,&mode->color_coding_id)!=DC1394_SUCCESS)
       MainError("Got a problem querying format7 color coding ID");
+    //eprint("getting color codings\n");
     if (dc1394_query_format7_color_coding(&cam->camera_info,mode_id,&color_codings, &mode->color_codings_num)!=DC1394_SUCCESS)
       MainError("Got a problem querying format7 color coding");
 
+    //eprint("memcpy?\n");
     memcpy(&mode->color_codings,color_codings,mode->color_codings_num*sizeof(unsigned int));
 
-    free(color_codings);
-
+    //eprint("free\n");
+    //free(color_codings);
+    //eprint("  got everything\n");
     //fprintf(stderr,"%d\n",(int)mode->total_bytes);
   }
 }

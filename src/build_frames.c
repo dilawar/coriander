@@ -118,6 +118,7 @@ void
 BuildFormat7ModeFrame(void)
 {
   BuildFormat7ModeMenu();
+  //eprint("test\n");
   BuildFormat7ColorMenu();
 }
 

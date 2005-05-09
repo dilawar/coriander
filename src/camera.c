@@ -23,12 +23,16 @@ GetCameraNodes(void) {
 
   int err;
   dc1394camera_t **dccameras;
-  unsigned int camnum;
+  unsigned int camnum=0;
   camera_t* camera_ptr;
   int i;
+  //fprintf(stderr,"found %d cameras\n",camnum);
 
   // find the cameras using classic libdc functions:
   err=dc1394_find_cameras(&dccameras,&camnum);
+
+  //fprintf(stderr,"found %d cameras\n",camnum);
+
   /*
   fprintf(stderr,"error code: %d-%d\n",err,DC1394_NO_CAMERA);
   
@@ -41,7 +45,12 @@ GetCameraNodes(void) {
     // copy the info in the dc structure into the coriander struct.
     // This is not optimal: we should use pointers instead...
     memcpy(&camera_ptr->camera_info,dccameras[i],sizeof(dc1394camera_t));
+
+    //fprintf(stderr,"0x%llx - 0x%llx\n",dccameras[i]->euid_64,camera_ptr->camera_info.euid_64);
+
+    //fprintf(stderr,"Getting camera data\n");
     GetCameraData(camera_ptr);
+    //fprintf(stderr,"Adding camera\n");
 
     AppendCamera(camera_ptr);
   }
@@ -50,6 +59,7 @@ GetCameraNodes(void) {
   for (i=0;i<camnum;i++)
     free(dccameras[i]);
   free(dccameras);
+  //fprintf(stderr,"Done getting nodes\n");
 
   return err;;
 }
@@ -87,6 +97,7 @@ GetCameraData(camera_t* cam) {
   if (dc1394_get_camera_feature_set(&cam->camera_info, &cam->feature_set)!=DC1394_SUCCESS)
     MainError("Could not get camera feature information!");
 
+  //fprintf(stderr,"Grabbing F7 stuff\n");
   GetFormat7Capabilities(cam);
   cam->image_pipe=NULL;
   pthread_mutex_lock(&cam->uimutex);

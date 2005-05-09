@@ -47,8 +47,9 @@ main (int argc, char *argv[])
                       NULL);
 
   GetXvInfo(&xvinfo);
-  //fprintf(stderr,"%d %d\n", xvinfo.max_height, xvinfo.max_width);
+  //eprint("%d %d\n", xvinfo.max_height, xvinfo.max_width);
   LoadConfigFile();
+  //eprint("config loaded\n");
 
   //  port_num should be set here or later below
   tmp_handle=raw1394_new_handle();
@@ -60,8 +61,10 @@ main (int argc, char *argv[])
   }
   port_num=raw1394_get_port_info(tmp_handle, NULL, 0);
   raw1394_destroy_handle(tmp_handle);
+  //eprint("port OK\n");
 
   err=GetCameraNodes();
+  //eprint("nodes OK\n");
 
   if (err==DC1394_NO_CAMERA) {
     err_window=create_no_camera_window();
@@ -74,14 +77,24 @@ main (int argc, char *argv[])
     exit(1);
   }
 
+  //eprint("got camera nodes\n");
+
   GrabSelfIds(cameras);
 
+  //eprint("got selfids\n");
   SetChannels();
+  //eprint("channels set\n");
   // current camera is the first camera:
   SetCurrentCamera(cameras->camera_info.euid_64);
+  //eprint("current camera set\n");
   
   preferences_window= create_preferences_window();
+
+  //eprint("preferences window created\n");
+  
   main_window = create_main_window();
+  //eprint("main window created\n");
+  
   
   format7_tab_presence=1;
   gtk_notebook_set_homogeneous_tabs(GTK_NOTEBOOK(lookup_widget(main_window,"notebook2")),TRUE);
@@ -89,8 +102,11 @@ main (int argc, char *argv[])
 
   // Setup the GUI in accordance with the camera capabilities
   GetContextStatus();
+  //eprint("got context\n");
   BuildAllWindows();
+  //eprint("windows built\n");
   UpdateAllWindows();
+  //eprint("windows updated\n");
 
   MainStatus("Welcome to Coriander...");
   gtk_widget_show (main_window); // this is the only window shown at boot-time

@@ -21,6 +21,10 @@
 #ifndef __ERROR_H__
 #define __ERROR_H__
 
+
+#define eprint(args...) \
+ fprintf(stderr,args);
+
 void
 ErrorPopup(char *string);
 
