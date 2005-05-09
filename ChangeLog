@@ -4,6 +4,10 @@ Changes towards version 2.0.0
 
    May 9, 2005, by Damien Douxchamps
    - fixed a lot of bugs.
+   - added exposure check (under and over exposed areas highlighted)
+   - fixed important bug (yet another) due to the lack of 'hole' in the enum
+     type for the formats. Since formats are hidden anyway I've reverted that
+     crap.
 	
    May 8, 2005, by Damien Douxchamps
    - added white shading support

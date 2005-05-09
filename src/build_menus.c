@@ -710,6 +710,14 @@ BuildOverlayPatternMenu(void)
   g_signal_connect ((gpointer) glade_menuitem, "activate",
 		      G_CALLBACK (on_overlay_pattern_menu_activate),
 		      (int*)OVERLAY_PATTERN_GOLDEN_MEAN);
+
+  // over and under exposed regions
+  glade_menuitem = gtk_menu_item_new_with_label (_("Exposure check"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+  g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (on_overlay_pattern_menu_activate),
+		      (int*)OVERLAY_PATTERN_OVER_UNDEREXPOSED);
  
   /*
   // Image

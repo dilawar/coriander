@@ -598,6 +598,56 @@ SDLDisplayPattern(chain_t *display_service)
     break;
   case OVERLAY_PATTERN_IMAGE:
     break;
+  case OVERLAY_PATTERN_OVER_UNDEREXPOSED:
+    switch(preferences.overlay_byte_order) {
+    case DC1394_BYTE_ORDER_YUYV:
+      if (display_service->camera->prefs.overlay_type==OVERLAY_TYPE_INVERT) {
+	for (i=0;i<sx;i+=2) {
+	  for (j=0;j<sy;j++) {
+	    if ((pimage[(j*sx+i)<<1]>254)||(pimage[(j*sx+i)<<1]<1)||
+		(pimage[(j*sx+i+1)<<1]>254)||(pimage[(j*sx+i+1)<<1]<1)) {
+	      INVPIX(pimage, ((j*sx+i)<<1));
+	    }
+	  }
+	}
+      }
+      else {
+	for (i=0;i<sx;i+=2) {
+	  for (j=0;j<sy;j++) {
+	    if ((pimage[(j*sx+i)<<1]>254)||(pimage[(j*sx+i)<<1]<1)||
+		(pimage[(j*sx+i+1)<<1]>254)||(pimage[(j*sx+i+1)<<1]<1)) {
+	      REPLPIX(pimage, block, ((j*sx+i)<<1));
+	    }
+	  }
+	}
+      }
+      break;
+    case DC1394_BYTE_ORDER_UYVY:
+      if (display_service->camera->prefs.overlay_type==OVERLAY_TYPE_INVERT) {
+	for (i=0;i<sx;i+=2) {
+	  for (j=0;j<sy;j++) {
+	    if ((pimage[((j*sx+i)<<1)+1]>254)||(pimage[((j*sx+i)<<1)+1]<1)||
+		(pimage[((j*sx+i+1)<<1)+1]>254)||(pimage[((j*sx+i+1)<<1)+1]<1)) {
+	      INVPIX(pimage, ((j*sx+i)<<1));
+	    }
+	  }
+	}
+      }
+      else {
+	for (i=0;i<sx;i+=2) {
+	  for (j=0;j<sy;j++) {
+	    if ((pimage[((j*sx+i)<<1)+1]>254)||(pimage[((j*sx+i)<<1)+1]<1)||
+		(pimage[((j*sx+i+1)<<1)+1]>254)||(pimage[((j*sx+i+1)<<1)+1]<1)) {
+	      REPLPIX(pimage, block, ((j*sx+i)<<1));
+	    }
+	  }
+	}
+      }
+      break;
+    default:
+      fprintf(stderr,"Invalid overlay byte order\n");
+    }
+    break;
   default:
     fprintf(stderr,"Wrong overlay pattern ID\n");
     break;

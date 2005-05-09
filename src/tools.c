@@ -1128,8 +1128,8 @@ IsOptionAvailableWithFormat(int* bayer, int* stereo, int* bpp16)
 {
   int cond8, cond16, cond422;
 
-  if ((camera->camera_info.mode >= MODE_FORMAT7_MIN) &&
-      (camera->camera_info.mode <= MODE_FORMAT7_MAX)) {
+  if (!((camera->camera_info.mode >= MODE_FORMAT7_MIN) &&
+	(camera->camera_info.mode <= MODE_FORMAT7_MAX))) {
     cond8=((camera->camera_info.mode==MODE_640x480_MONO8)||
 	   (camera->camera_info.mode==MODE_800x600_MONO8)||
 	   (camera->camera_info.mode==MODE_1024x768_MONO8)||

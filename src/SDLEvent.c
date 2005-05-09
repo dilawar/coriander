@@ -242,10 +242,21 @@ OnMouseDown(chain_t *display_service, int button, int x, int y)
   case SDL_BUTTON_MIDDLE:
     x=x*display_service->current_buffer->width/info->sdlvideorect.w; //rescaling
     y=y*display_service->current_buffer->height/info->sdlvideorect.h;
-    // THIS IS ONLY VALID FOR YUYV!!
-    cursor_info.col_y=info->sdloverlay->pixels[0][(y*display_service->current_buffer->width+x)*2];
-    cursor_info.col_u=info->sdloverlay->pixels[0][(((y*display_service->current_buffer->width+x)>>1)<<2)+1]-127;
-    cursor_info.col_v=info->sdloverlay->pixels[0][(((y*display_service->current_buffer->width+x)>>1)<<2)+3]-127;
+    switch(preferences.overlay_byte_order) {
+    case DC1394_BYTE_ORDER_YUYV:
+      cursor_info.col_y=info->sdloverlay->pixels[0][(y*display_service->current_buffer->width+x)*2];
+      cursor_info.col_u=info->sdloverlay->pixels[0][(((y*display_service->current_buffer->width+x)>>1)<<2)+1]-127;
+      cursor_info.col_v=info->sdloverlay->pixels[0][(((y*display_service->current_buffer->width+x)>>1)<<2)+3]-127;
+      break;
+    case DC1394_BYTE_ORDER_UYVY:
+      cursor_info.col_u=info->sdloverlay->pixels[0][(y*display_service->current_buffer->width+x)*2]-127;
+      cursor_info.col_y=info->sdloverlay->pixels[0][(((y*display_service->current_buffer->width+x)>>1)<<2)+1];
+      cursor_info.col_v=info->sdloverlay->pixels[0][(((y*display_service->current_buffer->width+x)>>1)<<2)+2]-127;
+      break;
+    default:
+      fprintf(stderr,"Invalid overlay byte order\n");
+      break;
+    }
     YUV2RGB(cursor_info.col_y, cursor_info.col_u, cursor_info.col_v,
 	    cursor_info.col_r, cursor_info.col_g, cursor_info.col_b);
     cursor_info.x=x;

@@ -20,7 +20,7 @@
 
 gint IsoStartThread(camera_t* cam)
 {
-  int maxspeed;
+  int maxspeed, err;
   //int channel, speed;
   chain_t* iso_service=NULL;
   isothread_info_t *info=NULL;
@@ -43,7 +43,7 @@ gint IsoStartThread(camera_t* cam)
       FreeChain(iso_service);
       return(-1);
     }
-    
+    /*
     info->handle = NULL;
      
     // the iso receive handler gets its own raw1394 handle to free the controls
@@ -56,7 +56,7 @@ gint IsoStartThread(camera_t* cam)
       FreeChain(iso_service);
       return(-1);
     }
-
+    */
     // ONLY IF LEGACY. OTHERWISE S800.
     if (cam->camera_info.bmode_capable==0) {
       switch (cam->selfid.packetZero.phySpeed) {
@@ -82,68 +82,57 @@ gint IsoStartThread(camera_t* cam)
     case RECEIVE_METHOD_VIDEO1394:
       if (!((cam->camera_info.mode >= MODE_FORMAT7_MIN) &&
 	    (cam->camera_info.mode <= MODE_FORMAT7_MAX))) {
-	if (dc1394_dma_setup_capture(&cam->camera_info, cam->camera_info.iso_channel, 
+	err=dc1394_dma_setup_capture(&cam->camera_info, cam->camera_info.iso_channel, 
 				     cam->camera_info.mode, maxspeed,
 				     cam->camera_info.framerate, info->dma_buffer_size,
 				     info->video1394_dropframes, 
-				     info->capture.dma_device_file, &info->capture)
-	    == DC1394_SUCCESS) {
-	  info->receive_method=RECEIVE_METHOD_VIDEO1394;
-	}
-	else {
-	  MainError("Failed to setup DMA capture with VIDEO1394");
-	  raw1394_destroy_handle(info->handle);
+				     info->capture.dma_device_file, &info->capture);
+	if (err!=DC1394_SUCCESS){
+	  eprint("Failed to setup DMA capture. Error code %d\n",err);
 	  FreeChain(iso_service);
 	  return(-1);
 	}
+	info->receive_method=RECEIVE_METHOD_VIDEO1394;
       }
       else {
-	if (dc1394_dma_setup_format7_capture(&cam->camera_info, cam->camera_info.iso_channel, 
+	err=dc1394_dma_setup_format7_capture(&cam->camera_info, cam->camera_info.iso_channel, 
 					     cam->camera_info.mode, maxspeed, QUERY_FROM_CAMERA,
 					     QUERY_FROM_CAMERA, QUERY_FROM_CAMERA,
 					     QUERY_FROM_CAMERA, QUERY_FROM_CAMERA, 
 					     info->dma_buffer_size,
 					     info->video1394_dropframes, 
-					     info->capture.dma_device_file, &info->capture)
-	    == DC1394_SUCCESS) {
-	  info->receive_method=RECEIVE_METHOD_VIDEO1394;
-	}
-	else {
-	  MainError("Failed to setup Format_7 DMA capture with VIDEO1394");
-	  raw1394_destroy_handle(info->handle);
+					     info->capture.dma_device_file, &info->capture);
+	
+	if (err!=DC1394_SUCCESS){
+	  eprint("Failed to setup DMA Format_7 capture. Error code %d\n",err);
 	  FreeChain(iso_service);
 	  return(-1);
 	}
+	info->receive_method=RECEIVE_METHOD_VIDEO1394;
       }
       break;
     case RECEIVE_METHOD_RAW1394:
       if (!((cam->camera_info.mode >= MODE_FORMAT7_MIN) &&
 	    (cam->camera_info.mode <= MODE_FORMAT7_MAX))) {
-	if (dc1394_setup_capture(&cam->camera_info, cam->camera_info.iso_channel, 
+	err=dc1394_setup_capture(&cam->camera_info, cam->camera_info.iso_channel, 
 				 cam->camera_info.mode, maxspeed,
-				 cam->camera_info.framerate, &info->capture)
-	    == DC1394_SUCCESS) {
-	  info->receive_method=RECEIVE_METHOD_RAW1394;
-	}
-	else {
-	  MainError("Failed to setup capture with RAW1394");
-	  raw1394_destroy_handle(info->handle);
+				 cam->camera_info.framerate, &info->capture);
+	
+	if (err!=DC1394_SUCCESS){
+	  eprint("Failed to setup RAW1394 capture. Error code %d\n",err);
 	  FreeChain(iso_service);
 	  return(-1);
 	}
+	info->receive_method=RECEIVE_METHOD_RAW1394;
       }
       else {
-	if (dc1394_setup_format7_capture(&cam->camera_info, cam->camera_info.iso_channel, 
+	err=dc1394_setup_format7_capture(&cam->camera_info, cam->camera_info.iso_channel, 
 					 cam->camera_info.mode, maxspeed, QUERY_FROM_CAMERA,
 					 QUERY_FROM_CAMERA, QUERY_FROM_CAMERA,
 					 QUERY_FROM_CAMERA, QUERY_FROM_CAMERA,
-					 &info->capture)
-	    == DC1394_SUCCESS) {
-	  info->receive_method=RECEIVE_METHOD_RAW1394;
-	}
-	else {
-	  MainError("Failed to setup Format_7 capture with RAW1394");
-	  raw1394_destroy_handle(info->handle);
+					 &info->capture);
+	if (err!=DC1394_SUCCESS){
+	  eprint("Failed to setup RAW1394 Format_7 capture. Error code %d\n",err);
 	  FreeChain(iso_service);
 	  return(-1);
 	}
@@ -332,6 +321,8 @@ gint IsoStopThread(camera_t* cam)
     pthread_mutex_lock(&iso_service->mutex_data);
     pthread_mutex_lock(&iso_service->mutex_struct);
 
+    eprint("test1\n");
+
     RemoveChain(cam,iso_service);
     
     if ((info->temp!=NULL)&&(info->temp_allocated>0)) {
@@ -340,6 +331,7 @@ gint IsoStopThread(camera_t* cam)
       info->temp_allocated=0;
       info->temp_size=0;
     }
+    eprint("test2\n");
     
     if (info->receive_method == RECEIVE_METHOD_VIDEO1394) {
       dc1394_dma_unlisten(&info->capture);
@@ -348,15 +340,14 @@ gint IsoStopThread(camera_t* cam)
     else 
       dc1394_release_capture(&info->capture);
     
-    raw1394_destroy_handle(info->handle);
-    info->handle = NULL;
-    
+    eprint("test3\n");
     pthread_mutex_unlock(&iso_service->mutex_struct);
     pthread_mutex_unlock(&iso_service->mutex_data);
     
     FreeChain(iso_service);
     
   }
+    eprint("test final\n");
   
   return (1);
 }

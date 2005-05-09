@@ -362,10 +362,8 @@ UpdateOptionFrame(void)
   gtk_widget_set_sensitive(lookup_widget(main_window,"stereo_menu"), stereo_ok);
 
   pthread_mutex_lock(&camera->uimutex);
-  gtk_widget_set_sensitive(lookup_widget(main_window,"mono16_bpp"),bpp16_ok &&
-			   (camera->stereo==NO_STEREO_DECODING)&&(camera->bayer==NO_BAYER_DECODING));
-  gtk_widget_set_sensitive(lookup_widget(main_window,"label114"),bpp16_ok &&
-			   (camera->stereo==NO_STEREO_DECODING)&&(camera->bayer==NO_BAYER_DECODING));
+  gtk_widget_set_sensitive(lookup_widget(main_window,"mono16_bpp"), bpp16_ok && (camera->stereo==NO_STEREO_DECODING) && (camera->bayer==NO_BAYER_DECODING));
+  gtk_widget_set_sensitive(lookup_widget(main_window,"label114"), bpp16_ok && (camera->stereo==NO_STEREO_DECODING) && (camera->bayer==NO_BAYER_DECODING));
   pthread_mutex_unlock(&camera->uimutex);
   
 }
