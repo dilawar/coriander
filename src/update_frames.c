@@ -158,7 +158,7 @@ UpdateTriggerFrame(void)
 			   camera->feature_set.feature[FEATURE_TRIGGER-FEATURE_MIN].available);
   gtk_widget_set_sensitive(lookup_widget(main_window,"fps_menu"),
 			   !(camera->feature_set.feature[FEATURE_TRIGGER-FEATURE_MIN].is_on) &&
-			   ((camera->camera_info.mode >= MODE_FORMAT7_MIN) && (camera->camera_info.mode <= MODE_FORMAT7_MAX)));
+			   !((camera->camera_info.mode >= MODE_FORMAT7_MIN) && (camera->camera_info.mode <= MODE_FORMAT7_MAX)));
   gtk_widget_set_sensitive(lookup_widget(main_window,"trigger_mode"),
 			   camera->feature_set.feature[FEATURE_TRIGGER-FEATURE_MIN].is_on && 
 			   camera->feature_set.feature[FEATURE_TRIGGER-FEATURE_MIN].available);
