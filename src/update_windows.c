@@ -45,7 +45,7 @@ UpdateCommanderWindow(void)
   UpdateTriggerFrame();
   UpdatePowerFrame();
   UpdateMemoryFrame();
-  UpdateFormatMenu();
+  //  UpdateFormatMenu();
   UpdateIsoFrame();
   UpdateOptionFrame();
   UpdateServiceFrame();

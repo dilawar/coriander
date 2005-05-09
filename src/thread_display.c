@@ -332,12 +332,12 @@ SDLInit(chain_t *display_service)
 
   // Create YUV Overlay
   switch(preferences.overlay_byte_order) {
-  case OVERLAY_BYTE_ORDER_YUYV:
+  case DC1394_BYTE_ORDER_YUYV:
     info->sdloverlay = SDL_CreateYUVOverlay(display_service->current_buffer->width,
 					    display_service->current_buffer->height,
 					    SDL_YUY2_OVERLAY,info->sdlvideo);
     break;
-  case OVERLAY_BYTE_ORDER_UYVY:
+  case DC1394_BYTE_ORDER_UYVY:
     info->sdloverlay = SDL_CreateYUVOverlay(display_service->current_buffer->width,
 					    display_service->current_buffer->height,
 					    SDL_UYVY_OVERLAY,info->sdlvideo);
@@ -357,45 +357,6 @@ SDLInit(chain_t *display_service)
   SDLEventStartThread(display_service);
 
   return(1);
-}
-
-// we should optimize this for RGB too: RGB modes could use RGB-SDL instead of YUV overlay
-void
-convert_to_yuv_for_SDL(buffer_t *buffer, SDL_Overlay *sdloverlay, int overlay_byte_order)
-{
-  unsigned char *dest=sdloverlay->pixels[0];
-  /*
-  fprintf(stderr,"C:[%d %d] BPF:%lli ColMode:%d\n",
-	  buffer->width, buffer->height,
-	  buffer->bytes_per_frame,
-	  buffer->color_mode);
-  */
-  switch(buffer->color_mode) {
-  case COLOR_FORMAT7_MONO8:
-  case COLOR_FORMAT7_RAW8:
-    y2uyvy(buffer->image, dest, buffer->width, buffer->height, 
-	   sdloverlay->pitches[0], overlay_byte_order);
-    break;
-  case COLOR_FORMAT7_YUV411:
-    uyyvyy2uyvy(buffer->image,dest,buffer->width*buffer->height, overlay_byte_order);
-    break;
-  case COLOR_FORMAT7_YUV422:
-    yuyv2uyvy(buffer->image,dest,buffer->width*buffer->height, overlay_byte_order);
-    break;
-  case COLOR_FORMAT7_YUV444:
-    uyv2uyvy(buffer->image,dest,buffer->width*buffer->height, overlay_byte_order);
-    break;
-  case COLOR_FORMAT7_RGB8:
-    rgb2uyvy(buffer->image,dest,buffer->width*buffer->height, overlay_byte_order);
-    break;
-  case COLOR_FORMAT7_MONO16:
-  case COLOR_FORMAT7_RAW16:
-    y162uyvy(buffer->image,dest,buffer->width*buffer->height,buffer->bpp, overlay_byte_order);
-    break;
-  case COLOR_FORMAT7_RGB16:
-    rgb482uyvy(buffer->image,dest,buffer->width*buffer->height, overlay_byte_order);
-    break;
-  }
 }
 
 
@@ -464,13 +425,13 @@ SDLDisplayPattern(chain_t *display_service)
   switch(display_service->camera->prefs.overlay_type) {
   case OVERLAY_TYPE_REPLACE:
     switch(preferences.overlay_byte_order) {
-    case OVERLAY_BYTE_ORDER_YUYV:
+    case DC1394_BYTE_ORDER_YUYV:
       block[0]=y;
       block[1]=u;
       block[2]=y;
       block[3]=v;
       break;
-    case OVERLAY_BYTE_ORDER_UYVY:
+    case DC1394_BYTE_ORDER_UYVY:
       block[0]=u;
       block[1]=y;
       block[2]=v;

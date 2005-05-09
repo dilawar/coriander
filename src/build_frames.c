@@ -67,7 +67,7 @@ BuildPowerFrame(void)
   gtk_widget_set_sensitive(lookup_widget(main_window,"power_reset"),TRUE);
 
   // activate if camera capable of power on/off:
-  if (dc1394_query_basic_functionality(camera->camera_info.handle,camera->camera_info.id, &basic_funcs)!=DC1394_SUCCESS)
+  if (dc1394_query_basic_functionality(&camera->camera_info, &basic_funcs)!=DC1394_SUCCESS)
     MainError("Could not query basic functionalities");
 
   gtk_widget_set_sensitive(lookup_widget(main_window,"power_on"),(basic_funcs & 0x1<<16));
@@ -91,13 +91,13 @@ void
 BuildIsoFrame(void)
 {
   // TODO: only if ISO capable
-  if (dc1394_get_iso_status(camera->camera_info.handle,camera->camera_info.id, &camera->misc_info.is_iso_on)!=DC1394_SUCCESS)
+  if (dc1394_get_iso_status(&camera->camera_info, &camera->camera_info.is_iso_on)!=DC1394_SUCCESS)
     MainError("Can't get ISO status");
   //fprintf(stderr,"sync: %d\n",preferences.sync_control);
   gtk_widget_set_sensitive(lookup_widget(main_window,"iso_frame"),TRUE);
-  gtk_widget_set_sensitive(lookup_widget(main_window,"iso_start"),!camera->misc_info.is_iso_on);
-  gtk_widget_set_sensitive(lookup_widget(main_window,"iso_restart"),camera->misc_info.is_iso_on);
-  gtk_widget_set_sensitive(lookup_widget(main_window,"iso_stop"),camera->misc_info.is_iso_on);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"iso_start"),!camera->camera_info.is_iso_on);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"iso_restart"),camera->camera_info.is_iso_on);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"iso_stop"),camera->camera_info.is_iso_on);
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window,"sync_control_button")),preferences.sync_control);
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window,"iso_nodrop")),camera->prefs.iso_nodrop);
 
@@ -347,7 +347,7 @@ BuildBandwidthFrame(void)
   temp=(char*)malloc(STRING_SIZE*sizeof(char));
 
   // get the number of ports
-  nports=businfo->port_num;
+  nports=port_num;
 
   //destroy table first.
   gtk_widget_destroy(GTK_WIDGET (lookup_widget(main_window, "bandwidth_table")));

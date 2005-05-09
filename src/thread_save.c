@@ -141,88 +141,25 @@ SaveCleanupThread(void* arg)
   return(NULL);
 }
 
-double
-framerateAsDouble(int framerate_enum)
-{
-  switch(framerate_enum)  {
-  case FRAMERATE_1_875:
-    return(1.875);
-    break;
-  case FRAMERATE_3_75:
-    return(3.750);
-    break;
-  case FRAMERATE_7_5:
-    return(7.500);
-    break;
-  case FRAMERATE_15:
-    return(15.000);
-    break;
-  case FRAMERATE_30:
-    return(30.000);
-    break;
-  case FRAMERATE_60:
-    return(60.000);
-    break;
-  case FRAMERATE_120:
-    return(120.000);
-    break;
-  case FRAMERATE_240:
-    return(240.000);
-    break;
-  default:
-    return(0);
-    break;
-  }
-  return(0);
-}
-
-// TRUE if color mode is color, FALSE if MONO/GREYSCALE
-int
-isColor(int color_mode)
-{
-  switch(color_mode)  {
-  case COLOR_FORMAT7_MONO8:
-  case COLOR_FORMAT7_MONO16:
-  case COLOR_FORMAT7_MONO16S:
-  case COLOR_FORMAT7_RAW8:
-  case COLOR_FORMAT7_RAW16:
-    return(FALSE);
-    break;
-  case COLOR_FORMAT7_YUV411:
-  case COLOR_FORMAT7_YUV422:
-  case COLOR_FORMAT7_YUV444:
-  case COLOR_FORMAT7_RGB8:
-  case COLOR_FORMAT7_RGB16:
-  case COLOR_FORMAT7_RGB16S:
-    return(TRUE);
-    break;
-  default:
-    fprintf(stderr, "Unknown buffer format!\n");
-    return(FALSE);
-    break;
-  }
-  return(FALSE);
-}
-
 
 // return TRUE if format is not in PVN native RGB or GREYSCALE mode
 int
 needsConversionForPVN(int color_mode)
 {
   switch(color_mode) {
-  case COLOR_FORMAT7_YUV411:
-  case COLOR_FORMAT7_YUV422:
-  case COLOR_FORMAT7_YUV444:
+  case COLOR_FORMAT_YUV411:
+  case COLOR_FORMAT_YUV422:
+  case COLOR_FORMAT_YUV444:
     return(TRUE);
     break;
-  case COLOR_FORMAT7_MONO8:
-  case COLOR_FORMAT7_RGB8:
-  case COLOR_FORMAT7_MONO16:
-  case COLOR_FORMAT7_MONO16S:
-  case COLOR_FORMAT7_RGB16:
-  case COLOR_FORMAT7_RAW8:
-  case COLOR_FORMAT7_RAW16:
-  case COLOR_FORMAT7_RGB16S:
+  case COLOR_FORMAT_MONO8:
+  case COLOR_FORMAT_RGB8:
+  case COLOR_FORMAT_MONO16:
+  case COLOR_FORMAT_MONO16S:
+  case COLOR_FORMAT_RGB16:
+  case COLOR_FORMAT_RAW8:
+  case COLOR_FORMAT_RAW16:
+  case COLOR_FORMAT_RGB16S:
     return(FALSE);
     break;
   default:
@@ -238,18 +175,18 @@ int
 getConvertedBytesPerChannel(int color_mode)
 {
   switch(color_mode) {
-  case COLOR_FORMAT7_MONO8:
-  case COLOR_FORMAT7_RAW8:
-  case COLOR_FORMAT7_YUV411:
-  case COLOR_FORMAT7_YUV422:
-  case COLOR_FORMAT7_YUV444:
-  case COLOR_FORMAT7_RGB8:
+  case COLOR_FORMAT_MONO8:
+  case COLOR_FORMAT_RAW8:
+  case COLOR_FORMAT_YUV411:
+  case COLOR_FORMAT_YUV422:
+  case COLOR_FORMAT_YUV444:
+  case COLOR_FORMAT_RGB8:
     return(1);
     break;
-  case COLOR_FORMAT7_MONO16:
-  case COLOR_FORMAT7_RAW16:
-  case COLOR_FORMAT7_MONO16S:
-  case COLOR_FORMAT7_RGB16:
+  case COLOR_FORMAT_MONO16:
+  case COLOR_FORMAT_RAW16:
+  case COLOR_FORMAT_MONO16S:
+  case COLOR_FORMAT_RGB16:
     return(2);
     break;
   default:
@@ -260,86 +197,12 @@ getConvertedBytesPerChannel(int color_mode)
   return(0);
 }
 
-
-// return Bytes in each pixel (3*bytes per channel if colour)
-float
-getAvgBytesPerPixel(int color_mode)
-{
-  switch(color_mode) {
-  case COLOR_FORMAT7_MONO8:
-  case COLOR_FORMAT7_RAW8:
-    return(1.0);
-    break;
-  case COLOR_FORMAT7_YUV411:
-    return(1.5);
-    break;
-  case COLOR_FORMAT7_MONO16:
-  case COLOR_FORMAT7_RAW16:
-  case COLOR_FORMAT7_MONO16S:
-  case COLOR_FORMAT7_YUV422:
-    return(2.0);
-    break;
-  case COLOR_FORMAT7_YUV444:
-  case COLOR_FORMAT7_RGB8:
-    return(3.0);
-    break;
-  case COLOR_FORMAT7_RGB16:
-    return(6.0);
-    break;
-  default:
-    fprintf(stderr, "Unknown buffer format!\n");
-    return(0.0);
-    break;
-  }
-  return(0.0);
-}
-
-
 unsigned int
 getDepth(unsigned long bufsize, int mode, unsigned int height, unsigned int width)
 {
-  float bytes_per_pixel=getAvgBytesPerPixel(mode);
+  float bytes_per_pixel;
+  dc1394_get_bytes_per_pixel(mode, &bytes_per_pixel);
   return((unsigned int)(bufsize/(bytes_per_pixel*height*width)));
-}
-
-void
-convert_for_pvn(unsigned char *buffer, unsigned int width, unsigned int height,
-		unsigned int page, int color_mode, unsigned char *dest)
-{
-  unsigned char *buf_loc=buffer+(int)(page*getAvgBytesPerPixel(color_mode)*width*height);
-
-  if(dest==NULL)
-    return;
-
-  switch(color_mode) {
-    case COLOR_FORMAT7_MONO8:
-    case COLOR_FORMAT7_RAW8:
-      memcpy(dest,buf_loc,width*height);
-      break;
-    case COLOR_FORMAT7_YUV411:
-      uyyvyy2rgb(buf_loc,dest,width*height);
-      break;
-    case COLOR_FORMAT7_YUV422:
-      uyvy2rgb(buf_loc,dest,width*height);
-      break;
-    case COLOR_FORMAT7_YUV444:
-      uyv2rgb(buf_loc,dest,width*height);
-      break;
-    case COLOR_FORMAT7_RGB8:
-      memcpy(dest,buf_loc,3*width*height);
-      break;
-    case COLOR_FORMAT7_MONO16:
-    case COLOR_FORMAT7_MONO16S:
-    case COLOR_FORMAT7_RAW16:
-      memcpy(dest,buf_loc,2*width*height);
-      break;
-    case COLOR_FORMAT7_RGB16:
-      memcpy(dest,buf_loc,6*width*height);
-      break;
-    default:
-      fprintf(stderr, "Unknown buffer format!\n");
-      break;
-  }
 }
 
 // (JG) note: depth/# of pages is calculated from bufsize by dividing by # of bytes per image
@@ -348,9 +211,12 @@ writePVNHeader(FILE *fd, unsigned int mode, unsigned int height, unsigned int wi
 	       unsigned int depth, unsigned int bpp, double framerate)
 {
   char magic[6];
+  unsigned int is_color;
 
-  if(isColor(mode)==FALSE) {//greyscale
-    if(mode == COLOR_FORMAT7_MONO16S)
+  dc1394_is_color(mode,&is_color);
+
+  if(is_color==FALSE) {//greyscale
+    if(mode == COLOR_FORMAT_MONO16S)
       strcpy(magic,"PV5b");
     else
       strcpy(magic,"PV5a");
@@ -367,8 +233,8 @@ CreateSettingsFile(char *destdir)
   char *fname = NULL;
   FILE *fd = NULL;
   int i;
-  extern char* fps_label_list[NUM_FRAMERATES];
-  extern char* feature_name_list[NUM_FEATURES];
+  extern char* fps_label_list[FRAMERATE_NUM];
+  extern char* feature_name_list[FEATURE_NUM];
   extern Prefs_t preferences;
   
   fname = (char*)malloc(STRING_SIZE*sizeof(char));
@@ -379,7 +245,7 @@ CreateSettingsFile(char *destdir)
     return(0);
   }
   
-  fprintf(fd,"fps=%s\n", fps_label_list[camera->misc_info.framerate-FRAMERATE_MIN]);
+  fprintf(fd,"fps=%s\n", fps_label_list[camera->camera_info.framerate-FRAMERATE_MIN]);
   fprintf(fd,"sync_control=%d\n",preferences.sync_control);
   
   for(i=FEATURE_MIN; i<=FEATURE_MAX; ++i) {
@@ -522,7 +388,7 @@ InitVideoFile(chain_t *save_service, FILE *fd, char *filename_out)
 {
   savethread_info_t *info;
   info=(savethread_info_t*)save_service->data;
-
+  float fps;
 #ifdef HAVE_FFMPEG
   info->fmt = NULL;
   info->oc = NULL;
@@ -536,11 +402,12 @@ InitVideoFile(chain_t *save_service, FILE *fd, char *filename_out)
   // (JG) if extension is PVN, write PVN header here
   if ((info->format==SAVE_FORMAT_PVN) && (info->use_ram_buffer==FALSE)) {//-----------------------------------
     //fprintf(stderr,"pvn header write\n");
+    dc1394_framerate_as_float(camera->camera_info.framerate, &fps);
     writePVNHeader(fd, save_service->current_buffer->color_mode,
 		   save_service->current_buffer->height,
 		   save_service->current_buffer->width,
 		   0, getConvertedBytesPerChannel(save_service->current_buffer->color_mode)*8,
-		   framerateAsDouble(camera->misc_info.framerate));
+		   fps);
   }
 
 #ifdef HAVE_FFMPEG
@@ -611,20 +478,20 @@ InitVideoFile(chain_t *save_service, FILE *fd, char *filename_out)
     
     info->mpeg_color_mode=0;
     switch (save_service->current_buffer->color_mode) {
-    case COLOR_FORMAT7_MONO8:
-    case COLOR_FORMAT7_RAW8:
+    case COLOR_FORMAT_MONO8:
+    case COLOR_FORMAT_RAW8:
       info->mpeg_color_mode=PIX_FMT_GRAY8;
       break;
-    case COLOR_FORMAT7_YUV411:
+    case COLOR_FORMAT_YUV411:
       info->mpeg_color_mode=PIX_FMT_YUV411P;
       break;
-    case COLOR_FORMAT7_YUV422:
+    case COLOR_FORMAT_YUV422:
       info->mpeg_color_mode=PIX_FMT_YUV422P;
       break;
-    case COLOR_FORMAT7_YUV444:
+    case COLOR_FORMAT_YUV444:
       info->mpeg_color_mode=PIX_FMT_YUV444P;
       break;
-    case COLOR_FORMAT7_RGB8:
+    case COLOR_FORMAT_RGB8:
       info->mpeg_color_mode=PIX_FMT_RGB24;
       break;
     default:
@@ -685,37 +552,37 @@ SavePPMPGM(chain_t *save_service, FILE *fd)
   info=(savethread_info_t*)save_service->data;
   
   switch (save_service->current_buffer->color_mode) {
-  case COLOR_FORMAT7_MONO8:
-  case COLOR_FORMAT7_RAW8:
+  case COLOR_FORMAT_MONO8:
+  case COLOR_FORMAT_RAW8:
     P_value=5;
     bytes=save_service->current_buffer->width*save_service->current_buffer->height;
     maxlevels=255;
     src=save_service->current_buffer->image;
     break;
-  case COLOR_FORMAT7_MONO16:
-  case COLOR_FORMAT7_RAW16:
-  case COLOR_FORMAT7_MONO16S:
+  case COLOR_FORMAT_MONO16:
+  case COLOR_FORMAT_RAW16:
+  case COLOR_FORMAT_MONO16S:
     P_value=5;
     bytes=save_service->current_buffer->width*save_service->current_buffer->height*2;
     maxlevels=65535;
     src=save_service->current_buffer->image;
     break;
-  case COLOR_FORMAT7_YUV411:
-  case COLOR_FORMAT7_YUV422:
-  case COLOR_FORMAT7_YUV444:
+  case COLOR_FORMAT_YUV411:
+  case COLOR_FORMAT_YUV422:
+  case COLOR_FORMAT_YUV444:
     convert_to_rgb(save_service->current_buffer, info->buffer);
     P_value=6;
     bytes=save_service->current_buffer->width*save_service->current_buffer->height*3;
     maxlevels=255;
     src=info->buffer;
     break;
-  case COLOR_FORMAT7_RGB8:
+  case COLOR_FORMAT_RGB8:
     P_value=6;
     bytes=save_service->current_buffer->width*save_service->current_buffer->height*3;
     maxlevels=255;
     src=save_service->current_buffer->image;
     break;
-  case COLOR_FORMAT7_RGB16:
+  case COLOR_FORMAT_RGB16:
     P_value=6;
     bytes=save_service->current_buffer->width*save_service->current_buffer->height*6;
     maxlevels=65535;
@@ -738,7 +605,7 @@ SaveThread(void* arg)
   //GdkImlibImage *im=NULL; // V20***
   long int skip_counter;
   FILE *fd=NULL;
-  float tmp;
+  float tmp, fps;
   int i;
   unsigned char* dest=NULL;
 
@@ -846,7 +713,7 @@ SaveThread(void* arg)
 		// video saving mode
 		//fprintf(stderr,"entering MPEG save and convert section\n");
 		switch(save_service->current_buffer->color_mode) {
-		case COLOR_FORMAT7_YUV411:
+		case COLOR_FORMAT_YUV411:
 		  uyvy411_yuv411p(save_service->current_buffer->image, info->tmp_picture, 
 				  save_service->current_buffer->width, save_service->current_buffer->height);
 		  img_convert((AVPicture *)info->picture, info->video_st->codec.pix_fmt, 
@@ -854,7 +721,7 @@ SaveThread(void* arg)
 			      save_service->current_buffer->width, save_service->current_buffer->height);
 		  write_video_frame(info->oc, info->video_st, info->picture);
 		  break;
-		case COLOR_FORMAT7_YUV422:
+		case COLOR_FORMAT_YUV422:
 		  uyvy422_yuv422p(save_service->current_buffer->image, info->tmp_picture, 
 				  save_service->current_buffer->width, save_service->current_buffer->height);
 		  img_convert((AVPicture *)info->picture, info->video_st->codec.pix_fmt, 
@@ -882,7 +749,7 @@ SaveThread(void* arg)
 		  fprintf(stderr, "Could not allocate picture\n");
 		}
 		switch(save_service->current_buffer->color_mode) {
-		case COLOR_FORMAT7_YUV411:
+		case COLOR_FORMAT_YUV411:
 		  info->tmp_picture = alloc_picture(PIX_FMT_YUV411P, 
 				  save_service->current_buffer->width, save_service->current_buffer->height);
 		  uyvy411_yuv411p(save_service->current_buffer->image, info->tmp_picture, 
@@ -894,7 +761,7 @@ SaveThread(void* arg)
 			     PIX_FMT_YUV420P, filename_out, 90.0, "Created using Coriander and FFMPEG");
 		  
 		  break;
-		case COLOR_FORMAT7_YUV422: 
+		case COLOR_FORMAT_YUV422: 
 		  info->tmp_picture = alloc_picture(PIX_FMT_YUV422P, 
 				  save_service->current_buffer->width, save_service->current_buffer->height);
 		  uyvy422_yuv422p(save_service->current_buffer->image, info->tmp_picture, 
@@ -983,13 +850,14 @@ SaveThread(void* arg)
       break;
 #endif
     case SAVE_FORMAT_PVN:
+      dc1394_framerate_as_float(camera->camera_info.framerate, &fps);
       writePVNHeader(fd, save_service->current_buffer->color_mode,
 		     save_service->current_buffer->height,
 		     save_service->current_buffer->width,
 		     getDepth(info->bigbuffer_position, save_service->current_buffer->color_mode, 
 			      save_service->current_buffer->height, save_service->current_buffer->width),
 		     getConvertedBytesPerChannel(save_service->current_buffer->color_mode)*8,
-		     framerateAsDouble(camera->misc_info.framerate));
+		     fps);
       
       if(needsConversionForPVN(save_service->current_buffer->color_mode)==FALSE) {
 	fwrite(info->bigbuffer, info->bigbuffer_position, 1, fd);

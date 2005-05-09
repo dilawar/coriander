@@ -20,10 +20,10 @@
 
 #define RANGE_TABLE_WIDTH 5
 
-extern char* feature_menu_table_list[NUM_FEATURES];
-extern char* feature_menu_items_list[NUM_FEATURES];
-extern char* feature_name_list[NUM_FEATURES];
-extern char* feature_abs_label_list[NUM_FEATURES];
+extern char* feature_menu_table_list[FEATURE_NUM];
+extern char* feature_menu_items_list[FEATURE_NUM];
+extern char* feature_name_list[FEATURE_NUM];
+extern char* feature_abs_label_list[FEATURE_NUM];
 
 void
 BuildEmptyRange(int feature)
@@ -147,11 +147,11 @@ BuildEmptyRange(int feature)
 
 void BuildRange(int feature)
 {
-  GtkAdjustment *adjustment, *adjustment2;
+  GtkAdjustment *adjustment, *adjustment2, *adjustment3;
   GtkWidget* new_option_menu;
   GtkWidget* new_menu;
   GtkWidget* glade_menuitem;
-  GtkWidget* scale, *scale2;
+  GtkWidget* scale, *scale2, *scale3;
   GtkWidget* abs_entry;
   GtkWidget* label;
   
@@ -320,7 +320,62 @@ void BuildRange(int feature)
     g_signal_connect ((gpointer) adjustment, "value_changed", G_CALLBACK (on_scale_value_changed), (int*) FEATURE_TEMPERATURE);
     break;
   case FEATURE_WHITE_SHADING:
-    fprintf(stderr,"Not implemented\n");
+    adjustment=(GtkAdjustment*)gtk_adjustment_new(camera->feature_set.feature[feature-FEATURE_MIN].min,
+						  camera->feature_set.feature[feature-FEATURE_MIN].min,
+						  camera->feature_set.feature[feature-FEATURE_MIN].max,1,10,0);
+    adjustment2=(GtkAdjustment*)gtk_adjustment_new(camera->feature_set.feature[feature-FEATURE_MIN].min,
+						   camera->feature_set.feature[feature-FEATURE_MIN].min,
+						   camera->feature_set.feature[feature-FEATURE_MIN].max,1,10,0);
+    adjustment3=(GtkAdjustment*)gtk_adjustment_new(camera->feature_set.feature[feature-FEATURE_MIN].min,
+						   camera->feature_set.feature[feature-FEATURE_MIN].min,
+						   camera->feature_set.feature[feature-FEATURE_MIN].max,1,10,0);
+    scale = gtk_hscale_new (adjustment);
+    gtk_widget_ref (scale);
+    sprintf(stemp,"feature_%d_r_scale",feature);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, scale,
+			      (GtkDestroyNotify) gtk_widget_unref);
+    gtk_widget_show (scale);
+    sprintf(stemp,"feature_%d_table",feature);
+    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale, 1, RANGE_TABLE_WIDTH, 1, 2,
+		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+		      (GtkAttachOptions) (GTK_FILL), 0, 0);
+    gtk_widget_set_sensitive (scale, TRUE);
+    gtk_scale_set_digits (GTK_SCALE (scale), 0);
+
+    scale2 = gtk_hscale_new (adjustment);
+    gtk_widget_ref (scale2);
+    sprintf(stemp,"feature_%d_g_scale",feature);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, scale2,
+			      (GtkDestroyNotify) gtk_widget_unref);
+    gtk_widget_show (scale2);
+    sprintf(stemp,"feature_%d_table",feature);
+    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale2, 1, RANGE_TABLE_WIDTH, 2, 3,
+		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+		      (GtkAttachOptions) (GTK_FILL), 0, 0);
+    gtk_widget_set_sensitive (scale2, TRUE);
+    gtk_scale_set_digits (GTK_SCALE (scale2), 0);
+
+    scale3 = gtk_hscale_new (adjustment);
+    gtk_widget_ref (scale3);
+    sprintf(stemp,"feature_%d_b_scale",feature);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, scale3,
+			      (GtkDestroyNotify) gtk_widget_unref);
+    gtk_widget_show (scale3);
+    sprintf(stemp,"feature_%d_table",feature);
+    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale3, 1, RANGE_TABLE_WIDTH, 3, 4,
+		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+		      (GtkAttachOptions) (GTK_FILL), 0, 0);
+    gtk_widget_set_sensitive (scale3, TRUE);
+    gtk_scale_set_digits (GTK_SCALE (scale3), 0);
+
+    gtk_range_set_adjustment((GtkRange*)scale,adjustment);
+    gtk_range_set_adjustment((GtkRange*)scale2,adjustment2);
+    gtk_range_set_adjustment((GtkRange*)scale3,adjustment3);
+
+    // connect:
+    g_signal_connect ((gpointer) adjustment, "value_changed", G_CALLBACK (on_scale_value_changed), (int*) FEATURE_WHITE_SHADING+SHADINGR);
+    g_signal_connect ((gpointer) (adjustment2), "value_changed", G_CALLBACK (on_scale_value_changed), (int*) FEATURE_WHITE_BALANCE+SHADINGG);
+    g_signal_connect ((gpointer) (adjustment3), "value_changed", G_CALLBACK (on_scale_value_changed), (int*) FEATURE_WHITE_BALANCE+SHADINGB);
     break;
     
   default:

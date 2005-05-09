@@ -169,15 +169,7 @@ on_service_save_toggled                (GtkToggleButton *togglebutton,
 void
 on_service_ftp_toggled                 (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
-/*
-void
-on_prefs_save_seq_toggled              (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
 
-void
-on_prefs_save_mode_toggled          (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
-*/
 void
 on_prefs_ftp_seq_toggled               (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
@@ -205,19 +197,7 @@ on_format7_packet_size_changed               (GtkAdjustment    *adj,
 void
 on_key_bindings_activate               (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
-/*
-void
-on_prefs_save_video_toggled            (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
 
-void
-on_prefs_save_convert_toggled          (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
-
-void
-on_prefs_save_noconvert_toggled        (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
-*/
 void
 on_name_camera_clicked                 (GtkButton       *button,
                                         gpointer         user_data);
@@ -370,11 +350,6 @@ on_display_redraw_toggled              (GtkToggleButton *togglebutton,
 void
 on_display_redraw_rate_changed         (GtkEditable     *editable,
                                         gpointer         user_data);
-/*
-void
-on_prefs_display_scale_changed         (GtkEditable     *editable,
-                                        gpointer         user_data);
-*/
 
 void
 on_sync_control_button_toggled        (GtkToggleButton *togglebutton,

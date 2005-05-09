@@ -27,6 +27,8 @@ AC_DEFUN([AC_CHECK_LIBDC],[
 	AC_MSG_CHECKING(for libdc1394)
  	AC_TRY_CPP([
 	#include <libdc1394/dc1394_control.h>
+	#include <libdc1394/dc1394_utils.h>
+	#include <libdc1394/dc1394_conversions.h>
 	],[
  	libdc1394=yes
  	],[
@@ -36,7 +38,7 @@ AC_DEFUN([AC_CHECK_LIBDC],[
  	if test x$libdc1394 = xno; then
           AC_ERROR([libdc1394 is not installed.  
 **************************************************************************
-**   Please install libdc1394 version > 1.0.0 or its latest CVS         **
+**   Please install libdc1394 version > 2.0.0 or its latest CVS         **
 **   Source tarball and CVS at:  http://www.sf.net/projects/libdc1394   **
 **************************************************************************])
  	fi
@@ -45,27 +47,20 @@ AC_DEFUN([AC_CHECK_LIBDC],[
 AC_DEFUN([AC_CHECK_LIBDC_VERSION_FUNCTION],[
 	AC_SUBST(LIBDC_CFLAGS)
 	AC_SUBST(LIBDC_LIBS)
- 	AC_CHECK_LIB(dc1394_control,GetCameraControlRegister,libdc1394=ok,libdc1394=old,-lraw1394)
+ 	AC_CHECK_LIB(dc1394_control,dc1394_find_cameras,libdc1394=ok,libdc1394=old,-lraw1394)
  	if test x$libdc1394 = xok; then
- 	   AC_CHECK_LIB(dc1394_control,dc1394_get_camera_port,libdc1394=ok,libdc1394=old,-lraw1394)
- 	   if test x$libdc1394 = xok; then
-             LIBDC_LIBS="-ldc1394_control"
-             LIBDC_CFLAGS=""
-	   else
-             AC_ERROR([libdc1394 is too old.
-**************************************************************************
-**   Please install libdc1394 version > 1.0.0 or its latest CVS         **
-**   Source tarball and CVS at:  http://www.sf.net/projects/libdc1394   **
-**************************************************************************])
-	   fi
+          LIBDC_LIBS="-ldc1394_control"
+          LIBDC_CFLAGS=""
 	else
-          AC_ERROR([libdc1394 is too old. 
+          AC_ERROR([libdc1394 is too old.
 **************************************************************************
-**   Please install libdc1394 version > 1.0.0 or its latest CVS         **
+**   Please install libdc1394 version > 2.0.0 or its latest CVS         **
 **   Source tarball and CVS at:  http://www.sf.net/projects/libdc1394   **
 **************************************************************************])
- 	fi
+	fi
 ])
+
+dnl the macro below is not used with latest libdc v2
 
 AC_DEFUN([AC_CHECK_LIBDC_VERSION_COMPILE],[
 	AC_SUBST(LIBDC_CFLAGS)
@@ -95,6 +90,7 @@ AC_DEFUN([AC_CHECK_LIBDC_VERSION_COMPILE],[
 **************************************************************************])
  	fi
 ])
+
 
 AC_DEFUN([AC_CHECK_LIBRAW],[
 	AC_MSG_CHECKING(for libraw1394)
@@ -338,7 +334,7 @@ AC_CHECK_SSE2
 AC_CHECK_LIBRAW
 AC_CHECK_LIBRAW_VERSION
 AC_CHECK_LIBDC
-AC_CHECK_LIBDC_VERSION_COMPILE
+dnl AC_CHECK_LIBDC_VERSION_COMPILE
 AC_CHECK_LIBDC_VERSION_FUNCTION
 AC_CHECK_FTPLIB
 AC_CHECK_SDLLIB

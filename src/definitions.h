@@ -19,30 +19,40 @@
 #ifndef __DEFINITIONS_H__
 #define __DEFINITIONS_H__
 
-#define  BU                  1000     // definitions for distinguishing the BU and RV
-#define  RV                  2000     // scales of the FEATURE_WHITE_BALANCE feature
+#define  BU                  1000     // definitions for distinguishing the BU and RV scales of the FEATURE_WHITE_BALANCE feature
+#define  RV                  2000    
+#define  SHADINGR            1000     // definitions for distinguishing the R, G and B scales of the FEATURE_WHITE_SHADING feature
+#define  SHADINGG            2000     
+#define  SHADINGB            3000     
 #define  NO                 FALSE
 #define  YES                 TRUE
 #define  STRING_SIZE         1024
 #define  KEY_BINDINGS_NUM      10
 #define  DELAY              50000
 
-enum 
-{
-    RANGE_MENU_OFF = 0,
-    RANGE_MENU_MAN,
-    RANGE_MENU_AUTO,
-    RANGE_MENU_SINGLE,
-    RANGE_MENU_ABSOLUTE
+enum  {
+  RANGE_MENU_OFF = 0,
+  RANGE_MENU_MAN,
+  RANGE_MENU_AUTO,
+  RANGE_MENU_SINGLE,
+  RANGE_MENU_ABSOLUTE
 };
 
-enum 
-{
-    FORMAT7_SIZE_X = 0,
-    FORMAT7_SIZE_Y,
-    FORMAT7_POS_X,
-    FORMAT7_POS_Y
+enum {
+  FORMAT7_SIZE_X = 0,
+  FORMAT7_SIZE_Y,
+  FORMAT7_POS_X,
+  FORMAT7_POS_Y
 };
+
+typedef enum
+{
+  NO_STEREO_DECODING=0,
+  STEREO_DECODING_INTERLACED,
+  STEREO_DECODING_FIELD
+} stereo_decoding_t;
+
+#define NO_BAYER_DECODING -1
 
 typedef struct _CamPrefs
 {
@@ -130,7 +140,6 @@ typedef struct _BusInfo
 
 typedef struct _Format7ModeInfo
 {
-
   dc1394bool_t present;
 
   unsigned int size_x;
@@ -147,7 +156,8 @@ typedef struct _Format7ModeInfo
   unsigned int unit_pos_y;
 
   unsigned int color_coding_id;
-  quadlet_t color_coding;
+  unsigned int color_codings[COLOR_FORMAT_NUM];
+  unsigned int color_codings_num;
 
   unsigned int pixnum;
 
@@ -161,7 +171,7 @@ typedef struct _Format7ModeInfo
 
 typedef struct _Format7Info
 {
-  Format7ModeInfo_t mode[NUM_MODE_FORMAT7];
+  Format7ModeInfo_t mode[MODE_FORMAT7_NUM];
   int edit_mode;
   
   int scale_posx_handle;
@@ -172,9 +182,8 @@ typedef struct _Format7Info
 } Format7Info_t;
 
 typedef struct _CameraInfo_T {
-  dc1394_camerainfo camera_info;
-  dc1394_feature_set feature_set;
-  dc1394_miscinfo misc_info;
+  dc1394camera_t camera_info;
+  dc1394featureset_t feature_set;
   struct _Chain_T* image_pipe;
   Format7Info_t format7_info;
   SelfIdPacket_t selfid;
@@ -203,7 +212,7 @@ typedef struct _Buffer_T
   unsigned long long int bytes_per_frame; // this is the bytes per frame, including padding.
   int bpp; // this bpp is used for 16bit camera that only have e.g. 12 bits.
   unsigned long long int image_bytes;
-  bayer_decoding_t bayer;
+  unsigned int bayer;
   int bayer_pattern;
   stereo_decoding_t stereo_decoding;
 
@@ -219,7 +228,6 @@ typedef struct _Buffer_T
   int used; // set to 1 if the buffer has already been used by a service. Only the last thread can do
             // this change. The ISO thread can be set to take that flag into account or not. EFFECT:
             // avoids framedrop in association with a sufficiently large DMA buffer
-
 } buffer_t;
 
 typedef struct _Chain_T

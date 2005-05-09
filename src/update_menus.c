@@ -18,6 +18,8 @@
 
 #include "coriander.h"
 
+// LIBDCV2: this file will be removed...
+/*
 extern char* format_list[5];
 extern char* format0_list[7];
 extern char* format1_list[8];
@@ -29,7 +31,7 @@ void UpdateFormatMenu(void)
 {
   quadlet_t formats;
 
-  if (dc1394_query_supported_formats(camera->camera_info.handle, camera->camera_info.id, &formats)!=DC1394_SUCCESS) {
+  if (dc1394_query_supported_formats(&camera->camera_info, &formats)!=DC1394_SUCCESS) {
     MainError("Could not query supported formats");
     formats=0x0;
   }
@@ -40,6 +42,6 @@ void UpdateFormatMenu(void)
 			   camera->feature_set.feature[FEATURE_TEMPERATURE-FEATURE_MIN].available );
   
 }
-
+*/
 
 

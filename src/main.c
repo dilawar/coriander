@@ -26,9 +26,10 @@
 int
 main (int argc, char *argv[])
 {
-  int i;
+  int err;
   int main_timeout;
   GtkWidget* err_window;
+  raw1394handle_t tmp_handle;
 
   main_timeout_ticker=0;
   WM_cancel_display=0;
@@ -45,50 +46,35 @@ main (int argc, char *argv[])
                       GNOME_PARAM_APP_DATADIR, PACKAGE_DATA_DIR,
                       NULL);
 
-  businfo=(BusInfo_t*)malloc(sizeof(BusInfo_t));
-  businfo->handles=NULL;
-  businfo->port_camera_num=NULL;
-  businfo->camera_nodes=NULL;
-  businfo->card_found=0;
-
   GetXvInfo(&xvinfo);
   //fprintf(stderr,"%d %d\n", xvinfo.max_height, xvinfo.max_width);
+  LoadConfigFile();
 
-  GetCameraNodes(businfo);
-
-  // it seems that freeing some vars before a return() or an exit() prevent the program from exiting.
-  // this only happens on some platforms, but I cleared the free() anyway.
-  if (businfo->card_found==0) {
+  //  port_num should be set here or later below
+  tmp_handle=raw1394_new_handle();
+  if (tmp_handle==NULL) {
     err_window=create_no_handle_window();
     gtk_widget_show(err_window);
     gtk_main();
-    free(businfo);
     return(1);
   }
-  else {
-    if (businfo->camera_num<1) {
+  port_num=raw1394_get_port_info(tmp_handle, NULL, 0);
+  raw1394_destroy_handle(tmp_handle);
+
+  err=GetCameraNodes();
+
+  if (err==DC1394_NO_CAMERA) {
     err_window=create_no_camera_window();
-      gtk_widget_show(err_window);
-      gtk_main();
-      
-      for (i=0;i<businfo->port_num;i++)
-	free(businfo->camera_nodes[i]);
-      free(businfo->camera_nodes);
-      free(businfo->port_camera_num);
-      free(businfo->handles);
-      free(businfo);
-      
-      return(1);
-    }
+    gtk_widget_show(err_window);
+    gtk_main();
+    return(1);
+  }
+  else if (err!=DC1394_SUCCESS) {
+    fprintf(stderr, "Unknown error getting cameras on the bus.\nExiting\n");
+    exit(1);
   }
 
-  LoadConfigFile();
-
-  // we have at least one camera on one interface card.
-  // get camera infos and serialize the port info for each camera
-  GetCamerasInfo(businfo);
-
-  GrabSelfIds(businfo->handles, businfo->port_num);
+  GrabSelfIds(cameras);
 
   SetChannels();
   // current camera is the first camera:
@@ -109,7 +95,7 @@ main (int argc, char *argv[])
   MainStatus("Welcome to Coriander...");
   gtk_widget_show (main_window); // this is the only window shown at boot-time
   
-  main_timeout=gtk_timeout_add(10, (GtkFunction)main_timeout_handler, (gpointer*)businfo->port_num);
+  main_timeout=gtk_timeout_add(10, (GtkFunction)main_timeout_handler, (gpointer*)port_num);
 
 #ifdef HAVE_SDLLIB
   WatchStartThread(&watchthread_info);
@@ -126,7 +112,7 @@ main (int argc, char *argv[])
   while (cameras!=NULL) {
     RemoveCamera(cameras->camera_info.euid_64);
   }
-  
+  /*
   for (i=0;i<businfo->port_num;i++) {
     if (businfo->handles[i]!=0)
       raw1394_destroy_handle(businfo->handles[i]);
@@ -136,6 +122,6 @@ main (int argc, char *argv[])
   free(businfo->camera_nodes);
   free(businfo->handles);
   free(businfo->port_camera_num);
-  
+  */
   return 0;
 }

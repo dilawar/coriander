@@ -40,8 +40,8 @@ GetFormat7Capabilities(camera_t* cam);
 void
 GetFormat7ModeInfo(camera_t* cam, int mode_id);
 
-void
-SwitchToNearestFPS(quadlet_t compat, int current);
+unsigned int
+SwitchToNearestFPS(int *framerates, int numfps, int current);
 
 void
 ChangeModeAndFormat         (GtkMenuItem     *menuitem,
@@ -56,7 +56,8 @@ void
 GetContextStatus(void);
 
 void
-GrabSelfIds(raw1394handle_t* handles, int portmax);
+GrabSelfIds(camera_t *cams);
+//GrabSelfIds(raw1394handle_t* handles, int portmax);
 
 void
 SetChannels(void);

@@ -20,7 +20,7 @@
 
 gint IsoStartThread(camera_t* cam)
 {
-  int maxspeed, port;
+  int maxspeed;
   //int channel, speed;
   chain_t* iso_service=NULL;
   isothread_info_t *info=NULL;
@@ -38,7 +38,8 @@ gint IsoStartThread(camera_t* cam)
     info=(isothread_info_t*)iso_service->data;
     
     /* currently FORMAT_STILL_IMAGE is not supported*/
-    if (cam->misc_info.format == FORMAT_STILL_IMAGE) {
+    if ((cam->camera_info.mode >= MODE_FORMAT6_MIN) &&
+        (cam->camera_info.mode <= MODE_FORMAT6_MAX)) {
       FreeChain(iso_service);
       return(-1);
     }
@@ -46,15 +47,18 @@ gint IsoStartThread(camera_t* cam)
     info->handle = NULL;
      
     // the iso receive handler gets its own raw1394 handle to free the controls
-    port=dc1394_get_camera_port(cam->camera_info.handle);
     //fprintf(stderr,"port for this camera is %d\n",port);
-    if ( (info->handle = dc1394_create_handle(port)) < 0) {
+    if ( (info->handle = raw1394_new_handle()) < 0) {
+      FreeChain(iso_service);
+      return(-1);
+    }
+    if ( (raw1394_set_port(info->handle, cam->camera_info.port)) < 0) {
       FreeChain(iso_service);
       return(-1);
     }
 
     // ONLY IF LEGACY. OTHERWISE S800.
-    if (cam->misc_info.bmode_capable==0) {
+    if (cam->camera_info.bmode_capable==0) {
       switch (cam->selfid.packetZero.phySpeed) {
       case 1: maxspeed=SPEED_200;break;
       case 2: maxspeed=SPEED_400;break;
@@ -76,10 +80,11 @@ gint IsoStartThread(camera_t* cam)
 
     switch(info->receive_method) {
     case RECEIVE_METHOD_VIDEO1394:
-      if (cam->misc_info.format!=FORMAT_SCALABLE_IMAGE_SIZE)
-	if (dc1394_dma_setup_capture(cam->camera_info.handle, cam->camera_info.id, cam->misc_info.iso_channel, 
-				     cam->misc_info.format, cam->misc_info.mode, maxspeed,
-				     cam->misc_info.framerate, info->dma_buffer_size,
+      if ((cam->camera_info.mode >= MODE_FORMAT7_MIN) &&
+	  (cam->camera_info.mode <= MODE_FORMAT7_MAX)) {
+	if (dc1394_dma_setup_capture(&cam->camera_info, cam->camera_info.iso_channel, 
+				     cam->camera_info.mode, maxspeed,
+				     cam->camera_info.framerate, info->dma_buffer_size,
 				     info->video1394_dropframes, 
 				     info->capture.dma_device_file, &info->capture)
 	    == DC1394_SUCCESS) {
@@ -87,13 +92,14 @@ gint IsoStartThread(camera_t* cam)
 	}
 	else {
 	  MainError("Failed to setup DMA capture with VIDEO1394");
-	  dc1394_destroy_handle(info->handle);
+	  raw1394_destroy_handle(info->handle);
 	  FreeChain(iso_service);
 	  return(-1);
 	}
+      }
       else {
-	if (dc1394_dma_setup_format7_capture(cam->camera_info.handle, cam->camera_info.id, cam->misc_info.iso_channel, 
-					     cam->misc_info.mode, maxspeed, QUERY_FROM_CAMERA,
+	if (dc1394_dma_setup_format7_capture(&cam->camera_info, cam->camera_info.iso_channel, 
+					     cam->camera_info.mode, maxspeed, QUERY_FROM_CAMERA,
 					     QUERY_FROM_CAMERA, QUERY_FROM_CAMERA,
 					     QUERY_FROM_CAMERA, QUERY_FROM_CAMERA, 
 					     info->dma_buffer_size,
@@ -104,29 +110,31 @@ gint IsoStartThread(camera_t* cam)
 	}
 	else {
 	  MainError("Failed to setup Format_7 DMA capture with VIDEO1394");
-	  dc1394_destroy_handle(info->handle);
+	  raw1394_destroy_handle(info->handle);
 	  FreeChain(iso_service);
 	  return(-1);
 	}
       }
       break;
     case RECEIVE_METHOD_RAW1394:
-      if (cam->misc_info.format!=FORMAT_SCALABLE_IMAGE_SIZE)
-	if (dc1394_setup_capture(cam->camera_info.handle, cam->camera_info.id, cam->misc_info.iso_channel, 
-				 cam->misc_info.format, cam->misc_info.mode, maxspeed,
-				 cam->misc_info.framerate, &info->capture)
+      if ((cam->camera_info.mode >= MODE_FORMAT7_MIN) &&
+	  (cam->camera_info.mode <= MODE_FORMAT7_MAX)) {
+	if (dc1394_setup_capture(&cam->camera_info, cam->camera_info.iso_channel, 
+				 cam->camera_info.mode, maxspeed,
+				 cam->camera_info.framerate, &info->capture)
 	    == DC1394_SUCCESS) {
 	  info->receive_method=RECEIVE_METHOD_RAW1394;
 	}
 	else {
 	  MainError("Failed to setup capture with RAW1394");
-	  dc1394_destroy_handle(info->handle);
+	  raw1394_destroy_handle(info->handle);
 	  FreeChain(iso_service);
 	  return(-1);
 	}
+      }
       else {
-	if (dc1394_setup_format7_capture(cam->camera_info.handle, cam->camera_info.id, cam->misc_info.iso_channel, 
-					 cam->misc_info.mode, maxspeed, QUERY_FROM_CAMERA,
+	if (dc1394_setup_format7_capture(&cam->camera_info, cam->camera_info.iso_channel, 
+					 cam->camera_info.mode, maxspeed, QUERY_FROM_CAMERA,
 					 QUERY_FROM_CAMERA, QUERY_FROM_CAMERA,
 					 QUERY_FROM_CAMERA, QUERY_FROM_CAMERA,
 					 &info->capture)
@@ -135,9 +143,9 @@ gint IsoStartThread(camera_t* cam)
 	}
 	else {
 	  MainError("Failed to setup Format_7 capture with RAW1394");
-	  dc1394_destroy_handle(info->handle);
+	  raw1394_destroy_handle(info->handle);
 	  FreeChain(iso_service);
-		return(-1);
+	  return(-1);
 	}
       }
       break;
@@ -224,9 +232,9 @@ IsoThread(void* arg)
 	(iso_service->camera->prefs.iso_nodrop==0)) {
     
       if (info->receive_method == RECEIVE_METHOD_RAW1394)
-	dc1394_single_capture(info->handle, &info->capture);
+	dc1394_capture(&info->capture, 1);
       else
-	dma_ok=dc1394_dma_single_capture(&info->capture);
+	dma_ok=dc1394_dma_capture(&info->capture, 1, VIDEO1394_WAIT);
     
       //printf("Got frame\n");
   
@@ -250,16 +258,16 @@ IsoThread(void* arg)
       // Stereo decoding
       switch (iso_service->current_buffer->stereo_decoding) {
       case STEREO_DECODING_INTERLACED:
-	StereoDecode((unsigned char *)info->capture.capture_buffer,info->temp,
-		     info->orig_sizex*info->orig_sizey*2);
+	dc1394_deinterlace_stereo((unsigned char *)info->capture.capture_buffer,info->temp,
+				  info->orig_sizex*info->orig_sizey*2);
 	break;
       case STEREO_DECODING_FIELD:
 	memcpy(info->temp,(unsigned char *)info->capture.capture_buffer,info->orig_sizex*info->orig_sizey*2);
 	break;
       case NO_STEREO_DECODING:
 	if ((iso_service->current_buffer->bayer!=NO_BAYER_DECODING)&&(info->cond16bit!=0)) {
-	  y162y((unsigned char *)info->capture.capture_buffer,info->temp,
-		info->orig_sizex*info->orig_sizey, iso_service->current_buffer->bpp);
+	  dc1394_MONO16_to_MONO8((unsigned char *)info->capture.capture_buffer,info->temp,
+				 info->orig_sizex*info->orig_sizey, iso_service->current_buffer->bpp);
 	}
 	else {
 	  // it is necessary to put this here and not in the thread init or IsoThreadCheckParams function because
@@ -270,38 +278,18 @@ IsoThread(void* arg)
       }
       
       // Bayer decoding
-      switch (iso_service->current_buffer->bayer) {
-      case BAYER_DECODING_NEAREST:
-	BayerNearestNeighbor(info->temp, iso_service->current_buffer->image,
-			     iso_service->current_buffer->width, iso_service->current_buffer->height, iso_service->current_buffer->bayer_pattern);
-	break;
-      case BAYER_DECODING_EDGE_SENSE:
-	BayerEdgeSense(info->temp, iso_service->current_buffer->image,
-		       iso_service->current_buffer->width, iso_service->current_buffer->height, iso_service->current_buffer->bayer_pattern);
-	break;
-      case BAYER_DECODING_SIMPLE:
-	BayerSimple(info->temp, iso_service->current_buffer->image,
-		    iso_service->current_buffer->width, iso_service->current_buffer->height, iso_service->current_buffer->bayer_pattern);
-	break;
-      case BAYER_DECODING_DOWNSAMPLE:
-	BayerDownsample(info->temp, iso_service->current_buffer->image,
-			iso_service->current_buffer->width, iso_service->current_buffer->height, iso_service->current_buffer->bayer_pattern);
-	break;
-      case BAYER_DECODING_BILINEAR:
-	BayerBilinear(info->temp, iso_service->current_buffer->image,
-		      iso_service->current_buffer->width, iso_service->current_buffer->height, iso_service->current_buffer->bayer_pattern);
-	break;
-      case BAYER_DECODING_HQLINEAR:
-	BayerHQLinear(info->temp, iso_service->current_buffer->image,
-		      iso_service->current_buffer->width, iso_service->current_buffer->height, iso_service->current_buffer->bayer_pattern);
-	break;
-      case NO_BAYER_DECODING:
+      // TO BE UPGRADED FOR 16bit...
+      if (iso_service->current_buffer->bayer!=NO_BAYER_DECODING) {
+	dc1394_bayer_decoding_8bit(info->temp, iso_service->current_buffer->image,
+				   iso_service->current_buffer->width, iso_service->current_buffer->height,
+				   iso_service->current_buffer->bayer_pattern,iso_service->current_buffer->bayer);
+      }
+      else {
 	// this is only necessary if no stereo was performed
 	if (iso_service->current_buffer->stereo_decoding==NO_STEREO_DECODING) {
 	  memcpy(iso_service->current_buffer->image, info->temp,
 		 iso_service->current_buffer->bytes_per_frame);
 	}
-	break;
       }
       
       // FPS computation:
@@ -317,7 +305,7 @@ IsoThread(void* arg)
       
       if ((info->receive_method == RECEIVE_METHOD_VIDEO1394)&&(dma_ok==DC1394_SUCCESS))
 	dc1394_dma_done_with_buffer(&info->capture);
-    
+      
       //fprintf(stderr,"Buffer soon rolled in ISO\n");
       pthread_mutex_unlock(&iso_service->mutex_data);
     }
@@ -327,7 +315,7 @@ IsoThread(void* arg)
     pthread_mutex_unlock(&iso_service->mutex_data);
     pthread_cleanup_pop(0);
   }
-
+  
 }
 
 
@@ -354,13 +342,13 @@ gint IsoStopThread(camera_t* cam)
     }
     
     if (info->receive_method == RECEIVE_METHOD_VIDEO1394) {
-      dc1394_dma_unlisten(cam->camera_info.handle, &info->capture);
-      dc1394_dma_release_camera(info->handle, &info->capture);
+      dc1394_dma_unlisten(&info->capture);
+      dc1394_dma_release_capture(&info->capture);
     }
     else 
-      dc1394_release_camera(cam->camera_info.handle, &info->capture);
+      dc1394_release_capture(&info->capture);
     
-    dc1394_destroy_handle(info->handle);
+    raw1394_destroy_handle(info->handle);
     info->handle = NULL;
     
     pthread_mutex_unlock(&iso_service->mutex_struct);
@@ -405,7 +393,7 @@ IsoThreadCheckParams(chain_t *iso_service)
 
   // the buffer sizes. If a size is not good, re-allocate.
   switch (iso_service->current_buffer->bayer) {
-  case BAYER_DECODING_DOWNSAMPLE:
+  case DC1394_BAYER_METHOD_DOWNSAMPLE:
     switch (iso_service->current_buffer->stereo_decoding) {
     case STEREO_DECODING_FIELD:
     case STEREO_DECODING_INTERLACED:
@@ -428,11 +416,11 @@ IsoThreadCheckParams(chain_t *iso_service)
       break;
     }
     break;
-  case BAYER_DECODING_EDGE_SENSE:
-  case BAYER_DECODING_NEAREST:
-  case BAYER_DECODING_SIMPLE:
-  case BAYER_DECODING_BILINEAR:
-  case BAYER_DECODING_HQLINEAR:
+  case DC1394_BAYER_METHOD_EDGESENSE:
+  case DC1394_BAYER_METHOD_NEAREST:
+  case DC1394_BAYER_METHOD_SIMPLE:
+  case DC1394_BAYER_METHOD_BILINEAR:
+  case DC1394_BAYER_METHOD_HQLINEAR:
     switch (iso_service->current_buffer->stereo_decoding) {
     case STEREO_DECODING_FIELD:
     case STEREO_DECODING_INTERLACED:
@@ -474,13 +462,14 @@ IsoThreadCheckParams(chain_t *iso_service)
   }
 
 
-  if (iso_service->camera->misc_info.format==FORMAT_SCALABLE_IMAGE_SIZE) {
-    temp=iso_service->camera->format7_info.mode[iso_service->camera->misc_info.mode-MODE_FORMAT7_MIN].color_coding_id;
+  if ((iso_service->camera->camera_info.mode >= MODE_FORMAT7_MIN) &&
+      (iso_service->camera->camera_info.mode <= MODE_FORMAT7_MAX)) {
+    temp=iso_service->camera->format7_info.mode[iso_service->camera->camera_info.mode-MODE_FORMAT7_MIN].color_coding_id;
   }
   else {
     temp=-1;
   }
-  SetColorMode(iso_service->camera->misc_info.mode,iso_service->current_buffer,temp);
+  SetColorMode(iso_service->camera->camera_info.mode,iso_service->current_buffer,temp);
   /*
   fprintf(stderr,"S:[%d %d] BPF:%lli ColMode:%d\n",
 	  iso_service->current_buffer->width, iso_service->current_buffer->height,
@@ -536,8 +525,7 @@ SetColorMode(int mode, buffer_t *buffer, int f7_color)
   if (buffer->bayer==NO_BAYER_DECODING) {
     switch(mode) {
     case MODE_160x120_YUV444:
-      buffer->color_mode=COLOR_FORMAT7_YUV444;
-      bpp=3;
+      buffer->color_mode=COLOR_FORMAT_YUV444;
       break;
     case MODE_320x240_YUV422:
     case MODE_640x480_YUV422:
@@ -546,33 +534,28 @@ SetColorMode(int mode, buffer_t *buffer, int f7_color)
     case MODE_1280x960_YUV422:
     case MODE_1600x1200_YUV422:
       if (buffer->stereo_decoding!=NO_STEREO_DECODING) {
-	buffer->color_mode=COLOR_FORMAT7_MONO8;
-	bpp=1;
+	buffer->color_mode=COLOR_FORMAT_MONO8;
       }
       else {
-	buffer->color_mode=COLOR_FORMAT7_YUV422;
-	bpp=2;
+	buffer->color_mode=COLOR_FORMAT_YUV422;
       }
       break;
     case MODE_640x480_YUV411:
-      buffer->color_mode=COLOR_FORMAT7_YUV411;
-      bpp=1.5;
+      buffer->color_mode=COLOR_FORMAT_YUV411;
       break;
-    case MODE_640x480_RGB:
-    case MODE_800x600_RGB:
-    case MODE_1024x768_RGB:
-    case MODE_1280x960_RGB:
-    case MODE_1600x1200_RGB:
-      buffer->color_mode=COLOR_FORMAT7_RGB8;
-      bpp=3;
+    case MODE_640x480_RGB8:
+    case MODE_800x600_RGB8:
+    case MODE_1024x768_RGB8:
+    case MODE_1280x960_RGB8:
+    case MODE_1600x1200_RGB8:
+      buffer->color_mode=COLOR_FORMAT_RGB8;
       break;
-    case MODE_640x480_MONO:
-    case MODE_800x600_MONO:
-    case MODE_1024x768_MONO:
-    case MODE_1280x960_MONO:
-    case MODE_1600x1200_MONO:
-      buffer->color_mode=COLOR_FORMAT7_MONO8;
-      bpp=1;
+    case MODE_640x480_MONO8:
+    case MODE_800x600_MONO8:
+    case MODE_1024x768_MONO8:
+    case MODE_1280x960_MONO8:
+    case MODE_1600x1200_MONO8:
+      buffer->color_mode=COLOR_FORMAT_MONO8;
       break;
     case MODE_640x480_MONO16:
     case MODE_800x600_MONO16:
@@ -580,12 +563,10 @@ SetColorMode(int mode, buffer_t *buffer, int f7_color)
     case MODE_1280x960_MONO16:
     case MODE_1600x1200_MONO16:
       if (buffer->stereo_decoding!=NO_STEREO_DECODING) {
-	buffer->color_mode=COLOR_FORMAT7_MONO8;
-	bpp=1;
+	buffer->color_mode=COLOR_FORMAT_MONO8;
       }
       else {
-	buffer->color_mode=COLOR_FORMAT7_MONO16;
-	bpp=2;
+	buffer->color_mode=COLOR_FORMAT_MONO16;
       }
       break;
     case MODE_FORMAT7_0:
@@ -598,46 +579,20 @@ SetColorMode(int mode, buffer_t *buffer, int f7_color)
     case MODE_FORMAT7_7:
       if (f7_color==-1)
 	fprintf(stderr,"ERROR: format7 asked but color mode is -1\n");
-      if ((f7_color==COLOR_FORMAT7_MONO16)&&(buffer->stereo_decoding!=NO_STEREO_DECODING)) {
-	buffer->color_mode=COLOR_FORMAT7_MONO8;
-	bpp=1;
+      if ((f7_color==COLOR_FORMAT_MONO16)&&(buffer->stereo_decoding!=NO_STEREO_DECODING)) {
+	buffer->color_mode=COLOR_FORMAT_MONO8;
       }
       else {
 	buffer->color_mode=f7_color;
-	switch (buffer->color_mode) {
-	case COLOR_FORMAT7_MONO8:
-	case COLOR_FORMAT7_RAW8:
-	  bpp=1;
-	  break;
-	case COLOR_FORMAT7_MONO16:
-	case COLOR_FORMAT7_RAW16:
-	  bpp=2;
-	  break;
-	case COLOR_FORMAT7_RGB8:
-	case COLOR_FORMAT7_YUV444:
-	  bpp=3;
-	  break;
-	case COLOR_FORMAT7_RGB16:
-	  bpp=6;
-	  break;
-	case COLOR_FORMAT7_YUV422:
-	  bpp=2;
-	  break;
-	case COLOR_FORMAT7_YUV411:
-	  bpp=1.5;
-	  break;
-	}
       }
       break;
     }
   }
   else  { // we force RGB mode
-    buffer->color_mode=COLOR_FORMAT7_RGB8;
-    bpp=3;
+    buffer->color_mode=COLOR_FORMAT_RGB8;
   }
 
-  if (bpp==-1)
-    fprintf(stderr,"ERROR: BPP is -1!!\n");
+  dc1394_get_bytes_per_pixel(buffer->color_mode, &bpp);
 
   buffer->buffer_image_bytes=(int)((float)(buffer->width*buffer->height)*bpp);
 

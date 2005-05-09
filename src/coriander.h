@@ -27,6 +27,8 @@
 #include <libraw1394/raw1394.h>
 #include <libraw1394/csr.h>
 #include <libdc1394/dc1394_control.h>
+#include <libdc1394/dc1394_conversions.h>
+#include <libdc1394/dc1394_utils.h>
 
 // FTP lib
 #ifdef HAVE_FTPLIB
@@ -53,8 +55,8 @@
 #include <netinet/in.h>
 
 #include "raw1394support.h"
-#include "bayer.h"
-#include "conversions.h"
+//#include "bayer.h"
+//#include "conversions.h"
 #include "definitions.h"
 #include "videodev.h"
 
@@ -99,7 +101,6 @@
 #include "tools.h"
 #include "topology.h"
 #include "update_frames.h"
-#include "update_menus.h"
 #include "update_ranges.h"
 #include "update_windows.h"
 #include "watch_thread.h"
@@ -116,7 +117,7 @@ camera_t* camera;
 camera_t* cameras;
 
 xvinfo_t xvinfo;
-BusInfo_t* businfo;
+int port_num;
 
 unsigned int format7_tab_presence;
 unsigned int main_timeout_ticker;

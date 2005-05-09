@@ -74,25 +74,26 @@ WatchThread(void *arg)
       pthread_mutex_lock(&info->mutex_area);
       
       if (info->crop>0) {
-	if (camera->misc_info.format==FORMAT_SCALABLE_IMAGE_SIZE) {
-	  if (dc1394_query_format7_image_position(camera->camera_info.handle, camera->camera_info.id, camera->misc_info.mode,
-						  &camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN].pos_x,
-						  &camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN].pos_y)!=DC1394_SUCCESS)
+	if ((camera->camera_info.mode >= MODE_FORMAT7_MIN) &&
+	    (camera->camera_info.mode <= MODE_FORMAT7_MAX)) {
+	  if (dc1394_query_format7_image_position(&camera->camera_info, camera->camera_info.mode,
+						  &camera->format7_info.mode[camera->camera_info.mode-MODE_FORMAT7_MIN].pos_x,
+						  &camera->format7_info.mode[camera->camera_info.mode-MODE_FORMAT7_MIN].pos_y)!=DC1394_SUCCESS)
 	    MainError("Could not get format7 image position");
 	  // if we did reset to max size, don't do the addition:
-	  if ((info->size[0]==camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN].max_size_x)&&
-	      (info->size[1]==camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN].max_size_y))
-	    SetFormat7Crop(info->size[0],info->size[1],info->pos[0],info->pos[1],camera->misc_info.mode);
+	  if ((info->size[0]==camera->format7_info.mode[camera->camera_info.mode-MODE_FORMAT7_MIN].max_size_x)&&
+	      (info->size[1]==camera->format7_info.mode[camera->camera_info.mode-MODE_FORMAT7_MIN].max_size_y))
+	    SetFormat7Crop(info->size[0],info->size[1],info->pos[0],info->pos[1],camera->camera_info.mode);
 	  else {
 	    SetFormat7Crop(info->size[0],info->size[1],
-			   info->pos[0]+camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN].pos_x,
-			   info->pos[1]+camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN].pos_y,
-			   camera->misc_info.mode);
+			   info->pos[0]+camera->format7_info.mode[camera->camera_info.mode-MODE_FORMAT7_MIN].pos_x,
+			   info->pos[1]+camera->format7_info.mode[camera->camera_info.mode-MODE_FORMAT7_MIN].pos_y,
+			   camera->camera_info.mode);
 	  }
 	  UpdateFormat7BppRange();
 	}
 	else {
-	  SetFormat7Crop(info->size[0],info->size[1],info->pos[0],info->pos[1],camera->misc_info.mode);
+	  SetFormat7Crop(info->size[0],info->size[1],info->pos[0],info->pos[1],camera->camera_info.mode);
 	}
 	info->crop=0;
       }
@@ -127,8 +128,9 @@ GetValidF7Crop(watchthread_info_t *wtinfo, chain_t* display_service) {
   Format7ModeInfo_t* f7info;
   int mov[2];
   
-  if (camera->misc_info.format==FORMAT_SCALABLE_IMAGE_SIZE) {
-    f7info=&camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN];
+  if ((camera->camera_info.mode >= MODE_FORMAT7_MIN) &&
+      (camera->camera_info.mode <= MODE_FORMAT7_MAX)) {
+    f7info=&camera->format7_info.mode[camera->camera_info.mode-MODE_FORMAT7_MIN];
 
     // step_pos=step if no step_pos is supported.
     wtinfo->pos[0]=wtinfo->upper_left[0]-wtinfo->upper_left[0]%f7info->unit_pos_x;

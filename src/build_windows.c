@@ -51,8 +51,9 @@ BuildFormat7Window(void)
   // the first available mode (F7 inactive)
 
   // if we are using F7, choose current F7 mode as default
-  if (camera->misc_info.format==FORMAT_SCALABLE_IMAGE_SIZE) {
-    camera->format7_info.edit_mode=camera->misc_info.mode;
+  if ((camera->camera_info.mode >= MODE_FORMAT7_MIN) &&
+      (camera->camera_info.mode <= MODE_FORMAT7_MAX)) {
+    camera->format7_info.edit_mode=camera->camera_info.mode;
   }
   // if we are NOT using F7, check if an F7 mode is supported and use the first one as default
   else { 

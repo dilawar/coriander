@@ -18,89 +18,40 @@
 
 #include "coriander.h"
 
-void
-GetCameraNodes(BusInfo_t* bi) {
+int
+GetCameraNodes(void) {
 
-  raw1394handle_t tmp_handle;
-  int port;
-
-  tmp_handle=raw1394_new_handle();
-  bi->card_found=0;
-  bi->camera_num=0;
-
-  if (tmp_handle!=NULL) {
-    bi->port_num=raw1394_get_port_info(tmp_handle, NULL, 0);
-    //fprintf(stderr,"%d port(s) found\n",bi->port_num);
-    raw1394_destroy_handle(tmp_handle);
-
-    if ((bi->camera_nodes!=NULL)&&(bi->port_camera_num!=NULL)&&(bi->handles!=NULL)) {
-      for (port=0;port<bi->port_num;port++)
-	free(bi->camera_nodes[port]);
-      free(bi->camera_nodes);
-      free(bi->port_camera_num);
-      free(bi->handles);
-      bi->camera_nodes=NULL;
-      bi->port_camera_num=NULL;
-      bi->handles=NULL;
-    }
-
-    if ((bi->camera_nodes==NULL)&&(bi->port_camera_num==NULL)&&(bi->handles==NULL)) {
-      bi->camera_nodes=(nodeid_t**)malloc(bi->port_num*sizeof(nodeid_t*));
-      bi->port_camera_num=(int*)malloc(bi->port_num*sizeof(int));
-      bi->handles=(raw1394handle_t *)malloc(bi->port_num*sizeof(raw1394handle_t));
-    }
-    else {
-      fprintf(stderr,"ERROR allocating bus info structures!\n");
-    }
-    
-    for (port=0;port<bi->port_num;port++) {
-      // get a handle to the current interface card
-      bi->handles[port]=dc1394_create_handle(port);
-      if (bi->handles[port]!=0) { // if the card is present
-	bi->card_found=1;
-	// set bus reset handler
-	raw1394_set_bus_reset_handler(bi->handles[port], bus_reset_handler);
-	// probe the IEEE1394 bus for DC camera:
-	bi->camera_nodes[port]=dc1394_get_camera_nodes(bi->handles[port], &(bi->port_camera_num[port]), 0); // 0 not to show the cams.
-	//fprintf(stderr,"There is %d cameras on port %d\n",bi->port_camera_num[port],port);
-	bi->camera_num+=bi->port_camera_num[port];
-      }
-    }
-  }
-}
-
-void
-GetCamerasInfo(BusInfo_t* bi) {
-
-  int i;
-  int port;
+  int err;
+  dc1394camera_t **dccameras;
+  unsigned int camnum;
   camera_t* camera_ptr;
-  camera_t* tmp;
-  for (port=0;port<bi->port_num;port++) {
-    if (bi->handles[port]!=0) {
-      for (i=0;i<bi->port_camera_num[port];i++) {
-	camera_ptr=NewCamera();
-	GetCameraData(port, bi->camera_nodes[port][i], camera_ptr);
+  int i;
 
-	// check that the camera is not yet found through another interface card (for strange bus topologies):
-	tmp=cameras;
-	while (tmp!=NULL) {
-	  if (tmp->camera_info.euid_64==camera_ptr->camera_info.euid_64) {
-	    // the camera is already there. don't append.
-	    FreeCamera(camera_ptr);
-	    break;
-	  }
-	  else {
-	    tmp=tmp->next;
-	  }
-	}
-	// if the camera was not found, add it
-	if (tmp==NULL) {
-	  AppendCamera(camera_ptr);
-	}
-      }
-    }
+  // find the cameras using classic libdc functions:
+  err=dc1394_find_cameras(&dccameras,&camnum);
+  /*
+  fprintf(stderr,"error code: %d-%d\n",err,DC1394_NO_CAMERA);
+  
+  if (err!=DC1394_NO_CAMERA)
+    DC1394_ERR_CHK(err,"Error getting the cameras");
+  */
+  // create a list of cameras with coriander's camera type camera_t
+  for (i=0;i<camnum;i++) {
+    camera_ptr=NewCamera();
+    // copy the info in the dc structure into the coriander struct.
+    // This is not optimal: we should use pointers instead...
+    memcpy(&camera_ptr->camera_info,dccameras[i],sizeof(dc1394camera_t));
+    GetCameraData(camera_ptr);
+
+    AppendCamera(camera_ptr);
   }
+
+  // free the temp dccameras:
+  for (i=0;i<camnum;i++)
+    free(dccameras[i]);
+  free(dccameras);
+
+  return err;;
 }
 
 camera_t*
@@ -108,40 +59,34 @@ NewCamera(void) {
   camera_t* cam;
 
   cam=(camera_t*)malloc(sizeof(camera_t));
-  cam->prefs.video1394_device=(char*)malloc(STRING_SIZE*sizeof(char));
+  cam->prefs.video1394_device= (char*)malloc(STRING_SIZE*sizeof(char));
   cam->prefs.ftp_user = (char*)malloc(STRING_SIZE*sizeof(char));
   cam->prefs.ftp_address = (char*)malloc(STRING_SIZE*sizeof(char));
   cam->prefs.ftp_password = (char*)malloc(STRING_SIZE*sizeof(char));
   cam->prefs.ftp_filename =(char*)malloc(STRING_SIZE*sizeof(char));
-  cam->prefs.ftp_path =(char*)malloc(STRING_SIZE*sizeof(char));
-  cam->prefs.v4l_dev_name =(char*)malloc(STRING_SIZE*sizeof(char));
+  cam->prefs.ftp_path = (char*)malloc(STRING_SIZE*sizeof(char));
+  cam->prefs.v4l_dev_name = (char*)malloc(STRING_SIZE*sizeof(char));
   cam->prefs.name = (char*)malloc(STRING_SIZE*sizeof(char));
   cam->prefs.save_filename = (char*)malloc(STRING_SIZE*sizeof(char));
   cam->prefs.save_filename_ext = (char*)malloc(STRING_SIZE*sizeof(char));
   cam->prefs.save_filename_base = (char*)malloc(STRING_SIZE*sizeof(char));
   cam->prefs.overlay_filename = (char*)malloc(STRING_SIZE*sizeof(char));
-  cam->bayer_pattern=COLOR_FILTER_FORMAT7_BGGR;
+  cam->bayer_pattern=COLOR_FILTER_FORMAT_BGGR;
   pthread_mutex_init(&cam->uimutex, NULL);
   return cam;
 
 }
 
 void
-GetCameraData(int port, nodeid_t node, camera_t* cam) {
+GetCameraData(camera_t* cam) {
 
-  cam->camera_info.handle=dc1394_create_handle(port);
-  if (dc1394_get_camera_info(cam->camera_info.handle, node, &cam->camera_info)!=DC1394_SUCCESS)
-    MainError("Could not get camera basic information!");
-  if (dc1394_get_camera_misc_info(cam->camera_info.handle, cam->camera_info.id, &cam->misc_info)!=DC1394_SUCCESS)
-    MainError("Could not get camera misc information!");
-  if (cam->misc_info.bmode_capable>0) {
+  if (cam->camera_info.bmode_capable>0) {
     // set b-mode and reprobe modes,... (higher fps formats might not be reported as available in legacy mode)
-    dc1394_set_operation_mode(cam->camera_info.handle, cam->camera_info.id, OPERATION_MODE_1394B);
-    if (dc1394_get_camera_misc_info(cam->camera_info.handle, cam->camera_info.id, &cam->misc_info)!=DC1394_SUCCESS)
-      MainError("Could not get camera misc information!");
+    dc1394_set_operation_mode(&cam->camera_info, OPERATION_MODE_1394B);
   }
-  if (dc1394_get_camera_feature_set(cam->camera_info.handle, cam->camera_info.id, &cam->feature_set)!=DC1394_SUCCESS)
+  if (dc1394_get_camera_feature_set(&cam->camera_info, &cam->feature_set)!=DC1394_SUCCESS)
     MainError("Could not get camera feature information!");
+
   GetFormat7Capabilities(cam);
   cam->image_pipe=NULL;
   pthread_mutex_lock(&cam->uimutex);

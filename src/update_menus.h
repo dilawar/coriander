@@ -18,8 +18,9 @@
 
 #ifndef __UPDATEMENUS_H__
 #define __UPDATEMENUS_H__
-
+// LIBDCV2: this file will be removed...
+/*
 void
 UpdateFormatMenu(void);
-
+*/
 #endif // __UPDATEMENUS_H__

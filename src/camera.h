@@ -19,17 +19,14 @@
 #ifndef __CAMERA_H__
 #define __CAMERA_H__
 
-void
-GetCameraNodes(BusInfo_t* businfo);
-
-void
-GetCamerasInfo(BusInfo_t* businfo);
+int
+GetCameraNodes(void);
 
 camera_t*
 NewCamera(void);
 
 void
-GetCameraData(int port, nodeid_t node, camera_t* cam);
+GetCameraData(camera_t* cam);
 
 void
 AppendCamera(camera_t* camera);

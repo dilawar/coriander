@@ -224,37 +224,6 @@ FreeChain(chain_t* chain)
 
 
 void
-convert_to_rgb(buffer_t *buffer, unsigned char *dest)
-{
-  switch(buffer->color_mode) {
-  case COLOR_FORMAT7_MONO8:
-  case COLOR_FORMAT7_RAW8:
-    y2rgb(buffer->image,dest,buffer->width*buffer->height);
-    break;
-  case COLOR_FORMAT7_YUV411:
-    uyyvyy2rgb(buffer->image,dest,buffer->width*buffer->height);
-    break;
-  case COLOR_FORMAT7_YUV422:
-    uyvy2rgb(buffer->image,dest,buffer->width*buffer->height);
-    break;
-  case COLOR_FORMAT7_YUV444:
-    uyv2rgb(buffer->image,dest,buffer->width*buffer->height);
-    break;
-  case COLOR_FORMAT7_RGB8:
-    memcpy(dest,buffer->image,3*buffer->width*buffer->height);
-    break;
-  case COLOR_FORMAT7_MONO16:
-  case COLOR_FORMAT7_RAW16:
-    y162rgb(buffer->image,dest,buffer->width*buffer->height,buffer->bpp);
-    break;
-  case COLOR_FORMAT7_RGB16:
-    rgb482rgb(buffer->image,dest,buffer->width*buffer->height);
-    break;
-  }
-}
-
-
-void
 InitBuffer(buffer_t *buffer)
 {
   buffer->width=-1;

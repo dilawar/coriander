@@ -18,8 +18,8 @@
 
 #include "coriander.h"
 
-extern char* feature_menu_table_list[NUM_FEATURES]; 
-extern char* feature_menu_items_list[NUM_FEATURES];
+extern char* feature_menu_table_list[FEATURE_NUM]; 
+extern char* feature_menu_items_list[FEATURE_NUM];
 
 void
 UpdateRange(int feature)
@@ -87,6 +87,14 @@ UpdateRange(int feature)
     sprintf(stemp,"feature_%d_rv_scale",feature);
     gtk_widget_set_sensitive(lookup_widget(main_window, stemp), range_is_active);
     break;
+  case FEATURE_WHITE_SHADING:
+    sprintf(stemp,"feature_%d_r_scale",feature);
+    gtk_widget_set_sensitive(lookup_widget(main_window, stemp), range_is_active);
+    sprintf(stemp,"feature_%d_g_scale",feature);
+    gtk_widget_set_sensitive(lookup_widget(main_window, stemp), range_is_active);
+    sprintf(stemp,"feature_%d_b_scale",feature);
+    gtk_widget_set_sensitive(lookup_widget(main_window, stemp), range_is_active);
+    break;
   case FEATURE_TEMPERATURE:
     // the only changeable range is the target one, the other is just an indicator.
     sprintf(stemp,"feature_%d_target_scale",feature);
@@ -122,26 +130,31 @@ UpdateRangeValue(GtkWidget* widget, int feature)
   //       therefor mendatory to read the CAMERA value and not the value present in "feature_set".
   //       Moreover, we must WRITE the value read in the "feature_set" 'value' field.
 
-  int  err, value, valueBU, valueRV, valuegoal, valuecurrent;
-  int stable, prec_value, prec_valuegoal, prec_valueBU, prec_valuecurrent, prec_valueRV;
+  int  err, value, valueBU, valueRV, valuegoal, valuecurrent, valueR, valueG, valueB;
+  //int stable;
+  //int prec_value, prec_valuegoal, prec_valueBU, prec_valuecurrent, prec_valueRV;
   char *stemp;
   GtkAdjustment* adj;
   stemp=(char*)malloc(STRING_SIZE*sizeof(char));
 
-  stable=0;
+  //stable=0;
   err=0;
+  /*
   prec_value=-1e7;// out of range data
   prec_valuegoal=-1e7;
   prec_valuecurrent=-1e7;
   prec_valueBU=-1e7;
   prec_valueRV=-1e7;
-
+  prec_valueR=-1e7;
+  prec_valueG=-1e7;
+  prec_valueB=-1e7;
+  */
   // grab&set range value if readable:
   if (camera->feature_set.feature[feature-FEATURE_MIN].readout_capable) {
     switch(feature) {
     case FEATURE_WHITE_BALANCE:
       //      while(!stable) {
-	err=dc1394_get_white_balance(camera->camera_info.handle,camera->camera_info.id,&valueBU,&valueRV);
+	err=dc1394_get_white_balance(&camera->camera_info,&valueBU,&valueRV);
 	/*	if (((valueBU==prec_valueBU)&&(valueRV==prec_valueRV))||(err<0))
 	  stable=1;
 	else {
@@ -151,7 +164,7 @@ UpdateRangeValue(GtkWidget* widget, int feature)
 	  //fprintf(stderr,"values: %d %d\n",valueBU,valueRV);
 	  }
 	  }*/
-      if (err<0)
+      if (err!=DC1394_SUCCESS)
 	MainError("Could not get white balance value");
       else {
 	sprintf(stemp,"feature_%d_bu_scale",feature);
@@ -164,10 +177,39 @@ UpdateRangeValue(GtkWidget* widget, int feature)
 	g_signal_emit_by_name((gpointer) adj, "changed");
 	//fprintf(stderr,"white balance updated\n");
       }
+      break; case FEATURE_WHITE_SHADING:
+      //      while(!stable) {
+	err=dc1394_get_white_shading(&camera->camera_info,&valueR,&valueG, &valueB);
+	/*	if (((valueBU==prec_valueBU)&&(valueRV==prec_valueRV))||(err<0))
+	  stable=1;
+	else {
+	  prec_valueBU=valueBU;
+	  prec_valueRV=valueRV;
+	  usleep(DELAY);// wait 1/20 sec
+	  //fprintf(stderr,"values: %d %d\n",valueBU,valueRV);
+	  }
+	  }*/
+      if (err!=DC1394_SUCCESS)
+	MainError("Could not get white balance value");
+      else {
+	sprintf(stemp,"feature_%d_r_scale",feature);
+	adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(widget, stemp)));
+	adj->value=valueR;
+	g_signal_emit_by_name((gpointer) adj, "changed");
+	sprintf(stemp,"feature_%d_g_scale",feature);
+	adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(widget, stemp)));
+	adj->value=valueG;
+	g_signal_emit_by_name((gpointer) adj, "changed");
+	sprintf(stemp,"feature_%d_b_scale",feature);
+	adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(widget, stemp)));
+	adj->value=valueB;
+	g_signal_emit_by_name((gpointer) adj, "changed");
+	//fprintf(stderr,"white balance updated\n");
+      }
       break;
     case FEATURE_TEMPERATURE:
       //while(!stable) {
-	err=dc1394_get_temperature(camera->camera_info.handle,camera->camera_info.id,&valuegoal,&valuecurrent);
+	err=dc1394_get_temperature(&camera->camera_info, &valuegoal, &valuecurrent);
 	/*if (((valuegoal==prec_valuegoal)&&(valuecurrent==prec_valuecurrent))||(err<0))
 	  stable=1;
 	else {
@@ -191,7 +233,7 @@ UpdateRangeValue(GtkWidget* widget, int feature)
       break;
     default:
       //while(!stable) {
-	err=dc1394_get_feature_value(camera->camera_info.handle,camera->camera_info.id,feature,&value);
+	err=dc1394_get_feature_value(&camera->camera_info,feature,&value);
 	/*if ((value==prec_value)||(err<0))
 	  stable=1;
 	else {
@@ -223,9 +265,9 @@ UpdateFormat7BppRange(void)
   Format7ModeInfo_t *info;
   info=&camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN];
 
-  if (dc1394_query_format7_byte_per_packet(camera->camera_info.handle,camera->camera_info.id,
+  if (dc1394_query_format7_byte_per_packet(&camera->camera_info,
 					   camera->format7_info.edit_mode, &info->bpp)==DC1394_SUCCESS) {
-    if (dc1394_query_format7_packet_para(camera->camera_info.handle,camera->camera_info.id,
+    if (dc1394_query_format7_packet_para(&camera->camera_info,
 					 camera->format7_info.edit_mode, &info->min_bpp,&info->max_bpp)==DC1394_SUCCESS) {
       //if (info->bpp==0)
       //  fprintf(stderr,"BPP is zero in %s at line %d\n",__FUNCTION__,__LINE__);

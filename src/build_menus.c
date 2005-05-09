@@ -18,23 +18,23 @@
 
 #include "coriander.h"
 
-extern char* fps_label_list[NUM_FRAMERATES];
-extern char* format7_color_list[NUM_MODE_FORMAT7];
-extern char* format7_mode_list[NUM_MODE_FORMAT7];
+extern char* fps_label_list[FRAMERATE_NUM];
+extern char* format7_color_list[MODE_FORMAT7_NUM];
+extern char* format7_mode_list[MODE_FORMAT7_NUM];
 extern char* channel_num_list[16];
 extern char* trigger_mode_list[4];
-extern char* format0_list[NUM_FORMAT0_MODES];
-extern char* format1_list[NUM_FORMAT1_MODES];
-extern char* format2_list[NUM_FORMAT2_MODES];
-extern char* format6_list[NUM_FORMAT6_MODES];
-extern char* format7_list[NUM_MODE_FORMAT7];
+extern char* format0_list[MODE_FORMAT0_NUM];
+extern char* format1_list[MODE_FORMAT1_NUM];
+extern char* format2_list[MODE_FORMAT2_NUM];
+extern char* format6_list[MODE_FORMAT6_NUM];
+extern char* format7_list[MODE_FORMAT7_NUM];
 
 void
 BuildTriggerModeMenu(void)
 {
   int i, f, modes;
   quadlet_t value;
-  int index[NUM_TRIGGER_MODE];
+  int index[TRIGGER_MODE_NUM];
   unsigned int current_trigger_mode;
   GtkWidget* trigger_mode;
   GtkWidget* trigger_mode_menu;
@@ -57,7 +57,7 @@ BuildTriggerModeMenu(void)
   // offset 0x530h. Thus we can't probe anything there without producing an error
   if (camera->feature_set.feature[FEATURE_TRIGGER-FEATURE_MIN].available!=0) {
 
-  if (dc1394_query_feature_characteristics(camera->camera_info.handle,camera->camera_info.id,FEATURE_TRIGGER,&value)!=DC1394_SUCCESS)
+  if (dc1394_query_feature_characteristics(&camera->camera_info,FEATURE_TRIGGER,&value)!=DC1394_SUCCESS)
     MainError("Could not query trigger feature characteristics");
   modes=( (value & (0xF << 12)) >>12 );
 
@@ -79,11 +79,10 @@ BuildTriggerModeMenu(void)
     gtk_option_menu_set_menu (GTK_OPTION_MENU (trigger_mode), trigger_mode_menu);
     
     // sets the active menu item:
-    if (dc1394_get_trigger_mode(camera->camera_info.handle,camera->camera_info.id, &current_trigger_mode)!=DC1394_SUCCESS) {
+    if (dc1394_get_trigger_mode(&camera->camera_info, &current_trigger_mode)!=DC1394_SUCCESS) {
       MainError("Could not query current trigger mode");
       current_trigger_mode=TRIGGER_MODE_MIN;
     }
-
     //fprintf(stderr,"current trigger mode: %d\n", current_trigger_mode - TRIGGER_MODE_MIN);
     gtk_option_menu_set_history (GTK_OPTION_MENU (trigger_mode), index[current_trigger_mode - TRIGGER_MODE_MIN]);
     
@@ -119,7 +118,7 @@ BuildMemoryChannelMenu(void)
   GtkWidget* channel_num_menu;
   GtkWidget* glade_menuitem;
 
-  camera->misc_info.save_channel=camera->misc_info.load_channel;
+  camera->camera_info.save_channel=camera->camera_info.load_channel;
 
   gtk_widget_destroy(GTK_WIDGET (lookup_widget(main_window,"memory_channel"))); // remove previous menu
 
@@ -133,7 +132,7 @@ BuildMemoryChannelMenu(void)
 
   channel_num_menu = gtk_menu_new ();
 
-  for (i=0;i<=camera->misc_info.mem_channel_number;i++) {
+  for (i=0;i<=camera->camera_info.mem_channel_number;i++) {
     glade_menuitem = gtk_menu_item_new_with_label (_(channel_num_list[i]));
     gtk_widget_show (glade_menuitem);
     gtk_menu_append (GTK_MENU (channel_num_menu), glade_menuitem);
@@ -145,7 +144,7 @@ BuildMemoryChannelMenu(void)
   gtk_option_menu_set_menu (GTK_OPTION_MENU (channel_num), channel_num_menu);
 
   // sets the active menu item:
-  gtk_option_menu_set_history (GTK_OPTION_MENU (channel_num), camera->misc_info.load_channel);
+  gtk_option_menu_set_history (GTK_OPTION_MENU (channel_num), camera->camera_info.load_channel);
 }
 
 void
@@ -200,7 +199,7 @@ BuildFormat7ModeMenu(void)
 {
   int i,f;
   int k=0;
-  int index[NUM_MODE_FORMAT7];
+  int index[MODE_FORMAT7_NUM];
 
   //fprintf(stderr,"building F7 mode menu\n");
 
@@ -249,9 +248,7 @@ BuildFormat7ModeMenu(void)
 void
 BuildFormat7ColorMenu(void)
 {
-  int i, f;
-  int k=0;
-  int index[NUM_COLOR_FORMAT7];
+  int i;
 
   //fprintf(stderr,"building F7 color menu\n");
 
@@ -271,25 +268,23 @@ BuildFormat7ColorMenu(void)
 
   color_num_menu = gtk_menu_new ();
 
-  for (f=COLOR_FORMAT7_MIN,i=0;f<=COLOR_FORMAT7_MAX;f++,i++) {
-    if ((camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].color_coding) & (0x1 << (31-i))) {
-      index[i]=k;
-      k++;
-      glade_menuitem = gtk_menu_item_new_with_label (_(format7_color_list[i]));
-      gtk_widget_show (glade_menuitem);
-      gtk_menu_append (GTK_MENU (color_num_menu), glade_menuitem);
-      g_signal_connect ((gpointer) glade_menuitem, "activate",
-			  G_CALLBACK (on_edit_format7_color_activate),
-			  (int*)f); // f is an int passed in a pointer variable. This is 'normal'.
-    }
-    else
-      index[i]=0;
+  for (i=0;i<=camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].color_codings_num;i++) {
+    glade_menuitem = gtk_menu_item_new_with_label (_(format7_color_list[camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].color_codings[i]-COLOR_FORMAT_MIN]));
+    gtk_widget_show (glade_menuitem);
+    gtk_menu_append (GTK_MENU (color_num_menu), glade_menuitem);
+    g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (on_edit_format7_color_activate),
+		      (int*)camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].color_codings[i]);
   }
   
+  for (i=0;i<camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].color_codings_num;i++) {
+    if (camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].color_coding_id==camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].color_codings[i])
+      break;
+  }
   gtk_option_menu_set_menu (GTK_OPTION_MENU (color_num), color_num_menu);
 
   // sets the active menu item:
-  gtk_option_menu_set_history (GTK_OPTION_MENU (color_num), index[camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].color_coding_id-COLOR_FORMAT7_MIN]);
+  gtk_option_menu_set_history (GTK_OPTION_MENU (color_num), i);
 
 }
 
@@ -297,24 +292,24 @@ BuildFormat7ColorMenu(void)
 void
 BuildFpsMenu(void)
 {
-  int i, f;
-  quadlet_t value;
+  int i;
   GtkWidget* fps;
   GtkWidget* fps_menu;
   GtkWidget* glade_menuitem;
-  int index[NUM_FRAMERATES];
-  int k=0;
+  quadlet_t value;
+  unsigned int *framerates;
+  int numfps;
 
-  if (camera->misc_info.format == FORMAT_SCALABLE_IMAGE_SIZE) {
+  if ((camera->camera_info.mode >= MODE_FORMAT7_MIN) &&
+      (camera->camera_info.mode <= MODE_FORMAT7_MAX)) {
     value = 0; /* format 7 has no fixed framerates */
     gtk_widget_set_sensitive(lookup_widget(main_window,"fps_menu"),FALSE);
   }
   else {
     gtk_widget_set_sensitive(lookup_widget(main_window,"fps_menu"),TRUE);
-    if (dc1394_query_supported_framerates(camera->camera_info.handle, camera->camera_info.id, camera->misc_info.format, camera->misc_info.mode, &value)!=DC1394_SUCCESS)
+
+    if (dc1394_query_supported_framerates(&camera->camera_info, camera->camera_info.mode, &framerates, &numfps)!=DC1394_SUCCESS)
       MainError("Could not query supported framerates");
-  
- 
     gtk_widget_destroy(GTK_WIDGET (lookup_widget(main_window,"fps_menu"))); // remove previous menu
     
     fps = gtk_option_menu_new ();
@@ -327,20 +322,13 @@ BuildFpsMenu(void)
     
     fps_menu = gtk_menu_new ();
     
-    k=0;
-    for (f=FRAMERATE_MIN,i=0;f<=FRAMERATE_MAX;i++,f++) {
-      if  ( value & (0x1<< (31-i) ) ) { //31 to 31-num_framerates 
-	index[i]=k;
-	k++;
-	glade_menuitem = gtk_menu_item_new_with_label (_(fps_label_list[i]));
+    for (i=0;i<numfps;i++) {
+	glade_menuitem = gtk_menu_item_new_with_label (_(fps_label_list[framerates[i]-FRAMERATE_MIN]));
 	gtk_widget_show (glade_menuitem);
 	gtk_menu_append (GTK_MENU (fps_menu), glade_menuitem);
 	g_signal_connect ((gpointer) glade_menuitem, "activate",
 			    G_CALLBACK (on_fps_activate),
-			    (int*)f);
-      }
-      else
-	index[i]=-1; // framerate not supported
+			    (unsigned int*)framerates[i]);
     }
     gtk_option_menu_set_menu (GTK_OPTION_MENU (fps), fps_menu);
     
@@ -348,28 +336,31 @@ BuildFpsMenu(void)
     //gtk_widget_set_sensitive (lookup_widget(main_window,"fps_menu"),
     //			    !(GTK_TOGGLE_BUTTON (lookup_widget(main_window,"trigger_external")))->active);
     
-    // sets the active menu item:
-    if (index[camera->misc_info.framerate-FRAMERATE_MIN]<0) { // previously selected framerate unsupported!!
-      SwitchToNearestFPS(value, camera->misc_info.framerate);
+    // switch to nearest FPS if the previous value is not valid anymore
+    for (i=0;i<numfps;i++) {
+      if (camera->camera_info.framerate==framerates[i])
+	break;
     }
-    gtk_option_menu_set_history (GTK_OPTION_MENU (fps), index[camera->misc_info.framerate-FRAMERATE_MIN]);
+    if (camera->camera_info.framerate!=framerates[i]) {
+      i=SwitchToNearestFPS(framerates, numfps, camera->camera_info.framerate);
+    }
+    // sets the active menu item:
+    gtk_option_menu_set_history (GTK_OPTION_MENU (fps), i);
   }
   
+  free(framerates);
 }
 
 
 void
 BuildFormatMenu(void)
 {
-  int f;
-  int k=0;
-  int index[2048];
-  quadlet_t modes, formats;
-
-
+  int i;
   GtkWidget* mode_num;
   GtkWidget* mode_num_menu;
   GtkWidget* glade_menuitem;
+  unsigned int *modes;
+  int nummodes;
 
   gtk_widget_destroy(GTK_WIDGET (lookup_widget(main_window,"format_select"))); // remove previous menu
 
@@ -384,141 +375,48 @@ BuildFormatMenu(void)
   mode_num_menu = gtk_menu_new ();
 
   // get supported formats
-  if (dc1394_query_supported_formats(camera->camera_info.handle, camera->camera_info.id, &formats)<0) {
+  if (dc1394_query_supported_modes(&camera->camera_info, &modes, &nummodes)<0) {
     MainError("Could not query supported formats");
-    formats=0x0;
+    return;
   }
 
-  // FORMAT_0 -----------------------------------
-  if (formats & (0x1<<31)) {
-    if (dc1394_query_supported_modes(camera->camera_info.handle, camera->camera_info.id, FORMAT_VGA_NONCOMPRESSED, &modes)<0) {
-      MainError("Could not query Format0 modes");
-      modes=0;
+  for (i=0;i<nummodes;i++) {
+    if ((modes[i]>=MODE_FORMAT0_MIN)&&(modes[i]<=MODE_FORMAT0_MAX)) {
+      glade_menuitem = gtk_menu_item_new_with_label (_(format0_list[modes[i]-MODE_FORMAT0_MIN]));
     }
-  }
-  else
-    modes=0;
-  
-  for (f=MODE_FORMAT0_MIN;f<=MODE_FORMAT0_MAX;f++) {
-    if (modes & (0x1<<(31-(f-MODE_FORMAT0_MIN)))) {
-      index[f]=k;
-      k++;
-      glade_menuitem = gtk_menu_item_new_with_label (_(format0_list[f-MODE_FORMAT0_MIN]));
-      gtk_widget_show (glade_menuitem);
-      gtk_menu_append (GTK_MENU (mode_num_menu), glade_menuitem);
-      g_signal_connect ((gpointer) glade_menuitem, "activate",
-			  G_CALLBACK (ChangeModeAndFormat),
-			  (int*)f); // i is an int passed in a pointer variable. This is 'normal'.
+    else if ((modes[i]>=MODE_FORMAT1_MIN)&&(modes[i]<=MODE_FORMAT1_MAX)) {
+      glade_menuitem = gtk_menu_item_new_with_label (_(format1_list[modes[i]-MODE_FORMAT1_MIN]));
     }
-    else
-      index[f]=0;
-  }
+    else if ((modes[i]>=MODE_FORMAT2_MIN)&&(modes[i]<=MODE_FORMAT2_MAX)) {
+      glade_menuitem = gtk_menu_item_new_with_label (_(format2_list[modes[i]-MODE_FORMAT2_MIN]));
+    }
+    else if ((modes[i]>=MODE_FORMAT6_MIN)&&(modes[i]<=MODE_FORMAT6_MAX)) {
+      glade_menuitem = gtk_menu_item_new_with_label (_(format6_list[modes[i]-MODE_FORMAT6_MIN]));
+    }
+    else if ((modes[i]>=MODE_FORMAT7_MIN)&&(modes[i]<=MODE_FORMAT7_MAX)) {
+      glade_menuitem = gtk_menu_item_new_with_label (_(format7_list[modes[i]-MODE_FORMAT7_MIN]));
+    }
+    else {
+      fprintf(stderr,"Invalid mode\n");
+      return;
+    }
 
-  // FORMAT_1 -----------------------------------
-  if (formats & (0x1<<30)) {
-    if (dc1394_query_supported_modes(camera->camera_info.handle, camera->camera_info.id, FORMAT_SVGA_NONCOMPRESSED_1, &modes)<0) {
-      MainError("Could not query Format0 modes");
-      modes=0;
-    }
+    gtk_widget_show (glade_menuitem);
+    gtk_menu_append (GTK_MENU (mode_num_menu), glade_menuitem);
+    g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (ChangeModeAndFormat),
+		      (unsigned int*)modes[i]);
   }
-  else
-    modes=0;
-  
-  for (f=MODE_FORMAT1_MIN;f<=MODE_FORMAT1_MAX;f++) {
-    if (modes & (0x1<<(31-(f-MODE_FORMAT1_MIN)))) {
-      index[f]=k;
-      k++;
-      glade_menuitem = gtk_menu_item_new_with_label (_(format1_list[f-MODE_FORMAT1_MIN]));
-      gtk_widget_show (glade_menuitem);
-      gtk_menu_append (GTK_MENU (mode_num_menu), glade_menuitem);
-      g_signal_connect ((gpointer) glade_menuitem, "activate",
-			  G_CALLBACK (ChangeModeAndFormat),
-			  (int*)f); // i is an int passed in a pointer variable. This is 'normal'.
-    }
-    else
-      index[f]=0;
+  for (i=0;i<nummodes;i++) {
+    if (camera->camera_info.mode==modes[i])
+      break;
   }
-
-  // FORMAT_2 -----------------------------------
-  if (formats & (0x1<<29)) {
-    if (dc1394_query_supported_modes(camera->camera_info.handle, camera->camera_info.id, FORMAT_SVGA_NONCOMPRESSED_2, &modes)<0) {
-      MainError("Could not query Format0 modes");
-      modes=0;
-    }
-  }
-  else
-    modes=0;
-  
-  for (f=MODE_FORMAT2_MIN;f<=MODE_FORMAT2_MAX;f++) {
-    if (modes & (0x1<<(31-(f-MODE_FORMAT2_MIN)))) {
-      index[f]=k;
-      k++;
-      glade_menuitem = gtk_menu_item_new_with_label (_(format2_list[f-MODE_FORMAT2_MIN]));
-      gtk_widget_show (glade_menuitem);
-      gtk_menu_append (GTK_MENU (mode_num_menu), glade_menuitem);
-      g_signal_connect ((gpointer) glade_menuitem, "activate",
-			  G_CALLBACK (ChangeModeAndFormat),
-			  (int*)f); // i is an int passed in a pointer variable. This is 'normal'.
-    }
-    else
-      index[f]=0;
-  }
-  
-  // FORMAT_6 -----------------------------------
-  if (formats & (0x1<<25)) {
-    if (dc1394_query_supported_modes(camera->camera_info.handle, camera->camera_info.id, FORMAT_STILL_IMAGE, &modes)<0) {
-      MainError("Could not query Format0 modes");
-      modes=0;
-    }
-  }
-  else
-    modes=0;
-
-  for (f=MODE_FORMAT6_MIN;f<=MODE_FORMAT6_MAX;f++) {
-    if (modes & (0x1<<(31-(f-MODE_FORMAT6_MIN)))) {
-      index[f]=k;
-      k++;
-      glade_menuitem = gtk_menu_item_new_with_label (_(format6_list[f-MODE_FORMAT6_MIN]));
-      gtk_widget_show (glade_menuitem);
-      gtk_menu_append (GTK_MENU (mode_num_menu), glade_menuitem);
-      g_signal_connect ((gpointer) glade_menuitem, "activate",
-			  G_CALLBACK (ChangeModeAndFormat),
-			  (int*)f); // i is an int passed in a pointer variable. This is 'normal'.
-    }
-    else
-      index[f]=0;
-  }
-
-  // FORMAT_7 -----------------------------------
-  if (formats & (0x1<<24)) {
-    if (dc1394_query_supported_modes(camera->camera_info.handle, camera->camera_info.id, FORMAT_SCALABLE_IMAGE_SIZE, &modes)<0) {
-      MainError("Could not query Format0 modes");
-      modes=0;
-    }
-  }
-  else
-    modes=0;
-  
-  for (f=MODE_FORMAT7_MIN;f<=MODE_FORMAT7_MAX;f++) {
-    if (modes & (0x1<<(31-(f-MODE_FORMAT7_MIN)))) {
-      index[f]=k;
-      k++;
-      glade_menuitem = gtk_menu_item_new_with_label (_(format7_list[f-MODE_FORMAT7_MIN]));
-      gtk_widget_show (glade_menuitem);
-      gtk_menu_append (GTK_MENU (mode_num_menu), glade_menuitem);
-      g_signal_connect ((gpointer) glade_menuitem, "activate",
-			  G_CALLBACK (ChangeModeAndFormat),
-			  (int*)f); // i is an int passed in a pointer variable. This is 'normal'.
-    }
-    else
-      index[f]=0;
-  }
-  
   gtk_option_menu_set_menu (GTK_OPTION_MENU (mode_num), mode_num_menu);
 
   // sets the active menu item:
-  gtk_option_menu_set_history (GTK_OPTION_MENU (mode_num), index[camera->misc_info.mode]);
+  gtk_option_menu_set_history (GTK_OPTION_MENU (mode_num), i);
 
+  free(modes);
 }
 
 
@@ -558,42 +456,42 @@ BuildBayerMenu(void)
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
   g_signal_connect ((gpointer) glade_menuitem, "activate",
 		      G_CALLBACK (on_bayer_menu_activate),
-		      (int*)BAYER_DECODING_NEAREST); 
+		      (int*)DC1394_BAYER_METHOD_NEAREST); 
   // add simple option
   glade_menuitem = gtk_menu_item_new_with_label (_("Simple"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
   g_signal_connect ((gpointer) glade_menuitem, "activate",
 		      G_CALLBACK (on_bayer_menu_activate),
-		      (int*)BAYER_DECODING_SIMPLE); 
+		      (int*)DC1394_BAYER_METHOD_SIMPLE); 
   // add edge sense option
   glade_menuitem = gtk_menu_item_new_with_label (_("Edge Sense"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
   g_signal_connect ((gpointer) glade_menuitem, "activate",
 		      G_CALLBACK (on_bayer_menu_activate),
-		      (int*)BAYER_DECODING_EDGE_SENSE); 
+		      (int*)DC1394_BAYER_METHOD_EDGESENSE); 
   // add downsample option
   glade_menuitem = gtk_menu_item_new_with_label (_("Downsample"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
   g_signal_connect ((gpointer) glade_menuitem, "activate",
 		      G_CALLBACK (on_bayer_menu_activate),
-		      (int*)BAYER_DECODING_DOWNSAMPLE); 
+		      (int*)DC1394_BAYER_METHOD_DOWNSAMPLE); 
   // add bilinear option
   glade_menuitem = gtk_menu_item_new_with_label (_("Bilinear"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
   g_signal_connect ((gpointer) glade_menuitem, "activate",
 		      G_CALLBACK (on_bayer_menu_activate),
-		      (int*)BAYER_DECODING_BILINEAR); 
+		      (int*)DC1394_BAYER_METHOD_BILINEAR); 
   // add HQ linear option
   glade_menuitem = gtk_menu_item_new_with_label (_("HQ Linear"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
   g_signal_connect ((gpointer) glade_menuitem, "activate",
 		      G_CALLBACK (on_bayer_menu_activate),
-		      (int*)BAYER_DECODING_HQLINEAR); 
+		      (int*)DC1394_BAYER_METHOD_HQLINEAR); 
   
   gtk_option_menu_set_menu (GTK_OPTION_MENU (new_option_menu), new_menu);
 
@@ -633,28 +531,28 @@ BuildBayerPatternMenu(void)
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
   g_signal_connect ((gpointer) glade_menuitem, "activate",
 		      G_CALLBACK (on_bayer_pattern_menu_activate),
-		      (int*)COLOR_FILTER_FORMAT7_BGGR); 
+		      (int*)COLOR_FILTER_FORMAT_BGGR); 
   // add GRBG option
   glade_menuitem = gtk_menu_item_new_with_label (_("GRBG"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
   g_signal_connect ((gpointer) glade_menuitem, "activate",
 		      G_CALLBACK (on_bayer_pattern_menu_activate),
-		      (int*)COLOR_FILTER_FORMAT7_GRBG); 
+		      (int*)COLOR_FILTER_FORMAT_GRBG); 
   // add RGGB option
   glade_menuitem = gtk_menu_item_new_with_label (_("RGGB"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
   g_signal_connect ((gpointer) glade_menuitem, "activate",
 		      G_CALLBACK (on_bayer_pattern_menu_activate),
-		      (int*)COLOR_FILTER_FORMAT7_RGGB); 
+		      (int*)COLOR_FILTER_FORMAT_RGGB); 
   // add GBRG option
   glade_menuitem = gtk_menu_item_new_with_label (_("GBRG"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
   g_signal_connect ((gpointer) glade_menuitem, "activate",
 		      G_CALLBACK (on_bayer_pattern_menu_activate),
-		      (int*)COLOR_FILTER_FORMAT7_GBRG); 
+		      (int*)COLOR_FILTER_FORMAT_GBRG); 
   /*
   // add Auto option
   glade_menuitem = gtk_menu_item_new_with_label (_("Auto"));

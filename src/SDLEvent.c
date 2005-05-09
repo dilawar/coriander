@@ -212,8 +212,9 @@ OnMouseDown(chain_t *display_service, int button, int x, int y)
   Format7ModeInfo_t* f7info;
   info=(displaythread_info_t*)display_service->data;
 
-  if (camera->misc_info.format==FORMAT_SCALABLE_IMAGE_SIZE) {
-    f7info=&camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN];
+  if ((camera->camera_info.mode >= MODE_FORMAT7_MIN) &&
+      (camera->camera_info.mode <= MODE_FORMAT7_MAX)) {
+    f7info=&camera->format7_info.mode[camera->camera_info.mode-MODE_FORMAT7_MIN];
   }
 
   switch (button) {
@@ -406,12 +407,12 @@ SDLResizeDisplay(chain_t *display_service, int width, int height)
     
     // Create YUV Overlay  
     switch(preferences.overlay_byte_order) {
-    case OVERLAY_BYTE_ORDER_YUYV:
+    case DC1394_BYTE_ORDER_YUYV:
       info->sdloverlay = SDL_CreateYUVOverlay(display_service->current_buffer->width,
 					      display_service->current_buffer->height,
 					      SDL_YUY2_OVERLAY,info->sdlvideo);
       break;
-    case OVERLAY_BYTE_ORDER_UYVY:
+    case DC1394_BYTE_ORDER_UYVY:
       info->sdloverlay = SDL_CreateYUVOverlay(display_service->current_buffer->width,
 					      display_service->current_buffer->height,
 					      SDL_UYVY_OVERLAY,info->sdlvideo);
@@ -439,7 +440,8 @@ SDLCropImage(chain_t *display_service)
   pthread_mutex_lock(&watchthread_info.mutex_area);
 
   watchthread_info.draw=0;
-  if (camera->misc_info.format==FORMAT_SCALABLE_IMAGE_SIZE)
+  if ((camera->camera_info.mode >= MODE_FORMAT7_MIN) &&
+      (camera->camera_info.mode <= MODE_FORMAT7_MAX))
     watchthread_info.crop=1;
 
   pthread_mutex_unlock(&watchthread_info.mutex_area);
@@ -451,12 +453,13 @@ SDLSetMaxSize(chain_t *display_service)
 {
   pthread_mutex_lock(&watchthread_info.mutex_area);
   watchthread_info.draw=0;
-  if (camera->misc_info.format==FORMAT_SCALABLE_IMAGE_SIZE) {
+  if ((camera->camera_info.mode >= MODE_FORMAT7_MIN) &&
+      (camera->camera_info.mode <= MODE_FORMAT7_MAX)) {
     watchthread_info.crop=1;
     watchthread_info.pos[0]=0;
     watchthread_info.pos[1]=0;
-    watchthread_info.size[0]=camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN].max_size_x;
-    watchthread_info.size[1]=camera->format7_info.mode[camera->misc_info.mode-MODE_FORMAT7_MIN].max_size_y;
+    watchthread_info.size[0]=camera->format7_info.mode[camera->camera_info.mode-MODE_FORMAT7_MIN].max_size_x;
+    watchthread_info.size[1]=camera->format7_info.mode[camera->camera_info.mode-MODE_FORMAT7_MIN].max_size_y;
   }
   pthread_mutex_unlock(&watchthread_info.mutex_area);
 

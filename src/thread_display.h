@@ -43,6 +43,18 @@ enum
   OVERLAY_TYPE_AVERAGE
 };
 
+#define REPLPIX(im, pix, index)\
+  im[index]=pix[0];\
+  im[index+1]=pix[1];\
+  im[index+2]=pix[2];\
+  im[index+3]=pix[3]
+
+#define INVPIX(im, index)\
+  im[index]=255-im[index];\
+  im[index+1]=255-im[index+1];\
+  im[index+2]=255-im[index+2];\
+  im[index+3]=255-im[index+3]
+
 typedef struct
 {
   long int                period;
