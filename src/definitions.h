@@ -155,9 +155,8 @@ typedef struct _Format7ModeInfo
   unsigned int unit_pos_x;
   unsigned int unit_pos_y;
 
+  dc1394colormodes_t color_codings;
   unsigned int color_coding_id;
-  unsigned int color_codings[COLOR_FORMAT_NUM];
-  unsigned int color_codings_num;
 
   unsigned int pixnum;
 

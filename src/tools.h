@@ -41,7 +41,7 @@ void
 GetFormat7ModeInfo(camera_t* cam, int mode_id);
 
 unsigned int
-SwitchToNearestFPS(int *framerates, int numfps, int current);
+SwitchToNearestFPS(dc1394framerates_t *framerates, int current);
 
 void
 ChangeModeAndFormat         (GtkMenuItem     *menuitem,

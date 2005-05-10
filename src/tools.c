@@ -181,26 +181,25 @@ void
 GetFormat7Capabilities(camera_t* cam)
 {
   int i;
-  unsigned int *formats;
-  unsigned int numformats;
   int check=0;
-  
+  dc1394videomodes_t modes;
+
   for (i=0;i<MODE_FORMAT7_NUM;i++) {
     cam->format7_info.mode[i].present=0;
   }
   
   //eprint("F7 presence set to 0\n");
 
-  if (dc1394_query_supported_modes(&cam->camera_info, &formats, &numformats)!=DC1394_SUCCESS)
+  if (dc1394_query_supported_modes(&cam->camera_info, &modes)!=DC1394_SUCCESS)
     MainError("Could not query supported formats");
   else {
     // find a mode which is F7:
     //eprint("found %d formats\n",numformats)
-    for (i=0;i<numformats;i++) {
-      if ((formats[i]>=MODE_FORMAT7_MIN)&&(formats[i]<=MODE_FORMAT7_MAX)) {
+    for (i=0;i<modes.num;i++) {
+      if ((modes.modes[i]>=MODE_FORMAT7_MIN)&&(modes.modes[i]<=MODE_FORMAT7_MAX)) {
 	//eprint("format %d is F7\n",formats[i])
-	cam->format7_info.mode[formats[i]-MODE_FORMAT7_MIN].present= 1;
-	GetFormat7ModeInfo(cam, formats[i]);
+	cam->format7_info.mode[modes.modes[i]-MODE_FORMAT7_MIN].present= 1;
+	GetFormat7ModeInfo(cam, modes.modes[i]);
 	check=1;
       }
     }
@@ -208,15 +207,12 @@ GetFormat7Capabilities(camera_t* cam)
   if (check==0) { // F7 not supported
     cam->format7_info.edit_mode=-1;
   }
-
-  free(formats);
 }
 
 void
 GetFormat7ModeInfo(camera_t* cam, int mode_id) 
 {
   Format7ModeInfo_t *mode;
-  unsigned int *color_codings;
 
   mode=&cam->format7_info.mode[mode_id-MODE_FORMAT7_MIN];
 
@@ -271,35 +267,27 @@ GetFormat7ModeInfo(camera_t* cam, int mode_id)
     if (dc1394_query_format7_color_coding_id(&cam->camera_info,mode_id,&mode->color_coding_id)!=DC1394_SUCCESS)
       MainError("Got a problem querying format7 color coding ID");
     //eprint("getting color codings\n");
-    if (dc1394_query_format7_color_coding(&cam->camera_info,mode_id,&color_codings, &mode->color_codings_num)!=DC1394_SUCCESS)
+    if (dc1394_query_format7_color_coding(&cam->camera_info,mode_id,&mode->color_codings)!=DC1394_SUCCESS)
       MainError("Got a problem querying format7 color coding");
-
-    //eprint("memcpy?\n");
-    memcpy(&mode->color_codings,color_codings,mode->color_codings_num*sizeof(unsigned int));
-
-    //eprint("free\n");
-    //free(color_codings);
-    //eprint("  got everything\n");
-    //fprintf(stderr,"%d\n",(int)mode->total_bytes);
   }
 }
 
 unsigned int
-SwitchToNearestFPS(int *framerates, int numfps, int current)
+SwitchToNearestFPS(dc1394framerates_t *framerates, int current)
 {
   int i;
 
-  if (current<framerates[0])
-    camera->camera_info.framerate=framerates[0];
+  if (current<framerates->framerates[0])
+    camera->camera_info.framerate=framerates->framerates[0];
     return 0;
   
-  if (current>framerates[numfps-1])
-    camera->camera_info.framerate=framerates[numfps-1];
-    return numfps-1;
+  if (current>framerates->framerates[framerates->num-1])
+    camera->camera_info.framerate=framerates->framerates[framerates->num-1];
+    return framerates->num-1;
   
-  for (i=1;i<numfps;i++) { // search radius is num_framerates/2 +1 for safe rounding
-    if (current<framerates[i])
-      camera->camera_info.framerate=framerates[i-1];
+  for (i=1;i<framerates->num;i++) { // search radius is num_framerates/2 +1 for safe rounding
+    if (current<framerates->framerates[i])
+      camera->camera_info.framerate=framerates->framerates[i-1];
       return i-1; // switch to lower fps
   }
 
@@ -311,8 +299,7 @@ ChangeModeAndFormat         (GtkMenuItem     *menuitem,
 {
   int state;
   int mode,i;
-  unsigned int *framerates;
-  unsigned int numfps;
+  dc1394framerates_t framerates;
   
   //eprint("change mode\n");
 
@@ -328,18 +315,17 @@ ChangeModeAndFormat         (GtkMenuItem     *menuitem,
   // check consistancy of framerate:
   if (!((camera->camera_info.mode >= MODE_FORMAT7_MIN) &&
 	(camera->camera_info.mode <= MODE_FORMAT7_MAX))) {
-    if (dc1394_query_supported_framerates(&camera->camera_info, mode, &framerates, &numfps)!=DC1394_SUCCESS)
+    if (dc1394_query_supported_framerates(&camera->camera_info, mode, &framerates)!=DC1394_SUCCESS)
       MainError("Could not read supported framerates");
     else {
-      for (i=0;i<numfps;i++) {
-	if (camera->camera_info.framerate==framerates[i])
+      for (i=0;i<framerates.num;i++) {
+	if (camera->camera_info.framerate==framerates.framerates[i])
 	  break;
       }
-      if (camera->camera_info.framerate!=framerates[i]) {
+      if (camera->camera_info.framerate!=framerates.framerates[i]) {
 	//eprint("need to switch\n");
-	i=SwitchToNearestFPS(framerates, numfps, camera->camera_info.framerate);
+	i=SwitchToNearestFPS(&framerates, camera->camera_info.framerate);
       }
-      free(framerates);
     }
   }
   

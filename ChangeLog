@@ -2,6 +2,9 @@ Coriander, (c) 2000-2005 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 2.0.0
 
+   May 10, 2005, by Damien Douxchamps
+   - adapted to libdc-2.0 changes
+	
    May 9, 2005, by Damien Douxchamps
    - fixed a lot of bugs.
    - added exposure check (under and over exposed areas highlighted)
