@@ -53,22 +53,22 @@ BuildFormat7Window(void)
   // the first available mode (F7 inactive)
 
   // if we are using F7, choose current F7 mode as default
-  if ((camera->camera_info.mode >= MODE_FORMAT7_MIN) &&
-      (camera->camera_info.mode <= MODE_FORMAT7_MAX)) {
+  if ((camera->camera_info.mode >= DC1394_MODE_FORMAT7_MIN) &&
+      (camera->camera_info.mode <= DC1394_MODE_FORMAT7_MAX)) {
     camera->format7_info.edit_mode=camera->camera_info.mode;
   }
   // if we are NOT using F7, check if an F7 mode is supported and use the first one as default
   else { 
     // get first supported F7 mode
-    for (f=MODE_FORMAT7_MIN;f<=MODE_FORMAT7_MAX;f++) {
-      if (camera->format7_info.mode[f-MODE_FORMAT7_MIN].present>0) {
+    for (f=DC1394_MODE_FORMAT7_MIN;f<=DC1394_MODE_FORMAT7_MAX;f++) {
+      if (camera->format7_info.mode[f-DC1394_MODE_FORMAT7_MIN].present>0) {
 	f++;
 	break;
       }
     }
     f--;
 
-    if (camera->format7_info.mode[f-MODE_FORMAT7_MIN].present==0) {
+    if (camera->format7_info.mode[f-DC1394_MODE_FORMAT7_MIN].present==0) {
       // F7 not supported. don't build anything
       camera->format7_info.edit_mode=-1;
     }
@@ -433,9 +433,9 @@ BuildFeatureWindow(void)
   gtk_widget_show (vbox_features);
   gtk_container_add (GTK_CONTAINER (lookup_widget(main_window,"viewport1")), vbox_features);
 
-  for (i=FEATURE_MIN;i<=FEATURE_MAX;i++) {
-    if ((camera->feature_set.feature[i-FEATURE_MIN].available>0)&&
-	(i!=FEATURE_TRIGGER)) {
+  for (i=DC1394_FEATURE_MIN;i<=DC1394_FEATURE_MAX;i++) {
+    if ((camera->feature_set.feature[i-DC1394_FEATURE_MIN].available>0)&&
+	(i!=DC1394_FEATURE_TRIGGER)) {
       BuildRange(i);
     }
   }

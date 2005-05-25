@@ -18,7 +18,7 @@
 
 #include "coriander.h"
 
-const char * feature_name_list[FEATURE_NUM] = {
+const char * feature_name_list[DC1394_FEATURE_NUM] = {
   "Brightness",
   "Auto exposure",
   "Sharpness",
@@ -43,7 +43,7 @@ const char * feature_name_list[FEATURE_NUM] = {
   "Capture Quality"
 };
 
-const char *feature_abs_switch_list[FEATURE_NUM] = {
+const char *feature_abs_switch_list[DC1394_FEATURE_NUM] = {
   "abs_brightness_switch",
   "abs_autoexp_switch",
   "abs_sharpness_switch",
@@ -68,7 +68,7 @@ const char *feature_abs_switch_list[FEATURE_NUM] = {
   "abs_capture_quality_switch"
 };
 
-const char *feature_abs_label_list[FEATURE_NUM] = {
+const char *feature_abs_label_list[DC1394_FEATURE_NUM] = {
   "%",
   "IL",
   "-",
@@ -93,7 +93,7 @@ const char *feature_abs_label_list[FEATURE_NUM] = {
   "-"
 };
 
-const char * trigger_mode_list[TRIGGER_MODE_NUM] = {
+const char * trigger_mode_list[DC1394_TRIGGER_MODE_NUM] = {
   "Mode 0",
   "Mode 1",
   "Mode 2",
@@ -119,7 +119,7 @@ const char * channel_num_list[16] = {
   "Setup 15"
 };
 
-const char * fps_label_list[FRAMERATE_NUM] = {
+const char * fps_label_list[DC1394_FRAMERATE_NUM] = {
   "1.875 fps",
   "3.75 fps",
   "7.5 fps",
@@ -130,7 +130,7 @@ const char * fps_label_list[FRAMERATE_NUM] = {
   "240 fps"
 };
 
-const char * format7_mode_list[MODE_FORMAT7_NUM] = {
+const char * format7_mode_list[DC1394_MODE_FORMAT7_NUM] = {
   "Mode 0",
   "Mode 1",
   "Mode 2",
@@ -141,7 +141,7 @@ const char * format7_mode_list[MODE_FORMAT7_NUM] = {
   "Mode 7"
 };
 
-const char * format7_color_list[COLOR_FORMAT_NUM] = {
+const char * format7_color_list[DC1394_COLOR_CODING_NUM] = {
   "Mono 8bpp",
   "YUV 4:1:1",
   "YUV 4:2:2",
@@ -192,7 +192,7 @@ const char * format_list[5]= {
   "Format_7"
 };
 
-const char * format0_list[MODE_FORMAT0_NUM]= {
+const char * format0_list[DC1394_MODE_FORMAT0_NUM]= {
   "Format_0, Mode_0: 160x120 YUV (4:4:4)",
   "Format_0, Mode_1: 320x240 YUV (4:2:2)",
   "Format_0, Mode_2: 640x480 YUV (4:1:1)",
@@ -202,7 +202,7 @@ const char * format0_list[MODE_FORMAT0_NUM]= {
   "Format_0, Mode_6: 640x480 Mono 16bpp"
 };
 
-const char * format1_list[MODE_FORMAT1_NUM]= {
+const char * format1_list[DC1394_MODE_FORMAT1_NUM]= {
   "Format_1, Mode_0: 800x600 YUV (4:2:2)",
   "Format_1, Mode_1: 800x600 RGB 24bpp",
   "Format_1, Mode_2: 800x600 Mono 8bpp",
@@ -213,7 +213,7 @@ const char * format1_list[MODE_FORMAT1_NUM]= {
   "Format_1, Mode_7: 1024x768 Mono 16bpp"
 };
 
-const char * format2_list[MODE_FORMAT2_NUM]= {
+const char * format2_list[DC1394_MODE_FORMAT2_NUM]= {
   "Format_2, Mode_0: 1280x960 YUV (4:2:2)",
   "Format_2, Mode_1: 1280x960 RGB 24bpp",
   "Format_2, Mode_2: 1280x960 Mono 8bpp",
@@ -224,11 +224,11 @@ const char * format2_list[MODE_FORMAT2_NUM]= {
   "Format_2, Mode_7: 1600x1200 Mono 16bpp"
 };
 
-const char * format6_list[MODE_FORMAT6_NUM]= {
+const char * format6_list[DC1394_MODE_FORMAT6_NUM]= {
   "Mode_0: EXIF (not supported)"
 };
 
-const char * format7_list[MODE_FORMAT7_NUM]= {
+const char * format7_list[DC1394_MODE_FORMAT7_NUM]= {
   "Format7, Mode_0",
   "Format7, Mode_1",
   "Format7, Mode_2",

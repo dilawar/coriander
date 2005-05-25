@@ -443,10 +443,20 @@ SDLDisplayPattern(chain_t *display_service)
     }
     break;
   case OVERLAY_TYPE_RANDOM:
-    block[0]=random()/(RAND_MAX/255);
-    block[1]=random()/(RAND_MAX/255);
-    block[2]=random()/(RAND_MAX/255);
-    block[3]=random()/(RAND_MAX/255);
+    switch(preferences.overlay_byte_order) {
+    case DC1394_BYTE_ORDER_YUYV:
+      block[0]=random()/(RAND_MAX/255);
+      block[1]=random()/(RAND_MAX/255);
+      block[2]=block[0];
+      block[3]=random()/(RAND_MAX/255);
+      break;
+    case DC1394_BYTE_ORDER_UYVY:
+      block[0]=random()/(RAND_MAX/255);
+      block[1]=random()/(RAND_MAX/255);
+      block[2]=random()/(RAND_MAX/255);
+      block[3]=block[1];
+      break;
+    }
     break;
   case OVERLAY_TYPE_INVERT:
     break;

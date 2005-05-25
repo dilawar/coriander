@@ -29,27 +29,27 @@ void
 convert_to_rgb(buffer_t *buffer, unsigned char *dest)
 {
   switch(buffer->color_mode) {
-  case COLOR_FORMAT_MONO8:
-  case COLOR_FORMAT_RAW8:
+  case DC1394_COLOR_CODING_MONO8:
+  case DC1394_COLOR_CODING_RAW8:
     dc1394_MONO8_to_RGB8(buffer->image,dest,buffer->width*buffer->height);
     break;
-  case COLOR_FORMAT_YUV411:
+  case DC1394_COLOR_CODING_YUV411:
     dc1394_YUV411_to_RGB8(buffer->image,dest,buffer->width*buffer->height);
     break;
-  case COLOR_FORMAT_YUV422:
+  case DC1394_COLOR_CODING_YUV422:
     dc1394_YUV422_to_RGB8(buffer->image,dest,buffer->width*buffer->height);
     break;
-  case COLOR_FORMAT_YUV444:
+  case DC1394_COLOR_CODING_YUV444:
     dc1394_YUV444_to_RGB8(buffer->image,dest,buffer->width*buffer->height);
     break;
-  case COLOR_FORMAT_RGB8:
+  case DC1394_COLOR_CODING_RGB8:
     memcpy(dest,buffer->image,3*buffer->width*buffer->height);
     break;
-  case COLOR_FORMAT_MONO16:
-  case COLOR_FORMAT_RAW16:
+  case DC1394_COLOR_CODING_MONO16:
+  case DC1394_COLOR_CODING_RAW16:
     dc1394_MONO16_to_RGB8(buffer->image,dest,buffer->width*buffer->height,buffer->bpp);
     break;
-  case COLOR_FORMAT_RGB16:
+  case DC1394_COLOR_CODING_RGB16:
     dc1394_RGB16_to_RGB8(buffer->image,dest,buffer->width*buffer->height);
     break;
   }
@@ -67,28 +67,28 @@ convert_to_yuv_for_SDL(buffer_t *buffer, SDL_Overlay *sdloverlay, int overlay_by
 	  buffer->color_mode);
   */
   switch(buffer->color_mode) {
-  case COLOR_FORMAT_MONO8:
-  case COLOR_FORMAT_RAW8:
+  case DC1394_COLOR_CODING_MONO8:
+  case DC1394_COLOR_CODING_RAW8:
     dc1394_MONO8_to_YUV422(buffer->image, dest, buffer->width, buffer->height, 
 			   sdloverlay->pitches[0], overlay_byte_order);
     break;
-  case COLOR_FORMAT_YUV411:
+  case DC1394_COLOR_CODING_YUV411:
     dc1394_YUV411_to_YUV422(buffer->image,dest,buffer->width*buffer->height, overlay_byte_order);
     break;
-  case COLOR_FORMAT_YUV422:
+  case DC1394_COLOR_CODING_YUV422:
     dc1394_YUV422_to_YUV422(buffer->image,dest,buffer->width*buffer->height, overlay_byte_order);
     break;
-  case COLOR_FORMAT_YUV444:
+  case DC1394_COLOR_CODING_YUV444:
     dc1394_YUV444_to_YUV422(buffer->image,dest,buffer->width*buffer->height, overlay_byte_order);
     break;
-  case COLOR_FORMAT_RGB8:
+  case DC1394_COLOR_CODING_RGB8:
     dc1394_RGB8_to_YUV422(buffer->image,dest,buffer->width*buffer->height, overlay_byte_order);
     break;
-  case COLOR_FORMAT_MONO16:
-  case COLOR_FORMAT_RAW16:
+  case DC1394_COLOR_CODING_MONO16:
+  case DC1394_COLOR_CODING_RAW16:
     dc1394_MONO16_to_YUV422(buffer->image,dest,buffer->width*buffer->height,buffer->bpp, overlay_byte_order);
     break;
-  case COLOR_FORMAT_RGB16:
+  case DC1394_COLOR_CODING_RGB16:
     dc1394_RGB16_to_YUV422(buffer->image,dest,buffer->width*buffer->height, overlay_byte_order);
     break;
   }
@@ -107,28 +107,28 @@ convert_for_pvn(unsigned char *buffer, unsigned int width, unsigned int height,
     return;
 
   switch(color_mode) {
-    case COLOR_FORMAT_MONO8:
-    case COLOR_FORMAT_RAW8:
+    case DC1394_COLOR_CODING_MONO8:
+    case DC1394_COLOR_CODING_RAW8:
       memcpy(dest,buf_loc,width*height);
       break;
-    case COLOR_FORMAT_YUV411:
+    case DC1394_COLOR_CODING_YUV411:
       dc1394_YUV411_to_RGB8(buf_loc,dest,width*height);
       break;
-    case COLOR_FORMAT_YUV422:
+    case DC1394_COLOR_CODING_YUV422:
       dc1394_YUV422_to_RGB8(buf_loc,dest,width*height);
       break;
-    case COLOR_FORMAT_YUV444:
+    case DC1394_COLOR_CODING_YUV444:
       dc1394_YUV444_to_RGB8(buf_loc,dest,width*height);
       break;
-    case COLOR_FORMAT_RGB8:
+    case DC1394_COLOR_CODING_RGB8:
       memcpy(dest,buf_loc,3*width*height);
       break;
-    case COLOR_FORMAT_MONO16:
-    case COLOR_FORMAT_MONO16S:
-    case COLOR_FORMAT_RAW16:
+    case DC1394_COLOR_CODING_MONO16:
+    case DC1394_COLOR_CODING_MONO16S:
+    case DC1394_COLOR_CODING_RAW16:
       memcpy(dest,buf_loc,2*width*height);
       break;
-    case COLOR_FORMAT_RGB16:
+    case DC1394_COLOR_CODING_RGB16:
       memcpy(dest,buf_loc,6*width*height);
       break;
     default:

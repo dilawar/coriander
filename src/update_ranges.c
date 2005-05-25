@@ -18,8 +18,8 @@
 
 #include "coriander.h"
 
-extern char* feature_menu_table_list[FEATURE_NUM]; 
-extern char* feature_menu_items_list[FEATURE_NUM];
+extern char* feature_menu_table_list[DC1394_FEATURE_NUM]; 
+extern char* feature_menu_items_list[DC1394_FEATURE_NUM];
 
 void
 UpdateRange(int feature)
@@ -31,36 +31,36 @@ UpdateRange(int feature)
   stemp=(char*)malloc(STRING_SIZE*sizeof(char));
 
   // select the current menuitem:
-  if ((!camera->feature_set.feature[feature-FEATURE_MIN].is_on)&& // off
-      (camera->feature_set.feature[feature-FEATURE_MIN].on_off_capable)) {
+  if ((!camera->feature_set.feature[feature-DC1394_FEATURE_MIN].is_on)&& // off
+      (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].on_off_capable)) {
     index=0;
   }
   else {
-    if ((!camera->feature_set.feature[feature-FEATURE_MIN].auto_active)&& // man
-	(camera->feature_set.feature[feature-FEATURE_MIN].manual_capable)&&
-	(!(camera->feature_set.feature[feature-FEATURE_MIN].absolute_capable&& // abs control not on
-	   camera->feature_set.feature[feature-FEATURE_MIN].abs_control))){
-      index=1*(camera->feature_set.feature[feature-FEATURE_MIN].on_off_capable>0);
+    if ((!camera->feature_set.feature[feature-DC1394_FEATURE_MIN].auto_active)&& // man
+	(camera->feature_set.feature[feature-DC1394_FEATURE_MIN].manual_capable)&&
+	(!(camera->feature_set.feature[feature-DC1394_FEATURE_MIN].absolute_capable&& // abs control not on
+	   camera->feature_set.feature[feature-DC1394_FEATURE_MIN].abs_control))){
+      index=1*(camera->feature_set.feature[feature-DC1394_FEATURE_MIN].on_off_capable>0);
     }
     else {
-      if ((camera->feature_set.feature[feature-FEATURE_MIN].auto_active)&& // auto
-	  (camera->feature_set.feature[feature-FEATURE_MIN].auto_capable)&&
-	  (!(camera->feature_set.feature[feature-FEATURE_MIN].absolute_capable&& // abs control not on
-	     camera->feature_set.feature[feature-FEATURE_MIN].abs_control))){
-	index=1*(camera->feature_set.feature[feature-FEATURE_MIN].on_off_capable)+
-	  1*(camera->feature_set.feature[feature-FEATURE_MIN].manual_capable);
+      if ((camera->feature_set.feature[feature-DC1394_FEATURE_MIN].auto_active)&& // auto
+	  (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].auto_capable)&&
+	  (!(camera->feature_set.feature[feature-DC1394_FEATURE_MIN].absolute_capable&& // abs control not on
+	     camera->feature_set.feature[feature-DC1394_FEATURE_MIN].abs_control))){
+	index=1*(camera->feature_set.feature[feature-DC1394_FEATURE_MIN].on_off_capable)+
+	  1*(camera->feature_set.feature[feature-DC1394_FEATURE_MIN].manual_capable);
       }
       else {
-	if (!(camera->feature_set.feature[feature-FEATURE_MIN].absolute_capable&& // abs control not on
-	   camera->feature_set.feature[feature-FEATURE_MIN].abs_control)) // single
-	  index=1*(camera->feature_set.feature[feature-FEATURE_MIN].on_off_capable)+
-	    1*(camera->feature_set.feature[feature-FEATURE_MIN].manual_capable)+
-	    1*(camera->feature_set.feature[feature-FEATURE_MIN].auto_capable);
+	if (!(camera->feature_set.feature[feature-DC1394_FEATURE_MIN].absolute_capable&& // abs control not on
+	   camera->feature_set.feature[feature-DC1394_FEATURE_MIN].abs_control)) // single
+	  index=1*(camera->feature_set.feature[feature-DC1394_FEATURE_MIN].on_off_capable)+
+	    1*(camera->feature_set.feature[feature-DC1394_FEATURE_MIN].manual_capable)+
+	    1*(camera->feature_set.feature[feature-DC1394_FEATURE_MIN].auto_capable);
 	else {
-	  index=1*(camera->feature_set.feature[feature-FEATURE_MIN].on_off_capable)+ // absolute
-	    1*(camera->feature_set.feature[feature-FEATURE_MIN].manual_capable)+
-	    1*(camera->feature_set.feature[feature-FEATURE_MIN].auto_capable)+
-	    1*(camera->feature_set.feature[feature-FEATURE_MIN].one_push);
+	  index=1*(camera->feature_set.feature[feature-DC1394_FEATURE_MIN].on_off_capable)+ // absolute
+	    1*(camera->feature_set.feature[feature-DC1394_FEATURE_MIN].manual_capable)+
+	    1*(camera->feature_set.feature[feature-DC1394_FEATURE_MIN].auto_capable)+
+	    1*(camera->feature_set.feature[feature-DC1394_FEATURE_MIN].one_push);
 	  
 	}
       }
@@ -71,23 +71,23 @@ UpdateRange(int feature)
   sprintf(stemp,"feature_%d_menu",feature);
   gtk_option_menu_set_history (GTK_OPTION_MENU (lookup_widget(main_window,stemp)), index);
   
-  range_is_active=((!(camera->feature_set.feature[feature-FEATURE_MIN].auto_capable&& // auto not on
-		      camera->feature_set.feature[feature-FEATURE_MIN].auto_active))&&
-                   (!(camera->feature_set.feature[feature-FEATURE_MIN].one_push&& // one-push auto not active
-		      camera->feature_set.feature[feature-FEATURE_MIN].one_push_active))&&
-		   (!(camera->feature_set.feature[feature-FEATURE_MIN].absolute_capable&& // abs control not on
-		      camera->feature_set.feature[feature-FEATURE_MIN].abs_control))&&
-		   (!(camera->feature_set.feature[feature-FEATURE_MIN].on_off_capable&& // feature is on
-		      !camera->feature_set.feature[feature-FEATURE_MIN].is_on)));
+  range_is_active=((!(camera->feature_set.feature[feature-DC1394_FEATURE_MIN].auto_capable&& // auto not on
+		      camera->feature_set.feature[feature-DC1394_FEATURE_MIN].auto_active))&&
+                   (!(camera->feature_set.feature[feature-DC1394_FEATURE_MIN].one_push&& // one-push auto not active
+		      camera->feature_set.feature[feature-DC1394_FEATURE_MIN].one_push_active))&&
+		   (!(camera->feature_set.feature[feature-DC1394_FEATURE_MIN].absolute_capable&& // abs control not on
+		      camera->feature_set.feature[feature-DC1394_FEATURE_MIN].abs_control))&&
+		   (!(camera->feature_set.feature[feature-DC1394_FEATURE_MIN].on_off_capable&& // feature is on
+		      !camera->feature_set.feature[feature-DC1394_FEATURE_MIN].is_on)));
 
   switch(feature) {
-  case FEATURE_WHITE_BALANCE:
+  case DC1394_FEATURE_WHITE_BALANCE:
     sprintf(stemp,"feature_%d_bu_scale",feature);
     gtk_widget_set_sensitive(lookup_widget(main_window, stemp), range_is_active);
     sprintf(stemp,"feature_%d_rv_scale",feature);
     gtk_widget_set_sensitive(lookup_widget(main_window, stemp), range_is_active);
     break;
-  case FEATURE_WHITE_SHADING:
+  case DC1394_FEATURE_WHITE_SHADING:
     sprintf(stemp,"feature_%d_r_scale",feature);
     gtk_widget_set_sensitive(lookup_widget(main_window, stemp), range_is_active);
     sprintf(stemp,"feature_%d_g_scale",feature);
@@ -95,7 +95,7 @@ UpdateRange(int feature)
     sprintf(stemp,"feature_%d_b_scale",feature);
     gtk_widget_set_sensitive(lookup_widget(main_window, stemp), range_is_active);
     break;
-  case FEATURE_TEMPERATURE:
+  case DC1394_FEATURE_TEMPERATURE:
     // the only changeable range is the target one, the other is just an indicator.
     sprintf(stemp,"feature_%d_target_scale",feature);
     gtk_widget_set_sensitive(lookup_widget(main_window, stemp), range_is_active);
@@ -107,10 +107,10 @@ UpdateRange(int feature)
     break;
   }
   // all features: set absolute range sensitivity:
-  abs_is_on=((camera->feature_set.feature[feature-FEATURE_MIN].absolute_capable&& // abs control is on
-	      camera->feature_set.feature[feature-FEATURE_MIN].abs_control) &&
-	     camera->feature_set.feature[feature-FEATURE_MIN].is_on);
-  if (camera->feature_set.feature[feature-FEATURE_MIN].absolute_capable) {
+  abs_is_on=((camera->feature_set.feature[feature-DC1394_FEATURE_MIN].absolute_capable&& // abs control is on
+	      camera->feature_set.feature[feature-DC1394_FEATURE_MIN].abs_control) &&
+	     camera->feature_set.feature[feature-DC1394_FEATURE_MIN].is_on);
+  if (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].absolute_capable) {
     sprintf(stemp,"feature_%d_abs_entry",feature);
     gtk_widget_set_sensitive(lookup_widget(main_window, stemp), abs_is_on);
     sprintf(stemp,"feature_%d_abs_label",feature);
@@ -150,9 +150,9 @@ UpdateRangeValue(GtkWidget* widget, int feature)
   prec_valueB=-1e7;
   */
   // grab&set range value if readable:
-  if (camera->feature_set.feature[feature-FEATURE_MIN].readout_capable) {
+  if (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].readout_capable) {
     switch(feature) {
-    case FEATURE_WHITE_BALANCE:
+    case DC1394_FEATURE_WHITE_BALANCE:
       //      while(!stable) {
 	err=dc1394_get_white_balance(&camera->camera_info,&valueBU,&valueRV);
 	/*	if (((valueBU==prec_valueBU)&&(valueRV==prec_valueRV))||(err<0))
@@ -177,7 +177,8 @@ UpdateRangeValue(GtkWidget* widget, int feature)
 	g_signal_emit_by_name((gpointer) adj, "changed");
 	//fprintf(stderr,"white balance updated\n");
       }
-      break; case FEATURE_WHITE_SHADING:
+      break;
+    case DC1394_FEATURE_WHITE_SHADING:
       //      while(!stable) {
 	err=dc1394_get_white_shading(&camera->camera_info,&valueR,&valueG, &valueB);
 	/*	if (((valueBU==prec_valueBU)&&(valueRV==prec_valueRV))||(err<0))
@@ -207,7 +208,7 @@ UpdateRangeValue(GtkWidget* widget, int feature)
 	//fprintf(stderr,"white balance updated\n");
       }
       break;
-    case FEATURE_TEMPERATURE:
+    case DC1394_FEATURE_TEMPERATURE:
       //while(!stable) {
 	err=dc1394_get_temperature(&camera->camera_info, &valuegoal, &valuecurrent);
 	/*if (((valuegoal==prec_valuegoal)&&(valuecurrent==prec_valuecurrent))||(err<0))
@@ -250,7 +251,7 @@ UpdateRangeValue(GtkWidget* widget, int feature)
       }
       break;
     }
-    if (camera->feature_set.feature[feature-FEATURE_MIN].absolute_capable) {
+    if (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].absolute_capable) {
       GetAbsValue(feature);
     }
   }
@@ -263,7 +264,7 @@ UpdateFormat7BppRange(void)
 {
   GtkAdjustment* adj;
   Format7ModeInfo_t *info;
-  info=&camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN];
+  info=&camera->format7_info.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN];
 
   if (dc1394_query_format7_byte_per_packet(&camera->camera_info,
 					   camera->format7_info.edit_mode, &info->bpp)==DC1394_SUCCESS) {
@@ -291,7 +292,7 @@ UpdateFormat7Ranges(void)
 {
   GtkAdjustment  *adj;
   Format7ModeInfo_t *info;
-  info=&camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN];
+  info=&camera->format7_info.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN];
 
   // define the adjustments for the 4 format7 controls. Note that (pos_x+size_x)<=max_size_x which yields some inter-dependencies
 

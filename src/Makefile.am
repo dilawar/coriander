@@ -35,5 +35,5 @@ coriander_SOURCES = \
 	subtitles.c subtitles.h \
 	raw1394support.h 
 
-coriander_LDADD = @PACKAGE_LIBS@ $(INTLLIBS) $(FTPLIB_LIBS) $(SDLLIB_LIBS) $(LIBDC_LIBS) $(LIBRAW_LIBS) $(XV_LIBS) $(COR_LFS_LDFLAGS) -lgthread $(FFMPEG_LIBS)
+coriander_LDADD = @PACKAGE_LIBS@ $(INTLLIBS) $(FTPLIB_LIBS) $(SDLLIB_LIBS) $(LIBDC_LIBS) $(LIBRAW_LIBS) $(XV_LIBS) $(COR_LFS_LDFLAGS) -lgthread-2.0 $(FFMPEG_LIBS)
 

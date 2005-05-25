@@ -56,9 +56,9 @@ UpdateFeatureWindow(void)
 {
   int i;
 
-  for (i=FEATURE_MIN;i<=FEATURE_MAX;i++) {
-    if ((camera->feature_set.feature[i-FEATURE_MIN].available>0)&&
-	(i!=FEATURE_TRIGGER)) {
+  for (i=DC1394_FEATURE_MIN;i<=DC1394_FEATURE_MAX;i++) {
+    if ((camera->feature_set.feature[i-DC1394_FEATURE_MIN].available>0)&&
+	(i!=DC1394_FEATURE_TRIGGER)) {
       UpdateRange(i);
     }
   }

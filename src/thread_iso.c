@@ -38,8 +38,8 @@ gint IsoStartThread(camera_t* cam)
     info=(isothread_info_t*)iso_service->data;
     
     /* currently FORMAT_STILL_IMAGE is not supported*/
-    if ((cam->camera_info.mode >= MODE_FORMAT6_MIN) &&
-        (cam->camera_info.mode <= MODE_FORMAT6_MAX)) {
+    if ((cam->camera_info.mode >= DC1394_MODE_FORMAT6_MIN) &&
+        (cam->camera_info.mode <= DC1394_MODE_FORMAT6_MAX)) {
       FreeChain(iso_service);
       return(-1);
     }
@@ -60,13 +60,13 @@ gint IsoStartThread(camera_t* cam)
     // ONLY IF LEGACY. OTHERWISE S800.
     if (cam->camera_info.bmode_capable==0) {
       switch (cam->selfid.packetZero.phySpeed) {
-      case 1: maxspeed=SPEED_200;break;
-      case 2: maxspeed=SPEED_400;break;
-      default: maxspeed=SPEED_100;break;
+      case 1: maxspeed=DC1394_SPEED_200;break;
+      case 2: maxspeed=DC1394_SPEED_400;break;
+      default: maxspeed=DC1394_SPEED_100;break;
       }
     }
     else {
-      maxspeed=SPEED_800;
+      maxspeed=DC1394_SPEED_800;
     }
 
     // copy params if we are the current camera
@@ -80,8 +80,8 @@ gint IsoStartThread(camera_t* cam)
 
     switch(info->receive_method) {
     case RECEIVE_METHOD_VIDEO1394:
-      if (!((cam->camera_info.mode >= MODE_FORMAT7_MIN) &&
-	    (cam->camera_info.mode <= MODE_FORMAT7_MAX))) {
+      if (!((cam->camera_info.mode >= DC1394_MODE_FORMAT7_MIN) &&
+	    (cam->camera_info.mode <= DC1394_MODE_FORMAT7_MAX))) {
 	err=dc1394_dma_setup_capture(&cam->camera_info, cam->camera_info.iso_channel, 
 				     cam->camera_info.mode, maxspeed,
 				     cam->camera_info.framerate, info->dma_buffer_size,
@@ -96,9 +96,9 @@ gint IsoStartThread(camera_t* cam)
       }
       else {
 	err=dc1394_dma_setup_format7_capture(&cam->camera_info, cam->camera_info.iso_channel, 
-					     cam->camera_info.mode, maxspeed, QUERY_FROM_CAMERA,
-					     QUERY_FROM_CAMERA, QUERY_FROM_CAMERA,
-					     QUERY_FROM_CAMERA, QUERY_FROM_CAMERA, 
+					     cam->camera_info.mode, maxspeed, DC1394_QUERY_FROM_CAMERA,
+					     DC1394_QUERY_FROM_CAMERA, DC1394_QUERY_FROM_CAMERA,
+					     DC1394_QUERY_FROM_CAMERA, DC1394_QUERY_FROM_CAMERA, 
 					     info->dma_buffer_size,
 					     info->video1394_dropframes, 
 					     info->capture.dma_device_file, &info->capture);
@@ -112,8 +112,8 @@ gint IsoStartThread(camera_t* cam)
       }
       break;
     case RECEIVE_METHOD_RAW1394:
-      if (!((cam->camera_info.mode >= MODE_FORMAT7_MIN) &&
-	    (cam->camera_info.mode <= MODE_FORMAT7_MAX))) {
+      if (!((cam->camera_info.mode >= DC1394_MODE_FORMAT7_MIN) &&
+	    (cam->camera_info.mode <= DC1394_MODE_FORMAT7_MAX))) {
 	err=dc1394_setup_capture(&cam->camera_info, cam->camera_info.iso_channel, 
 				 cam->camera_info.mode, maxspeed,
 				 cam->camera_info.framerate, &info->capture);
@@ -127,9 +127,9 @@ gint IsoStartThread(camera_t* cam)
       }
       else {
 	err=dc1394_setup_format7_capture(&cam->camera_info, cam->camera_info.iso_channel, 
-					 cam->camera_info.mode, maxspeed, QUERY_FROM_CAMERA,
-					 QUERY_FROM_CAMERA, QUERY_FROM_CAMERA,
-					 QUERY_FROM_CAMERA, QUERY_FROM_CAMERA,
+					 cam->camera_info.mode, maxspeed, DC1394_QUERY_FROM_CAMERA,
+					 DC1394_QUERY_FROM_CAMERA, DC1394_QUERY_FROM_CAMERA,
+					 DC1394_QUERY_FROM_CAMERA, DC1394_QUERY_FROM_CAMERA,
 					 &info->capture);
 	if (err!=DC1394_SUCCESS){
 	  eprint("Failed to setup RAW1394 Format_7 capture. Error code %d\n",err);
@@ -223,7 +223,7 @@ IsoThread(void* arg)
       if (info->receive_method == RECEIVE_METHOD_RAW1394)
 	dc1394_capture(&info->capture, 1);
       else
-	dma_ok=dc1394_dma_capture(&info->capture, 1, VIDEO1394_WAIT);
+	dma_ok=dc1394_dma_capture(&info->capture, 1, DC1394_VIDEO1394_WAIT);
     
       //printf("Got frame\n");
   
@@ -453,9 +453,9 @@ IsoThreadCheckParams(chain_t *iso_service)
   }
 
 
-  if ((iso_service->camera->camera_info.mode >= MODE_FORMAT7_MIN) &&
-      (iso_service->camera->camera_info.mode <= MODE_FORMAT7_MAX)) {
-    temp=iso_service->camera->format7_info.mode[iso_service->camera->camera_info.mode-MODE_FORMAT7_MIN].color_coding_id;
+  if ((iso_service->camera->camera_info.mode >= DC1394_MODE_FORMAT7_MIN) &&
+      (iso_service->camera->camera_info.mode <= DC1394_MODE_FORMAT7_MAX)) {
+    temp=iso_service->camera->format7_info.mode[iso_service->camera->camera_info.mode-DC1394_MODE_FORMAT7_MIN].color_coding_id;
   }
   else {
     temp=-1;
@@ -515,63 +515,63 @@ SetColorMode(int mode, buffer_t *buffer, int f7_color)
 
   if (buffer->bayer==NO_BAYER_DECODING) {
     switch(mode) {
-    case MODE_160x120_YUV444:
-      buffer->color_mode=COLOR_FORMAT_YUV444;
+    case DC1394_MODE_160x120_YUV444:
+      buffer->color_mode=DC1394_COLOR_CODING_YUV444;
       break;
-    case MODE_320x240_YUV422:
-    case MODE_640x480_YUV422:
-    case MODE_800x600_YUV422:
-    case MODE_1024x768_YUV422:
-    case MODE_1280x960_YUV422:
-    case MODE_1600x1200_YUV422:
+    case DC1394_MODE_320x240_YUV422:
+    case DC1394_MODE_640x480_YUV422:
+    case DC1394_MODE_800x600_YUV422:
+    case DC1394_MODE_1024x768_YUV422:
+    case DC1394_MODE_1280x960_YUV422:
+    case DC1394_MODE_1600x1200_YUV422:
       if (buffer->stereo_decoding!=NO_STEREO_DECODING) {
-	buffer->color_mode=COLOR_FORMAT_MONO8;
+	buffer->color_mode=DC1394_COLOR_CODING_MONO8;
       }
       else {
-	buffer->color_mode=COLOR_FORMAT_YUV422;
+	buffer->color_mode=DC1394_COLOR_CODING_YUV422;
       }
       break;
-    case MODE_640x480_YUV411:
-      buffer->color_mode=COLOR_FORMAT_YUV411;
+    case DC1394_MODE_640x480_YUV411:
+      buffer->color_mode=DC1394_COLOR_CODING_YUV411;
       break;
-    case MODE_640x480_RGB8:
-    case MODE_800x600_RGB8:
-    case MODE_1024x768_RGB8:
-    case MODE_1280x960_RGB8:
-    case MODE_1600x1200_RGB8:
-      buffer->color_mode=COLOR_FORMAT_RGB8;
+    case DC1394_MODE_640x480_RGB8:
+    case DC1394_MODE_800x600_RGB8:
+    case DC1394_MODE_1024x768_RGB8:
+    case DC1394_MODE_1280x960_RGB8:
+    case DC1394_MODE_1600x1200_RGB8:
+      buffer->color_mode=DC1394_COLOR_CODING_RGB8;
       break;
-    case MODE_640x480_MONO8:
-    case MODE_800x600_MONO8:
-    case MODE_1024x768_MONO8:
-    case MODE_1280x960_MONO8:
-    case MODE_1600x1200_MONO8:
-      buffer->color_mode=COLOR_FORMAT_MONO8;
+    case DC1394_MODE_640x480_MONO8:
+    case DC1394_MODE_800x600_MONO8:
+    case DC1394_MODE_1024x768_MONO8:
+    case DC1394_MODE_1280x960_MONO8:
+    case DC1394_MODE_1600x1200_MONO8:
+      buffer->color_mode=DC1394_COLOR_CODING_MONO8;
       break;
-    case MODE_640x480_MONO16:
-    case MODE_800x600_MONO16:
-    case MODE_1024x768_MONO16:
-    case MODE_1280x960_MONO16:
-    case MODE_1600x1200_MONO16:
+    case DC1394_MODE_640x480_MONO16:
+    case DC1394_MODE_800x600_MONO16:
+    case DC1394_MODE_1024x768_MONO16:
+    case DC1394_MODE_1280x960_MONO16:
+    case DC1394_MODE_1600x1200_MONO16:
       if (buffer->stereo_decoding!=NO_STEREO_DECODING) {
-	buffer->color_mode=COLOR_FORMAT_MONO8;
+	buffer->color_mode=DC1394_COLOR_CODING_MONO8;
       }
       else {
-	buffer->color_mode=COLOR_FORMAT_MONO16;
+	buffer->color_mode=DC1394_COLOR_CODING_MONO16;
       }
       break;
-    case MODE_FORMAT7_0:
-    case MODE_FORMAT7_1:
-    case MODE_FORMAT7_2:
-    case MODE_FORMAT7_3:
-    case MODE_FORMAT7_4:
-    case MODE_FORMAT7_5:
-    case MODE_FORMAT7_6:
-    case MODE_FORMAT7_7:
+    case DC1394_MODE_FORMAT7_0:
+    case DC1394_MODE_FORMAT7_1:
+    case DC1394_MODE_FORMAT7_2:
+    case DC1394_MODE_FORMAT7_3:
+    case DC1394_MODE_FORMAT7_4:
+    case DC1394_MODE_FORMAT7_5:
+    case DC1394_MODE_FORMAT7_6:
+    case DC1394_MODE_FORMAT7_7:
       if (f7_color==-1)
 	fprintf(stderr,"ERROR: format7 asked but color mode is -1\n");
-      if ((f7_color==COLOR_FORMAT_MONO16)&&(buffer->stereo_decoding!=NO_STEREO_DECODING)) {
-	buffer->color_mode=COLOR_FORMAT_MONO8;
+      if ((f7_color==DC1394_COLOR_CODING_MONO16)&&(buffer->stereo_decoding!=NO_STEREO_DECODING)) {
+	buffer->color_mode=DC1394_COLOR_CODING_MONO8;
       }
       else {
 	buffer->color_mode=f7_color;
@@ -580,7 +580,7 @@ SetColorMode(int mode, buffer_t *buffer, int f7_color)
     }
   }
   else  { // we force RGB mode
-    buffer->color_mode=COLOR_FORMAT_RGB8;
+    buffer->color_mode=DC1394_COLOR_CODING_RGB8;
   }
 
   dc1394_get_bytes_per_pixel(buffer->color_mode, &bpp);

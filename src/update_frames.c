@@ -155,28 +155,28 @@ UpdateTriggerFrame(void)
   gtk_widget_set_sensitive(lookup_widget(main_window,"trigger_frame"),TRUE);
 
   gtk_widget_set_sensitive(lookup_widget(main_window,"trigger_external"),
-			   camera->feature_set.feature[FEATURE_TRIGGER-FEATURE_MIN].available);
+			   camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].available);
   gtk_widget_set_sensitive(lookup_widget(main_window,"fps_menu"),
-			   !(camera->feature_set.feature[FEATURE_TRIGGER-FEATURE_MIN].is_on) &&
-			   !((camera->camera_info.mode >= MODE_FORMAT7_MIN) && (camera->camera_info.mode <= MODE_FORMAT7_MAX)));
+			   !(camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].is_on) &&
+			   !((camera->camera_info.mode >= DC1394_MODE_FORMAT7_MIN) && (camera->camera_info.mode <= DC1394_MODE_FORMAT7_MAX)));
   gtk_widget_set_sensitive(lookup_widget(main_window,"trigger_mode"),
-			   camera->feature_set.feature[FEATURE_TRIGGER-FEATURE_MIN].is_on && 
-			   camera->feature_set.feature[FEATURE_TRIGGER-FEATURE_MIN].available);
+			   camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].is_on && 
+			   camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].available);
   gtk_widget_set_sensitive(lookup_widget(main_window,"trigger_polarity"),
-			   camera->feature_set.feature[FEATURE_TRIGGER-FEATURE_MIN].available &&
-			   camera->feature_set.feature[FEATURE_TRIGGER-FEATURE_MIN].is_on &&
-			   camera->feature_set.feature[FEATURE_TRIGGER-FEATURE_MIN].polarity_capable);
+			   camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].available &&
+			   camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].is_on &&
+			   camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].polarity_capable);
   gtk_widget_set_sensitive(lookup_widget(main_window,"trigger_count"),
-			   (camera->feature_set.feature[FEATURE_TRIGGER-FEATURE_MIN].available) &&
-			   (camera->feature_set.feature[FEATURE_TRIGGER-FEATURE_MIN].is_on) && 
-			   ((camera->feature_set.feature[FEATURE_TRIGGER-FEATURE_MIN].trigger_mode == TRIGGER_MODE_2)||
-			     camera->feature_set.feature[FEATURE_TRIGGER-FEATURE_MIN].trigger_mode == TRIGGER_MODE_3));
+			   (camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].available) &&
+			   (camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].is_on) && 
+			   ((camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].trigger_mode == DC1394_TRIGGER_MODE_2)||
+			     camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].trigger_mode == DC1394_TRIGGER_MODE_3));
 
   gtk_widget_set_sensitive(lookup_widget(main_window, "label16"),
-			   (camera->feature_set.feature[FEATURE_TRIGGER-FEATURE_MIN].available) &&
-			   (camera->feature_set.feature[FEATURE_TRIGGER-FEATURE_MIN].is_on) && 
-			   ((camera->feature_set.feature[FEATURE_TRIGGER-FEATURE_MIN].trigger_mode == TRIGGER_MODE_2)||
-			     camera->feature_set.feature[FEATURE_TRIGGER-FEATURE_MIN].trigger_mode == TRIGGER_MODE_3));
+			   (camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].available) &&
+			   (camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].is_on) && 
+			   ((camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].trigger_mode == DC1394_TRIGGER_MODE_2)||
+			     camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].trigger_mode == DC1394_TRIGGER_MODE_3));
 }
 
 void
@@ -267,19 +267,19 @@ UpdateCameraStatusFrame(void)
 
   // IIDC software revision:
   switch (camera->camera_info.iidc_version) {
-  case IIDC_VERSION_1_04: sprintf(temp," 1.04 ");break;
-  case IIDC_VERSION_1_20: sprintf(temp," 1.20 ");break;
-  case IIDC_VERSION_1_30: sprintf(temp," 1.30 ");break;
-  case IIDC_VERSION_PTGREY: sprintf(temp," Pt Grey 114 ");break;
-  case IIDC_VERSION_1_31: sprintf(temp," 1.31 ");break;
-  case IIDC_VERSION_1_32: sprintf(temp," 1.32 ");break;
-  case IIDC_VERSION_1_33: sprintf(temp," 1.33 ");break;
-  case IIDC_VERSION_1_34: sprintf(temp," 1.34 ");break;
-  case IIDC_VERSION_1_35: sprintf(temp," 1.35 ");break;
-  case IIDC_VERSION_1_36: sprintf(temp," 1.36 ");break;
-  case IIDC_VERSION_1_37: sprintf(temp," 1.37 ");break;
-  case IIDC_VERSION_1_38: sprintf(temp," 1.38 ");break;
-  case IIDC_VERSION_1_39: sprintf(temp," 1.39 ");break;
+  case DC1394_IIDC_VERSION_1_04: sprintf(temp," 1.04 ");break;
+  case DC1394_IIDC_VERSION_1_20: sprintf(temp," 1.20 ");break;
+  case DC1394_IIDC_VERSION_1_30: sprintf(temp," 1.30 ");break;
+  case DC1394_IIDC_VERSION_PTGREY: sprintf(temp," Pt Grey 114 ");break;
+  case DC1394_IIDC_VERSION_1_31: sprintf(temp," 1.31 ");break;
+  case DC1394_IIDC_VERSION_1_32: sprintf(temp," 1.32 ");break;
+  case DC1394_IIDC_VERSION_1_33: sprintf(temp," 1.33 ");break;
+  case DC1394_IIDC_VERSION_1_34: sprintf(temp," 1.34 ");break;
+  case DC1394_IIDC_VERSION_1_35: sprintf(temp," 1.35 ");break;
+  case DC1394_IIDC_VERSION_1_36: sprintf(temp," 1.36 ");break;
+  case DC1394_IIDC_VERSION_1_37: sprintf(temp," 1.37 ");break;
+  case DC1394_IIDC_VERSION_1_38: sprintf(temp," 1.38 ");break;
+  case DC1394_IIDC_VERSION_1_39: sprintf(temp," 1.39 ");break;
   default: sprintf(temp," ?? %d ",sw_version);
   }
   gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"camera_dc_status"), ctxt.dc_ctxt, ctxt.dc_id);
@@ -399,7 +399,7 @@ UpdateFormat7InfoFrame(void)
 
   if (camera->format7_info.edit_mode!=-1) {
 
-    mode = &camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN];
+    mode = &camera->format7_info.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN];
 
 
     dc1394_get_bytes_per_pixel(mode->color_coding_id, &bpp);
@@ -485,12 +485,12 @@ UpdateBandwidthFrame(void)
     //fprintf(stderr,"%d\n",bandwidth);
     iso_service=GetService(cam,SERVICE_ISO);
     // if we are using format7 and there is a running ISO service, we can get a better estimate:
-    if (((camera->camera_info.mode >= MODE_FORMAT7_MIN) && (camera->camera_info.mode <= MODE_FORMAT7_MAX))
+    if (((camera->camera_info.mode >= DC1394_MODE_FORMAT7_MIN) && (camera->camera_info.mode <= DC1394_MODE_FORMAT7_MAX))
 	&&(iso_service!=NULL)){
       //fprintf(stderr,"better estimate can be found\n");
       // use the fractions of packets needed:
-      theobps=8000*cam->format7_info.mode[cam->format7_info.edit_mode-MODE_FORMAT7_MIN].bpp;
-      truebps=iso_service->fps*cam->format7_info.mode[cam->format7_info.edit_mode-MODE_FORMAT7_MIN].total_bytes;
+      theobps=8000*cam->format7_info.mode[cam->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].bpp;
+      truebps=iso_service->fps*cam->format7_info.mode[cam->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].total_bytes;
       ratio=(float)truebps/(float)theobps;
       //fprintf(stderr,"truebps: %d, theobps: %d, ratio: %.2f\n",truebps, theobps, ratio);
       // apply only if the ratio is less than 0.95 and greater than 0

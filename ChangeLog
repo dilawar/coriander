@@ -2,6 +2,16 @@ Coriander, (c) 2000-2005 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 2.0.0
 
+   May 25, 2005, by Damien Douxchamps
+   - sync with cvs of libdc1394
+	
+   May 12, 2005, by Damien Douxchamps
+   - fixed little bug in random color overlay: the color is more homogenous now.
+	
+   May 11, 2005, by Damien Douxchamps
+   - fixed "-lgthread" inclusion in src/Makefile.am following a report from
+     Don Murray. I should have been "-lgthread-2.0"
+	
    May 10, 2005, by Damien Douxchamps
    - adapted to libdc-2.0 changes
 	

@@ -212,9 +212,9 @@ OnMouseDown(chain_t *display_service, int button, int x, int y)
   Format7ModeInfo_t* f7info;
   info=(displaythread_info_t*)display_service->data;
 
-  if ((camera->camera_info.mode >= MODE_FORMAT7_MIN) &&
-      (camera->camera_info.mode <= MODE_FORMAT7_MAX)) {
-    f7info=&camera->format7_info.mode[camera->camera_info.mode-MODE_FORMAT7_MIN];
+  if ((camera->camera_info.mode >= DC1394_MODE_FORMAT7_MIN) &&
+      (camera->camera_info.mode <= DC1394_MODE_FORMAT7_MAX)) {
+    f7info=&camera->format7_info.mode[camera->camera_info.mode-DC1394_MODE_FORMAT7_MIN];
   }
 
   switch (button) {
@@ -451,8 +451,8 @@ SDLCropImage(chain_t *display_service)
   pthread_mutex_lock(&watchthread_info.mutex_area);
 
   watchthread_info.draw=0;
-  if ((camera->camera_info.mode >= MODE_FORMAT7_MIN) &&
-      (camera->camera_info.mode <= MODE_FORMAT7_MAX))
+  if ((camera->camera_info.mode >= DC1394_MODE_FORMAT7_MIN) &&
+      (camera->camera_info.mode <= DC1394_MODE_FORMAT7_MAX))
     watchthread_info.crop=1;
 
   pthread_mutex_unlock(&watchthread_info.mutex_area);
@@ -464,13 +464,13 @@ SDLSetMaxSize(chain_t *display_service)
 {
   pthread_mutex_lock(&watchthread_info.mutex_area);
   watchthread_info.draw=0;
-  if ((camera->camera_info.mode >= MODE_FORMAT7_MIN) &&
-      (camera->camera_info.mode <= MODE_FORMAT7_MAX)) {
+  if ((camera->camera_info.mode >= DC1394_MODE_FORMAT7_MIN) &&
+      (camera->camera_info.mode <= DC1394_MODE_FORMAT7_MAX)) {
     watchthread_info.crop=1;
     watchthread_info.pos[0]=0;
     watchthread_info.pos[1]=0;
-    watchthread_info.size[0]=camera->format7_info.mode[camera->camera_info.mode-MODE_FORMAT7_MIN].max_size_x;
-    watchthread_info.size[1]=camera->format7_info.mode[camera->camera_info.mode-MODE_FORMAT7_MIN].max_size_y;
+    watchthread_info.size[0]=camera->format7_info.mode[camera->camera_info.mode-DC1394_MODE_FORMAT7_MIN].max_size_x;
+    watchthread_info.size[1]=camera->format7_info.mode[camera->camera_info.mode-DC1394_MODE_FORMAT7_MIN].max_size_y;
   }
   pthread_mutex_unlock(&watchthread_info.mutex_area);
 

@@ -147,19 +147,19 @@ int
 needsConversionForPVN(int color_mode)
 {
   switch(color_mode) {
-  case COLOR_FORMAT_YUV411:
-  case COLOR_FORMAT_YUV422:
-  case COLOR_FORMAT_YUV444:
+  case DC1394_COLOR_CODING_YUV411:
+  case DC1394_COLOR_CODING_YUV422:
+  case DC1394_COLOR_CODING_YUV444:
     return(TRUE);
     break;
-  case COLOR_FORMAT_MONO8:
-  case COLOR_FORMAT_RGB8:
-  case COLOR_FORMAT_MONO16:
-  case COLOR_FORMAT_MONO16S:
-  case COLOR_FORMAT_RGB16:
-  case COLOR_FORMAT_RAW8:
-  case COLOR_FORMAT_RAW16:
-  case COLOR_FORMAT_RGB16S:
+  case DC1394_COLOR_CODING_MONO8:
+  case DC1394_COLOR_CODING_RGB8:
+  case DC1394_COLOR_CODING_MONO16:
+  case DC1394_COLOR_CODING_MONO16S:
+  case DC1394_COLOR_CODING_RGB16:
+  case DC1394_COLOR_CODING_RAW8:
+  case DC1394_COLOR_CODING_RAW16:
+  case DC1394_COLOR_CODING_RGB16S:
     return(FALSE);
     break;
   default:
@@ -175,18 +175,18 @@ int
 getConvertedBytesPerChannel(int color_mode)
 {
   switch(color_mode) {
-  case COLOR_FORMAT_MONO8:
-  case COLOR_FORMAT_RAW8:
-  case COLOR_FORMAT_YUV411:
-  case COLOR_FORMAT_YUV422:
-  case COLOR_FORMAT_YUV444:
-  case COLOR_FORMAT_RGB8:
+  case DC1394_COLOR_CODING_MONO8:
+  case DC1394_COLOR_CODING_RAW8:
+  case DC1394_COLOR_CODING_YUV411:
+  case DC1394_COLOR_CODING_YUV422:
+  case DC1394_COLOR_CODING_YUV444:
+  case DC1394_COLOR_CODING_RGB8:
     return(1);
     break;
-  case COLOR_FORMAT_MONO16:
-  case COLOR_FORMAT_RAW16:
-  case COLOR_FORMAT_MONO16S:
-  case COLOR_FORMAT_RGB16:
+  case DC1394_COLOR_CODING_MONO16:
+  case DC1394_COLOR_CODING_RAW16:
+  case DC1394_COLOR_CODING_MONO16S:
+  case DC1394_COLOR_CODING_RGB16:
     return(2);
     break;
   default:
@@ -216,7 +216,7 @@ writePVNHeader(FILE *fd, unsigned int mode, unsigned int height, unsigned int wi
   dc1394_is_color(mode,&is_color);
 
   if(is_color==FALSE) {//greyscale
-    if(mode == COLOR_FORMAT_MONO16S)
+    if(mode == DC1394_COLOR_CODING_MONO16S)
       strcpy(magic,"PV5b");
     else
       strcpy(magic,"PV5a");
@@ -233,8 +233,8 @@ CreateSettingsFile(char *destdir)
   char *fname = NULL;
   FILE *fd = NULL;
   int i;
-  extern char* fps_label_list[FRAMERATE_NUM];
-  extern char* feature_name_list[FEATURE_NUM];
+  extern char* fps_label_list[DC1394_FRAMERATE_NUM];
+  extern char* feature_name_list[DC1394_FEATURE_NUM];
   extern Prefs_t preferences;
   
   fname = (char*)malloc(STRING_SIZE*sizeof(char));
@@ -245,13 +245,13 @@ CreateSettingsFile(char *destdir)
     return(0);
   }
   
-  fprintf(fd,"fps=%s\n", fps_label_list[camera->camera_info.framerate-FRAMERATE_MIN]);
+  fprintf(fd,"fps=%s\n", fps_label_list[camera->camera_info.framerate-DC1394_FRAMERATE_MIN]);
   fprintf(fd,"sync_control=%d\n",preferences.sync_control);
   
-  for(i=FEATURE_MIN; i<=FEATURE_MAX; ++i) {
-    if (camera->feature_set.feature[i-FEATURE_MIN].available)
-      fprintf(fd,"%s=%d\n", feature_name_list[i-FEATURE_MIN],
-	      camera->feature_set.feature[i-FEATURE_MIN].value);
+  for(i=DC1394_FEATURE_MIN; i<=DC1394_FEATURE_MAX; ++i) {
+    if (camera->feature_set.feature[i-DC1394_FEATURE_MIN].available)
+      fprintf(fd,"%s=%d\n", feature_name_list[i-DC1394_FEATURE_MIN],
+	      camera->feature_set.feature[i-DC1394_FEATURE_MIN].value);
   }
 
   fclose(fd);
@@ -478,20 +478,20 @@ InitVideoFile(chain_t *save_service, FILE *fd, char *filename_out)
     
     info->mpeg_color_mode=0;
     switch (save_service->current_buffer->color_mode) {
-    case COLOR_FORMAT_MONO8:
-    case COLOR_FORMAT_RAW8:
+    case DC1394_COLOR_CODING_MONO8:
+    case DC1394_COLOR_CODING_RAW8:
       info->mpeg_color_mode=PIX_FMT_GRAY8;
       break;
-    case COLOR_FORMAT_YUV411:
+    case DC1394_COLOR_CODING_YUV411:
       info->mpeg_color_mode=PIX_FMT_YUV411P;
       break;
-    case COLOR_FORMAT_YUV422:
+    case DC1394_COLOR_CODING_YUV422:
       info->mpeg_color_mode=PIX_FMT_YUV422P;
       break;
-    case COLOR_FORMAT_YUV444:
+    case DC1394_COLOR_CODING_YUV444:
       info->mpeg_color_mode=PIX_FMT_YUV444P;
       break;
-    case COLOR_FORMAT_RGB8:
+    case DC1394_COLOR_CODING_RGB8:
       info->mpeg_color_mode=PIX_FMT_RGB24;
       break;
     default:
@@ -552,37 +552,37 @@ SavePPMPGM(chain_t *save_service, FILE *fd)
   info=(savethread_info_t*)save_service->data;
   
   switch (save_service->current_buffer->color_mode) {
-  case COLOR_FORMAT_MONO8:
-  case COLOR_FORMAT_RAW8:
+  case DC1394_COLOR_CODING_MONO8:
+  case DC1394_COLOR_CODING_RAW8:
     P_value=5;
     bytes=save_service->current_buffer->width*save_service->current_buffer->height;
     maxlevels=255;
     src=save_service->current_buffer->image;
     break;
-  case COLOR_FORMAT_MONO16:
-  case COLOR_FORMAT_RAW16:
-  case COLOR_FORMAT_MONO16S:
+  case DC1394_COLOR_CODING_MONO16:
+  case DC1394_COLOR_CODING_RAW16:
+  case DC1394_COLOR_CODING_MONO16S:
     P_value=5;
     bytes=save_service->current_buffer->width*save_service->current_buffer->height*2;
     maxlevels=65535;
     src=save_service->current_buffer->image;
     break;
-  case COLOR_FORMAT_YUV411:
-  case COLOR_FORMAT_YUV422:
-  case COLOR_FORMAT_YUV444:
+  case DC1394_COLOR_CODING_YUV411:
+  case DC1394_COLOR_CODING_YUV422:
+  case DC1394_COLOR_CODING_YUV444:
     convert_to_rgb(save_service->current_buffer, info->buffer);
     P_value=6;
     bytes=save_service->current_buffer->width*save_service->current_buffer->height*3;
     maxlevels=255;
     src=info->buffer;
     break;
-  case COLOR_FORMAT_RGB8:
+  case DC1394_COLOR_CODING_RGB8:
     P_value=6;
     bytes=save_service->current_buffer->width*save_service->current_buffer->height*3;
     maxlevels=255;
     src=save_service->current_buffer->image;
     break;
-  case COLOR_FORMAT_RGB16:
+  case DC1394_COLOR_CODING_RGB16:
     P_value=6;
     bytes=save_service->current_buffer->width*save_service->current_buffer->height*6;
     maxlevels=65535;
@@ -713,7 +713,7 @@ SaveThread(void* arg)
 		// video saving mode
 		//fprintf(stderr,"entering MPEG save and convert section\n");
 		switch(save_service->current_buffer->color_mode) {
-		case COLOR_FORMAT_YUV411:
+		case DC1394_COLOR_CODING_YUV411:
 		  uyvy411_yuv411p(save_service->current_buffer->image, info->tmp_picture, 
 				  save_service->current_buffer->width, save_service->current_buffer->height);
 		  img_convert((AVPicture *)info->picture, info->video_st->codec.pix_fmt, 
@@ -721,7 +721,7 @@ SaveThread(void* arg)
 			      save_service->current_buffer->width, save_service->current_buffer->height);
 		  write_video_frame(info->oc, info->video_st, info->picture);
 		  break;
-		case COLOR_FORMAT_YUV422:
+		case DC1394_COLOR_CODING_YUV422:
 		  uyvy422_yuv422p(save_service->current_buffer->image, info->tmp_picture, 
 				  save_service->current_buffer->width, save_service->current_buffer->height);
 		  img_convert((AVPicture *)info->picture, info->video_st->codec.pix_fmt, 
@@ -749,7 +749,7 @@ SaveThread(void* arg)
 		  fprintf(stderr, "Could not allocate picture\n");
 		}
 		switch(save_service->current_buffer->color_mode) {
-		case COLOR_FORMAT_YUV411:
+		case DC1394_COLOR_CODING_YUV411:
 		  info->tmp_picture = alloc_picture(PIX_FMT_YUV411P, 
 				  save_service->current_buffer->width, save_service->current_buffer->height);
 		  uyvy411_yuv411p(save_service->current_buffer->image, info->tmp_picture, 
@@ -761,7 +761,7 @@ SaveThread(void* arg)
 			     PIX_FMT_YUV420P, filename_out, 90.0, "Created using Coriander and FFMPEG");
 		  
 		  break;
-		case COLOR_FORMAT_YUV422: 
+		case DC1394_COLOR_CODING_YUV422: 
 		  info->tmp_picture = alloc_picture(PIX_FMT_YUV422P, 
 				  save_service->current_buffer->width, save_service->current_buffer->height);
 		  uyvy422_yuv422p(save_service->current_buffer->image, info->tmp_picture, 

@@ -107,7 +107,7 @@ on_trigger_polarity_toggled            (GtkToggleButton *togglebutton,
   if (dc1394_set_trigger_polarity(&camera->camera_info,togglebutton->active)!=DC1394_SUCCESS)
     MainError("Cannot set trigger polarity");
   else
-    camera->feature_set.feature[FEATURE_TRIGGER-FEATURE_MIN].trigger_polarity=(int)togglebutton->active;
+    camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].trigger_polarity=(int)togglebutton->active;
 }
 
 
@@ -118,7 +118,7 @@ on_trigger_mode_activate              (GtkMenuItem     *menuitem,
   if (dc1394_set_trigger_mode(&camera->camera_info, (int)user_data)!=DC1394_SUCCESS)
     MainError("Could not set trigger mode");
   else
-    camera->feature_set.feature[FEATURE_TRIGGER-FEATURE_MIN].trigger_mode=(int)user_data;
+    camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].trigger_mode=(int)user_data;
   UpdateTriggerFrame();
 }
 
@@ -126,10 +126,10 @@ void
 on_trigger_external_toggled            (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-  if (dc1394_feature_on_off(&camera->camera_info, FEATURE_TRIGGER, togglebutton->active)!=DC1394_SUCCESS)
+  if (dc1394_feature_on_off(&camera->camera_info, DC1394_FEATURE_TRIGGER, togglebutton->active)!=DC1394_SUCCESS)
     MainError("Could not set external trigger source");
   else
-    camera->feature_set.feature[FEATURE_TRIGGER-FEATURE_MIN].is_on=togglebutton->active;
+    camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].is_on=togglebutton->active;
   UpdateTriggerFrame();
 }
 
@@ -280,9 +280,9 @@ on_format7_packet_size_changed               (GtkAdjustment    *adj,
 
   value=(int)adj->value;
 
-  value=NearestValue(value,camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].min_bpp,
-		     camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].min_bpp,
-		     camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].max_bpp);
+  value=NearestValue(value,camera->format7_info.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].min_bpp,
+		     camera->format7_info.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].min_bpp,
+		     camera->format7_info.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].max_bpp);
 
   IsoFlowCheck(&state);
   
@@ -294,7 +294,7 @@ on_format7_packet_size_changed               (GtkAdjustment    *adj,
 					   camera->format7_info.edit_mode,&bpp)!=DC1394_SUCCESS) 
     MainError("Could not query Format7 bytes per packet");
   else {
-    camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].bpp=bpp;
+    camera->format7_info.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].bpp=bpp;
     if (bpp==0)
       fprintf(stderr,"BPP is zero in %s at line %d\n",__FUNCTION__,__LINE__);
     
@@ -333,7 +333,7 @@ on_edit_format7_color_activate             (GtkMenuItem     *menuitem,
   if (dc1394_set_format7_color_coding_id(&camera->camera_info, camera->format7_info.edit_mode, (int)user_data)!=DC1394_SUCCESS)
     MainError("Could not change Format7 color coding");
   else
-    camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].color_coding_id=(int)user_data;
+    camera->format7_info.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].color_coding_id=(int)user_data;
 
   GetFormat7ModeInfo(camera, camera->format7_info.edit_mode);
   UpdateOptionFrame();
@@ -355,38 +355,38 @@ on_scale_value_changed             ( GtkAdjustment    *adj,
 				     gpointer         user_data)
 {
   switch((int)user_data) {
-  case FEATURE_TEMPERATURE:
+  case DC1394_FEATURE_TEMPERATURE:
     if (dc1394_set_temperature(&camera->camera_info,adj->value)!=DC1394_SUCCESS)
       MainError("Could not set temperature");
     else
-      camera->feature_set.feature[FEATURE_TEMPERATURE-FEATURE_MIN].target_value=adj->value;
+      camera->feature_set.feature[DC1394_FEATURE_TEMPERATURE-DC1394_FEATURE_MIN].target_value=adj->value;
     break;
-  case FEATURE_WHITE_BALANCE+BU*4: // why oh why is there a *4?
-    if (dc1394_set_white_balance(&camera->camera_info,adj->value, camera->feature_set.feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].RV_value)!=DC1394_SUCCESS)
+  case DC1394_FEATURE_WHITE_BALANCE+BU*4: // why oh why is there a *4?
+    if (dc1394_set_white_balance(&camera->camera_info,adj->value, camera->feature_set.feature[DC1394_FEATURE_WHITE_BALANCE-DC1394_FEATURE_MIN].RV_value)!=DC1394_SUCCESS)
       MainError("Could not set B/U white balance");
     else {
-      camera->feature_set.feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].BU_value=adj->value;
-      if (camera->feature_set.feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].absolute_capable!=0) {
-	GetAbsValue(FEATURE_WHITE_BALANCE);
+      camera->feature_set.feature[DC1394_FEATURE_WHITE_BALANCE-DC1394_FEATURE_MIN].BU_value=adj->value;
+      if (camera->feature_set.feature[DC1394_FEATURE_WHITE_BALANCE-DC1394_FEATURE_MIN].absolute_capable!=0) {
+	GetAbsValue(DC1394_FEATURE_WHITE_BALANCE);
       }
     }
     break;
-  case FEATURE_WHITE_BALANCE+RV*4: // why oh why is there a *4?
-    if (dc1394_set_white_balance(&camera->camera_info, camera->feature_set.feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].BU_value, adj->value)!=DC1394_SUCCESS)
+  case DC1394_FEATURE_WHITE_BALANCE+RV*4: // why oh why is there a *4?
+    if (dc1394_set_white_balance(&camera->camera_info, camera->feature_set.feature[DC1394_FEATURE_WHITE_BALANCE-DC1394_FEATURE_MIN].BU_value, adj->value)!=DC1394_SUCCESS)
       MainError("Could not set R/V white balance");
     else {
-      camera->feature_set.feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].RV_value=adj->value;
-      if (camera->feature_set.feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].absolute_capable!=0) {
-	GetAbsValue(FEATURE_WHITE_BALANCE);
+      camera->feature_set.feature[DC1394_FEATURE_WHITE_BALANCE-DC1394_FEATURE_MIN].RV_value=adj->value;
+      if (camera->feature_set.feature[DC1394_FEATURE_WHITE_BALANCE-DC1394_FEATURE_MIN].absolute_capable!=0) {
+	GetAbsValue(DC1394_FEATURE_WHITE_BALANCE);
       }
     }
     break;
-  case FEATURE_WHITE_SHADING+SHADINGR*4:
-    if (dc1394_set_white_shading(&camera->camera_info,  adj->value, camera->feature_set.feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].G_value,
-				 camera->feature_set.feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].B_value)!=DC1394_SUCCESS)
+  case DC1394_FEATURE_WHITE_SHADING+SHADINGR*4:
+    if (dc1394_set_white_shading(&camera->camera_info,  adj->value, camera->feature_set.feature[DC1394_FEATURE_WHITE_SHADING-DC1394_FEATURE_MIN].G_value,
+				 camera->feature_set.feature[DC1394_FEATURE_WHITE_SHADING-DC1394_FEATURE_MIN].B_value)!=DC1394_SUCCESS)
       MainError("Could not set white shading / blue channel");
     else {
-      camera->feature_set.feature[FEATURE_WHITE_SHADING-FEATURE_MIN].R_value=adj->value;
+      camera->feature_set.feature[DC1394_FEATURE_WHITE_SHADING-DC1394_FEATURE_MIN].R_value=adj->value;
       // don't know about abs values for white shading:
       /*
       if (camera->feature_set.feature[FEATURE_WHITE_SHADING-FEATURE_MIN].absolute_capable!=0) {
@@ -395,12 +395,12 @@ on_scale_value_changed             ( GtkAdjustment    *adj,
       */
     }
     break;
-  case FEATURE_WHITE_SHADING+SHADINGG*4:
-    if (dc1394_set_white_shading(&camera->camera_info, camera->feature_set.feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].R_value,
-				 adj->value, camera->feature_set.feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].B_value)!=DC1394_SUCCESS)
+  case DC1394_FEATURE_WHITE_SHADING+SHADINGG*4:
+    if (dc1394_set_white_shading(&camera->camera_info, camera->feature_set.feature[DC1394_FEATURE_WHITE_SHADING-DC1394_FEATURE_MIN].R_value,
+				 adj->value, camera->feature_set.feature[DC1394_FEATURE_WHITE_SHADING-DC1394_FEATURE_MIN].B_value)!=DC1394_SUCCESS)
       MainError("Could not set white shading / blue channel");
     else {
-      camera->feature_set.feature[FEATURE_WHITE_SHADING-FEATURE_MIN].G_value=adj->value;
+      camera->feature_set.feature[DC1394_FEATURE_WHITE_SHADING-DC1394_FEATURE_MIN].G_value=adj->value;
       // don't know about abs values for white shading:
       /*
       if (camera->feature_set.feature[FEATURE_WHITE_SHADING-FEATURE_MIN].absolute_capable!=0) {
@@ -409,12 +409,12 @@ on_scale_value_changed             ( GtkAdjustment    *adj,
       */
     }
     break;
-  case FEATURE_WHITE_SHADING+SHADINGB*4:
-    if (dc1394_set_white_shading(&camera->camera_info, camera->feature_set.feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].R_value,
-				 camera->feature_set.feature[FEATURE_WHITE_BALANCE-FEATURE_MIN].G_value, adj->value)!=DC1394_SUCCESS)
+  case DC1394_FEATURE_WHITE_SHADING+SHADINGB*4:
+    if (dc1394_set_white_shading(&camera->camera_info, camera->feature_set.feature[DC1394_FEATURE_WHITE_SHADING-DC1394_FEATURE_MIN].R_value,
+				 camera->feature_set.feature[DC1394_FEATURE_WHITE_SHADING-DC1394_FEATURE_MIN].G_value, adj->value)!=DC1394_SUCCESS)
       MainError("Could not set white shading / blue channel");
     else {
-      camera->feature_set.feature[FEATURE_WHITE_SHADING-FEATURE_MIN].B_value=adj->value;
+      camera->feature_set.feature[DC1394_FEATURE_WHITE_SHADING-DC1394_FEATURE_MIN].B_value=adj->value;
       // don't know about abs values for white shading:
       /*
       if (camera->feature_set.feature[FEATURE_WHITE_SHADING-FEATURE_MIN].absolute_capable!=0) {
@@ -428,16 +428,16 @@ on_scale_value_changed             ( GtkAdjustment    *adj,
     if (dc1394_set_feature_value(&camera->camera_info,(int)user_data,adj->value)!=DC1394_SUCCESS)
       MainError("Could not set feature");
     else {
-      camera->feature_set.feature[(int)user_data-FEATURE_MIN].value=adj->value;
-      if ((int)user_data!=FEATURE_TRIGGER) {
-	if (camera->feature_set.feature[(int)user_data-FEATURE_MIN].absolute_capable!=0) {
+      camera->feature_set.feature[(int)user_data-DC1394_FEATURE_MIN].value=adj->value;
+      if ((int)user_data!=DC1394_FEATURE_TRIGGER) {
+	if (camera->feature_set.feature[(int)user_data-DC1394_FEATURE_MIN].absolute_capable!=0) {
 	  GetAbsValue((int)user_data);
 	}
       }
     }
     // optical filter sometimes changes white balance (sony cameras) so we update the WB.
-    if ((int)user_data==FEATURE_OPTICAL_FILTER) {
-      UpdateRange(FEATURE_WHITE_BALANCE);
+    if ((int)user_data==DC1394_FEATURE_OPTICAL_FILTER) {
+      UpdateRange(DC1394_FEATURE_WHITE_BALANCE);
     }
     break;
   }
@@ -451,7 +451,7 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
   Format7ModeInfo_t* info;
 
   if (camera->format7_info.edit_mode>=0) { // check if F7 is supported
-    info=&camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN];
+    info=&camera->format7_info.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN];
     sx=info->size_x;
     sy=info->size_y;
     px=info->pos_x;
@@ -615,54 +615,54 @@ on_range_menu_activate             (GtkMenuItem     *menuitem,
     if (dc1394_feature_on_off(&camera->camera_info, feature, FALSE)!=DC1394_SUCCESS)
       MainError("Could not set feature on/off");
     else {
-      camera->feature_set.feature[feature-FEATURE_MIN].is_on=FALSE;
+      camera->feature_set.feature[feature-DC1394_FEATURE_MIN].is_on=FALSE;
       UpdateRange(feature);
     }
     break;
   case RANGE_MENU_MAN : // ============================== MAN ==============================
-      if (camera->feature_set.feature[feature-FEATURE_MIN].on_off_capable) {
+      if (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].on_off_capable) {
 	if (dc1394_feature_on_off(&camera->camera_info, feature, TRUE)!=DC1394_SUCCESS) {
 	  MainError("Could not set feature on");
 	  break;
 	}
 	else
-	  camera->feature_set.feature[feature-FEATURE_MIN].is_on=TRUE;
+	  camera->feature_set.feature[feature-DC1394_FEATURE_MIN].is_on=TRUE;
       }
       if (dc1394_auto_on_off(&camera->camera_info, feature, FALSE)!=DC1394_SUCCESS)
 	MainError("Could not set manual mode");
       else {
-	camera->feature_set.feature[feature-FEATURE_MIN].auto_active=FALSE;
-	if (camera->feature_set.feature[feature-FEATURE_MIN].absolute_capable)
+	camera->feature_set.feature[feature-DC1394_FEATURE_MIN].auto_active=FALSE;
+	if (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].absolute_capable)
 	  SetAbsoluteControl(feature, FALSE);
 	UpdateRange(feature);
       }
       break;
   case RANGE_MENU_AUTO : // ============================== AUTO ==============================
-    if (camera->feature_set.feature[feature-FEATURE_MIN].on_off_capable) {
+    if (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].on_off_capable) {
       if (dc1394_feature_on_off(&camera->camera_info, feature, TRUE)!=DC1394_SUCCESS) {
 	MainError("Could not set feature on");
 	break;
       }
       else
-	camera->feature_set.feature[feature-FEATURE_MIN].is_on=TRUE;
+	camera->feature_set.feature[feature-DC1394_FEATURE_MIN].is_on=TRUE;
     }
     if (dc1394_auto_on_off(&camera->camera_info, feature, TRUE)!=DC1394_SUCCESS)
       MainError("Could not set auto mode");
     else {
-      camera->feature_set.feature[feature-FEATURE_MIN].auto_active=TRUE;
-      if (camera->feature_set.feature[feature-FEATURE_MIN].absolute_capable)
+      camera->feature_set.feature[feature-DC1394_FEATURE_MIN].auto_active=TRUE;
+      if (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].absolute_capable)
 	SetAbsoluteControl(feature, FALSE);
       UpdateRange(feature);
     }
     break;
     case RANGE_MENU_SINGLE : // ============================== SINGLE ==============================
-      if (camera->feature_set.feature[feature-FEATURE_MIN].on_off_capable) {
+      if (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].on_off_capable) {
 	if (dc1394_feature_on_off(&camera->camera_info, feature, TRUE)!=DC1394_SUCCESS) {
 	  MainError("Could not set feature on");
 	  break;
 	}
 	else
-	  camera->feature_set.feature[feature-FEATURE_MIN].is_on=TRUE;
+	  camera->feature_set.feature[feature-DC1394_FEATURE_MIN].is_on=TRUE;
       }
       step=(unsigned long int)(1000000.0/preferences.auto_update_frequency);
       if (dc1394_start_one_push_operation(&camera->camera_info, feature)!=DC1394_SUCCESS)
@@ -679,7 +679,7 @@ on_range_menu_activate             (GtkMenuItem     *menuitem,
 	if (timeout_bin>=(unsigned long int)(preferences.op_timeout*1000000.0))
 	  MainStatus("One-Push function timed-out!");
 
-	if (camera->feature_set.feature[feature-FEATURE_MIN].absolute_capable)
+	if (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].absolute_capable)
 	  SetAbsoluteControl(feature, FALSE);
 	UpdateRange(feature);
 	// should switch back to manual mode here. Maybe a recursive call??
@@ -688,13 +688,13 @@ on_range_menu_activate             (GtkMenuItem     *menuitem,
       }
       break;
   case RANGE_MENU_ABSOLUTE : // ============================== ABSOLUTE ==============================
-    if (camera->feature_set.feature[feature-FEATURE_MIN].on_off_capable) {
+    if (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].on_off_capable) {
       if (dc1394_feature_on_off(&camera->camera_info, feature, TRUE)!=DC1394_SUCCESS) {
 	MainError("Could not set feature on");
 	break;
       }
       else
-	camera->feature_set.feature[feature-FEATURE_MIN].is_on=TRUE;
+	camera->feature_set.feature[feature-DC1394_FEATURE_MIN].is_on=TRUE;
     }
     SetAbsoluteControl(feature, TRUE);
     UpdateRange(feature);
@@ -1146,10 +1146,10 @@ on_trigger_count_changed               (GtkEditable     *editable,
   int value;
   value=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(main_window,"trigger_count")));
 
-  if (dc1394_set_feature_value(&camera->camera_info, FEATURE_TRIGGER, value)!=DC1394_SUCCESS)
+  if (dc1394_set_feature_value(&camera->camera_info, DC1394_FEATURE_TRIGGER, value)!=DC1394_SUCCESS)
     MainError("Could not set external trigger count");
   else
-    camera->feature_set.feature[FEATURE_TRIGGER-FEATURE_MIN].value=value;
+    camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].value=value;
 }
 
 

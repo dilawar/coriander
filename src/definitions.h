@@ -170,7 +170,7 @@ typedef struct _Format7ModeInfo
 
 typedef struct _Format7Info
 {
-  Format7ModeInfo_t mode[MODE_FORMAT7_NUM];
+  Format7ModeInfo_t mode[DC1394_MODE_FORMAT7_NUM];
   int edit_mode;
   
   int scale_posx_handle;
