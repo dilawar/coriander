@@ -4,6 +4,7 @@ Changes towards version 2.0.0
 
    May 25, 2005, by Damien Douxchamps
    - sync with cvs of libdc1394
+   - fixed the interactive display of the WOI
 	
    May 12, 2005, by Damien Douxchamps
    - fixed little bug in random color overlay: the color is more homogenous now.
