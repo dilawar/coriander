@@ -58,15 +58,20 @@ gint IsoStartThread(camera_t* cam)
     }
     */
     // ONLY IF LEGACY. OTHERWISE S800.
-    if (cam->camera_info.bmode_capable==0) {
-      switch (cam->selfid.packetZero.phySpeed) {
-      case 1: maxspeed=DC1394_SPEED_200;break;
-      case 2: maxspeed=DC1394_SPEED_400;break;
-      default: maxspeed=DC1394_SPEED_100;break;
-      }
+    switch (cam->selfid.packetZero.phySpeed) {
+    case 1: maxspeed=DC1394_SPEED_200;break;
+    case 2: maxspeed=DC1394_SPEED_400;break;
+    case 3: maxspeed=DC1394_SPEED_800;break;
+    case 4: maxspeed=DC1394_SPEED_1600;break;
+    case 5: maxspeed=DC1394_SPEED_3200;break;
+    default: maxspeed=DC1394_SPEED_100;break;
     }
-    else {
-      maxspeed=DC1394_SPEED_800;
+
+    if (maxspeed >= DC1394_SPEED_800) {
+      if (dc1394_set_operation_mode(&cam->camera_info, DC1394_OPERATION_MODE_1394B)!=DC1394_SUCCESS) {
+	fprintf(stderr,"Can't set 1394B mode. Reverting to 400Mbps\n");
+	maxspeed=DC1394_SPEED_400;
+      }
     }
 
     // copy params if we are the current camera
