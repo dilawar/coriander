@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT(configure.in)
-AM_INIT_AUTOMAKE(coriander, 1.2.0)
+AM_INIT_AUTOMAKE(coriander, 2.0.0-pre2)
 AM_MAINTAINER_MODE
 AM_CONFIG_HEADER(config.h)
 
@@ -38,7 +38,7 @@ AC_DEFUN([AC_CHECK_LIBDC],[
  	if test x$libdc1394 = xno; then
           AC_ERROR([libdc1394 is not installed.  
 **************************************************************************
-**   Please install libdc1394 version > 2.0.0 or its latest CVS         **
+**   Please install libdc1394 version 2.0.0-pre3                        **
 **   Source tarball and CVS at:  http://www.sf.net/projects/libdc1394   **
 **************************************************************************])
  	fi
@@ -54,30 +54,29 @@ AC_DEFUN([AC_CHECK_LIBDC_VERSION_FUNCTION],[
 	else
           AC_ERROR([libdc1394 is too old.
 **************************************************************************
-**   Please install libdc1394 version > 2.0.0 or its latest CVS         **
+**   Please install libdc1394 version 2.0.0-pre3                        **
 **   Source tarball and CVS at:  http://www.sf.net/projects/libdc1394   **
 **************************************************************************])
 	fi
 ])
 
-dnl the macro below is not used with latest libdc v2
-
 AC_DEFUN([AC_CHECK_LIBDC_VERSION_COMPILE],[
 	AC_SUBST(LIBDC_CFLAGS)
 	AC_SUBST(LIBDC_LIBS)
-	AC_MSG_CHECKING(presence of IIDC v1.31 in libdc)
+	AC_MSG_CHECKING(libdc1394-2 definitions)
 	AC_TRY_COMPILE([
         #include <libraw1394/raw1394.h>
         #include <libdc1394/dc1394_control.h>
 	],[
 	int main(void) {
 	raw1394handle_t handle;
-	dc1394_cameracapture camera;
-	dc1394_dma_setup_capture(handle, FRAMERATE_240, 0, 0, COLOR_FORMAT7_RAW8,
-	                         0, 0, 0, 0, "tmp", &camera);
+	dc1394capture_t capture;
+	dc1394camera_t camera;
+	dc1394_dma_setup_capture(&camera, 0, 0, DC1394_SPEED_800, DC1394_FRAMERATE_240,
+	                         10, 0, "tmp", &capture);
 	return 0;
 	}
-	],libdc1394=ok,libdc1394=missing);
+	],libdc1394=ok,libdc1394=outdated);
 	AC_MSG_RESULT($libdc1394)
  	if test x$libdc1394 = xok; then
            LIBDC_LIBS="-ldc1394_control"
@@ -85,7 +84,7 @@ AC_DEFUN([AC_CHECK_LIBDC_VERSION_COMPILE],[
 	else
           AC_ERROR([libdc1394 is too old. 
 **************************************************************************
-**   Please install libdc1394 version > 1.0.0 or its latest CVS         **
+**   Please install libdc1394 version 2.0.0-pre3                        **
 **   Source tarball and CVS at:  http://www.sf.net/projects/libdc1394   **
 **************************************************************************])
  	fi
@@ -105,7 +104,7 @@ AC_DEFUN([AC_CHECK_LIBRAW],[
  	if test x$libraw1394 = xno; then
           AC_ERROR([libraw1394 is not installed.
 **************************************************************************
-**   Please install version >= 0.9.0                                    **
+**   Please install version >= 1.0.0                                    **
 **   Source tarball and CVS at:  http://www.sf.net/projects/libraw1394  **
 **************************************************************************])
 	fi
@@ -121,7 +120,7 @@ AC_DEFUN([AC_CHECK_LIBRAW_VERSION],[
 	else
           AC_ERROR([libraw1394 is too old.
 **************************************************************************
-**   Please upgrade to a version >= 0.9.0                               **
+**   Please upgrade to a version >= 1.0.0                               **
 **   Source tarball and CVS at:  http://www.sf.net/projects/libraw1394  **
 **************************************************************************])
 	fi
@@ -318,7 +317,7 @@ AC_DEFUN([AC_CHECK_FFMPEG],[
 **************************************************************************
 **   ffmpeg can be obtained using your favorite package mamagement      **
 **   system (such as apt-get). Be sure to get ffmpeg and the two        **
-**   development packages libavcodec-dev and libavformat                **
+**   development packages libavcodec-dev and libavformat-dev            **
 **   Saving MPEG movies is DISABLED.                                    **
 **   Saving JPEGs will be SIGNIFICANTLY SLOWER                          **
 **************************************************************************])
@@ -334,8 +333,8 @@ AC_CHECK_SSE2
 AC_CHECK_LIBRAW
 AC_CHECK_LIBRAW_VERSION
 AC_CHECK_LIBDC
-dnl AC_CHECK_LIBDC_VERSION_COMPILE
 AC_CHECK_LIBDC_VERSION_FUNCTION
+AC_CHECK_LIBDC_VERSION_COMPILE
 AC_CHECK_FTPLIB
 AC_CHECK_SDLLIB
 AC_CHECK_FFMPEG

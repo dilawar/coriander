@@ -638,7 +638,7 @@ SaveThread(void* arg)
       pthread_mutex_unlock(&info->mutex_cancel);
       pthread_mutex_lock(&save_service->mutex_data);
       //fprintf(stderr,"About to roll buffers in SAVE thread\n");
-      if(RollBuffers(save_service)) { // have buffers been rolled?
+      if(GetBufferFromPrevious(save_service)) { // have buffers been rolled?
 	// check params
 	//printf("New frame arrived\n");
 	SaveThreadCheckParams(save_service);
@@ -824,6 +824,8 @@ SaveThread(void* arg)
 	    save_service->fps=fabs((float)save_service->fps_frames/tmp);
 
 	}
+	//usleep(200000);////////////////////////////////////////////
+	PublishBufferForNext(save_service);
 	pthread_mutex_unlock(&save_service->mutex_data);
 	//fprintf(stderr,"saved frame %.7f\n",save_service->fps);
       }

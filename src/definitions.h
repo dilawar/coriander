@@ -224,7 +224,7 @@ typedef struct _Buffer_T
   int captime_usec;
   char captime_string[19];
 
-  int used; // set to 1 if the buffer has already been used by a service. Only the last thread can do
+  //int used; // set to 1 if the buffer has already been used by a service. Only the last thread can do
             // this change. The ISO thread can be set to take that flag into account or not. EFFECT:
             // avoids framedrop in association with a sufficiently large DMA buffer
 } buffer_t;
@@ -255,6 +255,10 @@ typedef struct _Chain_T
   unsigned long long int processed_frames;
 
   camera_t*       camera; // the camera that uses this thread    
+
+  int ready;// set to 1 if the ISO service can grab another picture from the camera. Only the last thread can do
+            // this change. The ISO thread can be set to take that flag into account or not. EFFECT:
+            // avoids framedrop in association with a sufficiently large DMA buffer
 } chain_t;
 
 /*

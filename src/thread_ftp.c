@@ -162,7 +162,7 @@ FtpThread(void* arg)
     else {
       pthread_mutex_unlock(&info->mutex_cancel);
       pthread_mutex_lock(&ftp_service->mutex_data);
-      if(RollBuffers(ftp_service)) { // have buffers been rolled?
+      if(GetBufferFromPrevious(ftp_service)) { // have buffers been rolled?
 	FtpThreadCheckParams(ftp_service);
 	if (ftp_service->current_buffer->width!=-1) {
 	  if (skip_counter>=(info->period-1)) {
@@ -219,6 +219,8 @@ FtpThread(void* arg)
 	    ftp_service->fps=fabs((float)ftp_service->fps_frames/tmp);
 
 	}
+	
+	PublishBufferForNext(ftp_service);
 	pthread_mutex_unlock(&ftp_service->mutex_data);
       }
       else {

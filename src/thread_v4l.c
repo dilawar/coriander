@@ -144,7 +144,7 @@ V4lThread(void* arg)
     else {
       pthread_mutex_unlock(&info->mutex_cancel);
       pthread_mutex_lock(&v4l_service->mutex_data);
-      if(RollBuffers(v4l_service)) { // have buffers been rolled?
+      if(GetBufferFromPrevious(v4l_service)) { // have buffers been rolled?
 	// check params
 	V4lThreadCheckParams(v4l_service);
 	
@@ -192,6 +192,7 @@ V4lThread(void* arg)
 	    v4l_service->fps=fabs((float)v4l_service->fps_frames/tmp);
 
 	}
+	PublishBufferForNext(v4l_service);
 	pthread_mutex_unlock(&v4l_service->mutex_data);
       }
       else {

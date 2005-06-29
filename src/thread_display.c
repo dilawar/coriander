@@ -110,7 +110,7 @@ DisplayThread(void* arg)
     else {
       pthread_mutex_unlock(&info->mutex_cancel);
       pthread_mutex_lock(&display_service->mutex_data);
-      if(RollBuffers(display_service)) { // have buffers been rolled?
+      if(GetBufferFromPrevious(display_service)) { // have buffers been rolled?
 #ifdef HAVE_SDLLIB
 	// check params
 	DisplayThreadCheckParams(display_service);
@@ -145,13 +145,15 @@ DisplayThread(void* arg)
 	  }
 	  // FPS display:
 	  display_service->current_time=times(&display_service->tms_buf);
-
+	  
 	  tmp=(float)(display_service->current_time-display_service->prev_time)/sysconf(_SC_CLK_TCK);
 	  if (tmp==0)
 	    display_service->fps=fabs(0.0);
 	  else
 	    display_service->fps=fabs((float)display_service->fps_frames/tmp);
 	}
+
+	PublishBufferForNext(display_service);
 	pthread_mutex_unlock(&display_service->mutex_data);
       }
       else { //

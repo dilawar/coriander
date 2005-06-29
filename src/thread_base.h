@@ -29,8 +29,11 @@ GetService(camera_t* cam, service_t service);
 void
 CommonChainSetup(camera_t* cam, chain_t* chain, service_t req_service);
 
+void
+PublishBufferForNext(chain_t *chain);
+
 int
-RollBuffers(chain_t* chain);
+GetBufferFromPrevious(chain_t *chain);
 
 void
 InsertChain(camera_t* cam, chain_t* chain);

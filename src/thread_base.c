@@ -46,46 +46,78 @@ GetService(camera_t* cam, service_t service)
 }
 
 
-int
-RollBuffers(chain_t* chain)
+void
+PublishBufferForNext(chain_t *chain)
 {
   buffer_t* tmp_buffer;
-  int new_current=0;
-  if (chain->service==SERVICE_ISO) {
-    // 1 - 2 - 3 -> 1 - 3 - 2 (publish for next service, ISO only)
-    tmp_buffer=chain->current_buffer;
-    chain->current_buffer=chain->next_buffer;
-    chain->next_buffer=tmp_buffer;
-    chain->next_buffer->used=0;
-    chain->updated=1;
+  chain_t *tmp_chain;
+
+  // mutexes are not necessary (and should not be there)
+  // because we are in a mutex clamp when this function is executed.
+
+  //pthread_mutex_lock(&chain->mutex_data);
+  
+  if ((chain->service==SERVICE_ISO)){
+    if (chain->next_chain!=NULL) {
+
+      tmp_buffer=chain->current_buffer;
+      chain->current_buffer=chain->next_buffer;
+      chain->next_buffer=tmp_buffer;
+      chain->updated=1;
+      //fprintf(stderr,"service %d published buffer 0x%x, ready =%d\n",
+      //      chain->service,chain->next_buffer, chain->ready);
+      
+      chain->ready=0;
+    }
   }
   else {
-    // 1 - 3 - 2 -> 3 - 1 - 2 (get from previous service, other services)
-    if (chain->prev_chain!=NULL) { // look for previous chain existance
-      pthread_mutex_lock(&chain->prev_chain->mutex_data);
-      if (chain->prev_chain->updated>0) { // look for updated picture
-	// publish current one to the next chain:
-	tmp_buffer=chain->current_buffer;
-	chain->current_buffer=chain->next_buffer;
-	chain->next_buffer=tmp_buffer;
-	chain->updated=1;
-	
-	if (chain->next_chain==NULL) { // if we are the last buffer, set used to 1
-	  chain->current_buffer->used=1;
-	}
-
-	// get previous chain image
-	tmp_buffer=chain->current_buffer;
-	chain->current_buffer=chain->prev_chain->next_buffer;
-	chain->prev_chain->next_buffer=tmp_buffer;
-	chain->prev_chain->updated=0;
-	new_current=1;
-      }
-      else
-	new_current=0;
-    
-      pthread_mutex_unlock(&chain->prev_chain->mutex_data);
+    if (chain->next_chain!=NULL) {
+      tmp_buffer=chain->current_buffer;
+      chain->current_buffer=chain->next_buffer;
+      chain->next_buffer=tmp_buffer;
+      chain->updated=1;
     }
+    else {
+      //eprint("find iso\n");
+      // find the ISO service
+      tmp_chain=chain;
+      while(tmp_chain->prev_chain!=NULL) {
+	tmp_chain=tmp_chain->prev_chain;
+	if (tmp_chain->service==SERVICE_ISO)
+	  break;
+      }
+      if (tmp_chain->service==SERVICE_ISO)
+	tmp_chain->ready=1;
+      //chain->current_buffer->used=1;
+    }
+  }
+  //pthread_mutex_unlock(&chain->mutex_data);
+}
+
+int
+GetBufferFromPrevious(chain_t *chain)
+{
+  int new_current=0;
+  buffer_t* tmp_buffer;
+
+  if (chain->prev_chain!=NULL) { // look for previous chain existance
+    pthread_mutex_lock(&chain->prev_chain->mutex_data);
+    if (chain->prev_chain->updated>0) { // look for updated picture
+
+      //fprintf(stderr,"service %d got buffer 0x%x, updated=%d\n",
+      //      chain->service,chain->prev_chain->next_buffer, chain->prev_chain->updated);
+
+      // get previous chain image
+      tmp_buffer=chain->current_buffer;
+      chain->current_buffer=chain->prev_chain->next_buffer;
+      chain->prev_chain->next_buffer=tmp_buffer;
+      chain->prev_chain->updated=0;
+      new_current=1;
+    }
+    else
+      new_current=0;
+    
+    pthread_mutex_unlock(&chain->prev_chain->mutex_data);
   }
 
   return(new_current);
@@ -104,25 +136,35 @@ CommonChainSetup(camera_t* cam, chain_t* chain, service_t req_service)
   chain->service=req_service;
   
   probe_chain=cam->image_pipe; // set the begin point for search
+
   if (req_service==SERVICE_ISO) {
     chain->next_chain=probe_chain;// the chain is inserted BEFORE probe_chain
     chain->prev_chain=NULL;
   }
+  else if (probe_chain==NULL) { // empty pipe
+    chain->next_chain=NULL;
+    chain->prev_chain=NULL;
+  }
   else {
-    if (probe_chain!=NULL) {
-      pthread_mutex_lock(&probe_chain->mutex_struct);
-      while ((probe_chain->next_chain!=NULL)&&(probe_chain->service<req_service)) {
+    pthread_mutex_lock(&probe_chain->mutex_struct);
+    while (1) {
+      if (probe_chain->service>req_service) {// the chain is inserted BEFORE probe_chain
+	chain->next_chain=probe_chain;
+	chain->prev_chain=probe_chain->prev_chain;
+	pthread_mutex_unlock(&probe_chain->mutex_struct);
+	break;
+      }
+      else if (probe_chain->next_chain==NULL) {
+	chain->next_chain=probe_chain->next_chain;// the chain is inserted AFTER probe_chain
+	chain->prev_chain=probe_chain;
+	pthread_mutex_unlock(&probe_chain->mutex_struct);
+	break;
+      }
+      else { //advance in pipeline
 	pthread_mutex_unlock(&probe_chain->mutex_struct);
 	probe_chain=probe_chain->next_chain;
 	pthread_mutex_lock(&probe_chain->mutex_struct);
       }
-      chain->next_chain=probe_chain->next_chain;// the chain is inserted AFTER probe_chain
-      chain->prev_chain=probe_chain;
-      pthread_mutex_unlock(&probe_chain->mutex_struct);
-    }
-    else { // chain is the first one
-      chain->next_chain=NULL;
-      chain->prev_chain=NULL;
     }
   }
 
@@ -137,6 +179,8 @@ CommonChainSetup(camera_t* cam, chain_t* chain, service_t req_service)
   InitBuffer(&chain->local_param_copy);
 
   chain->updated=0;
+
+  chain->ready=1;
 }
 
 
@@ -145,6 +189,20 @@ InsertChain(camera_t* cam, chain_t* chain)
 {
 
   // we should only use mutex_struct in this function
+
+  chain_t *tmp;
+  eprint("Services before: ");
+  tmp=cam->image_pipe;
+  if (tmp!=NULL) {
+    eprint("%d ",tmp->service);
+
+    while (tmp->next_chain!=NULL) {
+      tmp=tmp->next_chain;
+      eprint("%d ",tmp->service);
+    }
+  }
+  else
+    eprint("none\n");
 
   // we should now effectively make the break in the pipe:
   if (chain->next_chain!=NULL)
@@ -165,6 +223,21 @@ InsertChain(camera_t* cam, chain_t* chain)
   if (chain->next_chain!=NULL)
     pthread_mutex_unlock(&chain->next_chain->mutex_struct);   
 
+  //chain_t *tmp;
+  eprint("Services after: ");
+  tmp=cam->image_pipe;
+  if (tmp!=NULL) {
+    eprint("%d ",tmp->service);
+
+    while (tmp->next_chain!=NULL) {
+      tmp=tmp->next_chain;
+      eprint("%d ",tmp->service);
+    }
+  }
+  else
+    eprint("none\n");
+
+  eprint("\n");
 }
 
 
@@ -237,5 +310,4 @@ InitBuffer(buffer_t *buffer)
   buffer->image=NULL;
   buffer->buffer_image_bytes=-1;
   buffer->buffer_size=0;
-  buffer->used=1;
 }

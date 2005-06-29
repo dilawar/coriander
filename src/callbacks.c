@@ -518,6 +518,7 @@ void
 on_service_display_toggled             (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
+
   if (!silent_ui_update) {
     if (togglebutton->active) {
       pthread_mutex_lock(&camera->uimutex);

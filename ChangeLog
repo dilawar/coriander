@@ -1,7 +1,20 @@
 Coriander, (c) 2000-2005 Damien Douxchamps <ddouxchamps@users.sf.net>
 
-Changes towards version 2.0.0
+Changes in version 2.0.0-pre2
 
+   June 29, 2005, by Damien Douxchamps
+   - fixed bad inclusion of services in the pipe. They are now inserted in the
+     correct order.
+	
+   June 28, 2005, by Damien Douxchamps
+   - fixed important bug in the synch pipe: frames could be out of order and the
+     pipe could also oscillate. Not 100% tested but looks better now.
+	
+Changes in version 2.0.0-pre1
+
+   June 13, 2005, by Damien Douxchamps
+   - fixed and updated libdc detection macros for libdc 2.0.0-pre3
+	
    May 25, 2005, by Damien Douxchamps
    - sync with cvs of libdc1394
    - fixed the interactive display of the WOI

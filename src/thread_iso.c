@@ -222,7 +222,7 @@ IsoThread(void* arg)
     pthread_cleanup_push((void*)IsoCleanupThread, (void*)iso_service);
 
     // IF FRAME USED (and we use no-drop mode)
-    if (((iso_service->current_buffer->used>0)&&(iso_service->camera->prefs.iso_nodrop>0))||
+    if (((iso_service->ready>0)&&(iso_service->camera->prefs.iso_nodrop>0))||
 	(iso_service->camera->prefs.iso_nodrop==0)) {
     
       if (info->receive_method == RECEIVE_METHOD_RAW1394)
@@ -300,13 +300,14 @@ IsoThread(void* arg)
       if ((info->receive_method == RECEIVE_METHOD_VIDEO1394)&&(dma_ok==DC1394_SUCCESS))
 	dc1394_dma_done_with_buffer(&info->capture);
       
+      PublishBufferForNext(iso_service);
       //fprintf(stderr,"Buffer soon rolled in ISO\n");
       pthread_mutex_unlock(&iso_service->mutex_data);
     }
+    else
+      usleep(0);
     //fprintf(stderr,"got frame %.7f\n",iso_service->fps);
-    pthread_mutex_lock(&iso_service->mutex_data);
-    RollBuffers(iso_service);
-    pthread_mutex_unlock(&iso_service->mutex_data);
+
     pthread_cleanup_pop(0);
   }
   
