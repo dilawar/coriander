@@ -1,5 +1,10 @@
 Coriander, (c) 2000-2005 Damien Douxchamps <ddouxchamps@users.sf.net>
 
+Changes towards version 2.0.0-pre3
+
+   July 1, 2005, by Damien Douxchamps
+   - implemented white shading (table built was missing)
+	
 Changes in version 2.0.0-pre2
 
    June 29, 2005, by Damien Douxchamps

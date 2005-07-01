@@ -28,7 +28,7 @@ extern char* feature_abs_label_list[DC1394_FEATURE_NUM];
 void
 BuildEmptyRange(int feature)
 {
-  GtkWidget *table, *frame, *label1, *label2, *frame_title;
+  GtkWidget *table, *frame, *label1, *label2, *label3, *frame_title;
   char *stemp;
 
   stemp=(char*)malloc(STRING_SIZE*sizeof(char));
@@ -123,7 +123,50 @@ BuildEmptyRange(int feature)
 
     break;
   case DC1394_FEATURE_WHITE_SHADING:
-    fprintf(stderr,"Not implemented\n");
+    table = gtk_table_new (3, RANGE_TABLE_WIDTH, FALSE);
+    gtk_table_set_homogeneous (GTK_TABLE(table),TRUE);
+    gtk_widget_ref (table);
+    sprintf(stemp,"feature_%d_table",feature);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, table,
+			      (GtkDestroyNotify) gtk_widget_unref);
+    gtk_widget_show (table);
+    gtk_container_add (GTK_CONTAINER (frame), table);
+
+    label1 = gtk_label_new (_("Red:"));
+    gtk_widget_ref (label1);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), "label_ws_scale_r", label1,
+			      (GtkDestroyNotify) gtk_widget_unref);
+    gtk_widget_show (label1);
+    gtk_table_attach (GTK_TABLE (table), label1, 0, 1, 1, 2,
+		      (GtkAttachOptions) (GTK_FILL),
+		      (GtkAttachOptions) (0), 0, 0);
+    gtk_label_set_justify (GTK_LABEL (label1), GTK_JUSTIFY_RIGHT);
+    gtk_misc_set_alignment (GTK_MISC (label1), 0, 0.5);
+    gtk_misc_set_padding (GTK_MISC (label1), 2, 2);
+
+    label2 = gtk_label_new (_("Green:"));
+    gtk_widget_ref (label2);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), "label_ws_scale_g", label2,
+			      (GtkDestroyNotify) gtk_widget_unref);
+    gtk_widget_show (label2);
+    gtk_table_attach (GTK_TABLE (table), label2, 0, 1, 2, 3,
+		      (GtkAttachOptions) (GTK_FILL),
+		      (GtkAttachOptions) (0), 0, 0);
+    gtk_label_set_justify (GTK_LABEL (label2), GTK_JUSTIFY_RIGHT);
+    gtk_misc_set_alignment (GTK_MISC (label2), 0, 0.5);
+    gtk_misc_set_padding (GTK_MISC (label2), 2, 2);
+
+    label3 = gtk_label_new (_("Blue:"));
+    gtk_widget_ref (label3);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), "label_ws_scale_g", label3,
+			      (GtkDestroyNotify) gtk_widget_unref);
+    gtk_widget_show (label3);
+    gtk_table_attach (GTK_TABLE (table), label3, 0, 1, 3, 4,
+		      (GtkAttachOptions) (GTK_FILL),
+		      (GtkAttachOptions) (0), 0, 0);
+    gtk_label_set_justify (GTK_LABEL (label3), GTK_JUSTIFY_RIGHT);
+    gtk_misc_set_alignment (GTK_MISC (label3), 0, 0.5);
+    gtk_misc_set_padding (GTK_MISC (label3), 2, 2);
     break;
 
   default:
