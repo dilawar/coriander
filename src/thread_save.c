@@ -730,7 +730,7 @@ SaveThread(void* arg)
 		  write_video_frame(info->oc, info->video_st, info->picture);
 		  break;
 		default:
-		  fprintf(stderr,"unsupported format!!\n");
+		  fprintf(stderr,"unsupported color format!!\n");
 		  break;
 		}
 		
@@ -743,8 +743,7 @@ SaveThread(void* arg)
 		break;
 	      case SAVE_FORMAT_JPEG:
 		/* Save JPEG file using FFMPEG... Much, much faster... There is no need for YUV->RGB color space conversions */
-		info->picture = alloc_picture(PIX_FMT_YUV420P, 
-				 save_service->current_buffer->width, save_service->current_buffer->height);
+		info->picture = alloc_picture(PIX_FMT_YUV420P, save_service->current_buffer->width, save_service->current_buffer->height);
 		if (!info->picture) {
 		  fprintf(stderr, "Could not allocate picture\n");
 		}
@@ -773,8 +772,9 @@ SaveThread(void* arg)
 			     PIX_FMT_YUV420P, filename_out, 90.0, "Created using Coriander and FFMPEG");
 		  break;
 		default:
+		  fprintf(stderr,"unsupported format: jpeg only works with YUV411 and YUV422!\n");
 		  break;
-		}	 
+		}
 
 		if (info->picture) {
 		  av_free(info->picture->data[0]);
@@ -791,20 +791,6 @@ SaveThread(void* arg)
 		fclose(fd);
 		fd=NULL;
 		break;
-		// V20***
-		/*convert_to_rgb(save_service->current_buffer, info->buffer);
-		im=gdk_imlib_create_image_from_data(info->buffer,NULL, save_service->current_buffer->width, save_service->current_buffer->height);
-		if (im != NULL) {
-		  if (gdk_imlib_save_image(im, filename_out, NULL)==0) {
-		    MainError("Can't save image with Imlib!");
-		  }
-		  gdk_imlib_kill_image(im);
-		}
-		else {
-		  MainError("Can't create gdk image!");
-		}
-		break;
-		*/
 	      default:
 		fprintf(stderr,"Unsupported file format\n");
 	      } // end save format switch

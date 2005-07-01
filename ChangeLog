@@ -4,6 +4,7 @@ Changes towards version 2.0.0-pre3
 
    July 1, 2005, by Damien Douxchamps
    - implemented white shading (table built was missing)
+   - a warning is now issued if the color format is not OK for MPEG or JPEG saving.
 	
 Changes in version 2.0.0-pre2
 
