@@ -320,7 +320,7 @@ gint IsoStopThread(camera_t* cam)
     pthread_mutex_lock(&iso_service->mutex_data);
     pthread_mutex_lock(&iso_service->mutex_struct);
 
-    eprint("test1\n");
+    //eprint("test1\n");
 
     RemoveChain(cam,iso_service);
     
@@ -330,7 +330,7 @@ gint IsoStopThread(camera_t* cam)
       info->temp_allocated=0;
       info->temp_size=0;
     }
-    eprint("test2\n");
+    //eprint("test2\n");
     
     if (info->receive_method == RECEIVE_METHOD_VIDEO1394) {
       dc1394_dma_unlisten(&info->capture);
@@ -339,14 +339,14 @@ gint IsoStopThread(camera_t* cam)
     else 
       dc1394_release_capture(&info->capture);
     
-    eprint("test3\n");
+    //eprint("test3\n");
     pthread_mutex_unlock(&iso_service->mutex_struct);
     pthread_mutex_unlock(&iso_service->mutex_data);
     
     FreeChain(iso_service);
     
   }
-    eprint("test final\n");
+  //eprint("test final\n");
   
   return (1);
 }

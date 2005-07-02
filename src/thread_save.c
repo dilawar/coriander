@@ -48,18 +48,6 @@ SaveStartThread(camera_t* cam)
     strcpy(info->filename_base, cam->prefs.save_filename_base);
     strcpy(info->filename_ext, cam->prefs.save_filename_ext);
 
-    /*
-    // if we use conversion, look for the extension.
-    if (cam->prefs.save_convert==SAVE_CONVERT_ON) {    
-      if (tmp==NULL) {
-	MainError("You should supply an extension");
-	pthread_mutex_unlock(&save_service->mutex_data);
-	FreeChain(save_service);
-	return(-1);
-      }
-    }
-    */
-
     info->period=cam->prefs.save_period;
     CommonChainSetup(cam, save_service,SERVICE_SAVE);
     
@@ -596,6 +584,103 @@ SavePPMPGM(chain_t *save_service, FILE *fd)
   fwrite(src, bytes, 1, fd);
 }
 
+#ifdef HAVE_FFMPEG
+void
+SaveMPEGFrame(chain_t *save_service)
+{
+  savethread_info_t *info;
+  //unsigned char *tmp_buf;
+  unsigned int pix_fmt;
+  int err=0;
+  info=(savethread_info_t*)save_service->data;
+
+
+  switch(save_service->current_buffer->color_mode) {
+  case DC1394_COLOR_CODING_YUV411:
+    uyvy411_yuv411p(save_service->current_buffer->image, info->tmp_picture, 
+		    save_service->current_buffer->width, save_service->current_buffer->height);
+    img_convert((AVPicture *)info->picture, PIX_FMT_YUVJ420P, 
+		(AVPicture *)info->tmp_picture, PIX_FMT_YUV411P,
+		save_service->current_buffer->width, save_service->current_buffer->height);
+    pix_fmt=PIX_FMT_YUVJ420P;
+    break;
+  case DC1394_COLOR_CODING_YUV422:
+    uyvy422_yuv422p(save_service->current_buffer->image, info->tmp_picture, 
+		    save_service->current_buffer->width, save_service->current_buffer->height);
+    img_convert((AVPicture *)info->picture, PIX_FMT_YUVJ420P, 
+		(AVPicture *)info->tmp_picture, PIX_FMT_YUV422P,
+		save_service->current_buffer->width, save_service->current_buffer->height);
+    pix_fmt=PIX_FMT_YUVJ420P;
+    break;
+  default:
+    fprintf(stderr,"unsupported color format!!\n");
+    err=1;
+    break;
+  }
+
+  if (err==0) {
+    write_video_frame(info->oc, info->video_st, info->picture);
+    
+    /* Save time stamp */
+    new_subtitle(save_service->processed_frames, save_service->fps,
+		 save_service->current_buffer->captime_string, info->subtitle);
+    //printf("%s", info->subtitle);
+    write(info->fdts, info->subtitle, strlen(info->subtitle));
+  }
+}
+
+void
+SaveJPEGFrame(chain_t *save_service, char *filename_out)
+{
+  savethread_info_t *info;
+  //unsigned char *tmp_buf;
+  unsigned int pix_fmt;
+  int err=0;
+  info=(savethread_info_t*)save_service->data;
+
+  //if (save_service->current_buffer->color_mode!=DC1394_COLOR_CODING_YUV411)&&(
+
+  
+  info->picture = alloc_picture(PIX_FMT_YUVJ420P, save_service->current_buffer->width, save_service->current_buffer->height);
+  if (!info->picture) {
+    fprintf(stderr, "Could not allocate picture\n");
+  }
+  switch(save_service->current_buffer->color_mode) {
+  case DC1394_COLOR_CODING_YUV411:
+    info->tmp_picture = alloc_picture(PIX_FMT_YUV411P, save_service->current_buffer->width, save_service->current_buffer->height);
+    uyvy411_yuv411p(save_service->current_buffer->image, info->tmp_picture, 
+		    save_service->current_buffer->width, save_service->current_buffer->height);
+    img_convert((AVPicture *)info->picture, PIX_FMT_YUVJ420P, 
+		(AVPicture *)info->tmp_picture, PIX_FMT_YUV411P,
+		save_service->current_buffer->width, save_service->current_buffer->height);
+    jpeg_write(info->picture, save_service->current_buffer->width, save_service->current_buffer->height,
+	       PIX_FMT_YUVJ420P, filename_out, 90.0, "Created using Coriander and FFMPEG");
+    
+    break;
+  case DC1394_COLOR_CODING_YUV422: 
+    info->tmp_picture = alloc_picture(PIX_FMT_YUV422P, save_service->current_buffer->width, save_service->current_buffer->height);
+    uyvy422_yuv422p(save_service->current_buffer->image, info->tmp_picture, 
+		    save_service->current_buffer->width, save_service->current_buffer->height);
+    jpeg_write(info->picture, save_service->current_buffer->width, save_service->current_buffer->height,
+	       PIX_FMT_YUVJ420P, filename_out, 90.0, "Created using Coriander and FFMPEG");
+    break;
+  default:
+    fprintf(stderr,"unsupported format: jpeg only works with YUV411 and YUV422 at this time!\n");
+    break;
+  }
+  
+  if (info->picture) {
+    av_free(info->picture->data[0]);
+    av_free(info->picture);
+  }
+  if (info->tmp_picture) {
+    av_free(info->tmp_picture->data[0]);
+    av_free(info->tmp_picture);
+  }
+}
+#endif
+
+
 void*
 SaveThread(void* arg)
 {
@@ -607,7 +692,7 @@ SaveThread(void* arg)
   FILE *fd=NULL;
   float tmp, fps;
   int i;
-  unsigned char* dest=NULL;
+  unsigned char* tmp_buf=NULL;
 
   filename_out=(char*)malloc(STRING_SIZE*sizeof(char));
 
@@ -696,12 +781,11 @@ SaveThread(void* arg)
 	      case SAVE_FORMAT_PVN:
 		if (needsConversionForPVN(save_service->current_buffer->color_mode)>0) {
 		  // we assume that if it needs conversion, the output of the conversion is an 8bpp RGB
-		  if (dest==NULL)
-		    dest = (unsigned char*)malloc(3*save_service->current_buffer->width*save_service->current_buffer->height*
-						  sizeof(unsigned char));
+		  tmp_buf = (unsigned char*)malloc(3*save_service->current_buffer->width*save_service->current_buffer->height*sizeof(unsigned char));
 		  convert_for_pvn(save_service->current_buffer->image, save_service->current_buffer->width,
-				  save_service->current_buffer->height, 0, save_service->current_buffer->color_mode, dest);
-		  fwrite(dest, 3*save_service->current_buffer->width*save_service->current_buffer->height, 1, fd);
+				  save_service->current_buffer->height, 0, save_service->current_buffer->color_mode, tmp_buf);
+		  fwrite(tmp_buf, 3*save_service->current_buffer->width*save_service->current_buffer->height, 1, fd);
+		  free(tmp_buf);
 		}
 		else {
 		  // no conversion, we can dump the data
@@ -712,78 +796,11 @@ SaveThread(void* arg)
 	      case SAVE_FORMAT_MPEG:
 		// video saving mode
 		//fprintf(stderr,"entering MPEG save and convert section\n");
-		switch(save_service->current_buffer->color_mode) {
-		case DC1394_COLOR_CODING_YUV411:
-		  uyvy411_yuv411p(save_service->current_buffer->image, info->tmp_picture, 
-				  save_service->current_buffer->width, save_service->current_buffer->height);
-		  img_convert((AVPicture *)info->picture, info->video_st->codec.pix_fmt, 
-			      (AVPicture *)info->tmp_picture, PIX_FMT_YUV411P,
-			      save_service->current_buffer->width, save_service->current_buffer->height);
-		  write_video_frame(info->oc, info->video_st, info->picture);
-		  break;
-		case DC1394_COLOR_CODING_YUV422:
-		  uyvy422_yuv422p(save_service->current_buffer->image, info->tmp_picture, 
-				  save_service->current_buffer->width, save_service->current_buffer->height);
-		  img_convert((AVPicture *)info->picture, info->video_st->codec.pix_fmt, 
-			      (AVPicture *)info->tmp_picture, PIX_FMT_YUV422P,
-			      save_service->current_buffer->width, save_service->current_buffer->height);
-		  write_video_frame(info->oc, info->video_st, info->picture);
-		  break;
-		default:
-		  fprintf(stderr,"unsupported color format!!\n");
-		  break;
-		}
-		
-		/* Save time stamp */
-		new_subtitle(save_service->processed_frames, save_service->fps,
-			     save_service->current_buffer->captime_string, info->subtitle);
-		printf("%s", info->subtitle);
-		write(info->fdts, info->subtitle, strlen(info->subtitle));
-		
+		SaveMPEGFrame(save_service);
 		break;
 	      case SAVE_FORMAT_JPEG:
 		/* Save JPEG file using FFMPEG... Much, much faster... There is no need for YUV->RGB color space conversions */
-		info->picture = alloc_picture(PIX_FMT_YUV420P, save_service->current_buffer->width, save_service->current_buffer->height);
-		if (!info->picture) {
-		  fprintf(stderr, "Could not allocate picture\n");
-		}
-		switch(save_service->current_buffer->color_mode) {
-		case DC1394_COLOR_CODING_YUV411:
-		  info->tmp_picture = alloc_picture(PIX_FMT_YUV411P, 
-				  save_service->current_buffer->width, save_service->current_buffer->height);
-		  uyvy411_yuv411p(save_service->current_buffer->image, info->tmp_picture, 
-				  save_service->current_buffer->width, save_service->current_buffer->height);
-		  img_convert((AVPicture *)info->picture, PIX_FMT_YUV420P, 
-			      (AVPicture *)info->tmp_picture, PIX_FMT_YUV411P,
-			      save_service->current_buffer->width, save_service->current_buffer->height);
-		  jpeg_write(info->picture, save_service->current_buffer->width, save_service->current_buffer->height,
-			     PIX_FMT_YUV420P, filename_out, 90.0, "Created using Coriander and FFMPEG");
-		  
-		  break;
-		case DC1394_COLOR_CODING_YUV422: 
-		  info->tmp_picture = alloc_picture(PIX_FMT_YUV422P, 
-				  save_service->current_buffer->width, save_service->current_buffer->height);
-		  uyvy422_yuv422p(save_service->current_buffer->image, info->tmp_picture, 
-				  save_service->current_buffer->width, save_service->current_buffer->height);
-		  img_convert((AVPicture *)info->picture, PIX_FMT_YUV420P, 
-			      (AVPicture *)info->tmp_picture, PIX_FMT_YUV422P,
-			      save_service->current_buffer->width, save_service->current_buffer->height);
-		  jpeg_write(info->picture, save_service->current_buffer->width, save_service->current_buffer->height,
-			     PIX_FMT_YUV420P, filename_out, 90.0, "Created using Coriander and FFMPEG");
-		  break;
-		default:
-		  fprintf(stderr,"unsupported format: jpeg only works with YUV411 and YUV422!\n");
-		  break;
-		}
-
-		if (info->picture) {
-		  av_free(info->picture->data[0]);
-		  av_free(info->picture);
-		}
-		if (info->tmp_picture) {
-		  av_free(info->tmp_picture->data[0]);
-		  av_free(info->tmp_picture);
-		}
+		SaveJPEGFrame(save_service, filename_out);
 		break;
 #endif
 	      case SAVE_FORMAT_PPMPGM:
@@ -852,15 +869,15 @@ SaveThread(void* arg)
       }
       else {
 	// we assume that if it needs conversion, the output of the conversion is an 8bpp RGB
-	if (dest==NULL)
-	  dest = (unsigned char*)malloc(3*save_service->current_buffer->width*save_service->current_buffer->height*sizeof(unsigned char));
+	tmp_buf = (unsigned char*)malloc(3*save_service->current_buffer->width*save_service->current_buffer->height*sizeof(unsigned char));
 	
 	for (i = 0; i < getDepth(info->bigbuffer_position, save_service->current_buffer->color_mode,
 				 save_service->current_buffer->height, save_service->current_buffer->width); i++) {
 	  convert_for_pvn(info->bigbuffer, save_service->current_buffer->width,
-			  save_service->current_buffer->height, i, save_service->current_buffer->color_mode, dest);
-	  fwrite(dest, 3*save_service->current_buffer->width*save_service->current_buffer->height, 1, fd);
+			  save_service->current_buffer->height, i, save_service->current_buffer->color_mode, tmp_buf);
+	  fwrite(tmp_buf, 3*save_service->current_buffer->width*save_service->current_buffer->height, 1, fd);
 	}
+	free(tmp_buf);
       }
       break;
     default:
@@ -911,11 +928,6 @@ SaveThread(void* arg)
   if (info->bigbuffer!=NULL) {
     free(info->bigbuffer);
     info->bigbuffer=NULL;
-  }
-
-  if(dest != NULL) {
-    free(dest);
-    dest=NULL;
   }
 
   pthread_mutex_unlock(&info->mutex_cancel);

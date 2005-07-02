@@ -189,7 +189,7 @@ InsertChain(camera_t* cam, chain_t* chain)
 {
 
   // we should only use mutex_struct in this function
-
+  /*
   chain_t *tmp;
   eprint("Services before: ");
   tmp=cam->image_pipe;
@@ -203,6 +203,7 @@ InsertChain(camera_t* cam, chain_t* chain)
   }
   else
     eprint("none\n");
+  */
 
   // we should now effectively make the break in the pipe:
   if (chain->next_chain!=NULL)
@@ -224,6 +225,7 @@ InsertChain(camera_t* cam, chain_t* chain)
     pthread_mutex_unlock(&chain->next_chain->mutex_struct);   
 
   //chain_t *tmp;
+  /*
   eprint("Services after: ");
   tmp=cam->image_pipe;
   if (tmp!=NULL) {
@@ -238,6 +240,7 @@ InsertChain(camera_t* cam, chain_t* chain)
     eprint("none\n");
 
   eprint("\n");
+  */
 }
 
 

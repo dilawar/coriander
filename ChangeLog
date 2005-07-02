@@ -5,6 +5,7 @@ Changes towards version 2.0.0-pre3
    July 2, 2005, by Damien Douxchamps
    - applied patch from Olaf Hering (uninitialized variables)
    - applied patch from Olaf Hering (type conversion warnings)
+   - fixed jpeg saving.
 	
    July 1, 2005, by Damien Douxchamps
    - implemented white shading (table built was missing)

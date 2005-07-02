@@ -57,6 +57,7 @@ _______________________________________________________________________________
 	- report frames that were dropped by the kernel drivers
 	- implement the display overlay with used-specified images
 	- create an "mencoder" service or capability
+	- save setup: run frame refresh when format is autodetected during typing
 
 - long term:
 	- add advanced features capability. This would probably require a

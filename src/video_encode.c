@@ -86,7 +86,7 @@ AVStream *add_video_stream(AVFormatContext *oc, int codec_id, int width, int hei
   /* resolution must be a multiple of two */
   c->width = width;  
   c->height = height;
-  //c->pix_fmt = PIX_FMT_YUV422P;
+  c->pix_fmt = PIX_FMT_YUV420P;
   //c->dct_algo = FF_DCT_AUTO;
   //c->idct_algo = FF_IDCT_AUTO;
   //c->me_method = ME_ZERO;
@@ -244,14 +244,14 @@ int jpeg_write(AVFrame *jpeg_picture, unsigned int width, unsigned int height, i
   AVCodecContext *jpeg_c = NULL;
   uint8_t *jpeg_outbuf   = NULL;
   unsigned int jpeg_outbuf_size, jpeg_size;
-  int jpeg_fd;
+  FILE *jpeg_fd;
   
   jpeg_c = avcodec_alloc_context();
 
   //jpeg_c->bit_rate = 10000000; // heuristic...
   jpeg_c->width = width;
   jpeg_c->height = height;
-  jpeg_c->pix_fmt = PIX_FMT_YUV420P;
+  jpeg_c->pix_fmt = fmt;//PIX_FMT_YUVJ420P;
   //jpeg_c->dct_algo = FF_DCT_AUTO;
   //jpeg_c->idct_algo = FF_IDCT_AUTO;
   /* set the quality */
@@ -272,9 +272,9 @@ int jpeg_write(AVFrame *jpeg_picture, unsigned int width, unsigned int height, i
 
   jpeg_size = avcodec_encode_video(jpeg_c, jpeg_outbuf, jpeg_outbuf_size, jpeg_picture);
   if (jpeg_size > 0) {
-    jpeg_fd = open(filename, O_CREAT | O_WRONLY, S_IRWXU | S_IRWXG);
-    write(jpeg_fd, jpeg_outbuf, jpeg_size);
-    close(jpeg_fd);
+    jpeg_fd = fopen(filename, "w");
+    fwrite(jpeg_outbuf, jpeg_size, 1, jpeg_fd);
+    fclose(jpeg_fd);
   }
   
   avcodec_close(jpeg_c);
