@@ -43,28 +43,21 @@ gint IsoStartThread(camera_t* cam)
       FreeChain(iso_service);
       return(-1);
     }
-    /*
-    info->handle = NULL;
-     
-    // the iso receive handler gets its own raw1394 handle to free the controls
-    //fprintf(stderr,"port for this camera is %d\n",port);
-    if ( (info->handle = raw1394_new_handle()) < 0) {
-      FreeChain(iso_service);
-      return(-1);
-    }
-    if ( (raw1394_set_port(info->handle, cam->camera_info.port)) < 0) {
-      FreeChain(iso_service);
-      return(-1);
-    }
-    */
+
     // ONLY IF LEGACY. OTHERWISE S800.
     switch (cam->selfid.packetZero.phySpeed) {
+    case 0: maxspeed=DC1394_SPEED_100;break;
     case 1: maxspeed=DC1394_SPEED_200;break;
     case 2: maxspeed=DC1394_SPEED_400;break;
     case 3: maxspeed=DC1394_SPEED_800;break;
+#if 0
     case 4: maxspeed=DC1394_SPEED_1600;break;
     case 5: maxspeed=DC1394_SPEED_3200;break;
-    default: maxspeed=DC1394_SPEED_100;break;
+#endif
+    default:
+      fprintf(stderr, "%s: unhandled phy speed %d\n", __FUNCTION__, cam->selfid.packetZero.phySpeed);
+      maxspeed=DC1394_SPEED_100;
+      break;
     }
 
     if (maxspeed >= DC1394_SPEED_800) {

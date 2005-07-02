@@ -70,7 +70,7 @@ BuildTriggerModeMenu(void)
 	glade_menuitem = gtk_menu_item_new_with_label (_(trigger_mode_list[i]));
 	gtk_widget_show (glade_menuitem);
 	gtk_menu_append (GTK_MENU (trigger_mode_menu), glade_menuitem);
-	g_signal_connect ((gpointer) glade_menuitem, "activate", G_CALLBACK (on_trigger_mode_activate), (int*)f);
+        g_signal_connect ((gpointer) glade_menuitem, "activate", G_CALLBACK (on_trigger_mode_activate), (gpointer)(unsigned long)f);
       }
       else
 	index[i]=0;
@@ -138,7 +138,7 @@ BuildMemoryChannelMenu(void)
     gtk_menu_append (GTK_MENU (channel_num_menu), glade_menuitem);
     g_signal_connect ((gpointer) glade_menuitem, "activate",
 			G_CALLBACK (on_memory_channel_activate),
-			(int*)i); // i is an int passed in a pointer variable. This is 'normal'.
+			(gpointer)(unsigned long)i); // i is an int passed in a pointer variable. This is 'normal'.
   }
 
   gtk_option_menu_set_menu (GTK_OPTION_MENU (channel_num), channel_num_menu);
@@ -234,7 +234,7 @@ BuildFormat7ModeMenu(void)
       gtk_menu_append (GTK_MENU (mode_num_menu), glade_menuitem);
       g_signal_connect ((gpointer) glade_menuitem, "activate",
 			  G_CALLBACK (on_edit_format7_mode_activate),
-			  (int*)f); // i is an int passed in a pointer variable. This is 'normal'.
+			  (gpointer)(unsigned long)f); // i is an int passed in a pointer variable. This is 'normal'.
     }
     else
       index[i]=0;
@@ -283,7 +283,7 @@ BuildFormat7ColorMenu(void)
     gtk_menu_append (GTK_MENU (color_num_menu), glade_menuitem);
     g_signal_connect ((gpointer) glade_menuitem, "activate",
 		      G_CALLBACK (on_edit_format7_color_activate),
-		      (int*)camera->format7_info.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].color_codings.modes[i]);
+		      (gpointer)(unsigned long)camera->format7_info.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].color_codings.modes[i]);
   }
   
   for (i=0;i<camera->format7_info.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].color_codings.num;i++) {
@@ -337,7 +337,7 @@ BuildFpsMenu(void)
 	gtk_menu_append (GTK_MENU (fps_menu), glade_menuitem);
 	g_signal_connect ((gpointer) glade_menuitem, "activate",
 			    G_CALLBACK (on_fps_activate),
-			    (unsigned int*)framerates.framerates[i]);
+			    (gpointer)(unsigned long)framerates.framerates[i]);
     }
     gtk_option_menu_set_menu (GTK_OPTION_MENU (fps), fps_menu);
     
@@ -418,7 +418,7 @@ BuildFormatMenu(void)
     gtk_menu_append (GTK_MENU (mode_num_menu), glade_menuitem);
     g_signal_connect ((gpointer) glade_menuitem, "activate",
 		      G_CALLBACK (ChangeModeAndFormat),
-		      (int*)modes.modes[i]);
+		      (gpointer)(unsigned long)modes.modes[i]);
   }
   for (i=0;i<modes.num;i++) {
     if (camera->camera_info.mode==modes.modes[i])

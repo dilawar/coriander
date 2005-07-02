@@ -65,10 +65,10 @@ on_fps_activate                    (GtkMenuItem     *menuitem,
   
   IsoFlowCheck(&state);
     
-  if(dc1394_set_video_framerate(&camera->camera_info, (int)user_data)!=DC1394_SUCCESS)
+  if(dc1394_set_video_framerate(&camera->camera_info, (int)(unsigned long)user_data)!=DC1394_SUCCESS)
     MainError("Could not set framerate");
   else
-    camera->camera_info.framerate=(int)user_data;
+    camera->camera_info.framerate=(int)(unsigned long)user_data;
 
   IsoFlowResume(&state);
 }
@@ -138,8 +138,8 @@ void
 on_memory_channel_activate              (GtkMenuItem     *menuitem,
 					 gpointer         user_data)
 {
-  camera->camera_info.save_channel=(int)user_data; // user data is an int.
-  camera->camera_info.load_channel=(int)user_data; // user data is an int.
+  camera->camera_info.save_channel=(int)(unsigned long)user_data; // user data is an int.
+  camera->camera_info.load_channel=(int)(unsigned long)user_data; // user data is an int.
   UpdateMemoryFrame();
 }
 
@@ -274,7 +274,7 @@ void
 on_format7_packet_size_changed               (GtkAdjustment    *adj,
 					      gpointer         user_data)
 { 
-  int bpp;
+  unsigned int bpp;
   int state;
   int value;
 
@@ -315,7 +315,7 @@ void
 on_edit_format7_mode_activate             (GtkMenuItem     *menuitem,
 					   gpointer         user_data)
 {
-  camera->format7_info.edit_mode=(int)user_data;
+  camera->format7_info.edit_mode=(int)(unsigned long)user_data;
   GetFormat7ModeInfo(camera, camera->format7_info.edit_mode);
   UpdateFormat7Window();
 }
@@ -330,10 +330,10 @@ on_edit_format7_color_activate             (GtkMenuItem     *menuitem,
   if (camera->format7_info.edit_mode==camera->camera_info.mode)
     IsoFlowCheck(&state);
 
-  if (dc1394_set_format7_color_coding_id(&camera->camera_info, camera->format7_info.edit_mode, (int)user_data)!=DC1394_SUCCESS)
+  if (dc1394_set_format7_color_coding_id(&camera->camera_info, camera->format7_info.edit_mode, (int)(unsigned long)user_data)!=DC1394_SUCCESS)
     MainError("Could not change Format7 color coding");
   else
-    camera->format7_info.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].color_coding_id=(int)user_data;
+    camera->format7_info.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].color_coding_id=(int)(unsigned long)user_data;
 
   GetFormat7ModeInfo(camera, camera->format7_info.edit_mode);
   UpdateOptionFrame();
@@ -354,7 +354,7 @@ void
 on_scale_value_changed             ( GtkAdjustment    *adj,
 				     gpointer         user_data)
 {
-  switch((int)user_data) {
+  switch((int)(unsigned long)user_data) {
   case DC1394_FEATURE_TEMPERATURE:
     if (dc1394_set_temperature(&camera->camera_info,adj->value)!=DC1394_SUCCESS)
       MainError("Could not set temperature");
@@ -425,18 +425,18 @@ on_scale_value_changed             ( GtkAdjustment    *adj,
     break;
     
   default: // includes trigger_count
-    if (dc1394_set_feature_value(&camera->camera_info,(int)user_data,adj->value)!=DC1394_SUCCESS)
+    if (dc1394_set_feature_value(&camera->camera_info,(int)(unsigned long)user_data,adj->value)!=DC1394_SUCCESS)
       MainError("Could not set feature");
     else {
-      camera->feature_set.feature[(int)user_data-DC1394_FEATURE_MIN].value=adj->value;
-      if ((int)user_data!=DC1394_FEATURE_TRIGGER) {
-	if (camera->feature_set.feature[(int)user_data-DC1394_FEATURE_MIN].absolute_capable!=0) {
-	  GetAbsValue((int)user_data);
+      camera->feature_set.feature[(int)(unsigned long)user_data-DC1394_FEATURE_MIN].value=adj->value;
+      if ((int)(unsigned long)user_data!=DC1394_FEATURE_TRIGGER) {
+	if (camera->feature_set.feature[(int)(unsigned long)user_data-DC1394_FEATURE_MIN].absolute_capable!=0) {
+	  GetAbsValue((int)(unsigned long)user_data);
 	}
       }
     }
     // optical filter sometimes changes white balance (sony cameras) so we update the WB.
-    if ((int)user_data==DC1394_FEATURE_OPTICAL_FILTER) {
+    if ((int)(unsigned long)user_data==DC1394_FEATURE_OPTICAL_FILTER) {
       UpdateRange(DC1394_FEATURE_WHITE_BALANCE);
     }
     break;
@@ -608,8 +608,8 @@ on_range_menu_activate             (GtkMenuItem     *menuitem,
   unsigned long int step;
   dc1394bool_t value=TRUE;
 
-  action=((int)user_data)%1000;
-  feature=(((int)user_data)-action)/1000;
+  action=((int)(unsigned long)user_data)%1000;
+  feature=(((int)(unsigned long)user_data)-action)/1000;
 
   switch (action) {
   case RANGE_MENU_OFF : // ============================== OFF ==============================
@@ -1051,7 +1051,7 @@ void
 on_prefs_receive_method_activate      (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-  camera->prefs.receive_method=(int)user_data;
+  camera->prefs.receive_method=(int)(unsigned long)user_data;
   gnome_config_set_int("coriander/receive/method",camera->prefs.receive_method);
   gnome_config_sync();
   UpdatePrefsReceiveFrame();
@@ -1108,7 +1108,7 @@ on_bayer_menu_activate           (GtkMenuItem     *menuitem,
 				  gpointer         user_data)
 {
   int tmp;
-  tmp=(int)user_data;
+  tmp=(int)(unsigned long)user_data;
   
   pthread_mutex_lock(&camera->uimutex);
   camera->bayer=tmp;
@@ -1170,7 +1170,7 @@ on_abs_entry_activate              (GtkEditable     *editable,
                                     gpointer         user_data)
 { 
   int feature;
-  feature=(int)user_data;
+  feature=(int)(unsigned long)user_data;
   SetAbsValue(feature);
 }
 
@@ -1504,7 +1504,7 @@ void
 on_overlay_type_menu_activate           (GtkMenuItem     *menuitem,
 					 gpointer         user_data)
 {
-  camera->prefs.overlay_type=(int)user_data;
+  camera->prefs.overlay_type=(int)(unsigned long)user_data;
   gnome_config_set_int("coriander/display/overlay_type",camera->prefs.overlay_type);
   gnome_config_sync();
   UpdatePrefsDisplayOverlayFrame();
@@ -1514,7 +1514,7 @@ void
 on_overlay_pattern_menu_activate        (GtkMenuItem     *menuitem,
 					 gpointer         user_data)
 {
-  camera->prefs.overlay_pattern=(int)user_data;
+  camera->prefs.overlay_pattern=(int)(unsigned long)user_data;
   gnome_config_set_int("coriander/display/overlay_pattern",camera->prefs.overlay_pattern);
   gnome_config_sync();
   UpdatePrefsDisplayOverlayFrame();
@@ -1625,13 +1625,13 @@ on_save_format_menu_activate             (GtkEditable     *editable,
                                         gpointer         user_data)
 {
   // rebuild the append menu if we switch between video and still formats
-  if ((((int)user_data>=SAVE_FORMAT_RAW_VIDEO)&&(camera->prefs.save_format<SAVE_FORMAT_RAW_VIDEO)) ||
-      (((int)user_data<SAVE_FORMAT_RAW_VIDEO)&&(camera->prefs.save_format>=SAVE_FORMAT_RAW_VIDEO))) {
-    camera->prefs.save_format=(int)user_data;
+  if ((((int)(unsigned long)user_data>=SAVE_FORMAT_RAW_VIDEO)&&(camera->prefs.save_format<SAVE_FORMAT_RAW_VIDEO)) ||
+      (((int)(unsigned long)user_data<SAVE_FORMAT_RAW_VIDEO)&&(camera->prefs.save_format>=SAVE_FORMAT_RAW_VIDEO))) {
+    camera->prefs.save_format=(int)(unsigned long)user_data;
     BuildSaveAppendMenu();
   }
   else
-    camera->prefs.save_format=(int)user_data;
+    camera->prefs.save_format=(int)(unsigned long)user_data;
 
   gnome_config_set_int("coriander/save/format",camera->prefs.save_format);
   gnome_config_sync();
@@ -1642,7 +1642,7 @@ void
 on_save_append_menu_activate             (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  camera->prefs.save_append=(int)user_data;
+  camera->prefs.save_append=(int)(unsigned long)user_data;
   gnome_config_set_int("coriander/save/append",camera->prefs.save_append);
   gnome_config_sync();
   UpdatePrefsSaveFrame();

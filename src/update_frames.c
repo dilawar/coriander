@@ -246,7 +246,7 @@ UpdateCameraStatusFrame(void)
   ctxt.node_id=gtk_statusbar_push( (GtkStatusbar*)lookup_widget(main_window,"camera_node_status"), ctxt.node_ctxt, temp);
 
   // camera handle:
-  sprintf(temp," 0x%x",(unsigned int)camera->camera_info.handle);
+  sprintf(temp," %p",camera->camera_info.handle);
   gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"camera_handle_status"), ctxt.handle_ctxt, ctxt.handle_id);
   ctxt.handle_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"camera_handle_status"), ctxt.handle_ctxt, temp);
 

@@ -303,7 +303,7 @@ ChangeModeAndFormat         (GtkMenuItem     *menuitem,
   
   //eprint("change mode\n");
 
-  mode=(unsigned int)user_data;
+  mode=(int)(unsigned long)user_data;
 
   IsoFlowCheck(&state);
   
@@ -644,16 +644,14 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation)
 {
 
   BusInfo_t bi; // WHY NOT USE THE BUS_INFO GLOBAL VARIABLE HERE???
-  int i, ic, icfound, channel, speed;
+  int i, ic, icfound;
   camera_t *camera_ptr, *cp2;
   camera_t* new_camera;
   dc1394bool_t iso_status;
   dc1394camera_t **newcams;
-  unsigned int newcamnum;
+  unsigned int newcamnum,channel,speed;
 
-  bi.handles=NULL;
-  bi.port_camera_num=NULL;
-  bi.camera_nodes=NULL;
+  memset(&bi,0,sizeof(BusInfo_t));
   MainStatus("Bus reset detected");
 
   eprint("bus reset detected\n");
@@ -697,7 +695,7 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation)
 	cp2=cameras;
 	while(cp2!=NULL) {
 	  if (cp2->camera_info.iso_channel==ic) {
-	    //fprintf(stderr,"    Found a cam with channel %d\n",channel);
+	    //fprintf(stderr,"    Found a cam with channel %u\n",channel);
 	    break;
 	  }
 	  cp2=cp2->next;
@@ -709,7 +707,7 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation)
       }
       if (dc1394_get_iso_channel_and_speed(&new_camera->camera_info, &channel, &speed)!=DC1394_SUCCESS)
 	MainError("Can't get iso channel and speed");
-      //fprintf(stderr,"   Channel was %d\n",channel);
+      //fprintf(stderr,"   Channel was %u\n",channel);
       if (dc1394_set_iso_channel_and_speed(&new_camera->camera_info, ic, speed)!=DC1394_SUCCESS)
 	MainError("Can't set iso channel and speed");
       //fprintf(stderr,"   Channel set to %d\n",ic);

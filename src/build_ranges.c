@@ -240,7 +240,7 @@ void BuildRange(int feature)
     gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
     g_signal_connect ((gpointer) glade_menuitem, "activate",
 		      G_CALLBACK (on_range_menu_activate),
-		      (int*)(feature*1000+RANGE_MENU_OFF)); // i is an int passed in a pointer variable. This is 'normal'.
+		      (gpointer)(unsigned long)(feature*1000+RANGE_MENU_OFF)); // i is an int passed in a pointer variable. This is 'normal'.
   }
   // 'man' menuitem optional addition:
   if (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].manual_capable>0) {
@@ -249,7 +249,7 @@ void BuildRange(int feature)
     gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
     g_signal_connect ((gpointer) glade_menuitem, "activate",
 		      G_CALLBACK (on_range_menu_activate),
-		      (int*)(feature*1000+RANGE_MENU_MAN));
+		      (gpointer)(unsigned long)(feature*1000+RANGE_MENU_MAN));
   }
   // 'auto' menuitem optional addition:
   if (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].auto_capable>0) {
@@ -258,7 +258,7 @@ void BuildRange(int feature)
     gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
     g_signal_connect ((gpointer) glade_menuitem, "activate",
 		      G_CALLBACK (on_range_menu_activate),
-		      (int*)(feature*1000+RANGE_MENU_AUTO));
+		      (gpointer)(unsigned long)(feature*1000+RANGE_MENU_AUTO));
   }
   // 'single' menuitem optional addition:
   if (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].one_push>0) {
@@ -267,7 +267,7 @@ void BuildRange(int feature)
     gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
     g_signal_connect ((gpointer) glade_menuitem, "activate",
 		      G_CALLBACK (on_range_menu_activate),
-		      (int*)(feature*1000+RANGE_MENU_SINGLE));
+		      (gpointer)(unsigned long)(feature*1000+RANGE_MENU_SINGLE));
   }
   // 'absolute' menuitem optional addition:
   if (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].absolute_capable>0) {
@@ -276,7 +276,7 @@ void BuildRange(int feature)
     gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
     g_signal_connect ((gpointer) glade_menuitem, "activate",
 		      G_CALLBACK (on_range_menu_activate),
-		      (int*)(feature*1000+RANGE_MENU_ABSOLUTE));
+		      (gpointer)(unsigned long)(feature*1000+RANGE_MENU_ABSOLUTE));
   }
   
   gtk_option_menu_set_menu (GTK_OPTION_MENU (new_option_menu), new_menu);
@@ -321,8 +321,8 @@ void BuildRange(int feature)
     gtk_range_set_adjustment((GtkRange*)scale2,adjustment2);
 
     // connect:
-    g_signal_connect ((gpointer) adjustment, "value_changed", G_CALLBACK (on_scale_value_changed), (int*) DC1394_FEATURE_WHITE_BALANCE+BU);
-    g_signal_connect ((gpointer) (adjustment2), "value_changed", G_CALLBACK (on_scale_value_changed), (int*) DC1394_FEATURE_WHITE_BALANCE+RV);
+    g_signal_connect ((gpointer) adjustment, "value_changed", G_CALLBACK (on_scale_value_changed), (gpointer)(unsigned long) DC1394_FEATURE_WHITE_BALANCE+BU);
+    g_signal_connect ((gpointer) (adjustment2), "value_changed", G_CALLBACK (on_scale_value_changed), (gpointer)(unsigned long) DC1394_FEATURE_WHITE_BALANCE+RV);
     break;
   case DC1394_FEATURE_TEMPERATURE:
     adjustment=(GtkAdjustment*)gtk_adjustment_new(camera->feature_set.feature[feature-DC1394_FEATURE_MIN].min,
@@ -360,7 +360,7 @@ void BuildRange(int feature)
     gtk_range_set_adjustment((GtkRange*)scale,adjustment);
     gtk_range_set_adjustment((GtkRange*)scale2,adjustment2);
     // connect:
-    g_signal_connect ((gpointer) adjustment, "value_changed", G_CALLBACK (on_scale_value_changed), (int*) DC1394_FEATURE_TEMPERATURE);
+    g_signal_connect ((gpointer) adjustment, "value_changed", G_CALLBACK (on_scale_value_changed), (gpointer)(unsigned long) DC1394_FEATURE_TEMPERATURE);
     break;
   case DC1394_FEATURE_WHITE_SHADING:
     adjustment=(GtkAdjustment*)gtk_adjustment_new(camera->feature_set.feature[feature-DC1394_FEATURE_MIN].min,
@@ -416,9 +416,9 @@ void BuildRange(int feature)
     gtk_range_set_adjustment((GtkRange*)scale3,adjustment3);
 
     // connect:
-    g_signal_connect ((gpointer) adjustment, "value_changed", G_CALLBACK (on_scale_value_changed), (int*) DC1394_FEATURE_WHITE_SHADING+SHADINGR);
-    g_signal_connect ((gpointer) (adjustment2), "value_changed", G_CALLBACK (on_scale_value_changed), (int*) DC1394_FEATURE_WHITE_BALANCE+SHADINGG);
-    g_signal_connect ((gpointer) (adjustment3), "value_changed", G_CALLBACK (on_scale_value_changed), (int*) DC1394_FEATURE_WHITE_BALANCE+SHADINGB);
+    g_signal_connect ((gpointer) adjustment, "value_changed", G_CALLBACK (on_scale_value_changed), (gpointer)(unsigned long) DC1394_FEATURE_WHITE_SHADING+SHADINGR);
+    g_signal_connect ((gpointer) (adjustment2), "value_changed", G_CALLBACK (on_scale_value_changed), (gpointer)(unsigned long) DC1394_FEATURE_WHITE_BALANCE+SHADINGG);
+    g_signal_connect ((gpointer) (adjustment3), "value_changed", G_CALLBACK (on_scale_value_changed), (gpointer)(unsigned long) DC1394_FEATURE_WHITE_BALANCE+SHADINGB);
     break;
     
   default:
@@ -447,7 +447,7 @@ void BuildRange(int feature)
 
     gtk_range_set_adjustment((GtkRange*)scale,adjustment);
     // connect:
-    g_signal_connect ((gpointer) adjustment, "value_changed", G_CALLBACK (on_scale_value_changed), (int*) feature);
+    g_signal_connect ((gpointer) adjustment, "value_changed", G_CALLBACK (on_scale_value_changed), (gpointer)(unsigned long) feature);
     
   }
   // common action for absolute settings:
@@ -465,7 +465,7 @@ void BuildRange(int feature)
 		      (GtkAttachOptions) (0), 0, 0);
     g_signal_connect ((gpointer) abs_entry, "activate",
                       G_CALLBACK (on_abs_entry_activate),
-                      (int*)feature);
+                      (gpointer)(unsigned long)feature);
     // label
     label = gtk_label_new (_(feature_abs_label_list[feature-DC1394_FEATURE_MIN]));
     gtk_widget_ref (label);

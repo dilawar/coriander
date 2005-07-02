@@ -130,7 +130,8 @@ UpdateRangeValue(GtkWidget* widget, int feature)
   //       therefor mendatory to read the CAMERA value and not the value present in "feature_set".
   //       Moreover, we must WRITE the value read in the "feature_set" 'value' field.
 
-  int  err, value, valueBU, valueRV, valuegoal, valuecurrent, valueR, valueG, valueB;
+  int  err;
+  unsigned int value, valueBU, valueRV, valuegoal, valuecurrent, valueR, valueG, valueB;
   //int stable;
   //int prec_value, prec_valuegoal, prec_valueBU, prec_valuecurrent, prec_valueRV;
   char *stemp;
@@ -161,7 +162,7 @@ UpdateRangeValue(GtkWidget* widget, int feature)
 	  prec_valueBU=valueBU;
 	  prec_valueRV=valueRV;
 	  usleep(DELAY);// wait 1/20 sec
-	  //fprintf(stderr,"values: %d %d\n",valueBU,valueRV);
+	  //fprintf(stderr,"values: %u %u\n",valueBU,valueRV);
 	  }
 	  }*/
       if (err!=DC1394_SUCCESS)
@@ -187,7 +188,7 @@ UpdateRangeValue(GtkWidget* widget, int feature)
 	  prec_valueBU=valueBU;
 	  prec_valueRV=valueRV;
 	  usleep(DELAY);// wait 1/20 sec
-	  //fprintf(stderr,"values: %d %d\n",valueBU,valueRV);
+	  //fprintf(stderr,"values: %u %u\n",valueBU,valueRV);
 	  }
 	  }*/
       if (err!=DC1394_SUCCESS)

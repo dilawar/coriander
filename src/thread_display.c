@@ -463,9 +463,11 @@ SDLDisplayPattern(chain_t *display_service)
     }
     break;
   case OVERLAY_TYPE_INVERT:
+    memset(block, 0, sizeof(block));
     break;
   default:
     fprintf(stderr,"Invalid display overlay type: %d\n",display_service->camera->prefs.overlay_type);
+    memset(block, 0, sizeof(block));
     break;
   }
 

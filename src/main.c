@@ -111,7 +111,7 @@ main (int argc, char *argv[])
   MainStatus("Welcome to Coriander...");
   gtk_widget_show (main_window); // this is the only window shown at boot-time
   
-  main_timeout=gtk_timeout_add(10, (GtkFunction)main_timeout_handler, (gpointer*)port_num);
+  main_timeout=gtk_timeout_add(10, (GtkFunction)main_timeout_handler, (gpointer)(unsigned long)port_num);
 
 #ifdef HAVE_SDLLIB
   WatchStartThread(&watchthread_info);
