@@ -209,7 +209,7 @@ AC_DEFUN([AC_CHECK_SSE],[
  	AC_MSG_RESULT($sse)
  	if test x$sse = xyes; then
   	   AC_DEFINE(SSE_SUPPORT,1,[defined if SSE is available])
-	   SSE_CFLAGS="-msse -march=i686 -mcpu=i686"
+	   SSE_CFLAGS="-msse -march=i686"
 	else
 	   SSE_CFLAGS=""
  	fi

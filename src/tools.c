@@ -647,7 +647,7 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation)
   int i, ic, icfound;
   camera_t *camera_ptr, *cp2;
   camera_t* new_camera;
-  dc1394bool_t iso_status;
+  dc1394switch_t iso_status;
   dc1394camera_t **newcams;
   unsigned int newcamnum,channel,speed;
 

@@ -182,7 +182,7 @@ void
 on_iso_start_clicked                   (GtkButton       *button,
                                         gpointer         user_data)
 {
-  dc1394bool_t status;
+  dc1394switch_t status;
 
   if (dc1394_video_set_transmission(&camera->camera_info,DC1394_ON)!=DC1394_SUCCESS)
     MainError("Could not start ISO transmission");
@@ -206,7 +206,7 @@ void
 on_iso_stop_clicked                    (GtkButton       *button,
                                         gpointer         user_data)
 {
-  dc1394bool_t status;
+  dc1394switch_t status;
 
   if (dc1394_video_set_transmission(&camera->camera_info,DC1394_OFF)!=DC1394_SUCCESS)
     MainError("Could not stop ISO transmission");
@@ -602,7 +602,7 @@ on_range_menu_activate             (GtkMenuItem     *menuitem,
   // single auto variables:
   unsigned long int timeout_bin=0;
   unsigned long int step;
-  dc1394bool_t value=TRUE;
+  dc1394feature_mode_t value=DC1394_FEATURE_MODE_ONE_PUSH_AUTO;
 
   action=((int)(unsigned long)user_data)%1000;
   feature=(((int)(unsigned long)user_data)-action)/1000;
@@ -1175,7 +1175,7 @@ void
 on_global_iso_stop_clicked             (GtkButton       *button,
                                         gpointer         user_data)
 {
-  dc1394bool_t status;
+  dc1394switch_t status;
   camera_t* camera_ptr;
   camera_ptr=cameras;
   unsigned int tmp_node;
@@ -1245,7 +1245,7 @@ void
 on_global_iso_start_clicked            (GtkButton       *button,
                                         gpointer         user_data)
 {  
-  dc1394bool_t status;
+  dc1394switch_t status;
   camera_t* camera_ptr;
   camera_ptr=cameras;
   unsigned int tmp_node;

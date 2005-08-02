@@ -3,7 +3,7 @@ Coriander, (c) 2000-2005 Damien Douxchamps <ddouxchamps@users.sf.net>
 Changes towards version 2.0.0-pre3
 
    August 2, 2005, by Damien Douxchamps
-   - synched with libdc CVS
+   - synched with libdc CVS (compilation check only)
 	
    July 2, 2005, by Damien Douxchamps
    - applied patch from Olaf Hering (uninitialized variables)

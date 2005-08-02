@@ -22,7 +22,7 @@ int
 GetCameraNodes(void) {
 
   int err;
-  dc1394camera_t **dccameras;
+  dc1394camera_t **dccameras=NULL;
   unsigned int camnum=0;
   camera_t* camera_ptr;
   int i;
@@ -58,7 +58,9 @@ GetCameraNodes(void) {
   // free the temp dccameras:
   for (i=0;i<camnum;i++)
     free(dccameras[i]);
-  free(dccameras);
+
+  if (camnum>0)
+    free(dccameras);
   //fprintf(stderr,"Done getting nodes\n");
 
   return err;;
