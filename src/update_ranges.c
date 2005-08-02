@@ -155,7 +155,7 @@ UpdateRangeValue(GtkWidget* widget, int feature)
     switch(feature) {
     case DC1394_FEATURE_WHITE_BALANCE:
       //      while(!stable) {
-	err=dc1394_get_white_balance(&camera->camera_info,&valueBU,&valueRV);
+	err=dc1394_feature_whitebalance_get_value(&camera->camera_info,&valueBU,&valueRV);
 	/*	if (((valueBU==prec_valueBU)&&(valueRV==prec_valueRV))||(err<0))
 	  stable=1;
 	else {
@@ -181,7 +181,7 @@ UpdateRangeValue(GtkWidget* widget, int feature)
       break;
     case DC1394_FEATURE_WHITE_SHADING:
       //      while(!stable) {
-	err=dc1394_get_white_shading(&camera->camera_info,&valueR,&valueG, &valueB);
+	err=dc1394_feature_whiteshading_get_value(&camera->camera_info,&valueR,&valueG, &valueB);
 	/*	if (((valueBU==prec_valueBU)&&(valueRV==prec_valueRV))||(err<0))
 	  stable=1;
 	else {
@@ -211,7 +211,7 @@ UpdateRangeValue(GtkWidget* widget, int feature)
       break;
     case DC1394_FEATURE_TEMPERATURE:
       //while(!stable) {
-	err=dc1394_get_temperature(&camera->camera_info, &valuegoal, &valuecurrent);
+	err=dc1394_feature_temperature_get_value(&camera->camera_info, &valuegoal, &valuecurrent);
 	/*if (((valuegoal==prec_valuegoal)&&(valuecurrent==prec_valuecurrent))||(err<0))
 	  stable=1;
 	else {
@@ -235,7 +235,7 @@ UpdateRangeValue(GtkWidget* widget, int feature)
       break;
     default:
       //while(!stable) {
-	err=dc1394_get_feature_value(&camera->camera_info,feature,&value);
+	err=dc1394_feature_get_value(&camera->camera_info,feature,&value);
 	/*if ((value==prec_value)||(err<0))
 	  stable=1;
 	else {
@@ -267,9 +267,9 @@ UpdateFormat7BppRange(void)
   Format7ModeInfo_t *info;
   info=&camera->format7_info.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN];
 
-  if (dc1394_query_format7_byte_per_packet(&camera->camera_info,
+  if (dc1394_format7_get_byte_per_packet(&camera->camera_info,
 					   camera->format7_info.edit_mode, &info->bpp)==DC1394_SUCCESS) {
-    if (dc1394_query_format7_packet_para(&camera->camera_info,
+    if (dc1394_format7_get_packet_para(&camera->camera_info,
 					 camera->format7_info.edit_mode, &info->min_bpp,&info->max_bpp)==DC1394_SUCCESS) {
       //if (info->bpp==0)
       //  fprintf(stderr,"BPP is zero in %s at line %d\n",__FUNCTION__,__LINE__);

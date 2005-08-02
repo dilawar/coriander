@@ -76,7 +76,7 @@ WatchThread(void *arg)
       if (info->crop>0) {
 	if ((camera->camera_info.mode >= DC1394_MODE_FORMAT7_MIN) &&
 	    (camera->camera_info.mode <= DC1394_MODE_FORMAT7_MAX)) {
-	  if (dc1394_query_format7_image_position(&camera->camera_info, camera->camera_info.mode,
+	  if (dc1394_format7_get_image_position(&camera->camera_info, camera->camera_info.mode,
 						  &camera->format7_info.mode[camera->camera_info.mode-DC1394_MODE_FORMAT7_MIN].pos_x,
 						  &camera->format7_info.mode[camera->camera_info.mode-DC1394_MODE_FORMAT7_MIN].pos_y)!=DC1394_SUCCESS)
 	    MainError("Could not get format7 image position");

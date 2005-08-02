@@ -308,7 +308,7 @@ UpdateTransferStatusFrame(void)
   gtk_statusbar_remove( (GtkStatusbar*) lookup_widget(main_window,"iso_channel_status"), ctxt.iso_channel_ctxt, ctxt.iso_channel_id);
   ctxt.iso_channel_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(main_window,"iso_channel_status"), ctxt.iso_channel_ctxt, temp);
 
-  if (dc1394_get_iso_channel_and_speed(&camera->camera_info, &camera->camera_info.iso_channel, &camera->camera_info.iso_speed)!=DC1394_SUCCESS)
+  if (dc1394_video_get_iso_channel_and_speed(&camera->camera_info, &camera->camera_info.iso_channel, &camera->camera_info.iso_speed)!=DC1394_SUCCESS)
     MainError("Can't get ISO channel and speed");
   sprintf(temp," %d",camera->camera_info.iso_channel);
   gtk_statusbar_remove( (GtkStatusbar*) lookup_widget(main_window,"iso_channel_status"), ctxt.iso_channel_ctxt, ctxt.iso_channel_id);
@@ -479,7 +479,7 @@ UpdateBandwidthFrame(void)
 
   cam=cameras;
   while(cam!=NULL) {
-    if (dc1394_get_bandwidth_usage(&cam->camera_info, &bandwidth)!=DC1394_SUCCESS) {
+    if (dc1394_video_get_bandwidth_usage(&cam->camera_info, &bandwidth)!=DC1394_SUCCESS) {
       MainError("Could not get a camera bandwidth usage. Bus usage might be inaccurate.");
     }
     //fprintf(stderr,"%d\n",bandwidth);

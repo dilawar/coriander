@@ -61,7 +61,7 @@ gint IsoStartThread(camera_t* cam)
     }
 
     if (maxspeed >= DC1394_SPEED_800) {
-      if (dc1394_set_operation_mode(&cam->camera_info, DC1394_OPERATION_MODE_1394B)!=DC1394_SUCCESS) {
+      if (dc1394_video_set_operation_mode(&cam->camera_info, DC1394_OPERATION_MODE_1394B)!=DC1394_SUCCESS) {
 	fprintf(stderr,"Can't set 1394B mode. Reverting to 400Mbps\n");
 	maxspeed=DC1394_SPEED_400;
       }

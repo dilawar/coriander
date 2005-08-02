@@ -190,7 +190,7 @@ GetFormat7Capabilities(camera_t* cam)
   
   //eprint("F7 presence set to 0\n");
 
-  if (dc1394_query_supported_modes(&cam->camera_info, &modes)!=DC1394_SUCCESS)
+  if (dc1394_video_get_supported_modes(&cam->camera_info, &modes)!=DC1394_SUCCESS)
     MainError("Could not query supported formats");
   else {
     // find a mode which is F7:
@@ -218,25 +218,25 @@ GetFormat7ModeInfo(camera_t* cam, int mode_id)
 
   if (mode->present>0) { // check for mode presence before query
     //eprint("ready to get image size\n");
-    if (dc1394_query_format7_max_image_size(&cam->camera_info,mode_id,&mode->max_size_x,&mode->max_size_y)!=DC1394_SUCCESS)
+    if (dc1394_format7_get_max_image_size(&cam->camera_info,mode_id,&mode->max_size_x,&mode->max_size_y)!=DC1394_SUCCESS)
       MainError("Got a problem querying format7 max image size");
     //eprint("got image size\n");
-    if (dc1394_query_format7_unit_size(&cam->camera_info,mode_id,&mode->unit_size_x,&mode->unit_size_y)!=DC1394_SUCCESS)
+    if (dc1394_format7_get_unit_size(&cam->camera_info,mode_id,&mode->unit_size_x,&mode->unit_size_y)!=DC1394_SUCCESS)
       MainError("Got a problem querying format7 unit size");
     // quick hack to keep size/position even. If pos/size is ODD, strange color/distorsions occur on some cams
     // (e.g. Basler cams). This will have to really fixed later.
     // REM: this is fixed by using the unit_position:
     // fprintf(stderr,"Using pos units = %d %d\n",info->mode[i].step_pos_x,info->mode[i].step_pos_y);
-    if (dc1394_query_format7_unit_position(&cam->camera_info,mode_id,&mode->unit_pos_x,&mode->unit_pos_y)!=DC1394_SUCCESS) {
+    if (dc1394_format7_get_unit_position(&cam->camera_info,mode_id,&mode->unit_pos_x,&mode->unit_pos_y)!=DC1394_SUCCESS) {
       MainError("Got a problem querying format7 unit position");
       mode->unit_pos_x=0;
       mode->unit_pos_y=0;
     }
-    if (dc1394_query_format7_image_position(&cam->camera_info,mode_id,&mode->pos_x,&mode->pos_y)!=DC1394_SUCCESS)
+    if (dc1394_format7_get_image_position(&cam->camera_info,mode_id,&mode->pos_x,&mode->pos_y)!=DC1394_SUCCESS)
       MainError("Got a problem querying format7 image position");
-    if (dc1394_query_format7_image_size(&cam->camera_info,mode_id,&mode->size_x,&mode->size_y)!=DC1394_SUCCESS)
+    if (dc1394_format7_get_image_size(&cam->camera_info,mode_id,&mode->size_x,&mode->size_y)!=DC1394_SUCCESS)
       MainError("Got a problem querying format7 image size");
-    if (dc1394_query_format7_byte_per_packet(&cam->camera_info,mode_id,&mode->bpp)!=DC1394_SUCCESS)
+    if (dc1394_format7_get_byte_per_packet(&cam->camera_info,mode_id,&mode->bpp)!=DC1394_SUCCESS)
       MainError("Got a problem querying format7 bytes per packet");
     //eprint("got some stuff\n");
     
@@ -245,12 +245,12 @@ GetFormat7ModeInfo(camera_t* cam, int mode_id)
       // sometimes a camera will not set the bpp register until a valid image size has been set after boot. If BPP is zero, we therefor
       // try again after setting the image size to the maximum size.
       MainError("Camera reported a BPP of ZERO. Trying to set maximum size to correct this.");
-      if (dc1394_set_format7_image_position(&cam->camera_info,mode_id,0,0)!=DC1394_SUCCESS)
+      if (dc1394_format7_set_image_position(&cam->camera_info,mode_id,0,0)!=DC1394_SUCCESS)
 	MainError("Got a problem setting format7 image position");
-      if (dc1394_set_format7_image_size(&cam->camera_info,mode_id,mode->max_size_x,mode->max_size_y)!=DC1394_SUCCESS)
+      if (dc1394_format7_set_image_size(&cam->camera_info,mode_id,mode->max_size_x,mode->max_size_y)!=DC1394_SUCCESS)
 	MainError("Got a problem setting format7 image size");
       // maybe we should also force a color coding here.
-      if (dc1394_query_format7_byte_per_packet(&cam->camera_info,mode_id,&mode->bpp)!=DC1394_SUCCESS)
+      if (dc1394_format7_get_byte_per_packet(&cam->camera_info,mode_id,&mode->bpp)!=DC1394_SUCCESS)
 	MainError("Got a problem querying format7 bytes per packet");
       if (mode->bpp==0) {
 	MainError("    BPP still zero. Giving up.");
@@ -258,16 +258,16 @@ GetFormat7ModeInfo(camera_t* cam, int mode_id)
     }
     
     //eprint("got almost everything\n");
-    if (dc1394_query_format7_packet_para(&cam->camera_info,mode_id,&mode->min_bpp,&mode->max_bpp)!=DC1394_SUCCESS)
+    if (dc1394_format7_get_packet_para(&cam->camera_info,mode_id,&mode->min_bpp,&mode->max_bpp)!=DC1394_SUCCESS)
       MainError("Got a problem querying format7 packet parameters");
-    if (dc1394_query_format7_pixel_number(&cam->camera_info,mode_id,&mode->pixnum)!=DC1394_SUCCESS)
+    if (dc1394_format7_get_pixel_number(&cam->camera_info,mode_id,&mode->pixnum)!=DC1394_SUCCESS)
       MainError("Got a problem querying format7 pixel number");
-    if (dc1394_query_format7_total_bytes(&cam->camera_info,mode_id,&mode->total_bytes)!=DC1394_SUCCESS)
+    if (dc1394_format7_get_total_bytes(&cam->camera_info,mode_id,&mode->total_bytes)!=DC1394_SUCCESS)
       MainError("Got a problem querying format7 total bytes per frame");
-    if (dc1394_query_format7_color_coding_id(&cam->camera_info,mode_id,&mode->color_coding_id)!=DC1394_SUCCESS)
+    if (dc1394_format7_get_color_coding_id(&cam->camera_info,mode_id,&mode->color_coding_id)!=DC1394_SUCCESS)
       MainError("Got a problem querying format7 color coding ID");
     //eprint("getting color codings\n");
-    if (dc1394_query_format7_color_coding(&cam->camera_info,mode_id,&mode->color_codings)!=DC1394_SUCCESS)
+    if (dc1394_format7_get_color_coding(&cam->camera_info,mode_id,&mode->color_codings)!=DC1394_SUCCESS)
       MainError("Got a problem querying format7 color coding");
   }
 }
@@ -307,7 +307,7 @@ ChangeModeAndFormat         (GtkMenuItem     *menuitem,
 
   IsoFlowCheck(&state);
   
-  if (dc1394_set_video_mode(&camera->camera_info,mode)!=DC1394_SUCCESS)
+  if (dc1394_video_set_mode(&camera->camera_info,mode)!=DC1394_SUCCESS)
     MainError("Could not set video mode");
   else
     camera->camera_info.mode=mode;
@@ -315,7 +315,7 @@ ChangeModeAndFormat         (GtkMenuItem     *menuitem,
   // check consistancy of framerate:
   if (!((camera->camera_info.mode >= DC1394_MODE_FORMAT7_MIN) &&
 	(camera->camera_info.mode <= DC1394_MODE_FORMAT7_MAX))) {
-    if (dc1394_query_supported_framerates(&camera->camera_info, mode, &framerates)!=DC1394_SUCCESS)
+    if (dc1394_video_get_supported_framerates(&camera->camera_info, mode, &framerates)!=DC1394_SUCCESS)
       MainError("Could not read supported framerates");
     else {
       for (i=0;i<framerates.num;i++) {
@@ -354,12 +354,12 @@ ChangeModeAndFormat         (GtkMenuItem     *menuitem,
 void IsoFlowCheck(int *state)
 { 
   //fprintf(stderr,"Checking ISO... ");
-  if (dc1394_get_iso_status(&camera->camera_info, &camera->camera_info.is_iso_on)!=DC1394_SUCCESS)
+  if (dc1394_video_get_transmission(&camera->camera_info, &camera->camera_info.is_iso_on)!=DC1394_SUCCESS)
     MainError("Could not get ISO status");
   else {
     if (camera->camera_info.is_iso_on>0) {
       //fprintf(stderr,"Stopping... ");
-      if (dc1394_stop_iso_transmission(&camera->camera_info)!=DC1394_SUCCESS) {
+      if (dc1394_video_set_transmission(&camera->camera_info, DC1394_OFF)!=DC1394_SUCCESS) {
 	// ... (if not done, restarting is no more possible)
 	MainError("Could not stop ISO transmission");
       }
@@ -383,7 +383,7 @@ void IsoFlowResume(int *state)
   if (was_on>0) { // restart if it was 'on' before the changes
     usleep(DELAY); // necessary to avoid desynchronized ISO flow.
     //fprintf(stderr,"Starting ... ");
-    if (dc1394_start_iso_transmission(&camera->camera_info)!=DC1394_SUCCESS) {
+    if (dc1394_video_set_transmission(&camera->camera_info,DC1394_ON)!=DC1394_SUCCESS) {
       MainError("Could not start ISO transmission");
     }
   }
@@ -393,7 +393,7 @@ void IsoFlowResume(int *state)
   }
   
   if (was_on>0) {
-    if (dc1394_get_iso_status(&camera->camera_info,&camera->camera_info.is_iso_on)!=DC1394_SUCCESS)
+    if (dc1394_video_get_transmission(&camera->camera_info,&camera->camera_info.is_iso_on)!=DC1394_SUCCESS)
       MainError("Could not get ISO status");
     else {
       if (!camera->camera_info.is_iso_on) {
@@ -402,11 +402,11 @@ void IsoFlowResume(int *state)
 	while ((!camera->camera_info.is_iso_on)&&(timeout<5000)) {
 	  usleep(DELAY);
 	  timeout+=DELAY/1000;
-	  if (dc1394_start_iso_transmission(&camera->camera_info)!=DC1394_SUCCESS)
+	  if (dc1394_video_set_transmission(&camera->camera_info,DC1394_ON)!=DC1394_SUCCESS)
 	    // ... (if not done, restarting is no more possible)
 	    MainError("Could not start ISO transmission");
 	  else {
-	    if (dc1394_get_iso_status(&camera->camera_info,&camera->camera_info.is_iso_on)!=DC1394_SUCCESS)
+	    if (dc1394_video_get_transmission(&camera->camera_info,&camera->camera_info.is_iso_on)!=DC1394_SUCCESS)
 	      MainError("Could not get ISO status");
 	  }
 	}
@@ -530,9 +530,9 @@ SetChannels(void)
 
   camera_ptr=cameras;
   while(camera_ptr!=NULL) {
-    if (dc1394_get_iso_channel_and_speed(&camera_ptr->camera_info, &channel, &speed)!=DC1394_SUCCESS)
+    if (dc1394_video_get_iso_channel_and_speed(&camera_ptr->camera_info, &channel, &speed)!=DC1394_SUCCESS)
       MainError("Can't get iso channel and speed");
-    if (dc1394_set_iso_channel_and_speed(&camera_ptr->camera_info, channel, speed)!=DC1394_SUCCESS)
+    if (dc1394_video_set_iso_channel_and_speed(&camera_ptr->camera_info, channel, speed)!=DC1394_SUCCESS)
       MainError("Can't set iso channel and speed");
     camera_ptr=camera_ptr->next;
   }
@@ -570,7 +570,7 @@ SetScaleSensitivity(GtkWidget* widget, int feature, dc1394bool_t sense)
 void
 SetAbsoluteControl(int feature, int power)
 {
-  if (dc1394_absolute_setting_on_off(&camera->camera_info, feature, power)!=DC1394_SUCCESS)
+  if (dc1394_feature_set_absolute_control(&camera->camera_info, feature, power)!=DC1394_SUCCESS)
     MainError("Could not toggle absolute setting control\n");
   else {
     camera->feature_set.feature[feature-DC1394_FEATURE_MIN].abs_control=power;
@@ -597,11 +597,11 @@ SetAbsValue(int feature)
   sprintf(stemp,"feature_%d_abs_entry",feature);
   stringp=(char*)gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,stemp)));
   value=atof(stringp);
-  if (dc1394_set_absolute_feature_value(&camera->camera_info, feature, value)!=DC1394_SUCCESS) {
+  if (dc1394_feature_set_absolute_value(&camera->camera_info, feature, value)!=DC1394_SUCCESS) {
     MainError("Can't set absolute value!");
   }
   else {
-    if (dc1394_query_absolute_feature_value(&camera->camera_info, feature, &value)!=DC1394_SUCCESS) {
+    if (dc1394_feature_get_absolute_value(&camera->camera_info, feature, &value)!=DC1394_SUCCESS) {
       MainError("Can't get absolute value!");
     }
     else {
@@ -622,7 +622,7 @@ GetAbsValue(int feature)
   string=(char*)malloc(STRING_SIZE*sizeof(char));
  
   
-  if (dc1394_query_absolute_feature_value(&camera->camera_info, feature, &value)!=DC1394_SUCCESS) {
+  if (dc1394_feature_get_absolute_value(&camera->camera_info, feature, &value)!=DC1394_SUCCESS) {
     MainError("Can't get absolute value!");
   }
   else {
@@ -705,10 +705,10 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation)
 	else
 	  ic++;
       }
-      if (dc1394_get_iso_channel_and_speed(&new_camera->camera_info, &channel, &speed)!=DC1394_SUCCESS)
+      if (dc1394_video_get_iso_channel_and_speed(&new_camera->camera_info, &channel, &speed)!=DC1394_SUCCESS)
 	MainError("Can't get iso channel and speed");
       //fprintf(stderr,"   Channel was %u\n",channel);
-      if (dc1394_set_iso_channel_and_speed(&new_camera->camera_info, ic, speed)!=DC1394_SUCCESS)
+      if (dc1394_video_set_iso_channel_and_speed(&new_camera->camera_info, ic, speed)!=DC1394_SUCCESS)
 	MainError("Can't set iso channel and speed");
       //fprintf(stderr,"   Channel set to %d\n",ic);
       if (cameras==NULL) {
@@ -774,13 +774,13 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation)
   // restart ISO if necessary
   cp2=cameras;
   while(cp2!=NULL) {
-    if (dc1394_get_iso_status(&cp2->camera_info,&iso_status)!=DC1394_SUCCESS) {
+    if (dc1394_video_get_transmission(&cp2->camera_info,&iso_status)!=DC1394_SUCCESS) {
       MainError("Could not read ISO status");
     }
     else {
       //fprintf(stderr,"iso is %d and should be %d\n", iso_status,cp2->camera_info.is_iso_on);
       if ((cp2->camera_info.is_iso_on==DC1394_TRUE)&&(iso_status==DC1394_FALSE)) {
-	if (dc1394_start_iso_transmission(&cp2->camera_info)!=DC1394_SUCCESS) {
+	if (dc1394_video_set_transmission(&cp2->camera_info,DC1394_ON)!=DC1394_SUCCESS) {
 	  MainError("Could start ISO");
 	}
 	usleep(DELAY);
@@ -939,10 +939,10 @@ SetFormat7Crop(int sx, int sy, int px, int py, int mode) {
   // example: from size=128x128, pos=128x128, we can't go to size=1280x1024 by just changing the size.
   // We need to set the position to 0x0 first.
   //fprintf(stderr,"Setting format7 to pos=[%d %d], size=[%d %d]\n",px,py,sx,sy);
-  if (dc1394_set_format7_image_position(&camera->camera_info, mode, 0, 0)!=DC1394_SUCCESS)
+  if (dc1394_format7_set_image_position(&camera->camera_info, mode, 0, 0)!=DC1394_SUCCESS)
     MainError("Could not set Format7 image position to zero");
-  if ((dc1394_set_format7_image_size(&camera->camera_info, mode, sx, sy)!=DC1394_SUCCESS)||
-      (dc1394_set_format7_image_position(&camera->camera_info, mode, px, py)!=DC1394_SUCCESS))
+  if ((dc1394_format7_set_image_size(&camera->camera_info, mode, sx, sy)!=DC1394_SUCCESS)||
+      (dc1394_format7_set_image_position(&camera->camera_info, mode, px, py)!=DC1394_SUCCESS))
     MainError("Could not set Format7 image size and position");
   else {
     info->size_x=sx;

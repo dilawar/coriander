@@ -634,8 +634,8 @@ SaveJPEGFrame(chain_t *save_service, char *filename_out)
 {
   savethread_info_t *info;
   //unsigned char *tmp_buf;
-  unsigned int pix_fmt;
-  int err=0;
+  //unsigned int pix_fmt;
+  //int err=0;
   info=(savethread_info_t*)save_service->data;
 
   //if (save_service->current_buffer->color_mode!=DC1394_COLOR_CODING_YUV411)&&(

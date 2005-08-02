@@ -67,7 +67,7 @@ BuildPowerFrame(void)
   gtk_widget_set_sensitive(lookup_widget(main_window,"power_reset"),TRUE);
 
   // activate if camera capable of power on/off:
-  if (dc1394_query_basic_functionality(&camera->camera_info, &basic_funcs)!=DC1394_SUCCESS)
+  if (dc1394_get_basic_functionality(&camera->camera_info, &basic_funcs)!=DC1394_SUCCESS)
     MainError("Could not query basic functionalities");
 
   gtk_widget_set_sensitive(lookup_widget(main_window,"power_on"),(basic_funcs & 0x1<<16));
@@ -91,7 +91,7 @@ void
 BuildIsoFrame(void)
 {
   // TODO: only if ISO capable
-  if (dc1394_get_iso_status(&camera->camera_info, &camera->camera_info.is_iso_on)!=DC1394_SUCCESS)
+  if (dc1394_video_get_transmission(&camera->camera_info, &camera->camera_info.is_iso_on)!=DC1394_SUCCESS)
     MainError("Can't get ISO status");
   //fprintf(stderr,"sync: %d\n",preferences.sync_control);
   gtk_widget_set_sensitive(lookup_widget(main_window,"iso_frame"),TRUE);

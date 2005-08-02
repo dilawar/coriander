@@ -57,7 +57,7 @@ BuildTriggerModeMenu(void)
   // offset 0x530h. Thus we can't probe anything there without producing an error
   if (camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].available!=0) {
 
-  if (dc1394_query_feature_characteristics(&camera->camera_info,DC1394_FEATURE_TRIGGER,&value)!=DC1394_SUCCESS)
+  if (dc1394_feature_get_characteristics(&camera->camera_info,DC1394_FEATURE_TRIGGER,&value)!=DC1394_SUCCESS)
     MainError("Could not query trigger feature characteristics");
   modes=( (value & (0xF << 12)) >>12 );
 
@@ -79,7 +79,7 @@ BuildTriggerModeMenu(void)
     gtk_option_menu_set_menu (GTK_OPTION_MENU (trigger_mode), trigger_mode_menu);
     
     // sets the active menu item:
-    if (dc1394_get_trigger_mode(&camera->camera_info, &current_trigger_mode)!=DC1394_SUCCESS) {
+    if (dc1394_external_trigger_get_mode(&camera->camera_info, &current_trigger_mode)!=DC1394_SUCCESS) {
       MainError("Could not query current trigger mode");
       current_trigger_mode=DC1394_TRIGGER_MODE_MIN;
     }
@@ -317,7 +317,7 @@ BuildFpsMenu(void)
   else {
     gtk_widget_set_sensitive(lookup_widget(main_window,"fps_menu"),TRUE);
 
-    if (dc1394_query_supported_framerates(&camera->camera_info, camera->camera_info.mode, &framerates)!=DC1394_SUCCESS)
+    if (dc1394_video_get_supported_framerates(&camera->camera_info, camera->camera_info.mode, &framerates)!=DC1394_SUCCESS)
       MainError("Could not query supported framerates");
     gtk_widget_destroy(GTK_WIDGET (lookup_widget(main_window,"fps_menu"))); // remove previous menu
     
@@ -387,7 +387,7 @@ BuildFormatMenu(void)
   //eprint("check\n");
 
   // get supported modes
-  if (dc1394_query_supported_modes(&camera->camera_info, &modes)<0) {
+  if (dc1394_video_get_supported_modes(&camera->camera_info, &modes)<0) {
     MainError("Could not query supported formats");
     return;
   }
