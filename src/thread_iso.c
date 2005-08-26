@@ -454,7 +454,7 @@ IsoThreadCheckParams(chain_t *iso_service)
 
   if ((iso_service->camera->camera_info.mode >= DC1394_MODE_FORMAT7_MIN) &&
       (iso_service->camera->camera_info.mode <= DC1394_MODE_FORMAT7_MAX)) {
-    temp=iso_service->camera->format7_info.mode[iso_service->camera->camera_info.mode-DC1394_MODE_FORMAT7_MIN].color_coding_id;
+    temp=iso_service->camera->format7_info.modeset.mode[iso_service->camera->camera_info.mode-DC1394_MODE_FORMAT7_MIN].color_coding_id;
   }
   else {
     temp=-1;

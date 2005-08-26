@@ -1,6 +1,12 @@
 Coriander, (c) 2000-2005 Damien Douxchamps <ddouxchamps@users.sf.net>
 
-Changes towards version 2.0.0-pre3
+Changes towards version 2.0.0-pre4
+
+   August 25, 2005, by Damien Douxchamps
+   - sync with libdc again: remove the duplicate F7 code that was related
+     to getting F7 modes capabilities.
+	
+Changes in version 2.0.0-pre3
 
    August 2, 2005, by Damien Douxchamps
    - synched with libdc CVS (compilation check only)

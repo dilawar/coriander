@@ -37,9 +37,6 @@ typedef struct _xvinfo
 void
 GetFormat7Capabilities(camera_t* cam);
 
-void
-GetFormat7ModeInfo(camera_t* cam, int mode_id);
-
 unsigned int
 SwitchToNearestFPS(dc1394framerates_t *framerates, int current);
 

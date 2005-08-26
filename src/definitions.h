@@ -138,39 +138,9 @@ typedef struct _BusInfo
 
 } BusInfo_t;
 
-typedef struct _Format7ModeInfo
-{
-  dc1394bool_t present;
-
-  unsigned int size_x;
-  unsigned int size_y;
-  unsigned int max_size_x;
-  unsigned int max_size_y;
-
-  unsigned int pos_x;
-  unsigned int pos_y;
-
-  unsigned int unit_size_x;
-  unsigned int unit_size_y;
-  unsigned int unit_pos_x;
-  unsigned int unit_pos_y;
-
-  dc1394colormodes_t color_codings;
-  unsigned int color_coding_id;
-
-  unsigned int pixnum;
-
-  unsigned int bpp; // bpp is byte_per_packet
-  unsigned int min_bpp;
-  unsigned int max_bpp;
-
-  unsigned long long int total_bytes;
-
-} Format7ModeInfo_t;
-
 typedef struct _Format7Info
 {
-  Format7ModeInfo_t mode[DC1394_MODE_FORMAT7_NUM];
+  dc1394format7modeset_t modeset;
   int edit_mode;
   
   int scale_posx_handle;

@@ -391,7 +391,7 @@ UpdateFormat7InfoFrame(void)
 {
 
   char *temp;
-  Format7ModeInfo_t *mode;
+  dc1394format7mode_t *mode;
   float bpp;
   int bytesize, grandtotal;
   
@@ -399,7 +399,7 @@ UpdateFormat7InfoFrame(void)
 
   if (camera->format7_info.edit_mode!=-1) {
 
-    mode = &camera->format7_info.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN];
+    mode = &camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN];
 
 
     dc1394_get_bytes_per_pixel(mode->color_coding_id, &bpp);
@@ -489,8 +489,8 @@ UpdateBandwidthFrame(void)
 	&&(iso_service!=NULL)){
       //fprintf(stderr,"better estimate can be found\n");
       // use the fractions of packets needed:
-      theobps=8000*cam->format7_info.mode[cam->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].bpp;
-      truebps=iso_service->fps*cam->format7_info.mode[cam->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].total_bytes;
+      theobps=8000*cam->format7_info.modeset.mode[cam->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].bpp;
+      truebps=iso_service->fps*cam->format7_info.modeset.mode[cam->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].total_bytes;
       ratio=(float)truebps/(float)theobps;
       //fprintf(stderr,"truebps: %d, theobps: %d, ratio: %.2f\n",truebps, theobps, ratio);
       // apply only if the ratio is less than 0.95 and greater than 0

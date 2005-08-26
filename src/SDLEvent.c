@@ -209,12 +209,12 @@ void
 OnMouseDown(chain_t *display_service, int button, int x, int y)
 {
   displaythread_info_t *info;
-  Format7ModeInfo_t* f7info;
+  dc1394format7mode_t* f7info;
   info=(displaythread_info_t*)display_service->data;
 
   if ((camera->camera_info.mode >= DC1394_MODE_FORMAT7_MIN) &&
       (camera->camera_info.mode <= DC1394_MODE_FORMAT7_MAX)) {
-    f7info=&camera->format7_info.mode[camera->camera_info.mode-DC1394_MODE_FORMAT7_MIN];
+    f7info=&camera->format7_info.modeset.mode[camera->camera_info.mode-DC1394_MODE_FORMAT7_MIN];
   }
 
   switch (button) {
@@ -469,8 +469,8 @@ SDLSetMaxSize(chain_t *display_service)
     watchthread_info.crop=1;
     watchthread_info.pos[0]=0;
     watchthread_info.pos[1]=0;
-    watchthread_info.size[0]=camera->format7_info.mode[camera->camera_info.mode-DC1394_MODE_FORMAT7_MIN].max_size_x;
-    watchthread_info.size[1]=camera->format7_info.mode[camera->camera_info.mode-DC1394_MODE_FORMAT7_MIN].max_size_y;
+    watchthread_info.size[0]=camera->format7_info.modeset.mode[camera->camera_info.mode-DC1394_MODE_FORMAT7_MIN].max_size_x;
+    watchthread_info.size[1]=camera->format7_info.modeset.mode[camera->camera_info.mode-DC1394_MODE_FORMAT7_MIN].max_size_y;
   }
   pthread_mutex_unlock(&watchthread_info.mutex_area);
 

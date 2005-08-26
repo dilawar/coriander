@@ -226,7 +226,7 @@ BuildFormat7ModeMenu(void)
   mode_num_menu = gtk_menu_new ();
 
   for (f=DC1394_MODE_FORMAT7_MIN,i=0;f<=DC1394_MODE_FORMAT7_MAX;f++,i++) {
-    if (camera->format7_info.mode[f-DC1394_MODE_FORMAT7_MIN].present>0) {
+    if (camera->format7_info.modeset.mode[f-DC1394_MODE_FORMAT7_MIN].present>0) {
       index[i]=k;
       k++;
       glade_menuitem = gtk_menu_item_new_with_label (_(format7_mode_list[i]));
@@ -276,18 +276,18 @@ BuildFormat7ColorMenu(void)
 
   //eprint("ready to add\n");
 
-  for (i=0;i<camera->format7_info.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].color_codings.num;i++) {
+  for (i=0;i<camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].color_codings.num;i++) {
     //eprint("%d\n",camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].color_codings[i]);
-    glade_menuitem = gtk_menu_item_new_with_label (_(format7_color_list[camera->format7_info.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].color_codings.modes[i]-DC1394_COLOR_CODING_MIN]));
+    glade_menuitem = gtk_menu_item_new_with_label (_(format7_color_list[camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].color_codings.modes[i]-DC1394_COLOR_CODING_MIN]));
     gtk_widget_show (glade_menuitem);
     gtk_menu_append (GTK_MENU (color_num_menu), glade_menuitem);
     g_signal_connect ((gpointer) glade_menuitem, "activate",
 		      G_CALLBACK (on_edit_format7_color_activate),
-		      (gpointer)(unsigned long)camera->format7_info.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].color_codings.modes[i]);
+		      (gpointer)(unsigned long)camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].color_codings.modes[i]);
   }
   
-  for (i=0;i<camera->format7_info.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].color_codings.num;i++) {
-    if (camera->format7_info.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].color_coding_id==camera->format7_info.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].color_codings.modes[i])
+  for (i=0;i<camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].color_codings.num;i++) {
+    if (camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].color_coding_id==camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].color_codings.modes[i])
       break;
   }
   gtk_option_menu_set_menu (GTK_OPTION_MENU (color_num), color_num_menu);

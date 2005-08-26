@@ -276,9 +276,9 @@ on_format7_packet_size_changed               (GtkAdjustment    *adj,
 
   value=(int)adj->value;
 
-  value=NearestValue(value,camera->format7_info.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].min_bpp,
-		     camera->format7_info.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].min_bpp,
-		     camera->format7_info.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].max_bpp);
+  value=NearestValue(value,camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].min_bpp,
+		     camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].min_bpp,
+		     camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].max_bpp);
 
   IsoFlowCheck(&state);
   
@@ -290,7 +290,7 @@ on_format7_packet_size_changed               (GtkAdjustment    *adj,
 					   camera->format7_info.edit_mode,&bpp)!=DC1394_SUCCESS) 
     MainError("Could not query Format7 bytes per packet");
   else {
-    camera->format7_info.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].bpp=bpp;
+    camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].bpp=bpp;
     if (bpp==0)
       fprintf(stderr,"BPP is zero in %s at line %d\n",__FUNCTION__,__LINE__);
     
@@ -301,7 +301,10 @@ on_format7_packet_size_changed               (GtkAdjustment    *adj,
     usleep(DELAY);
   }
   
-  GetFormat7ModeInfo(camera, camera->format7_info.edit_mode);
+  if (dc1394_format7_get_mode_info(&camera->camera_info, camera->format7_info.edit_mode, 
+				   &camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN])!=DC1394_SUCCESS)
+    MainError("Could not get format7 mode information");
+
   UpdateFormat7InfoFrame();
   IsoFlowResume(&state);
   
@@ -312,7 +315,11 @@ on_edit_format7_mode_activate             (GtkMenuItem     *menuitem,
 					   gpointer         user_data)
 {
   camera->format7_info.edit_mode=(int)(unsigned long)user_data;
-  GetFormat7ModeInfo(camera, camera->format7_info.edit_mode);
+
+  if (dc1394_format7_get_mode_info(&camera->camera_info, camera->format7_info.edit_mode, 
+				   &camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN])!=DC1394_SUCCESS)
+    MainError("Could not get format7 mode information");
+
   UpdateFormat7Window();
 }
 
@@ -329,9 +336,12 @@ on_edit_format7_color_activate             (GtkMenuItem     *menuitem,
   if (dc1394_format7_set_color_coding_id(&camera->camera_info, camera->format7_info.edit_mode, (int)(unsigned long)user_data)!=DC1394_SUCCESS)
     MainError("Could not change Format7 color coding");
   else
-    camera->format7_info.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].color_coding_id=(int)(unsigned long)user_data;
+    camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].color_coding_id=(int)(unsigned long)user_data;
 
-  GetFormat7ModeInfo(camera, camera->format7_info.edit_mode);
+  if (dc1394_format7_get_mode_info(&camera->camera_info, camera->format7_info.edit_mode, 
+				   &camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN])!=DC1394_SUCCESS)
+    MainError("Could not get format7 mode information");
+
   UpdateOptionFrame();
   UpdateFormat7Window();
   /*UpdateFormat7BppRange();
@@ -444,10 +454,10 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
 				       gpointer         user_data)
 {
   int sx, sy, px, py;
-  Format7ModeInfo_t* info;
+  dc1394format7mode_t* info;
 
   if (camera->format7_info.edit_mode>=0) { // check if F7 is supported
-    info=&camera->format7_info.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN];
+    info=&camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN];
     sx=info->size_x;
     sy=info->size_y;
     px=info->pos_x;
@@ -479,7 +489,10 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
     
     //fprintf(stderr,"Size: %d %d  Position: %d %d\n",info->size_x, info->size_y, info->pos_x, info->pos_y);
     // update bpp range here.
-    GetFormat7ModeInfo(camera, camera->format7_info.edit_mode);
+    if (dc1394_format7_get_mode_info(&camera->camera_info, camera->format7_info.edit_mode, 
+				   &camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN])!=DC1394_SUCCESS)
+    MainError("Could not get format7 mode information");
+
     UpdateFormat7BppRange();
     UpdateFormat7InfoFrame();
   }

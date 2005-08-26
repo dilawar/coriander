@@ -182,93 +182,23 @@ GetFormat7Capabilities(camera_t* cam)
 {
   int i;
   int check=0;
-  dc1394videomodes_t modes;
 
   for (i=0;i<DC1394_MODE_FORMAT7_NUM;i++) {
-    cam->format7_info.mode[i].present=0;
+    cam->format7_info.modeset.mode[i].present=0;
   }
-  
-  //eprint("F7 presence set to 0\n");
 
-  if (dc1394_video_get_supported_modes(&cam->camera_info, &modes)!=DC1394_SUCCESS)
-    MainError("Could not query supported formats");
-  else {
-    // find a mode which is F7:
-    //eprint("found %d formats\n",numformats)
-    for (i=0;i<modes.num;i++) {
-      if ((modes.modes[i]>=DC1394_MODE_FORMAT7_MIN)&&(modes.modes[i]<=DC1394_MODE_FORMAT7_MAX)) {
-	//eprint("format %d is F7\n",formats[i])
-	cam->format7_info.mode[modes.modes[i]-DC1394_MODE_FORMAT7_MIN].present= 1;
-	GetFormat7ModeInfo(cam, modes.modes[i]);
-	check=1;
-      }
+  if (dc1394_format7_get_modeset(&cam->camera_info, &cam->format7_info.modeset)!=DC1394_SUCCESS)
+    MainError("Could not query Format_7 informations");
+    
+  check=0;
+  for (i=0;i<DC1394_MODE_FORMAT7_NUM;i++) {
+    if (cam->format7_info.modeset.mode[i].present!=0) {
+      check=1;
+      break;
     }
   }
   if (check==0) { // F7 not supported
     cam->format7_info.edit_mode=-1;
-  }
-}
-
-void
-GetFormat7ModeInfo(camera_t* cam, int mode_id) 
-{
-  Format7ModeInfo_t *mode;
-
-  mode=&cam->format7_info.mode[mode_id-DC1394_MODE_FORMAT7_MIN];
-
-  if (mode->present>0) { // check for mode presence before query
-    //eprint("ready to get image size\n");
-    if (dc1394_format7_get_max_image_size(&cam->camera_info,mode_id,&mode->max_size_x,&mode->max_size_y)!=DC1394_SUCCESS)
-      MainError("Got a problem querying format7 max image size");
-    //eprint("got image size\n");
-    if (dc1394_format7_get_unit_size(&cam->camera_info,mode_id,&mode->unit_size_x,&mode->unit_size_y)!=DC1394_SUCCESS)
-      MainError("Got a problem querying format7 unit size");
-    // quick hack to keep size/position even. If pos/size is ODD, strange color/distorsions occur on some cams
-    // (e.g. Basler cams). This will have to really fixed later.
-    // REM: this is fixed by using the unit_position:
-    // fprintf(stderr,"Using pos units = %d %d\n",info->mode[i].step_pos_x,info->mode[i].step_pos_y);
-    if (dc1394_format7_get_unit_position(&cam->camera_info,mode_id,&mode->unit_pos_x,&mode->unit_pos_y)!=DC1394_SUCCESS) {
-      MainError("Got a problem querying format7 unit position");
-      mode->unit_pos_x=0;
-      mode->unit_pos_y=0;
-    }
-    if (dc1394_format7_get_image_position(&cam->camera_info,mode_id,&mode->pos_x,&mode->pos_y)!=DC1394_SUCCESS)
-      MainError("Got a problem querying format7 image position");
-    if (dc1394_format7_get_image_size(&cam->camera_info,mode_id,&mode->size_x,&mode->size_y)!=DC1394_SUCCESS)
-      MainError("Got a problem querying format7 image size");
-    if (dc1394_format7_get_byte_per_packet(&cam->camera_info,mode_id,&mode->bpp)!=DC1394_SUCCESS)
-      MainError("Got a problem querying format7 bytes per packet");
-    //eprint("got some stuff\n");
-    
-    if (mode->bpp==0) {
-      //eprint("bpp=0: setting some params\n");
-      // sometimes a camera will not set the bpp register until a valid image size has been set after boot. If BPP is zero, we therefor
-      // try again after setting the image size to the maximum size.
-      MainError("Camera reported a BPP of ZERO. Trying to set maximum size to correct this.");
-      if (dc1394_format7_set_image_position(&cam->camera_info,mode_id,0,0)!=DC1394_SUCCESS)
-	MainError("Got a problem setting format7 image position");
-      if (dc1394_format7_set_image_size(&cam->camera_info,mode_id,mode->max_size_x,mode->max_size_y)!=DC1394_SUCCESS)
-	MainError("Got a problem setting format7 image size");
-      // maybe we should also force a color coding here.
-      if (dc1394_format7_get_byte_per_packet(&cam->camera_info,mode_id,&mode->bpp)!=DC1394_SUCCESS)
-	MainError("Got a problem querying format7 bytes per packet");
-      if (mode->bpp==0) {
-	MainError("    BPP still zero. Giving up.");
-      }
-    }
-    
-    //eprint("got almost everything\n");
-    if (dc1394_format7_get_packet_para(&cam->camera_info,mode_id,&mode->min_bpp,&mode->max_bpp)!=DC1394_SUCCESS)
-      MainError("Got a problem querying format7 packet parameters");
-    if (dc1394_format7_get_pixel_number(&cam->camera_info,mode_id,&mode->pixnum)!=DC1394_SUCCESS)
-      MainError("Got a problem querying format7 pixel number");
-    if (dc1394_format7_get_total_bytes(&cam->camera_info,mode_id,&mode->total_bytes)!=DC1394_SUCCESS)
-      MainError("Got a problem querying format7 total bytes per frame");
-    if (dc1394_format7_get_color_coding_id(&cam->camera_info,mode_id,&mode->color_coding_id)!=DC1394_SUCCESS)
-      MainError("Got a problem querying format7 color coding ID");
-    //eprint("getting color codings\n");
-    if (dc1394_format7_get_color_coding(&cam->camera_info,mode_id,&mode->color_codings)!=DC1394_SUCCESS)
-      MainError("Got a problem querying format7 color coding");
   }
 }
 
@@ -920,10 +850,10 @@ void
 SetFormat7Crop(int sx, int sy, int px, int py, int mode) {
 	
   int state;
-  Format7ModeInfo_t *info;
+  dc1394format7mode_t *info;
   GtkAdjustment *adjsx, *adjsy, *adjpx, *adjpy, *adj_bpp;
 
-  info=&camera->format7_info.mode[mode-DC1394_MODE_FORMAT7_MIN];
+  info=&camera->format7_info.modeset.mode[mode-DC1394_MODE_FORMAT7_MIN];
   
   adjpx=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_hposition_scale")));
   adjpy=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_vposition_scale")));
@@ -1136,11 +1066,11 @@ IsOptionAvailableWithFormat(int* bayer, int* stereo, int* bpp16)
 	     (camera->camera_info.mode==DC1394_MODE_1600x1200_YUV422));
   }
   else {
-    cond16=((camera->format7_info.mode[camera->camera_info.mode-DC1394_MODE_FORMAT7_MIN].color_coding_id==DC1394_COLOR_CODING_MONO16)||
-	    (camera->format7_info.mode[camera->camera_info.mode-DC1394_MODE_FORMAT7_MIN].color_coding_id==DC1394_COLOR_CODING_RAW16));
-    cond8=((camera->format7_info.mode[camera->camera_info.mode-DC1394_MODE_FORMAT7_MIN].color_coding_id==DC1394_COLOR_CODING_MONO8)||
-	   (camera->format7_info.mode[camera->camera_info.mode-DC1394_MODE_FORMAT7_MIN].color_coding_id==DC1394_COLOR_CODING_RAW8));
-    cond422=(camera->format7_info.mode[camera->camera_info.mode-DC1394_MODE_FORMAT7_MIN].color_coding_id==DC1394_COLOR_CODING_YUV422);
+    cond16=((camera->format7_info.modeset.mode[camera->camera_info.mode-DC1394_MODE_FORMAT7_MIN].color_coding_id==DC1394_COLOR_CODING_MONO16)||
+	    (camera->format7_info.modeset.mode[camera->camera_info.mode-DC1394_MODE_FORMAT7_MIN].color_coding_id==DC1394_COLOR_CODING_RAW16));
+    cond8=((camera->format7_info.modeset.mode[camera->camera_info.mode-DC1394_MODE_FORMAT7_MIN].color_coding_id==DC1394_COLOR_CODING_MONO8)||
+	   (camera->format7_info.modeset.mode[camera->camera_info.mode-DC1394_MODE_FORMAT7_MIN].color_coding_id==DC1394_COLOR_CODING_RAW8));
+    cond422=(camera->format7_info.modeset.mode[camera->camera_info.mode-DC1394_MODE_FORMAT7_MIN].color_coding_id==DC1394_COLOR_CODING_YUV422);
   }
   
   *bayer = (cond8||cond16||(cond422 && (camera->stereo!=NO_STEREO_DECODING)));

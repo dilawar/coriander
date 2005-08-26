@@ -61,14 +61,14 @@ BuildFormat7Window(void)
   else { 
     // get first supported F7 mode
     for (f=DC1394_MODE_FORMAT7_MIN;f<=DC1394_MODE_FORMAT7_MAX;f++) {
-      if (camera->format7_info.mode[f-DC1394_MODE_FORMAT7_MIN].present>0) {
+      if (camera->format7_info.modeset.mode[f-DC1394_MODE_FORMAT7_MIN].present>0) {
 	f++;
 	break;
       }
     }
     f--;
 
-    if (camera->format7_info.mode[f-DC1394_MODE_FORMAT7_MIN].present==0) {
+    if (camera->format7_info.modeset.mode[f-DC1394_MODE_FORMAT7_MIN].present==0) {
       // F7 not supported. don't build anything
       camera->format7_info.edit_mode=-1;
     }
