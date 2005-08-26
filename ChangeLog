@@ -5,6 +5,8 @@ Changes towards version 2.0.0-pre4
    August 25, 2005, by Damien Douxchamps
    - sync with libdc again: remove the duplicate F7 code that was related
      to getting F7 modes capabilities.
+   - better ISO channel allocation (it was only performed during a hotplug
+     event and was missing at launch time)
 	
 Changes in version 2.0.0-pre3
 
@@ -19,7 +21,7 @@ Changes in version 2.0.0-pre3
    July 1, 2005, by Damien Douxchamps
    - implemented white shading (table built was missing)
    - a warning is now issued if the color format is not OK for MPEG or JPEG saving.
-	
+
 Changes in version 2.0.0-pre2
 
    June 29, 2005, by Damien Douxchamps

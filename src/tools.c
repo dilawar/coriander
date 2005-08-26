@@ -451,20 +451,40 @@ void GrabSelfIds(camera_t *cams)
   raw1394_destroy_handle(handle);
 }
 
-
 void
-SetChannels(void)
+SetIsoChannels(void)
 {
-  unsigned int channel, speed;
-  camera_t* camera_ptr;
-
+  unsigned int channel, speed, ic=0;
+  camera_t* camera_ptr, *cp2;
+  
   camera_ptr=cameras;
   while(camera_ptr!=NULL) {
     if (dc1394_video_get_iso_channel_and_speed(&camera_ptr->camera_info, &channel, &speed)!=DC1394_SUCCESS)
       MainError("Can't get iso channel and speed");
-    if (dc1394_video_set_iso_channel_and_speed(&camera_ptr->camera_info, channel, speed)!=DC1394_SUCCESS)
+    //fprintf(stderr,"   Channel was %u\n",channel);
+
+    // if the camera is streaming don't touch the settings
+    if (camera_ptr->camera_info.is_iso_on!=DC1394_ON) {
+      // find an available ISO channel
+      while(1) {
+	//fprintf(stderr,"    Trying channel %d...\n",ic);
+	cp2=cameras;
+	while(cp2!=NULL) {
+	  if (cp2->camera_info.iso_channel==ic) {
+	    //fprintf(stderr,"    Found a cam with channel %u\n",channel);
+	    break;
+	  }
+	  cp2=cp2->next;
+	}
+	if (cp2==NULL)
+	  break;
+	else
+	  ic++;
+      }
+    }
+    if (dc1394_video_set_iso_channel_and_speed(&camera_ptr->camera_info, ic, speed)!=DC1394_SUCCESS)
       MainError("Can't set iso channel and speed");
-    camera_ptr=camera_ptr->next;
+    //fprintf(stderr,"   Channel set to %d\n",ic);
   }
 }
 
@@ -574,12 +594,12 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation)
 {
 
   BusInfo_t bi; // WHY NOT USE THE BUS_INFO GLOBAL VARIABLE HERE???
-  int i, ic, icfound;
+  int i;
   camera_t *camera_ptr, *cp2;
   camera_t* new_camera;
   dc1394switch_t iso_status;
   dc1394camera_t **newcams;
-  unsigned int newcamnum,channel,speed;
+  unsigned int newcamnum;
 
   memset(&bi,0,sizeof(BusInfo_t));
   MainStatus("Bus reset detected");
@@ -617,30 +637,6 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation)
       memcpy(&new_camera->camera_info,newcams[i],sizeof(dc1394camera_t));
       GetCameraData(new_camera);
 
-      // set ISO channel for this camera
-      ic=0;
-      icfound=0;
-      while(icfound!=1) {
-	//fprintf(stderr,"    Trying channel %d...\n",ic);
-	cp2=cameras;
-	while(cp2!=NULL) {
-	  if (cp2->camera_info.iso_channel==ic) {
-	    //fprintf(stderr,"    Found a cam with channel %u\n",channel);
-	    break;
-	  }
-	  cp2=cp2->next;
-	}
-	if (cp2==NULL)
-	  icfound=1;
-	else
-	  ic++;
-      }
-      if (dc1394_video_get_iso_channel_and_speed(&new_camera->camera_info, &channel, &speed)!=DC1394_SUCCESS)
-	MainError("Can't get iso channel and speed");
-      //fprintf(stderr,"   Channel was %u\n",channel);
-      if (dc1394_video_set_iso_channel_and_speed(&new_camera->camera_info, ic, speed)!=DC1394_SUCCESS)
-	MainError("Can't set iso channel and speed");
-      //fprintf(stderr,"   Channel set to %d\n",ic);
       if (cameras==NULL) {
 	AppendCamera(new_camera);
 	SetCurrentCamera(new_camera->camera_info.euid_64);
@@ -756,6 +752,8 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation)
 
   GrabSelfIds(cameras);
 
+  // set ISO channels
+  SetIsoChannels();
   
   // fprintf(stderr,"Reseting ISO channels\n");
   // // re-set ISO channels.

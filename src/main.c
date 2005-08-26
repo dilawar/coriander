@@ -77,13 +77,9 @@ main (int argc, char *argv[])
     exit(1);
   }
 
-  //eprint("got camera nodes\n");
-
   GrabSelfIds(cameras);
+  SetIsoChannels();
 
-  //eprint("got selfids\n");
-  SetChannels();
-  //eprint("channels set\n");
   // current camera is the first camera:
   SetCurrentCamera(cameras->camera_info.euid_64);
   //eprint("current camera set\n");
