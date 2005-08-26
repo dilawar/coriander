@@ -7,7 +7,8 @@ Changes towards version 2.0.0-pre4
      to getting F7 modes capabilities.
    - better ISO channel allocation (it was only performed during a hotplug
      event and was missing at launch time)
-	
+   - removed debug statements
+
 Changes in version 2.0.0-pre3
 
    August 2, 2005, by Damien Douxchamps
