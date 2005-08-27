@@ -160,7 +160,7 @@ BuildCameraMenu(void)
 
   gtk_widget_destroy(GTK_WIDGET (lookup_widget(main_window,"camera_select"))); // remove previous menu
 
-  //eprint("yuk\n");
+  //eprint("Building camera menu-----\n");
   camera_id = gtk_option_menu_new ();
   gtk_widget_ref (camera_id);
   gtk_object_set_data_full ((gpointer) main_window, "camera_select", camera_id,
@@ -176,6 +176,7 @@ BuildCameraMenu(void)
   i=0;
   current_camera_id=0;
   while (camera_ptr!=NULL) {
+    //fprintf(stderr,"menu camera: %s\n",camera_ptr->prefs.name);
     glade_menuitem = gtk_menu_item_new_with_label (_(camera_ptr->prefs.name));
     gtk_widget_show (glade_menuitem);
     gtk_menu_append (GTK_MENU (camera_id_menu), glade_menuitem);

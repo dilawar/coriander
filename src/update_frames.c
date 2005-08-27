@@ -290,7 +290,9 @@ UpdateCameraStatusFrame(void)
   gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"camera_pwclass_status"), ctxt.pwclass_ctxt, ctxt.pwclass_id);
   ctxt.pwclass_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"camera_pwclass_status"), ctxt.pwclass_ctxt,temp);
 
-  // camera name: 
+  // camera name:
+  //eprint("UpdateFrame: Entry was '%s', ",gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"camera_name_text"))));
+  //eprint("Setting to '%s'\n",camera->prefs.name);
   gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window,"camera_name_text")), camera->prefs.name);
 
   free(temp);

@@ -724,7 +724,7 @@ DisplayThreadCheckParams(chain_t *display_service)
       //(display_service->current_buffer->bayer!=display_service->local_param_copy.bayer)
       ) {
 
-    fprintf(stderr,"Parameters changed...\n");
+    //fprintf(stderr,"Parameters changed...\n");
     first_time=((display_service->local_param_copy.width==-1)&&(display_service->current_buffer->width!=-1));
     //size_change=((display_service->current_buffer->width!=display_service->local_param_copy.width)||
     //		 (display_service->current_buffer->height!=display_service->local_param_copy.height));
@@ -759,7 +759,7 @@ DisplayThreadCheckParams(chain_t *display_service)
 	//SDLEventStartThread(display_service);
       }
     }
-    fprintf(stderr,"SDL updated.\n");
+    //fprintf(stderr,"SDL updated.\n");
   }
 
 }

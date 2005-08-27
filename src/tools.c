@@ -459,19 +459,21 @@ SetIsoChannels(void)
   
   camera_ptr=cameras;
   while(camera_ptr!=NULL) {
+    //eprint("Camera found. Getting current settings\n");
     if (dc1394_video_get_iso_channel_and_speed(&camera_ptr->camera_info, &channel, &speed)!=DC1394_SUCCESS)
       MainError("Can't get iso channel and speed");
     //fprintf(stderr,"   Channel was %u\n",channel);
 
     // if the camera is streaming don't touch the settings
     if (camera_ptr->camera_info.is_iso_on!=DC1394_ON) {
+      //eprint("Camera is not streaming. Setting ISO channel.\n");
       // find an available ISO channel
       while(1) {
-	//fprintf(stderr,"    Trying channel %d...\n",ic);
+	//eprint("Trying channel %d...\n",ic);
 	cp2=cameras;
 	while(cp2!=NULL) {
-	  if (cp2->camera_info.iso_channel==ic) {
-	    //fprintf(stderr,"    Found a cam with channel %u\n",channel);
+	  if ((cp2->camera_info.iso_channel==ic)&&(cp2->camera_info.euid_64!=camera_ptr->camera_info.euid_64)) {
+	    //eprint("Found a cam already using channel %u\n",channel);
 	    break;
 	  }
 	  cp2=cp2->next;
@@ -484,7 +486,9 @@ SetIsoChannels(void)
     }
     if (dc1394_video_set_iso_channel_and_speed(&camera_ptr->camera_info, ic, speed)!=DC1394_SUCCESS)
       MainError("Can't set iso channel and speed");
-    //fprintf(stderr,"   Channel set to %d\n",ic);
+    //eprint("Channel set to %d\n",ic);
+
+    camera_ptr=camera_ptr->next;
   }
 }
 

@@ -78,7 +78,10 @@ main (int argc, char *argv[])
   }
 
   GrabSelfIds(cameras);
+
+  //eprint("Starting to set ISO channels\n");
   SetIsoChannels();
+  //eprint("ISO channels are set\n");
 
   // current camera is the first camera:
   SetCurrentCamera(cameras->camera_info.euid_64);

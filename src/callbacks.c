@@ -241,13 +241,17 @@ on_camera_select_activate              (GtkMenuItem     *menuitem,
 {
   camera_t* camera_ptr;
   
+  //fprintf(stderr,"old camera: %s\n",camera->prefs.name);
   // close current display (we don't want display to be used by 2 threads at the same time 'cause SDL forbids it)
   DisplayStopThread(camera);
+  //fprintf(stderr,"camera: %s\n",camera->prefs.name);
 
   camera_ptr=(camera_t*)user_data;
+  //fprintf(stderr,"new camera: %s\n",camera_ptr->prefs.name);
 
   // set current camera pointers:
   SetCurrentCamera(camera_ptr->camera_info.euid_64);
+  //fprintf(stderr,"new camera: %s\n",camera_ptr->prefs.name);
 
 #ifdef HAVE_SDLLIB
   watchthread_info.draw=0;
@@ -258,11 +262,20 @@ on_camera_select_activate              (GtkMenuItem     *menuitem,
   if (camera->want_to_display>0)
     DisplayStartThread(camera);
 
-  //fprintf(stderr,"camera: %s\n",camera->prefs.name);
+  //fprintf(stderr,"new camera: %s\n",camera->prefs.name);
 
   // redraw all:
+  //eprint("Build All Windows\n");
   BuildAllWindows();
+  //eprint("Update All Windows\n");
+
+  // WARNING: blocking the 'changed' signal from the camera name entry is necessary to avoid an endless loop of callbacks:
+  // menu item changed -> update text entry -> text entry changed -> update menu item
+  // this did not appear before, it probably comes form the gnome 1.2 -> gnome 2.0 migration.
+
+  g_signal_handlers_block_by_func(GTK_OBJECT(lookup_widget(main_window,"camera_name_text")), G_CALLBACK (on_camera_name_text_changed), NULL);
   UpdateAllWindows();
+  g_signal_handlers_unblock_by_func(GTK_OBJECT(lookup_widget(main_window,"camera_name_text")), G_CALLBACK (on_camera_name_text_changed), NULL);
 
 }
 
@@ -731,15 +744,19 @@ on_camera_name_text_changed            (GtkEditable     *editable,
                                         gpointer         user_data)
 {
   char *tmp, *tmp_ptr;
+  GtkWidget *item;
   const char *camera_name_str =  "coriander/camera_names/";
-  //fprintf(stderr,"name changed\n");
   tmp=(char*)malloc(STRING_SIZE*sizeof(char));
   tmp_ptr=(char*)gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window, "camera_name_text")));
   sprintf(tmp,"%s%llx",camera_name_str, camera->camera_info.euid_64);
   gnome_config_set_string(tmp,tmp_ptr);
   gnome_config_sync();
   strcpy(camera->prefs.name,tmp_ptr);
-  BuildCameraMenu();
+
+  //eprint("name changed: updating menu to %s\n",tmp_ptr);
+  item=GTK_WIDGET(GTK_BIN(GTK_OPTION_MENU(lookup_widget(main_window,"camera_select")))->child);
+  gtk_label_set_text (GTK_LABEL (item),tmp_ptr);
+
   free(tmp);
 }
 

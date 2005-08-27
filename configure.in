@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT(configure.in)
-AM_INIT_AUTOMAKE(coriander, 2.0.0-pre2)
+AM_INIT_AUTOMAKE(coriander, 2.0.0-pre3)
 AM_MAINTAINER_MODE
 AM_CONFIG_HEADER(config.h)
 
@@ -38,7 +38,7 @@ AC_DEFUN([AC_CHECK_LIBDC],[
  	if test x$libdc1394 = xno; then
           AC_ERROR([libdc1394 is not installed.  
 **************************************************************************
-**   Please install libdc1394 version 2.0.0-pre3                        **
+**   Please install libdc1394 version 2.0.0-pre4                        **
 **   Source tarball and CVS at:  http://www.sf.net/projects/libdc1394   **
 **************************************************************************])
  	fi
@@ -47,14 +47,14 @@ AC_DEFUN([AC_CHECK_LIBDC],[
 AC_DEFUN([AC_CHECK_LIBDC_VERSION_FUNCTION],[
 	AC_SUBST(LIBDC_CFLAGS)
 	AC_SUBST(LIBDC_LIBS)
- 	AC_CHECK_LIB(dc1394_control,dc1394_find_cameras,libdc1394=ok,libdc1394=old,-lraw1394)
+ 	AC_CHECK_LIB(dc1394_control,dc1394_feature_get_boundaries,libdc1394=ok,libdc1394=old,-lraw1394)
  	if test x$libdc1394 = xok; then
           LIBDC_LIBS="-ldc1394_control"
           LIBDC_CFLAGS=""
 	else
           AC_ERROR([libdc1394 is too old.
 **************************************************************************
-**   Please install libdc1394 version 2.0.0-pre3                        **
+**   Please install libdc1394 version 2.0.0-pre4                        **
 **   Source tarball and CVS at:  http://www.sf.net/projects/libdc1394   **
 **************************************************************************])
 	fi
@@ -84,7 +84,7 @@ AC_DEFUN([AC_CHECK_LIBDC_VERSION_COMPILE],[
 	else
           AC_ERROR([libdc1394 is too old. 
 **************************************************************************
-**   Please install libdc1394 version 2.0.0-pre3                        **
+**   Please install libdc1394 version 2.0.0-pre4                        **
 **   Source tarball and CVS at:  http://www.sf.net/projects/libdc1394   **
 **************************************************************************])
  	fi
