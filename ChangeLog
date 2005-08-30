@@ -2,6 +2,10 @@ Coriander, (c) 2000-2005 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 2.0.0-pre4
 
+   August 30, 2005, by Damien Douxchamps
+   - removed 'append number' option if the save format is a video format
+     (thanks to Jacob Gryn)
+
    August 27, 2005, by Damien Douxchamps
    - fixed circular reference of callbacks for the camera text entry
    - fixed stupid error in the ISO channel settings (a p=p->next was missing,

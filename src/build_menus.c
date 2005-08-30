@@ -900,7 +900,7 @@ BuildSaveAppendMenu(void)
   GtkWidget* new_menu;
   GtkWidget* glade_menuitem;
 
-  // build bayer option menu:
+  // build save append menu:
   gtk_widget_destroy(GTK_WIDGET(lookup_widget(main_window,"save_append_menu"))); // remove previous menu
   
   new_option_menu = gtk_option_menu_new ();
@@ -917,13 +917,15 @@ BuildSaveAppendMenu(void)
   new_menu = gtk_menu_new ();
 
   // 
-  glade_menuitem = gtk_menu_item_new_with_label (_("number"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-  g_signal_connect ((gpointer) glade_menuitem, "activate",
+  if (camera->prefs.save_format<SAVE_FORMAT_RAW_VIDEO) {
+    glade_menuitem = gtk_menu_item_new_with_label (_("number"));
+    gtk_widget_show (glade_menuitem);
+    gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+    g_signal_connect ((gpointer) glade_menuitem, "activate",
 		      G_CALLBACK (on_save_append_menu_activate),
 		      (int*)SAVE_APPEND_NUMBER);
-  
+  }
+
   // 
   glade_menuitem = gtk_menu_item_new_with_label (_("date and time"));
   gtk_widget_show (glade_menuitem);
@@ -932,8 +934,8 @@ BuildSaveAppendMenu(void)
 		      G_CALLBACK (on_save_append_menu_activate),
 		      (int*)SAVE_APPEND_DATE_TIME);
   
+  // 
   if ((camera->prefs.save_to_dir==0)||(camera->prefs.save_format>=SAVE_FORMAT_RAW_VIDEO)) {
-    // 
     glade_menuitem = gtk_menu_item_new_with_label (_("none (overwrite)"));
     gtk_widget_show (glade_menuitem);
     gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
