@@ -27,9 +27,7 @@ typedef enum
 
 typedef struct
 { 
-  //raw1394handle_t         handle;
-  receive_method_t        receive_method;
-  dc1394capture_t         capture;
+  receive_method_t receive_method;
   int video1394_dropframes;
   char video1394_device[STRING_SIZE];
 

@@ -2,6 +2,9 @@ Coriander, (c) 2000-2005 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 2.0.0-pre4
 
+   September 9, 2005, by Damien Douxchamps
+   - sync with libdc changes (capture struct is now invisible)
+
    August 30, 2005, by Damien Douxchamps
    - removed 'append number' option if the save format is a video format
      (thanks to Jacob Gryn)

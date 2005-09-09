@@ -71,7 +71,7 @@ gint IsoStartThread(camera_t* cam)
     if (cam==camera) {
       info->receive_method=cam->prefs.receive_method;
       strcpy(info->video1394_device, cam->prefs.video1394_device);
-      info->capture.dma_device_file=info->video1394_device;
+      camera->camera_info.capture.dma_device_file=info->video1394_device;
       info->video1394_dropframes=cam->prefs.video1394_dropframes;
       info->dma_buffer_size=cam->prefs.dma_buffer_size;
     }
@@ -84,7 +84,7 @@ gint IsoStartThread(camera_t* cam)
 				     cam->camera_info.mode, maxspeed,
 				     cam->camera_info.framerate, info->dma_buffer_size,
 				     info->video1394_dropframes, 
-				     info->capture.dma_device_file, &info->capture);
+				     camera->camera_info.capture.dma_device_file);
 	if (err!=DC1394_SUCCESS){
 	  eprint("Failed to setup DMA capture. Error code %d\n",err);
 	  FreeChain(iso_service);
@@ -99,7 +99,7 @@ gint IsoStartThread(camera_t* cam)
 					     DC1394_QUERY_FROM_CAMERA, DC1394_QUERY_FROM_CAMERA, 
 					     info->dma_buffer_size,
 					     info->video1394_dropframes, 
-					     info->capture.dma_device_file, &info->capture);
+					     camera->camera_info.capture.dma_device_file);
 	
 	if (err!=DC1394_SUCCESS){
 	  eprint("Failed to setup DMA Format_7 capture. Error code %d\n",err);
@@ -114,7 +114,7 @@ gint IsoStartThread(camera_t* cam)
 	    (cam->camera_info.mode <= DC1394_MODE_FORMAT7_MAX))) {
 	err=dc1394_setup_capture(&cam->camera_info, cam->camera_info.iso_channel, 
 				 cam->camera_info.mode, maxspeed,
-				 cam->camera_info.framerate, &info->capture);
+				 cam->camera_info.framerate);
 	
 	if (err!=DC1394_SUCCESS){
 	  eprint("Failed to setup RAW1394 capture. Error code %d\n",err);
@@ -127,8 +127,7 @@ gint IsoStartThread(camera_t* cam)
 	err=dc1394_setup_format7_capture(&cam->camera_info, cam->camera_info.iso_channel, 
 					 cam->camera_info.mode, maxspeed, DC1394_QUERY_FROM_CAMERA,
 					 DC1394_QUERY_FROM_CAMERA, DC1394_QUERY_FROM_CAMERA,
-					 DC1394_QUERY_FROM_CAMERA, DC1394_QUERY_FROM_CAMERA,
-					 &info->capture);
+					 DC1394_QUERY_FROM_CAMERA, DC1394_QUERY_FROM_CAMERA);
 	if (err!=DC1394_SUCCESS){
 	  eprint("Failed to setup RAW1394 Format_7 capture. Error code %d\n",err);
 	  FreeChain(iso_service);
@@ -195,6 +194,7 @@ IsoThread(void* arg)
   isothread_info_t *info;
   int dma_ok=DC1394_FAILURE;
   float tmp;
+  dc1394camera_t *camptr;
   // we should only use mutex_data in this function
 
   iso_service=(chain_t*)arg;
@@ -218,10 +218,12 @@ IsoThread(void* arg)
     if (((iso_service->ready>0)&&(iso_service->camera->prefs.iso_nodrop>0))||
 	(iso_service->camera->prefs.iso_nodrop==0)) {
     
+      camptr=&(iso_service->camera->camera_info);
+
       if (info->receive_method == RECEIVE_METHOD_RAW1394)
-	dc1394_capture(&info->capture, 1);
+	dc1394_capture(&camptr, 1);
       else
-	dma_ok=dc1394_dma_capture(&info->capture, 1, DC1394_VIDEO1394_WAIT);
+	dma_ok=dc1394_dma_capture(&camptr, 1, DC1394_VIDEO1394_WAIT);
     
       //printf("Got frame\n");
   
@@ -245,21 +247,21 @@ IsoThread(void* arg)
       // Stereo decoding
       switch (iso_service->current_buffer->stereo_decoding) {
       case STEREO_DECODING_INTERLACED:
-	dc1394_deinterlace_stereo((unsigned char *)info->capture.capture_buffer,info->temp,
+	dc1394_deinterlace_stereo((unsigned char *)iso_service->camera->camera_info.capture.capture_buffer,info->temp,
 				  info->orig_sizex*info->orig_sizey*2);
 	break;
       case STEREO_DECODING_FIELD:
-	memcpy(info->temp,(unsigned char *)info->capture.capture_buffer,info->orig_sizex*info->orig_sizey*2);
+	memcpy(info->temp,(unsigned char *)iso_service->camera->camera_info.capture.capture_buffer,info->orig_sizex*info->orig_sizey*2);
 	break;
       case NO_STEREO_DECODING:
 	if ((iso_service->current_buffer->bayer!=NO_BAYER_DECODING)&&(info->cond16bit!=0)) {
-	  dc1394_MONO16_to_MONO8((unsigned char *)info->capture.capture_buffer,info->temp,
+	  dc1394_MONO16_to_MONO8((unsigned char *)iso_service->camera->camera_info.capture.capture_buffer,info->temp,
 				 info->orig_sizex*info->orig_sizey, iso_service->current_buffer->bpp);
 	}
 	else {
 	  // it is necessary to put this here and not in the thread init or IsoThreadCheckParams function because
 	  // the buffer might change at every capture (typically when capture is too slow and buffering is performed)
-	  info->temp=(unsigned char*)info->capture.capture_buffer;
+	  info->temp=(unsigned char*)iso_service->camera->camera_info.capture.capture_buffer;
 	}
 	break;
       }
@@ -291,7 +293,7 @@ IsoThread(void* arg)
 	iso_service->fps=fabs((float)iso_service->fps_frames/tmp);
       
       if ((info->receive_method == RECEIVE_METHOD_VIDEO1394)&&(dma_ok==DC1394_SUCCESS))
-	dc1394_dma_done_with_buffer(&info->capture);
+	dc1394_dma_done_with_buffer(&iso_service->camera->camera_info);
       
       PublishBufferForNext(iso_service);
       //fprintf(stderr,"Buffer soon rolled in ISO\n");
@@ -333,11 +335,11 @@ gint IsoStopThread(camera_t* cam)
     //eprint("test2\n");
     
     if (info->receive_method == RECEIVE_METHOD_VIDEO1394) {
-      dc1394_dma_unlisten(&info->capture);
-      dc1394_dma_release_capture(&info->capture);
+      dc1394_dma_unlisten(&iso_service->camera->camera_info);
+      dc1394_dma_release_camera(&iso_service->camera->camera_info);
     }
     else 
-      dc1394_release_capture(&info->capture);
+      dc1394_release_camera(&iso_service->camera->camera_info);
     
     //eprint("test3\n");
     pthread_mutex_unlock(&iso_service->mutex_struct);
@@ -364,9 +366,9 @@ IsoThreadCheckParams(chain_t *iso_service)
 
   iso_service->current_buffer->bpp=iso_service->camera->bpp;
   iso_service->current_buffer->bayer_pattern=iso_service->camera->bayer_pattern;
-  iso_service->current_buffer->width=info->capture.frame_width;
-  iso_service->current_buffer->height=info->capture.frame_height;
-  iso_service->current_buffer->bytes_per_frame=info->capture.quadlets_per_frame*4;
+  iso_service->current_buffer->width=iso_service->camera->camera_info.capture.frame_width;
+  iso_service->current_buffer->height=iso_service->camera->camera_info.capture.frame_height;
+  iso_service->current_buffer->bytes_per_frame=iso_service->camera->camera_info.capture.quadlets_per_frame*4;
   iso_service->current_buffer->stereo_decoding=iso_service->camera->stereo;
   iso_service->current_buffer->bayer=iso_service->camera->bayer;
   info->orig_sizex=iso_service->current_buffer->width;
