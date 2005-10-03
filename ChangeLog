@@ -2,6 +2,12 @@ Coriander, (c) 2000-2005 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 2.0.0-pre4
 
+   October 3, 2005, by Damien Douxchamps
+   - fixed bad control of WB (it was not working anymore). This bug was probably
+     revealed by the sticter signess check of GCC wich prompted several changes.
+     the *4 factor, whose cause was not known, had to be removed.
+   - fixed the bug related to uninitialized F7 color mode menu. It was in libdc1394.
+
    September 9, 2005, by Damien Douxchamps
    - sync with libdc changes (capture struct is now invisible)
 

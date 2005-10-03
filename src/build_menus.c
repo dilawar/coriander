@@ -275,10 +275,10 @@ BuildFormat7ColorMenu(void)
 
   color_num_menu = gtk_menu_new ();
 
-  //eprint("ready to add\n");
+  //eprint("ready to add for f7 mode %d, %d color modes\n", camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN, camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].color_codings.num);
 
   for (i=0;i<camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].color_codings.num;i++) {
-    //eprint("%d\n",camera->format7_info.mode[camera->format7_info.edit_mode-MODE_FORMAT7_MIN].color_codings[i]);
+    //eprint("%d\n",camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].color_codings.modes[i]);
     glade_menuitem = gtk_menu_item_new_with_label (_(format7_color_list[camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].color_codings.modes[i]-DC1394_COLOR_CODING_MIN]));
     gtk_widget_show (glade_menuitem);
     gtk_menu_append (GTK_MENU (color_num_menu), glade_menuitem);

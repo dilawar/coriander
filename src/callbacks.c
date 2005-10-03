@@ -380,17 +380,18 @@ on_scale_value_changed             ( GtkAdjustment    *adj,
     else
       camera->feature_set.feature[DC1394_FEATURE_TEMPERATURE-DC1394_FEATURE_MIN].target_value=adj->value;
     break;
-  case DC1394_FEATURE_WHITE_BALANCE+BU*4: // why oh why is there a *4?
+  case DC1394_FEATURE_WHITE_BALANCE+BU: // why oh why is there a *4?
     if (dc1394_feature_whitebalance_set_value(&camera->camera_info,adj->value, camera->feature_set.feature[DC1394_FEATURE_WHITE_BALANCE-DC1394_FEATURE_MIN].RV_value)!=DC1394_SUCCESS)
       MainError("Could not set B/U white balance");
     else {
+      //fprintf(stderr,"WB changed to %.0f\n",adj->value);
       camera->feature_set.feature[DC1394_FEATURE_WHITE_BALANCE-DC1394_FEATURE_MIN].BU_value=adj->value;
       if (camera->feature_set.feature[DC1394_FEATURE_WHITE_BALANCE-DC1394_FEATURE_MIN].absolute_capable!=0) {
 	GetAbsValue(DC1394_FEATURE_WHITE_BALANCE);
       }
     }
     break;
-  case DC1394_FEATURE_WHITE_BALANCE+RV*4: // why oh why is there a *4?
+  case DC1394_FEATURE_WHITE_BALANCE+RV: // why oh why is there a *4?
     if (dc1394_feature_whitebalance_set_value(&camera->camera_info, camera->feature_set.feature[DC1394_FEATURE_WHITE_BALANCE-DC1394_FEATURE_MIN].BU_value, adj->value)!=DC1394_SUCCESS)
       MainError("Could not set R/V white balance");
     else {
@@ -400,7 +401,7 @@ on_scale_value_changed             ( GtkAdjustment    *adj,
       }
     }
     break;
-  case DC1394_FEATURE_WHITE_SHADING+SHADINGR*4:
+  case DC1394_FEATURE_WHITE_SHADING+SHADINGR:
     if (dc1394_feature_whiteshading_set_value(&camera->camera_info,  adj->value, camera->feature_set.feature[DC1394_FEATURE_WHITE_SHADING-DC1394_FEATURE_MIN].G_value,
 					      camera->feature_set.feature[DC1394_FEATURE_WHITE_SHADING-DC1394_FEATURE_MIN].B_value)!=DC1394_SUCCESS)
       MainError("Could not set white shading / blue channel");
@@ -414,7 +415,7 @@ on_scale_value_changed             ( GtkAdjustment    *adj,
       */
     }
     break;
-  case DC1394_FEATURE_WHITE_SHADING+SHADINGG*4:
+  case DC1394_FEATURE_WHITE_SHADING+SHADINGG:
     if (dc1394_feature_whiteshading_set_value(&camera->camera_info, camera->feature_set.feature[DC1394_FEATURE_WHITE_SHADING-DC1394_FEATURE_MIN].R_value,
 				 adj->value, camera->feature_set.feature[DC1394_FEATURE_WHITE_SHADING-DC1394_FEATURE_MIN].B_value)!=DC1394_SUCCESS)
       MainError("Could not set white shading / blue channel");
@@ -428,7 +429,7 @@ on_scale_value_changed             ( GtkAdjustment    *adj,
       */
     }
     break;
-  case DC1394_FEATURE_WHITE_SHADING+SHADINGB*4:
+  case DC1394_FEATURE_WHITE_SHADING+SHADINGB:
     if (dc1394_feature_whiteshading_set_value(&camera->camera_info, camera->feature_set.feature[DC1394_FEATURE_WHITE_SHADING-DC1394_FEATURE_MIN].R_value,
 				 camera->feature_set.feature[DC1394_FEATURE_WHITE_SHADING-DC1394_FEATURE_MIN].G_value, adj->value)!=DC1394_SUCCESS)
       MainError("Could not set white shading / blue channel");
