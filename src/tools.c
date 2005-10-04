@@ -224,6 +224,9 @@ SwitchToNearestFPS(dc1394framerates_t *framerates, int current)
     }
   }
 
+  // if all else fails, return lowest fps:
+  return 0;
+
 }
 
 void

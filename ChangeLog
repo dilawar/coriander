@@ -1,6 +1,6 @@
 Coriander, (c) 2000-2005 Damien Douxchamps <ddouxchamps@users.sf.net>
 
-Changes towards version 2.0.0-pre4
+Changes in version 2.0.0-pre4
 
    October 4, 2005, by Damien Douxchamps
    - fixed the bpp overflow in the format 7 bpp range. this happened when the image
