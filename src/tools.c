@@ -207,18 +207,21 @@ SwitchToNearestFPS(dc1394framerates_t *framerates, int current)
 {
   int i;
 
-  if (current<framerates->framerates[0])
+  if (current<framerates->framerates[0]) {
     camera->camera_info.framerate=framerates->framerates[0];
     return 0;
+  }
   
-  if (current>framerates->framerates[framerates->num-1])
+  if (current>framerates->framerates[framerates->num-1]) {
     camera->camera_info.framerate=framerates->framerates[framerates->num-1];
     return framerates->num-1;
+  }
   
-  for (i=1;i<framerates->num;i++) { // search radius is num_framerates/2 +1 for safe rounding
-    if (current<framerates->framerates[i])
+  for (i=0;i<framerates->num;i++) { // search radius is num_framerates/2 +1 for safe rounding
+    if (current<framerates->framerates[i]) {
       camera->camera_info.framerate=framerates->framerates[i-1];
       return i-1; // switch to lower fps
+    }
   }
 
 }
