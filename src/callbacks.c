@@ -503,9 +503,10 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
     
     //fprintf(stderr,"Size: %d %d  Position: %d %d\n",info->size_x, info->size_y, info->pos_x, info->pos_y);
     // update bpp range here.
-    if (dc1394_format7_get_mode_info(&camera->camera_info, camera->format7_info.edit_mode, 
-				   &camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN])!=DC1394_SUCCESS)
-    MainError("Could not get format7 mode information");
+    //fprintf(stderr,"max bpp before: %d  ",info->max_bpp);
+    if (dc1394_format7_get_mode_info(&camera->camera_info, camera->format7_info.edit_mode, info)!=DC1394_SUCCESS)
+      MainError("Could not get format7 mode information");
+    //fprintf(stderr,"after %d\n",info->max_bpp);
 
     UpdateFormat7BppRange();
     UpdateFormat7InfoFrame();
