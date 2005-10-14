@@ -51,7 +51,6 @@ LoadConfigFile(void)
   //preferences.camprefs.video1394_device=(char*)malloc(STRING_SIZE*sizeof(char));
   //fprintf(stderr,"ftpuser orig adr: 0x%x\n",preferences.camprefs.video1394_device);
   //sprintf(preferences.camprefs.video1394_device,"/dev/video1394/%d", dc1394_get_camera_port(camera->camera_info.handle));
-  preferences.camprefs.video1394_device = gnome_config_get_string("coriander/receive/video1394_device=/dev/video1394/0");
 
   preferences.camprefs.save_filename  = gnome_config_get_string("coriander/save/filename=test");
   preferences.camprefs.overlay_filename = gnome_config_get_string("coriander/display/overlay_filename=test.png");
@@ -105,7 +104,6 @@ CopyCameraPrefs(camera_t* cam) {
   strcpy(cam->prefs.ftp_address     , preferences.camprefs.ftp_address);
   strcpy(cam->prefs.ftp_user        , preferences.camprefs.ftp_user);
   strcpy(cam->prefs.v4l_dev_name    , preferences.camprefs.v4l_dev_name);
-  strcpy(cam->prefs.video1394_device, preferences.camprefs.video1394_device);
   preferences.camprefs.ftp_password = "";
   
   tmp=(char*)malloc(STRING_SIZE*sizeof(char));

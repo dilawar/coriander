@@ -540,16 +540,14 @@ create_main_window (void)
   GtkWidget *label96;
   GtkWidget *prefs_receive_frame;
   GtkWidget *table45;
-  GtkWidget *label84;
   GtkWidget *prefs_receive_method_menu;
   GtkWidget *convertwidget5;
+  GtkWidget *prefs_receive_dropframes;
   GtkWidget *hbox68;
   GtkWidget *label153;
   GtkObject *dma_buffer_size_adj;
   GtkWidget *dma_buffer_size;
   GtkWidget *label154;
-  GtkWidget *prefs_receive_dropframes;
-  GtkWidget *prefs_video1394_device;
   GtkWidget *label97;
   GtkWidget *hbox59;
   GtkWidget *iso_frame;
@@ -1741,20 +1739,10 @@ create_main_window (void)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (prefs_receive_frame), 5);
 
-  table45 = gtk_table_new (2, 3, FALSE);
+  table45 = gtk_table_new (2, 2, FALSE);
   gtk_widget_set_name (table45, "table45");
   gtk_widget_show (table45);
   gtk_container_add (GTK_CONTAINER (prefs_receive_frame), table45);
-
-  label84 = gtk_label_new (_("device:"));
-  gtk_widget_set_name (label84, "label84");
-  gtk_widget_show (label84);
-  gtk_table_attach (GTK_TABLE (table45), label84, 1, 2, 0, 1,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_label_set_justify (GTK_LABEL (label84), GTK_JUSTIFY_CENTER);
-  gtk_misc_set_alignment (GTK_MISC (label84), 1, 0.5);
-  gtk_misc_set_padding (GTK_MISC (label84), 2, 0);
 
   prefs_receive_method_menu = gtk_option_menu_new ();
   gtk_widget_set_name (prefs_receive_method_menu, "prefs_receive_method_menu");
@@ -1772,10 +1760,18 @@ create_main_window (void)
 
   gtk_option_menu_set_menu (GTK_OPTION_MENU (prefs_receive_method_menu), convertwidget5);
 
+  prefs_receive_dropframes = gtk_check_button_new_with_mnemonic (_("Frame dropping"));
+  gtk_widget_set_name (prefs_receive_dropframes, "prefs_receive_dropframes");
+  gtk_widget_show (prefs_receive_dropframes);
+  gtk_table_attach (GTK_TABLE (table45), prefs_receive_dropframes, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_tooltips_set_tip (tooltips, prefs_receive_dropframes, _("Allow the low-level driver to drop frames. Enable this to reduce delay"), NULL);
+
   hbox68 = gtk_hbox_new (FALSE, 0);
   gtk_widget_set_name (hbox68, "hbox68");
   gtk_widget_show (hbox68);
-  gtk_table_attach (GTK_TABLE (table45), hbox68, 2, 3, 1, 2,
+  gtk_table_attach (GTK_TABLE (table45), hbox68, 1, 2, 1, 2,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
 
@@ -1798,22 +1794,6 @@ create_main_window (void)
   gtk_widget_show (label154);
   gtk_box_pack_start (GTK_BOX (hbox68), label154, FALSE, FALSE, 0);
   gtk_misc_set_padding (GTK_MISC (label154), 5, 0);
-
-  prefs_receive_dropframes = gtk_check_button_new_with_mnemonic (_("Frame dropping"));
-  gtk_widget_set_name (prefs_receive_dropframes, "prefs_receive_dropframes");
-  gtk_widget_show (prefs_receive_dropframes);
-  gtk_table_attach (GTK_TABLE (table45), prefs_receive_dropframes, 0, 1, 1, 2,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_tooltips_set_tip (tooltips, prefs_receive_dropframes, _("Allow the low-level driver to drop frames. Enable this to reduce delay"), NULL);
-
-  prefs_video1394_device = gtk_entry_new ();
-  gtk_widget_set_name (prefs_video1394_device, "prefs_video1394_device");
-  gtk_widget_show (prefs_video1394_device);
-  gtk_table_attach (GTK_TABLE (table45), prefs_video1394_device, 2, 3, 0, 1,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_tooltips_set_tip (tooltips, prefs_video1394_device, _("Enter the VIDEO1394 device name here (e.g. /dev/video1394/0)"), NULL);
 
   label97 = gtk_label_new (_("<b>Method</b>"));
   gtk_widget_set_name (label97, "label97");
@@ -3889,14 +3869,11 @@ create_main_window (void)
   g_signal_connect ((gpointer) service_ftp, "toggled",
                     G_CALLBACK (on_service_ftp_toggled),
                     NULL);
-  g_signal_connect ((gpointer) dma_buffer_size, "changed",
-                    G_CALLBACK (on_dma_buffer_size_changed),
-                    NULL);
   g_signal_connect ((gpointer) prefs_receive_dropframes, "toggled",
                     G_CALLBACK (on_prefs_receive_drop_frames_toggled),
                     NULL);
-  g_signal_connect ((gpointer) prefs_video1394_device, "changed",
-                    G_CALLBACK (on_prefs_video1394_device_changed),
+  g_signal_connect ((gpointer) dma_buffer_size, "changed",
+                    G_CALLBACK (on_dma_buffer_size_changed),
                     NULL);
   g_signal_connect ((gpointer) iso_nodrop, "toggled",
                     G_CALLBACK (on_iso_nodrop_toggled),
@@ -4142,15 +4119,13 @@ create_main_window (void)
   GLADE_HOOKUP_OBJECT (main_window, label96, "label96");
   GLADE_HOOKUP_OBJECT (main_window, prefs_receive_frame, "prefs_receive_frame");
   GLADE_HOOKUP_OBJECT (main_window, table45, "table45");
-  GLADE_HOOKUP_OBJECT (main_window, label84, "label84");
   GLADE_HOOKUP_OBJECT (main_window, prefs_receive_method_menu, "prefs_receive_method_menu");
   GLADE_HOOKUP_OBJECT (main_window, convertwidget5, "convertwidget5");
+  GLADE_HOOKUP_OBJECT (main_window, prefs_receive_dropframes, "prefs_receive_dropframes");
   GLADE_HOOKUP_OBJECT (main_window, hbox68, "hbox68");
   GLADE_HOOKUP_OBJECT (main_window, label153, "label153");
   GLADE_HOOKUP_OBJECT (main_window, dma_buffer_size, "dma_buffer_size");
   GLADE_HOOKUP_OBJECT (main_window, label154, "label154");
-  GLADE_HOOKUP_OBJECT (main_window, prefs_receive_dropframes, "prefs_receive_dropframes");
-  GLADE_HOOKUP_OBJECT (main_window, prefs_video1394_device, "prefs_video1394_device");
   GLADE_HOOKUP_OBJECT (main_window, label97, "label97");
   GLADE_HOOKUP_OBJECT (main_window, hbox59, "hbox59");
   GLADE_HOOKUP_OBJECT (main_window, iso_frame, "iso_frame");

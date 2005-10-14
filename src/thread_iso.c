@@ -70,8 +70,6 @@ gint IsoStartThread(camera_t* cam)
     // copy params if we are the current camera
     if (cam==camera) {
       info->receive_method=cam->prefs.receive_method;
-      strcpy(info->video1394_device, cam->prefs.video1394_device);
-      camera->camera_info.capture.dma_device_file=info->video1394_device;
       info->video1394_dropframes=cam->prefs.video1394_dropframes;
       info->dma_buffer_size=cam->prefs.dma_buffer_size;
     }
@@ -83,8 +81,7 @@ gint IsoStartThread(camera_t* cam)
 	err=dc1394_dma_setup_capture(&cam->camera_info, cam->camera_info.iso_channel, 
 				     cam->camera_info.mode, maxspeed,
 				     cam->camera_info.framerate, info->dma_buffer_size,
-				     info->video1394_dropframes, 
-				     camera->camera_info.capture.dma_device_file);
+				     info->video1394_dropframes);
 	if (err!=DC1394_SUCCESS){
 	  eprint("Failed to setup DMA capture. Error code %d\n",err);
 	  FreeChain(iso_service);
@@ -98,8 +95,7 @@ gint IsoStartThread(camera_t* cam)
 					     DC1394_QUERY_FROM_CAMERA, DC1394_QUERY_FROM_CAMERA,
 					     DC1394_QUERY_FROM_CAMERA, DC1394_QUERY_FROM_CAMERA, 
 					     info->dma_buffer_size,
-					     info->video1394_dropframes, 
-					     camera->camera_info.capture.dma_device_file);
+					     info->video1394_dropframes);
 	
 	if (err!=DC1394_SUCCESS){
 	  eprint("Failed to setup DMA Format_7 capture. Error code %d\n",err);

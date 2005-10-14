@@ -62,7 +62,6 @@ typedef struct _CamPrefs
   int display_redraw;
   float display_redraw_rate;
   int receive_method;
-  char *video1394_device;
   int iso_nodrop;
   int video1394_dropframes;
   int dma_buffer_size;

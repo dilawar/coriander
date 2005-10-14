@@ -215,10 +215,6 @@ on_prefs_update_scale_changed          (GtkEditable     *editable,
                                         gpointer         user_data);
 
 void
-on_prefs_video1394_device_changed      (GtkEditable     *editable,
-                                        gpointer         user_data);
-
-void
 on_prefs_display_period_changed        (GtkEditable     *editable,
                                         gpointer         user_data);
 

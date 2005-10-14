@@ -71,7 +71,6 @@ NewCamera(void) {
   camera_t* cam;
 
   cam=(camera_t*)malloc(sizeof(camera_t));
-  cam->prefs.video1394_device= (char*)malloc(STRING_SIZE*sizeof(char));
   cam->prefs.ftp_user = (char*)malloc(STRING_SIZE*sizeof(char));
   cam->prefs.ftp_address = (char*)malloc(STRING_SIZE*sizeof(char));
   cam->prefs.ftp_password = (char*)malloc(STRING_SIZE*sizeof(char));
@@ -183,9 +182,8 @@ RemoveCamera(u_int64_t guid) {
 }
 
 void
-FreeCamera(camera_t* cam) {
-  
-  free(cam->prefs.video1394_device);
+FreeCamera(camera_t* cam)
+{  
   free(cam->prefs.ftp_user);
   free(cam->prefs.ftp_address);
   free(cam->prefs.ftp_filename); 

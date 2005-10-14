@@ -1,5 +1,10 @@
 Coriander, (c) 2000-2005 Damien Douxchamps <ddouxchamps@users.sf.net>
 
+Changes towards version 2.0.0-pre5
+	
+   October 14, 2005, by Damien Douxchamps
+   - removed manual input of video1394 device names.
+
 Changes in version 2.0.0-pre4
 
    October 4, 2005, by Damien Douxchamps

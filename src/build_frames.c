@@ -318,8 +318,6 @@ BuildPrefsReceiveFrame(void)
   // menu history
   gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(main_window, "prefs_receive_method_menu")),
 			      camera->prefs.receive_method2index[camera->prefs.receive_method]);
-  //fprintf(stderr,"camera 0x%x: video1394: %s\n",camera,camera->prefs.video1394_device);
-  gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window, "prefs_video1394_device")), _(camera->prefs.video1394_device));
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window, "prefs_receive_dropframes")), camera->prefs.video1394_dropframes);
 
   gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(main_window, "dma_buffer_size"), camera->prefs.dma_buffer_size);

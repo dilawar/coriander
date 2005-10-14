@@ -1097,18 +1097,6 @@ on_prefs_display_keep_ratio_toggled    (GtkToggleButton *togglebutton,
 
 
 void
-on_prefs_video1394_device_changed      (GtkEditable     *editable,
-                                        gpointer         user_data)
-{
-  char *tmp_ptr;
-  tmp_ptr=(char*)gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"prefs_video1394_device")));
-  strcpy(camera->prefs.video1394_device,tmp_ptr);
-  gnome_config_set_string("coriander/receive/video1394_device",camera->prefs.video1394_device);
-  gnome_config_sync();
-
-}
-
-void
 on_prefs_v4l_dev_name_changed      (GtkEditable     *editable,
                                   gpointer         user_data)
 {
