@@ -52,10 +52,6 @@ UpdatePrefsReceiveFrame(void)
   gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_receive_frame"), TRUE);
 
   // normal:
-  gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_video1394_device"),
-			   camera->prefs.receive_method==RECEIVE_METHOD_VIDEO1394);
-  gtk_widget_set_sensitive(lookup_widget(main_window,"label84"),
-			   camera->prefs.receive_method==RECEIVE_METHOD_VIDEO1394);
   gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_receive_dropframes"),
 			   camera->prefs.receive_method==RECEIVE_METHOD_VIDEO1394);
   gtk_widget_set_sensitive(lookup_widget(main_window,"label153"),
