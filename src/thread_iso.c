@@ -41,6 +41,7 @@ gint IsoStartThread(camera_t* cam)
     if ((cam->camera_info.mode >= DC1394_MODE_FORMAT6_MIN) &&
         (cam->camera_info.mode <= DC1394_MODE_FORMAT6_MAX)) {
       FreeChain(iso_service);
+      iso_service=NULL;
       return(-1);
     }
 
@@ -85,6 +86,7 @@ gint IsoStartThread(camera_t* cam)
 	if (err!=DC1394_SUCCESS){
 	  eprint("Failed to setup DMA capture. Error code %d\n",err);
 	  FreeChain(iso_service);
+	  iso_service=NULL;
 	  return(-1);
 	}
 	info->receive_method=RECEIVE_METHOD_VIDEO1394;
@@ -100,6 +102,7 @@ gint IsoStartThread(camera_t* cam)
 	if (err!=DC1394_SUCCESS){
 	  eprint("Failed to setup DMA Format_7 capture. Error code %d\n",err);
 	  FreeChain(iso_service);
+	  iso_service=NULL;
 	  return(-1);
 	}
 	info->receive_method=RECEIVE_METHOD_VIDEO1394;
@@ -115,6 +118,7 @@ gint IsoStartThread(camera_t* cam)
 	if (err!=DC1394_SUCCESS){
 	  eprint("Failed to setup RAW1394 capture. Error code %d\n",err);
 	  FreeChain(iso_service);
+	  iso_service=NULL;
 	  return(-1);
 	}
 	info->receive_method=RECEIVE_METHOD_RAW1394;
@@ -127,6 +131,7 @@ gint IsoStartThread(camera_t* cam)
 	if (err!=DC1394_SUCCESS){
 	  eprint("Failed to setup RAW1394 Format_7 capture. Error code %d\n",err);
 	  FreeChain(iso_service);
+	  iso_service=NULL;
 	  return(-1);
 	}
       }
@@ -149,6 +154,7 @@ gint IsoStartThread(camera_t* cam)
       pthread_mutex_unlock(&iso_service->mutex_struct);
       pthread_mutex_unlock(&iso_service->mutex_data);
       FreeChain(iso_service);
+      iso_service=NULL;
       return(-1);
     }
     else {
@@ -223,7 +229,9 @@ IsoThread(void* arg)
     
       //printf("Got frame\n");
   
-      gettimeofday(&info->rawtime, NULL);
+      info->rawtime.tv_sec=iso_service->camera->camera_info.capture.filltime.tv_sec;
+      info->rawtime.tv_usec=iso_service->camera->camera_info.capture.filltime.tv_usec;
+      //gettimeofday(&info->rawtime, NULL);
       localtime_r(&info->rawtime.tv_sec, &(iso_service->current_buffer->captime));
       iso_service->current_buffer->captime_usec=info->rawtime.tv_usec;
       sprintf(iso_service->current_buffer->captime_string,"%04d%02d%02d-%02d%02d%02d-%03d",
@@ -342,6 +350,7 @@ gint IsoStopThread(camera_t* cam)
     pthread_mutex_unlock(&iso_service->mutex_data);
     
     FreeChain(iso_service);
+    iso_service=NULL;
     
   }
   //eprint("test final\n");
@@ -474,6 +483,7 @@ AllocTempBuffer(long long unsigned int requested_size, isothread_info_t* info)
   if (requested_size==0) {
     if (info->temp_allocated>0) {
       free(info->temp);
+      info->temp=NULL;
     }
     info->temp_allocated=0;
     info->temp_size=0;
@@ -482,6 +492,7 @@ AllocTempBuffer(long long unsigned int requested_size, isothread_info_t* info)
     if (requested_size!=info->temp_size) { // req and actual size don't not match
       if (info->temp_allocated>0) {
 	free(info->temp);
+	info->temp=NULL;
       }
       info->temp=(unsigned char *)malloc(requested_size*sizeof(unsigned char));
       info->temp_allocated=1;

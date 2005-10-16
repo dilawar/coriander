@@ -118,6 +118,7 @@ camera_t* cameras;
 
 xvinfo_t xvinfo;
 int port_num;
+raw1394handle_t *handles;
 
 unsigned int format7_tab_presence;
 unsigned int main_timeout_ticker;

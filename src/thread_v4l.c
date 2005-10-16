@@ -63,7 +63,9 @@ V4lStartThread(camera_t* cam)
       sprintf(stemp,"Failed to open V4L device %s",info->v4l_dev_name);
       MainError(stemp);
       free(stemp);
+      stemp=NULL;
       FreeChain(v4l_service);
+      v4l_service=NULL;
       return(-1);
     }
 
@@ -80,7 +82,9 @@ V4lStartThread(camera_t* cam)
       pthread_mutex_unlock(&v4l_service->mutex_data);
       free(info->v4l_buffer);
       free(stemp);
+      stemp=NULL;
       FreeChain(v4l_service);
+      v4l_service=NULL;
       return(-1);
     }
 
@@ -89,6 +93,7 @@ V4lStartThread(camera_t* cam)
     
   }
   free(stemp);
+  stemp=NULL;
   return (1);
 }
 
@@ -240,6 +245,7 @@ V4lStopThread(camera_t* cam)
     pthread_mutex_unlock(&v4l_service->mutex_struct);
     pthread_mutex_unlock(&v4l_service->mutex_data);
     FreeChain(v4l_service);
+    v4l_service=NULL;
     
   }
   

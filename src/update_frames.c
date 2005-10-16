@@ -814,4 +814,5 @@ UpdateSaveFilenameFrame(void)
   ctxt.save_filename_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"save_filename_status"), ctxt.save_filename_ctxt, filename_out);
 
   free(filename_out);
+  
 }

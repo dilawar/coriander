@@ -107,6 +107,18 @@ main (int argc, char *argv[])
   UpdateAllWindows();
   //eprint("windows updated\n");
 
+  int port;
+  handles=(raw1394handle_t*)malloc(port_num*sizeof(raw1394handle_t));
+  // Set bus reset handlers:
+  for (port=0;port<port_num;port++) {
+    // get a handle to the current interface card
+    handles[port]=raw1394_new_handle();
+    raw1394_set_port(handles[port],port);
+    // set bus reset handler
+    raw1394_set_bus_reset_handler(handles[port], bus_reset_handler);
+    //raw1394_destroy_handle(handle);
+  }
+
   MainStatus("Welcome to Coriander...");
   gtk_widget_show (main_window); // this is the only window shown at boot-time
   
@@ -127,16 +139,8 @@ main (int argc, char *argv[])
   while (cameras!=NULL) {
     RemoveCamera(cameras->camera_info.euid_64);
   }
-  /*
-  for (i=0;i<businfo->port_num;i++) {
-    if (businfo->handles[i]!=0)
-      raw1394_destroy_handle(businfo->handles[i]);
-    free(businfo->camera_nodes[i]);
-  }
+
+  free(handles);
   
-  free(businfo->camera_nodes);
-  free(businfo->handles);
-  free(businfo->port_camera_num);
-  */
   return 0;
 }

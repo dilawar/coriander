@@ -2,6 +2,10 @@ Coriander, (c) 2000-2005 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 2.0.0-pre5
 	
+   October 16, 2005, by Damien Douxchamps
+   - use the video1394 buffer filltime instead of a new gettimeofday.
+   - fixed hotplug, including leaks from libdc1394 (which was corrected too).
+	
    October 15, 2005, by Damien Douxchamps
    - fixed gtk errors related to the previous change
 	

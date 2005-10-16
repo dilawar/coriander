@@ -97,7 +97,9 @@ FtpStartThread(camera_t* cam)
       pthread_mutex_unlock(&ftp_service->mutex_struct);
       pthread_mutex_unlock(&ftp_service->mutex_data);
       free(info->buffer);
+      info->buffer=NULL;
       FreeChain(ftp_service);
+      ftp_service=NULL;
       return(-1);
     }
 
@@ -269,6 +271,7 @@ FtpStopThread(camera_t* cam)
     pthread_mutex_unlock(&ftp_service->mutex_struct);
     pthread_mutex_unlock(&ftp_service->mutex_data);
     FreeChain(ftp_service);
+    ftp_service=NULL;
     
   }
 
@@ -396,10 +399,12 @@ FtpPutFrame(char *filename, GdkImlibImage *im, ftpthread_info_t* info)
 
   if (!FtpPut(tmp, filename, FTPLIB_IMAGE, info->ftp_handle)) {
     free(tmp);
+    tmp=NULL;
     MainError("Ftp failed to put file.");
     return FALSE;
   }
   free(tmp);
+  tmp=NULL;
   return TRUE;
 }
 */

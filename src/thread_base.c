@@ -281,18 +281,25 @@ FreeChain(chain_t* chain)
 {
 
   if (chain!=NULL) {
-    if (chain->data!=NULL)
+    if (chain->data!=NULL) {
       free(chain->data);
+      chain->data=NULL;
+    }
     if (chain->current_buffer!=NULL) {
       if (chain->current_buffer->image!=NULL) {
 	free(chain->current_buffer->image);
+	chain->current_buffer->image=NULL;
       }
       free(chain->current_buffer);
+      chain->current_buffer=NULL;
     }
     if (chain->next_buffer!=NULL) {
-      if (chain->next_buffer->image!=NULL)
+      if (chain->next_buffer->image!=NULL) {
 	free(chain->next_buffer->image);
+	chain->next_buffer->image=NULL;
+      }
       free(chain->next_buffer);
+      chain->next_buffer=NULL;
     }
     free(chain);
   }

@@ -45,6 +45,8 @@ GetCameraNodes(void) {
     // copy the info in the dc structure into the coriander struct.
     // This is not optimal: we should use pointers instead...
     memcpy(&camera_ptr->camera_info,dccameras[i],sizeof(dc1394camera_t));
+    //copied cameras should not have their handle destroyed, hence we put them to NULL
+    dccameras[i]->handle=NULL;
 
     //fprintf(stderr,"0x%llx - 0x%llx\n",dccameras[i]->euid_64,camera_ptr->camera_info.euid_64);
 
@@ -56,11 +58,13 @@ GetCameraNodes(void) {
   }
 
   // free the temp dccameras:
-  for (i=0;i<camnum;i++)
-    free(dccameras[i]);
-
-  if (camnum>0)
+  if (camnum>0) {
+    for (i=0;i<camnum;i++) {
+      dc1394_free_camera(dccameras[i]);
+      dccameras[i]=NULL;
+    }
     free(dccameras);
+  }
   //fprintf(stderr,"Done getting nodes\n");
 
   return err;;
@@ -179,6 +183,7 @@ RemoveCamera(u_int64_t guid) {
   }
 
   FreeCamera(ptr);
+  ptr=NULL;
 }
 
 void
@@ -196,6 +201,5 @@ FreeCamera(camera_t* cam)
   free(cam->prefs.save_filename_base);
   free(cam->prefs.overlay_filename);
   free(cam);
-  cam=NULL;
 }
 

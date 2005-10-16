@@ -289,12 +289,12 @@ ChangeModeAndFormat         (GtkMenuItem     *menuitem,
 
 void IsoFlowCheck(int *state)
 { 
-  //fprintf(stderr,"Checking ISO... ");
+  //eprint("Checking ISO... ");
   if (dc1394_video_get_transmission(&camera->camera_info, &camera->camera_info.is_iso_on)!=DC1394_SUCCESS)
     MainError("Could not get ISO status");
   else {
     if (camera->camera_info.is_iso_on>0) {
-      //fprintf(stderr,"Stopping... ");
+      //eprint("Stopping... ");
       if (dc1394_video_set_transmission(&camera->camera_info, DC1394_OFF)!=DC1394_SUCCESS) {
 	// ... (if not done, restarting is no more possible)
 	MainError("Could not stop ISO transmission");
@@ -306,7 +306,7 @@ void IsoFlowCheck(int *state)
   if (*state!=0) {
     gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(main_window,"service_iso"),FALSE);
   }
-  //fprintf(stderr,"done\n");
+  //eprint("done\n");
 }
 
 void IsoFlowResume(int *state)
@@ -314,11 +314,11 @@ void IsoFlowResume(int *state)
   int was_on;
   int timeout;
 
-  //fprintf(stderr,"Resuming ISO... ");
+  //eprint("Resuming ISO... ");
   was_on=camera->camera_info.is_iso_on;
   if (was_on>0) { // restart if it was 'on' before the changes
     usleep(DELAY); // necessary to avoid desynchronized ISO flow.
-    //fprintf(stderr,"Starting ... ");
+    //eprint("Starting ... ");
     if (dc1394_video_set_transmission(&camera->camera_info,DC1394_ON)!=DC1394_SUCCESS) {
       MainError("Could not start ISO transmission");
     }
@@ -352,7 +352,7 @@ void IsoFlowResume(int *state)
     }
     UpdateIsoFrame();
   }
-  //fprintf(stderr,"done\n");
+  //eprint("done\n");
 }
 
 void GetContextStatus()
@@ -468,7 +468,7 @@ SetIsoChannels(void)
     //eprint("Camera found. Getting current settings\n");
     if (dc1394_video_get_iso_channel_and_speed(&camera_ptr->camera_info, &channel, &speed)!=DC1394_SUCCESS)
       MainError("Can't get iso channel and speed");
-    //fprintf(stderr,"   Channel was %u\n",channel);
+    //eprint("   Channel was %u\n",channel);
 
     // if the camera is streaming don't touch the settings
     if (camera_ptr->camera_info.is_iso_on!=DC1394_ON) {
@@ -603,7 +603,6 @@ int
 bus_reset_handler(raw1394handle_t handle, unsigned int generation)
 {
 
-  BusInfo_t bi; // WHY NOT USE THE BUS_INFO GLOBAL VARIABLE HERE???
   int i;
   camera_t *camera_ptr, *cp2;
   camera_t* new_camera;
@@ -611,21 +610,25 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation)
   dc1394camera_t **newcams;
   unsigned int newcamnum;
 
-  memset(&bi,0,sizeof(BusInfo_t));
   MainStatus("Bus reset detected");
 
-  eprint("bus reset detected\n");
+  //eprint("bus reset detected\n");
 
   gtk_widget_set_sensitive(main_window,FALSE);
 
-  usleep(DELAY); // sleep some time (50ms) to allow the cam to warm-up/boot
+  usleep(DELAY*40); // sleep some time (1 second) to allow the cam to warm-up/boot
 
   raw1394_update_generation(handle, generation);
   // Now we have to deal with this bus reset...
 
   // get camera nodes:
   dc1394_find_cameras(&newcams,&newcamnum);
-  
+  /*
+  eprint("found %d cameras. Handles:\n",newcamnum);
+  for (i=0;i<newcamnum;i++) {
+    eprint("\t#%d @ 0x%x\n",i,newcams[i]->handle);
+  }
+  */
   // ADD NEW CAMERAS AND UPDATE PREVIOUS ONES ---------------------------------
 
   // try to match the GUID with previous cameras
@@ -634,17 +637,17 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation)
     camera_ptr=cameras;
     while(camera_ptr!=NULL) {
       if (camera_ptr->camera_info.euid_64==newcams[i]->euid_64) { // yes, the camera was there
-	//fprintf(stderr,"  camera was already there, updating...\n");
-	if (dc1394_get_camera_info(&camera_ptr->camera_info)!=DC1394_SUCCESS)
-	  MainError("Could not update camera basic information in bus reset handler");
+	//eprint("  camera was already there\n");
+	//if (dc1394_get_camera_info(&camera_ptr->camera_info)!=DC1394_SUCCESS)
+	//  MainError("Could not update camera basic information in bus reset handler");
 	break;
       }
       camera_ptr=camera_ptr->next;
     }
     if (camera_ptr==NULL) { // the camera is new
-      //fprintf(stderr,"  A new camera was added\n");
       new_camera=NewCamera();
       memcpy(&new_camera->camera_info,newcams[i],sizeof(dc1394camera_t));
+      newcams[i]->handle=NULL; // this is to avoid destruction of the handle when the camera will be freed
       GetCameraData(new_camera);
 
       if (cameras==NULL) {
@@ -654,6 +657,7 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation)
       else {
 	AppendCamera(new_camera);
       }
+      //eprint("  A new camera has been added\n");
     }
   }
 
@@ -667,11 +671,11 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation)
 	break;
     }
     if (camera_ptr->camera_info.euid_64!=newcams[i]->euid_64) { // the camera "camera_ptr" was unplugged
-      //fprintf(stderr,"found a camera to remove\n");
+      //eprint("found a camera to remove\n");
       if (camera->camera_info.euid_64==camera_ptr->camera_info.euid_64) {
-	//fprintf(stderr," The current camera was unplugged\n");
+	//eprint(" The current camera was unplugged\n");
 	if ((camera->next==NULL)&&(cameras==camera)) { // the only camera was removed. Close GUI and revert to camera wait prompt
-	  //fprintf(stderr," ... and it was the only camera!\n");
+	  //eprint(" ... and it was the only camera!\n");
 	  waiting_camera_window=create_waiting_camera_window();
 	  gtk_widget_show(waiting_camera_window);
 
@@ -681,7 +685,7 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation)
 	  camera=NULL;
 	}
 	else {
-	  //fprintf(stderr,"  Selecting the first non-removed camera as current camera\n");
+	  //eprint("  Selecting the first non-removed camera as current camera\n");
 	  if (cameras->camera_info.euid_64==camera_ptr->camera_info.euid_64) { // is the first camera the one to be removed?
 	    // use second cam as current cam
 	    SetCurrentCamera(cameras->next->camera_info.euid_64);
@@ -693,7 +697,7 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation)
 	  // close and remove dead camera
 	  RemoveCamera(camera_ptr->camera_info.euid_64);
 	}
-	//fprintf(stderr," removed dead camera\n");
+	//eprint(" removed dead camera\n");
       } // end if we are deleting the current camera
       else { // we delete another camera. This is easy.
 	RemoveCamera(camera_ptr->camera_info.euid_64);
@@ -705,7 +709,7 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation)
       camera_ptr=camera_ptr->next;
     }
   }
-  //fprintf(stderr,"Removed all dead camera structs\n");
+  //eprint("Removed all dead camera structs\n");
 
   // restart ISO if necessary
   cp2=cameras;
@@ -714,7 +718,7 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation)
       MainError("Could not read ISO status");
     }
     else {
-      //fprintf(stderr,"iso is %d and should be %d\n", iso_status,cp2->camera_info.is_iso_on);
+      //eprint("iso is %d and should be %d\n", iso_status,cp2->camera_info.is_iso_on);
       if ((cp2->camera_info.is_iso_on==DC1394_TRUE)&&(iso_status==DC1394_FALSE)) {
 	if (dc1394_video_set_transmission(&cp2->camera_info,DC1394_ON)!=DC1394_SUCCESS) {
 	  MainError("Could start ISO");
@@ -725,14 +729,14 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation)
     cp2=cp2->next;
   }
 
-  if (bi.camera_num>0) {
-    //fprintf(stderr,"build/refresh GUI\n");
+  if (newcamnum>0) {
+    //eprint("build/refresh GUI\n");
     if (waiting_camera_window!=NULL) {
       gtk_widget_destroy(GTK_WIDGET(waiting_camera_window));
       waiting_camera_window=NULL;
-      //fprintf(stderr," destroyed win\n");
+      //eprint(" destroyed win\n");
     }
-
+    
 #ifdef HAVE_SDLLIB
     watchthread_info.draw=0;
     watchthread_info.mouse_down=0;
@@ -740,21 +744,21 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation)
 #endif
     
     //if (new_camera!=NULL)
-    //  fprintf(stderr," handle: 0x%x\n",new_camera->camera_info.handle);
+    //  eprint(" handle: 0x%x\n",new_camera->camera_info.handle);
     
     //if (camera!=NULL)
-    //  fprintf(stderr," handle: 0x%x\n",camera->camera_info.handle);
-    //fprintf(stderr,"camera: 0x%x\n",camera);
+    //  eprint(" handle: 0x%x\n",camera->camera_info.handle);
+    //eprint("camera: 0x%x\n",camera);
     
-    //fprintf(stderr,"Want to display: %d\n",camera->want_to_display);
+    //eprint("Want to display: %d\n",camera->want_to_display);
     if (camera!=NULL) {
       if (camera->want_to_display>0)
 	DisplayStartThread(camera);
 
       BuildAllWindows();
-      //fprintf(stderr,"finished building GUI\n");
+      //eprint("finished building GUI\n");
       UpdateAllWindows();
-      //fprintf(stderr,"finished updating GUI\n");
+      //eprint("finished updating GUI\n");
 
       gtk_widget_set_sensitive(main_window,TRUE);
     }
@@ -765,11 +769,11 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation)
   // set ISO channels
   SetIsoChannels();
   
-  // fprintf(stderr,"Reseting ISO channels\n");
+  // eprint("Reseting ISO channels\n");
   // // re-set ISO channels.
   // SetChannels();
 
-  // fprintf(stderr,"Restarting ISO\n");
+  // eprint("Restarting ISO\n");
   // // Restart all ISO threads
   // camera_ptr=cameras;
   // while (camera_ptr!=NULL) {
@@ -781,13 +785,21 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation)
   //camera_ptr=camera_ptr->next;
   //}
 
-  for (i=0;i<newcamnum;i++)
-    dc1394_free_camera(newcams[i]);
-  free(newcams);
+  if (newcamnum>0) {
+    //eprint("free %d newcameras\n",newcamnum);
+    for (i=0;i<newcamnum;i++) {
+      //eprint("deleting new camera struct member #%d @ handle 0x%x\n",i,newcams[i]->handle);
+      dc1394_free_camera(newcams[i]);
+      //eprint("cam deleted to 0x%x\n",newcams[i]);
+    }
+    //eprint("freeing newcams\n");
+    free(newcams);
+    newcams=NULL;
+  }
 
-  //fprintf(stderr,"resumed fps display\n");
+  //eprint("resumed fps display\n");
 
-  //fprintf(stderr,"Finished handling bus reset\n");
+  //eprint("Finished handling bus reset\n");
 
   return(1);
 }
@@ -801,7 +813,7 @@ main_timeout_handler(gpointer* tmp)
   // the main_timeout_ticker can be consulted.
   main_timeout_ticker=(main_timeout_ticker+10)%1000;
 
-  //fprintf(stderr,"Got timeout\n");
+  //eprint("Got timeout\n");
 
   // --------------------------------------------------------------------------------------
   // cancel display thread if asked by the SDL/WM
@@ -812,33 +824,28 @@ main_timeout_handler(gpointer* tmp)
       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (lookup_widget(main_window,"service_display")), FALSE);
       WM_cancel_display=0;
     }
-    //fprintf(stderr,"check display cancel\n");
+    //eprint("check display cancel\n");
   }
 
   // --------------------------------------------------------------------------------------
   // performs a dummy read on all handles to detect bus resets
   int i;
   quadlet_t quadlet;
-  raw1394handle_t handle;
   if (!(main_timeout_ticker%1000)) { // every 1/2 second
-    handle=raw1394_new_handle();
     for (i=0;i<port_num;i++) {
-      raw1394_set_port(handle,i);
-      //fprintf(stderr,"bus reset detection for port %d\n",i);
-      cooked1394_read(handle, 0xffc0 | raw1394_get_local_id(handle),
+      //eprint("bus reset detection for port %d\n",i);
+      cooked1394_read(handles[i], 0xffc0 | raw1394_get_local_id(handles[i]),
 		      CSR_REGISTER_BASE + CSR_CYCLE_TIME, 4, (quadlet_t *) &quadlet);
     }
-    raw1394_destroy_handle(handle);
-    //fprintf(stderr,"dummy read\n");
   }
 
-  //fprintf(stderr,".");
+  //eprint(".");
   // --------------------------------------------------------------------------------------
   // update the bandwidth estimtation
   if (!(main_timeout_ticker%1000)) { // every second
     UpdateBandwidthFrame();
   }
-  //fprintf(stderr,".\n");
+  //eprint(".\n");
 #ifdef HAVE_SDLLIB
   // --------------------------------------------------------------------------------------
   // update cursor information
@@ -849,7 +856,7 @@ main_timeout_handler(gpointer* tmp)
     }
   }
 #endif
-  //fprintf(stderr,"timeout processed\n");
+  //eprint("timeout processed\n");
   return(1);
 }
 
@@ -876,7 +883,7 @@ SetFormat7Crop(int sx, int sy, int px, int py, int mode) {
   // the order in which we apply the F7 changes is important.
   // example: from size=128x128, pos=128x128, we can't go to size=1280x1024 by just changing the size.
   // We need to set the position to 0x0 first.
-  //fprintf(stderr,"Setting format7 to pos=[%d %d], size=[%d %d]\n",px,py,sx,sy);
+  //eprint("Setting format7 to pos=[%d %d], size=[%d %d]\n",px,py,sx,sy);
   if (dc1394_format7_set_image_position(&camera->camera_info, mode, 0, 0)!=DC1394_SUCCESS)
     MainError("Could not set Format7 image position to zero");
   if ((dc1394_format7_set_image_size(&camera->camera_info, mode, sx, sy)!=DC1394_SUCCESS)||
@@ -1046,7 +1053,7 @@ GetXvInfo(xvinfo_t *xvinfo) {
   xvinfo->max_width=-1;
 #endif
 
-  //fprintf(stderr,"%d %d\n", xvinfo->max_height, xvinfo->max_width);
+  //eprint("%d %d\n", xvinfo->max_height, xvinfo->max_width);
 }
 
 void

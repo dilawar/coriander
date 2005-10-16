@@ -83,6 +83,7 @@ SaveStartThread(camera_t* cam)
 	MainError("Could not allocate memory for RAM buffer save service");
 	pthread_mutex_unlock(&save_service->mutex_data);
 	FreeChain(save_service);
+	save_service=NULL;
 	return(-1);
       }
     }
@@ -99,7 +100,9 @@ SaveStartThread(camera_t* cam)
       pthread_mutex_unlock(&save_service->mutex_struct);
       pthread_mutex_unlock(&save_service->mutex_data);
       free(info->buffer);
+      info->buffer=NULL;
       FreeChain(save_service);
+      save_service=NULL;
       return(-1);
     }
 
@@ -672,10 +675,12 @@ SaveJPEGFrame(chain_t *save_service, char *filename_out)
   if (info->picture) {
     av_free(info->picture->data[0]);
     av_free(info->picture);
+    info->picture=NULL;
   }
   if (info->tmp_picture) {
     av_free(info->tmp_picture->data[0]);
     av_free(info->tmp_picture);
+    info->tmp_picture=NULL;
   }
 }
 #endif
@@ -786,6 +791,7 @@ SaveThread(void* arg)
 				  save_service->current_buffer->height, 0, save_service->current_buffer->color_mode, tmp_buf);
 		  fwrite(tmp_buf, 3*save_service->current_buffer->width*save_service->current_buffer->height, 1, fd);
 		  free(tmp_buf);
+		  tmp_buf=NULL;
 		}
 		else {
 		  // no conversion, we can dump the data
@@ -878,6 +884,7 @@ SaveThread(void* arg)
 	  fwrite(tmp_buf, 3*save_service->current_buffer->width*save_service->current_buffer->height, 1, fd);
 	}
 	free(tmp_buf);
+	tmp_buf=NULL;
       }
       break;
     default:
@@ -896,9 +903,11 @@ SaveThread(void* arg)
   if (info->format==SAVE_FORMAT_MPEG) {
     av_free(info->picture->data[0]);
     av_free(info->picture);
+    info->picture=NULL;
     
     av_free(info->tmp_picture->data[0]);
     av_free(info->tmp_picture);
+    info->tmp_picture=NULL;
 
     //video_encode_finish();
     /* close each codec */
@@ -915,7 +924,8 @@ SaveThread(void* arg)
       url_fclose(&info->oc->pb);
     }
     /* free the stream */
-    av_free(info->oc);  
+    av_free(info->oc);
+    info->oc=NULL;
   
     close(info->fdts);
     
@@ -977,6 +987,7 @@ SaveStopThread(camera_t* cam)
     pthread_mutex_unlock(&save_service->mutex_struct);
     pthread_mutex_unlock(&save_service->mutex_data);
     FreeChain(save_service);
+    save_service=NULL;
     
   }
   

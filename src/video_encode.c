@@ -119,6 +119,7 @@ AVFrame *alloc_picture(int pix_fmt, int width, int height) {
     picture_buf = malloc(size);
     if (!picture_buf) {
         av_free(picture);
+	picture=NULL;
         return NULL;
     }
     avpicture_fill((AVPicture *)picture, picture_buf, 
@@ -233,6 +234,7 @@ int close_video(AVFormatContext *oc, AVStream *st) {
     }
     */
     av_free(video_outbuf);
+    video_outbuf=NULL;
     return 1;
 }
 
@@ -264,6 +266,7 @@ int jpeg_write(AVFrame *jpeg_picture, unsigned int width, unsigned int height, i
 
   if (avcodec_open(jpeg_c, &mjpeg_encoder) < 0) {
     av_free(jpeg_c);
+    jpeg_c=NULL;
     return -1;
   }
   
@@ -280,7 +283,8 @@ int jpeg_write(AVFrame *jpeg_picture, unsigned int width, unsigned int height, i
   avcodec_close(jpeg_c);
   av_free(jpeg_outbuf);
   av_free(jpeg_c);
-  
+  jpeg_c=NULL;
+  jpeg_outbuf=NULL;
   return 1;
 }
 
