@@ -2,6 +2,9 @@ Coriander, (c) 2000-2005 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 2.0.0-pre5
 	
+   October 17, 2005, by Damien Douxchamps
+   - update configure.in to properly detect libdc CVS requirement
+	
    October 16, 2005, by Damien Douxchamps
    - use the video1394 buffer filltime instead of a new gettimeofday.
    - fixed hotplug, including leaks from libdc1394 (which was corrected too).
