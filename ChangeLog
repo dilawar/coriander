@@ -1,6 +1,10 @@
 Coriander, (c) 2000-2005 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 2.0.0-pre5
+
+   December 2, 2005, by Damien Douxchamps
+   - removed MMX/SSE checks after problems reported by Jacob Gryn when
+     compiling on X64 archs.
 	
    October 17, 2005, by Damien Douxchamps
    - update configure.in to properly detect libdc CVS requirement

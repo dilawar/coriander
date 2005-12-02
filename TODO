@@ -1,64 +1,7 @@
-_______________________________________________________________________________
+The TODO list is now kept on SourceForge as a series of Tasks. Please visit
 
-	                  Open issues for Coriander ...
-	          Damien Douxchamps <ddouxchamps@users.sf.net>
-_______________________________________________________________________________
+http://www.sourceforge.net/projects/coriander
 
-- video:
-    	- add a button somewhere to quickly capture an image and save it to
-	  disk (this was previously called "capture single").
-	- use available XV color modes to avoid useless conversions
+If you wish to report a bug or ask for new features you can send an email
+to the user/development mailing lists.
 
-- refresh/update:
-	- regularly update ranges in auto-mode
-
-- misc stuff:
-	- merge Johann's patch for a nice display window
-	- add autofocus, autowhitebalance and autoexposure (autocontrast)
-	  in software
-	- record and play 'scenario' files (files containing a list of
-	  timed commands)
-	- record and recall camera setup files
-	- command line capability
-	- avoid buttons that have the same name (save setup/power)
-	- update phy speed detection with raw1394 (currently it does not work
-	  with 1394b)
-	- check that libdc1394 version is correctly probed.
-
-- services:
-	- add an SHM service
-	- update the V4L service
-	- protect overwriting files with a confirmation dialog
-	- When a video is being saved, it should not be possible to change
-	  the camera mode (it should be greyed out, or should end the save if
-	  hanged); or should prompt user to supply a new file name to continue
-	  saving (or some combination of above?).
-	- save to stdout: test and check that all formats output OK. This might
- 	  not be the case with imlib formats...
-	- add 16bit bayer pattern demosaicing
-	- add service/ISO autostart in the preferences. Warn in status window
-	  if services not started in the 'normal' order.
-	- handle the case where no extension is provided
-	- thread_save button should self-reset after finishing to write the
-	  RAM buffer to disk, or if the thread self-terminate (error,...)
-	- filename preview should be updated
-	- for video, check previously written files to set the number to append
-	- confirm overwrite files
-	- option to propagate the display pattern in the rest of the pipe
-	- MPEG libraries should be probed (including libjpeg *and* libjpeg-mmx)
-	- add options to MPEG service (codec, basic params?)
-	- FTP should be upgraded when the save service is completed and tested
-	- errors should be sent to dialogs, not in the status window which is
-	  only good for warnings/status messages
-	- option for the RECEIVE service to get frames from the DMA buffer only
- 	  if the frames have been used by the following service. Previously,
-	  the advantage of the DMA buffer were lost after the ISO thread, which
-	  could typically lead to dropped frames in the save service
-	- report frames that were dropped by the kernel drivers
-	- implement the display overlay with used-specified images
-	- create an "mencoder" service or capability
-	- save setup: run frame refresh when format is autodetected during typing
-
-- long term:
-	- add advanced features capability. This would probably require a
-	  DB of the supported cameras
