@@ -460,11 +460,12 @@ void GrabSelfIds(camera_t *cams)
 void
 SetIsoChannels(void)
 {
-  unsigned int channel, speed, ic=0;
+  unsigned int channel, speed, ic;
   camera_t* camera_ptr, *cp2;
-  
+
   camera_ptr=cameras;
   while(camera_ptr!=NULL) {
+    ic=0;
     //eprint("Camera found. Getting current settings\n");
     if (dc1394_video_get_iso_channel_and_speed(&camera_ptr->camera_info, &channel, &speed)!=DC1394_SUCCESS)
       MainError("Can't get iso channel and speed");
@@ -492,6 +493,7 @@ SetIsoChannels(void)
     }
     if (dc1394_video_set_iso_channel_and_speed(&camera_ptr->camera_info, ic, speed)!=DC1394_SUCCESS)
       MainError("Can't set iso channel and speed");
+    camera_ptr->camera_info.iso_channel=ic;
     //eprint("Channel set to %d\n",ic);
 
     camera_ptr=camera_ptr->next;

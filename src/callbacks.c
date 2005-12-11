@@ -1591,11 +1591,11 @@ on_save_filename_subentry_changed      (GtkEditable     *editable,
     // The following message should go in the SAVE thread setup functions //////////////////////////
     // MainError("You should provide an extension for the save filename. Default extension is RAW");
   }
-  /*
+  
   fprintf(stderr,"filname: %s\n",camera->prefs.save_filename);
   fprintf(stderr,"   ext: %s\n",camera->prefs.save_filename_ext);
   fprintf(stderr,"  base: %s\n",camera->prefs.save_filename_base);
-  */
+  
   // autodetect file format
   if (strncasecmp(camera->prefs.save_filename_ext, "pvn",3)==0) {
     camera->prefs.save_format=SAVE_FORMAT_PVN;
@@ -1623,8 +1623,6 @@ on_save_filename_subentry_changed      (GtkEditable     *editable,
   //BuildSaveModeMenu();
   UpdateSaveFilenameFrame();
 
-  //if (camera->prefs.save_format==SAVE_FORMAT_PPMPGM)
-  //ErrorPopup("Not supported with the new Gnome2 interface");
 }
 
 

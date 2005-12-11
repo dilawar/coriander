@@ -544,6 +544,7 @@ UpdateServiceTree(void)
 
   gtk_tree_model_get_iter_first(model, &cam_leaf);
 
+  //eprint("----------\n");
   cam=cameras;
   while(cam!=NULL) {
     n = gtk_tree_model_iter_n_children  (model, &cam_leaf);
@@ -722,6 +723,7 @@ UpdateServiceTree(void)
     //fprintf(stderr,"Number of services in list after adding: %d\n",n);
 
     cam=cam->next;
+    gtk_tree_model_iter_next(model, &cam_leaf);
   }
 
   for (i=0;i<3;i++) {
@@ -792,10 +794,10 @@ UpdateSaveFilenameFrame(void)
     }
     break;
   case SAVE_FORMAT_RAW_VIDEO:
+  case SAVE_FORMAT_PVN:
 #ifdef HAVE_FFMPEG
   case SAVE_FORMAT_MPEG:
 #endif
-  case SAVE_FORMAT_PVN:
     switch (camera->prefs.save_append) {
     case SAVE_APPEND_NONE:
       sprintf(filename_out, "%s.%s", camera->prefs.save_filename_base,camera->prefs.save_filename_ext);

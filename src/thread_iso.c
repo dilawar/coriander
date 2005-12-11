@@ -229,8 +229,8 @@ IsoThread(void* arg)
     
       //printf("Got frame\n");
   
-      info->rawtime.tv_sec=iso_service->camera->camera_info.capture.filltime.tv_sec;
-      info->rawtime.tv_usec=iso_service->camera->camera_info.capture.filltime.tv_usec;
+      info->rawtime.tv_sec=(dc1394_video_get_filltime(&iso_service->camera->camera_info))->tv_sec;
+      info->rawtime.tv_usec=(dc1394_video_get_filltime(&iso_service->camera->camera_info))->tv_usec;
       //gettimeofday(&info->rawtime, NULL);
       localtime_r(&info->rawtime.tv_sec, &(iso_service->current_buffer->captime));
       iso_service->current_buffer->captime_usec=info->rawtime.tv_usec;
@@ -251,21 +251,21 @@ IsoThread(void* arg)
       // Stereo decoding
       switch (iso_service->current_buffer->stereo_decoding) {
       case STEREO_DECODING_INTERLACED:
-	dc1394_deinterlace_stereo((unsigned char *)iso_service->camera->camera_info.capture.capture_buffer,info->temp,
+	dc1394_deinterlace_stereo(dc1394_video_get_buffer(&iso_service->camera->camera_info),info->temp,
 				  info->orig_sizex*info->orig_sizey*2);
 	break;
       case STEREO_DECODING_FIELD:
-	memcpy(info->temp,(unsigned char *)iso_service->camera->camera_info.capture.capture_buffer,info->orig_sizex*info->orig_sizey*2);
+	memcpy(info->temp,dc1394_video_get_buffer(&iso_service->camera->camera_info),info->orig_sizex*info->orig_sizey*2);
 	break;
       case NO_STEREO_DECODING:
 	if ((iso_service->current_buffer->bayer!=NO_BAYER_DECODING)&&(info->cond16bit!=0)) {
-	  dc1394_MONO16_to_MONO8((unsigned char *)iso_service->camera->camera_info.capture.capture_buffer,info->temp,
+	  dc1394_MONO16_to_MONO8(dc1394_video_get_buffer(&iso_service->camera->camera_info),info->temp,
 				 info->orig_sizex*info->orig_sizey, iso_service->current_buffer->bpp);
 	}
 	else {
 	  // it is necessary to put this here and not in the thread init or IsoThreadCheckParams function because
 	  // the buffer might change at every capture (typically when capture is too slow and buffering is performed)
-	  info->temp=(unsigned char*)iso_service->camera->camera_info.capture.capture_buffer;
+	  info->temp=dc1394_video_get_buffer(&iso_service->camera->camera_info);
 	}
 	break;
       }
