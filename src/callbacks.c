@@ -71,6 +71,7 @@ on_fps_activate                    (GtkMenuItem     *menuitem,
     camera->camera_info.framerate=(int)(unsigned long)user_data;
 
   IsoFlowResume(&state);
+  UpdateFeatureWindow(); // because several controls may change, especially exposure, gamma, shutter,... since the framerate changes.
 }
 
 
@@ -320,7 +321,7 @@ on_format7_packet_size_changed               (GtkAdjustment    *adj,
 
   UpdateFormat7InfoFrame();
   IsoFlowResume(&state);
-  
+  UpdateFeatureWindow(); // because several controls may change, especially exposure, gamma, shutter,... since the framerate changes.
 } 
 
 void
@@ -510,6 +511,7 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
 
     UpdateFormat7BppRange();
     UpdateFormat7InfoFrame();
+    UpdateFeatureWindow(); // because several controls may change, especially exposure, gamma, shutter,... since the framerate changes.
   }
 }
 
