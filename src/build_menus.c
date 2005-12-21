@@ -19,15 +19,15 @@
 #include "coriander.h"
 
 extern char* fps_label_list[DC1394_FRAMERATE_NUM];
-extern char* format7_color_list[DC1394_MODE_FORMAT7_NUM];
-extern char* format7_mode_list[DC1394_MODE_FORMAT7_NUM];
+extern char* format7_color_list[DC1394_VIDEO_MODE_FORMAT7_NUM];
+extern char* format7_mode_list[DC1394_VIDEO_MODE_FORMAT7_NUM];
 extern char* channel_num_list[16];
 extern char* trigger_mode_list[4];
-extern char* format0_list[DC1394_MODE_FORMAT0_NUM];
-extern char* format1_list[DC1394_MODE_FORMAT1_NUM];
-extern char* format2_list[DC1394_MODE_FORMAT2_NUM];
-extern char* format6_list[DC1394_MODE_FORMAT6_NUM];
-extern char* format7_list[DC1394_MODE_FORMAT7_NUM];
+extern char* format0_list[DC1394_VIDEO_MODE_FORMAT0_NUM];
+extern char* format1_list[DC1394_VIDEO_MODE_FORMAT1_NUM];
+extern char* format2_list[DC1394_VIDEO_MODE_FORMAT2_NUM];
+extern char* format6_list[DC1394_VIDEO_MODE_FORMAT6_NUM];
+extern char* format7_list[DC1394_VIDEO_MODE_FORMAT7_NUM];
 
 void
 BuildTriggerModeMenu(void)
@@ -206,7 +206,7 @@ BuildFormat7ModeMenu(void)
 {
   int i,f;
   int k=0;
-  int index[DC1394_MODE_FORMAT7_NUM];
+  int index[DC1394_VIDEO_MODE_FORMAT7_NUM];
 
   //fprintf(stderr,"building F7 mode menu\n");
 
@@ -226,8 +226,8 @@ BuildFormat7ModeMenu(void)
 
   mode_num_menu = gtk_menu_new ();
 
-  for (f=DC1394_MODE_FORMAT7_MIN,i=0;f<=DC1394_MODE_FORMAT7_MAX;f++,i++) {
-    if (camera->format7_info.modeset.mode[f-DC1394_MODE_FORMAT7_MIN].present>0) {
+  for (f=DC1394_VIDEO_MODE_FORMAT7_MIN,i=0;f<=DC1394_VIDEO_MODE_FORMAT7_MAX;f++,i++) {
+    if (camera->format7_info.modeset.mode[f-DC1394_VIDEO_MODE_FORMAT7_MIN].present>0) {
       index[i]=k;
       k++;
       glade_menuitem = gtk_menu_item_new_with_label (_(format7_mode_list[i]));
@@ -247,7 +247,7 @@ BuildFormat7ModeMenu(void)
   //fprintf(stderr,"F7 mode: max: %d, default: %d\n",
   //	  NUM_MODE_FORMAT7,format7_info->edit_mode-MODE_FORMAT7_MIN);
   gtk_option_menu_set_history (GTK_OPTION_MENU (mode_num), 
-			       index[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN]);
+			       index[camera->format7_info.edit_mode-DC1394_VIDEO_MODE_FORMAT7_MIN]);
 
 }
 
@@ -275,20 +275,20 @@ BuildFormat7ColorMenu(void)
 
   color_num_menu = gtk_menu_new ();
 
-  //eprint("ready to add for f7 mode %d, %d color modes\n", camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN, camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].color_codings.num);
+  //eprint("ready to add for f7 mode %d, %d color modes\n", camera->format7_info.edit_mode-DC1394_VIDEO_MODE_FORMAT7_MIN, camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].color_codings.num);
 
-  for (i=0;i<camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].color_codings.num;i++) {
-    //eprint("%d\n",camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].color_codings.modes[i]);
-    glade_menuitem = gtk_menu_item_new_with_label (_(format7_color_list[camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].color_codings.modes[i]-DC1394_COLOR_CODING_MIN]));
+  for (i=0;i<camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].color_codings.num;i++) {
+    //eprint("%d\n",camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].color_codings.modes[i]);
+    glade_menuitem = gtk_menu_item_new_with_label (_(format7_color_list[camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].color_codings.modes[i]-DC1394_COLOR_CODING_MIN]));
     gtk_widget_show (glade_menuitem);
     gtk_menu_append (GTK_MENU (color_num_menu), glade_menuitem);
     g_signal_connect ((gpointer) glade_menuitem, "activate",
 		      G_CALLBACK (on_edit_format7_color_activate),
-		      (gpointer)(unsigned long)camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].color_codings.modes[i]);
+		      (gpointer)(unsigned long)camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].color_codings.modes[i]);
   }
   
-  for (i=0;i<camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].color_codings.num;i++) {
-    if (camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].color_coding_id==camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].color_codings.modes[i])
+  for (i=0;i<camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].color_codings.num;i++) {
+    if (camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].color_coding_id==camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].color_codings.modes[i])
       break;
   }
   gtk_option_menu_set_menu (GTK_OPTION_MENU (color_num), color_num_menu);
@@ -310,8 +310,8 @@ BuildFpsMenu(void)
   dc1394framerates_t framerates;
   //eprint("building framerates menu\n");
 
-  if ((camera->camera_info.mode >= DC1394_MODE_FORMAT7_MIN) &&
-      (camera->camera_info.mode <= DC1394_MODE_FORMAT7_MAX)) {
+  if ((camera->camera_info.mode >= DC1394_VIDEO_MODE_FORMAT7_MIN) &&
+      (camera->camera_info.mode <= DC1394_VIDEO_MODE_FORMAT7_MAX)) {
     value = 0; /* format 7 has no fixed framerates */
     gtk_widget_set_sensitive(lookup_widget(main_window,"fps_menu"),FALSE);
   }
@@ -394,20 +394,20 @@ BuildFormatMenu(void)
   }
 
   for (i=0;i<modes.num;i++) {
-    if ((modes.modes[i]>=DC1394_MODE_FORMAT0_MIN)&&(modes.modes[i]<=DC1394_MODE_FORMAT0_MAX)) {
-      glade_menuitem = gtk_menu_item_new_with_label (_(format0_list[modes.modes[i]-DC1394_MODE_FORMAT0_MIN]));
+    if ((modes.modes[i]>=DC1394_VIDEO_MODE_FORMAT0_MIN)&&(modes.modes[i]<=DC1394_VIDEO_MODE_FORMAT0_MAX)) {
+      glade_menuitem = gtk_menu_item_new_with_label (_(format0_list[modes.modes[i]-DC1394_VIDEO_MODE_FORMAT0_MIN]));
     }
-    else if ((modes.modes[i]>=DC1394_MODE_FORMAT1_MIN)&&(modes.modes[i]<=DC1394_MODE_FORMAT1_MAX)) {
-      glade_menuitem = gtk_menu_item_new_with_label (_(format1_list[modes.modes[i]-DC1394_MODE_FORMAT1_MIN]));
+    else if ((modes.modes[i]>=DC1394_VIDEO_MODE_FORMAT1_MIN)&&(modes.modes[i]<=DC1394_VIDEO_MODE_FORMAT1_MAX)) {
+      glade_menuitem = gtk_menu_item_new_with_label (_(format1_list[modes.modes[i]-DC1394_VIDEO_MODE_FORMAT1_MIN]));
     }
-    else if ((modes.modes[i]>=DC1394_MODE_FORMAT2_MIN)&&(modes.modes[i]<=DC1394_MODE_FORMAT2_MAX)) {
-      glade_menuitem = gtk_menu_item_new_with_label (_(format2_list[modes.modes[i]-DC1394_MODE_FORMAT2_MIN]));
+    else if ((modes.modes[i]>=DC1394_VIDEO_MODE_FORMAT2_MIN)&&(modes.modes[i]<=DC1394_VIDEO_MODE_FORMAT2_MAX)) {
+      glade_menuitem = gtk_menu_item_new_with_label (_(format2_list[modes.modes[i]-DC1394_VIDEO_MODE_FORMAT2_MIN]));
     }
-    else if ((modes.modes[i]>=DC1394_MODE_FORMAT6_MIN)&&(modes.modes[i]<=DC1394_MODE_FORMAT6_MAX)) {
-      glade_menuitem = gtk_menu_item_new_with_label (_(format6_list[modes.modes[i]-DC1394_MODE_FORMAT6_MIN]));
+    else if ((modes.modes[i]>=DC1394_VIDEO_MODE_FORMAT6_MIN)&&(modes.modes[i]<=DC1394_VIDEO_MODE_FORMAT6_MAX)) {
+      glade_menuitem = gtk_menu_item_new_with_label (_(format6_list[modes.modes[i]-DC1394_VIDEO_MODE_FORMAT6_MIN]));
     }
-    else if ((modes.modes[i]>=DC1394_MODE_FORMAT7_MIN)&&(modes.modes[i]<=DC1394_MODE_FORMAT7_MAX)) {
-      glade_menuitem = gtk_menu_item_new_with_label (_(format7_list[modes.modes[i]-DC1394_MODE_FORMAT7_MIN]));
+    else if ((modes.modes[i]>=DC1394_VIDEO_MODE_FORMAT7_MIN)&&(modes.modes[i]<=DC1394_VIDEO_MODE_FORMAT7_MAX)) {
+      glade_menuitem = gtk_menu_item_new_with_label (_(format7_list[modes.modes[i]-DC1394_VIDEO_MODE_FORMAT7_MIN]));
       //eprint("menuitem ok\n");
     }
     else {
@@ -506,6 +506,13 @@ BuildBayerMenu(void)
   g_signal_connect ((gpointer) glade_menuitem, "activate",
 		      G_CALLBACK (on_bayer_menu_activate),
 		      (int*)DC1394_BAYER_METHOD_HQLINEAR); 
+  // add VNG linear option
+  glade_menuitem = gtk_menu_item_new_with_label (_("VNG"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+  g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (on_bayer_menu_activate),
+		      (int*)DC1394_BAYER_METHOD_VNG); 
   
   gtk_option_menu_set_menu (GTK_OPTION_MENU (new_option_menu), new_menu);
 

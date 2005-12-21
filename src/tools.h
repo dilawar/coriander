@@ -55,10 +55,10 @@ GetContextStatus(void);
 void
 GrabSelfIds(camera_t *cams);
 //GrabSelfIds(raw1394handle_t* handles, int portmax);
-
+/*
 void
 SetIsoChannels(void);
-
+*/
 void
 SetScaleSensitivity(GtkWidget* widget, int feature, dc1394bool_t sense);
 

@@ -183,7 +183,7 @@ GetFormat7Capabilities(camera_t* cam)
   int i;
   int check=0;
 
-  for (i=0;i<DC1394_MODE_FORMAT7_NUM;i++) {
+  for (i=0;i<DC1394_VIDEO_MODE_FORMAT7_NUM;i++) {
     cam->format7_info.modeset.mode[i].present=0;
   }
 
@@ -191,7 +191,7 @@ GetFormat7Capabilities(camera_t* cam)
     MainError("Could not query Format_7 informations");
     
   check=0;
-  for (i=0;i<DC1394_MODE_FORMAT7_NUM;i++) {
+  for (i=0;i<DC1394_VIDEO_MODE_FORMAT7_NUM;i++) {
     if (cam->format7_info.modeset.mode[i].present!=0) {
       check=1;
       break;
@@ -249,8 +249,8 @@ ChangeModeAndFormat         (GtkMenuItem     *menuitem,
     camera->camera_info.mode=mode;
   
   // check consistancy of framerate:
-  if (!((camera->camera_info.mode >= DC1394_MODE_FORMAT7_MIN) &&
-	(camera->camera_info.mode <= DC1394_MODE_FORMAT7_MAX))) {
+  if (!((camera->camera_info.mode >= DC1394_VIDEO_MODE_FORMAT7_MIN) &&
+	(camera->camera_info.mode <= DC1394_VIDEO_MODE_FORMAT7_MAX))) {
     if (dc1394_video_get_supported_framerates(&camera->camera_info, mode, &framerates)!=DC1394_SUCCESS)
       MainError("Could not read supported framerates");
     else {
@@ -274,8 +274,8 @@ ChangeModeAndFormat         (GtkMenuItem     *menuitem,
   if (dc1394_get_camera_feature_set(&camera->camera_info, &camera->feature_set)!=DC1394_SUCCESS)
     MainError("Could not get camera feature information!");
   
-  if ((camera->camera_info.mode >= DC1394_MODE_FORMAT7_MIN) &&
-      (camera->camera_info.mode <= DC1394_MODE_FORMAT7_MAX)) {
+  if ((camera->camera_info.mode >= DC1394_VIDEO_MODE_FORMAT7_MIN) &&
+      (camera->camera_info.mode <= DC1394_VIDEO_MODE_FORMAT7_MAX)) {
     GetFormat7Capabilities(camera);
   }
   
@@ -456,7 +456,7 @@ void GrabSelfIds(camera_t *cams)
   
   raw1394_destroy_handle(handle);
 }
-
+/*
 void
 SetIsoChannels(void)
 {
@@ -499,7 +499,7 @@ SetIsoChannels(void)
     camera_ptr=camera_ptr->next;
   }
 }
-
+*/
 void
 SetScaleSensitivity(GtkWidget* widget, int feature, dc1394bool_t sense)
 { 
@@ -768,24 +768,9 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation)
 
   GrabSelfIds(cameras);
 
+  // TODO: ISO should be restarted for the cameras that were streaming. 
   // set ISO channels
-  SetIsoChannels();
-  
-  // eprint("Reseting ISO channels\n");
-  // // re-set ISO channels.
-  // SetChannels();
-
-  // eprint("Restarting ISO\n");
-  // // Restart all ISO threads
-  // camera_ptr=cameras;
-  // while (camera_ptr!=NULL) {
-  //   if (GetService(camera_ptr,SERVICE_ISO)!=NULL) {
-  //     IsoStopThread(camera_ptr);
-  //     usleep(DELAY);
-  //     IsoStartThread(camera_ptr);
-  //  }
-  //camera_ptr=camera_ptr->next;
-  //}
+  // SetIsoChannels();
 
   if (newcamnum>0) {
     //eprint("free %d newcameras\n",newcamnum);
@@ -870,7 +855,7 @@ SetFormat7Crop(int sx, int sy, int px, int py, int mode) {
   dc1394format7mode_t *info;
   GtkAdjustment *adjsx, *adjsy, *adjpx, *adjpy, *adj_bpp;
 
-  info=&camera->format7_info.modeset.mode[mode-DC1394_MODE_FORMAT7_MIN];
+  info=&camera->format7_info.modeset.mode[mode-DC1394_VIDEO_MODE_FORMAT7_MIN];
   
   adjpx=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_hposition_scale")));
   adjpy=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_vposition_scale")));
@@ -1063,31 +1048,31 @@ IsOptionAvailableWithFormat(int* bayer, int* stereo, int* bpp16)
 {
   int cond8, cond16, cond422;
 
-  if (!((camera->camera_info.mode >= DC1394_MODE_FORMAT7_MIN) &&
-	(camera->camera_info.mode <= DC1394_MODE_FORMAT7_MAX))) {
-    cond8=((camera->camera_info.mode==DC1394_MODE_640x480_MONO8)||
-	   (camera->camera_info.mode==DC1394_MODE_800x600_MONO8)||
-	   (camera->camera_info.mode==DC1394_MODE_1024x768_MONO8)||
-	   (camera->camera_info.mode==DC1394_MODE_1280x960_MONO8)||
-	   (camera->camera_info.mode==DC1394_MODE_1600x1200_MONO8));
-    cond16=((camera->camera_info.mode==DC1394_MODE_640x480_MONO16)||
-	    (camera->camera_info.mode==DC1394_MODE_800x600_MONO16)||
-	    (camera->camera_info.mode==DC1394_MODE_1024x768_MONO16)||
-	    (camera->camera_info.mode==DC1394_MODE_1280x960_MONO16)||
-	    (camera->camera_info.mode==DC1394_MODE_1600x1200_MONO16));
-    cond422=((camera->camera_info.mode==DC1394_MODE_320x240_YUV422)||
-	     (camera->camera_info.mode==DC1394_MODE_640x480_YUV422)||
-	     (camera->camera_info.mode==DC1394_MODE_800x600_YUV422)||
-	     (camera->camera_info.mode==DC1394_MODE_1024x768_YUV422)||
-	     (camera->camera_info.mode==DC1394_MODE_1280x960_YUV422)||
-	     (camera->camera_info.mode==DC1394_MODE_1600x1200_YUV422));
+  if (!((camera->camera_info.mode >= DC1394_VIDEO_MODE_FORMAT7_MIN) &&
+	(camera->camera_info.mode <= DC1394_VIDEO_MODE_FORMAT7_MAX))) {
+    cond8=((camera->camera_info.mode==DC1394_VIDEO_MODE_640x480_MONO8)||
+	   (camera->camera_info.mode==DC1394_VIDEO_MODE_800x600_MONO8)||
+	   (camera->camera_info.mode==DC1394_VIDEO_MODE_1024x768_MONO8)||
+	   (camera->camera_info.mode==DC1394_VIDEO_MODE_1280x960_MONO8)||
+	   (camera->camera_info.mode==DC1394_VIDEO_MODE_1600x1200_MONO8));
+    cond16=((camera->camera_info.mode==DC1394_VIDEO_MODE_640x480_MONO16)||
+	    (camera->camera_info.mode==DC1394_VIDEO_MODE_800x600_MONO16)||
+	    (camera->camera_info.mode==DC1394_VIDEO_MODE_1024x768_MONO16)||
+	    (camera->camera_info.mode==DC1394_VIDEO_MODE_1280x960_MONO16)||
+	    (camera->camera_info.mode==DC1394_VIDEO_MODE_1600x1200_MONO16));
+    cond422=((camera->camera_info.mode==DC1394_VIDEO_MODE_320x240_YUV422)||
+	     (camera->camera_info.mode==DC1394_VIDEO_MODE_640x480_YUV422)||
+	     (camera->camera_info.mode==DC1394_VIDEO_MODE_800x600_YUV422)||
+	     (camera->camera_info.mode==DC1394_VIDEO_MODE_1024x768_YUV422)||
+	     (camera->camera_info.mode==DC1394_VIDEO_MODE_1280x960_YUV422)||
+	     (camera->camera_info.mode==DC1394_VIDEO_MODE_1600x1200_YUV422));
   }
   else {
-    cond16=((camera->format7_info.modeset.mode[camera->camera_info.mode-DC1394_MODE_FORMAT7_MIN].color_coding_id==DC1394_COLOR_CODING_MONO16)||
-	    (camera->format7_info.modeset.mode[camera->camera_info.mode-DC1394_MODE_FORMAT7_MIN].color_coding_id==DC1394_COLOR_CODING_RAW16));
-    cond8=((camera->format7_info.modeset.mode[camera->camera_info.mode-DC1394_MODE_FORMAT7_MIN].color_coding_id==DC1394_COLOR_CODING_MONO8)||
-	   (camera->format7_info.modeset.mode[camera->camera_info.mode-DC1394_MODE_FORMAT7_MIN].color_coding_id==DC1394_COLOR_CODING_RAW8));
-    cond422=(camera->format7_info.modeset.mode[camera->camera_info.mode-DC1394_MODE_FORMAT7_MIN].color_coding_id==DC1394_COLOR_CODING_YUV422);
+    cond16=((camera->format7_info.modeset.mode[camera->camera_info.mode-DC1394_VIDEO_MODE_FORMAT7_MIN].color_coding_id==DC1394_COLOR_CODING_MONO16)||
+	    (camera->format7_info.modeset.mode[camera->camera_info.mode-DC1394_VIDEO_MODE_FORMAT7_MIN].color_coding_id==DC1394_COLOR_CODING_RAW16));
+    cond8=((camera->format7_info.modeset.mode[camera->camera_info.mode-DC1394_VIDEO_MODE_FORMAT7_MIN].color_coding_id==DC1394_COLOR_CODING_MONO8)||
+	   (camera->format7_info.modeset.mode[camera->camera_info.mode-DC1394_VIDEO_MODE_FORMAT7_MIN].color_coding_id==DC1394_COLOR_CODING_RAW8));
+    cond422=(camera->format7_info.modeset.mode[camera->camera_info.mode-DC1394_VIDEO_MODE_FORMAT7_MIN].color_coding_id==DC1394_COLOR_CODING_YUV422);
   }
   
   *bayer = (cond8||cond16||(cond422 && (camera->stereo!=NO_STEREO_DECODING)));

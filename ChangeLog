@@ -2,6 +2,12 @@ Coriander, (c) 2000-2005 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 2.0.0-pre5
 
+   December 20, 2005, by Damien Douxchamps
+   - added support for VNG bayer decoding
+	
+   December 18, 2005, by Damien Douxchamps
+   - sync with libdc1394
+	
    December 11, 2005, by Damien Douxchamps
    - update the ranges when a control that changes the framerate is activated.
      This is necessary because the min/max and/or absolute value may change

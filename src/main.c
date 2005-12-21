@@ -79,8 +79,13 @@ main (int argc, char *argv[])
 
   GrabSelfIds(cameras);
 
+  camera_t *cam_tmp=cameras;
+  while (cam_tmp!=NULL) {
+    dc1394_cleanup_iso_channels_and_bandwidth(&cam_tmp->camera_info);
+    cam_tmp=cam_tmp->next;
+  }
   //eprint("Starting to set ISO channels\n");
-  SetIsoChannels();
+  //SetIsoChannels();
   //eprint("ISO channels are set\n");
 
   // current camera is the first camera:

@@ -265,7 +265,7 @@ UpdateFormat7BppRange(void)
 {
   GtkAdjustment* adj;
   dc1394format7mode_t *info;
-  info=&camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN];
+  info=&camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_VIDEO_MODE_FORMAT7_MIN];
 
   if (dc1394_format7_get_byte_per_packet(&camera->camera_info,
 					   camera->format7_info.edit_mode, &info->bpp)==DC1394_SUCCESS) {
@@ -295,7 +295,7 @@ UpdateFormat7Ranges(void)
 {
   GtkAdjustment  *adj;
   dc1394format7mode_t *info;
-  info=&camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN];
+  info=&camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_VIDEO_MODE_FORMAT7_MIN];
 
   // define the adjustments for the 4 format7 controls. Note that (pos_x+size_x)<=max_size_x which yields some inter-dependencies
 

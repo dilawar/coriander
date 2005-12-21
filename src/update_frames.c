@@ -154,7 +154,7 @@ UpdateTriggerFrame(void)
 			   camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].available);
   gtk_widget_set_sensitive(lookup_widget(main_window,"fps_menu"),
 			   !(camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].is_on) &&
-			   !((camera->camera_info.mode >= DC1394_MODE_FORMAT7_MIN) && (camera->camera_info.mode <= DC1394_MODE_FORMAT7_MAX)));
+			   !((camera->camera_info.mode >= DC1394_VIDEO_MODE_FORMAT7_MIN) && (camera->camera_info.mode <= DC1394_VIDEO_MODE_FORMAT7_MAX)));
   gtk_widget_set_sensitive(lookup_widget(main_window,"trigger_mode"),
 			   camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].is_on && 
 			   camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].available);
@@ -302,13 +302,12 @@ UpdateTransferStatusFrame(void)
   char *temp;
   temp=(char*)malloc(STRING_SIZE*sizeof(char));
 
-  sprintf(temp," %d",camera->camera_info.iso_channel);
-  gtk_statusbar_remove( (GtkStatusbar*) lookup_widget(main_window,"iso_channel_status"), ctxt.iso_channel_ctxt, ctxt.iso_channel_id);
-  ctxt.iso_channel_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(main_window,"iso_channel_status"), ctxt.iso_channel_ctxt, temp);
-
-  if (dc1394_video_get_iso_channel_and_speed(&camera->camera_info, &camera->camera_info.iso_channel, &camera->camera_info.iso_speed)!=DC1394_SUCCESS)
-    MainError("Can't get ISO channel and speed");
-  sprintf(temp," %d",camera->camera_info.iso_channel);
+  if (camera->camera_info.iso_channel>=0) {
+    sprintf(temp," %d",camera->camera_info.iso_channel);
+  }
+  else {
+    sprintf(temp," N/A");
+  }
   gtk_statusbar_remove( (GtkStatusbar*) lookup_widget(main_window,"iso_channel_status"), ctxt.iso_channel_ctxt, ctxt.iso_channel_id);
   ctxt.iso_channel_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(main_window,"iso_channel_status"), ctxt.iso_channel_ctxt, temp);
 
@@ -397,7 +396,7 @@ UpdateFormat7InfoFrame(void)
 
   if (camera->format7_info.edit_mode!=-1) {
 
-    mode = &camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN];
+    mode = &camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_VIDEO_MODE_FORMAT7_MIN];
 
 
     dc1394_get_bytes_per_pixel(mode->color_coding_id, &bpp);
@@ -461,6 +460,7 @@ UpdateBandwidthFrame(void)
   float *ports;
   float ratio;
   char* temp;
+  dc1394switch_t iso;
   int nports, i, truebps, theobps;
   chain_t* iso_service;
   GtkProgressBar *bar;
@@ -477,18 +477,27 @@ UpdateBandwidthFrame(void)
 
   cam=cameras;
   while(cam!=NULL) {
-    if (dc1394_video_get_bandwidth_usage(&cam->camera_info, &bandwidth)!=DC1394_SUCCESS) {
-      MainError("Could not get a camera bandwidth usage. Bus usage might be inaccurate.");
+    if (dc1394_video_get_transmission(&cam->camera_info, &iso)!=DC1394_SUCCESS) {
+      MainError("Could not get ISO status");
+    }
+
+    if (iso==DC1394_ON) {
+      if (dc1394_video_get_bandwidth_usage(&cam->camera_info, &bandwidth)!=DC1394_SUCCESS) {
+	MainError("Could not get a camera bandwidth usage. Bus usage might be inaccurate.");
+      }
+    }
+    else {
+      bandwidth=0;
     }
     //fprintf(stderr,"%d\n",bandwidth);
     iso_service=GetService(cam,SERVICE_ISO);
     // if we are using format7 and there is a running ISO service, we can get a better estimate:
-    if (((camera->camera_info.mode >= DC1394_MODE_FORMAT7_MIN) && (camera->camera_info.mode <= DC1394_MODE_FORMAT7_MAX))
+    if (((camera->camera_info.mode >= DC1394_VIDEO_MODE_FORMAT7_MIN) && (camera->camera_info.mode <= DC1394_VIDEO_MODE_FORMAT7_MAX))
 	&&(iso_service!=NULL)){
       //fprintf(stderr,"better estimate can be found\n");
       // use the fractions of packets needed:
-      theobps=8000*cam->format7_info.modeset.mode[cam->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].bpp;
-      truebps=iso_service->fps*cam->format7_info.modeset.mode[cam->format7_info.edit_mode-DC1394_MODE_FORMAT7_MIN].total_bytes;
+      theobps=8000*cam->format7_info.modeset.mode[cam->format7_info.edit_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].bpp;
+      truebps=iso_service->fps*cam->format7_info.modeset.mode[cam->format7_info.edit_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].total_bytes;
       ratio=(float)truebps/(float)theobps;
       //fprintf(stderr,"truebps: %d, theobps: %d, ratio: %.2f\n",truebps, theobps, ratio);
       // apply only if the ratio is less than 0.95 and greater than 0
