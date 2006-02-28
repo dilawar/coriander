@@ -78,13 +78,15 @@ NewCamera(void) {
   cam->prefs.ftp_user = (char*)malloc(STRING_SIZE*sizeof(char));
   cam->prefs.ftp_address = (char*)malloc(STRING_SIZE*sizeof(char));
   cam->prefs.ftp_password = (char*)malloc(STRING_SIZE*sizeof(char));
-  cam->prefs.ftp_filename =(char*)malloc(STRING_SIZE*sizeof(char));
   cam->prefs.ftp_path = (char*)malloc(STRING_SIZE*sizeof(char));
   cam->prefs.v4l_dev_name = (char*)malloc(STRING_SIZE*sizeof(char));
   cam->prefs.name = (char*)malloc(STRING_SIZE*sizeof(char));
   cam->prefs.save_filename = (char*)malloc(STRING_SIZE*sizeof(char));
   cam->prefs.save_filename_ext = (char*)malloc(STRING_SIZE*sizeof(char));
   cam->prefs.save_filename_base = (char*)malloc(STRING_SIZE*sizeof(char));
+  cam->prefs.ftp_filename = (char*)malloc(STRING_SIZE*sizeof(char));
+  cam->prefs.ftp_filename_ext = (char*)malloc(STRING_SIZE*sizeof(char));
+  cam->prefs.ftp_filename_base = (char*)malloc(STRING_SIZE*sizeof(char));
   cam->prefs.overlay_filename = (char*)malloc(STRING_SIZE*sizeof(char));
   cam->bayer_pattern=DC1394_COLOR_FILTER_BGGR;
   pthread_mutex_init(&cam->uimutex, NULL);
@@ -100,7 +102,7 @@ GetCameraData(camera_t* cam) {
     dc1394_video_set_operation_mode(&cam->camera_info, DC1394_OPERATION_MODE_1394B);
   }
   if (dc1394_get_camera_feature_set(&cam->camera_info, &cam->feature_set)!=DC1394_SUCCESS)
-    MainError("Could not get camera feature information!");
+    Error("Could not get camera feature information!");
 
   //fprintf(stderr,"Grabbing F7 stuff\n");
   GetFormat7Capabilities(cam);

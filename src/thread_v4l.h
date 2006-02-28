@@ -28,10 +28,6 @@ typedef struct
 
   int v4l_dev;
   unsigned char *v4l_buffer;
-  char v4l_dev_name[STRING_SIZE];
-
-  int period;
-  //int counter;
 
   struct video_capability vid_caps;
   struct video_window vid_win;

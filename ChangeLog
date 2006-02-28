@@ -2,6 +2,32 @@ Coriander, (c) 2000-2005 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 2.0.0-pre5
 
+   February 2, 2006, by Damien Douxchamps
+   - support for trigger modes 4, 5, 14 and 15
+   - basic overwriting protection: append "-%d" to the filename. 
+   - small merge of Johann's patch regarding execution of thread functions
+     by the main function.
+   - errors and warnings can be shown in popups.
+
+   January 23, 2006, by Damien Douxchamps
+   - errors are now always sent to stderr. There is a problem with sending
+     GTK commands from threads so I skipped the message log altogether.
+
+   January 22, 2006, by Damien Douxchamps
+   - code cleanup (no more parameters copy in threads)
+	
+   January 10, 2006, by Damien Douxchamps
+   - added direct register manipulation
+
+   December 26, 2005, by Damien Douxchamps
+   - sync with libdc
+   - automatic bayer pattern detection (if available)
+
+   December 23, 2005, by Damien Douxchamps
+   - sync with new libdc location
+   - merge autoconf functions in (configure.in)
+   - sync with FFMPEG. Coriander now accepts the latest version.
+	
    December 20, 2005, by Damien Douxchamps
    - added support for VNG bayer decoding
 	

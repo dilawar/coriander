@@ -48,20 +48,16 @@ V4lStartThread(camera_t* cam)
     /* setup v4l_thread: handles, ...*/
     pthread_mutex_lock(&v4l_service->mutex_data);
     
-    info->period=cam->prefs.v4l_period;
     CommonChainSetup(cam, v4l_service,SERVICE_V4L);
     
     info->v4l_buffer=NULL;
 
-    // COPY CAM->PREFS HERE
-    strcpy(info->v4l_dev_name,cam->prefs.v4l_dev_name);
-
     // open V4L device
     info->v4l_dev=-1;
-    info->v4l_dev = open(info->v4l_dev_name, O_RDWR);
+    info->v4l_dev = open(cam->prefs.v4l_dev_name, O_RDWR);
     if (info->v4l_dev < 0) {
-      sprintf(stemp,"Failed to open V4L device %s",info->v4l_dev_name);
-      MainError(stemp);
+      sprintf(stemp,"Failed to open V4L device %s",cam->prefs.v4l_dev_name);
+      Error(stemp);
       free(stemp);
       stemp=NULL;
       FreeChain(v4l_service);
@@ -127,6 +123,8 @@ V4lThread(void* arg)
   v4l_service=(chain_t*)arg;
   pthread_mutex_lock(&v4l_service->mutex_data);
   info=(v4lthread_info_t*)v4l_service->data;
+  camera_t *cam=v4l_service->camera;
+
   skip_counter=0;
   v4l_service->processed_frames=0;
 
@@ -157,13 +155,13 @@ V4lThread(void* arg)
 	/* Only do this ONCE before writing the first frame */
 	if (((v4l_service->current_buffer->color_mode == DC1394_COLOR_CODING_MONO8) ||
 	     (v4l_service->current_buffer->color_mode == DC1394_COLOR_CODING_RAW8)) && v4l_service->processed_frames==0) {
-	  MainStatus("Setting V4L device to GREY palette");
+	  Warning("Setting V4L device to GREY palette");
 	  if (ioctl(info->v4l_dev,VIDIOCGPICT,&p) < 0) 
-	    MainError("ioctl(VIDIOCGPICT) error");
+	    Error("ioctl(VIDIOCGPICT) error");
 	  else {
 	    p.palette = VIDEO_PALETTE_GREY;
 	    if (ioctl(info->v4l_dev,VIDIOCSPICT,&p) < 0) 
-	      MainError("ioctl(VIDIOCSPICT) Error");
+	      Error("ioctl(VIDIOCSPICT) Error");
 	  }
 	}
 
@@ -175,7 +173,7 @@ V4lThread(void* arg)
 	}
 
 	if (v4l_service->current_buffer->width!=-1) {
-	  if (skip_counter>=(info->period-1)) {
+	  if (skip_counter>=(cam->prefs.v4l_period-1)) {
 	    skip_counter=0;
 	    if ((v4l_service->current_buffer->color_mode != DC1394_COLOR_CODING_MONO8) ||
 		(v4l_service->current_buffer->color_mode != DC1394_COLOR_CODING_RAW8))

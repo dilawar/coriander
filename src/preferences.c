@@ -47,25 +47,25 @@ LoadConfigFile(void)
   preferences.camprefs.ftp_datenum          = gnome_config_get_int("coriander/ftp/datenum=1");
   preferences.camprefs.v4l_period           = gnome_config_get_int("coriander/v4l/period=1");
 
-  //fprintf(stderr,"ftpuser orig adr: 0x%x\n",preferences.camprefs.video1394_device);
-  //preferences.camprefs.video1394_device=(char*)malloc(STRING_SIZE*sizeof(char));
-  //fprintf(stderr,"ftpuser orig adr: 0x%x\n",preferences.camprefs.video1394_device);
-  //sprintf(preferences.camprefs.video1394_device,"/dev/video1394/%d", dc1394_get_camera_port(camera->camera_info.handle));
-
-  preferences.camprefs.save_filename  = gnome_config_get_string("coriander/save/filename=test");
+  preferences.camprefs.save_filename    = gnome_config_get_string("coriander/save/filename=test");
   preferences.camprefs.overlay_filename = gnome_config_get_string("coriander/display/overlay_filename=test.png");
-  preferences.camprefs.ftp_filename  = gnome_config_get_string("coriander/ftp/filename=");
-  preferences.camprefs.ftp_path      = gnome_config_get_string("coriander/ftp/path=");
-  preferences.camprefs.ftp_address   = gnome_config_get_string("coriander/ftp/address=");
-  preferences.camprefs.ftp_user      = gnome_config_get_string("coriander/ftp/user=username");
-  preferences.camprefs.v4l_dev_name  = gnome_config_get_string("coriander/v4l/v4l_dev_name=/dev/video0");
-  preferences.camprefs.ftp_password = "";
+  preferences.camprefs.ftp_filename     = gnome_config_get_string("coriander/ftp/filename=");
+  preferences.camprefs.ftp_path         = gnome_config_get_string("coriander/ftp/path=");
+  preferences.camprefs.ftp_address      = gnome_config_get_string("coriander/ftp/address=");
+  preferences.camprefs.ftp_user         = gnome_config_get_string("coriander/ftp/user=username");
+  preferences.camprefs.v4l_dev_name     = gnome_config_get_string("coriander/v4l/v4l_dev_name=/dev/video0");
+  preferences.camprefs.ftp_password     = "";
 
-  preferences.op_timeout             = gnome_config_get_float("coriander/global/one_push_timeout=10.0");
-  preferences.auto_update            = gnome_config_get_int("coriander/global/auto_update=1");
-  preferences.auto_update_frequency  = gnome_config_get_float("coriander/global/auto_update_frequency=2.0");
-  preferences.sync_control           = gnome_config_get_float("coriander/global/sync_control=0");
-  preferences.overlay_byte_order     = gnome_config_get_int("coriander/global/overlay_byte_order=0");
+  preferences.op_timeout                = gnome_config_get_float("coriander/global/one_push_timeout=10.0");
+  preferences.auto_update               = gnome_config_get_int("coriander/global/auto_update=1");
+  preferences.auto_update_frequency     = gnome_config_get_float("coriander/global/auto_update_frequency=2.0");
+  preferences.sync_control              = gnome_config_get_float("coriander/global/sync_control=0");
+  preferences.overlay_byte_order        = gnome_config_get_int("coriander/global/overlay_byte_order=0");
+  preferences.no_overwrite              = gnome_config_get_int("coriander/global/no_overwrite=1");
+  preferences.warning_in_popup          = gnome_config_get_int("coriander/global/warning_in_popup=0");
+  preferences.error_in_popup            = gnome_config_get_int("coriander/global/error_in_popup=1");
+  preferences.automate_receive          = gnome_config_get_int("coriander/global/automate_receive=1");
+  preferences.automate_iso              = gnome_config_get_int("coriander/global/automate_iso=1");
 }
 
 void

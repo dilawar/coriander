@@ -97,7 +97,11 @@ const char * trigger_mode_list[DC1394_TRIGGER_MODE_NUM] = {
   "Mode 0",
   "Mode 1",
   "Mode 2",
-  "Mode 3"
+  "Mode 3",
+  "Mode 4",
+  "Mode 5",
+  "Mode 14",
+  "Mode 15"
 };
 
 const char * channel_num_list[16] = {
@@ -183,26 +187,14 @@ const char * phy_delay_list[4] = {
   "unknown"
 };
 
-
-const char * format_list[5]= {
-  "Format_0",
-  "Format_1",
-  "Format_2",
-  "Format_6",
-  "Format_7"
-};
-
-const char * format0_list[DC1394_VIDEO_MODE_FORMAT0_NUM]= {
+const char * video_mode_list[DC1394_VIDEO_MODE_NUM]= {
   "Format_0, Mode_0: 160x120 YUV (4:4:4)",
   "Format_0, Mode_1: 320x240 YUV (4:2:2)",
   "Format_0, Mode_2: 640x480 YUV (4:1:1)",
   "Format_0, Mode_3: 640x480 YUV (4:2:2)",
   "Format_0, Mode_4: 640x480 RGB 24bpp",
   "Format_0, Mode_5: 640x480 Mono 8bpp",
-  "Format_0, Mode_6: 640x480 Mono 16bpp"
-};
-
-const char * format1_list[DC1394_VIDEO_MODE_FORMAT1_NUM]= {
+  "Format_0, Mode_6: 640x480 Mono 16bpp",
   "Format_1, Mode_0: 800x600 YUV (4:2:2)",
   "Format_1, Mode_1: 800x600 RGB 24bpp",
   "Format_1, Mode_2: 800x600 Mono 8bpp",
@@ -210,10 +202,7 @@ const char * format1_list[DC1394_VIDEO_MODE_FORMAT1_NUM]= {
   "Format_1, Mode_4: 1024x768 RGB 24bpp",
   "Format_1, Mode_5: 1024x768 Mono 8bpp",
   "Format_1, Mode_6: 800x600 Mono 16bpp",
-  "Format_1, Mode_7: 1024x768 Mono 16bpp"
-};
-
-const char * format2_list[DC1394_VIDEO_MODE_FORMAT2_NUM]= {
+  "Format_1, Mode_7: 1024x768 Mono 16bpp",
   "Format_2, Mode_0: 1280x960 YUV (4:2:2)",
   "Format_2, Mode_1: 1280x960 RGB 24bpp",
   "Format_2, Mode_2: 1280x960 Mono 8bpp",
@@ -221,14 +210,8 @@ const char * format2_list[DC1394_VIDEO_MODE_FORMAT2_NUM]= {
   "Format_2, Mode_4: 1600x1200 RGB 24bpp",
   "Format_2, Mode_5: 1600x1200 Mono 8bpp",
   "Format_2, Mode_6: 1280x960 Mono 16bpp",
-  "Format_2, Mode_7: 1600x1200 Mono 16bpp"
-};
-
-const char * format6_list[DC1394_VIDEO_MODE_FORMAT6_NUM]= {
-  "Mode_0: EXIF (not supported)"
-};
-
-const char * format7_list[DC1394_VIDEO_MODE_FORMAT7_NUM]= {
+  "Format_2, Mode_7: 1600x1200 Mono 16bpp",
+  "Mode_0: EXIF (not supported)",
   "Format7, Mode_0",
   "Format7, Mode_1",
   "Format7, Mode_2",

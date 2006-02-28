@@ -38,17 +38,17 @@ typedef struct
 
   pthread_mutex_t    mutex_cancel;
   int                cancel_req;
-  char               filename[STRING_SIZE];
-  char               filename_ext[STRING_SIZE];
-  char               address[STRING_SIZE];
-  char               password[STRING_SIZE];
-  char               user[STRING_SIZE];
-  char               path[STRING_SIZE];
-  long int           period;
+  //char               filename[STRING_SIZE];
+  //char               filename_ext[STRING_SIZE];
+  //char               address[STRING_SIZE];
+  //char               password[STRING_SIZE];
+  //char               user[STRING_SIZE];
+  //char               path[STRING_SIZE];
+  //long int           period;
   long int           imlib_buffer_size;
   unsigned char*     buffer;
-  int                mode;
-  int                datenum;
+  //int                mode;
+  //int                datenum;
 #ifdef HAVE_FTPLIB
   netbuf             *ftp_handle;
 #endif
@@ -73,7 +73,7 @@ FtpThreadCheckParams(chain_t *ftp_service);
 #ifdef HAVE_FTPLIB
 
 gboolean
-OpenFtpConnection(ftpthread_info_t* info);
+OpenFtpConnection(chain_t *ftp_service);
 
 // V20***
 //gboolean
@@ -83,7 +83,7 @@ void
 CloseFtpConnection(netbuf *ftp_handle);
 
 gboolean
-CheckFtpConnection(ftpthread_info_t* info);
+CheckFtpConnection(chain_t *ftp_service);
 
 #endif
 

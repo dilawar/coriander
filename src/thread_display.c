@@ -41,10 +41,9 @@ DisplayStartThread(camera_t* cam)
     pthread_mutex_unlock(&info->mutex_cancel);
     
     pthread_mutex_lock(&display_service->mutex_data);
-    info->period=cam->prefs.display_period;
     CommonChainSetup(cam, display_service,SERVICE_DISPLAY);
-    
     pthread_mutex_lock(&display_service->mutex_struct);
+
     InsertChain(cam, display_service);
     
     if (pthread_create(&display_service->thread, NULL, DisplayThread, (void*)display_service)) {
@@ -95,6 +94,7 @@ DisplayThread(void* arg)
   pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED,NULL);
   pthread_mutex_unlock(&display_service->mutex_data);
   skip_counter=0;
+  camera_t *cam=display_service->camera;
 
   // time inits:
   display_service->prev_time = times(&display_service->tms_buf);
@@ -116,7 +116,7 @@ DisplayThread(void* arg)
 	DisplayThreadCheckParams(display_service);
 #endif
 	if (display_service->current_buffer->width!=-1) {
-	  if (skip_counter>=(info->period-1)) {
+	  if (skip_counter>=(cam->prefs.display_period-1)) {
 	    skip_counter=0;
 #ifdef HAVE_SDLLIB
 	    if (info->sdloverlay!=NULL) {
@@ -185,7 +185,7 @@ ConditionalTimeoutRedraw(chain_t* service)
     if (interval>(1.0/service->camera->prefs.display_redraw_rate)) { // redraw e.g. 4 times per second
 #ifdef HAVE_SDLLIB
       if (SDL_LockYUVOverlay(info->sdloverlay) == 0) {
-	//MainStatus("Conditional display redraw");
+	//MainWarning("Conditional display redraw");
 	convert_to_yuv_for_SDL(service->current_buffer, info->sdloverlay, preferences.overlay_byte_order);
 	SDLDisplayArea(service);
 	SDL_UnlockYUVOverlay(info->sdloverlay);
@@ -245,7 +245,7 @@ SDLInit(chain_t *display_service)
 
   // Initialize the SDL library (video subsystem)
   if ( SDL_Init(SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE) == -1) {
-    ErrorPopup("Couldn't initialize SDL video subsystem");
+    Error("Couldn't initialize SDL video subsystem");
     return(0);
   }
   
@@ -277,12 +277,12 @@ SDLInit(chain_t *display_service)
   modes=SDL_ListModes(NULL,info->sdlflags);
   if (modes!=(SDL_Rect**)-1) {
     // not all resolutions are OK for this video card. For safety we switch to software accel
-    MainStatus("No SDL mode available with hardware accel. Trying without HWSURFACE");
+    Warning("No SDL mode available with hardware accel. Trying without HWSURFACE");
     info->sdlflags&= ~SDL_HWSURFACE;
     info->sdlflags&= ~SDL_HWACCEL;
     modes=SDL_ListModes(NULL,info->sdlflags);
     if (modes!=(SDL_Rect**)-1) {
-      ErrorPopup("No video modes available, even without hardware acceleration. Can't start SDL!");
+      Error("No video modes available, even without hardware acceleration. Can't start SDL!");
       SDL_Quit();
       return(0);
     }
@@ -314,13 +314,13 @@ SDLInit(chain_t *display_service)
   info->sdlvideo = SDL_SetVideoMode(info->sdlvideorect.w, info->sdlvideorect.h, info->sdlbpp, info->sdlflags);
 
   if (info->sdlvideo == NULL) {
-    MainError(SDL_GetError());
+    Error(SDL_GetError());
     SDL_Quit();
     return(0);
   }
 
   if (SDL_SetColorKey( info->sdlvideo, SDL_SRCCOLORKEY, 0x0) < 0 ) {
-    MainError(SDL_GetError());
+    Error(SDL_GetError());
   }
   
   // Show cursor
@@ -351,7 +351,7 @@ SDLInit(chain_t *display_service)
   
 
   if (info->sdloverlay==NULL) {
-    MainError(SDL_GetError());
+    Error(SDL_GetError());
     SDL_Quit();
     return(0);
   }

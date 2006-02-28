@@ -26,9 +26,10 @@
 #include <gnome.h>
 #include <libraw1394/raw1394.h>
 #include <libraw1394/csr.h>
-#include <libdc1394/dc1394_control.h>
-#include <libdc1394/dc1394_conversions.h>
-#include <libdc1394/dc1394_utils.h>
+#include <dc1394/dc1394_control.h>
+#include <dc1394/dc1394_conversions.h>
+#include <dc1394/dc1394_utils.h>
+#include <dc1394/dc1394_register.h>
 
 // FTP lib
 #ifdef HAVE_FTPLIB
@@ -55,8 +56,6 @@
 #include <netinet/in.h>
 
 #include "raw1394support.h"
-//#include "bayer.h"
-//#include "conversions.h"
 #include "definitions.h"
 #include "videodev.h"
 
@@ -74,8 +73,7 @@
 #endif
 
 #ifdef HAVE_FFMPEG
-//#include <jpeglib.h> // don't use this: ffmpeg is faster.
-#include <avformat.h>
+#include <ffmpeg/avformat.h>
 #endif
 
 #include "video_encode.h"
@@ -123,10 +121,18 @@ raw1394handle_t *handles;
 unsigned int format7_tab_presence;
 unsigned int main_timeout_ticker;
 unsigned int WM_cancel_display;
-
+/*
+unsigned int message_request;
+pthread_mutex_t message_mutex;
+char message_string[STRING_SIZE];
+unsigned int message_type;
+unsigned int message_clicked;
+*/
 #ifdef HAVE_SDLLIB
 cursor_info_t cursor_info;
 watchthread_info_t watchthread_info;
 #endif
+
+mainthread_info_t mainthread_info;
 
 #endif // __CORIANDER_H__

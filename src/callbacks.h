@@ -415,4 +415,36 @@ void
 on_error_popup_button_activate         (GtkButton       *button,
                                         gpointer         user_data);
 
+void
+on_offset_menu_activate             (GtkMenuItem     *menuitem,
+				     gpointer         user_data);
+
+void
+on_register_write_button_clicked       (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_register_read_button_clicked        (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_prefs_no_overwrite_toggled     (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_prefs_warning_in_popup_toggled      (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_prefs_error_in_popup_toggled        (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_prefs_auto_receive_toggled          (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_prefs_auto_iso_toggled              (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
 #endif // __CALLBACKS_H__

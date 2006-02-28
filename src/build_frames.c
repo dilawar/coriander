@@ -61,18 +61,13 @@ BuildTriggerFrame(void)
 void
 BuildPowerFrame(void)
 {
-  quadlet_t basic_funcs;
   // these two functions are always present:
   gtk_widget_set_sensitive(lookup_widget(main_window,"power_frame"),TRUE);
   gtk_widget_set_sensitive(lookup_widget(main_window,"power_reset"),TRUE);
 
   // activate if camera capable of power on/off:
-  if (dc1394_get_basic_functionality(&camera->camera_info, &basic_funcs)!=DC1394_SUCCESS)
-    MainError("Could not query basic functionalities");
-
-  gtk_widget_set_sensitive(lookup_widget(main_window,"power_on"),(basic_funcs & 0x1<<16));
-  gtk_widget_set_sensitive(lookup_widget(main_window,"power_off"),(basic_funcs & 0x1<<16));
-
+  gtk_widget_set_sensitive(lookup_widget(main_window,"power_on"),(camera->camera_info.can_switch_on_off));
+  gtk_widget_set_sensitive(lookup_widget(main_window,"power_off"),(camera->camera_info.can_switch_on_off));
 }
 
 
@@ -92,7 +87,7 @@ BuildIsoFrame(void)
 {
   // TODO: only if ISO capable
   if (dc1394_video_get_transmission(&camera->camera_info, &camera->camera_info.is_iso_on)!=DC1394_SUCCESS)
-    MainError("Can't get ISO status");
+    Error("Can't get ISO status");
   //fprintf(stderr,"sync: %d\n",preferences.sync_control);
   gtk_widget_set_sensitive(lookup_widget(main_window,"iso_frame"),TRUE);
   gtk_widget_set_sensitive(lookup_widget(main_window,"iso_start"),!camera->camera_info.is_iso_on);
@@ -125,6 +120,13 @@ BuildFormat7ModeFrame(void)
 void
 BuildCameraStatusFrame(void)
 { 
+}
+
+void
+BuildRegisterAccessFrame(void)
+{
+  //fprintf(stderr,"build register menu\n");
+  BuildRegisterAccessOffsetMenu();
 }
 
 void
@@ -173,6 +175,11 @@ BuildPrefsGeneralFrame(void)
   
   gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(preferences_window,"prefs_op_timeout_scale"), preferences.op_timeout);
   gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(preferences_window,"prefs_update_scale"), preferences.auto_update_frequency);
+  gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(preferences_window, "prefs_no_overwrite"), preferences.no_overwrite);
+  gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(preferences_window, "prefs_warning_in_popup"), preferences.warning_in_popup);
+  gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(preferences_window, "prefs_error_in_popup"), preferences.error_in_popup);
+  gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(preferences_window, "prefs_auto_receive"), preferences.automate_receive);
+  gtk_toggle_button_set_active((GtkToggleButton*)lookup_widget(preferences_window, "prefs_auto_iso"), preferences.automate_iso);
 }
 
 void

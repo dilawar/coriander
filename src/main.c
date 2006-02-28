@@ -36,6 +36,19 @@ main (int argc, char *argv[])
   cameras=NULL;
   silent_ui_update=0;
 
+  /*
+  // only the main thread is allowed to use gtk_ functions
+  memset (&mainthread_info, 0, sizeof(mainthread_info));
+  mainthread_info.thread=pthread_self();
+  pthread_mutex_init(&mainthread_info.do_mutex, NULL);
+  pthread_mutex_init(&mainthread_info.dialog_mutex, NULL);
+  */
+
+  /*
+  pthread_mutex_init(&message_mutex,NULL);
+  message_request=0;
+  message_clicked=0;
+  */
 #ifdef ENABLE_NLS
   bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
   bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
@@ -124,7 +137,7 @@ main (int argc, char *argv[])
     //raw1394_destroy_handle(handle);
   }
 
-  MainStatus("Welcome to Coriander...");
+  //Warning("Welcome to Coriander...");
   gtk_widget_show (main_window); // this is the only window shown at boot-time
   
   main_timeout=gtk_timeout_add(10, (GtkFunction)main_timeout_handler, (gpointer)(unsigned long)port_num);

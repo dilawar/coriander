@@ -53,9 +53,8 @@ BuildFormat7Window(void)
   // the first available mode (F7 inactive)
 
   // if we are using F7, choose current F7 mode as default
-  if ((camera->camera_info.mode >= DC1394_VIDEO_MODE_FORMAT7_MIN) &&
-      (camera->camera_info.mode <= DC1394_VIDEO_MODE_FORMAT7_MAX)) {
-    camera->format7_info.edit_mode=camera->camera_info.mode;
+  if (dc1394_is_video_mode_scalable(camera->camera_info.video_mode)) {
+    camera->format7_info.edit_mode=camera->camera_info.video_mode;
   }
   // if we are NOT using F7, check if an F7 mode is supported and use the first one as default
   else { 
@@ -473,6 +472,7 @@ BuildStatusWindow(void)
   BuildTransferStatusFrame();
   BuildBandwidthFrame();
   BuildSeviceTreeFrame();
+  BuildRegisterAccessFrame();
 }
 
 void

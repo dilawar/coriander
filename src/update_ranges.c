@@ -166,7 +166,7 @@ UpdateRangeValue(GtkWidget* widget, int feature)
 	  }
 	  }*/
       if (err!=DC1394_SUCCESS)
-	MainError("Could not get white balance value");
+	Error("Could not get white balance value");
       else {
 	sprintf(stemp,"feature_%d_bu_scale",feature);
 	adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(widget, stemp)));
@@ -192,7 +192,7 @@ UpdateRangeValue(GtkWidget* widget, int feature)
 	  }
 	  }*/
       if (err!=DC1394_SUCCESS)
-	MainError("Could not get white balance value");
+	Error("Could not get white balance value");
       else {
 	sprintf(stemp,"feature_%d_r_scale",feature);
 	adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(widget, stemp)));
@@ -221,7 +221,7 @@ UpdateRangeValue(GtkWidget* widget, int feature)
 	}
 	}*/
       if (err<0)
-	MainError("Could not get temperature value");
+	Error("Could not get temperature value");
       else {
 	sprintf(stemp,"feature_%d_target_scale",feature);
 	adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(widget,stemp)));
@@ -243,7 +243,7 @@ UpdateRangeValue(GtkWidget* widget, int feature)
 	  usleep(DELAY);// wait 1/20 sec
 	}
 	}*/
-      if (err<0) MainError("Could not get feature value");
+      if (err<0) Error("Could not get feature value");
       else {
 	sprintf(stemp,"feature_%d_scale",feature);
 	adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(widget, stemp)));
@@ -284,10 +284,10 @@ UpdateFormat7BppRange(void)
       g_signal_emit_by_name((gpointer) adj, "changed");
     }
     else
-      MainError("Can't get bpp info from camera");
+      Error("Can't get bpp info from camera");
   }
   else
-    MainError("Can't get bpp info from camera");
+    Error("Can't get bpp info from camera");
 }
 
 void

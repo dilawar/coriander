@@ -23,7 +23,6 @@ FtpStartThread(camera_t* cam)
 {
   chain_t* ftp_service=NULL;
   ftpthread_info_t *info=NULL;
-  gchar *tmp;
 
   ftp_service=GetService(camera,SERVICE_FTP);
 
@@ -44,41 +43,41 @@ FtpStartThread(camera_t* cam)
     
     /* setup ftp_thread: handles, ...*/
     pthread_mutex_lock(&ftp_service->mutex_data);
-    info->period=cam->prefs.ftp_period;
-    info->datenum=cam->prefs.ftp_datenum;
-    strcpy(info->address, cam->prefs.ftp_address);
-    strcpy(info->user, cam->prefs.ftp_user);
-    strcpy(info->password, cam->prefs.ftp_password);
-    strcpy(info->path, cam->prefs.ftp_path);
-    strcpy(info->filename, cam->prefs.ftp_filename);
-    tmp = strrchr(info->filename, '.');
-    
+    //info->period=cam->prefs.ftp_period;
+    //info->datenum=cam->prefs.ftp_datenum;
+    //strcpy(info->address, cam->prefs.ftp_address);
+    //strcpy(info->user, cam->prefs.ftp_user);
+    //strcpy(info->password, cam->prefs.ftp_password);
+    //strcpy(info->path, cam->prefs.ftp_path);
+    //strcpy(info->filename, cam->prefs.ftp_filename);
+    //tmp = strrchr(cam->prefs.ftp_filename, '.');
+    /*
     if (tmp==NULL) {
-      MainError("You should supply an extension");
+      Error("You should supply an extension");
       pthread_mutex_unlock(&ftp_service->mutex_data);
       FreeChain(ftp_service);
       return(-1);
     }
-    
-    tmp[0] = '\0';// cut filename before point
-    strcpy(info->filename_ext, strrchr(cam->prefs.ftp_filename, '.'));
+    */
+    //tmp[0] = '\0';// cut filename before point
+    //strcpy(info->filename_ext, strrchr(cam->prefs.ftp_filename, '.'));
     
     CommonChainSetup(cam,ftp_service,SERVICE_FTP);
     
     info->buffer=NULL;
     info->imlib_buffer_size=0;
     
-    info->mode=cam->prefs.ftp_mode;
+    //info->mode=cam->prefs.ftp_mode;
     
 #ifdef HAVE_FTPLIB
-    if (!OpenFtpConnection(info)) {
-      MainError("Failed to open FTP connection");
+    if (!OpenFtpConnection(ftp_service)) {
+      Error("Failed to open FTP connection");
       pthread_mutex_unlock(&ftp_service->mutex_data);
       FreeChain(ftp_service);
       return(-1);
     }
 #else
-    MainError("You don't have FTPLIB");
+    Error("You don't have FTPLIB");
     pthread_mutex_unlock(&ftp_service->mutex_data);
     FreeChain(ftp_service);
     return(-1);
@@ -142,7 +141,8 @@ FtpThread(void* arg)
   ftp_service=(chain_t*)arg;
   pthread_mutex_lock(&ftp_service->mutex_data);
   info=(ftpthread_info_t*)ftp_service->data;
-  skip_counter=(info->period-1); /* send immediately, then start skipping */
+  camera_t *cam=ftp_service->camera;
+  skip_counter=(cam->prefs.ftp_period-1); /* send immediately, then start skipping */
   /* These settings depend on the thread. For 100% safe deferred-cancel
    threads, I advise you use a custom thread cancel flag. See display thread.*/
   pthread_setcancelstate(PTHREAD_CANCEL_DISABLE,NULL);
@@ -167,20 +167,20 @@ FtpThread(void* arg)
       if(GetBufferFromPrevious(ftp_service)) { // have buffers been rolled?
 	FtpThreadCheckParams(ftp_service);
 	if (ftp_service->current_buffer->width!=-1) {
-	  if (skip_counter>=(info->period-1)) {
+	  if (skip_counter>=(cam->prefs.ftp_period-1)) {
 	    skip_counter=0;
 	    convert_to_rgb(ftp_service->current_buffer, info->buffer);
-	    switch (info->mode) {
+	    switch (cam->prefs.ftp_mode) {
 	    case FTP_MODE_OVERWRITE:
-	      sprintf(filename_out, "%s%s", info->filename,info->filename_ext);
+	      sprintf(filename_out, "%s%s", cam->prefs.ftp_filename,cam->prefs.ftp_filename_ext);
 	      break;
 	    case FTP_MODE_SEQUENTIAL:
-	      switch (info->datenum) {
+	      switch (cam->prefs.ftp_datenum) {
 	      case FTP_TAG_DATE:
-		sprintf(filename_out, "%s-%s%s", info->filename, ftp_service->current_buffer->captime_string, info->filename_ext);
+		sprintf(filename_out, "%s-%s%s", cam->prefs.ftp_filename, ftp_service->current_buffer->captime_string, cam->prefs.ftp_filename_ext);
 		break;
 	      case FTP_TAG_NUMBER:
-		sprintf(filename_out,"%s-%10.10lli%s", info->filename, ftp_service->processed_frames, info->filename_ext);
+		sprintf(filename_out,"%s-%10.10lli%s", cam->prefs.ftp_filename, ftp_service->processed_frames, cam->prefs.ftp_filename_ext);
 		break;
 	      }
 	      break;
@@ -190,8 +190,8 @@ FtpThread(void* arg)
 	    // V20***   
 	    //im=gdk_imlib_create_image_from_data(info->buffer, NULL, ftp_service->current_buffer->width, ftp_service->current_buffer->height);
 #ifdef HAVE_FTPLIB
-	    if (!CheckFtpConnection(info)) {
-	      MainError("Ftp connection lost for good");
+	    if (!CheckFtpConnection(ftp_service)) {
+	      Error("Ftp connection lost for good");
 	      // AUTO CANCEL THREAD
 	      pthread_mutex_lock(&info->mutex_cancel);
 	      info->cancel_req=1;
@@ -330,36 +330,37 @@ FtpThreadCheckParams(chain_t *ftp_service)
 }
 
 #ifdef HAVE_FTPLIB
-gboolean OpenFtpConnection(ftpthread_info_t* info)
+gboolean OpenFtpConnection(chain_t *ftp_service)
 {
   char  tmp[STRING_SIZE];
-
+  ftpthread_info_t* info=(ftpthread_info_t*)ftp_service->data;
+  camera_t *cam=ftp_service->camera;
   FtpInit();
 
-  //MainStatus("Ftp: starting...\n");
-  if (!FtpConnect(info->address, &info->ftp_handle)) {
-    MainError("Ftp: connection to server failed");
+  //Warning("Ftp: starting...\n");
+  if (!FtpConnect(cam->prefs.ftp_address, &info->ftp_handle)) {
+    Error("Ftp: connection to server failed");
     return FALSE;
   }
   
-  if (FtpLogin(info->user, info->password, info->ftp_handle) != 1) {
-    MainError("Ftp: login failed.");
+  if (FtpLogin(cam->prefs.ftp_user, cam->prefs.ftp_password, info->ftp_handle) != 1) {
+    Error("Ftp: login failed.");
     return FALSE;
   }
   
-  sprintf(tmp, "Ftp: logged in as %s", info->user);
-  MainStatus(tmp);
+  sprintf(tmp, "Ftp: logged in as %s", cam->prefs.ftp_user);
+  Warning(tmp);
   
-  if (info->path != NULL && strcmp(info->path,"")) {
-    if (!FtpChdir(info->path, info->ftp_handle)) {
-      MainError("Ftp: chdir failed");
+  if (cam->prefs.ftp_path != NULL && strcmp(cam->prefs.ftp_path,"")) {
+    if (!FtpChdir(cam->prefs.ftp_path, info->ftp_handle)) {
+      Error("Ftp: chdir failed");
       return FALSE;
     }
-    sprintf(tmp, "Ftp: chdir %s", info->path);
-    MainStatus(tmp);
+    sprintf(tmp, "Ftp: chdir %s", cam->prefs.ftp_path);
+    Warning(tmp);
   }
   
-  MainStatus("Ftp: ready to send");
+  Warning("Ftp: ready to send");
 
   return TRUE;
 }
@@ -371,13 +372,15 @@ CloseFtpConnection(netbuf *ftp_handle)
 }
 
 gboolean
-CheckFtpConnection(ftpthread_info_t* info)
+CheckFtpConnection(chain_t *ftp_service)
 {
  
+  ftpthread_info_t* info=(ftpthread_info_t*)ftp_service->data;
+
   if (!FtpChdir(".", info->ftp_handle))
     // we can't access the current directory! Connection is probably lost. Reconnect: 
-    if (!OpenFtpConnection(info)) {
-      MainError("Ftp: Can't restore lost connection");
+    if (!OpenFtpConnection(ftp_service)) {
+      Error("Ftp: Can't restore lost connection");
       return FALSE;
     }
   return TRUE;
@@ -400,7 +403,7 @@ FtpPutFrame(char *filename, GdkImlibImage *im, ftpthread_info_t* info)
   if (!FtpPut(tmp, filename, FTPLIB_IMAGE, info->ftp_handle)) {
     free(tmp);
     tmp=NULL;
-    MainError("Ftp failed to put file.");
+    Error("Ftp failed to put file.");
     return FALSE;
   }
   free(tmp);

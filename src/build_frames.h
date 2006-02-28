@@ -83,4 +83,7 @@ BuildBandwidthFrame(void);
 void
 BuildSeviceTreeFrame(void);
 
+void
+BuildRegisterAccessFrame(void);
+
 #endif // __BUILDFRAMES_H__

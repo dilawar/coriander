@@ -212,9 +212,8 @@ OnMouseDown(chain_t *display_service, int button, int x, int y)
   dc1394format7mode_t* f7info;
   info=(displaythread_info_t*)display_service->data;
 
-  if ((camera->camera_info.mode >= DC1394_VIDEO_MODE_FORMAT7_MIN) &&
-      (camera->camera_info.mode <= DC1394_VIDEO_MODE_FORMAT7_MAX)) {
-    f7info=&camera->format7_info.modeset.mode[camera->camera_info.mode-DC1394_VIDEO_MODE_FORMAT7_MIN];
+  if (dc1394_is_video_mode_scalable(camera->camera_info.video_mode)) {
+    f7info=&camera->format7_info.modeset.mode[camera->camera_info.video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN];
   }
 
   switch (button) {
@@ -405,13 +404,13 @@ SDLResizeDisplay(chain_t *display_service, int width, int height)
     //info->sdlbpp = SDL_VideoModeOK(info->sdlvideorect.w, info->sdlvideorect.h, info->sdlbpp, info->sdlflags); // not necessary
     info->sdlvideo = SDL_SetVideoMode(info->sdlvideorect.w, info->sdlvideorect.h, info->sdlbpp, info->sdlflags); // THIS LINE SOMETIME SUCKS WHEN CHANGING FORMAT W/H
     if (info->sdlvideo == NULL) {
-      MainError(SDL_GetError());
+      Error(SDL_GetError());
       SDL_Quit();
       return;
     }
     
     //if (SDL_SetColorKey(info->sdlvideo, SDL_SRCCOLORKEY, 0x0) < 0 ) {
-    //  MainError(SDL_GetError());
+    //  Error(SDL_GetError());
     //}
     
     //fprintf(stderr,"create overlay with size [%d %d]...\n",display_service->current_buffer->width,display_service->current_buffer->height);
@@ -433,7 +432,7 @@ SDLResizeDisplay(chain_t *display_service, int width, int height)
       break;
     }
     if (info->sdloverlay==NULL) {
-      MainError(SDL_GetError());
+      Error(SDL_GetError());
       SDL_Quit();
       return;
     }
@@ -451,8 +450,7 @@ SDLCropImage(chain_t *display_service)
   pthread_mutex_lock(&watchthread_info.mutex_area);
 
   watchthread_info.draw=0;
-  if ((camera->camera_info.mode >= DC1394_VIDEO_MODE_FORMAT7_MIN) &&
-      (camera->camera_info.mode <= DC1394_VIDEO_MODE_FORMAT7_MAX))
+  if (dc1394_is_video_mode_scalable(camera->camera_info.video_mode))
     watchthread_info.crop=1;
 
   pthread_mutex_unlock(&watchthread_info.mutex_area);
@@ -464,13 +462,12 @@ SDLSetMaxSize(chain_t *display_service)
 {
   pthread_mutex_lock(&watchthread_info.mutex_area);
   watchthread_info.draw=0;
-  if ((camera->camera_info.mode >= DC1394_VIDEO_MODE_FORMAT7_MIN) &&
-      (camera->camera_info.mode <= DC1394_VIDEO_MODE_FORMAT7_MAX)) {
+  if (dc1394_is_video_mode_scalable(camera->camera_info.video_mode)) {
     watchthread_info.crop=1;
     watchthread_info.pos[0]=0;
     watchthread_info.pos[1]=0;
-    watchthread_info.size[0]=camera->format7_info.modeset.mode[camera->camera_info.mode-DC1394_VIDEO_MODE_FORMAT7_MIN].max_size_x;
-    watchthread_info.size[1]=camera->format7_info.modeset.mode[camera->camera_info.mode-DC1394_VIDEO_MODE_FORMAT7_MIN].max_size_y;
+    watchthread_info.size[0]=camera->format7_info.modeset.mode[camera->camera_info.video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].max_size_x;
+    watchthread_info.size[1]=camera->format7_info.modeset.mode[camera->camera_info.video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].max_size_y;
   }
   pthread_mutex_unlock(&watchthread_info.mutex_area);
 

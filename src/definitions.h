@@ -52,13 +52,32 @@ typedef enum
   STEREO_DECODING_FIELD
 } stereo_decoding_t;
 
+enum
+{
+  REGISTER_OFFSET_CRB=0,
+  REGISTER_OFFSET_UD,
+  REGISTER_OFFSET_UDD,
+  REGISTER_OFFSET_BASE
+};
+
+typedef struct _mainthread_info {
+  pthread_t thread;
+  pthread_mutex_t do_mutex;
+  void *(*do_function)(void *);
+  void *do_arg;
+  void *do_result;
+  int dialog_clicked;
+  pthread_mutex_t dialog_mutex;
+  char message[1024];
+} mainthread_info_t;
+
+
 #define NO_BAYER_DECODING -1
 
 typedef struct _CamPrefs
 {
   int display_keep_ratio;
   int display_period;
-  //int display_scale;
   int display_redraw;
   float display_redraw_rate;
   int receive_method;
@@ -70,10 +89,7 @@ typedef struct _CamPrefs
   char *save_filename_base;
   int save_format;
   int save_append;
-  //int save_mode;
   int save_period;
-  //int save_convert;
-  //int save_datenum;
   int save_to_dir;
   int save_to_stdout;
   int use_ram_buffer;
@@ -82,6 +98,8 @@ typedef struct _CamPrefs
   char *ftp_user;
   char *ftp_password;
   char *ftp_filename;
+  char *ftp_filename_ext;
+  char *ftp_filename_base;
   char *ftp_path;
   int ftp_mode;
   int ftp_period;
@@ -110,7 +128,11 @@ typedef struct _Prefs
   int auto_update;
   float auto_update_frequency;
   int sync_control;
-  
+  int no_overwrite;
+  int warning_in_popup;
+  int error_in_popup;
+  int automate_receive;
+  int automate_iso;
   int overlay_byte_order;
 
   struct _CamPrefs camprefs;
@@ -152,6 +174,7 @@ typedef struct _CameraInfo_T {
   int bayer_pattern;
   int stereo;
   int bpp;
+  int register_offset;
 
   // structure information
   struct _CameraInfo_T* prev;

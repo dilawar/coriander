@@ -26,15 +26,15 @@
  fprintf(stderr,args);
 
 void
-ErrorPopup(char *string);
+ErrorPopup(char *string, int is_error);
 
 void
-MainError(const char *string);
+Error(char *string);
 
 void
-MainStatus(const char *string);
-
-void
-MessageBox(gchar *message);
-
+Warning(char *string);
+/*
+int
+ConfirmOverwrite(char *filename);
+*/
 #endif

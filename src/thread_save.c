@@ -45,42 +45,21 @@ SaveStartThread(camera_t* cam)
     
     /* setup save_thread: handles, ...*/
     pthread_mutex_lock(&save_service->mutex_data);
-    strcpy(info->filename_base, cam->prefs.save_filename_base);
-    strcpy(info->filename_ext, cam->prefs.save_filename_ext);
-
-    info->period=cam->prefs.save_period;
     CommonChainSetup(cam, save_service,SERVICE_SAVE);
     
-    ////////////////////////// REMOVE THESE COPIES ///////////////////////
-    /// we freeze the gui controls to avoid any changes instead /////////
-    /// cleanup to be performed on every service ///////////////////////
-    /// This can be performed because we have particularized every ////
-    /// prefs to each camera. ////////////////////////////////////////
-    //////// THIS SHOULD BE DONE FOR EVERY SERVICE //////////////////
-
     info->buffer=NULL;
-    //info->mode=cam->prefs.save_mode;
-    info->format=cam->prefs.save_format;
-    info->append=cam->prefs.save_append;
-    info->save_to_dir=cam->prefs.save_to_dir;
-    info->save_to_stdout=cam->prefs.save_to_stdout;
-    // if format extension is ".raw", we dump raw data on the file and perform no conversion
-    //info->rawdump=cam->prefs.save_convert;
-    info->use_ram_buffer=cam->prefs.use_ram_buffer;
-    info->ram_buffer_size=cam->prefs.ram_buffer_size*1024*1024; // ram buffer size in MB
-
     info->bigbuffer=NULL;
 
-    if ((info->use_ram_buffer==TRUE)&&
-	((info->format==SAVE_FORMAT_RAW_VIDEO)||
+    if ((cam->prefs.use_ram_buffer==TRUE)&&
+	((cam->prefs.save_format==SAVE_FORMAT_RAW_VIDEO)||
 #ifdef HAVE_FFMPEG
-	 (info->format==SAVE_FORMAT_MPEG)||
+	 (cam->prefs.save_format==SAVE_FORMAT_MPEG)||
 #endif
-	 (info->format==SAVE_FORMAT_PVN))) {
+	 (cam->prefs.save_format==SAVE_FORMAT_PVN))) {
       info->bigbuffer_position=0;
-      info->bigbuffer=(unsigned char*)malloc(info->ram_buffer_size*sizeof(unsigned char));
+      info->bigbuffer=(unsigned char*)malloc(cam->prefs.ram_buffer_size*sizeof(unsigned char));
       if (info->bigbuffer==NULL) {
-	MainError("Could not allocate memory for RAM buffer save service");
+	Error("Could not allocate memory for RAM buffer save service");
 	pthread_mutex_unlock(&save_service->mutex_data);
 	FreeChain(save_service);
 	save_service=NULL;
@@ -130,6 +109,24 @@ SaveCleanupThread(void* arg)
   //pthread_mutex_unlock(&save_service->mutex_data);
 
   return(NULL);
+}
+
+void
+ProtectFilename(char *filename)
+{
+  if (preferences.no_overwrite>0) {
+    char temp[1024];
+    struct stat buf;
+    // try to read the file
+    int retry=1;
+    strcpy(temp,filename);
+    while (stat(temp, &buf)==0) {
+      // file exists, append -1
+      sprintf(temp,"%s-%d",filename,retry);
+      retry++;
+    }
+    strcpy(filename,temp);
+  }
 }
 
 
@@ -230,9 +227,11 @@ CreateSettingsFile(char *destdir)
   
   fname = (char*)malloc(STRING_SIZE*sizeof(char));
   sprintf(fname,"%s/camera_setup.txt",destdir);
+
+  ProtectFilename(fname);
   fd = fopen(fname,"w");
   if (fd==NULL) {
-    MainError("Cannot open settings file - write permission error");
+    Error("Cannot create settings file");
     return(0);
   }
   
@@ -255,30 +254,31 @@ GetSaveFD(chain_t *save_service, FILE **fd, char *filename_out)
 {
   savethread_info_t *info=save_service->data;
   // NOTE: the jpeg format is now joined with other imlib formats, but will have to be handled separately by ffmpeg (patch pending)
+  camera_t *cam=save_service->camera;
 
-  if (info->save_to_stdout>0) {
+  if (cam->prefs.save_to_stdout>0) {
     *fd=stdout;
     return DC1394_SUCCESS;
   }
 
   // get filename
-  switch (info->format) {
+  switch (cam->prefs.save_format) {
   case SAVE_FORMAT_PPMPGM:
   case SAVE_FORMAT_RAW:
 #ifdef HAVE_FFMPEG
   case SAVE_FORMAT_JPEG:
 #endif
     // first handle the case of save-to-dir
-    if (info->save_to_dir==0) {
-      switch (info->append) {
+    if (cam->prefs.save_to_dir==0) {
+      switch (cam->prefs.save_append) {
       case SAVE_APPEND_NONE:
-	sprintf(filename_out, "%s.%s", info->filename_base,info->filename_ext);
+	sprintf(filename_out, "%s.%s", cam->prefs.save_filename_base,cam->prefs.save_filename_ext);
 	break;
       case SAVE_APPEND_DATE_TIME:
-	sprintf(filename_out, "%s-%s.%s", info->filename_base, save_service->current_buffer->captime_string, info->filename_ext);
+	sprintf(filename_out, "%s-%s.%s", cam->prefs.save_filename_base, save_service->current_buffer->captime_string, cam->prefs.save_filename_ext);
 	break;
       case SAVE_APPEND_NUMBER:
-	sprintf(filename_out,"%s-%10.10lli.%s", info->filename_base, save_service->processed_frames, info->filename_ext);
+	sprintf(filename_out,"%s-%10.10lli.%s", cam->prefs.save_filename_base, save_service->processed_frames, cam->prefs.save_filename_ext);
 	break;
       }
     }
@@ -287,14 +287,14 @@ GetSaveFD(chain_t *save_service, FILE **fd, char *filename_out)
       if (save_service->processed_frames==0) {
 	// note that we append a time tag to allow safe re-launch of the thread (it will prevent overwriting
 	// previous results)
-	sprintf(info->destdir,"%s-%s",info->filename_base,save_service->current_buffer->captime_string);
+	sprintf(info->destdir,"%s-%s",cam->prefs.save_filename_base,save_service->current_buffer->captime_string);
 
 	// Optional: get rid of "-mmm" ms 
 	//if (strlen(destdir) > 4)
 	//destdir[strlen(destdir)-4]=0;
 	
 	if (mkdir(info->destdir,0755)) {
-	  MainError("Could not create directory");
+	  Error("Could not create directory");
 	  return DC1394_FAILURE;
 	}
 	// Create a file with camera settings
@@ -302,16 +302,16 @@ GetSaveFD(chain_t *save_service, FILE **fd, char *filename_out)
       }
 
       // 2. build the filename
-      switch (info->append) {
+      switch (cam->prefs.save_append) {
       case SAVE_APPEND_NONE: 
 	fprintf(stderr,"time or number should have been selected\n");
 	return DC1394_FAILURE;
 	break;
       case SAVE_APPEND_DATE_TIME:
-	sprintf(filename_out, "%s/%s.%s", info->destdir, save_service->current_buffer->captime_string, info->filename_ext);
+	sprintf(filename_out, "%s/%s.%s", info->destdir, save_service->current_buffer->captime_string, cam->prefs.save_filename_ext);
 	break;
       case SAVE_APPEND_NUMBER:
-	sprintf(filename_out,"%s/%10.10lli.%s", info->destdir, save_service->processed_frames, info->filename_ext);
+	sprintf(filename_out,"%s/%10.10lli.%s", info->destdir, save_service->processed_frames, cam->prefs.save_filename_ext);
 	break;
       }
       // 3. done!
@@ -322,29 +322,30 @@ GetSaveFD(chain_t *save_service, FILE **fd, char *filename_out)
 #ifdef HAVE_FFMPEG
   case SAVE_FORMAT_MPEG:
 #endif
-    switch (info->append) {
+    switch (cam->prefs.save_append) {
     case SAVE_APPEND_NONE:
-      sprintf(filename_out, "%s.%s", info->filename_base,info->filename_ext);
+      sprintf(filename_out, "%s.%s", cam->prefs.save_filename_base,cam->prefs.save_filename_ext);
       break;
     case SAVE_APPEND_DATE_TIME:
-      sprintf(filename_out, "%s-%s.%s", info->filename_base, save_service->current_buffer->captime_string, info->filename_ext);
+      sprintf(filename_out, "%s-%s.%s", cam->prefs.save_filename_base, save_service->current_buffer->captime_string, cam->prefs.save_filename_ext);
       break;
     case SAVE_APPEND_NUMBER:
-      sprintf(filename_out,"%s-%10.10lli.%s", info->filename_base, save_service->processed_frames, info->filename_ext);
+      sprintf(filename_out,"%s-%10.10lli.%s", cam->prefs.save_filename_base, save_service->processed_frames, cam->prefs.save_filename_ext);
       break;
     }
     break;
   default:
-    fprintf(stderr,"unsuported format!\n");
+    fprintf(stderr,"unsupported format!\n");
     break;
   }
 
   // open FD if it's the first frame of a video
   // OR it's in picture saving mode AND it's not using imlib (which creates the fd from the filename itself)
-  switch (info->format) {
+  switch (cam->prefs.save_format) {
   case SAVE_FORMAT_RAW_VIDEO:
   case SAVE_FORMAT_PVN:
     if (save_service->processed_frames==0) {
+      ProtectFilename(filename_out);
       *fd=fopen(filename_out,"w");
       if (*fd==NULL) {
 	fprintf(stderr,"Can't create sequence file for saving\n");
@@ -354,6 +355,7 @@ GetSaveFD(chain_t *save_service, FILE **fd, char *filename_out)
     break;
   case SAVE_FORMAT_PPMPGM:
   case SAVE_FORMAT_RAW:
+    ProtectFilename(filename_out);
     *fd=fopen(filename_out,"w");
     if (*fd==NULL) {
       fprintf(stderr,"Can't create sequence file for saving\n");
@@ -380,6 +382,8 @@ InitVideoFile(chain_t *save_service, FILE *fd, char *filename_out)
   savethread_info_t *info;
   info=(savethread_info_t*)save_service->data;
   float fps;
+  camera_t *cam=save_service->camera;
+
 #ifdef HAVE_FFMPEG
   info->fmt = NULL;
   info->oc = NULL;
@@ -391,7 +395,7 @@ InitVideoFile(chain_t *save_service, FILE *fd, char *filename_out)
 #endif
 
   // (JG) if extension is PVN, write PVN header here
-  if ((info->format==SAVE_FORMAT_PVN) && (info->use_ram_buffer==FALSE)) {//-----------------------------------
+  if ((cam->prefs.save_format==SAVE_FORMAT_PVN) && (cam->prefs.use_ram_buffer==FALSE)) {//-----------------------------------
     //fprintf(stderr,"pvn header write\n");
     dc1394_framerate_as_float(camera->camera_info.framerate, &fps);
     writePVNHeader(fd, save_service->current_buffer->color_mode,
@@ -402,7 +406,7 @@ InitVideoFile(chain_t *save_service, FILE *fd, char *filename_out)
   }
 
 #ifdef HAVE_FFMPEG
-  if ((info->format==SAVE_FORMAT_MPEG) && (info->use_ram_buffer==FALSE)) {//-----------------------------------
+  if ((cam->prefs.save_format==SAVE_FORMAT_MPEG) && (cam->prefs.use_ram_buffer==FALSE)) {//-----------------------------------
     // MPEG
     //fprintf(stderr,"setting up mpeg codec\n");
     //video_encode_init(save_service->current_buffer->width,
@@ -446,14 +450,15 @@ InitVideoFile(chain_t *save_service, FILE *fd, char *filename_out)
     
     dump_format(info->oc, 0, filename_out, 1);
     
-    /* now that all the parameters are set, we can open the audio and
-       video codecs and allocate the necessary encode buffers */
+    /* now that all the parameters are set, we can open the
+       video codec and allocate the necessary encode buffers */
     
     if (info->video_st)
       open_video(info->oc, info->video_st);
     
     /* open the output file, if needed */
     if (!(info->fmt->flags & AVFMT_NOFILE)) {
+      ProtectFilename(filename_out);
       if (url_fopen(&info->oc->pb, filename_out, URL_WRONLY) < 0) {
 	fprintf(stderr, "Could not open '%s'\n", filename_out);
       }
@@ -462,7 +467,7 @@ InitVideoFile(chain_t *save_service, FILE *fd, char *filename_out)
     /* write the stream header, if any */
     av_write_header(info->oc); 
     
-    info->picture = alloc_picture(info->video_st->codec.pix_fmt, info->video_st->codec.width, info->video_st->codec.height);
+    info->picture = alloc_picture(info->video_st->codec->pix_fmt, info->video_st->codec->width, info->video_st->codec->height);
     if (!info->picture) {
       fprintf(stderr, "Could not allocate picture\n");
     }
@@ -490,7 +495,7 @@ InitVideoFile(chain_t *save_service, FILE *fd, char *filename_out)
       break;
     }
 
-    info->tmp_picture = alloc_picture(info->mpeg_color_mode, info->video_st->codec.width, info->video_st->codec.height);
+    info->tmp_picture = alloc_picture(info->mpeg_color_mode, info->video_st->codec->width, info->video_st->codec->height);
     if (!info->tmp_picture) {
       fprintf(stderr, "Could not allocate temporary picture\n");
     }
@@ -516,14 +521,16 @@ FillRamBuffer(chain_t *save_service)
   savethread_info_t *info;
 
   info=(savethread_info_t*)save_service->data;
+  camera_t *cam=save_service->camera;
 
-  if ((info->use_ram_buffer==TRUE)&&
-      ((info->format==SAVE_FORMAT_RAW_VIDEO)||
+
+  if ((cam->prefs.use_ram_buffer==TRUE)&&
+      ((cam->prefs.save_format==SAVE_FORMAT_RAW_VIDEO)||
 #ifdef HAVE_FFMPEG
-       (info->format==SAVE_FORMAT_MPEG)||
+       (cam->prefs.save_format==SAVE_FORMAT_MPEG)||
 #endif
-       (info->format==SAVE_FORMAT_PVN))) {
-    if (info->ram_buffer_size-info->bigbuffer_position>=save_service->current_buffer->buffer_image_bytes) {
+       (cam->prefs.save_format==SAVE_FORMAT_PVN))) {
+    if (cam->prefs.ram_buffer_size-info->bigbuffer_position>=save_service->current_buffer->buffer_image_bytes) {
       memcpy(&info->bigbuffer[info->bigbuffer_position], save_service->current_buffer->image, save_service->current_buffer->buffer_image_bytes);
       info->bigbuffer_position+=save_service->current_buffer->buffer_image_bytes;
     }
@@ -705,6 +712,8 @@ SaveThread(void* arg)
   pthread_mutex_lock(&save_service->mutex_data);
   info=(savethread_info_t*)save_service->data;
   skip_counter=0;
+  camera_t *cam=save_service->camera;
+
 
   /* These settings depend on the thread. For 100% safe deferred-cancel
    threads, I advise you use a custom thread cancel flag. See display thread.*/
@@ -727,51 +736,51 @@ SaveThread(void* arg)
     else {
       pthread_mutex_unlock(&info->mutex_cancel);
       pthread_mutex_lock(&save_service->mutex_data);
+
       //fprintf(stderr,"About to roll buffers in SAVE thread\n");
       if(GetBufferFromPrevious(save_service)) { // have buffers been rolled?
 	// check params
 	//printf("New frame arrived\n");
 	SaveThreadCheckParams(save_service);
 	if (save_service->current_buffer->width!=-1) {
-	  if (skip_counter>=(info->period-1)) {
+	  if (skip_counter>=(cam->prefs.save_period-1)) {
 	    skip_counter=0;
 
 	    // get file descriptor
-
 	    if (GetSaveFD(save_service, &fd, filename_out)!=DC1394_SUCCESS)
 	      break;
 
 #ifdef HAVE_FFMPEG
 	    if ((save_service->processed_frames==0)&&
-		((info->format==SAVE_FORMAT_MPEG)||
-		 (info->format==SAVE_FORMAT_JPEG))) {
+		((cam->prefs.save_format==SAVE_FORMAT_MPEG)||
+		 (cam->prefs.save_format==SAVE_FORMAT_JPEG))) {
 	      av_register_all();
 	    }
 #endif
 
 	    // write initial data for video (header,...)
 	    if ((save_service->processed_frames==0)&&
-		((info->format==SAVE_FORMAT_RAW_VIDEO)||
+		((cam->prefs.save_format==SAVE_FORMAT_RAW_VIDEO)||
 #ifdef HAVE_FFMPEG
-		 (info->format==SAVE_FORMAT_MPEG)||
+		 (cam->prefs.save_format==SAVE_FORMAT_MPEG)||
 #endif
-		 (info->format==SAVE_FORMAT_PVN))) {
+		 (cam->prefs.save_format==SAVE_FORMAT_PVN))) {
 	      if (InitVideoFile(save_service, fd, filename_out)!=DC1394_SUCCESS) {
 		break;
 	      }
 	    }
 
 	    // rambuffer operation
-	    if ((info->use_ram_buffer==TRUE)&&
-		((info->format==SAVE_FORMAT_RAW_VIDEO)||
+	    if ((cam->prefs.use_ram_buffer==TRUE)&&
+		((cam->prefs.save_format==SAVE_FORMAT_RAW_VIDEO)||
 #ifdef HAVE_FFMPEG
-		 (info->format==SAVE_FORMAT_MPEG)||
+		 (cam->prefs.save_format==SAVE_FORMAT_MPEG)||
 #endif
-		 (info->format==SAVE_FORMAT_PVN))) {
+		 (cam->prefs.save_format==SAVE_FORMAT_PVN))) {
 	      FillRamBuffer(save_service);
 	    }
 	    else { // normal operation (no RAM buffer)
-	      switch (info->format) {
+	      switch (cam->prefs.save_format) {
 	      case SAVE_FORMAT_RAW:
 		//fprintf(stderr,"writing raw...");
 		fwrite(save_service->current_buffer->image, save_service->current_buffer->buffer_image_bytes, 1, fd);
@@ -852,8 +861,8 @@ SaveThread(void* arg)
 
   //fprintf(stderr,"Break completed\n");
 
-  if (info->use_ram_buffer==TRUE) {
-    switch(info->format) {
+  if (cam->prefs.use_ram_buffer==TRUE) {
+    switch(cam->prefs.save_format) {
     case SAVE_FORMAT_RAW_VIDEO:
 #ifdef HAVE_FFMPEG
     case SAVE_FORMAT_MPEG:
@@ -900,7 +909,7 @@ SaveThread(void* arg)
   }
   //fprintf(stderr,"FFMPEG crap\n");
 #ifdef HAVE_FFMPEG
-  if (info->format==SAVE_FORMAT_MPEG) {
+  if (cam->prefs.save_format==SAVE_FORMAT_MPEG) {
     av_free(info->picture->data[0]);
     av_free(info->picture);
     info->picture=NULL;

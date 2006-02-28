@@ -32,7 +32,7 @@ void UpdateFormatMenu(void)
   quadlet_t formats;
 
   if (dc1394_query_supported_formats(&camera->camera_info, &formats)!=DC1394_SUCCESS) {
-    MainError("Could not query supported formats");
+    Error("Could not query supported formats");
     formats=0x0;
   }
 

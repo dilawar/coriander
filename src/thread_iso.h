@@ -27,10 +27,6 @@ typedef enum
 
 typedef struct
 { 
-  receive_method_t receive_method;
-  int video1394_dropframes;
-  char video1394_device[STRING_SIZE];
-
   unsigned char *temp;
   long long unsigned int temp_size;
   int temp_allocated;
@@ -38,8 +34,6 @@ typedef struct
   int orig_sizex;
   int orig_sizey;
   int cond16bit;
-
-  int dma_buffer_size;
 
   struct timeval rawtime;
 

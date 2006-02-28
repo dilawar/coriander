@@ -77,7 +77,7 @@ AVStream *add_video_stream(AVFormatContext *oc, int codec_id, int width, int hei
     exit(1);
   }
   
-  c = &st->codec;
+  c = st->codec;
   c->codec_id = codec_id;
   c->codec_type = CODEC_TYPE_VIDEO;
   
@@ -91,8 +91,8 @@ AVStream *add_video_stream(AVFormatContext *oc, int codec_id, int width, int hei
   //c->idct_algo = FF_IDCT_AUTO;
   //c->me_method = ME_ZERO;
   /* frames per second */
-  c->frame_rate = STREAM_FRAME_RATE;  
-  c->frame_rate_base = 1;
+  c->time_base.den = STREAM_FRAME_RATE;
+  c->time_base.num=1;
   c->gop_size = 0; /* emit one intra frame every n frames at most */
   /* just for testing, we also add B frames */
   /*
@@ -131,7 +131,7 @@ int open_video(AVFormatContext *oc, AVStream *st) {
     AVCodec *codec;
     AVCodecContext *c;
 
-    c = &st->codec;
+    c = st->codec;
 
     /* find the video encoder */
     codec = avcodec_find_encoder(c->codec_id);
@@ -185,7 +185,7 @@ int write_video_frame(AVFormatContext *oc, AVStream *st, AVFrame *picture) {
     AVPacket pkt;
 
     av_init_packet(&pkt);
-    c = &st->codec;
+    c = st->codec;
 
     /*
     uyvy422_yuv422p(frame, tmp_picture, c->width, c->height);
@@ -224,7 +224,7 @@ int write_video_frame(AVFormatContext *oc, AVStream *st, AVFrame *picture) {
 }
 
 int close_video(AVFormatContext *oc, AVStream *st) {
-    avcodec_close(&st->codec);
+    avcodec_close(st->codec);
     /*
     av_free(picture->data[0]);
     av_free(picture);

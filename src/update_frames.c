@@ -154,7 +154,7 @@ UpdateTriggerFrame(void)
 			   camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].available);
   gtk_widget_set_sensitive(lookup_widget(main_window,"fps_menu"),
 			   !(camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].is_on) &&
-			   !((camera->camera_info.mode >= DC1394_VIDEO_MODE_FORMAT7_MIN) && (camera->camera_info.mode <= DC1394_VIDEO_MODE_FORMAT7_MAX)));
+			   !((camera->camera_info.video_mode >= DC1394_VIDEO_MODE_FORMAT7_MIN) && (camera->camera_info.video_mode <= DC1394_VIDEO_MODE_FORMAT7_MAX)));
   gtk_widget_set_sensitive(lookup_widget(main_window,"trigger_mode"),
 			   camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].is_on && 
 			   camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].available);
@@ -358,9 +358,34 @@ UpdateOptionFrame(void)
   gtk_widget_set_sensitive(lookup_widget(main_window,"bayer_menu"), bayer_ok);
   gtk_widget_set_sensitive(lookup_widget(main_window,"stereo_menu"), stereo_ok);
 
+  dc1394color_filter_t filter;
+  // if we have a valid color filter, use that:
+  if (dc1394_is_video_mode_scalable(camera->camera_info.video_mode)==DC1394_TRUE) {
+    if (dc1394_format7_get_color_filter(&camera->camera_info, camera->camera_info.video_mode, &filter)!=DC1394_SUCCESS)
+      fprintf(stderr,"Could not get color filter!\n");
+    else {
+      if (filter!=0) { // we have a valid filter: use it.
+	//fprintf(stderr,"Valid filter!\n");
+	camera->format7_info.modeset.mode[camera->camera_info.video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].color_filter=filter;
+	camera->bayer_pattern=filter;
+	pthread_mutex_lock(&camera->uimutex);
+	gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(main_window, "pattern_menu")),
+				    camera->bayer_pattern-DC1394_COLOR_FILTER_MIN);
+	gtk_widget_set_sensitive(lookup_widget(main_window,"pattern_menu"),0);
+	pthread_mutex_unlock(&camera->uimutex);
+      }
+      //else
+	//fprintf(stderr,"Filter is zero!\n");
+    }
+  }
+
+  int cond= ((bpp16_ok) && 
+	     (camera->stereo==NO_STEREO_DECODING) && 
+	     (camera->bayer==NO_BAYER_DECODING));
+
   pthread_mutex_lock(&camera->uimutex);
-  gtk_widget_set_sensitive(lookup_widget(main_window,"mono16_bpp"), bpp16_ok && (camera->stereo==NO_STEREO_DECODING) && (camera->bayer==NO_BAYER_DECODING));
-  gtk_widget_set_sensitive(lookup_widget(main_window,"label114"), bpp16_ok && (camera->stereo==NO_STEREO_DECODING) && (camera->bayer==NO_BAYER_DECODING));
+  gtk_widget_set_sensitive(lookup_widget(main_window,"mono16_bpp"),cond);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"label114"), cond);
   pthread_mutex_unlock(&camera->uimutex);
   
 }
@@ -399,14 +424,14 @@ UpdateFormat7InfoFrame(void)
     mode = &camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_VIDEO_MODE_FORMAT7_MIN];
 
 
-    dc1394_get_bytes_per_pixel(mode->color_coding_id, &bpp);
+    dc1394_get_bytes_per_pixel(mode->color_coding, &bpp);
 
     bytesize=(int) ((float)mode->size_x*(float)mode->size_y*bpp);
     /*
       // this appears to be meaningless as some cameras take padding into account
       if (bytesize!=mode->total_bytes) {
       fprintf(stderr,"bytesize: %d, total_bytes: %d\n",bytesize, (int)mode->total_bytes);
-      MainStatus("The camera has a strange TOTAL_BYTES value.");
+      Warning("The camera has a strange TOTAL_BYTES value.");
       }
     */
     //fprintf(stderr,"total bytes: %d\n",mode->total_bytes);
@@ -421,7 +446,7 @@ UpdateFormat7InfoFrame(void)
     }
     else {
       grandtotal=0;
-      MainError("BPP is zero! This should not happen.");
+      Error("BPP is zero! This should not happen.");
     }
 
     sprintf(temp," %d", bytesize);
@@ -478,12 +503,12 @@ UpdateBandwidthFrame(void)
   cam=cameras;
   while(cam!=NULL) {
     if (dc1394_video_get_transmission(&cam->camera_info, &iso)!=DC1394_SUCCESS) {
-      MainError("Could not get ISO status");
+      Error("Could not get ISO status");
     }
 
     if (iso==DC1394_ON) {
       if (dc1394_video_get_bandwidth_usage(&cam->camera_info, &bandwidth)!=DC1394_SUCCESS) {
-	MainError("Could not get a camera bandwidth usage. Bus usage might be inaccurate.");
+	Error("Could not get a camera bandwidth usage. Bus usage might be inaccurate.");
       }
     }
     else {
@@ -492,7 +517,7 @@ UpdateBandwidthFrame(void)
     //fprintf(stderr,"%d\n",bandwidth);
     iso_service=GetService(cam,SERVICE_ISO);
     // if we are using format7 and there is a running ISO service, we can get a better estimate:
-    if (((camera->camera_info.mode >= DC1394_VIDEO_MODE_FORMAT7_MIN) && (camera->camera_info.mode <= DC1394_VIDEO_MODE_FORMAT7_MAX))
+    if (((camera->camera_info.video_mode >= DC1394_VIDEO_MODE_FORMAT7_MIN) && (camera->camera_info.video_mode <= DC1394_VIDEO_MODE_FORMAT7_MAX))
 	&&(iso_service!=NULL)){
       //fprintf(stderr,"better estimate can be found\n");
       // use the fractions of packets needed:

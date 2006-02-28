@@ -58,7 +58,6 @@ enum
 
 typedef struct
 {
-  long int                period;
   pthread_mutex_t         mutex_cancel;
   int                     cancel_req;
 

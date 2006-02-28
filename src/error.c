@@ -18,21 +18,47 @@
 
 #include "coriander.h"
 
+#define MAINTHREAD_PLEASE_DO(func, arg...) \
+{ \
+    /* ask the main thread to do the job */ \
+    /*fprintf (stderr,"%s: Asking mainthread to do the job\n", __FUNCTION__);*/ \
+    /* only one request at a time */ \
+    /*fprintf(stderr,"macro trying to lock\n");*/ \
+    pthread_mutex_lock (&mainthread_info.do_mutex); \
+    /* first the arg */ \
+    mainthread_info.do_arg=arg; \
+    /* then the function, this signals the mainthread in the timeout loop */ \
+    mainthread_info.do_function=(void *(*)(void *))func; \
+    /* the main thread signals when done */ \
+    while (mainthread_info.do_function!=NULL) { \
+      /*fprintf(stderr,".");*/ \
+      usleep(DELAY); \
+    } \
+    /*fprintf (stderr,"%s: Thank you mainthread!\n", __FUNCTION__);*/ \
+    pthread_mutex_unlock (&mainthread_info.do_mutex); \
+    /*return (int)mainthread_info.do_result; \ */ \
+}
+
 void
-ErrorPopup(char * string)
+ErrorPopup(char * string, int is_error)
 {
   GtkWidget *error_box;
   GtkWidget *dialog_vbox;
   GtkWidget *dialog_action_area;
   GtkWidget *error_popup_button;
-  char tmp_str[STRING_SIZE];
 
-  sprintf(tmp_str,"ERROR: %s",string);
+  //fprintf(stderr,"error popup %d\n",is_error);
 
-  error_box = gnome_message_box_new (_(tmp_str),
-                              GNOME_MESSAGE_BOX_ERROR, NULL);
+  if (is_error>0) {
+    error_box = gnome_message_box_new (_(string), GNOME_MESSAGE_BOX_ERROR, NULL);
+    gtk_window_set_title (GTK_WINDOW (error_box), _("Coriander error"));
+  }
+  else {
+    error_box = gnome_message_box_new (_(string), GNOME_MESSAGE_BOX_WARNING, NULL);
+    gtk_window_set_title (GTK_WINDOW (error_box), _("Coriander warning"));
+  }
+
   gtk_widget_set_name (error_box, "error_box");
-  gtk_window_set_title (GTK_WINDOW (error_box), _("Coriander error"));
   gtk_window_set_resizable (GTK_WINDOW (error_box), FALSE);
   gtk_window_set_type_hint (GTK_WINDOW (error_box), GDK_WINDOW_TYPE_HINT_DIALOG);
 
@@ -58,62 +84,63 @@ ErrorPopup(char * string)
 
   gtk_widget_show(error_box);
 
+  //gtk_widget_destroy(error_box);
+
 }
 
-
-void MainError(const char *string)
+inline void
+Error(char *string)
 {
-  char *temp;
-  temp=(char*)malloc(STRING_SIZE*sizeof(char));
-
-  sprintf(temp,"ERROR: %s\n",string);
-  if (main_window !=NULL) {
-    gtk_text_buffer_set_text(gtk_text_view_get_buffer(GTK_TEXT_VIEW(lookup_widget(main_window,"main_status"))),string, -1);
-  }
-  free(temp);
-}
-
-void MainStatus(const char *string)
-{
-  char *temp;
-  temp=(char*)malloc(STRING_SIZE*sizeof(char));
-  sprintf(temp,"%s\n",string);
-  if (main_window !=NULL) {
-    gtk_text_buffer_set_text(gtk_text_view_get_buffer(GTK_TEXT_VIEW(lookup_widget(main_window,"main_status"))),string, -1);
-  }
-  free(temp);
-}
-
-static void MessageBox_clicked (GtkWidget *widget, gpointer data)
-{
-    gtk_widget_destroy( GTK_WIDGET(data));
-}
-
-static void MessageBox_destroy (GtkWidget *widget, gpointer data)
-{
-    gtk_grab_remove (GTK_WIDGET(widget));
-}
-
-void MessageBox( gchar *message)
-{
-  static GtkWidget *label;
-  GtkWidget *button;
-  GtkWidget *dialog_window;
+  fprintf(stderr,"ERROR: %s\n",string);
+ 
+  if (preferences.error_in_popup>0) {
+    //fprintf(stderr,"err trying to lock\n");
+    pthread_mutex_lock(&mainthread_info.dialog_mutex);
+    mainthread_info.dialog_clicked=0;
+    if (pthread_self()!=mainthread_info.thread) {
+      // this macro returns with the result of the call
+      strcpy(mainthread_info.message,string);
+      MAINTHREAD_PLEASE_DO(ErrorPopup,mainthread_info.message,1);
+      //MAINTHREAD_PLEASE_DO(fprintf,stderr,"test_error");
+    }
+    else {
+      //fprintf(stderr,"Direct call!\n");
+      ErrorPopup(string,1);
+    }
+    while (mainthread_info.dialog_clicked==0) {
+      //fprintf(stderr,":");
+      usleep(DELAY);
+      }
+    mainthread_info.dialog_clicked=0;
+    pthread_mutex_unlock(&mainthread_info.dialog_mutex);
   
-  dialog_window = gtk_dialog_new();
-  g_signal_connect( (gpointer)dialog_window, "destroy", G_CALLBACK (MessageBox_destroy), dialog_window);
-  gtk_window_set_title (GTK_WINDOW(dialog_window), "Coriander Message");
-  gtk_container_border_width (GTK_CONTAINER(dialog_window), 5);
-  label = gtk_label_new (message);
-  gtk_misc_set_padding (GTK_MISC(label), 10, 10);
-  gtk_box_pack_start (GTK_BOX(GTK_DIALOG(dialog_window)->vbox), label, TRUE, TRUE, 0);
-  gtk_widget_show (label);
-  button = gtk_button_new_with_label ("OK");
-  g_signal_connect ((gpointer) button, "clicked", G_CALLBACK (MessageBox_clicked), dialog_window);
-  GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
-  gtk_box_pack_start (GTK_BOX(GTK_DIALOG(dialog_window)->action_area), button, TRUE, TRUE, 0);
-  gtk_widget_grab_default (button);
-  gtk_widget_show (button);
-  gtk_widget_show (dialog_window);
-  gtk_grab_add (dialog_window);
+  }
+ 
 }
+
+void
+Warning(char *string)
+{
+  fprintf(stderr,"WARNING: %s\n",string);
+  
+  if (preferences.error_in_popup>0) {
+    pthread_mutex_lock(&mainthread_info.dialog_mutex);
+    mainthread_info.dialog_clicked=0;
+    if (pthread_self()!=mainthread_info.thread) {
+      // this macro returns with the result of the call
+      strcpy(mainthread_info.message,string);
+      MAINTHREAD_PLEASE_DO(ErrorPopup,mainthread_info.message,0);
+    }
+    else {
+      ErrorPopup(string,0);
+    }
+    while (mainthread_info.dialog_clicked==0) {
+      usleep(DELAY);
+      }
+    mainthread_info.dialog_clicked=0;
+    pthread_mutex_unlock(&mainthread_info.dialog_mutex);
+  
+  }
+  
+}
+

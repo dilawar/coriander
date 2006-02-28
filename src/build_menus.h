@@ -61,4 +61,7 @@ BuildSaveFormatMenu(void);
 void
 BuildSaveAppendMenu(void);
 
+void
+BuildRegisterAccessOffsetMenu(void);
+
 #endif // __BUILDMENUS_H__

@@ -54,20 +54,10 @@ typedef struct
 
   pthread_mutex_t    mutex_cancel;
   int                cancel_req;
-  char               filename_base[STRING_SIZE];
-  char               filename_ext[STRING_SIZE];
   char               destdir[STRING_SIZE];
   unsigned char*     buffer;
-  save_format_t      format;
-  save_append_t      append;
-  long int           period;
-  int                rawdump;
-  int                save_to_dir;
-  int                save_to_stdout;
   unsigned char*     bigbuffer;
   unsigned long int  bigbuffer_position;
-  unsigned long int  ram_buffer_size;
-  int                use_ram_buffer;
   int                mpeg_color_mode;
 
 #ifdef HAVE_FFMPEG
@@ -77,7 +67,7 @@ typedef struct
   AVStream *video_st;
   AVFrame *picture;
   AVFrame *tmp_picture;
-    char subtitle[256];
+  char subtitle[256];
   int fdts;
 #endif
 

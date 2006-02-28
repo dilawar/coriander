@@ -782,10 +782,6 @@ create_main_window (void)
   GtkWidget *label59;
   GtkWidget *table77;
   GtkWidget *notebook7;
-  GtkWidget *table79;
-  GtkWidget *scrolledwindow1;
-  GtkWidget *main_status;
-  GtkWidget *label161a;
   GtkWidget *table78;
   GtkWidget *bandwidth_frame;
   GtkWidget *bandwidth_table;
@@ -805,14 +801,14 @@ create_main_window (void)
   GtkWidget *label226;
   GtkWidget *frame1113;
   GtkWidget *table83;
-  GtkWidget *entry2;
-  GtkWidget *entry1;
-  GtkWidget *button8;
+  GtkWidget *register_data_entry;
+  GtkWidget *register_address_entry;
+  GtkWidget *register_write_button;
   GtkWidget *alignment21;
   GtkWidget *hbox92;
   GtkWidget *image25;
   GtkWidget *label224;
-  GtkWidget *button9;
+  GtkWidget *register_read_button;
   GtkWidget *alignment22;
   GtkWidget *hbox93;
   GtkWidget *label225;
@@ -847,7 +843,7 @@ create_main_window (void)
 
   main_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_widget_set_name (main_window, "main_window");
-  gtk_window_set_title (GTK_WINDOW (main_window), _("Coriander 2.0.0-pre4"));
+  gtk_window_set_title (GTK_WINDOW (main_window), _("Coriander 2.0.0-20060113"));
   main_window_icon_pixbuf = create_pixbuf ("coriander/coriander-icon.png");
   if (main_window_icon_pixbuf)
     {
@@ -3422,36 +3418,6 @@ create_main_window (void)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (notebook7), 5);
 
-  table79 = gtk_table_new (1, 1, FALSE);
-  gtk_widget_set_name (table79, "table79");
-  gtk_widget_show (table79);
-  gtk_container_add (GTK_CONTAINER (notebook7), table79);
-
-  scrolledwindow1 = gtk_scrolled_window_new (NULL, NULL);
-  gtk_widget_set_name (scrolledwindow1, "scrolledwindow1");
-  gtk_widget_show (scrolledwindow1);
-  gtk_table_attach (GTK_TABLE (table79), scrolledwindow1, 0, 1, 0, 1,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (scrolledwindow1), 5);
-  GTK_WIDGET_UNSET_FLAGS (scrolledwindow1, GTK_CAN_FOCUS);
-  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow1), GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
-  gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolledwindow1), GTK_SHADOW_IN);
-
-  main_status = gtk_text_view_new ();
-  gtk_widget_set_name (main_status, "main_status");
-  gtk_widget_show (main_status);
-  gtk_container_add (GTK_CONTAINER (scrolledwindow1), main_status);
-  gtk_tooltips_set_tip (tooltips, main_status, _("Messages and errors are logged here."), NULL);
-  gtk_text_view_set_editable (GTK_TEXT_VIEW (main_status), FALSE);
-  gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (main_status), GTK_WRAP_WORD);
-
-  label161a = gtk_label_new (_("Messages Log"));
-  gtk_widget_set_name (label161a, "label161a");
-  gtk_widget_show (label161a);
-  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook7), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook7), 0), label161a);
-  gtk_label_set_justify (GTK_LABEL (label161a), GTK_JUSTIFY_CENTER);
-
   table78 = gtk_table_new (2, 1, FALSE);
   gtk_widget_set_name (table78, "table78");
   gtk_widget_show (table78);
@@ -3547,7 +3513,7 @@ create_main_window (void)
   label162 = gtk_label_new (_("Performances"));
   gtk_widget_set_name (label162, "label162");
   gtk_widget_show (label162);
-  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook7), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook7), 1), label162);
+  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook7), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook7), 0), label162);
   gtk_label_set_justify (GTK_LABEL (label162), GTK_JUSTIFY_CENTER);
 
   vbox80 = gtk_vbox_new (FALSE, 0);
@@ -3590,34 +3556,36 @@ create_main_window (void)
   gtk_table_set_row_spacings (GTK_TABLE (table83), 3);
   gtk_table_set_col_spacings (GTK_TABLE (table83), 3);
 
-  entry2 = gtk_entry_new ();
-  gtk_widget_set_name (entry2, "entry2");
-  gtk_widget_show (entry2);
-  gtk_table_attach (GTK_TABLE (table83), entry2, 4, 6, 1, 2,
+  register_data_entry = gtk_entry_new ();
+  gtk_widget_set_name (register_data_entry, "register_data_entry");
+  gtk_widget_show (register_data_entry);
+  gtk_table_attach (GTK_TABLE (table83), register_data_entry, 4, 6, 1, 2,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_tooltips_set_tip (tooltips, entry2, _("Data I/O"), NULL);
+  gtk_tooltips_set_tip (tooltips, register_data_entry, _("Data I/O"), NULL);
+  gtk_entry_set_max_length (GTK_ENTRY (register_data_entry), 8);
 
-  entry1 = gtk_entry_new ();
-  gtk_widget_set_name (entry1, "entry1");
-  gtk_widget_show (entry1);
-  gtk_table_attach (GTK_TABLE (table83), entry1, 0, 2, 1, 2,
+  register_address_entry = gtk_entry_new ();
+  gtk_widget_set_name (register_address_entry, "register_address_entry");
+  gtk_widget_show (register_address_entry);
+  gtk_table_attach (GTK_TABLE (table83), register_address_entry, 0, 2, 1, 2,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_tooltips_set_tip (tooltips, entry1, _("Address I/O"), NULL);
+  gtk_tooltips_set_tip (tooltips, register_address_entry, _("Address I/O"), NULL);
+  gtk_entry_set_max_length (GTK_ENTRY (register_address_entry), 16);
 
-  button8 = gtk_button_new ();
-  gtk_widget_set_name (button8, "button8");
-  gtk_widget_show (button8);
-  gtk_table_attach (GTK_TABLE (table83), button8, 2, 3, 1, 2,
+  register_write_button = gtk_button_new ();
+  gtk_widget_set_name (register_write_button, "register_write_button");
+  gtk_widget_show (register_write_button);
+  gtk_table_attach (GTK_TABLE (table83), register_write_button, 2, 3, 1, 2,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_tooltips_set_tip (tooltips, button8, _("Write data to the register address"), NULL);
+  gtk_tooltips_set_tip (tooltips, register_write_button, _("Write data to the register address"), NULL);
 
   alignment21 = gtk_alignment_new (0.5, 0.5, 0, 0);
   gtk_widget_set_name (alignment21, "alignment21");
   gtk_widget_show (alignment21);
-  gtk_container_add (GTK_CONTAINER (button8), alignment21);
+  gtk_container_add (GTK_CONTAINER (register_write_button), alignment21);
 
   hbox92 = gtk_hbox_new (FALSE, 2);
   gtk_widget_set_name (hbox92, "hbox92");
@@ -3634,18 +3602,18 @@ create_main_window (void)
   gtk_widget_show (label224);
   gtk_box_pack_start (GTK_BOX (hbox92), label224, FALSE, FALSE, 0);
 
-  button9 = gtk_button_new ();
-  gtk_widget_set_name (button9, "button9");
-  gtk_widget_show (button9);
-  gtk_table_attach (GTK_TABLE (table83), button9, 3, 4, 1, 2,
+  register_read_button = gtk_button_new ();
+  gtk_widget_set_name (register_read_button, "register_read_button");
+  gtk_widget_show (register_read_button);
+  gtk_table_attach (GTK_TABLE (table83), register_read_button, 3, 4, 1, 2,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_tooltips_set_tip (tooltips, button9, _("Read data from the register address"), NULL);
+  gtk_tooltips_set_tip (tooltips, register_read_button, _("Read data from the register address"), NULL);
 
   alignment22 = gtk_alignment_new (0.5, 0.5, 0, 0);
   gtk_widget_set_name (alignment22, "alignment22");
   gtk_widget_show (alignment22);
-  gtk_container_add (GTK_CONTAINER (button9), alignment22);
+  gtk_container_add (GTK_CONTAINER (register_read_button), alignment22);
 
   hbox93 = gtk_hbox_new (FALSE, 2);
   gtk_widget_set_name (hbox93, "hbox93");
@@ -3712,7 +3680,7 @@ create_main_window (void)
   label219 = gtk_label_new (_("Register Access"));
   gtk_widget_set_name (label219, "label219");
   gtk_widget_show (label219);
-  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook7), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook7), 2), label219);
+  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook7), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook7), 1), label219);
 
   frame4 = gtk_frame_new (NULL);
   gtk_widget_set_name (frame4, "frame4");
@@ -3815,7 +3783,7 @@ create_main_window (void)
   gtk_frame_set_label_widget (GTK_FRAME (frame4), label195);
   gtk_label_set_use_markup (GTK_LABEL (label195), TRUE);
 
-  label151 = gtk_label_new (_("Status"));
+  label151 = gtk_label_new (_("Misc"));
   gtk_widget_set_name (label151, "label151");
   gtk_widget_show (label151);
   gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook2), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook2), 4), label151);
@@ -3973,6 +3941,12 @@ create_main_window (void)
                     NULL);
   g_signal_connect ((gpointer) prefs_ftp_num_tag, "toggled",
                     G_CALLBACK (on_prefs_ftp_num_tag_toggled),
+                    NULL);
+  g_signal_connect ((gpointer) register_write_button, "clicked",
+                    G_CALLBACK (on_register_write_button_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) register_read_button, "clicked",
+                    G_CALLBACK (on_register_read_button_clicked),
                     NULL);
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
@@ -4385,10 +4359,6 @@ create_main_window (void)
   GLADE_HOOKUP_OBJECT (main_window, label59, "label59");
   GLADE_HOOKUP_OBJECT (main_window, table77, "table77");
   GLADE_HOOKUP_OBJECT (main_window, notebook7, "notebook7");
-  GLADE_HOOKUP_OBJECT (main_window, table79, "table79");
-  GLADE_HOOKUP_OBJECT (main_window, scrolledwindow1, "scrolledwindow1");
-  GLADE_HOOKUP_OBJECT (main_window, main_status, "main_status");
-  GLADE_HOOKUP_OBJECT (main_window, label161a, "label161a");
   GLADE_HOOKUP_OBJECT (main_window, table78, "table78");
   GLADE_HOOKUP_OBJECT (main_window, bandwidth_frame, "bandwidth_frame");
   GLADE_HOOKUP_OBJECT (main_window, bandwidth_table, "bandwidth_table");
@@ -4408,14 +4378,14 @@ create_main_window (void)
   GLADE_HOOKUP_OBJECT (main_window, label226, "label226");
   GLADE_HOOKUP_OBJECT (main_window, frame1113, "frame1113");
   GLADE_HOOKUP_OBJECT (main_window, table83, "table83");
-  GLADE_HOOKUP_OBJECT (main_window, entry2, "entry2");
-  GLADE_HOOKUP_OBJECT (main_window, entry1, "entry1");
-  GLADE_HOOKUP_OBJECT (main_window, button8, "button8");
+  GLADE_HOOKUP_OBJECT (main_window, register_data_entry, "register_data_entry");
+  GLADE_HOOKUP_OBJECT (main_window, register_address_entry, "register_address_entry");
+  GLADE_HOOKUP_OBJECT (main_window, register_write_button, "register_write_button");
   GLADE_HOOKUP_OBJECT (main_window, alignment21, "alignment21");
   GLADE_HOOKUP_OBJECT (main_window, hbox92, "hbox92");
   GLADE_HOOKUP_OBJECT (main_window, image25, "image25");
   GLADE_HOOKUP_OBJECT (main_window, label224, "label224");
-  GLADE_HOOKUP_OBJECT (main_window, button9, "button9");
+  GLADE_HOOKUP_OBJECT (main_window, register_read_button, "register_read_button");
   GLADE_HOOKUP_OBJECT (main_window, alignment22, "alignment22");
   GLADE_HOOKUP_OBJECT (main_window, hbox93, "hbox93");
   GLADE_HOOKUP_OBJECT (main_window, label225, "label225");
@@ -4614,6 +4584,20 @@ create_preferences_window (void)
   GSList *overlay_byte_order_YUYV_group = NULL;
   GtkWidget *overlay_byte_order_UYVY;
   GtkWidget *label198;
+  GtkWidget *prefs_confirmation_frame;
+  GtkWidget *vbox81;
+  GtkWidget *prefs_no_overwrite;
+  GtkWidget *label232;
+  GtkWidget *prefs_warnings_frame;
+  GtkWidget *vbox82;
+  GtkWidget *prefs_warning_in_popup;
+  GtkWidget *prefs_error_in_popup;
+  GtkWidget *label233;
+  GtkWidget *prefs_automate_frame;
+  GtkWidget *vbox84;
+  GtkWidget *prefs_auto_receive;
+  GtkWidget *prefs_auto_iso;
+  GtkWidget *label235;
 
   preferences_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_widget_set_name (preferences_window, "preferences_window");
@@ -4677,7 +4661,7 @@ create_preferences_window (void)
   prefs_update_power = gtk_check_button_new_with_mnemonic (_("Update"));
   gtk_widget_set_name (prefs_update_power, "prefs_update_power");
   gtk_widget_show (prefs_update_power);
-  gtk_box_pack_start (GTK_BOX (hbox44), prefs_update_power, FALSE, FALSE, 2);
+  gtk_box_pack_start (GTK_BOX (hbox44), prefs_update_power, FALSE, FALSE, 0);
 
   label79 = gtk_label_new (_("@"));
   gtk_widget_set_name (label79, "label79");
@@ -4736,6 +4720,85 @@ create_preferences_window (void)
   gtk_widget_show (label198);
   gtk_frame_set_label_widget (GTK_FRAME (frame10), label198);
 
+  prefs_confirmation_frame = gtk_frame_new (NULL);
+  gtk_widget_set_name (prefs_confirmation_frame, "prefs_confirmation_frame");
+  gtk_widget_show (prefs_confirmation_frame);
+  gtk_box_pack_start (GTK_BOX (vbox46), prefs_confirmation_frame, TRUE, TRUE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (prefs_confirmation_frame), 5);
+  gtk_frame_set_shadow_type (GTK_FRAME (prefs_confirmation_frame), GTK_SHADOW_IN);
+
+  vbox81 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_set_name (vbox81, "vbox81");
+  gtk_widget_show (vbox81);
+  gtk_container_add (GTK_CONTAINER (prefs_confirmation_frame), vbox81);
+  gtk_container_set_border_width (GTK_CONTAINER (vbox81), 2);
+
+  prefs_no_overwrite = gtk_check_button_new_with_mnemonic (_("Don't overwrite existing files but\nappend \"-1\" to filename instead"));
+  gtk_widget_set_name (prefs_no_overwrite, "prefs_no_overwrite");
+  gtk_widget_show (prefs_no_overwrite);
+  gtk_box_pack_start (GTK_BOX (vbox81), prefs_no_overwrite, FALSE, FALSE, 0);
+
+  label232 = gtk_label_new (_("Confirmation"));
+  gtk_widget_set_name (label232, "label232");
+  gtk_widget_show (label232);
+  gtk_frame_set_label_widget (GTK_FRAME (prefs_confirmation_frame), label232);
+
+  prefs_warnings_frame = gtk_frame_new (NULL);
+  gtk_widget_set_name (prefs_warnings_frame, "prefs_warnings_frame");
+  gtk_widget_show (prefs_warnings_frame);
+  gtk_box_pack_start (GTK_BOX (vbox46), prefs_warnings_frame, TRUE, TRUE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (prefs_warnings_frame), 5);
+  gtk_frame_set_shadow_type (GTK_FRAME (prefs_warnings_frame), GTK_SHADOW_IN);
+
+  vbox82 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_set_name (vbox82, "vbox82");
+  gtk_widget_show (vbox82);
+  gtk_container_add (GTK_CONTAINER (prefs_warnings_frame), vbox82);
+  gtk_container_set_border_width (GTK_CONTAINER (vbox82), 2);
+
+  prefs_warning_in_popup = gtk_check_button_new_with_mnemonic (_("Show errors in pop-up window"));
+  gtk_widget_set_name (prefs_warning_in_popup, "prefs_warning_in_popup");
+  gtk_widget_show (prefs_warning_in_popup);
+  gtk_box_pack_start (GTK_BOX (vbox82), prefs_warning_in_popup, FALSE, FALSE, 0);
+
+  prefs_error_in_popup = gtk_check_button_new_with_mnemonic (_("Show warnings in pop-up window"));
+  gtk_widget_set_name (prefs_error_in_popup, "prefs_error_in_popup");
+  gtk_widget_show (prefs_error_in_popup);
+  gtk_box_pack_start (GTK_BOX (vbox82), prefs_error_in_popup, FALSE, FALSE, 0);
+
+  label233 = gtk_label_new (_("Pop-ups"));
+  gtk_widget_set_name (label233, "label233");
+  gtk_widget_show (label233);
+  gtk_frame_set_label_widget (GTK_FRAME (prefs_warnings_frame), label233);
+
+  prefs_automate_frame = gtk_frame_new (NULL);
+  gtk_widget_set_name (prefs_automate_frame, "prefs_automate_frame");
+  gtk_widget_show (prefs_automate_frame);
+  gtk_box_pack_start (GTK_BOX (vbox46), prefs_automate_frame, TRUE, TRUE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (prefs_automate_frame), 5);
+  gtk_frame_set_shadow_type (GTK_FRAME (prefs_automate_frame), GTK_SHADOW_IN);
+
+  vbox84 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_set_name (vbox84, "vbox84");
+  gtk_widget_show (vbox84);
+  gtk_container_add (GTK_CONTAINER (prefs_automate_frame), vbox84);
+  gtk_container_set_border_width (GTK_CONTAINER (vbox84), 2);
+
+  prefs_auto_receive = gtk_check_button_new_with_mnemonic (_("Receive service"));
+  gtk_widget_set_name (prefs_auto_receive, "prefs_auto_receive");
+  gtk_widget_show (prefs_auto_receive);
+  gtk_box_pack_start (GTK_BOX (vbox84), prefs_auto_receive, FALSE, FALSE, 0);
+
+  prefs_auto_iso = gtk_check_button_new_with_mnemonic (_("ISO reception"));
+  gtk_widget_set_name (prefs_auto_iso, "prefs_auto_iso");
+  gtk_widget_show (prefs_auto_iso);
+  gtk_box_pack_start (GTK_BOX (vbox84), prefs_auto_iso, FALSE, FALSE, 0);
+
+  label235 = gtk_label_new (_("Automate"));
+  gtk_widget_set_name (label235, "label235");
+  gtk_widget_show (label235);
+  gtk_frame_set_label_widget (GTK_FRAME (prefs_automate_frame), label235);
+
   g_signal_connect ((gpointer) preferences_window, "destroy_event",
                     G_CALLBACK (gtk_widget_hide),
                     NULL);
@@ -4760,6 +4823,21 @@ create_preferences_window (void)
   g_signal_connect ((gpointer) overlay_byte_order_UYVY, "toggled",
                     G_CALLBACK (on_overlay_byte_order_UYVY_toggled),
                     NULL);
+  g_signal_connect ((gpointer) prefs_no_overwrite, "toggled",
+                    G_CALLBACK (on_prefs_no_overwrite_toggled),
+                    NULL);
+  g_signal_connect ((gpointer) prefs_warning_in_popup, "toggled",
+                    G_CALLBACK (on_prefs_warning_in_popup_toggled),
+                    NULL);
+  g_signal_connect ((gpointer) prefs_error_in_popup, "toggled",
+                    G_CALLBACK (on_prefs_error_in_popup_toggled),
+                    NULL);
+  g_signal_connect ((gpointer) prefs_auto_receive, "toggled",
+                    G_CALLBACK (on_prefs_auto_receive_toggled),
+                    NULL);
+  g_signal_connect ((gpointer) prefs_auto_iso, "toggled",
+                    G_CALLBACK (on_prefs_auto_iso_toggled),
+                    NULL);
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
   GLADE_HOOKUP_OBJECT_NO_REF (preferences_window, preferences_window, "preferences_window");
@@ -4781,6 +4859,20 @@ create_preferences_window (void)
   GLADE_HOOKUP_OBJECT (preferences_window, overlay_byte_order_YUYV, "overlay_byte_order_YUYV");
   GLADE_HOOKUP_OBJECT (preferences_window, overlay_byte_order_UYVY, "overlay_byte_order_UYVY");
   GLADE_HOOKUP_OBJECT (preferences_window, label198, "label198");
+  GLADE_HOOKUP_OBJECT (preferences_window, prefs_confirmation_frame, "prefs_confirmation_frame");
+  GLADE_HOOKUP_OBJECT (preferences_window, vbox81, "vbox81");
+  GLADE_HOOKUP_OBJECT (preferences_window, prefs_no_overwrite, "prefs_no_overwrite");
+  GLADE_HOOKUP_OBJECT (preferences_window, label232, "label232");
+  GLADE_HOOKUP_OBJECT (preferences_window, prefs_warnings_frame, "prefs_warnings_frame");
+  GLADE_HOOKUP_OBJECT (preferences_window, vbox82, "vbox82");
+  GLADE_HOOKUP_OBJECT (preferences_window, prefs_warning_in_popup, "prefs_warning_in_popup");
+  GLADE_HOOKUP_OBJECT (preferences_window, prefs_error_in_popup, "prefs_error_in_popup");
+  GLADE_HOOKUP_OBJECT (preferences_window, label233, "label233");
+  GLADE_HOOKUP_OBJECT (preferences_window, prefs_automate_frame, "prefs_automate_frame");
+  GLADE_HOOKUP_OBJECT (preferences_window, vbox84, "vbox84");
+  GLADE_HOOKUP_OBJECT (preferences_window, prefs_auto_receive, "prefs_auto_receive");
+  GLADE_HOOKUP_OBJECT (preferences_window, prefs_auto_iso, "prefs_auto_iso");
+  GLADE_HOOKUP_OBJECT (preferences_window, label235, "label235");
 
   return preferences_window;
 }
@@ -4852,10 +4944,10 @@ create_v4l_failure_window (void)
   GtkWidget *dialog_action_area4;
   GtkWidget *button6;
 
-  v4l_failure_window = gnome_message_box_new ("Warning: Could not start the V4L service\n\nPlease check that:\n- V4L kernel modules are loaded or that V4L support\n     is in your kernel\n- you have read/write permission on the selected\n     video device\n- the vloopback module is loaded",
-                              GNOME_MESSAGE_BOX_INFO, NULL);
+  v4l_failure_window = gnome_message_box_new ("Error: Could not start the V4L service\n\nPlease check that:\n- V4L kernel modules are loaded or that V4L support\n     is in your kernel\n- you have read/write permission on the selected\n     video device\n- the vloopback module is loaded",
+                              GNOME_MESSAGE_BOX_ERROR, NULL);
   gtk_widget_set_name (v4l_failure_window, "v4l_failure_window");
-  gtk_window_set_title (GTK_WINDOW (v4l_failure_window), _("Coriander Warning"));
+  gtk_window_set_title (GTK_WINDOW (v4l_failure_window), _("Coriander Error"));
   gtk_window_set_resizable (GTK_WINDOW (v4l_failure_window), FALSE);
   v4l_failure_window_icon_pixbuf = create_pixbuf ("coriander/coriander-icon.png");
   if (v4l_failure_window_icon_pixbuf)

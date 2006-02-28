@@ -39,8 +39,7 @@ gint IsoStartThread(camera_t* cam)
     info=(isothread_info_t*)iso_service->data;
     
     /* currently FORMAT_STILL_IMAGE is not supported*/
-    if ((cam->camera_info.mode >= DC1394_VIDEO_MODE_FORMAT6_MIN) &&
-        (cam->camera_info.mode <= DC1394_VIDEO_MODE_FORMAT6_MAX)) {
+    if (dc1394_is_video_mode_still_image(cam->camera_info.video_mode)==DC1394_TRUE) {
       FreeChain(iso_service);
       iso_service=NULL;
       return(-1);
@@ -69,42 +68,34 @@ gint IsoStartThread(camera_t* cam)
       }
     }
 
-    // copy params if we are the current camera
-    if (cam==camera) {
-      info->receive_method=cam->prefs.receive_method;
-      info->video1394_dropframes=cam->prefs.video1394_dropframes;
-      info->dma_buffer_size=cam->prefs.dma_buffer_size;
-    }
-
-    switch(info->receive_method) {
+    switch(cam->prefs.receive_method) {
     case RECEIVE_METHOD_VIDEO1394:
-      if (!((cam->camera_info.mode >= DC1394_VIDEO_MODE_FORMAT7_MIN) &&
-	    (cam->camera_info.mode <= DC1394_VIDEO_MODE_FORMAT7_MAX))) {
-	err=dc1394_dma_setup_capture(&cam->camera_info, cam->camera_info.mode, maxspeed,
-				     cam->camera_info.framerate, info->dma_buffer_size,
-				     info->video1394_dropframes);
+      if (!dc1394_is_video_mode_scalable(cam->camera_info.video_mode)) {
+	err=dc1394_dma_setup_capture(&cam->camera_info, cam->camera_info.video_mode, maxspeed,
+				     cam->camera_info.framerate, cam->prefs.dma_buffer_size,
+				     cam->prefs.video1394_dropframes);
 	if (err!=DC1394_SUCCESS){
 	  eprint("Failed to setup DMA capture. Error code %d\n",err);
 	  FreeChain(iso_service);
 	  iso_service=NULL;
 	  return(-1);
 	}
-	info->receive_method=RECEIVE_METHOD_VIDEO1394;
+	cam->prefs.receive_method=RECEIVE_METHOD_VIDEO1394;
       }
       else {
-	if (dc1394_format7_get_color_coding_id(&cam->camera_info, cam->camera_info.mode,
-					       &color_coding)!=DC1394_SUCCESS) {
+	if (dc1394_format7_get_color_coding(&cam->camera_info, cam->camera_info.video_mode,
+					    &color_coding)!=DC1394_SUCCESS) {
 	  fprintf(stderr,"could not get color coding!\n");
 	  FreeChain(iso_service);
 	  iso_service=NULL;
 	  return(-1);
 	}
 
-	err=dc1394_dma_setup_format7_capture(&cam->camera_info, cam->camera_info.mode, color_coding,
+	err=dc1394_dma_setup_format7_capture(&cam->camera_info, cam->camera_info.video_mode, color_coding,
 					     maxspeed, DC1394_QUERY_FROM_CAMERA,
 					     DC1394_QUERY_FROM_CAMERA, DC1394_QUERY_FROM_CAMERA,
 					     DC1394_QUERY_FROM_CAMERA, DC1394_QUERY_FROM_CAMERA, 
-					     info->dma_buffer_size, info->video1394_dropframes);
+					     cam->prefs.dma_buffer_size, cam->prefs.video1394_dropframes);
 	
 	if (err!=DC1394_SUCCESS){
 	  eprint("Failed to setup DMA Format_7 capture. Error code %d\n",err);
@@ -112,13 +103,12 @@ gint IsoStartThread(camera_t* cam)
 	  iso_service=NULL;
 	  return(-1);
 	}
-	info->receive_method=RECEIVE_METHOD_VIDEO1394;
+	cam->prefs.receive_method=RECEIVE_METHOD_VIDEO1394;
       }
       break;
     case RECEIVE_METHOD_RAW1394:
-      if (!((cam->camera_info.mode >= DC1394_VIDEO_MODE_FORMAT7_MIN) &&
-	    (cam->camera_info.mode <= DC1394_VIDEO_MODE_FORMAT7_MAX))) {
-	err=dc1394_setup_capture(&cam->camera_info, cam->camera_info.mode,
+      if (!dc1394_is_video_mode_scalable(cam->camera_info.video_mode)) {
+	err=dc1394_setup_capture(&cam->camera_info, cam->camera_info.video_mode,
 				 maxspeed, cam->camera_info.framerate);
 	
 	if (err!=DC1394_SUCCESS){
@@ -127,17 +117,17 @@ gint IsoStartThread(camera_t* cam)
 	  iso_service=NULL;
 	  return(-1);
 	}
-	info->receive_method=RECEIVE_METHOD_RAW1394;
+	cam->prefs.receive_method=RECEIVE_METHOD_RAW1394;
       }
       else {
-	if (dc1394_format7_get_color_coding_id(&cam->camera_info, cam->camera_info.mode,
-					       &color_coding)!=DC1394_SUCCESS) {
+	if (dc1394_format7_get_color_coding(&cam->camera_info, cam->camera_info.video_mode,
+					    &color_coding)!=DC1394_SUCCESS) {
 	  fprintf(stderr,"could not get color coding!\n");
 	  FreeChain(iso_service);
 	  iso_service=NULL;
 	  return(-1);
 	}
-	err=dc1394_setup_format7_capture(&cam->camera_info, cam->camera_info.mode, color_coding,
+	err=dc1394_setup_format7_capture(&cam->camera_info, cam->camera_info.video_mode, color_coding,
 					 maxspeed, DC1394_QUERY_FROM_CAMERA,
 					 DC1394_QUERY_FROM_CAMERA, DC1394_QUERY_FROM_CAMERA,
 					 DC1394_QUERY_FROM_CAMERA, DC1394_QUERY_FROM_CAMERA);
@@ -188,7 +178,9 @@ IsoCleanupThread(void* arg)
   iso_service=(chain_t*)arg;
   info=(isothread_info_t*)iso_service->data;
 
-  if ((info->receive_method == RECEIVE_METHOD_VIDEO1394)) {
+  camera_t *cam=iso_service->camera;
+
+  if ((cam->prefs.receive_method == RECEIVE_METHOD_VIDEO1394)) {
     //dc1394_dma_done_with_buffer(&info->capture);
     // this should be done at the condition it has not been executed before or
     // else we get an ioctl error from libdc1394. How to do this, I don't know...
@@ -220,6 +212,8 @@ IsoThread(void* arg)
   pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS,NULL);
   pthread_mutex_unlock(&iso_service->mutex_data);
 
+  camera_t *cam=iso_service->camera;
+
   // time inits:
   iso_service->prev_time = times(&iso_service->tms_buf);
   iso_service->fps_frames=0;
@@ -235,7 +229,7 @@ IsoThread(void* arg)
     
       camptr=&(iso_service->camera->camera_info);
 
-      if (info->receive_method == RECEIVE_METHOD_RAW1394)
+      if (cam->prefs.receive_method == RECEIVE_METHOD_RAW1394)
 	dc1394_capture(&camptr, 1);
       else
 	dma_ok=dc1394_dma_capture(&camptr, 1, DC1394_VIDEO1394_WAIT);
@@ -265,15 +259,16 @@ IsoThread(void* arg)
       switch (iso_service->current_buffer->stereo_decoding) {
       case STEREO_DECODING_INTERLACED:
 	dc1394_deinterlace_stereo(dc1394_video_get_buffer(&iso_service->camera->camera_info),info->temp,
-				  info->orig_sizex*info->orig_sizey*2);
+				  info->orig_sizex,info->orig_sizey*2);
 	break;
       case STEREO_DECODING_FIELD:
 	memcpy(info->temp,dc1394_video_get_buffer(&iso_service->camera->camera_info),info->orig_sizex*info->orig_sizey*2);
 	break;
       case NO_STEREO_DECODING:
 	if ((iso_service->current_buffer->bayer!=NO_BAYER_DECODING)&&(info->cond16bit!=0)) {
-	  dc1394_MONO16_to_MONO8(dc1394_video_get_buffer(&iso_service->camera->camera_info),info->temp,
-				 info->orig_sizex*info->orig_sizey, iso_service->current_buffer->bpp);
+	  dc1394_convert_to_MONO8(dc1394_video_get_buffer(&iso_service->camera->camera_info),info->temp,
+				  info->orig_sizex, info->orig_sizey,
+				  DC1394_BYTE_ORDER_YUYV, DC1394_COLOR_CODING_MONO16, iso_service->current_buffer->bpp);
 	}
 	else {
 	  // it is necessary to put this here and not in the thread init or IsoThreadCheckParams function because
@@ -309,7 +304,7 @@ IsoThread(void* arg)
       else
 	iso_service->fps=fabs((float)iso_service->fps_frames/tmp);
       
-      if ((info->receive_method == RECEIVE_METHOD_VIDEO1394)&&(dma_ok==DC1394_SUCCESS))
+      if ((cam->prefs.receive_method == RECEIVE_METHOD_VIDEO1394)&&(dma_ok==DC1394_SUCCESS))
 	dc1394_dma_done_with_buffer(&iso_service->camera->camera_info);
       
       PublishBufferForNext(iso_service);
@@ -351,7 +346,7 @@ gint IsoStopThread(camera_t* cam)
     }
     //eprint("test2\n");
     
-    if (info->receive_method == RECEIVE_METHOD_VIDEO1394) {
+    if (cam->prefs.receive_method == RECEIVE_METHOD_VIDEO1394) {
       dc1394_dma_unlisten(&iso_service->camera->camera_info);
       dc1394_dma_release_camera(&iso_service->camera->camera_info);
     }
@@ -472,20 +467,13 @@ IsoThreadCheckParams(chain_t *iso_service)
   }
 
 
-  if ((iso_service->camera->camera_info.mode >= DC1394_VIDEO_MODE_FORMAT7_MIN) &&
-      (iso_service->camera->camera_info.mode <= DC1394_VIDEO_MODE_FORMAT7_MAX)) {
-    temp=iso_service->camera->format7_info.modeset.mode[iso_service->camera->camera_info.mode-DC1394_VIDEO_MODE_FORMAT7_MIN].color_coding_id;
+  if (dc1394_is_video_mode_scalable(iso_service->camera->camera_info.video_mode)) {
+    temp=iso_service->camera->format7_info.modeset.mode[iso_service->camera->camera_info.video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].color_coding;
   }
   else {
     temp=-1;
   }
-  SetColorMode(iso_service->camera->camera_info.mode,iso_service->current_buffer,temp);
-  /*
-  fprintf(stderr,"S:[%d %d] BPF:%lli ColMode:%d\n",
-	  iso_service->current_buffer->width, iso_service->current_buffer->height,
-	  iso_service->current_buffer->bytes_per_frame,
-	  iso_service->current_buffer->color_mode);
-  */
+  SetColorMode(iso_service->camera->camera_info.video_mode,iso_service->current_buffer,temp);
   pthread_mutex_unlock(&iso_service->camera->uimutex);
 
 }
