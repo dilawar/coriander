@@ -627,7 +627,7 @@ on_offset_menu_activate             (GtkMenuItem     *menuitem,
   int offset;
 
   offset=(int)user_data;
-  fprintf(stderr,"offset: %d\n",offset);
+  //fprintf(stderr,"offset: %d\n",offset);
   camera->register_offset=offset;
 }
 
@@ -639,6 +639,8 @@ on_register_write_button_clicked      (GtkButton       *button,
   quadlet_t value;
   octlet_t offset;
   char *string;
+  dc1394error_t err=DC1394_SUCCESS;
+  char string2[16];
 
   string=(char*)gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window, "register_address_entry")));
   sscanf(string,"%llx",&offset);
@@ -647,20 +649,16 @@ on_register_write_button_clicked      (GtkButton       *button,
 
   switch(camera->register_offset) {
   case REGISTER_OFFSET_BASE:
-    if (SetCameraROMValue(&camera->camera_info, offset, value)!=DC1394_SUCCESS)
-      fprintf(stderr,"Error writing to register!\n");
+    err=SetCameraROMValue(&camera->camera_info, offset, value);
     break;
   case REGISTER_OFFSET_CRB:
-    if (SetCameraControlRegister(&camera->camera_info, offset, value)!=DC1394_SUCCESS)
-      fprintf(stderr,"Error writing to register!\n");
+    err=SetCameraControlRegister(&camera->camera_info, offset, value);
     break;
   case REGISTER_OFFSET_UD:
-    if (SetCameraROMValue(&camera->camera_info, offset+camera->camera_info.unit_directory, value)!=DC1394_SUCCESS)
-      fprintf(stderr,"Error writing to register!\n");
+    err=SetCameraROMValue(&camera->camera_info, offset+camera->camera_info.unit_directory, value);
     break;
   case REGISTER_OFFSET_UDD:
-    if (SetCameraROMValue(&camera->camera_info, offset+camera->camera_info.unit_dependent_directory, value)!=DC1394_SUCCESS)
-      fprintf(stderr,"Error writing to register!\n");
+    err=SetCameraROMValue(&camera->camera_info, offset+camera->camera_info.unit_dependent_directory, value);
     break;
   case DC1394_VIDEO_MODE_FORMAT7_0:
   case DC1394_VIDEO_MODE_FORMAT7_1:
@@ -670,14 +668,17 @@ on_register_write_button_clicked      (GtkButton       *button,
   case DC1394_VIDEO_MODE_FORMAT7_5:
   case DC1394_VIDEO_MODE_FORMAT7_6:
   case DC1394_VIDEO_MODE_FORMAT7_7:
-    if (SetCameraFormat7Register(&camera->camera_info, camera->register_offset, offset, value)!=DC1394_SUCCESS)
-      fprintf(stderr,"Error writing to register!\n");
+    err=SetCameraFormat7Register(&camera->camera_info, camera->register_offset, offset, value);
     break;
   default:
     fprintf(stderr,"Unrecognized offset!\n");
     break;
   }
+  if (err!=DC1394_SUCCESS) {
+    sprintf(string2,"Error");
 
+    gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window, "register_data_entry")),string2);
+  }
 
 }
 
@@ -690,6 +691,8 @@ on_register_read_button_clicked       (GtkButton       *button,
   quadlet_t value;
   octlet_t offset;
   char *string;
+  char string2[16];
+  dc1394error_t err=DC1394_SUCCESS;
 
   string=(char*)gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window, "register_address_entry")));
   sscanf(string,"%llx",&offset);
@@ -698,20 +701,16 @@ on_register_read_button_clicked       (GtkButton       *button,
 
   switch(camera->register_offset) {
   case REGISTER_OFFSET_BASE:
-    if (GetCameraROMValue(&camera->camera_info, offset, &value)!=DC1394_SUCCESS)
-      fprintf(stderr,"Error reading in register!\n");
+    err=GetCameraROMValue(&camera->camera_info, offset, &value);
     break;
   case REGISTER_OFFSET_CRB:
-    if (GetCameraControlRegister(&camera->camera_info, offset, &value)!=DC1394_SUCCESS)
-      fprintf(stderr,"Error reading in register!\n");
+    err=GetCameraControlRegister(&camera->camera_info, offset, &value);
     break;
   case REGISTER_OFFSET_UD:
-    if (GetCameraROMValue(&camera->camera_info, offset+camera->camera_info.unit_directory, &value)!=DC1394_SUCCESS)
-      fprintf(stderr,"Error reading in register!\n");
+    err=GetCameraROMValue(&camera->camera_info, offset+camera->camera_info.unit_directory, &value);
     break;
   case REGISTER_OFFSET_UDD:
-    if (GetCameraROMValue(&camera->camera_info, offset+camera->camera_info.unit_dependent_directory, &value)!=DC1394_SUCCESS)
-      fprintf(stderr,"Error reading in register!\n");
+    err=GetCameraROMValue(&camera->camera_info, offset+camera->camera_info.unit_dependent_directory, &value);
     break;
   case DC1394_VIDEO_MODE_FORMAT7_0:
   case DC1394_VIDEO_MODE_FORMAT7_1:
@@ -721,16 +720,18 @@ on_register_read_button_clicked       (GtkButton       *button,
   case DC1394_VIDEO_MODE_FORMAT7_5:
   case DC1394_VIDEO_MODE_FORMAT7_6:
   case DC1394_VIDEO_MODE_FORMAT7_7:
-    if (GetCameraFormat7Register(&camera->camera_info, camera->register_offset, offset, &value)!=DC1394_SUCCESS)
-      fprintf(stderr,"Error reading in register!\n");
+    err=GetCameraFormat7Register(&camera->camera_info, camera->register_offset, offset, &value);
     break;
   default:
     fprintf(stderr,"Unrecognized offset!\n");
     break;
   }
-  //fprintf(stderr,"0x%08x\n",value);
-  sprintf(string,"%08x",value);
-  gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window, "register_data_entry")),string);
+  if (err!=DC1394_SUCCESS)
+    sprintf(string2,"Error");
+  else
+    sprintf(string2,"%08x",value);
+
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window, "register_data_entry")),string2);
 }
 
 

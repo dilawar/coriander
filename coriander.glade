@@ -19,6 +19,7 @@
   <property name="type_hint">GDK_WINDOW_TYPE_HINT_NORMAL</property>
   <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
   <property name="focus_on_map">True</property>
+  <property name="urgency_hint">False</property>
   <signal name="delete_event" handler="on_main_window_delete_event"/>
 
   <child>
@@ -30,6 +31,8 @@
       <child>
 	<widget class="GtkMenuBar" id="menubar">
 	  <property name="visible">True</property>
+	  <property name="pack_direction">GTK_PACK_DIRECTION_LTR</property>
+	  <property name="child_pack_direction">GTK_PACK_DIRECTION_LTR</property>
 
 	  <child>
 	    <widget class="GtkMenuItem" id="file">
@@ -7275,7 +7278,7 @@ for something to take effect here.</property>
 				  <property name="can_focus">True</property>
 				  <property name="editable">True</property>
 				  <property name="visibility">True</property>
-				  <property name="max_length">8</property>
+				  <property name="max_length">16</property>
 				  <property name="text" translatable="yes"></property>
 				  <property name="has_frame">True</property>
 				  <property name="invisible_char">*</property>
@@ -7995,6 +7998,7 @@ Please check that:
   <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
   <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
   <property name="focus_on_map">True</property>
+  <property name="urgency_hint">False</property>
   <property name="auto_close">True</property>
   <property name="hide_on_close">False</property>
 
@@ -8068,6 +8072,7 @@ http://www.linux1394.org</property>
   <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
   <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
   <property name="focus_on_map">True</property>
+  <property name="urgency_hint">False</property>
   <property name="auto_close">True</property>
   <property name="hide_on_close">False</property>
 
@@ -8126,6 +8131,7 @@ http://www.linux1394.org</property>
   <property name="type_hint">GDK_WINDOW_TYPE_HINT_NORMAL</property>
   <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
   <property name="focus_on_map">True</property>
+  <property name="urgency_hint">False</property>
   <signal name="destroy_event" handler="gtk_widget_hide"/>
   <signal name="delete_event" handler="gtk_widget_hide"/>
   <signal name="destroy" handler="gtk_widget_hide"/>
@@ -8715,6 +8721,7 @@ append &quot;-1&quot; to filename instead</property>
   <property name="type_hint">GDK_WINDOW_TYPE_HINT_NORMAL</property>
   <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
   <property name="focus_on_map">True</property>
+  <property name="urgency_hint">False</property>
   <signal name="delete_event" handler="gtk_widget_destroy"/>
   <signal name="destroy_event" handler="gtk_widget_destroy"/>
   <signal name="destroy" handler="gtk_widget_destroy"/>
@@ -8786,6 +8793,7 @@ Please check that:
   <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
   <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
   <property name="focus_on_map">True</property>
+  <property name="urgency_hint">False</property>
   <property name="auto_close">True</property>
   <property name="hide_on_close">False</property>
 
@@ -8846,6 +8854,7 @@ you can click 'Quit' to leave Coriander.</property>
   <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
   <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
   <property name="focus_on_map">True</property>
+  <property name="urgency_hint">False</property>
   <property name="auto_close">True</property>
   <property name="hide_on_close">False</property>
 

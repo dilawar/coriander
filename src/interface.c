@@ -3563,7 +3563,7 @@ create_main_window (void)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_tooltips_set_tip (tooltips, register_data_entry, _("Data I/O"), NULL);
-  gtk_entry_set_max_length (GTK_ENTRY (register_data_entry), 8);
+  gtk_entry_set_max_length (GTK_ENTRY (register_data_entry), 16);
 
   register_address_entry = gtk_entry_new ();
   gtk_widget_set_name (register_address_entry, "register_address_entry");
