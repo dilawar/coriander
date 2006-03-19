@@ -28,7 +28,7 @@ V4lStartThread(camera_t* cam)
 
   stemp=(char*)malloc(STRING_SIZE*sizeof(char));
 
-  v4l_service=GetService(camera, SERVICE_V4L);
+  v4l_service=GetService(cam, SERVICE_V4L);
 
   if (v4l_service==NULL) { // if no V4L service running...
     v4l_service=(chain_t*)malloc(sizeof(chain_t));

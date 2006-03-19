@@ -24,7 +24,7 @@ DisplayStartThread(camera_t* cam)
   chain_t *display_service=NULL;
   displaythread_info_t *info=NULL;
 
-  display_service=GetService(camera,SERVICE_DISPLAY);
+  display_service=GetService(cam,SERVICE_DISPLAY);
 
   if (display_service==NULL) {// if no display service running...
     display_service=(chain_t*)malloc(sizeof(chain_t));
@@ -138,7 +138,7 @@ DisplayThread(void* arg)
 	    display_service->processed_frames++;
 	  }
 	  else { //
-	    if (display_service->camera->prefs.display_redraw==DISPLAY_REDRAW_ON) {
+	    if (cam->prefs.display_redraw==DISPLAY_REDRAW_ON) {
 	      ConditionalTimeoutRedraw(display_service);
 	    }
 	    skip_counter++;
@@ -157,7 +157,7 @@ DisplayThread(void* arg)
 	pthread_mutex_unlock(&display_service->mutex_data);
       }
       else { //
-	if (display_service->camera->prefs.display_redraw==DISPLAY_REDRAW_ON) {
+	if (cam->prefs.display_redraw==DISPLAY_REDRAW_ON) {
 	  ConditionalTimeoutRedraw(display_service);
 	}
 	pthread_mutex_unlock(&display_service->mutex_data);
@@ -327,7 +327,7 @@ SDLInit(chain_t *display_service)
   SDL_ShowCursor(1);
   
   // set window title:
-  SDL_WM_SetCaption(camera->prefs.name,camera->prefs.name);
+  SDL_WM_SetCaption(display_service->camera->prefs.name,display_service->camera->prefs.name);
 
   // this line broke everything for unknown reasons so I just remove it.
   //info->sdlvideo->format->BytesPerPixel=2;
@@ -424,7 +424,9 @@ SDLDisplayPattern(chain_t *display_service)
   js = (7*sy)/16;
   je = (9*sy)/16;
 
-  RGB2YUV(camera->prefs.overlay_color_r,camera->prefs.overlay_color_g,camera->prefs.overlay_color_b,y,u,v);
+  RGB2YUV(display_service->camera->prefs.overlay_color_r,
+	  display_service->camera->prefs.overlay_color_g,
+	  display_service->camera->prefs.overlay_color_b,y,u,v);
 
   switch(display_service->camera->prefs.overlay_type) {
   case OVERLAY_TYPE_REPLACE:

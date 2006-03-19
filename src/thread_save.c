@@ -26,7 +26,7 @@ SaveStartThread(camera_t* cam)
   chain_t* save_service=NULL;
   savethread_info_t *info=NULL;
 
-  save_service=GetService(camera, SERVICE_SAVE);
+  save_service=GetService(cam, SERVICE_SAVE);
 
   if (save_service==NULL) { // if no SAVE service running...
     save_service=(chain_t*)malloc(sizeof(chain_t));
@@ -216,7 +216,7 @@ writePVNHeader(FILE *fd, unsigned int mode, unsigned int height, unsigned int wi
 }
 
 static gint
-CreateSettingsFile(char *destdir)
+CreateSettingsFile(camera_t *cam, char *destdir)
 {
   char *fname = NULL;
   FILE *fd = NULL;
@@ -235,13 +235,13 @@ CreateSettingsFile(char *destdir)
     return(0);
   }
   
-  fprintf(fd,"fps=%s\n", fps_label_list[camera->camera_info.framerate-DC1394_FRAMERATE_MIN]);
+  fprintf(fd,"fps=%s\n", fps_label_list[cam->camera_info.framerate-DC1394_FRAMERATE_MIN]);
   fprintf(fd,"sync_control=%d\n",preferences.sync_control);
   
   for(i=DC1394_FEATURE_MIN; i<=DC1394_FEATURE_MAX; ++i) {
-    if (camera->feature_set.feature[i-DC1394_FEATURE_MIN].available)
+    if (cam->feature_set.feature[i-DC1394_FEATURE_MIN].available)
       fprintf(fd,"%s=%d\n", feature_name_list[i-DC1394_FEATURE_MIN],
-	      camera->feature_set.feature[i-DC1394_FEATURE_MIN].value);
+	      cam->feature_set.feature[i-DC1394_FEATURE_MIN].value);
   }
 
   fclose(fd);
@@ -298,7 +298,7 @@ GetSaveFD(chain_t *save_service, FILE **fd, char *filename_out)
 	  return DC1394_FAILURE;
 	}
 	// Create a file with camera settings
-	CreateSettingsFile(info->destdir);
+	CreateSettingsFile(cam,info->destdir);
       }
 
       // 2. build the filename
@@ -870,7 +870,7 @@ SaveThread(void* arg)
       break;
 #endif
     case SAVE_FORMAT_PVN:
-      dc1394_framerate_as_float(camera->camera_info.framerate, &fps);
+      dc1394_framerate_as_float(cam->camera_info.framerate, &fps);
       writePVNHeader(fd, save_service->current_buffer->color_mode,
 		     save_service->current_buffer->height,
 		     save_service->current_buffer->width,

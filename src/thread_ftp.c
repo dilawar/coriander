@@ -24,7 +24,7 @@ FtpStartThread(camera_t* cam)
   chain_t* ftp_service=NULL;
   ftpthread_info_t *info=NULL;
 
-  ftp_service=GetService(camera,SERVICE_FTP);
+  ftp_service=GetService(cam,SERVICE_FTP);
 
   if (ftp_service==NULL) { // if no FTP service running...
     ftp_service=(chain_t*)malloc(sizeof(chain_t));
@@ -123,7 +123,7 @@ FtpCleanupThread(void* arg)
 
   /* Mendatory cleanups: */
   pthread_mutex_unlock(&ftp_service->mutex_data);
-  FtpStopThread(camera); // we do this in case of auto-kill from the thread.
+  FtpStopThread(ftp_service->camera); // we do this in case of auto-kill from the thread.
 
   return(NULL);
 }

@@ -84,7 +84,7 @@ int
 NearestValue(int value, int step, int min, int max);
 
 void
-IsOptionAvailableWithFormat(int* bayer, int* stereo, int *bpp16);
+IsOptionAvailableWithFormat(camera_t* cam,int* bayer, int* stereo, int *bpp16);
 
 /*
 void

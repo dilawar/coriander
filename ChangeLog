@@ -1,7 +1,11 @@
-Coriander, (c) 2000-2005 Damien Douxchamps <ddouxchamps@users.sf.net>
+Coriander, (c) 2000-2006 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes towards version 2.0.0-pre5
 
+   March 19, 2006, by Damien Douxchamps
+   - fixed a (serious) bug regarding multiple camera support. Thanks to Michel
+     Sarkis and his team for finding that.
+	
    February 2, 2006, by Damien Douxchamps
    - support for trigger modes 4, 5, 14 and 15
    - basic overwriting protection: append "-%d" to the filename. 

@@ -224,8 +224,8 @@ IsoThread(void* arg)
     pthread_cleanup_push((void*)IsoCleanupThread, (void*)iso_service);
 
     // IF FRAME USED (and we use no-drop mode)
-    if (((iso_service->ready>0)&&(iso_service->camera->prefs.iso_nodrop>0))||
-	(iso_service->camera->prefs.iso_nodrop==0)) {
+    if (((iso_service->ready>0)&&(cam->prefs.iso_nodrop>0))||
+	(cam->prefs.iso_nodrop==0)) {
     
       camptr=&(iso_service->camera->camera_info);
 
@@ -236,8 +236,8 @@ IsoThread(void* arg)
     
       //printf("Got frame\n");
   
-      info->rawtime.tv_sec=(dc1394_video_get_filltime(&iso_service->camera->camera_info))->tv_sec;
-      info->rawtime.tv_usec=(dc1394_video_get_filltime(&iso_service->camera->camera_info))->tv_usec;
+      info->rawtime.tv_sec=(dc1394_video_get_filltime(camptr))->tv_sec;
+      info->rawtime.tv_usec=(dc1394_video_get_filltime(camptr))->tv_usec;
       //gettimeofday(&info->rawtime, NULL);
       localtime_r(&info->rawtime.tv_sec, &(iso_service->current_buffer->captime));
       iso_service->current_buffer->captime_usec=info->rawtime.tv_usec;
@@ -258,22 +258,22 @@ IsoThread(void* arg)
       // Stereo decoding
       switch (iso_service->current_buffer->stereo_decoding) {
       case STEREO_DECODING_INTERLACED:
-	dc1394_deinterlace_stereo(dc1394_video_get_buffer(&iso_service->camera->camera_info),info->temp,
+	dc1394_deinterlace_stereo(dc1394_video_get_buffer(camptr),info->temp,
 				  info->orig_sizex,info->orig_sizey*2);
 	break;
       case STEREO_DECODING_FIELD:
-	memcpy(info->temp,dc1394_video_get_buffer(&iso_service->camera->camera_info),info->orig_sizex*info->orig_sizey*2);
+	memcpy(info->temp,dc1394_video_get_buffer(camptr),info->orig_sizex*info->orig_sizey*2);
 	break;
       case NO_STEREO_DECODING:
 	if ((iso_service->current_buffer->bayer!=NO_BAYER_DECODING)&&(info->cond16bit!=0)) {
-	  dc1394_convert_to_MONO8(dc1394_video_get_buffer(&iso_service->camera->camera_info),info->temp,
+	  dc1394_convert_to_MONO8(dc1394_video_get_buffer(camptr),info->temp,
 				  info->orig_sizex, info->orig_sizey,
 				  DC1394_BYTE_ORDER_YUYV, DC1394_COLOR_CODING_MONO16, iso_service->current_buffer->bpp);
 	}
 	else {
 	  // it is necessary to put this here and not in the thread init or IsoThreadCheckParams function because
 	  // the buffer might change at every capture (typically when capture is too slow and buffering is performed)
-	  info->temp=dc1394_video_get_buffer(&iso_service->camera->camera_info);
+	  info->temp=dc1394_video_get_buffer(camptr);
 	}
 	break;
       }
@@ -305,7 +305,7 @@ IsoThread(void* arg)
 	iso_service->fps=fabs((float)iso_service->fps_frames/tmp);
       
       if ((cam->prefs.receive_method == RECEIVE_METHOD_VIDEO1394)&&(dma_ok==DC1394_SUCCESS))
-	dc1394_dma_done_with_buffer(&iso_service->camera->camera_info);
+	dc1394_dma_done_with_buffer(camptr);
       
       PublishBufferForNext(iso_service);
       //fprintf(stderr,"Buffer soon rolled in ISO\n");
@@ -387,7 +387,7 @@ IsoThreadCheckParams(chain_t *iso_service)
   info->orig_sizex=iso_service->current_buffer->width;
   info->orig_sizey=iso_service->current_buffer->height;
 
-  IsOptionAvailableWithFormat(&bayer_ok, &stereo_ok, &info->cond16bit);
+  IsOptionAvailableWithFormat(iso_service->camera,&bayer_ok, &stereo_ok, &info->cond16bit);
 
   if (bayer_ok==0) {
     iso_service->current_buffer->bayer=NO_BAYER_DECODING;
