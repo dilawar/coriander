@@ -42,7 +42,7 @@ AC_DEFUN([AC_CHECK_LIBDC],[
 **   Source tarball and CVS at:  http://www.sf.net/projects/libdc1394   **
 **************************************************************************])
         else
- 	  AC_CHECK_LIB(dc1394,dc1394_feature_get_boundaries,libdc1394=ok,libdc1394=old,-lraw1394)
+ 	  AC_CHECK_LIB(dc1394,dc1394_format7_set_roi,libdc1394=ok,libdc1394=old,-lraw1394)
  	  if test x$libdc1394 = xold; then
             AC_ERROR([libdc1394 is too old.
 **************************************************************************
@@ -61,7 +61,7 @@ AC_DEFUN([AC_CHECK_LIBDC],[
 	    raw1394handle_t handle;
 	    dc1394capture_t capture;
 	    dc1394camera_t camera;
-	    dc1394_dma_setup_capture(&camera, 0, DC1394_ISO_SPEED_800, DC1394_FRAMERATE_240, 10, 0);
+	    dc1394_capture_dma_setup(&camera, 0, DC1394_ISO_SPEED_800, DC1394_FRAMERATE_240, 10, 0);
 	    return 0;
 	    }
 	    ],libdc1394=ok,libdc1394=outdated);

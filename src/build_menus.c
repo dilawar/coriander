@@ -23,6 +23,7 @@ extern char* format7_color_list[DC1394_VIDEO_MODE_FORMAT7_NUM];
 extern char* format7_mode_list[DC1394_VIDEO_MODE_FORMAT7_NUM];
 extern char* channel_num_list[16];
 extern char* trigger_mode_list[DC1394_TRIGGER_MODE_NUM];
+extern char* trigger_source_list[DC1394_TRIGGER_SOURCE_NUM];
 extern char* video_mode_list[DC1394_VIDEO_MODE_NUM];
 
 void
@@ -88,6 +89,73 @@ BuildTriggerModeMenu(void)
     gtk_menu_append (GTK_MENU (trigger_mode_menu), glade_menuitem);
     gtk_option_menu_set_menu (GTK_OPTION_MENU (trigger_mode), trigger_mode_menu);
     gtk_option_menu_set_history (GTK_OPTION_MENU (trigger_mode), 0);
+  }
+ 
+}
+
+void
+BuildTriggerSourceMenu(void)
+{
+  int f;
+  int index[DC1394_TRIGGER_SOURCE_NUM];
+  unsigned int current_trigger_source;
+  GtkWidget* trigger_source;
+  GtkWidget* trigger_source_menu;
+  GtkWidget* glade_menuitem;
+
+  gtk_widget_destroy(GTK_WIDGET (lookup_widget(main_window,"trigger_source"))); // remove previous menu
+
+  trigger_source = gtk_option_menu_new ();
+  gtk_widget_ref (trigger_source);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "trigger_source", trigger_source,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (trigger_source);
+  gtk_table_attach_defaults (GTK_TABLE (lookup_widget(main_window,"table17")), trigger_source, 0, 2, 4, 5);
+  gtk_container_set_border_width (GTK_CONTAINER (trigger_source), 1);
+
+  trigger_source_menu = gtk_menu_new ();
+
+  // the following 'if' was added because the iSight from Apple does not even implement the registers over
+  // offset 0x530h. Thus we can't probe anything there without producing an error
+  if (camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].available!=0) {
+    if (camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].trigger_sources.num>0) { // at least one mode present
+      // external trigger available:
+      for (f=0;f<camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].trigger_sources.num;f++) {
+	glade_menuitem = gtk_menu_item_new_with_label (_(trigger_source_list[camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].trigger_sources.sources[f]-DC1394_TRIGGER_SOURCE_MIN]));
+	gtk_widget_show (glade_menuitem);
+	gtk_menu_append (GTK_MENU (trigger_source_menu), glade_menuitem);
+	g_signal_connect ((gpointer) glade_menuitem, "activate", G_CALLBACK (on_trigger_source_activate),
+			  (gpointer)(unsigned long)camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].trigger_sources.sources[f]);
+      }
+      
+      gtk_option_menu_set_menu (GTK_OPTION_MENU (trigger_source), trigger_source_menu);
+      
+      // sets the active menu item:
+      if (dc1394_external_trigger_get_source(&camera->camera_info, &current_trigger_source)!=DC1394_SUCCESS) {
+	Error("Could not query current trigger source");
+	current_trigger_source=DC1394_TRIGGER_SOURCE_MIN;
+      }
+      //fprintf(stderr,"current trigger mode: %d\n", current_trigger_mode - TRIGGER_MODE_MIN);
+      gtk_option_menu_set_history (GTK_OPTION_MENU (trigger_source), index[current_trigger_source - DC1394_TRIGGER_SOURCE_MIN]);
+    
+    }
+    else {
+      // add dummy menu item
+      glade_menuitem = gtk_menu_item_new_with_label (_("N/A"));
+      gtk_widget_show (glade_menuitem);
+      gtk_menu_append (GTK_MENU (trigger_source_menu), glade_menuitem);
+      gtk_option_menu_set_menu (GTK_OPTION_MENU (trigger_source), trigger_source_menu);
+      gtk_option_menu_set_history (GTK_OPTION_MENU (trigger_source), 0);
+    }
+    
+  }
+  else{
+    // add dummy menu item
+    glade_menuitem = gtk_menu_item_new_with_label (_("N/A"));
+    gtk_widget_show (glade_menuitem);
+    gtk_menu_append (GTK_MENU (trigger_source_menu), glade_menuitem);
+    gtk_option_menu_set_menu (GTK_OPTION_MENU (trigger_source), trigger_source_menu);
+    gtk_option_menu_set_history (GTK_OPTION_MENU (trigger_source), 0);
   }
  
 }

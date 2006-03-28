@@ -104,6 +104,13 @@ const char * trigger_mode_list[DC1394_TRIGGER_MODE_NUM] = {
   "Mode 15"
 };
 
+const char * trigger_source_list[DC1394_TRIGGER_SOURCE_NUM] = {
+  "Input 0",
+  "Input 1",
+  "Input 2",
+  "Input 3"
+};
+
 const char * channel_num_list[16] = {
   "Factory",
   "Setup 1",

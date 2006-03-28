@@ -75,6 +75,10 @@ on_trigger_mode_activate               (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
 void
+on_trigger_source_activate              (GtkMenuItem     *menuitem,
+					 gpointer         user_data);
+
+void
 on_memory_channel_activate             (GtkMenuItem     *menuitem,
 					gpointer         user_data);
 

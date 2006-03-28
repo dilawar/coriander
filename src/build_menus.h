@@ -23,6 +23,9 @@ void
 BuildTriggerModeMenu(void);
 
 void
+BuildTriggerSourceMenu(void);
+
+void
 BuildMemoryChannelMenu(void);
 
 void

@@ -50,6 +50,7 @@ BuildTriggerFrame(void)
 
   BuildTriggerModeMenu();
   BuildFpsMenu();
+  BuildTriggerSourceMenu();
   
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window,"trigger_external")),
 			       camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].is_on);

@@ -104,6 +104,18 @@ static GnomeUIInfo convertwidget8_uiinfo[] =
   GNOMEUIINFO_END
 };
 
+static GnomeUIInfo menu2_uiinfo[] =
+{
+  {
+    GNOME_APP_UI_ITEM, N_("N/A"),
+    NULL,
+    (gpointer) NULL, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    0, (GdkModifierType) 0, NULL
+  },
+  GNOMEUIINFO_END
+};
+
 static GnomeUIInfo convertwidget10_uiinfo[] =
 {
   {
@@ -580,6 +592,8 @@ create_main_window (void)
   GtkWidget *trigger_polarity;
   GtkObject *trigger_count_adj;
   GtkWidget *trigger_count;
+  GtkWidget *trigger_source;
+  GtkWidget *menu2;
   GtkWidget *label156;
   GtkWidget *image_options_frame;
   GtkWidget *table61;
@@ -1811,7 +1825,7 @@ create_main_window (void)
   gtk_container_set_border_width (GTK_CONTAINER (iso_frame), 5);
   gtk_widget_set_sensitive (iso_frame, FALSE);
 
-  table62 = gtk_table_new (4, 2, TRUE);
+  table62 = gtk_table_new (5, 2, TRUE);
   gtk_widget_set_name (table62, "table62");
   gtk_widget_show (table62);
   gtk_container_add (GTK_CONTAINER (iso_frame), table62);
@@ -1928,7 +1942,7 @@ create_main_window (void)
   gtk_container_set_border_width (GTK_CONTAINER (trigger_frame), 5);
   gtk_widget_set_sensitive (trigger_frame, FALSE);
 
-  table17 = gtk_table_new (4, 2, TRUE);
+  table17 = gtk_table_new (5, 2, TRUE);
   gtk_widget_set_name (table17, "table17");
   gtk_widget_show (table17);
   gtk_container_add (GTK_CONTAINER (trigger_frame), table17);
@@ -2011,6 +2025,24 @@ create_main_window (void)
   gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (trigger_count), TRUE);
   gtk_spin_button_set_update_policy (GTK_SPIN_BUTTON (trigger_count), GTK_UPDATE_IF_VALID);
 
+  trigger_source = gtk_option_menu_new ();
+  gtk_widget_set_name (trigger_source, "trigger_source");
+  gtk_widget_show (trigger_source);
+  gtk_table_attach (GTK_TABLE (table17), trigger_source, 0, 2, 4, 5,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (trigger_source), 1);
+  gtk_tooltips_set_tip (tooltips, trigger_source, _("Select an external trigger input"), NULL);
+
+  menu2 = gtk_menu_new ();
+  gtk_widget_set_name (menu2, "menu2");
+  gnome_app_fill_menu (GTK_MENU_SHELL (menu2), menu2_uiinfo,
+                       accel_group, FALSE, 0);
+
+  gtk_widget_set_name (menu2_uiinfo[0].widget, "menuitem1");
+
+  gtk_option_menu_set_menu (GTK_OPTION_MENU (trigger_source), menu2);
+
   label156 = gtk_label_new (_("<b>Trigger</b>"));
   gtk_widget_set_name (label156, "label156");
   gtk_widget_show (label156);
@@ -2023,7 +2055,7 @@ create_main_window (void)
   gtk_box_pack_start (GTK_BOX (hbox59), image_options_frame, TRUE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (image_options_frame), 5);
 
-  table61 = gtk_table_new (4, 2, TRUE);
+  table61 = gtk_table_new (5, 2, TRUE);
   gtk_widget_set_name (table61, "table61");
   gtk_widget_show (table61);
   gtk_container_add (GTK_CONTAINER (image_options_frame), table61);
@@ -4133,6 +4165,9 @@ create_main_window (void)
   GLADE_HOOKUP_OBJECT (main_window, trigger_external, "trigger_external");
   GLADE_HOOKUP_OBJECT (main_window, trigger_polarity, "trigger_polarity");
   GLADE_HOOKUP_OBJECT (main_window, trigger_count, "trigger_count");
+  GLADE_HOOKUP_OBJECT (main_window, trigger_source, "trigger_source");
+  GLADE_HOOKUP_OBJECT (main_window, menu2, "menu2");
+  GLADE_HOOKUP_OBJECT (main_window, menu2_uiinfo[0].widget, "menuitem1");
   GLADE_HOOKUP_OBJECT (main_window, label156, "label156");
   GLADE_HOOKUP_OBJECT (main_window, image_options_frame, "image_options_frame");
   GLADE_HOOKUP_OBJECT (main_window, table61, "table61");

@@ -24,7 +24,7 @@ gint IsoStartThread(camera_t* cam)
   //int channel, speed;
   chain_t* iso_service=NULL;
   isothread_info_t *info=NULL;
-  dc1394color_coding_t color_coding;
+  dc1394switch_t iso_state;
 
   iso_service=GetService(cam, SERVICE_ISO);
 
@@ -45,6 +45,16 @@ gint IsoStartThread(camera_t* cam)
       return(-1);
     }
 
+    // IF ISO IS ACTIVE, DON'T SET ANYTHING BUT CAPTURE
+    err=dc1394_video_get_transmission(&cam->camera_info, &iso_state);
+    if (err!=DC1394_SUCCESS){
+      eprint("Failed to get ISO state. Error code %d\n",err);
+      FreeChain(iso_service);
+      iso_service=NULL;
+      return(-1);
+    }
+    if (iso_state!=DC1394_ON) {
+    
     // ONLY IF LEGACY. OTHERWISE S800.
     switch (cam->selfid.packetZero.phySpeed) {
     case 0: maxspeed=DC1394_ISO_SPEED_100;break;
@@ -68,76 +78,70 @@ gint IsoStartThread(camera_t* cam)
       }
     }
 
+    // set ISO speed:
+    err=dc1394_video_set_iso_speed(&cam->camera_info, maxspeed);
+    if (err!=DC1394_SUCCESS){
+      eprint("Failed to set ISO speed. Error code %d\n",err);
+      FreeChain(iso_service);
+      iso_service=NULL;
+      return(-1);
+    }
+    
+    // set format and other stuff
+    err=dc1394_video_set_mode(&cam->camera_info, cam->camera_info.video_mode);
+    if (err!=DC1394_SUCCESS){
+      eprint("Failed to set current video mode. Error code %d\n",err);
+      FreeChain(iso_service);
+      iso_service=NULL;
+      return(-1);
+    }
+    
+    // set framerate or ROI:
+    if (dc1394_is_video_mode_scalable(cam->camera_info.video_mode)==DC1394_TRUE) {
+      err=dc1394_format7_set_roi(&cam->camera_info, cam->camera_info.video_mode,
+				 DC1394_QUERY_FROM_CAMERA, DC1394_QUERY_FROM_CAMERA, 
+				 DC1394_QUERY_FROM_CAMERA, DC1394_QUERY_FROM_CAMERA, 
+				 DC1394_QUERY_FROM_CAMERA, DC1394_QUERY_FROM_CAMERA);
+      if (err!=DC1394_SUCCESS){
+	eprint("Failed to set format7 mode. Error code %d\n",err);
+	FreeChain(iso_service);
+	iso_service=NULL;
+	return(-1);
+      }
+    }
+    else {
+      err=dc1394_video_set_framerate(&cam->camera_info, cam->camera_info.framerate);
+      if (err!=DC1394_SUCCESS){
+	eprint("Failed to set framerate. Error code %d\n",err);
+	FreeChain(iso_service);
+	iso_service=NULL;
+	return(-1);
+      }
+    }
+
+    } // end if iso_state is on.
+
     switch(cam->prefs.receive_method) {
     case RECEIVE_METHOD_VIDEO1394:
-      if (!dc1394_is_video_mode_scalable(cam->camera_info.video_mode)) {
-	err=dc1394_dma_setup_capture(&cam->camera_info, cam->camera_info.video_mode, maxspeed,
-				     cam->camera_info.framerate, cam->prefs.dma_buffer_size,
-				     cam->prefs.video1394_dropframes);
-	if (err!=DC1394_SUCCESS){
-	  eprint("Failed to setup DMA capture. Error code %d\n",err);
-	  FreeChain(iso_service);
-	  iso_service=NULL;
-	  return(-1);
-	}
-	cam->prefs.receive_method=RECEIVE_METHOD_VIDEO1394;
+      err=dc1394_capture_setup_dma(&cam->camera_info, cam->prefs.dma_buffer_size,
+				   cam->prefs.video1394_dropframes);
+      if (err!=DC1394_SUCCESS){
+	eprint("Failed to setup DMA capture. Error code %d\n",err);
+	FreeChain(iso_service);
+	iso_service=NULL;
+	return(-1);
       }
-      else {
-	if (dc1394_format7_get_color_coding(&cam->camera_info, cam->camera_info.video_mode,
-					    &color_coding)!=DC1394_SUCCESS) {
-	  fprintf(stderr,"could not get color coding!\n");
-	  FreeChain(iso_service);
-	  iso_service=NULL;
-	  return(-1);
-	}
-
-	err=dc1394_dma_setup_format7_capture(&cam->camera_info, cam->camera_info.video_mode, color_coding,
-					     maxspeed, DC1394_QUERY_FROM_CAMERA,
-					     DC1394_QUERY_FROM_CAMERA, DC1394_QUERY_FROM_CAMERA,
-					     DC1394_QUERY_FROM_CAMERA, DC1394_QUERY_FROM_CAMERA, 
-					     cam->prefs.dma_buffer_size, cam->prefs.video1394_dropframes);
-	
-	if (err!=DC1394_SUCCESS){
-	  eprint("Failed to setup DMA Format_7 capture. Error code %d\n",err);
-	  FreeChain(iso_service);
-	  iso_service=NULL;
-	  return(-1);
-	}
-	cam->prefs.receive_method=RECEIVE_METHOD_VIDEO1394;
-      }
+      cam->prefs.receive_method=RECEIVE_METHOD_VIDEO1394;
       break;
     case RECEIVE_METHOD_RAW1394:
-      if (!dc1394_is_video_mode_scalable(cam->camera_info.video_mode)) {
-	err=dc1394_setup_capture(&cam->camera_info, cam->camera_info.video_mode,
-				 maxspeed, cam->camera_info.framerate);
-	
-	if (err!=DC1394_SUCCESS){
-	  eprint("Failed to setup RAW1394 capture. Error code %d\n",err);
-	  FreeChain(iso_service);
-	  iso_service=NULL;
-	  return(-1);
-	}
-	cam->prefs.receive_method=RECEIVE_METHOD_RAW1394;
+      err=dc1394_capture_setup(&cam->camera_info);
+      if (err!=DC1394_SUCCESS){
+	eprint("Failed to setup RAW1394 capture. Error code %d\n",err);
+	FreeChain(iso_service);
+	iso_service=NULL;
+	return(-1);
       }
-      else {
-	if (dc1394_format7_get_color_coding(&cam->camera_info, cam->camera_info.video_mode,
-					    &color_coding)!=DC1394_SUCCESS) {
-	  fprintf(stderr,"could not get color coding!\n");
-	  FreeChain(iso_service);
-	  iso_service=NULL;
-	  return(-1);
-	}
-	err=dc1394_setup_format7_capture(&cam->camera_info, cam->camera_info.video_mode, color_coding,
-					 maxspeed, DC1394_QUERY_FROM_CAMERA,
-					 DC1394_QUERY_FROM_CAMERA, DC1394_QUERY_FROM_CAMERA,
-					 DC1394_QUERY_FROM_CAMERA, DC1394_QUERY_FROM_CAMERA);
-	if (err!=DC1394_SUCCESS){
-	  eprint("Failed to setup RAW1394 Format_7 capture. Error code %d\n",err);
-	  FreeChain(iso_service);
-	  iso_service=NULL;
-	  return(-1);
-	}
-      }
+      cam->prefs.receive_method=RECEIVE_METHOD_RAW1394;
       break;
     }
     
@@ -232,12 +236,12 @@ IsoThread(void* arg)
       if (cam->prefs.receive_method == RECEIVE_METHOD_RAW1394)
 	dc1394_capture(&camptr, 1);
       else
-	dma_ok=dc1394_dma_capture(&camptr, 1, DC1394_VIDEO1394_WAIT);
+	dma_ok=dc1394_capture_dma(&camptr, 1, DC1394_VIDEO1394_WAIT);
     
       //printf("Got frame\n");
   
-      info->rawtime.tv_sec=(dc1394_video_get_filltime(camptr))->tv_sec;
-      info->rawtime.tv_usec=(dc1394_video_get_filltime(camptr))->tv_usec;
+      info->rawtime.tv_sec=(dc1394_capture_get_dma_filltime(camptr))->tv_sec;
+      info->rawtime.tv_usec=(dc1394_capture_get_dma_filltime(camptr))->tv_usec;
       //gettimeofday(&info->rawtime, NULL);
       localtime_r(&info->rawtime.tv_sec, &(iso_service->current_buffer->captime));
       iso_service->current_buffer->captime_usec=info->rawtime.tv_usec;
@@ -258,22 +262,22 @@ IsoThread(void* arg)
       // Stereo decoding
       switch (iso_service->current_buffer->stereo_decoding) {
       case STEREO_DECODING_INTERLACED:
-	dc1394_deinterlace_stereo(dc1394_video_get_buffer(camptr),info->temp,
+	dc1394_deinterlace_stereo(dc1394_capture_get_dma_buffer(camptr),info->temp,
 				  info->orig_sizex,info->orig_sizey*2);
 	break;
       case STEREO_DECODING_FIELD:
-	memcpy(info->temp,dc1394_video_get_buffer(camptr),info->orig_sizex*info->orig_sizey*2);
+	memcpy(info->temp,dc1394_capture_get_dma_buffer(camptr),info->orig_sizex*info->orig_sizey*2);
 	break;
       case NO_STEREO_DECODING:
 	if ((iso_service->current_buffer->bayer!=NO_BAYER_DECODING)&&(info->cond16bit!=0)) {
-	  dc1394_convert_to_MONO8(dc1394_video_get_buffer(camptr),info->temp,
+	  dc1394_convert_to_MONO8(dc1394_capture_get_dma_buffer(camptr),info->temp,
 				  info->orig_sizex, info->orig_sizey,
 				  DC1394_BYTE_ORDER_YUYV, DC1394_COLOR_CODING_MONO16, iso_service->current_buffer->bpp);
 	}
 	else {
 	  // it is necessary to put this here and not in the thread init or IsoThreadCheckParams function because
 	  // the buffer might change at every capture (typically when capture is too slow and buffering is performed)
-	  info->temp=dc1394_video_get_buffer(camptr);
+	  info->temp=dc1394_capture_get_dma_buffer(camptr);
 	}
 	break;
       }
@@ -305,7 +309,7 @@ IsoThread(void* arg)
 	iso_service->fps=fabs((float)iso_service->fps_frames/tmp);
       
       if ((cam->prefs.receive_method == RECEIVE_METHOD_VIDEO1394)&&(dma_ok==DC1394_SUCCESS))
-	dc1394_dma_done_with_buffer(camptr);
+	dc1394_capture_dma_done_with_buffer(camptr);
       
       PublishBufferForNext(iso_service);
       //fprintf(stderr,"Buffer soon rolled in ISO\n");
@@ -345,13 +349,8 @@ gint IsoStopThread(camera_t* cam)
       info->temp_size=0;
     }
     //eprint("test2\n");
-    
-    if (cam->prefs.receive_method == RECEIVE_METHOD_VIDEO1394) {
-      dc1394_dma_unlisten(&iso_service->camera->camera_info);
-      dc1394_dma_release_camera(&iso_service->camera->camera_info);
-    }
-    else 
-      dc1394_release_camera(&iso_service->camera->camera_info);
+
+    dc1394_capture_stop(&iso_service->camera->camera_info);
     
     //eprint("test3\n");
     pthread_mutex_unlock(&iso_service->mutex_struct);

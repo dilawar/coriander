@@ -124,6 +124,17 @@ on_trigger_mode_activate              (GtkMenuItem     *menuitem,
 }
 
 void
+on_trigger_source_activate              (GtkMenuItem     *menuitem,
+				       gpointer         user_data)
+{
+  if (dc1394_external_trigger_set_source(&camera->camera_info, (int)user_data)!=DC1394_SUCCESS)
+    Error("Could not set trigger source");
+  else
+    camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].trigger_source=(int)user_data;
+  UpdateTriggerFrame();
+}
+
+void
 on_trigger_external_toggled            (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
