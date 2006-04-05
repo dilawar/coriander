@@ -1792,12 +1792,13 @@ create_main_window (void)
   gtk_label_set_justify (GTK_LABEL (label153), GTK_JUSTIFY_CENTER);
   gtk_misc_set_padding (GTK_MISC (label153), 5, 0);
 
-  dma_buffer_size_adj = gtk_adjustment_new (10, 2, 999999, 1, 10, 10);
+  dma_buffer_size_adj = gtk_adjustment_new (5, 2, 999999, 1, 10, 10);
   dma_buffer_size = gtk_spin_button_new (GTK_ADJUSTMENT (dma_buffer_size_adj), 1, 0);
   gtk_widget_set_name (dma_buffer_size, "dma_buffer_size");
   gtk_widget_show (dma_buffer_size);
   gtk_box_pack_start (GTK_BOX (hbox68), dma_buffer_size, TRUE, TRUE, 0);
   gtk_tooltips_set_tip (tooltips, dma_buffer_size, _("The number of frames in the DMA buffer. Should be minimum 3 for stable operation."), NULL);
+  gtk_spin_button_set_update_policy (GTK_SPIN_BUTTON (dma_buffer_size), GTK_UPDATE_IF_VALID);
 
   label154 = gtk_label_new (_("frames"));
   gtk_widget_set_name (label154, "label154");
@@ -2604,7 +2605,7 @@ create_main_window (void)
   gtk_widget_show (table75);
   gtk_container_add (GTK_CONTAINER (ram_buffer_frame), table75);
 
-  ram_buffer_size_adj = gtk_adjustment_new (1, 1, 100000000, 1, 10, 10);
+  ram_buffer_size_adj = gtk_adjustment_new (1, 1, 10000, 1, 10, 10);
   ram_buffer_size = gtk_spin_button_new (GTK_ADJUSTMENT (ram_buffer_size_adj), 1, 0);
   gtk_widget_set_name (ram_buffer_size, "ram_buffer_size");
   gtk_widget_show (ram_buffer_size);
@@ -2612,6 +2613,7 @@ create_main_window (void)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_tooltips_set_tip (tooltips, ram_buffer_size, _("Type in the size of the RAM buffer in megabytes"), NULL);
+  gtk_spin_button_set_update_policy (GTK_SPIN_BUTTON (ram_buffer_size), GTK_UPDATE_IF_VALID);
 
   label152 = gtk_label_new (_("Buffer size [MB]:"));
   gtk_widget_set_name (label152, "label152");

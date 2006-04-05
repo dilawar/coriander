@@ -36,13 +36,13 @@ main (int argc, char *argv[])
   cameras=NULL;
   silent_ui_update=0;
 
-  /*
+  
   // only the main thread is allowed to use gtk_ functions
   memset (&mainthread_info, 0, sizeof(mainthread_info));
   mainthread_info.thread=pthread_self();
   pthread_mutex_init(&mainthread_info.do_mutex, NULL);
   pthread_mutex_init(&mainthread_info.dialog_mutex, NULL);
-  */
+  
 
   /*
   pthread_mutex_init(&message_mutex,NULL);

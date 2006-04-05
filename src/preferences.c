@@ -66,6 +66,7 @@ LoadConfigFile(void)
   preferences.error_in_popup            = gnome_config_get_int("coriander/global/error_in_popup=1");
   preferences.automate_receive          = gnome_config_get_int("coriander/global/automate_receive=1");
   preferences.automate_iso              = gnome_config_get_int("coriander/global/automate_iso=1");
+  //fprintf(stderr,"Buffer size read as: %d\n",preferences.camprefs.ram_buffer_size);
 }
 
 void
@@ -105,6 +106,7 @@ CopyCameraPrefs(camera_t* cam) {
   strcpy(cam->prefs.ftp_user        , preferences.camprefs.ftp_user);
   strcpy(cam->prefs.v4l_dev_name    , preferences.camprefs.v4l_dev_name);
   preferences.camprefs.ftp_password = "";
+  //fprintf(stderr,"Buffer size copied to: %d\n",cam->prefs.ram_buffer_size);
   
   tmp=(char*)malloc(STRING_SIZE*sizeof(char));
   sprintf(tmp,"coriander/camera_names/%llx=%s %s",cam->camera_info.euid_64,

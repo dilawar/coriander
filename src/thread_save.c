@@ -57,7 +57,7 @@ SaveStartThread(camera_t* cam)
 #endif
 	 (cam->prefs.save_format==SAVE_FORMAT_PVN))) {
       info->bigbuffer_position=0;
-      info->bigbuffer=(unsigned char*)malloc(cam->prefs.ram_buffer_size*sizeof(unsigned char));
+      info->bigbuffer=(unsigned char*)malloc(cam->prefs.ram_buffer_size*1024*1024*sizeof(unsigned char));
       if (info->bigbuffer==NULL) {
 	Error("Could not allocate memory for RAM buffer save service");
 	pthread_mutex_unlock(&save_service->mutex_data);
@@ -530,7 +530,7 @@ FillRamBuffer(chain_t *save_service)
        (cam->prefs.save_format==SAVE_FORMAT_MPEG)||
 #endif
        (cam->prefs.save_format==SAVE_FORMAT_PVN))) {
-    if (cam->prefs.ram_buffer_size-info->bigbuffer_position>=save_service->current_buffer->buffer_image_bytes) {
+    if (cam->prefs.ram_buffer_size*1024*1024-info->bigbuffer_position>=save_service->current_buffer->buffer_image_bytes) {
       memcpy(&info->bigbuffer[info->bigbuffer_position], save_service->current_buffer->image, save_service->current_buffer->buffer_image_bytes);
       info->bigbuffer_position+=save_service->current_buffer->buffer_image_bytes;
     }

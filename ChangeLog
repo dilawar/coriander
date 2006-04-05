@@ -2,6 +2,9 @@ Coriander, (c) 2000-2006 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes in version 2.0.0-pre6
 
+   April 05, 2006, by Damien Douxchamps
+   - fixed error/warning popup deadlocks
+	
    March 28, 2006, by Damien Douxchamps
    - sync with libdc1394
    - fix ISO restart when changing format/mode/framerate/...

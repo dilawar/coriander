@@ -1500,9 +1500,10 @@ void
 on_ram_buffer_size_changed             (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  camera->prefs.ram_buffer_size=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(main_window,"ram_buffer_size")))*1024*1024;
+  camera->prefs.ram_buffer_size=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(lookup_widget(main_window,"ram_buffer_size")));
   gnome_config_set_int("coriander/save/ram_buffer_size",camera->prefs.ram_buffer_size);
   gnome_config_sync();
+  //fprintf(stderr,"Buffer size: %d\n",camera->prefs.ram_buffer_size);
   UpdatePrefsSaveFrame();
 }
 
@@ -1512,22 +1513,19 @@ on_malloc_test_clicked                 (GtkButton       *button,
                                         gpointer         user_data)
 {
   unsigned char *temp;
-  char *stemp;
-  stemp=(char*)malloc(STRING_SIZE*sizeof(char));
 
   // test if we can allocate enough memory
-  sprintf(stemp,"Trying to allocate %d MB...", camera->prefs.ram_buffer_size);
-  Warning(stemp);
   temp=(unsigned char*)malloc(camera->prefs.ram_buffer_size*1024*1024*sizeof(unsigned char));
-
+  
   if (temp==NULL)
+    //ErrorPopup("\tFailed to allocate memory",0);
     Warning("\tFailed to allocate memory");
   else {
-    Warning("\tAllocation succeeded");
+    //ErrorPopup("\tAllocation of succeeded",0);
+    Warning("\tAllocation of succeeded");
     free(temp);
   }
-
-  free(stemp);
+  //fprintf(stderr,"exit\n");
 }
 
 

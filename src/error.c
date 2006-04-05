@@ -80,9 +80,15 @@ ErrorPopup(char * string, int is_error)
   g_signal_connect ((gpointer) error_popup_button, "clicked",
                     G_CALLBACK (on_error_popup_button_activate), NULL);
 
+  //fprintf(stderr,"Dialog built\n");
+
   gtk_widget_set_sensitive(main_window,0);
 
+  //fprintf(stderr,"Sensitivity cancelled\n");
+
   gtk_widget_show(error_box);
+
+  //fprintf(stderr,"Dialog shown\n");
 
   //gtk_widget_destroy(error_box);
 
@@ -107,10 +113,12 @@ Error(char *string)
       //fprintf(stderr,"Direct call!\n");
       ErrorPopup(string,1);
     }
-    while (mainthread_info.dialog_clicked==0) {
-      //fprintf(stderr,":");
-      usleep(DELAY);
+    if (pthread_self()!=mainthread_info.thread) {
+      while (mainthread_info.dialog_clicked==0) {
+	//fprintf(stderr,":");
+	usleep(DELAY);
       }
+    }
     mainthread_info.dialog_clicked=0;
     pthread_mutex_unlock(&mainthread_info.dialog_mutex);
   
@@ -126,17 +134,22 @@ Warning(char *string)
   if (preferences.error_in_popup>0) {
     pthread_mutex_lock(&mainthread_info.dialog_mutex);
     mainthread_info.dialog_clicked=0;
+    //fprintf(stderr,"Self: %x  \t  Main: %x\n",pthread_self(),mainthread_info.thread);
     if (pthread_self()!=mainthread_info.thread) {
       // this macro returns with the result of the call
       strcpy(mainthread_info.message,string);
       MAINTHREAD_PLEASE_DO(ErrorPopup,mainthread_info.message,0);
     }
     else {
+      //fprintf(stderr,"Do popup myself\n");
       ErrorPopup(string,0);
     }
-    while (mainthread_info.dialog_clicked==0) {
-      usleep(DELAY);
+    
+    if (pthread_self()!=mainthread_info.thread) {
+      while (mainthread_info.dialog_clicked==0) {
+	usleep(DELAY);
       }
+    }
     mainthread_info.dialog_clicked=0;
     pthread_mutex_unlock(&mainthread_info.dialog_mutex);
   
