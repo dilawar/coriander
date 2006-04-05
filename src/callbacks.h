@@ -352,7 +352,7 @@ on_display_redraw_rate_changed         (GtkEditable     *editable,
                                         gpointer         user_data);
 
 void
-on_sync_control_button_toggled        (GtkToggleButton *togglebutton,
+on_broadcast_button_toggled            (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
 
 void

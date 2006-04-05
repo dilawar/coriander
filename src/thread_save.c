@@ -236,7 +236,7 @@ CreateSettingsFile(camera_t *cam, char *destdir)
   }
   
   fprintf(fd,"fps=%s\n", fps_label_list[cam->camera_info.framerate-DC1394_FRAMERATE_MIN]);
-  fprintf(fd,"sync_control=%d\n",preferences.sync_control);
+  fprintf(fd,"sync_control=%d\n",cam->prefs.broadcast);
   
   for(i=DC1394_FEATURE_MIN; i<=DC1394_FEATURE_MAX; ++i) {
     if (cam->feature_set.feature[i-DC1394_FEATURE_MIN].available)

@@ -4,6 +4,7 @@ Changes in version 2.0.0-pre6
 
    April 05, 2006, by Damien Douxchamps
    - fixed error/warning popup deadlocks
+   - update broadcast flag handling
 	
    March 28, 2006, by Damien Douxchamps
    - sync with libdc1394

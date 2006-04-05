@@ -179,7 +179,7 @@ BuildMemoryChannelMenu(void)
   gtk_object_set_data_full ((gpointer) main_window, "memory_channel", channel_num,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (channel_num);
-  gtk_table_attach_defaults (GTK_TABLE (lookup_widget(main_window,"table16")), channel_num, 0, 1, 0, 1);
+  gtk_table_attach_defaults (GTK_TABLE (lookup_widget(main_window,"table16")), channel_num, 0, 2, 0, 1);
   gtk_container_set_border_width (GTK_CONTAINER (channel_num), 1);
 
   channel_num_menu = gtk_menu_new ();

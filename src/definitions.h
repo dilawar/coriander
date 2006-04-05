@@ -117,6 +117,8 @@ typedef struct _CamPrefs
   int overlay_color_b;
   int overlay_pattern;
 
+  int broadcast;
+
   // internal data:
   int receive_method2index[2];
 
@@ -127,7 +129,6 @@ typedef struct _Prefs
   float op_timeout;
   int auto_update;
   float auto_update_frequency;
-  int sync_control;
   int no_overwrite;
   int warning_in_popup;
   int error_in_popup;

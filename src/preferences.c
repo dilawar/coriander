@@ -46,6 +46,7 @@ LoadConfigFile(void)
   preferences.camprefs.ftp_period           = gnome_config_get_int("coriander/ftp/period=1");
   preferences.camprefs.ftp_datenum          = gnome_config_get_int("coriander/ftp/datenum=1");
   preferences.camprefs.v4l_period           = gnome_config_get_int("coriander/v4l/period=1");
+  preferences.camprefs.broadcast            = gnome_config_get_int("coriander/global/broadcast=0");
 
   preferences.camprefs.save_filename    = gnome_config_get_string("coriander/save/filename=test");
   preferences.camprefs.overlay_filename = gnome_config_get_string("coriander/display/overlay_filename=test.png");
@@ -59,7 +60,6 @@ LoadConfigFile(void)
   preferences.op_timeout                = gnome_config_get_float("coriander/global/one_push_timeout=10.0");
   preferences.auto_update               = gnome_config_get_int("coriander/global/auto_update=1");
   preferences.auto_update_frequency     = gnome_config_get_float("coriander/global/auto_update_frequency=2.0");
-  preferences.sync_control              = gnome_config_get_float("coriander/global/sync_control=0");
   preferences.overlay_byte_order        = gnome_config_get_int("coriander/global/overlay_byte_order=0");
   preferences.no_overwrite              = gnome_config_get_int("coriander/global/no_overwrite=1");
   preferences.warning_in_popup          = gnome_config_get_int("coriander/global/warning_in_popup=0");
@@ -98,6 +98,7 @@ CopyCameraPrefs(camera_t* cam) {
   cam->prefs.ftp_period             = preferences.camprefs.ftp_period;
   cam->prefs.ftp_datenum            = preferences.camprefs.ftp_datenum;
   cam->prefs.v4l_period             = preferences.camprefs.v4l_period;
+  cam->prefs.broadcast              = preferences.camprefs.broadcast;
   strcpy(cam->prefs.save_filename   , preferences.camprefs.save_filename);
   strcpy(cam->prefs.overlay_filename, preferences.camprefs.overlay_filename);
   strcpy(cam->prefs.ftp_filename    , preferences.camprefs.ftp_filename);
