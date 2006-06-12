@@ -59,7 +59,6 @@ AC_DEFUN([AC_CHECK_LIBDC],[
 	    ],[
 	    int main(void) {
 	    raw1394handle_t handle;
-	    dc1394capture_t capture;
 	    dc1394camera_t camera;
 	    dc1394_capture_dma_setup(&camera, 0, DC1394_ISO_SPEED_800, DC1394_FRAMERATE_240, 10, 0);
 	    return 0;
