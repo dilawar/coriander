@@ -187,7 +187,7 @@ GetFormat7Capabilities(camera_t* cam)
     cam->format7_info.modeset.mode[i].present=0;
   }
 
-  if (dc1394_format7_get_modeset(&cam->camera_info, &cam->format7_info.modeset)!=DC1394_SUCCESS)
+  if (dc1394_format7_get_modeset(cam->camera_info, &cam->format7_info.modeset)!=DC1394_SUCCESS)
     Error("Could not query Format_7 informations");
     
   check=0;
@@ -208,18 +208,18 @@ SwitchToNearestFPS(dc1394framerates_t *framerates, int current)
   int i;
 
   if (current<framerates->framerates[0]) {
-    camera->camera_info.framerate=framerates->framerates[0];
+    camera->camera_info->framerate=framerates->framerates[0];
     return 0;
   }
   
   if (current>framerates->framerates[framerates->num-1]) {
-    camera->camera_info.framerate=framerates->framerates[framerates->num-1];
+    camera->camera_info->framerate=framerates->framerates[framerates->num-1];
     return framerates->num-1;
   }
   
   for (i=0;i<framerates->num;i++) { // search radius is num_framerates/2 +1 for safe rounding
     if (current<framerates->framerates[i]) {
-      camera->camera_info.framerate=framerates->framerates[i-1];
+      camera->camera_info->framerate=framerates->framerates[i-1];
       return i-1; // switch to lower fps
     }
   }
@@ -243,23 +243,23 @@ ChangeModeAndFormat         (GtkMenuItem     *menuitem,
 
   IsoFlowCheck(&state);
   
-  if (dc1394_video_set_mode(&camera->camera_info,mode)!=DC1394_SUCCESS)
+  if (dc1394_video_set_mode(camera->camera_info,mode)!=DC1394_SUCCESS)
     Error("Could not set video mode");
   else
-    camera->camera_info.video_mode=mode;
+    camera->camera_info->video_mode=mode;
   
   // check consistancy of framerate:
-  if (!dc1394_is_video_mode_scalable(camera->camera_info.video_mode)) {
-    if (dc1394_video_get_supported_framerates(&camera->camera_info, mode, &framerates)!=DC1394_SUCCESS)
+  if (!dc1394_is_video_mode_scalable(camera->camera_info->video_mode)) {
+    if (dc1394_video_get_supported_framerates(camera->camera_info, mode, &framerates)!=DC1394_SUCCESS)
       Error("Could not read supported framerates");
     else {
       for (i=0;i<framerates.num;i++) {
-	if (camera->camera_info.framerate==framerates.framerates[i])
+	if (camera->camera_info->framerate==framerates.framerates[i])
 	  break;
       }
-      if (camera->camera_info.framerate!=framerates.framerates[i]) {
+      if (camera->camera_info->framerate!=framerates.framerates[i]) {
 	//eprint("need to switch\n");
-	i=SwitchToNearestFPS(&framerates, camera->camera_info.framerate);
+	i=SwitchToNearestFPS(&framerates, camera->camera_info->framerate);
       }
     }
   }
@@ -267,13 +267,13 @@ ChangeModeAndFormat         (GtkMenuItem     *menuitem,
   IsoFlowResume(&state);
 
   // REPROBE EVERYTHING
-  if (dc1394_update_camera_info(&camera->camera_info)!=DC1394_SUCCESS)
+  if (dc1394_update_camera_info(camera->camera_info)!=DC1394_SUCCESS)
     Error("Could not get camera basic information!");
 
-  if (dc1394_get_camera_feature_set(&camera->camera_info, &camera->feature_set)!=DC1394_SUCCESS)
+  if (dc1394_get_camera_feature_set(camera->camera_info, &camera->feature_set)!=DC1394_SUCCESS)
     Error("Could not get camera feature information!");
   
-  if (dc1394_is_video_mode_scalable(camera->camera_info.video_mode)) {
+  if (dc1394_is_video_mode_scalable(camera->camera_info->video_mode)) {
     GetFormat7Capabilities(camera);
   }
   
@@ -289,16 +289,16 @@ void IsoFlowCheck(int *state)
 { 
   int was_on;
   //eprint("Checking ISO... ");
-  if (dc1394_video_get_transmission(&camera->camera_info, &camera->camera_info.is_iso_on)!=DC1394_SUCCESS) {
+  if (dc1394_video_get_transmission(camera->camera_info, &camera->camera_info->is_iso_on)!=DC1394_SUCCESS) {
     Error("Could not get ISO status");
     //try to shut ISO anyway
-    camera->camera_info.is_iso_on=1;
+    camera->camera_info->is_iso_on=1;
   }
 
-  if (camera->camera_info.is_iso_on>0) {
+  if (camera->camera_info->is_iso_on>0) {
     //eprint("Stopping... ");
     was_on=1;
-    if (dc1394_video_set_transmission(&camera->camera_info, DC1394_OFF)!=DC1394_SUCCESS) {
+    if (dc1394_video_set_transmission(camera->camera_info, DC1394_OFF)!=DC1394_SUCCESS) {
       // ... (if not done, restarting is no more possible)
       Error("Could not stop ISO transmission");
     }
@@ -327,7 +327,7 @@ void IsoFlowResume(int *state)
   if (was_on>0) { // restart if it was 'on' before the changes
     usleep(DELAY); // necessary to avoid desynchronized ISO flow.
     //eprint("Starting ... ");
-    if (dc1394_video_set_transmission(&camera->camera_info,DC1394_ON)!=DC1394_SUCCESS) {
+    if (dc1394_video_set_transmission(camera->camera_info,DC1394_ON)!=DC1394_SUCCESS) {
       Error("Could not start ISO transmission");
     }
   }
@@ -337,25 +337,25 @@ void IsoFlowResume(int *state)
   }
   
   if (was_on>0) {
-    if (dc1394_video_get_transmission(&camera->camera_info,&camera->camera_info.is_iso_on)!=DC1394_SUCCESS)
+    if (dc1394_video_get_transmission(camera->camera_info,&camera->camera_info->is_iso_on)!=DC1394_SUCCESS)
       Error("Could not get ISO status");
     else {
-      if (!camera->camera_info.is_iso_on) {
+      if (!camera->camera_info->is_iso_on) {
 	Error("ISO could not be restarted. Trying again for 5 seconds");
 	timeout=0;
-	while ((!camera->camera_info.is_iso_on)&&(timeout<5000)) {
+	while ((!camera->camera_info->is_iso_on)&&(timeout<5000)) {
 	  usleep(DELAY);
 	  timeout+=DELAY/1000;
 	  fprintf(stderr,"%d ",timeout);
-	  if (dc1394_video_set_transmission(&camera->camera_info,DC1394_ON)!=DC1394_SUCCESS)
+	  if (dc1394_video_set_transmission(camera->camera_info,DC1394_ON)!=DC1394_SUCCESS)
 	    // ... (if not done, restarting is no more possible)
 	    Error("Could not start ISO transmission");
 	  else {
-	    if (dc1394_video_get_transmission(&camera->camera_info,&camera->camera_info.is_iso_on)!=DC1394_SUCCESS)
+	    if (dc1394_video_get_transmission(camera->camera_info,&camera->camera_info->is_iso_on)!=DC1394_SUCCESS)
 	      Error("Could not get ISO status");
 	  }
 	}
-	if (!camera->camera_info.is_iso_on)
+	if (!camera->camera_info->is_iso_on)
 	  Error("Can't start ISO, giving up...");
       }
     }
@@ -433,6 +433,7 @@ void GetContextStatus()
 
 void GrabSelfIds(camera_t *cams)
 {
+  // TODO TODO TODO **************************************************************
   RAW1394topologyMap *topomap;
   SelfIdPacket_t packet;
   unsigned int* pselfid_int;
@@ -454,8 +455,8 @@ void GrabSelfIds(camera_t *cams)
 	
       camera_ptr=cameras;
       while (camera_ptr!=NULL) {
-	if ((camera_ptr->camera_info.node==packet.packetZero.phyID) &&
-	    (camera_ptr->camera_info.port==port)) { // added a check for the port too!!
+	if ((camera_ptr->camera_info->node==packet.packetZero.phyID) &&
+	    (camera_ptr->camera_info->port==port)) { // added a check for the port too!!
 	  camera_ptr->selfid=packet;
 	}
 	camera_ptr=camera_ptr->next;
@@ -464,7 +465,9 @@ void GrabSelfIds(camera_t *cams)
   }
   
   raw1394_destroy_handle(handle);
+  
 }
+
 /*
 void
 SetIsoChannels(void)
@@ -476,19 +479,19 @@ SetIsoChannels(void)
   while(camera_ptr!=NULL) {
     ic=0;
     //eprint("Camera found. Getting current settings\n");
-    if (dc1394_video_get_iso_channel_and_speed(&camera_ptr->camera_info, &channel, &speed)!=DC1394_SUCCESS)
+    if (dc1394_video_get_iso_channel_and_speed(camera_ptr->camera_info, &channel, &speed)!=DC1394_SUCCESS)
       Error("Can't get iso channel and speed");
     //eprint("   Channel was %u\n",channel);
 
     // if the camera is streaming don't touch the settings
-    if (camera_ptr->camera_info.is_iso_on!=DC1394_ON) {
+    if (camera_ptr->camera_info->is_iso_on!=DC1394_ON) {
       //eprint("Camera is not streaming. Setting ISO channel.\n");
       // find an available ISO channel
       while(1) {
 	//eprint("Trying channel %d...\n",ic);
 	cp2=cameras;
 	while(cp2!=NULL) {
-	  if ((cp2->camera_info.iso_channel==ic)&&(cp2->camera_info.euid_64!=camera_ptr->camera_info.euid_64)) {
+	  if ((cp2->camera_info.iso_channel==ic)&&(cp2->camera_info->euid_64!=camera_ptr->camera_info->euid_64)) {
 	    //eprint("Found a cam already using channel %u\n",channel);
 	    break;
 	  }
@@ -500,7 +503,7 @@ SetIsoChannels(void)
 	  ic++;
       }
     }
-    if (dc1394_video_set_iso_channel_and_speed(&camera_ptr->camera_info, ic, speed)!=DC1394_SUCCESS)
+    if (dc1394_video_set_iso_channel_and_speed(camera_ptr->camera_info, ic, speed)!=DC1394_SUCCESS)
       Error("Can't set iso channel and speed");
     camera_ptr->camera_info.iso_channel=ic;
     //eprint("Channel set to %d\n",ic);
@@ -541,7 +544,7 @@ SetScaleSensitivity(GtkWidget* widget, int feature, dc1394bool_t sense)
 void
 SetAbsoluteControl(int feature, int power)
 {
-  if (dc1394_feature_set_absolute_control(&camera->camera_info, feature, power)!=DC1394_SUCCESS)
+  if (dc1394_feature_set_absolute_control(camera->camera_info, feature, power)!=DC1394_SUCCESS)
     Error("Could not toggle absolute setting control\n");
   else {
     camera->feature_set.feature[feature-DC1394_FEATURE_MIN].abs_control=power;
@@ -568,11 +571,11 @@ SetAbsValue(int feature)
   sprintf(stemp,"feature_%d_abs_entry",feature);
   stringp=(char*)gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,stemp)));
   value=atof(stringp);
-  if (dc1394_feature_set_absolute_value(&camera->camera_info, feature, value)!=DC1394_SUCCESS) {
+  if (dc1394_feature_set_absolute_value(camera->camera_info, feature, value)!=DC1394_SUCCESS) {
     Error("Can't set absolute value!");
   }
   else {
-    if (dc1394_feature_get_absolute_value(&camera->camera_info, feature, &value)!=DC1394_SUCCESS) {
+    if (dc1394_feature_get_absolute_value(camera->camera_info, feature, &value)!=DC1394_SUCCESS) {
       Error("Can't get absolute value!");
     }
     else {
@@ -593,7 +596,7 @@ GetAbsValue(int feature)
   string=(char*)malloc(STRING_SIZE*sizeof(char));
  
   
-  if (dc1394_feature_get_absolute_value(&camera->camera_info, feature, &value)!=DC1394_SUCCESS) {
+  if (dc1394_feature_get_absolute_value(camera->camera_info, feature, &value)!=DC1394_SUCCESS) {
     Error("Can't get absolute value!");
   }
   else {
@@ -620,6 +623,7 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation)
   dc1394switch_t iso_status;
   dc1394camera_t **newcams;
   unsigned int newcamnum;
+  int *nodelete=NULL;
 
   Warning("Bus reset detected");
 
@@ -642,14 +646,16 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation)
   */
   // ADD NEW CAMERAS AND UPDATE PREVIOUS ONES ---------------------------------
 
+  if (newcamnum>0)
+    nodelete=(int*)calloc(newcamnum,sizeof(int));
   // try to match the GUID with previous cameras
   for (i=0;i<newcamnum;i++) {
     // was the current GUID already there?
     camera_ptr=cameras;
     while(camera_ptr!=NULL) {
-      if (camera_ptr->camera_info.euid_64==newcams[i]->euid_64) { // yes, the camera was there
+      if (camera_ptr->camera_info->euid_64==newcams[i]->euid_64) { // yes, the camera was there
 	//eprint("  camera was already there\n");
-	//if (dc1394_get_camera_info(&camera_ptr->camera_info)!=DC1394_SUCCESS)
+	//if (dc1394_get_camera_info(camera_ptr->camera_info)!=DC1394_SUCCESS)
 	//  Error("Could not update camera basic information in bus reset handler");
 	break;
       }
@@ -657,16 +663,13 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation)
     }
     if (camera_ptr==NULL) { // the camera is new
       new_camera=NewCamera();
-      memcpy(&new_camera->camera_info,newcams[i],sizeof(dc1394camera_t));
-      newcams[i]->handle=NULL; // this is to avoid destruction of the handle when the camera will be freed
+      new_camera->camera_info=newcams[i];
       GetCameraData(new_camera);
+      nodelete[i]=1;
 
+      AppendCamera(new_camera);
       if (cameras==NULL) {
-	AppendCamera(new_camera);
-	SetCurrentCamera(new_camera->camera_info.euid_64);
-      }
-      else {
-	AppendCamera(new_camera);
+	SetCurrentCamera(new_camera->camera_info->euid_64);
       }
       //eprint("  A new camera has been added\n");
     }
@@ -678,12 +681,12 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation)
   camera_ptr=cameras;
   while (camera_ptr!=NULL) {
     for (i=0;i<newcamnum;i++) {
-      if (camera_ptr->camera_info.euid_64==newcams[i]->euid_64)
+      if (camera_ptr->camera_info->euid_64==newcams[i]->euid_64)
 	break;
     }
-    if (camera_ptr->camera_info.euid_64!=newcams[i]->euid_64) { // the camera "camera_ptr" was unplugged
+    if (camera_ptr->camera_info->euid_64!=newcams[i]->euid_64) { // the camera "camera_ptr" was unplugged
       //eprint("found a camera to remove\n");
-      if (camera->camera_info.euid_64==camera_ptr->camera_info.euid_64) {
+      if (camera->camera_info->euid_64==camera_ptr->camera_info->euid_64) {
 	//eprint(" The current camera was unplugged\n");
 	if ((camera->next==NULL)&&(cameras==camera)) { // the only camera was removed. Close GUI and revert to camera wait prompt
 	  //eprint(" ... and it was the only camera!\n");
@@ -691,27 +694,27 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation)
 	  gtk_widget_show(waiting_camera_window);
 
 	  // delete structs:
-	  RemoveCamera(camera_ptr->camera_info.euid_64);
+	  RemoveCamera(camera_ptr->camera_info->euid_64);
 	  cameras=NULL;
 	  camera=NULL;
 	}
 	else {
 	  //eprint("  Selecting the first non-removed camera as current camera\n");
-	  if (cameras->camera_info.euid_64==camera_ptr->camera_info.euid_64) { // is the first camera the one to be removed?
+	  if (cameras->camera_info->euid_64==camera_ptr->camera_info->euid_64) { // is the first camera the one to be removed?
 	    // use second cam as current cam
-	    SetCurrentCamera(cameras->next->camera_info.euid_64);
+	    SetCurrentCamera(cameras->next->camera_info->euid_64);
 	  }
 	  else {
 	    // use first cam as current cam
-	    SetCurrentCamera(cameras->camera_info.euid_64);
+	    SetCurrentCamera(cameras->camera_info->euid_64);
 	  }
 	  // close and remove dead camera
-	  RemoveCamera(camera_ptr->camera_info.euid_64);
+	  RemoveCamera(camera_ptr->camera_info->euid_64);
 	}
 	//eprint(" removed dead camera\n");
       } // end if we are deleting the current camera
       else { // we delete another camera. This is easy.
-	RemoveCamera(camera_ptr->camera_info.euid_64);
+	RemoveCamera(camera_ptr->camera_info->euid_64);
       }
       // rescan from the beginning.
       camera_ptr=cameras;
@@ -725,13 +728,13 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation)
   // restart ISO if necessary
   cp2=cameras;
   while(cp2!=NULL) {
-    if (dc1394_video_get_transmission(&cp2->camera_info,&iso_status)!=DC1394_SUCCESS) {
+    if (dc1394_video_get_transmission(cp2->camera_info,&iso_status)!=DC1394_SUCCESS) {
       Error("Could not read ISO status");
     }
     else {
-      //eprint("iso is %d and should be %d\n", iso_status,cp2->camera_info.is_iso_on);
-      if ((cp2->camera_info.is_iso_on==DC1394_TRUE)&&(iso_status==DC1394_FALSE)) {
-	if (dc1394_video_set_transmission(&cp2->camera_info,DC1394_ON)!=DC1394_SUCCESS) {
+      //eprint("iso is %d and should be %d\n", iso_status,cp2->camera_info->is_iso_on);
+      if ((cp2->camera_info->is_iso_on==DC1394_TRUE)&&(iso_status==DC1394_FALSE)) {
+	if (dc1394_video_set_transmission(cp2->camera_info,DC1394_ON)!=DC1394_SUCCESS) {
 	  Error("Could not start ISO");
 	}
 	usleep(DELAY);
@@ -784,12 +787,15 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation)
   if (newcamnum>0) {
     //eprint("free %d newcameras\n",newcamnum);
     for (i=0;i<newcamnum;i++) {
-      //eprint("deleting new camera struct member #%d @ handle 0x%x\n",i,newcams[i]->handle);
-      dc1394_free_camera(newcams[i]);
-      //eprint("cam deleted to 0x%x\n",newcams[i]);
+      if (nodelete[i]!=1) {
+	//eprint("deleting new camera struct member #%d @ handle 0x%x\n",i,newcams[i]->handle);
+	dc1394_free_camera(newcams[i]);
+	//eprint("cam deleted to 0x%x\n",newcams[i]);
+      }
     }
     //eprint("freeing newcams\n");
     free(newcams);
+    free(nodelete);
     newcams=NULL;
   }
 
@@ -891,7 +897,7 @@ SetFormat7Crop(int sx, int sy, int px, int py, int mode) {
   dc1394format7mode_t *info;
   GtkAdjustment *adjsx, *adjsy, *adjpx, *adjpy, *adj_bpp;
 
-  info=&camera->format7_info.modeset.mode[mode-DC1394_VIDEO_MODE_FORMAT7_MIN];
+  info=&(camera->format7_info.modeset.mode[mode-DC1394_VIDEO_MODE_FORMAT7_MIN]);
   
   adjpx=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_hposition_scale")));
   adjpy=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_vposition_scale")));
@@ -899,7 +905,7 @@ SetFormat7Crop(int sx, int sy, int px, int py, int mode) {
   adjsy=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_vsize_scale")));
   adj_bpp=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_packet_size")));
   
-  if (mode==camera->camera_info.video_mode) {
+  if (mode==camera->camera_info->video_mode) {
     IsoFlowCheck(&state);
   }
   
@@ -907,7 +913,7 @@ SetFormat7Crop(int sx, int sy, int px, int py, int mode) {
   // example: from size=128x128, pos=128x128, we can't go to size=1280x1024 by just changing the size.
   // We need to set the position to 0x0 first.
   //eprint("Setting format7 to pos=[%d %d], size=[%d %d]\n",px,py,sx,sy);
-  if (dc1394_format7_set_roi(&camera->camera_info,mode,info->color_coding, DC1394_QUERY_FROM_CAMERA, px,py,sx,sy)!=DC1394_SUCCESS)
+  if (dc1394_format7_set_roi(camera->camera_info,mode,info->color_coding, DC1394_QUERY_FROM_CAMERA, px,py,sx,sy)!=DC1394_SUCCESS)
     Error("Could not set Format7 image ROI");
   else {
     info->size_x=sx;
@@ -937,7 +943,7 @@ SetFormat7Crop(int sx, int sy, int px, int py, int mode) {
   
   usleep(DELAY);
   
-  if (mode==camera->camera_info.video_mode) {
+  if (mode==camera->camera_info->video_mode) {
     IsoFlowResume(&state);
   }
   
@@ -1081,31 +1087,31 @@ IsOptionAvailableWithFormat(camera_t *cam,int* bayer, int* stereo, int* bpp16)
 {
   int cond8, cond16, cond422;
 
-  if (!((cam->camera_info.video_mode >= DC1394_VIDEO_MODE_FORMAT7_MIN) &&
-	(cam->camera_info.video_mode <= DC1394_VIDEO_MODE_FORMAT7_MAX))) {
-    cond8=((cam->camera_info.video_mode==DC1394_VIDEO_MODE_640x480_MONO8)||
-	   (cam->camera_info.video_mode==DC1394_VIDEO_MODE_800x600_MONO8)||
-	   (cam->camera_info.video_mode==DC1394_VIDEO_MODE_1024x768_MONO8)||
-	   (cam->camera_info.video_mode==DC1394_VIDEO_MODE_1280x960_MONO8)||
-	   (cam->camera_info.video_mode==DC1394_VIDEO_MODE_1600x1200_MONO8));
-    cond16=((cam->camera_info.video_mode==DC1394_VIDEO_MODE_640x480_MONO16)||
-	    (cam->camera_info.video_mode==DC1394_VIDEO_MODE_800x600_MONO16)||
-	    (cam->camera_info.video_mode==DC1394_VIDEO_MODE_1024x768_MONO16)||
-	    (cam->camera_info.video_mode==DC1394_VIDEO_MODE_1280x960_MONO16)||
-	    (cam->camera_info.video_mode==DC1394_VIDEO_MODE_1600x1200_MONO16));
-    cond422=((cam->camera_info.video_mode==DC1394_VIDEO_MODE_320x240_YUV422)||
-	     (cam->camera_info.video_mode==DC1394_VIDEO_MODE_640x480_YUV422)||
-	     (cam->camera_info.video_mode==DC1394_VIDEO_MODE_800x600_YUV422)||
-	     (cam->camera_info.video_mode==DC1394_VIDEO_MODE_1024x768_YUV422)||
-	     (cam->camera_info.video_mode==DC1394_VIDEO_MODE_1280x960_YUV422)||
-	     (cam->camera_info.video_mode==DC1394_VIDEO_MODE_1600x1200_YUV422));
+  if (!((cam->camera_info->video_mode >= DC1394_VIDEO_MODE_FORMAT7_MIN) &&
+	(cam->camera_info->video_mode <= DC1394_VIDEO_MODE_FORMAT7_MAX))) {
+    cond8=((cam->camera_info->video_mode==DC1394_VIDEO_MODE_640x480_MONO8)||
+	   (cam->camera_info->video_mode==DC1394_VIDEO_MODE_800x600_MONO8)||
+	   (cam->camera_info->video_mode==DC1394_VIDEO_MODE_1024x768_MONO8)||
+	   (cam->camera_info->video_mode==DC1394_VIDEO_MODE_1280x960_MONO8)||
+	   (cam->camera_info->video_mode==DC1394_VIDEO_MODE_1600x1200_MONO8));
+    cond16=((cam->camera_info->video_mode==DC1394_VIDEO_MODE_640x480_MONO16)||
+	    (cam->camera_info->video_mode==DC1394_VIDEO_MODE_800x600_MONO16)||
+	    (cam->camera_info->video_mode==DC1394_VIDEO_MODE_1024x768_MONO16)||
+	    (cam->camera_info->video_mode==DC1394_VIDEO_MODE_1280x960_MONO16)||
+	    (cam->camera_info->video_mode==DC1394_VIDEO_MODE_1600x1200_MONO16));
+    cond422=((cam->camera_info->video_mode==DC1394_VIDEO_MODE_320x240_YUV422)||
+	     (cam->camera_info->video_mode==DC1394_VIDEO_MODE_640x480_YUV422)||
+	     (cam->camera_info->video_mode==DC1394_VIDEO_MODE_800x600_YUV422)||
+	     (cam->camera_info->video_mode==DC1394_VIDEO_MODE_1024x768_YUV422)||
+	     (cam->camera_info->video_mode==DC1394_VIDEO_MODE_1280x960_YUV422)||
+	     (cam->camera_info->video_mode==DC1394_VIDEO_MODE_1600x1200_YUV422));
   }
   else {
-    cond16=((cam->format7_info.modeset.mode[cam->camera_info.video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].color_coding==DC1394_COLOR_CODING_MONO16)||
-	    (cam->format7_info.modeset.mode[cam->camera_info.video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].color_coding==DC1394_COLOR_CODING_RAW16));
-    cond8=((cam->format7_info.modeset.mode[cam->camera_info.video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].color_coding==DC1394_COLOR_CODING_MONO8)||
-	   (cam->format7_info.modeset.mode[cam->camera_info.video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].color_coding==DC1394_COLOR_CODING_RAW8));
-    cond422=(cam->format7_info.modeset.mode[cam->camera_info.video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].color_coding==DC1394_COLOR_CODING_YUV422);
+    cond16=((cam->format7_info.modeset.mode[cam->camera_info->video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].color_coding==DC1394_COLOR_CODING_MONO16)||
+	    (cam->format7_info.modeset.mode[cam->camera_info->video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].color_coding==DC1394_COLOR_CODING_RAW16));
+    cond8=((cam->format7_info.modeset.mode[cam->camera_info->video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].color_coding==DC1394_COLOR_CODING_MONO8)||
+	   (cam->format7_info.modeset.mode[cam->camera_info->video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].color_coding==DC1394_COLOR_CODING_RAW8));
+    cond422=(cam->format7_info.modeset.mode[cam->camera_info->video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].color_coding==DC1394_COLOR_CODING_YUV422);
   }
   
   *bayer = (cond8||cond16||(cond422 && (cam->stereo!=NO_STEREO_DECODING)));

@@ -1,5 +1,20 @@
 Coriander, (c) 2000-2006 Damien Douxchamps <ddouxchamps@users.sf.net>
 
+Changes in version 2.0.0-rc1
+
+   June 12, 2006, by Damien Douxchamps
+   - important changes to accomodate the multiplatform patch for libdc1394
+     from David Moore.
+   - the handle information is not available for display anymore (it may be
+     removed in the future)
+
+   May 12, 2006, by Damien Douxchamps
+   - some "BPP is zero" warnings appear with Sony cameras. I did a first
+     fix for this which only bypasses the problem by removing the offending
+     warning. TODO: later, a valid BPP should be obtained in a way or another
+     (for example: wait and try again, reset f7 ROI or at last set f7 ROI to
+     default sizes). Thanks to Onishi-san for finding this.
+	
 Changes in version 2.0.0-pre6
 
    April 14, 2006, by Damien Douxchamps

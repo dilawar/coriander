@@ -43,12 +43,9 @@ GetCameraNodes(void) {
   for (i=0;i<camnum;i++) {
     camera_ptr=NewCamera();
     // copy the info in the dc structure into the coriander struct.
-    // This is not optimal: we should use pointers instead...
-    memcpy(&camera_ptr->camera_info,dccameras[i],sizeof(dc1394camera_t));
-    //copied cameras should not have their handle destroyed, hence we put them to NULL
-    dccameras[i]->handle=NULL;
+    camera_ptr->camera_info=dccameras[i];
 
-    //fprintf(stderr,"0x%llx - 0x%llx\n",dccameras[i]->euid_64,camera_ptr->camera_info.euid_64);
+    //fprintf(stderr,"0x%llx - 0x%llx\n",dccameras[i]->euid_64,camera_ptr->camera_info->euid_64);
 
     //fprintf(stderr,"Getting camera data\n");
     GetCameraData(camera_ptr);
@@ -58,13 +55,8 @@ GetCameraNodes(void) {
   }
 
   // free the temp dccameras:
-  if (camnum>0) {
-    for (i=0;i<camnum;i++) {
-      dc1394_free_camera(dccameras[i]);
-      dccameras[i]=NULL;
-    }
-    free(dccameras);
-  }
+  free(dccameras);
+
   //fprintf(stderr,"Done getting nodes\n");
 
   return err;;
@@ -90,6 +82,7 @@ NewCamera(void) {
   cam->prefs.overlay_filename = (char*)malloc(STRING_SIZE*sizeof(char));
   cam->bayer_pattern=DC1394_COLOR_FILTER_BGGR;
   pthread_mutex_init(&cam->uimutex, NULL);
+  //fprintf(stderr,"new camera allocated\n");
   return cam;
 
 }
@@ -97,11 +90,11 @@ NewCamera(void) {
 void
 GetCameraData(camera_t* cam) {
 
-  if (cam->camera_info.bmode_capable>0) {
+  if (cam->camera_info->bmode_capable>0) {
     // set b-mode and reprobe modes,... (higher fps formats might not be reported as available in legacy mode)
-    dc1394_video_set_operation_mode(&cam->camera_info, DC1394_OPERATION_MODE_1394B);
+    dc1394_video_set_operation_mode(cam->camera_info, DC1394_OPERATION_MODE_1394B);
   }
-  if (dc1394_get_camera_feature_set(&cam->camera_info, &cam->feature_set)!=DC1394_SUCCESS)
+  if (dc1394_get_camera_feature_set(cam->camera_info, &cam->feature_set)!=DC1394_SUCCESS)
     Error("Could not get camera feature information!");
 
   //fprintf(stderr,"Grabbing F7 stuff\n");
@@ -145,10 +138,10 @@ SetCurrentCamera(u_int64_t guid) {
   camera_t* ptr;
   ptr=cameras;
 
-  while ((ptr->camera_info.euid_64!=guid)&&(ptr->next!=NULL)) {
+  while ((ptr->camera_info->euid_64!=guid)&&(ptr->next!=NULL)) {
     ptr=ptr->next;
   }
-  if (ptr->camera_info.euid_64!=guid)
+  if (ptr->camera_info->euid_64!=guid)
     fprintf(stderr,"Kaai! Can't find camera GUID in the camera stack!\n");
   else
     camera=ptr;
@@ -159,7 +152,7 @@ RemoveCamera(u_int64_t guid) {
 
   camera_t* ptr;
   ptr=cameras;
-  while (ptr->camera_info.euid_64!=guid) {
+  while (ptr->camera_info->euid_64!=guid) {
     ptr=ptr->next;
   }
 
@@ -202,6 +195,7 @@ FreeCamera(camera_t* cam)
   free(cam->prefs.save_filename_ext);
   free(cam->prefs.save_filename_base);
   free(cam->prefs.overlay_filename);
+  free(cam->camera_info);
   free(cam);
 }
 

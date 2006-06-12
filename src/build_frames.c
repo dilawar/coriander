@@ -67,8 +67,8 @@ BuildPowerFrame(void)
   gtk_widget_set_sensitive(lookup_widget(main_window,"power_reset"),TRUE);
 
   // activate if camera capable of power on/off:
-  gtk_widget_set_sensitive(lookup_widget(main_window,"power_on"),(camera->camera_info.can_switch_on_off));
-  gtk_widget_set_sensitive(lookup_widget(main_window,"power_off"),(camera->camera_info.can_switch_on_off));
+  gtk_widget_set_sensitive(lookup_widget(main_window,"power_on"),(camera->camera_info->can_switch_on_off));
+  gtk_widget_set_sensitive(lookup_widget(main_window,"power_off"),(camera->camera_info->can_switch_on_off));
 }
 
 
@@ -87,13 +87,13 @@ void
 BuildIsoFrame(void)
 {
   // TODO: only if ISO capable
-  if (dc1394_video_get_transmission(&camera->camera_info, &camera->camera_info.is_iso_on)!=DC1394_SUCCESS)
+  if (dc1394_video_get_transmission(camera->camera_info, &camera->camera_info->is_iso_on)!=DC1394_SUCCESS)
     Error("Can't get ISO status");
   //fprintf(stderr,"sync: %d\n",preferences.sync_control);
   gtk_widget_set_sensitive(lookup_widget(main_window,"iso_frame"),TRUE);
-  gtk_widget_set_sensitive(lookup_widget(main_window,"iso_start"),!camera->camera_info.is_iso_on);
-  gtk_widget_set_sensitive(lookup_widget(main_window,"iso_restart"),camera->camera_info.is_iso_on);
-  gtk_widget_set_sensitive(lookup_widget(main_window,"iso_stop"),camera->camera_info.is_iso_on);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"iso_start"),!camera->camera_info->is_iso_on);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"iso_restart"),camera->camera_info->is_iso_on);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"iso_stop"),camera->camera_info->is_iso_on);
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window,"broadcast_button")),camera->prefs.broadcast);
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window,"iso_nodrop")),camera->prefs.iso_nodrop);
 

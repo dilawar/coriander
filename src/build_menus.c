@@ -64,7 +64,7 @@ BuildTriggerModeMenu(void)
       gtk_option_menu_set_menu (GTK_OPTION_MENU (trigger_mode), trigger_mode_menu);
       
       // sets the active menu item:
-      if (dc1394_external_trigger_get_mode(&camera->camera_info, &current_trigger_mode)!=DC1394_SUCCESS) {
+      if (dc1394_external_trigger_get_mode(camera->camera_info, &current_trigger_mode)!=DC1394_SUCCESS) {
 	Error("Could not query current trigger mode");
 	current_trigger_mode=DC1394_TRIGGER_MODE_MIN;
       }
@@ -131,7 +131,7 @@ BuildTriggerSourceMenu(void)
       gtk_option_menu_set_menu (GTK_OPTION_MENU (trigger_source), trigger_source_menu);
       
       // sets the active menu item:
-      if (dc1394_external_trigger_get_source(&camera->camera_info, &current_trigger_source)!=DC1394_SUCCESS) {
+      if (dc1394_external_trigger_get_source(camera->camera_info, &current_trigger_source)!=DC1394_SUCCESS) {
 	Error("Could not query current trigger source");
 	current_trigger_source=DC1394_TRIGGER_SOURCE_MIN;
       }
@@ -170,7 +170,7 @@ BuildMemoryChannelMenu(void)
   GtkWidget* channel_num_menu;
   GtkWidget* glade_menuitem;
 
-  camera->camera_info.save_channel=camera->camera_info.load_channel;
+  camera->camera_info->save_channel=camera->camera_info->load_channel;
 
   gtk_widget_destroy(GTK_WIDGET (lookup_widget(main_window,"memory_channel"))); // remove previous menu
 
@@ -184,7 +184,7 @@ BuildMemoryChannelMenu(void)
 
   channel_num_menu = gtk_menu_new ();
 
-  for (i=0;i<=camera->camera_info.mem_channel_number;i++) {
+  for (i=0;i<=camera->camera_info->mem_channel_number;i++) {
     glade_menuitem = gtk_menu_item_new_with_label (_(channel_num_list[i]));
     gtk_widget_show (glade_menuitem);
     gtk_menu_append (GTK_MENU (channel_num_menu), glade_menuitem);
@@ -196,7 +196,7 @@ BuildMemoryChannelMenu(void)
   gtk_option_menu_set_menu (GTK_OPTION_MENU (channel_num), channel_num_menu);
 
   // sets the active menu item:
-  gtk_option_menu_set_history (GTK_OPTION_MENU (channel_num), camera->camera_info.load_channel);
+  gtk_option_menu_set_history (GTK_OPTION_MENU (channel_num), camera->camera_info->load_channel);
 }
 
 void
@@ -362,14 +362,14 @@ BuildFpsMenu(void)
   dc1394framerates_t framerates;
   //eprint("building framerates menu\n");
 
-  if (dc1394_is_video_mode_scalable(camera->camera_info.video_mode)) {
+  if (dc1394_is_video_mode_scalable(camera->camera_info->video_mode)) {
     value = 0; /* format 7 has no fixed framerates */
     gtk_widget_set_sensitive(lookup_widget(main_window,"fps_menu"),FALSE);
   }
   else {
     gtk_widget_set_sensitive(lookup_widget(main_window,"fps_menu"),TRUE);
 
-    if (dc1394_video_get_supported_framerates(&camera->camera_info, camera->camera_info.video_mode, &framerates)!=DC1394_SUCCESS)
+    if (dc1394_video_get_supported_framerates(camera->camera_info, camera->camera_info->video_mode, &framerates)!=DC1394_SUCCESS)
       Error("Could not query supported framerates");
     gtk_widget_destroy(GTK_WIDGET (lookup_widget(main_window,"fps_menu"))); // remove previous menu
     
@@ -399,11 +399,11 @@ BuildFpsMenu(void)
     
     // switch to nearest FPS if the previous value is not valid anymore
     for (i=0;i<framerates.num;i++) {
-      if (camera->camera_info.framerate==framerates.framerates[i])
+      if (camera->camera_info->framerate==framerates.framerates[i])
 	break;
     }
-    if (camera->camera_info.framerate!=framerates.framerates[i]) {
-      i=SwitchToNearestFPS(&framerates, camera->camera_info.framerate);
+    if (camera->camera_info->framerate!=framerates.framerates[i]) {
+      i=SwitchToNearestFPS(&framerates, camera->camera_info->framerate);
     }
     // sets the active menu item:
     gtk_option_menu_set_history (GTK_OPTION_MENU (fps), i);
@@ -439,7 +439,7 @@ BuildFormatMenu(void)
   //eprint("check\n");
 
   // get supported modes
-  if (dc1394_video_get_supported_modes(&camera->camera_info, &modes)<0) {
+  if (dc1394_video_get_supported_modes(camera->camera_info, &modes)<0) {
     Error("Could not query supported formats");
     return;
   }
@@ -454,7 +454,7 @@ BuildFormatMenu(void)
 		      (gpointer)(unsigned long)modes.modes[i]);
   }
   for (i=0;i<modes.num;i++) {
-    if (camera->camera_info.video_mode==modes.modes[i])
+    if (camera->camera_info->video_mode==modes.modes[i])
       break;
   }
   gtk_option_menu_set_menu (GTK_OPTION_MENU (mode_num), mode_num_menu);

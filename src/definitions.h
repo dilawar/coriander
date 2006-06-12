@@ -162,7 +162,7 @@ typedef struct _Format7Info
 } Format7Info_t;
 
 typedef struct _CameraInfo_T {
-  dc1394camera_t camera_info;
+  dc1394camera_t *camera_info;
   dc1394featureset_t feature_set;
   struct _Chain_T* image_pipe;
   Format7Info_t format7_info;

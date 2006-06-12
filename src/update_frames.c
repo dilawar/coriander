@@ -154,7 +154,7 @@ UpdateTriggerFrame(void)
 			   camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].available);
   gtk_widget_set_sensitive(lookup_widget(main_window,"fps_menu"),
 			   !(camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].is_on) &&
-			   !((camera->camera_info.video_mode >= DC1394_VIDEO_MODE_FORMAT7_MIN) && (camera->camera_info.video_mode <= DC1394_VIDEO_MODE_FORMAT7_MAX)));
+			   !((camera->camera_info->video_mode >= DC1394_VIDEO_MODE_FORMAT7_MIN) && (camera->camera_info->video_mode <= DC1394_VIDEO_MODE_FORMAT7_MAX)));
   gtk_widget_set_sensitive(lookup_widget(main_window,"trigger_mode"),
 			   camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].is_on && 
 			   camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].available);
@@ -191,7 +191,7 @@ UpdateMemoryFrame(void)
 
   // save not activated by default (it is not avail. for factory defaults channel):
   gtk_widget_set_sensitive(GTK_WIDGET (lookup_widget(main_window,"save_mem")),
-			   ((camera->camera_info.mem_channel_number>0)&&(camera->camera_info.save_channel>0)));
+			   ((camera->camera_info->mem_channel_number>0)&&(camera->camera_info->save_channel>0)));
 
   // load always present, so we can activate it:
   gtk_widget_set_sensitive(lookup_widget(main_window,"memory_frame"),TRUE);
@@ -202,9 +202,9 @@ UpdateMemoryFrame(void)
 void
 UpdateIsoFrame(void)
 {
-  gtk_widget_set_sensitive(lookup_widget(main_window,"iso_start"),!camera->camera_info.is_iso_on);
-  gtk_widget_set_sensitive(lookup_widget(main_window,"iso_restart"),camera->camera_info.is_iso_on);
-  gtk_widget_set_sensitive(lookup_widget(main_window,"iso_stop"),camera->camera_info.is_iso_on);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"iso_start"),!camera->camera_info->is_iso_on);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"iso_restart"),camera->camera_info->is_iso_on);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"iso_stop"),camera->camera_info->is_iso_on);
 }
 
 void
@@ -224,28 +224,30 @@ UpdateCameraStatusFrame(void)
 
   temp=(char*)malloc(STRING_SIZE*sizeof(char));
 
-  value[0]= camera->camera_info.euid_64 & 0xffffffff;
-  value[1]= (camera->camera_info.euid_64 >>32) & 0x000000ff;
-  value[2]= (camera->camera_info.euid_64 >>40) & 0xfffff;
+  value[0]= camera->camera_info->euid_64 & 0xffffffff;
+  value[1]= (camera->camera_info->euid_64 >>32) & 0x000000ff;
+  value[2]= (camera->camera_info->euid_64 >>40) & 0xfffff;
 
   // vendor:
-  sprintf(temp," %s",camera->camera_info.vendor);
+  sprintf(temp," %s",camera->camera_info->vendor);
   gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"camera_vendor_status"), ctxt.vendor_ctxt, ctxt.vendor_id);
   ctxt.vendor_id=gtk_statusbar_push((GtkStatusbar*) lookup_widget(main_window,"camera_vendor_status"), ctxt.vendor_ctxt, temp);
 
   // camera model:
-  sprintf(temp," %s",camera->camera_info.model);
+  sprintf(temp," %s",camera->camera_info->model);
   gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"camera_model_status"), ctxt.model_ctxt, ctxt.model_id);
   ctxt.model_id=gtk_statusbar_push( (GtkStatusbar*)lookup_widget(main_window,"camera_model_status"), ctxt.model_ctxt, temp);
 
   // camera node/bus:
-  sw_version=camera->camera_info.port;
-  sprintf(temp," %d  /  %d",camera->camera_info.node, sw_version);
+  sw_version=camera->camera_info->port;
+  sprintf(temp," %d  /  %d",camera->camera_info->node, sw_version);
   gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"camera_node_status"), ctxt.node_ctxt, ctxt.node_id);
   ctxt.node_id=gtk_statusbar_push( (GtkStatusbar*)lookup_widget(main_window,"camera_node_status"), ctxt.node_ctxt, temp);
 
   // camera handle:
-  sprintf(temp," %p",camera->camera_info.handle);
+  // TODO TODO TODO
+  // sprintf(temp," %p",camera->camera_info.handle);
+  sprintf(temp," N/A");
   gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"camera_handle_status"), ctxt.handle_ctxt, ctxt.handle_id);
   ctxt.handle_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"camera_handle_status"), ctxt.handle_ctxt, temp);
 
@@ -265,7 +267,7 @@ UpdateCameraStatusFrame(void)
   ctxt.delay_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"camera_delay_status"), ctxt.delay_ctxt, temp);
 
   // IIDC software revision:
-  switch (camera->camera_info.iidc_version) {
+  switch (camera->camera_info->iidc_version) {
   case DC1394_IIDC_VERSION_1_04: sprintf(temp," 1.04 ");break;
   case DC1394_IIDC_VERSION_1_20: sprintf(temp," 1.20 ");break;
   case DC1394_IIDC_VERSION_1_30: sprintf(temp," 1.30 ");break;
@@ -305,8 +307,8 @@ UpdateTransferStatusFrame(void)
   char *temp;
   temp=(char*)malloc(STRING_SIZE*sizeof(char));
 
-  if (camera->camera_info.iso_channel>=0) {
-    sprintf(temp," %d",camera->camera_info.iso_channel);
+  if (camera->camera_info->iso_channel>=0) {
+    sprintf(temp," %d",camera->camera_info->iso_channel);
   }
   else {
     sprintf(temp," N/A");
@@ -363,13 +365,13 @@ UpdateOptionFrame(void)
 
   dc1394color_filter_t filter;
   // if we have a valid color filter, use that:
-  if (dc1394_is_video_mode_scalable(camera->camera_info.video_mode)==DC1394_TRUE) {
-    if (dc1394_format7_get_color_filter(&camera->camera_info, camera->camera_info.video_mode, &filter)!=DC1394_SUCCESS)
+  if (dc1394_is_video_mode_scalable(camera->camera_info->video_mode)==DC1394_TRUE) {
+    if (dc1394_format7_get_color_filter(camera->camera_info, camera->camera_info->video_mode, &filter)!=DC1394_SUCCESS)
       fprintf(stderr,"Could not get color filter!\n");
     else {
       if (filter!=0) { // we have a valid filter: use it.
 	//fprintf(stderr,"Valid filter!\n");
-	camera->format7_info.modeset.mode[camera->camera_info.video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].color_filter=filter;
+	camera->format7_info.modeset.mode[camera->camera_info->video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].color_filter=filter;
 	camera->bayer_pattern=filter;
 	pthread_mutex_lock(&camera->uimutex);
 	gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(main_window, "pattern_menu")),
@@ -426,7 +428,6 @@ UpdateFormat7InfoFrame(void)
 
     mode = &camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_VIDEO_MODE_FORMAT7_MIN];
 
-
     dc1394_get_bytes_per_pixel(mode->color_coding, &bpp);
 
     bytesize=(int) ((float)mode->size_x*(float)mode->size_y*bpp);
@@ -438,7 +439,23 @@ UpdateFormat7InfoFrame(void)
       }
     */
     //fprintf(stderr,"total bytes: %d\n",mode->total_bytes);
-    if (mode->bpp!=0) {
+    if (mode->bpp==0) {
+      //Error("BPP is zero! This should not happen.");
+
+      // do something about it:
+      // - first wait a bit and try to get the BPP again
+      // (what follows only if ISO is not running)
+      // - then, if it's not ok, do a set_roi with all current values, wait and get BPP again
+      // - at last, do a set_roi with all max values, wait and get BPP again
+      // if all else fails, set the temp string to "Invalid BPP"
+      
+      // note: this obviously happen mostly (if not only) at camera boot time. So maybe the F7
+      // mode probing function could carry the function of setting a valid F7 by default.
+      // definitely better... (and in libdc1394 so everyone enjoys the modification)
+      grandtotal=0;
+      sprintf(temp,"Invalid BPP");
+    }
+    else {
       // if there is packet padding, take it into account
       if (mode->total_bytes%mode->bpp!=0) {
 	grandtotal=(mode->total_bytes/mode->bpp+1)*mode->bpp;
@@ -447,30 +464,30 @@ UpdateFormat7InfoFrame(void)
 	grandtotal=mode->total_bytes;
       }
     }
-    else {
-      grandtotal=0;
-      Error("BPP is zero! This should not happen.");
-    }
 
-    sprintf(temp," %d", bytesize);
+    if (mode->bpp>0)
+      sprintf(temp," %d", bytesize);
     gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"format7_imagebytes"), 
 			 ctxt.format7_imagebytes_ctxt, ctxt.format7_imagebytes_id);
     ctxt.format7_imagebytes_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"format7_imagebytes"), 
 						  ctxt.format7_imagebytes_ctxt,temp);
     
-    sprintf(temp," %d", mode->size_x*mode->size_y);
+    if (mode->bpp>0)
+      sprintf(temp," %d", mode->size_x*mode->size_y);
     gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"format7_imagepixels"), 
 			 ctxt.format7_imagepixels_ctxt, ctxt.format7_imagepixels_id);
     ctxt.format7_imagepixels_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"format7_imagepixels"), 
 						   ctxt.format7_imagepixels_ctxt,temp);
     
-    sprintf(temp," %d", grandtotal);
+    if (mode->bpp>0)
+      sprintf(temp," %d", grandtotal);
     gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"format7_totalbytes"), 
 			 ctxt.format7_totalbytes_ctxt, ctxt.format7_totalbytes_id);
     ctxt.format7_totalbytes_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"format7_totalbytes"), 
 						  ctxt.format7_totalbytes_ctxt,temp);
     
-    sprintf(temp," %d", grandtotal - bytesize);
+    if (mode->bpp>0)
+      sprintf(temp," %d", grandtotal - bytesize);
     gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"format7_padding"), 
 			 ctxt.format7_padding_ctxt, ctxt.format7_padding_id);
     ctxt.format7_padding_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"format7_padding"), 
@@ -505,12 +522,12 @@ UpdateBandwidthFrame(void)
 
   cam=cameras;
   while(cam!=NULL) {
-    if (dc1394_video_get_transmission(&cam->camera_info, &iso)!=DC1394_SUCCESS) {
+    if (dc1394_video_get_transmission(cam->camera_info, &iso)!=DC1394_SUCCESS) {
       Error("Could not get ISO status");
     }
 
     if (iso==DC1394_ON) {
-      if (dc1394_video_get_bandwidth_usage(&cam->camera_info, &bandwidth)!=DC1394_SUCCESS) {
+      if (dc1394_video_get_bandwidth_usage(cam->camera_info, &bandwidth)!=DC1394_SUCCESS) {
 	Error("Could not get a camera bandwidth usage. Bus usage might be inaccurate.");
       }
     }
@@ -520,7 +537,7 @@ UpdateBandwidthFrame(void)
     //fprintf(stderr,"%d\n",bandwidth);
     iso_service=GetService(cam,SERVICE_ISO);
     // if we are using format7 and there is a running ISO service, we can get a better estimate:
-    if (((camera->camera_info.video_mode >= DC1394_VIDEO_MODE_FORMAT7_MIN) && (camera->camera_info.video_mode <= DC1394_VIDEO_MODE_FORMAT7_MAX))
+    if (((camera->camera_info->video_mode >= DC1394_VIDEO_MODE_FORMAT7_MIN) && (camera->camera_info->video_mode <= DC1394_VIDEO_MODE_FORMAT7_MAX))
 	&&(iso_service!=NULL)){
       //fprintf(stderr,"better estimate can be found\n");
       // use the fractions of packets needed:
@@ -533,7 +550,7 @@ UpdateBandwidthFrame(void)
 	bandwidth=(int)((float)bandwidth*ratio);
     }
     // sum the values of the bandwidths
-    ports[cam->camera_info.port]+=bandwidth;
+    ports[cam->camera_info->port]+=bandwidth;
     cam=cam->next;
   }
 

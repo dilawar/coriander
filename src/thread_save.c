@@ -235,7 +235,7 @@ CreateSettingsFile(camera_t *cam, char *destdir)
     return(0);
   }
   
-  fprintf(fd,"fps=%s\n", fps_label_list[cam->camera_info.framerate-DC1394_FRAMERATE_MIN]);
+  fprintf(fd,"fps=%s\n", fps_label_list[cam->camera_info->framerate-DC1394_FRAMERATE_MIN]);
   fprintf(fd,"sync_control=%d\n",cam->prefs.broadcast);
   
   for(i=DC1394_FEATURE_MIN; i<=DC1394_FEATURE_MAX; ++i) {
@@ -397,7 +397,7 @@ InitVideoFile(chain_t *save_service, FILE *fd, char *filename_out)
   // (JG) if extension is PVN, write PVN header here
   if ((cam->prefs.save_format==SAVE_FORMAT_PVN) && (cam->prefs.use_ram_buffer==FALSE)) {//-----------------------------------
     //fprintf(stderr,"pvn header write\n");
-    dc1394_framerate_as_float(camera->camera_info.framerate, &fps);
+    dc1394_framerate_as_float(camera->camera_info->framerate, &fps);
     writePVNHeader(fd, save_service->current_buffer->color_mode,
 		   save_service->current_buffer->height,
 		   save_service->current_buffer->width,
@@ -870,7 +870,7 @@ SaveThread(void* arg)
       break;
 #endif
     case SAVE_FORMAT_PVN:
-      dc1394_framerate_as_float(cam->camera_info.framerate, &fps);
+      dc1394_framerate_as_float(cam->camera_info->framerate, &fps);
       writePVNHeader(fd, save_service->current_buffer->color_mode,
 		     save_service->current_buffer->height,
 		     save_service->current_buffer->width,

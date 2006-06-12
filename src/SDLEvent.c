@@ -212,8 +212,8 @@ OnMouseDown(chain_t *display_service, int button, int x, int y)
   dc1394format7mode_t* f7info;
   info=(displaythread_info_t*)display_service->data;
 
-  if (dc1394_is_video_mode_scalable(camera->camera_info.video_mode)) {
-    f7info=&camera->format7_info.modeset.mode[camera->camera_info.video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN];
+  if (dc1394_is_video_mode_scalable(camera->camera_info->video_mode)) {
+    f7info=&camera->format7_info.modeset.mode[camera->camera_info->video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN];
   }
 
   switch (button) {
@@ -450,7 +450,7 @@ SDLCropImage(chain_t *display_service)
   pthread_mutex_lock(&watchthread_info.mutex_area);
 
   watchthread_info.draw=0;
-  if (dc1394_is_video_mode_scalable(camera->camera_info.video_mode))
+  if (dc1394_is_video_mode_scalable(camera->camera_info->video_mode))
     watchthread_info.crop=1;
 
   pthread_mutex_unlock(&watchthread_info.mutex_area);
@@ -462,12 +462,12 @@ SDLSetMaxSize(chain_t *display_service)
 {
   pthread_mutex_lock(&watchthread_info.mutex_area);
   watchthread_info.draw=0;
-  if (dc1394_is_video_mode_scalable(camera->camera_info.video_mode)) {
+  if (dc1394_is_video_mode_scalable(camera->camera_info->video_mode)) {
     watchthread_info.crop=1;
     watchthread_info.pos[0]=0;
     watchthread_info.pos[1]=0;
-    watchthread_info.size[0]=camera->format7_info.modeset.mode[camera->camera_info.video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].max_size_x;
-    watchthread_info.size[1]=camera->format7_info.modeset.mode[camera->camera_info.video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].max_size_y;
+    watchthread_info.size[0]=camera->format7_info.modeset.mode[camera->camera_info->video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].max_size_x;
+    watchthread_info.size[1]=camera->format7_info.modeset.mode[camera->camera_info->video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].max_size_y;
   }
   pthread_mutex_unlock(&watchthread_info.mutex_area);
 

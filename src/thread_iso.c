@@ -39,14 +39,14 @@ gint IsoStartThread(camera_t* cam)
     info=(isothread_info_t*)iso_service->data;
     
     /* currently FORMAT_STILL_IMAGE is not supported*/
-    if (dc1394_is_video_mode_still_image(cam->camera_info.video_mode)==DC1394_TRUE) {
+    if (dc1394_is_video_mode_still_image(cam->camera_info->video_mode)==DC1394_TRUE) {
       FreeChain(iso_service);
       iso_service=NULL;
       return(-1);
     }
 
     // IF ISO IS ACTIVE, DON'T SET ANYTHING BUT CAPTURE
-    err=dc1394_video_get_transmission(&cam->camera_info, &iso_state);
+    err=dc1394_video_get_transmission(cam->camera_info, &iso_state);
     if (err!=DC1394_SUCCESS){
       eprint("Failed to get ISO state. Error code %d\n",err);
       FreeChain(iso_service);
@@ -72,14 +72,14 @@ gint IsoStartThread(camera_t* cam)
     }
 
     if (maxspeed >= DC1394_ISO_SPEED_800) {
-      if (dc1394_video_set_operation_mode(&cam->camera_info, DC1394_OPERATION_MODE_1394B)!=DC1394_SUCCESS) {
+      if (dc1394_video_set_operation_mode(cam->camera_info, DC1394_OPERATION_MODE_1394B)!=DC1394_SUCCESS) {
 	fprintf(stderr,"Can't set 1394B mode. Reverting to 400Mbps\n");
 	maxspeed=DC1394_ISO_SPEED_400;
       }
     }
 
     // set ISO speed:
-    err=dc1394_video_set_iso_speed(&cam->camera_info, maxspeed);
+    err=dc1394_video_set_iso_speed(cam->camera_info, maxspeed);
     if (err!=DC1394_SUCCESS){
       eprint("Failed to set ISO speed. Error code %d\n",err);
       FreeChain(iso_service);
@@ -88,7 +88,7 @@ gint IsoStartThread(camera_t* cam)
     }
     
     // set format and other stuff
-    err=dc1394_video_set_mode(&cam->camera_info, cam->camera_info.video_mode);
+    err=dc1394_video_set_mode(cam->camera_info, cam->camera_info->video_mode);
     if (err!=DC1394_SUCCESS){
       eprint("Failed to set current video mode. Error code %d\n",err);
       FreeChain(iso_service);
@@ -97,8 +97,8 @@ gint IsoStartThread(camera_t* cam)
     }
     
     // set framerate or ROI:
-    if (dc1394_is_video_mode_scalable(cam->camera_info.video_mode)==DC1394_TRUE) {
-      err=dc1394_format7_set_roi(&cam->camera_info, cam->camera_info.video_mode,
+    if (dc1394_is_video_mode_scalable(cam->camera_info->video_mode)==DC1394_TRUE) {
+      err=dc1394_format7_set_roi(cam->camera_info, cam->camera_info->video_mode,
 				 DC1394_QUERY_FROM_CAMERA, DC1394_QUERY_FROM_CAMERA, 
 				 DC1394_QUERY_FROM_CAMERA, DC1394_QUERY_FROM_CAMERA, 
 				 DC1394_QUERY_FROM_CAMERA, DC1394_QUERY_FROM_CAMERA);
@@ -110,7 +110,7 @@ gint IsoStartThread(camera_t* cam)
       }
     }
     else {
-      err=dc1394_video_set_framerate(&cam->camera_info, cam->camera_info.framerate);
+      err=dc1394_video_set_framerate(cam->camera_info, cam->camera_info->framerate);
       if (err!=DC1394_SUCCESS){
 	eprint("Failed to set framerate. Error code %d\n",err);
 	FreeChain(iso_service);
@@ -123,7 +123,7 @@ gint IsoStartThread(camera_t* cam)
 
     switch(cam->prefs.receive_method) {
     case RECEIVE_METHOD_VIDEO1394:
-      err=dc1394_capture_setup_dma(&cam->camera_info, cam->prefs.dma_buffer_size,
+      err=dc1394_capture_setup_dma(cam->camera_info, cam->prefs.dma_buffer_size,
 				   cam->prefs.video1394_dropframes);
       if (err!=DC1394_SUCCESS){
 	eprint("Failed to setup DMA capture. Error code %d\n",err);
@@ -134,7 +134,7 @@ gint IsoStartThread(camera_t* cam)
       cam->prefs.receive_method=RECEIVE_METHOD_VIDEO1394;
       break;
     case RECEIVE_METHOD_RAW1394:
-      err=dc1394_capture_setup(&cam->camera_info);
+      err=dc1394_capture_setup(cam->camera_info);
       if (err!=DC1394_SUCCESS){
 	eprint("Failed to setup RAW1394 capture. Error code %d\n",err);
 	FreeChain(iso_service);
@@ -231,7 +231,7 @@ IsoThread(void* arg)
     if (((iso_service->ready>0)&&(cam->prefs.iso_nodrop>0))||
 	(cam->prefs.iso_nodrop==0)) {
     
-      camptr=&(iso_service->camera->camera_info);
+      camptr=iso_service->camera->camera_info;
 
       if (cam->prefs.receive_method == RECEIVE_METHOD_RAW1394)
 	dc1394_capture(&camptr, 1);
@@ -350,7 +350,7 @@ gint IsoStopThread(camera_t* cam)
     }
     //eprint("test2\n");
 
-    dc1394_capture_stop(&iso_service->camera->camera_info);
+    dc1394_capture_stop(iso_service->camera->camera_info);
     
     //eprint("test3\n");
     pthread_mutex_unlock(&iso_service->mutex_struct);
@@ -378,9 +378,9 @@ IsoThreadCheckParams(chain_t *iso_service)
 
   iso_service->current_buffer->bpp=iso_service->camera->bpp;
   iso_service->current_buffer->bayer_pattern=iso_service->camera->bayer_pattern;
-  iso_service->current_buffer->width=iso_service->camera->camera_info.capture.frame_width;
-  iso_service->current_buffer->height=iso_service->camera->camera_info.capture.frame_height;
-  iso_service->current_buffer->bytes_per_frame=iso_service->camera->camera_info.capture.quadlets_per_frame*4;
+  iso_service->current_buffer->width=dc1394_capture_get_width(iso_service->camera->camera_info);
+  iso_service->current_buffer->height=dc1394_capture_get_height(iso_service->camera->camera_info);
+  iso_service->current_buffer->bytes_per_frame=dc1394_capture_get_bytes_per_frame(iso_service->camera->camera_info);
   iso_service->current_buffer->stereo_decoding=iso_service->camera->stereo;
   iso_service->current_buffer->bayer=iso_service->camera->bayer;
   info->orig_sizex=iso_service->current_buffer->width;
@@ -466,13 +466,13 @@ IsoThreadCheckParams(chain_t *iso_service)
   }
 
 
-  if (dc1394_is_video_mode_scalable(iso_service->camera->camera_info.video_mode)) {
-    temp=iso_service->camera->format7_info.modeset.mode[iso_service->camera->camera_info.video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].color_coding;
+  if (dc1394_is_video_mode_scalable(iso_service->camera->camera_info->video_mode)) {
+    temp=iso_service->camera->format7_info.modeset.mode[iso_service->camera->camera_info->video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].color_coding;
   }
   else {
     temp=-1;
   }
-  SetColorMode(iso_service->camera->camera_info.video_mode,iso_service->current_buffer,temp);
+  SetColorMode(iso_service->camera->camera_info->video_mode,iso_service->current_buffer,temp);
   pthread_mutex_unlock(&iso_service->camera->uimutex);
 
 }
