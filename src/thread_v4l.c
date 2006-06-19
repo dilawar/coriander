@@ -166,7 +166,7 @@ V4lThread(void* arg)
 	}
 
 	// Convert to RGB unless we are using direct GREY palette
-	if ((v4l_service->current_buffer->color_mode != DC1394_COLOR_CODING_MONO8) ||
+	if ((v4l_service->current_buffer->color_mode != DC1394_COLOR_CODING_MONO8) &&
 	    (v4l_service->current_buffer->color_mode != DC1394_COLOR_CODING_RAW8)) {
 	  convert_to_rgb(v4l_service->current_buffer, info->v4l_buffer);
 	  swap_rb(info->v4l_buffer, v4l_service->current_buffer->width*v4l_service->current_buffer->height*3);
@@ -175,7 +175,7 @@ V4lThread(void* arg)
 	if (v4l_service->current_buffer->width!=-1) {
 	  if (skip_counter>=(cam->prefs.v4l_period-1)) {
 	    skip_counter=0;
-	    if ((v4l_service->current_buffer->color_mode != DC1394_COLOR_CODING_MONO8) ||
+	    if ((v4l_service->current_buffer->color_mode != DC1394_COLOR_CODING_MONO8) &&
 		(v4l_service->current_buffer->color_mode != DC1394_COLOR_CODING_RAW8))
 	      write(info->v4l_dev,info->v4l_buffer,v4l_service->current_buffer->width*v4l_service->current_buffer->height*3);
 	    else
