@@ -23,7 +23,7 @@ void
 convert_to_rgb(buffer_t *buffer, unsigned char *dest);
 
 void
-convert_to_yuv_for_SDL(buffer_t *buffer, SDL_Overlay *sdloverlay, int overlay_byte_order);
+convert_to_yuv_for_SDL(buffer_t *buffer, SDL_Overlay *sdloverlay, unsigned int overlay_byte_order);
 
 void
 convert_for_pvn(unsigned char *buffer, unsigned int width, unsigned int height,

@@ -48,9 +48,6 @@ void
 FreeChain(chain_t* chain);
 
 void
-convert_to_rgb(buffer_t *buffer, unsigned char *dest);
-
-void
 InitBuffer(buffer_t *buffer);
 
 #endif // __THREAD_BASE_H__

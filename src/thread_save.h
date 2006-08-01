@@ -109,10 +109,6 @@ getAvgBytesPerPixel(int buffer_color_mode);
 unsigned int
 getDepth(unsigned long bufsize, int mode, unsigned int height, unsigned int width);
 
-void
-convert_for_pvn(unsigned char *buffer, unsigned int width, unsigned int height,
-		unsigned int page, int buffer_color_mode, unsigned char *dest);
-
 int
 InitVideoFile(chain_t *save_service, FILE *fd, char *filename_out);
 

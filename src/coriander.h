@@ -85,6 +85,7 @@
 #include "build_windows.h"
 #include "callbacks.h"
 #include "camera.h"
+#include "conversions.h"
 #include "interface.h"
 #include "preferences.h"
 #include "support.h"

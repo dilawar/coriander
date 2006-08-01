@@ -34,7 +34,7 @@ convert_to_rgb(buffer_t *buffer, unsigned char *dest)
 
 // we should optimize this for RGB too: RGB modes could use RGB-SDL instead of YUV overlay
 void
-convert_to_yuv_for_SDL(buffer_t *buffer, SDL_Overlay *sdloverlay, int overlay_byte_order)
+convert_to_yuv_for_SDL(buffer_t *buffer, SDL_Overlay *sdloverlay, unsigned int overlay_byte_order)
 {
   unsigned char *dest=sdloverlay->pixels[0];
   /*
