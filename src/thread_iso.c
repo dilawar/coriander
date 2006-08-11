@@ -378,9 +378,9 @@ IsoThreadCheckParams(chain_t *iso_service)
 
   iso_service->current_buffer->bpp=iso_service->camera->bpp;
   iso_service->current_buffer->bayer_pattern=iso_service->camera->bayer_pattern;
-  //iso_service->current_buffer->width=dc1394_capture_get_width(iso_service->camera->camera_info);
-  //iso_service->current_buffer->height=dc1394_capture_get_height(iso_service->camera->camera_info);
-  //iso_service->current_buffer->bytes_per_frame=dc1394_capture_get_bytes_per_frame(iso_service->camera->camera_info);
+  iso_service->current_buffer->width=dc1394_capture_get_width(iso_service->camera->camera_info);
+  iso_service->current_buffer->height=dc1394_capture_get_height(iso_service->camera->camera_info);
+  iso_service->current_buffer->bytes_per_frame=dc1394_capture_get_bytes_per_frame(iso_service->camera->camera_info);
   iso_service->current_buffer->stereo_decoding=iso_service->camera->stereo;
   iso_service->current_buffer->bayer=iso_service->camera->bayer;
   info->orig_sizex=iso_service->current_buffer->width;

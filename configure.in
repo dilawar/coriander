@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 
 dnl AC_INIT(configure.in)
-AC_INIT(coriander, 2.0.0-pre6)
+AC_INIT(coriander, 2.0.0-rc1)
 AM_INIT_AUTOMAKE
 AM_MAINTAINER_MODE
 AM_CONFIG_HEADER(config.h)
@@ -39,7 +39,7 @@ AC_DEFUN([AC_CHECK_LIBDC],[
  	if test x$libdc1394 = xno; then
           AC_ERROR([libdc1394 is not installed.  
 **************************************************************************
-**   Please install the current CVS of libdc1394, branch Version_2_0    **
+**   Please install the current verion libdc1394-2.0.0-rc3 or later     **
 **   Source tarball and CVS at:  http://www.sf.net/projects/libdc1394   **
 **************************************************************************])
         else
@@ -47,7 +47,7 @@ AC_DEFUN([AC_CHECK_LIBDC],[
  	  if test x$libdc1394 = xold; then
             AC_ERROR([libdc1394 is too old.
 **************************************************************************
-**   Please install the current CVS of libdc1394                        **
+**   Please install the current verion libdc1394-2.0.0-rc3 or later     **
 **   Source tarball and CVS at:  http://www.sf.net/projects/libdc1394   **
 **************************************************************************])
           else
@@ -62,6 +62,7 @@ AC_DEFUN([AC_CHECK_LIBDC],[
 	    raw1394handle_t handle;
 	    dc1394camera_t camera;
 	    dc1394_capture_dma_setup(&camera, 0, DC1394_ISO_SPEED_800, DC1394_FRAMERATE_240, 10, 0);
+	    camera.SIO_control_csr=0;
 	    return 0;
 	    }
 	    ],libdc1394=ok,libdc1394=outdated);
@@ -72,7 +73,7 @@ AC_DEFUN([AC_CHECK_LIBDC],[
 	    else
               AC_ERROR([libdc1394 is too old. 
 **************************************************************************
-**   Please install the current CVS of libdc1394                        **
+**   Please install the current verion libdc1394-2.0.0-rc3 or later     **
 **   Source tarball and CVS at:  http://www.sf.net/projects/libdc1394   **
 **************************************************************************])      
  	    fi
@@ -98,7 +99,7 @@ AC_DEFUN([AC_CHECK_LIBRAW],[
  	if test x$libraw1394 = xno; then
           AC_ERROR([libraw1394 is not installed.
 **************************************************************************
-**   Please install version >= 1.0.0                                    **
+**   Please install version >= 1.2.0                                    **
 **   Source tarball and CVS at:  http://www.sf.net/projects/libraw1394  **
 **************************************************************************])
         else

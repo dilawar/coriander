@@ -430,6 +430,11 @@ create_main_window (void)
   GtkWidget *hbox60;
   GtkWidget *power_frame;
   GtkWidget *table84;
+  GtkWidget *power_reset;
+  GtkWidget *alignment12;
+  GtkWidget *hbox83;
+  GtkWidget *image13;
+  GtkWidget *label210;
   GtkWidget *power_off;
   GtkWidget *alignment11;
   GtkWidget *hbox82;
@@ -440,29 +445,29 @@ create_main_window (void)
   GtkWidget *hbox81;
   GtkWidget *image11;
   GtkWidget *label208;
-  GtkWidget *power_reset;
-  GtkWidget *alignment12;
-  GtkWidget *hbox83;
-  GtkWidget *image13;
-  GtkWidget *label210;
   GtkWidget *label2;
   GtkWidget *memory_frame;
   GtkWidget *table16;
   GtkWidget *memory_channel;
   GtkWidget *convertwidget3;
-  GtkWidget *load_mem;
-  GtkWidget *alignment2;
-  GtkWidget *hbox73;
-  GtkWidget *image3;
-  GtkWidget *label200;
   GtkWidget *save_mem;
   GtkWidget *alignment1;
   GtkWidget *hbox72;
   GtkWidget *image2;
   GtkWidget *label199;
+  GtkWidget *load_mem;
+  GtkWidget *alignment2;
+  GtkWidget *hbox73;
+  GtkWidget *image3;
+  GtkWidget *label200;
   GtkWidget *label3;
   GtkWidget *global_iso_frame;
   GtkWidget *table72;
+  GtkWidget *global_iso_restart;
+  GtkWidget *alignment5;
+  GtkWidget *hbox76;
+  GtkWidget *image6;
+  GtkWidget *label203;
   GtkWidget *global_iso_start;
   GtkWidget *alignment4;
   GtkWidget *hbox75;
@@ -473,11 +478,6 @@ create_main_window (void)
   GtkWidget *hbox84;
   GtkWidget *image14;
   GtkWidget *label212;
-  GtkWidget *global_iso_restart;
-  GtkWidget *alignment5;
-  GtkWidget *hbox76;
-  GtkWidget *image6;
-  GtkWidget *label203;
   GtkWidget *label4;
   GtkWidget *frame2;
   GtkWidget *table48;
@@ -861,7 +861,7 @@ create_main_window (void)
 
   main_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_widget_set_name (main_window, "main_window");
-  gtk_window_set_title (GTK_WINDOW (main_window), _("Coriander 2.0.0-20060113"));
+  gtk_window_set_title (GTK_WINDOW (main_window), _("Coriander 2.0.0-rc1"));
   main_window_icon_pixbuf = create_pixbuf ("coriander/coriander-icon.png");
   if (main_window_icon_pixbuf)
     {
@@ -966,12 +966,42 @@ create_main_window (void)
   gtk_widget_show (table84);
   gtk_container_add (GTK_CONTAINER (power_frame), table84);
 
+  power_reset = gtk_button_new ();
+  gtk_widget_set_name (power_reset, "power_reset");
+  gtk_widget_show (power_reset);
+  gtk_table_attach (GTK_TABLE (table84), power_reset, 0, 2, 1, 2,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (power_reset), 1);
+  gtk_widget_set_sensitive (power_reset, FALSE);
+  gtk_tooltips_set_tip (tooltips, power_reset, _("Reset camera"), NULL);
+
+  alignment12 = gtk_alignment_new (0.5, 0.5, 0, 0);
+  gtk_widget_set_name (alignment12, "alignment12");
+  gtk_widget_show (alignment12);
+  gtk_container_add (GTK_CONTAINER (power_reset), alignment12);
+
+  hbox83 = gtk_hbox_new (FALSE, 2);
+  gtk_widget_set_name (hbox83, "hbox83");
+  gtk_widget_show (hbox83);
+  gtk_container_add (GTK_CONTAINER (alignment12), hbox83);
+
+  image13 = gtk_image_new_from_stock ("gtk-refresh", GTK_ICON_SIZE_SMALL_TOOLBAR);
+  gtk_widget_set_name (image13, "image13");
+  gtk_widget_show (image13);
+  gtk_box_pack_start (GTK_BOX (hbox83), image13, FALSE, FALSE, 0);
+
+  label210 = gtk_label_new_with_mnemonic (_("RESET"));
+  gtk_widget_set_name (label210, "label210");
+  gtk_widget_show (label210);
+  gtk_box_pack_start (GTK_BOX (hbox83), label210, FALSE, FALSE, 0);
+
   power_off = gtk_button_new ();
   gtk_widget_set_name (power_off, "power_off");
   gtk_widget_show (power_off);
   gtk_table_attach (GTK_TABLE (table84), power_off, 1, 2, 0, 1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (power_off), 1);
   gtk_widget_set_sensitive (power_off, FALSE);
   gtk_tooltips_set_tip (tooltips, power_off, _("Switch camera off"), NULL);
@@ -1001,7 +1031,7 @@ create_main_window (void)
   gtk_widget_show (power_on);
   gtk_table_attach (GTK_TABLE (table84), power_on, 0, 1, 0, 1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (power_on), 1);
   gtk_widget_set_sensitive (power_on, FALSE);
   gtk_tooltips_set_tip (tooltips, power_on, _("Switch camera on"), NULL);
@@ -1025,36 +1055,6 @@ create_main_window (void)
   gtk_widget_set_name (label208, "label208");
   gtk_widget_show (label208);
   gtk_box_pack_start (GTK_BOX (hbox81), label208, FALSE, FALSE, 0);
-
-  power_reset = gtk_button_new ();
-  gtk_widget_set_name (power_reset, "power_reset");
-  gtk_widget_show (power_reset);
-  gtk_table_attach (GTK_TABLE (table84), power_reset, 0, 2, 1, 2,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (GTK_FILL), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (power_reset), 1);
-  gtk_widget_set_sensitive (power_reset, FALSE);
-  gtk_tooltips_set_tip (tooltips, power_reset, _("Reset camera"), NULL);
-
-  alignment12 = gtk_alignment_new (0.5, 0.5, 0, 0);
-  gtk_widget_set_name (alignment12, "alignment12");
-  gtk_widget_show (alignment12);
-  gtk_container_add (GTK_CONTAINER (power_reset), alignment12);
-
-  hbox83 = gtk_hbox_new (FALSE, 2);
-  gtk_widget_set_name (hbox83, "hbox83");
-  gtk_widget_show (hbox83);
-  gtk_container_add (GTK_CONTAINER (alignment12), hbox83);
-
-  image13 = gtk_image_new_from_stock ("gtk-refresh", GTK_ICON_SIZE_SMALL_TOOLBAR);
-  gtk_widget_set_name (image13, "image13");
-  gtk_widget_show (image13);
-  gtk_box_pack_start (GTK_BOX (hbox83), image13, FALSE, FALSE, 0);
-
-  label210 = gtk_label_new_with_mnemonic (_("RESET"));
-  gtk_widget_set_name (label210, "label210");
-  gtk_widget_show (label210);
-  gtk_box_pack_start (GTK_BOX (hbox83), label210, FALSE, FALSE, 0);
 
   label2 = gtk_label_new (_("<b>Power</b>"));
   gtk_widget_set_name (label2, "label2");
@@ -1091,35 +1091,6 @@ create_main_window (void)
 
   gtk_option_menu_set_menu (GTK_OPTION_MENU (memory_channel), convertwidget3);
 
-  load_mem = gtk_button_new ();
-  gtk_widget_set_name (load_mem, "load_mem");
-  gtk_widget_show (load_mem);
-  gtk_table_attach (GTK_TABLE (table16), load_mem, 0, 1, 1, 2,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (GTK_FILL), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (load_mem), 1);
-  gtk_tooltips_set_tip (tooltips, load_mem, _("Load setup from camera memory"), NULL);
-
-  alignment2 = gtk_alignment_new (0.5, 0.5, 0, 0);
-  gtk_widget_set_name (alignment2, "alignment2");
-  gtk_widget_show (alignment2);
-  gtk_container_add (GTK_CONTAINER (load_mem), alignment2);
-
-  hbox73 = gtk_hbox_new (FALSE, 2);
-  gtk_widget_set_name (hbox73, "hbox73");
-  gtk_widget_show (hbox73);
-  gtk_container_add (GTK_CONTAINER (alignment2), hbox73);
-
-  image3 = gtk_image_new_from_stock ("gtk-goto-bottom", GTK_ICON_SIZE_SMALL_TOOLBAR);
-  gtk_widget_set_name (image3, "image3");
-  gtk_widget_show (image3);
-  gtk_box_pack_start (GTK_BOX (hbox73), image3, FALSE, FALSE, 0);
-
-  label200 = gtk_label_new_with_mnemonic (_("LOAD"));
-  gtk_widget_set_name (label200, "label200");
-  gtk_widget_show (label200);
-  gtk_box_pack_start (GTK_BOX (hbox73), label200, FALSE, FALSE, 0);
-
   save_mem = gtk_button_new ();
   gtk_widget_set_name (save_mem, "save_mem");
   gtk_widget_show (save_mem);
@@ -1150,6 +1121,35 @@ create_main_window (void)
   gtk_widget_show (label199);
   gtk_box_pack_start (GTK_BOX (hbox72), label199, FALSE, FALSE, 0);
 
+  load_mem = gtk_button_new ();
+  gtk_widget_set_name (load_mem, "load_mem");
+  gtk_widget_show (load_mem);
+  gtk_table_attach (GTK_TABLE (table16), load_mem, 0, 1, 1, 2,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (load_mem), 1);
+  gtk_tooltips_set_tip (tooltips, load_mem, _("Load setup from camera memory"), NULL);
+
+  alignment2 = gtk_alignment_new (0.5, 0.5, 0, 0);
+  gtk_widget_set_name (alignment2, "alignment2");
+  gtk_widget_show (alignment2);
+  gtk_container_add (GTK_CONTAINER (load_mem), alignment2);
+
+  hbox73 = gtk_hbox_new (FALSE, 2);
+  gtk_widget_set_name (hbox73, "hbox73");
+  gtk_widget_show (hbox73);
+  gtk_container_add (GTK_CONTAINER (alignment2), hbox73);
+
+  image3 = gtk_image_new_from_stock ("gtk-goto-bottom", GTK_ICON_SIZE_SMALL_TOOLBAR);
+  gtk_widget_set_name (image3, "image3");
+  gtk_widget_show (image3);
+  gtk_box_pack_start (GTK_BOX (hbox73), image3, FALSE, FALSE, 0);
+
+  label200 = gtk_label_new_with_mnemonic (_("LOAD"));
+  gtk_widget_set_name (label200, "label200");
+  gtk_widget_show (label200);
+  gtk_box_pack_start (GTK_BOX (hbox73), label200, FALSE, FALSE, 0);
+
   label3 = gtk_label_new (_("<b>Memory channels</b>"));
   gtk_widget_set_name (label3, "label3");
   gtk_widget_show (label3);
@@ -1167,12 +1167,42 @@ create_main_window (void)
   gtk_widget_show (table72);
   gtk_container_add (GTK_CONTAINER (global_iso_frame), table72);
 
+  global_iso_restart = gtk_button_new ();
+  gtk_widget_set_name (global_iso_restart, "global_iso_restart");
+  gtk_widget_show (global_iso_restart);
+  gtk_table_attach (GTK_TABLE (table72), global_iso_restart, 0, 2, 1, 2,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (global_iso_restart), 1);
+  gtk_widget_set_sensitive (global_iso_restart, FALSE);
+  gtk_tooltips_set_tip (tooltips, global_iso_restart, _("Restart video transmission for all cameras"), NULL);
+
+  alignment5 = gtk_alignment_new (0.5, 0.5, 0, 0);
+  gtk_widget_set_name (alignment5, "alignment5");
+  gtk_widget_show (alignment5);
+  gtk_container_add (GTK_CONTAINER (global_iso_restart), alignment5);
+
+  hbox76 = gtk_hbox_new (FALSE, 2);
+  gtk_widget_set_name (hbox76, "hbox76");
+  gtk_widget_show (hbox76);
+  gtk_container_add (GTK_CONTAINER (alignment5), hbox76);
+
+  image6 = gtk_image_new_from_stock ("gtk-refresh", GTK_ICON_SIZE_SMALL_TOOLBAR);
+  gtk_widget_set_name (image6, "image6");
+  gtk_widget_show (image6);
+  gtk_box_pack_start (GTK_BOX (hbox76), image6, FALSE, FALSE, 0);
+
+  label203 = gtk_label_new_with_mnemonic (_("RESTART"));
+  gtk_widget_set_name (label203, "label203");
+  gtk_widget_show (label203);
+  gtk_box_pack_start (GTK_BOX (hbox76), label203, FALSE, FALSE, 0);
+
   global_iso_start = gtk_button_new ();
   gtk_widget_set_name (global_iso_start, "global_iso_start");
   gtk_widget_show (global_iso_start);
   gtk_table_attach (GTK_TABLE (table72), global_iso_start, 0, 1, 0, 1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (global_iso_start), 1);
   gtk_widget_set_sensitive (global_iso_start, FALSE);
   gtk_tooltips_set_tip (tooltips, global_iso_start, _("Start video transmission on all cameras"), NULL);
@@ -1202,7 +1232,7 @@ create_main_window (void)
   gtk_widget_show (global_iso_stop);
   gtk_table_attach (GTK_TABLE (table72), global_iso_stop, 1, 2, 0, 1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (global_iso_stop), 1);
   gtk_widget_set_sensitive (global_iso_stop, FALSE);
   gtk_tooltips_set_tip (tooltips, global_iso_stop, _("Stop video transmission for all cameras"), NULL);
@@ -1226,36 +1256,6 @@ create_main_window (void)
   gtk_widget_set_name (label212, "label212");
   gtk_widget_show (label212);
   gtk_box_pack_start (GTK_BOX (hbox84), label212, FALSE, FALSE, 0);
-
-  global_iso_restart = gtk_button_new ();
-  gtk_widget_set_name (global_iso_restart, "global_iso_restart");
-  gtk_widget_show (global_iso_restart);
-  gtk_table_attach (GTK_TABLE (table72), global_iso_restart, 0, 2, 1, 2,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (GTK_FILL), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (global_iso_restart), 1);
-  gtk_widget_set_sensitive (global_iso_restart, FALSE);
-  gtk_tooltips_set_tip (tooltips, global_iso_restart, _("Restart video transmission for all cameras"), NULL);
-
-  alignment5 = gtk_alignment_new (0.5, 0.5, 0, 0);
-  gtk_widget_set_name (alignment5, "alignment5");
-  gtk_widget_show (alignment5);
-  gtk_container_add (GTK_CONTAINER (global_iso_restart), alignment5);
-
-  hbox76 = gtk_hbox_new (FALSE, 2);
-  gtk_widget_set_name (hbox76, "hbox76");
-  gtk_widget_show (hbox76);
-  gtk_container_add (GTK_CONTAINER (alignment5), hbox76);
-
-  image6 = gtk_image_new_from_stock ("gtk-refresh", GTK_ICON_SIZE_SMALL_TOOLBAR);
-  gtk_widget_set_name (image6, "image6");
-  gtk_widget_show (image6);
-  gtk_box_pack_start (GTK_BOX (hbox76), image6, FALSE, FALSE, 0);
-
-  label203 = gtk_label_new_with_mnemonic (_("RESTART"));
-  gtk_widget_set_name (label203, "label203");
-  gtk_widget_show (label203);
-  gtk_box_pack_start (GTK_BOX (hbox76), label203, FALSE, FALSE, 0);
 
   label4 = gtk_label_new (_("<b>Global Iso Control</b>"));
   gtk_widget_set_name (label4, "label4");
@@ -3862,29 +3862,29 @@ create_main_window (void)
   g_signal_connect ((gpointer) main_window, "delete_event",
                     G_CALLBACK (on_main_window_delete_event),
                     NULL);
+  g_signal_connect ((gpointer) power_reset, "clicked",
+                    G_CALLBACK (on_power_reset_clicked),
+                    NULL);
   g_signal_connect ((gpointer) power_off, "clicked",
                     G_CALLBACK (on_power_off_clicked),
                     NULL);
   g_signal_connect ((gpointer) power_on, "clicked",
                     G_CALLBACK (on_power_on_clicked),
                     NULL);
-  g_signal_connect ((gpointer) power_reset, "clicked",
-                    G_CALLBACK (on_power_reset_clicked),
+  g_signal_connect ((gpointer) save_mem, "clicked",
+                    G_CALLBACK (on_save_mem_clicked),
                     NULL);
   g_signal_connect ((gpointer) load_mem, "clicked",
                     G_CALLBACK (on_load_mem_clicked),
                     NULL);
-  g_signal_connect ((gpointer) save_mem, "clicked",
-                    G_CALLBACK (on_save_mem_clicked),
+  g_signal_connect ((gpointer) global_iso_restart, "clicked",
+                    G_CALLBACK (on_global_iso_restart_clicked),
                     NULL);
   g_signal_connect ((gpointer) global_iso_start, "clicked",
                     G_CALLBACK (on_global_iso_start_clicked),
                     NULL);
   g_signal_connect ((gpointer) global_iso_stop, "clicked",
                     G_CALLBACK (on_global_iso_stop_clicked),
-                    NULL);
-  g_signal_connect ((gpointer) global_iso_restart, "clicked",
-                    G_CALLBACK (on_global_iso_restart_clicked),
                     NULL);
   g_signal_connect ((gpointer) camera_name_text, "changed",
                     G_CALLBACK (on_camera_name_text_changed),
@@ -4041,6 +4041,11 @@ create_main_window (void)
   GLADE_HOOKUP_OBJECT (main_window, hbox60, "hbox60");
   GLADE_HOOKUP_OBJECT (main_window, power_frame, "power_frame");
   GLADE_HOOKUP_OBJECT (main_window, table84, "table84");
+  GLADE_HOOKUP_OBJECT (main_window, power_reset, "power_reset");
+  GLADE_HOOKUP_OBJECT (main_window, alignment12, "alignment12");
+  GLADE_HOOKUP_OBJECT (main_window, hbox83, "hbox83");
+  GLADE_HOOKUP_OBJECT (main_window, image13, "image13");
+  GLADE_HOOKUP_OBJECT (main_window, label210, "label210");
   GLADE_HOOKUP_OBJECT (main_window, power_off, "power_off");
   GLADE_HOOKUP_OBJECT (main_window, alignment11, "alignment11");
   GLADE_HOOKUP_OBJECT (main_window, hbox82, "hbox82");
@@ -4051,29 +4056,29 @@ create_main_window (void)
   GLADE_HOOKUP_OBJECT (main_window, hbox81, "hbox81");
   GLADE_HOOKUP_OBJECT (main_window, image11, "image11");
   GLADE_HOOKUP_OBJECT (main_window, label208, "label208");
-  GLADE_HOOKUP_OBJECT (main_window, power_reset, "power_reset");
-  GLADE_HOOKUP_OBJECT (main_window, alignment12, "alignment12");
-  GLADE_HOOKUP_OBJECT (main_window, hbox83, "hbox83");
-  GLADE_HOOKUP_OBJECT (main_window, image13, "image13");
-  GLADE_HOOKUP_OBJECT (main_window, label210, "label210");
   GLADE_HOOKUP_OBJECT (main_window, label2, "label2");
   GLADE_HOOKUP_OBJECT (main_window, memory_frame, "memory_frame");
   GLADE_HOOKUP_OBJECT (main_window, table16, "table16");
   GLADE_HOOKUP_OBJECT (main_window, memory_channel, "memory_channel");
   GLADE_HOOKUP_OBJECT (main_window, convertwidget3, "convertwidget3");
-  GLADE_HOOKUP_OBJECT (main_window, load_mem, "load_mem");
-  GLADE_HOOKUP_OBJECT (main_window, alignment2, "alignment2");
-  GLADE_HOOKUP_OBJECT (main_window, hbox73, "hbox73");
-  GLADE_HOOKUP_OBJECT (main_window, image3, "image3");
-  GLADE_HOOKUP_OBJECT (main_window, label200, "label200");
   GLADE_HOOKUP_OBJECT (main_window, save_mem, "save_mem");
   GLADE_HOOKUP_OBJECT (main_window, alignment1, "alignment1");
   GLADE_HOOKUP_OBJECT (main_window, hbox72, "hbox72");
   GLADE_HOOKUP_OBJECT (main_window, image2, "image2");
   GLADE_HOOKUP_OBJECT (main_window, label199, "label199");
+  GLADE_HOOKUP_OBJECT (main_window, load_mem, "load_mem");
+  GLADE_HOOKUP_OBJECT (main_window, alignment2, "alignment2");
+  GLADE_HOOKUP_OBJECT (main_window, hbox73, "hbox73");
+  GLADE_HOOKUP_OBJECT (main_window, image3, "image3");
+  GLADE_HOOKUP_OBJECT (main_window, label200, "label200");
   GLADE_HOOKUP_OBJECT (main_window, label3, "label3");
   GLADE_HOOKUP_OBJECT (main_window, global_iso_frame, "global_iso_frame");
   GLADE_HOOKUP_OBJECT (main_window, table72, "table72");
+  GLADE_HOOKUP_OBJECT (main_window, global_iso_restart, "global_iso_restart");
+  GLADE_HOOKUP_OBJECT (main_window, alignment5, "alignment5");
+  GLADE_HOOKUP_OBJECT (main_window, hbox76, "hbox76");
+  GLADE_HOOKUP_OBJECT (main_window, image6, "image6");
+  GLADE_HOOKUP_OBJECT (main_window, label203, "label203");
   GLADE_HOOKUP_OBJECT (main_window, global_iso_start, "global_iso_start");
   GLADE_HOOKUP_OBJECT (main_window, alignment4, "alignment4");
   GLADE_HOOKUP_OBJECT (main_window, hbox75, "hbox75");
@@ -4084,11 +4089,6 @@ create_main_window (void)
   GLADE_HOOKUP_OBJECT (main_window, hbox84, "hbox84");
   GLADE_HOOKUP_OBJECT (main_window, image14, "image14");
   GLADE_HOOKUP_OBJECT (main_window, label212, "label212");
-  GLADE_HOOKUP_OBJECT (main_window, global_iso_restart, "global_iso_restart");
-  GLADE_HOOKUP_OBJECT (main_window, alignment5, "alignment5");
-  GLADE_HOOKUP_OBJECT (main_window, hbox76, "hbox76");
-  GLADE_HOOKUP_OBJECT (main_window, image6, "image6");
-  GLADE_HOOKUP_OBJECT (main_window, label203, "label203");
   GLADE_HOOKUP_OBJECT (main_window, label4, "label4");
   GLADE_HOOKUP_OBJECT (main_window, frame2, "frame2");
   GLADE_HOOKUP_OBJECT (main_window, table48, "table48");
@@ -4513,8 +4513,8 @@ create_about_window (void)
 
   about_window_logo_pixbuf = create_pixbuf ("coriander/coriander-logo.png");
   about_window = gnome_about_new ("Coriander", VERSION,
-                        _("Copyright 2000-2005 Damien Douxchamps"),
-                        _("Coriander home page is http://coriander.sourceforge.net\n \nCoriander received equipment donations/leases from the following companies:\n- Hamamatsu Corporation     http://www.hpk.co.jp\n- The Imaging Source     http://www.1394imaging.com\n- Point Grey Research     http://www.ptgrey.com\n- Basler GmbH     http://www.balserweb.com\n \nMany thanks to our sponsors!"),
+                        _("Copyright 2000-2006 Damien Douxchamps"),
+                        _("Coriander home page is\nhttp://damien.douxchamps.net/ieee1394/coriander/\n \nCoriander received equipment donations/leases from the following companies:\n- Hamamatsu Corporation     http://www.hpk.co.jp\n- The Imaging Source     http://www.1394imaging.com\n- Point Grey Research     http://www.ptgrey.com\n- Basler GmbH     http://www.balserweb.com\n \nMany thanks to our sponsors!"),
                         authors,
                         documenters,
                         translators,

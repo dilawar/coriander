@@ -2,11 +2,13 @@
 
   		    C   O   R   I   A   N   D   E   R
 
-			     version 1.0.1
+			     version 2.0.0-rc1
 
 	      The Gnome IEEE-1394 Digital Camera Controller
 
      (C) 2000-2005 by Damien Douxchamps <ddouxchamps@users.sf.net>
+
+	    http://damien.douxchamps.net/ieee1394/coriander/
 
 Mailing lists: - coriander-user@lists.sourceforge.net
 		 for user support (please RTFM)
