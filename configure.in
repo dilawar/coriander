@@ -317,8 +317,8 @@ AC_DEFUN([AC_CHECK_LFS],[
 AC_DEFUN([AC_CHECK_FFMPEG],[
 	AC_SUBST(FFMPEG_CFLAGS)
 	AC_SUBST(FFMPEG_LIBS)
-	AC_CHECK_PROG(have_ffmpeg, pkg-config --libs libavformat libavcodec, "found", "no")
-	if test x$have_ffmpeg = xfound; then 
+	AC_CHECK_PROG(have_pkg_config, pkg-config --libs libavformat libavcodec, "found", "no")
+	if test x$have_pkg_config = xfound; then 
 	     AC_MSG_CHECKING(ffmpeg version)    
 	     AC_TRY_COMPILE([
 	     #include <ffmpeg/avformat.h>
@@ -331,25 +331,26 @@ AC_DEFUN([AC_CHECK_FFMPEG],[
   	       c = st->codec;
                return 0;
 	     }
-	     ],ffmpeg=ok,ffmpeg=outdated);
+	     ],ffmpeg=ok,ffmpeg=no);
 	     AC_MSG_RESULT($ffmpeg)
  	     if test x$ffmpeg = xok; then
 	          FFMPEG_LIBS=`pkg-config --libs libavformat libavcodec`
 	          FFMPEG_CFLAGS=`pkg-config --cflags libavformat libavcodec`
 	          AC_DEFINE(HAVE_FFMPEG,1,[defined if ffmpeg is available])
 	     else
-                  AC_ERROR([ffmpeg is too old. 
-**************************************************************************
-**   Please install ffmpeg version 0.4.9 or later                       **
-**************************************************************************])
-             fi
-	else
-	  AC_MSG_RESULT([ffmpeg required for MPEG video saving.
+	          AC_MSG_RESULT([ffmpeg required for MPEG video saving.
 **************************************************************************
 **   ffmpeg can be obtained using your favorite package mamagement      **
 **   system (such as apt-get). Be sure to get ffmpeg and the two        **
 **   development packages libavcodec-dev and libavformat-dev (on        **
-**   Debian).                                                           **
+**   Debian). You need version 0.4.9 or later.                          **
+**   Saving JPEG images and MPEG movies is DISABLED.                    **
+**************************************************************************])
+             fi
+	else
+           AC_MSG_RESULT([pkg_config not found. 
+**************************************************************************
+**   This prevents the detection of FFMPEG.                             **
 **   Saving JPEG images and MPEG movies is DISABLED.                    **
 **************************************************************************])
 	fi
