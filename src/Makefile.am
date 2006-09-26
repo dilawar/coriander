@@ -29,11 +29,9 @@ coriander_SOURCES = \
 	build_menus.c build_menus.h \
 	update_ranges.c update_ranges.h \
 	build_ranges.c build_ranges.h \
-	topology.c topology.h \
 	preferences.c preferences.h \
 	video_encode.c video_encode.h \
-	subtitles.c subtitles.h \
-	raw1394support.h 
+	subtitles.c subtitles.h 
 
 coriander_LDADD = -L/usr/X11R6/lib/ @PACKAGE_LIBS@ $(INTLLIBS) $(FTPLIB_LIBS) $(SDLLIB_LIBS) $(LIBDC_LIBS) $(LIBRAW_LIBS) $(XV_LIBS) $(COR_LFS_LDFLAGS) -lgthread-2.0 $(FFMPEG_LIBS)
 

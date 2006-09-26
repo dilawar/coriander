@@ -431,43 +431,6 @@ void GetContextStatus()
   ctxt.save_filename_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(main_window,"save_filename_status"), ctxt.save_filename_ctxt, "");
 }
 
-void GrabSelfIds(camera_t *cams)
-{
-  // TODO TODO TODO **************************************************************
-  RAW1394topologyMap *topomap;
-  SelfIdPacket_t packet;
-  unsigned int* pselfid_int;
-  int i, port;
-  camera_t* camera_ptr;
-  raw1394handle_t handle;
-  
-  handle=raw1394_new_handle();
-  
-  for (port=0;port<port_num;port++) {
-    raw1394_set_port(handle,port);
-    // get and decode SelfIds.
-    topomap=raw1394GetTopologyMap(handle);
-      
-    for (i=0;i<topomap->selfIdCount;i++) {
-      pselfid_int = (unsigned int *) &topomap->selfIdPacket[i];
-      decode_selfid(&packet,pselfid_int);
-      // find the camera related to this packet:
-	
-      camera_ptr=cameras;
-      while (camera_ptr!=NULL) {
-	if ((camera_ptr->camera_info->node==packet.packetZero.phyID) &&
-	    (camera_ptr->camera_info->port==port)) { // added a check for the port too!!
-	  camera_ptr->selfid=packet;
-	}
-	camera_ptr=camera_ptr->next;
-      }
-    }
-  }
-  
-  raw1394_destroy_handle(handle);
-  
-}
-
 /*
 void
 SetIsoChannels(void)
@@ -631,7 +594,7 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation)
 
   gtk_widget_set_sensitive(main_window,FALSE);
 
-  usleep(DELAY*40); // sleep some time (1 second) to allow the cam to warm-up/boot
+  usleep(1e6); // sleep some time (1 second) to allow the cam to warm-up/boot
 
   raw1394_update_generation(handle, generation);
   // Now we have to deal with this bus reset...
@@ -777,8 +740,6 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation)
       gtk_widget_set_sensitive(main_window,TRUE);
     }
   }
-
-  GrabSelfIds(cameras);
 
   // TODO: ISO should be restarted for the cameras that were streaming. 
   // set ISO channels

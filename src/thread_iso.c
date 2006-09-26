@@ -56,7 +56,7 @@ gint IsoStartThread(camera_t* cam)
     if (iso_state!=DC1394_ON) {
     
     // ONLY IF LEGACY. OTHERWISE S800.
-    switch (cam->selfid.packetZero.phySpeed) {
+    switch (cam->camera_info->phy_speed) {
     case 0: maxspeed=DC1394_ISO_SPEED_100;break;
     case 1: maxspeed=DC1394_ISO_SPEED_200;break;
     case 2: maxspeed=DC1394_ISO_SPEED_400;break;
@@ -66,7 +66,7 @@ gint IsoStartThread(camera_t* cam)
     case 5: maxspeed=DC1394_ISO_SPEED_3200;break;
 #endif
     default:
-      fprintf(stderr, "%s: unhandled phy speed %d\n", __FUNCTION__, cam->selfid.packetZero.phySpeed);
+      fprintf(stderr, "%s: unhandled phy speed %d\n", __FUNCTION__, cam->camera_info->phy_speed);
       maxspeed=DC1394_ISO_SPEED_100;
       break;
     }

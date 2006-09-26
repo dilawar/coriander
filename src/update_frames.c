@@ -257,12 +257,12 @@ UpdateCameraStatusFrame(void)
   ctxt.guid_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"camera_guid_status"), ctxt.guid_ctxt, temp);
 
   // camera maximal PHY speed:
-  sprintf(temp," %s",phy_speed_list[camera->selfid.packetZero.phySpeed]);
+  sprintf(temp," %s",phy_speed_list[camera->camera_info->phy_speed-DC1394_ISO_SPEED_MIN]);
   gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"camera_maxiso_status"), ctxt.max_iso_ctxt, ctxt.max_iso_id);
   ctxt.max_iso_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"camera_maxiso_status"), ctxt.max_iso_ctxt, temp);
 
   // camera maximal PHY delay:
-  sprintf(temp," %s",phy_delay_list[camera->selfid.packetZero.phyDelay]);
+  sprintf(temp," %s",phy_delay_list[camera->camera_info->phy_delay-DC1394_PHY_DELAY_MIN]);
   gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"camera_delay_status"), ctxt.delay_ctxt, ctxt.delay_id);
   ctxt.delay_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"camera_delay_status"), ctxt.delay_ctxt, temp);
 
@@ -287,7 +287,7 @@ UpdateCameraStatusFrame(void)
   ctxt.dc_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"camera_dc_status"), ctxt.dc_ctxt, temp);
 
   // power class:
-  sprintf(temp," %s",power_class_list[camera->selfid.packetZero.powerClass]);
+  sprintf(temp," %s",power_class_list[camera->camera_info->power_class-DC1394_POWER_CLASS_MIN]);
   gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"camera_pwclass_status"), ctxt.pwclass_ctxt, ctxt.pwclass_id);
   ctxt.pwclass_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"camera_pwclass_status"), ctxt.pwclass_ctxt,temp);
 

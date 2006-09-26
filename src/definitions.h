@@ -166,7 +166,6 @@ typedef struct _CameraInfo_T {
   dc1394featureset_t feature_set;
   struct _Chain_T* image_pipe;
   Format7Info_t format7_info;
-  SelfIdPacket_t selfid;
 
   // old uiinfo
   pthread_mutex_t uimutex;

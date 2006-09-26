@@ -90,8 +90,6 @@ main (int argc, char *argv[])
     exit(1);
   }
 
-  GrabSelfIds(cameras);
-
   camera_t *cam_tmp=cameras;
   while (cam_tmp!=NULL) {
     dc1394_cleanup_iso_channels_and_bandwidth(cam_tmp->camera_info);

@@ -55,7 +55,6 @@
 #include <errno.h>
 #include <netinet/in.h>
 
-#include "raw1394support.h"
 #include "definitions.h"
 #include "videodev.h"
 
@@ -98,7 +97,6 @@
 #include "thread_ftp.h"
 #include "thread_v4l.h"
 #include "tools.h"
-#include "topology.h"
 #include "update_frames.h"
 #include "update_ranges.h"
 #include "update_windows.h"
