@@ -1068,14 +1068,14 @@ IsOptionAvailableWithFormat(camera_t *cam,int* bayer, int* stereo, int* bpp16)
 	     (cam->camera_info->video_mode==DC1394_VIDEO_MODE_1600x1200_YUV422));
   }
   else {
-    cond16=((cam->format7_info.modeset.mode[cam->camera_info->video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].color_coding==DC1394_COLOR_CODING_MONO16)||
-	    (cam->format7_info.modeset.mode[cam->camera_info->video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].color_coding==DC1394_COLOR_CODING_RAW16));
-    cond8=((cam->format7_info.modeset.mode[cam->camera_info->video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].color_coding==DC1394_COLOR_CODING_MONO8)||
-	   (cam->format7_info.modeset.mode[cam->camera_info->video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].color_coding==DC1394_COLOR_CODING_RAW8));
-    cond422=(cam->format7_info.modeset.mode[cam->camera_info->video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].color_coding==DC1394_COLOR_CODING_YUV422);
+    cond16 =((cam->format7_info.modeset.mode[cam->camera_info->video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].color_coding==DC1394_COLOR_CODING_MONO16)||
+	     (cam->format7_info.modeset.mode[cam->camera_info->video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].color_coding==DC1394_COLOR_CODING_RAW16));
+    cond8  =((cam->format7_info.modeset.mode[cam->camera_info->video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].color_coding==DC1394_COLOR_CODING_MONO8)||
+	     (cam->format7_info.modeset.mode[cam->camera_info->video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].color_coding==DC1394_COLOR_CODING_RAW8));
+    cond422= (cam->format7_info.modeset.mode[cam->camera_info->video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].color_coding==DC1394_COLOR_CODING_YUV422);
   }
   
-  *bayer = (cond8||cond16||(cond422 && (cam->stereo!=NO_STEREO_DECODING)));
+  *bayer = (cond8||cond16||(cond422 && (cam->stereo!=-1)));
   *stereo = (cond16||cond422);
   *bpp16 = cond16;
 }

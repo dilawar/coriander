@@ -286,17 +286,17 @@ FreeChain(chain_t* chain)
       chain->data=NULL;
     }
     if (chain->current_buffer!=NULL) {
-      if (chain->current_buffer->image!=NULL) {
-	free(chain->current_buffer->image);
-	chain->current_buffer->image=NULL;
+      if (chain->current_buffer->frame.allocated_image_bytes!=0) {
+	free(chain->current_buffer->frame.image);
+	chain->current_buffer->frame.image=NULL;
       }
       free(chain->current_buffer);
       chain->current_buffer=NULL;
     }
     if (chain->next_buffer!=NULL) {
-      if (chain->next_buffer->image!=NULL) {
-	free(chain->next_buffer->image);
-	chain->next_buffer->image=NULL;
+      if (chain->next_buffer->frame.allocated_image_bytes!=0) {
+	free(chain->next_buffer->frame.image);
+	chain->next_buffer->frame.image=NULL;
       }
       free(chain->next_buffer);
       chain->next_buffer=NULL;
@@ -309,15 +309,15 @@ FreeChain(chain_t* chain)
 void
 InitBuffer(buffer_t *buffer)
 {
-  buffer->width=-1;
-  buffer->height=-1;
-  buffer->bytes_per_frame=-1;
+  buffer->frame.size[0]=-1;
+  buffer->frame.size[1]=-1;
+  buffer->frame.total_bytes=-1;
   buffer->bayer=-1;
-  buffer->bpp=-1;
-  buffer->bayer_pattern=-1; //COLOR_FILTER_FORMAT7_BGGR
-  buffer->stereo_decoding=-1;
-  buffer->color_mode=-1;
-  buffer->image=NULL;
-  buffer->buffer_image_bytes=-1;
-  buffer->buffer_size=0;
+  buffer->frame.bit_depth=-1;
+  buffer->frame.color_filter=-1; //COLOR_FILTER_FORMAT7_BGGR
+  buffer->stereo=-1;
+  buffer->frame.color_coding=-1;
+  buffer->frame.image=NULL;
+  buffer->frame.image_bytes=-1;
+  buffer->frame.allocated_image_bytes=0;
 }

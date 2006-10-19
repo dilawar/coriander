@@ -112,23 +112,6 @@ FtpStartThread(camera_t* cam)
 
 
 void*
-FtpCleanupThread(void* arg) 
-{
-  chain_t* ftp_service;
-  ftpthread_info_t *info;
-
-  ftp_service=(chain_t*)arg;
-  info=(ftpthread_info_t*)ftp_service->data;
-  /* Specific cleanups: */
-
-  /* Mendatory cleanups: */
-  pthread_mutex_unlock(&ftp_service->mutex_data);
-  FtpStopThread(ftp_service->camera); // we do this in case of auto-kill from the thread.
-
-  return(NULL);
-}
-
-void*
 FtpThread(void* arg)
 {
   static gchar filename_out[STRING_SIZE];
@@ -166,7 +149,7 @@ FtpThread(void* arg)
       pthread_mutex_lock(&ftp_service->mutex_data);
       if(GetBufferFromPrevious(ftp_service)) { // have buffers been rolled?
 	FtpThreadCheckParams(ftp_service);
-	if (ftp_service->current_buffer->width!=-1) {
+	if (ftp_service->current_buffer->frame.size[0]!=-1) {
 	  if (skip_counter>=(cam->prefs.ftp_period-1)) {
 	    skip_counter=0;
 	    convert_to_rgb(ftp_service->current_buffer, info->buffer);
@@ -283,50 +266,23 @@ FtpThreadCheckParams(chain_t *ftp_service)
 {
 
   ftpthread_info_t *info;
-  int buffer_size_change=0;
   info=(ftpthread_info_t*)ftp_service->data;
 
-  // copy harmless parameters anyway:
-  ftp_service->local_param_copy.bpp=ftp_service->current_buffer->bpp;
-  ftp_service->local_param_copy.bayer_pattern=ftp_service->current_buffer->bayer_pattern;
-
   // if some parameters changed, we need to re-allocate the local buffers and restart the ftp
-  if ((ftp_service->current_buffer->width!=ftp_service->local_param_copy.width)||
-      (ftp_service->current_buffer->height!=ftp_service->local_param_copy.height)||
-      (ftp_service->current_buffer->bytes_per_frame!=ftp_service->local_param_copy.bytes_per_frame)||
-      (ftp_service->current_buffer->color_mode!=ftp_service->local_param_copy.color_mode)||
-      // check bayer and stereo decoding
-      (ftp_service->current_buffer->stereo_decoding!=ftp_service->local_param_copy.stereo_decoding)||
-      (ftp_service->current_buffer->bayer!=ftp_service->local_param_copy.bayer)
-      ) {
-    if (ftp_service->current_buffer->width*ftp_service->current_buffer->height!=
-	ftp_service->local_param_copy.width*ftp_service->local_param_copy.height) {
-      buffer_size_change=1;
-    }
-    else {
-      buffer_size_change=0;
-    }
+  if ((ftp_service->current_buffer->frame.size[0]!=ftp_service->local_param_copy.frame.size[0]  )||
+      (ftp_service->current_buffer->frame.size[1]!=ftp_service->local_param_copy.frame.size[1])) {
     
-    // copy all new parameters:
-    ftp_service->local_param_copy.width=ftp_service->current_buffer->width;
-    ftp_service->local_param_copy.height=ftp_service->current_buffer->height;
-    ftp_service->local_param_copy.bytes_per_frame=ftp_service->current_buffer->bytes_per_frame;
-    ftp_service->local_param_copy.stereo_decoding=ftp_service->current_buffer->stereo_decoding;
-    ftp_service->local_param_copy.bayer=ftp_service->current_buffer->bayer;
-    ftp_service->local_param_copy.color_mode=ftp_service->current_buffer->color_mode;
-    ftp_service->local_param_copy.buffer_image_bytes=ftp_service->current_buffer->buffer_image_bytes;
-    
-    // DO SOMETHING
-    if (buffer_size_change!=0) {
-      
-      if (info->buffer!=NULL) {
-	free(info->buffer);
-	info->buffer=NULL;
-      }
-      info->imlib_buffer_size=ftp_service->current_buffer->width*ftp_service->current_buffer->height*3;
-      info->buffer=(unsigned char*)malloc(info->imlib_buffer_size*sizeof(unsigned char));
+    if (info->buffer!=NULL) {
+      free(info->buffer);
+      info->buffer=NULL;
     }
+    info->imlib_buffer_size=ftp_service->current_buffer->frame.size[0]*ftp_service->current_buffer->frame.size[1]*3;
+    info->buffer=(unsigned char*)malloc(info->imlib_buffer_size*sizeof(unsigned char));
   }
+  // copy all new parameters:
+  memcpy(&ftp_service->local_param_copy, ftp_service->current_buffer,sizeof(buffer_t));
+  ftp_service->local_param_copy.frame.allocated_image_bytes=0;
+
 }
 
 #ifdef HAVE_FTPLIB

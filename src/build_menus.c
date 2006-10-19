@@ -495,7 +495,7 @@ BuildBayerMenu(void)
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
   g_signal_connect ((gpointer) glade_menuitem, "activate",
 		      G_CALLBACK (on_bayer_menu_activate),
-		      (int*)NO_BAYER_DECODING); 
+		      (int*)-1); 
   // add nearest_neighbor option
   glade_menuitem = gtk_menu_item_new_with_label (_("Nearest"));
   gtk_widget_show (glade_menuitem);
@@ -647,21 +647,21 @@ BuildStereoMenu(void)
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
   g_signal_connect ((gpointer) glade_menuitem, "activate",
 		      G_CALLBACK (on_stereo_menu_activate),
-		      (int*)NO_STEREO_DECODING); 
+		      (int*)-1); 
   // add interlaced option
   glade_menuitem = gtk_menu_item_new_with_label (_("St. Interlaced"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
   g_signal_connect ((gpointer) glade_menuitem, "activate",
 		      G_CALLBACK (on_stereo_menu_activate),
-		      (int*)STEREO_DECODING_INTERLACED); 
+		      (int*)DC1394_STEREO_METHOD_INTERLACED); 
   // add field option
   glade_menuitem = gtk_menu_item_new_with_label (_("St. Field"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
   g_signal_connect ((gpointer) glade_menuitem, "activate",
 		      G_CALLBACK (on_stereo_menu_activate),
-		      (int*)STEREO_DECODING_FIELD); 
+		      (int*)DC1394_STEREO_METHOD_FIELD); 
   
   gtk_option_menu_set_menu (GTK_OPTION_MENU (new_option_menu), new_menu);
 
@@ -669,7 +669,7 @@ BuildStereoMenu(void)
   pthread_mutex_lock(&camera->uimutex);
   gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(main_window, "stereo_menu")),camera->stereo);
   pthread_mutex_unlock(&camera->uimutex);
-      
+
 }
 
 void

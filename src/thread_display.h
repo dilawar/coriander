@@ -88,9 +88,6 @@ gint
 DisplayStartThread(camera_t* cam);
 
 void*
-DisplayCleanupThread(void* arg);
-
-void*
 DisplayThread(void* arg);
 
 gint

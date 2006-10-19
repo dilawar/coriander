@@ -45,13 +45,6 @@ enum {
   FORMAT7_POS_Y
 };
 
-typedef enum
-{
-  NO_STEREO_DECODING=0,
-  STEREO_DECODING_INTERLACED,
-  STEREO_DECODING_FIELD
-} stereo_decoding_t;
-
 enum
 {
   REGISTER_OFFSET_CRB=0,
@@ -186,23 +179,12 @@ typedef struct _CameraInfo_T {
 
 typedef struct _Buffer_T
 {
-  unsigned char *image;
-  int width;
-  int height;
-  unsigned long long int bytes_per_frame; // this is the bytes per frame, including padding.
-  int bpp; // this bpp is used for 16bit camera that only have e.g. 12 bits.
-  unsigned long long int image_bytes;
+  dc1394video_frame_t frame;
   unsigned int bayer;
-  int bayer_pattern;
-  stereo_decoding_t stereo_decoding;
+  unsigned int stereo;
+  dc1394stereo_method_t stereo_method;
+  dc1394bayer_method_t  bayer_method;
 
-  int color_mode;
-  unsigned long long int buffer_image_bytes; // this is the true size of the image, without padding.
-
-  unsigned long long int buffer_size; // this is the allocated memory space size of the image field
-  // information about the time the frame was captured by the ISO thread.
-  struct tm captime;
-  int captime_usec;
   char captime_string[19];
 
   //int used; // set to 1 if the buffer has already been used by a service. Only the last thread can do

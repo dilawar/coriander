@@ -149,7 +149,7 @@ OnKeyPressed(chain_t *display_service, int key, int mod)
   case SDLK_n:
     // set display to normal size
     //fprintf(stderr,"Gaa! resize called!\n");
-    SDLResizeDisplay(display_service, display_service->current_buffer->width, display_service->current_buffer->height);
+    SDLResizeDisplay(display_service, display_service->current_buffer->frame.size[0], display_service->current_buffer->frame.size[1]);
     break;
   case SDLK_f:
     // toggle fullscreen mode
@@ -223,8 +223,8 @@ OnMouseDown(chain_t *display_service, int button, int x, int y)
     watchthread_info.mouse_down=1;
     // there is some adaptation because the display size can be different
     // from the real image size. (i.e. the image can be resized)
-    watchthread_info.first[0]= ((x*display_service->current_buffer->width /info->sdlvideorect.w));
-    watchthread_info.first[1]= ((y*display_service->current_buffer->height/info->sdlvideorect.h));
+    watchthread_info.first[0]= ((x*display_service->current_buffer->frame.size[0] /info->sdlvideorect.w));
+    watchthread_info.first[1]= ((y*display_service->current_buffer->frame.size[1]/info->sdlvideorect.h));
 
     // zero size at first click, -> copy click coordinate to second corner
     watchthread_info.second[0]=watchthread_info.first[0];
@@ -239,18 +239,18 @@ OnMouseDown(chain_t *display_service, int button, int x, int y)
     pthread_mutex_unlock(&watchthread_info.mutex_area);
     break;
   case SDL_BUTTON_MIDDLE:
-    x=x*display_service->current_buffer->width/info->sdlvideorect.w; //rescaling
-    y=y*display_service->current_buffer->height/info->sdlvideorect.h;
+    x=x*display_service->current_buffer->frame.size[0]/info->sdlvideorect.w; //rescaling
+    y=y*display_service->current_buffer->frame.size[1]/info->sdlvideorect.h;
     switch(preferences.overlay_byte_order) {
     case DC1394_BYTE_ORDER_YUYV:
-      cursor_info.col_y=info->sdloverlay->pixels[0][(y*display_service->current_buffer->width+x)*2];
-      cursor_info.col_u=info->sdloverlay->pixels[0][(((y*display_service->current_buffer->width+x)>>1)<<2)+1]-127;
-      cursor_info.col_v=info->sdloverlay->pixels[0][(((y*display_service->current_buffer->width+x)>>1)<<2)+3]-127;
+      cursor_info.col_y=info->sdloverlay->pixels[0][(y*display_service->current_buffer->frame.size[0]+x)*2];
+      cursor_info.col_u=info->sdloverlay->pixels[0][(((y*display_service->current_buffer->frame.size[0]+x)>>1)<<2)+1]-127;
+      cursor_info.col_v=info->sdloverlay->pixels[0][(((y*display_service->current_buffer->frame.size[0]+x)>>1)<<2)+3]-127;
       break;
     case DC1394_BYTE_ORDER_UYVY:
-      cursor_info.col_u=info->sdloverlay->pixels[0][(y*display_service->current_buffer->width+x)*2]-127;
-      cursor_info.col_y=info->sdloverlay->pixels[0][(((y*display_service->current_buffer->width+x)>>1)<<2)+1];
-      cursor_info.col_v=info->sdloverlay->pixels[0][(((y*display_service->current_buffer->width+x)>>1)<<2)+2]-127;
+      cursor_info.col_u=info->sdloverlay->pixels[0][(y*display_service->current_buffer->frame.size[0]+x)*2]-127;
+      cursor_info.col_y=info->sdloverlay->pixels[0][(((y*display_service->current_buffer->frame.size[0]+x)>>1)<<2)+1];
+      cursor_info.col_v=info->sdloverlay->pixels[0][(((y*display_service->current_buffer->frame.size[0]+x)>>1)<<2)+2]-127;
       break;
     default:
       fprintf(stderr,"Invalid overlay byte order\n");
@@ -263,8 +263,8 @@ OnMouseDown(chain_t *display_service, int button, int x, int y)
     cursor_info.update_req=1;
     break;
   case SDL_BUTTON_RIGHT:
-    //whitebal_data->x=x*display_service->current_buffer->width/info->sdlvideorect.w; //rescaling
-    //whitebal_data->y=y*display_service->current_buffer->height/info->sdlvideorect.h;
+    //whitebal_data->x=x*display_service->current_buffer->frame.size[0]/info->sdlvideorect.w; //rescaling
+    //whitebal_data->y=y*display_service->current_buffer->frame.size[1]/info->sdlvideorect.h;
     //whitebal_data->service=display_service;
     //pthread_create(&whitebal_data->thread, NULL, AutoWhiteBalance, (void*)&whitebal_data);
     break;
@@ -287,8 +287,8 @@ OnMouseUp(chain_t *display_service, int button, int x, int y)
     watchthread_info.mouse_down=0;
     // there is some adaptation because the display size can be different
     // from the real image size. (i.e. the image can be resized)
-    //info->lower_right[0]=x*display_service->current_buffer->width/info->sdlvideorect.w;
-    //info->lower_right[1]=y*display_service->current_buffer->height/info->sdlvideorect.h;
+    //info->lower_right[0]=x*display_service->current_buffer->frame.size[0]/info->sdlvideorect.w;
+    //info->lower_right[1]=y*display_service->current_buffer->frame.size[1]/info->sdlvideorect.h;
     pthread_mutex_unlock(&watchthread_info.mutex_area);
     break;
   case SDL_BUTTON_MIDDLE:
@@ -311,8 +311,8 @@ OnMouseMotion(chain_t *display_service, int x, int y)
   pthread_mutex_lock(&watchthread_info.mutex_area);
 
   if (watchthread_info.mouse_down==1) {
-    watchthread_info.second[0]=x*display_service->current_buffer->width/info->sdlvideorect.w;
-    watchthread_info.second[1]=y*display_service->current_buffer->height/info->sdlvideorect.h;
+    watchthread_info.second[0]=x*display_service->current_buffer->frame.size[0]/info->sdlvideorect.w;
+    watchthread_info.second[1]=y*display_service->current_buffer->frame.size[1]/info->sdlvideorect.h;
 
     // we need to flip the corners if the pointer moves backwards
     if (watchthread_info.second[0]<watchthread_info.first[0])
@@ -360,11 +360,11 @@ SDLResizeDisplay(chain_t *display_service, int width, int height)
     if (abs(width-info->sdlvideorect.w) >= (abs(height-info->sdlvideorect.h))) {
       // we changed the width, set height accordingly
       info->sdlvideorect.w = width;
-      info->sdlvideorect.h = (width * display_service->current_buffer->height) / display_service->current_buffer->width;
+      info->sdlvideorect.h = (width * display_service->current_buffer->frame.size[1]) / display_service->current_buffer->frame.size[0];
     }
     else {
       // we changed the height, set width accordingly
-      info->sdlvideorect.w = (height * display_service->current_buffer->width) / display_service->current_buffer->height;
+      info->sdlvideorect.w = (height * display_service->current_buffer->frame.size[0]) / display_service->current_buffer->frame.size[1];
       info->sdlvideorect.h = height;
     }
   }
@@ -413,18 +413,18 @@ SDLResizeDisplay(chain_t *display_service, int width, int height)
     //  Error(SDL_GetError());
     //}
     
-    //fprintf(stderr,"create overlay with size [%d %d]...\n",display_service->current_buffer->width,display_service->current_buffer->height);
+    //fprintf(stderr,"create overlay with size [%d %d]...\n",display_service->current_buffer->frame.size[0],display_service->current_buffer->frame.size[1]);
     
     // Create YUV Overlay  
     switch(preferences.overlay_byte_order) {
     case DC1394_BYTE_ORDER_YUYV:
-      info->sdloverlay = SDL_CreateYUVOverlay(display_service->current_buffer->width,
-					      display_service->current_buffer->height,
+      info->sdloverlay = SDL_CreateYUVOverlay(display_service->current_buffer->frame.size[0],
+					      display_service->current_buffer->frame.size[1],
 					      SDL_YUY2_OVERLAY,info->sdlvideo);
       break;
     case DC1394_BYTE_ORDER_UYVY:
-      info->sdloverlay = SDL_CreateYUVOverlay(display_service->current_buffer->width,
-					      display_service->current_buffer->height,
+      info->sdloverlay = SDL_CreateYUVOverlay(display_service->current_buffer->frame.size[0],
+					      display_service->current_buffer->frame.size[1],
 					      SDL_UYVY_OVERLAY,info->sdlvideo);
       break;
     default:

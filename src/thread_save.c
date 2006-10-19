@@ -93,23 +93,6 @@ SaveStartThread(camera_t* cam)
   return (1);
 }
 
-void*
-SaveCleanupThread(void* arg) 
-{
-  chain_t* save_service;
-  savethread_info_t *info;
-
-  save_service=(chain_t*)arg;
-  info=(savethread_info_t*)save_service->data;
-  /* Specific cleanups: */
-
-  SaveStopThread(save_service->camera);
-
-  /* Mandatory cleanups: */
-  //pthread_mutex_unlock(&save_service->mutex_data);
-
-  return(NULL);
-}
 
 void
 ProtectFilename(char *filename)
@@ -398,10 +381,10 @@ InitVideoFile(chain_t *save_service, FILE *fd, char *filename_out)
   if ((cam->prefs.save_format==SAVE_FORMAT_PVN) && (cam->prefs.use_ram_buffer==FALSE)) {//-----------------------------------
     //fprintf(stderr,"pvn header write\n");
     dc1394_framerate_as_float(camera->camera_info->framerate, &fps);
-    writePVNHeader(fd, save_service->current_buffer->color_mode,
-		   save_service->current_buffer->height,
-		   save_service->current_buffer->width,
-		   0, getConvertedBytesPerChannel(save_service->current_buffer->color_mode)*8,
+    writePVNHeader(fd, save_service->current_buffer->frame.color_coding,
+		   save_service->current_buffer->frame.size[0],
+		   save_service->current_buffer->frame.size[1],
+		   0, getConvertedBytesPerChannel(save_service->current_buffer->frame.color_coding)*8,
 		   fps);
   }
 
@@ -438,8 +421,8 @@ InitVideoFile(chain_t *save_service, FILE *fd, char *filename_out)
     if (info->fmt->video_codec != CODEC_ID_NONE) {
       //video_st = add_video_stream(oc, fmt->video_codec);
       info->video_st = add_video_stream(info->oc, CODEC_ID_MJPEG, 
-					save_service->current_buffer->width,
-					save_service->current_buffer->height);
+					save_service->current_buffer->frame.size[0],
+					save_service->current_buffer->frame.size[1]);
     }
     
     /* set the output parameters (must be done even if no
@@ -473,7 +456,7 @@ InitVideoFile(chain_t *save_service, FILE *fd, char *filename_out)
     }
     
     info->mpeg_color_mode=0;
-    switch (save_service->current_buffer->color_mode) {
+    switch (save_service->current_buffer->frame.color_coding) {
     case DC1394_COLOR_CODING_MONO8:
     case DC1394_COLOR_CODING_RAW8:
       info->mpeg_color_mode=PIX_FMT_GRAY8;
@@ -530,9 +513,9 @@ FillRamBuffer(chain_t *save_service)
        (cam->prefs.save_format==SAVE_FORMAT_MPEG)||
 #endif
        (cam->prefs.save_format==SAVE_FORMAT_PVN))) {
-    if (cam->prefs.ram_buffer_size*1024*1024-info->bigbuffer_position>=save_service->current_buffer->buffer_image_bytes) {
-      memcpy(&info->bigbuffer[info->bigbuffer_position], save_service->current_buffer->image, save_service->current_buffer->buffer_image_bytes);
-      info->bigbuffer_position+=save_service->current_buffer->buffer_image_bytes;
+    if (cam->prefs.ram_buffer_size*1024*1024-info->bigbuffer_position>=save_service->current_buffer->frame.image_bytes) {
+      memcpy(&info->bigbuffer[info->bigbuffer_position], save_service->current_buffer->frame.image, save_service->current_buffer->frame.image_bytes);
+      info->bigbuffer_position+=save_service->current_buffer->frame.image_bytes;
     }
     else { // buffer is full, exit thread
       info->cancel_req=1;
@@ -549,48 +532,48 @@ SavePPMPGM(chain_t *save_service, FILE *fd)
   unsigned char *src;
   info=(savethread_info_t*)save_service->data;
   
-  switch (save_service->current_buffer->color_mode) {
+  switch (save_service->current_buffer->frame.color_coding) {
   case DC1394_COLOR_CODING_MONO8:
   case DC1394_COLOR_CODING_RAW8:
     P_value=5;
-    bytes=save_service->current_buffer->width*save_service->current_buffer->height;
+    bytes=save_service->current_buffer->frame.size[0]*save_service->current_buffer->frame.size[1];
     maxlevels=255;
-    src=save_service->current_buffer->image;
+    src=save_service->current_buffer->frame.image;
     break;
   case DC1394_COLOR_CODING_MONO16:
   case DC1394_COLOR_CODING_RAW16:
   case DC1394_COLOR_CODING_MONO16S:
     P_value=5;
-    bytes=save_service->current_buffer->width*save_service->current_buffer->height*2;
+    bytes=save_service->current_buffer->frame.size[0]*save_service->current_buffer->frame.size[1]*2;
     maxlevels=65535;
-    src=save_service->current_buffer->image;
+    src=save_service->current_buffer->frame.image;
     break;
   case DC1394_COLOR_CODING_YUV411:
   case DC1394_COLOR_CODING_YUV422:
   case DC1394_COLOR_CODING_YUV444:
     convert_to_rgb(save_service->current_buffer, info->buffer);
     P_value=6;
-    bytes=save_service->current_buffer->width*save_service->current_buffer->height*3;
+    bytes=save_service->current_buffer->frame.size[0]*save_service->current_buffer->frame.size[1]*3;
     maxlevels=255;
     src=info->buffer;
     break;
   case DC1394_COLOR_CODING_RGB8:
     P_value=6;
-    bytes=save_service->current_buffer->width*save_service->current_buffer->height*3;
+    bytes=save_service->current_buffer->frame.size[0]*save_service->current_buffer->frame.size[1]*3;
     maxlevels=255;
-    src=save_service->current_buffer->image;
+    src=save_service->current_buffer->frame.image;
     break;
   case DC1394_COLOR_CODING_RGB16:
     P_value=6;
-    bytes=save_service->current_buffer->width*save_service->current_buffer->height*6;
+    bytes=save_service->current_buffer->frame.size[0]*save_service->current_buffer->frame.size[1]*6;
     maxlevels=65535;
-    src=save_service->current_buffer->image;
+    src=save_service->current_buffer->frame.image;
     break;
   default:
     fprintf(stderr, "Unknown buffer format!\n");
     return;
   }
-  fprintf(fd,"P%u\n#Created by Coriander\n%d %d\n%u\n",P_value,save_service->current_buffer->width,save_service->current_buffer->height,maxlevels);
+  fprintf(fd,"P%u\n#Created by Coriander\n%d %d\n%u\n",P_value,save_service->current_buffer->frame.size[0],save_service->current_buffer->frame.size[1],maxlevels);
   fwrite(src, bytes, 1, fd);
 }
 
@@ -605,21 +588,21 @@ SaveMPEGFrame(chain_t *save_service)
   info=(savethread_info_t*)save_service->data;
 
 
-  switch(save_service->current_buffer->color_mode) {
+  switch(save_service->current_buffer->frame.color_coding) {
   case DC1394_COLOR_CODING_YUV411:
-    uyvy411_yuv411p(save_service->current_buffer->image, info->tmp_picture, 
-		    save_service->current_buffer->width, save_service->current_buffer->height);
+    uyvy411_yuv411p(save_service->current_buffer->frame.image, info->tmp_picture, 
+		    save_service->current_buffer->frame.size[0], save_service->current_buffer->frame.size[1]);
     img_convert((AVPicture *)info->picture, PIX_FMT_YUVJ420P, 
 		(AVPicture *)info->tmp_picture, PIX_FMT_YUV411P,
-		save_service->current_buffer->width, save_service->current_buffer->height);
+		save_service->current_buffer->frame.size[0], save_service->current_buffer->frame.size[1]);
     pix_fmt=PIX_FMT_YUVJ420P;
     break;
   case DC1394_COLOR_CODING_YUV422:
-    uyvy422_yuv422p(save_service->current_buffer->image, info->tmp_picture, 
-		    save_service->current_buffer->width, save_service->current_buffer->height);
+    uyvy422_yuv422p(save_service->current_buffer->frame.image, info->tmp_picture, 
+		    save_service->current_buffer->frame.size[0], save_service->current_buffer->frame.size[1]);
     img_convert((AVPicture *)info->picture, PIX_FMT_YUVJ420P, 
 		(AVPicture *)info->tmp_picture, PIX_FMT_YUV422P,
-		save_service->current_buffer->width, save_service->current_buffer->height);
+		save_service->current_buffer->frame.size[0], save_service->current_buffer->frame.size[1]);
     pix_fmt=PIX_FMT_YUVJ420P;
     break;
   default:
@@ -648,30 +631,30 @@ SaveJPEGFrame(chain_t *save_service, char *filename_out)
   //int err=0;
   info=(savethread_info_t*)save_service->data;
 
-  //if (save_service->current_buffer->color_mode!=DC1394_COLOR_CODING_YUV411)&&(
+  //if (save_service->current_buffer->frame.color_coding!=DC1394_COLOR_CODING_YUV411)&&(
 
   
-  info->picture = alloc_picture(PIX_FMT_YUVJ420P, save_service->current_buffer->width, save_service->current_buffer->height);
+  info->picture = alloc_picture(PIX_FMT_YUVJ420P, save_service->current_buffer->frame.size[0], save_service->current_buffer->frame.size[1]);
   if (!info->picture) {
     fprintf(stderr, "Could not allocate picture\n");
   }
-  switch(save_service->current_buffer->color_mode) {
+  switch(save_service->current_buffer->frame.color_coding) {
   case DC1394_COLOR_CODING_YUV411:
-    info->tmp_picture = alloc_picture(PIX_FMT_YUV411P, save_service->current_buffer->width, save_service->current_buffer->height);
-    uyvy411_yuv411p(save_service->current_buffer->image, info->tmp_picture, 
-		    save_service->current_buffer->width, save_service->current_buffer->height);
+    info->tmp_picture = alloc_picture(PIX_FMT_YUV411P, save_service->current_buffer->frame.size[0], save_service->current_buffer->frame.size[1]);
+    uyvy411_yuv411p(save_service->current_buffer->frame.image, info->tmp_picture, 
+		    save_service->current_buffer->frame.size[0], save_service->current_buffer->frame.size[1]);
     img_convert((AVPicture *)info->picture, PIX_FMT_YUVJ420P, 
 		(AVPicture *)info->tmp_picture, PIX_FMT_YUV411P,
-		save_service->current_buffer->width, save_service->current_buffer->height);
-    jpeg_write(info->picture, save_service->current_buffer->width, save_service->current_buffer->height,
+		save_service->current_buffer->frame.size[0], save_service->current_buffer->frame.size[1]);
+    jpeg_write(info->picture, save_service->current_buffer->frame.size[0], save_service->current_buffer->frame.size[1],
 	       PIX_FMT_YUVJ420P, filename_out, 90.0, "Created using Coriander and FFMPEG");
     
     break;
   case DC1394_COLOR_CODING_YUV422: 
-    info->tmp_picture = alloc_picture(PIX_FMT_YUV422P, save_service->current_buffer->width, save_service->current_buffer->height);
-    uyvy422_yuv422p(save_service->current_buffer->image, info->tmp_picture, 
-		    save_service->current_buffer->width, save_service->current_buffer->height);
-    jpeg_write(info->picture, save_service->current_buffer->width, save_service->current_buffer->height,
+    info->tmp_picture = alloc_picture(PIX_FMT_YUV422P, save_service->current_buffer->frame.size[0], save_service->current_buffer->frame.size[1]);
+    uyvy422_yuv422p(save_service->current_buffer->frame.image, info->tmp_picture, 
+		    save_service->current_buffer->frame.size[0], save_service->current_buffer->frame.size[1]);
+    jpeg_write(info->picture, save_service->current_buffer->frame.size[0], save_service->current_buffer->frame.size[1],
 	       PIX_FMT_YUVJ420P, filename_out, 90.0, "Created using Coriander and FFMPEG");
     break;
   default:
@@ -742,7 +725,7 @@ SaveThread(void* arg)
 	// check params
 	//printf("New frame arrived\n");
 	SaveThreadCheckParams(save_service);
-	if (save_service->current_buffer->width!=-1) {
+	if (save_service->current_buffer->frame.size[0]!=-1) {
 	  if (skip_counter>=(cam->prefs.save_period-1)) {
 	    skip_counter=0;
 
@@ -783,28 +766,28 @@ SaveThread(void* arg)
 	      switch (cam->prefs.save_format) {
 	      case SAVE_FORMAT_RAW:
 		//fprintf(stderr,"writing raw...");
-		fwrite(save_service->current_buffer->image, save_service->current_buffer->buffer_image_bytes, 1, fd);
+		fwrite(save_service->current_buffer->frame.image, save_service->current_buffer->frame.image_bytes, 1, fd);
 		//fprintf(stderr,"done. closing fd...");
 		fclose(fd);
 		fd=NULL;
 		//fprintf(stderr,"done\n");
 		break;
 	      case SAVE_FORMAT_RAW_VIDEO:
-		fwrite(save_service->current_buffer->image, save_service->current_buffer->buffer_image_bytes, 1, fd);
+		fwrite(save_service->current_buffer->frame.image, save_service->current_buffer->frame.image_bytes, 1, fd);
 		break;
 	      case SAVE_FORMAT_PVN:
-		if (needsConversionForPVN(save_service->current_buffer->color_mode)>0) {
+		if (needsConversionForPVN(save_service->current_buffer->frame.color_coding)>0) {
 		  // we assume that if it needs conversion, the output of the conversion is an 8bpp RGB
-		  tmp_buf = (unsigned char*)malloc(3*save_service->current_buffer->width*save_service->current_buffer->height*sizeof(unsigned char));
-		  convert_for_pvn(save_service->current_buffer->image, save_service->current_buffer->width,
-				  save_service->current_buffer->height, 0, save_service->current_buffer->color_mode, tmp_buf);
-		  fwrite(tmp_buf, 3*save_service->current_buffer->width*save_service->current_buffer->height, 1, fd);
+		  tmp_buf = (unsigned char*)malloc(3*save_service->current_buffer->frame.size[0]*save_service->current_buffer->frame.size[1]*sizeof(unsigned char));
+		  convert_for_pvn(save_service->current_buffer->frame.image, save_service->current_buffer->frame.size[0],
+				  save_service->current_buffer->frame.size[1], 0, save_service->current_buffer->frame.color_coding, tmp_buf);
+		  fwrite(tmp_buf, 3*save_service->current_buffer->frame.size[0]*save_service->current_buffer->frame.size[1], 1, fd);
 		  free(tmp_buf);
 		  tmp_buf=NULL;
 		}
 		else {
 		  // no conversion, we can dump the data
-		  fwrite(save_service->current_buffer->image, save_service->current_buffer->buffer_image_bytes, 1, fd);
+		  fwrite(save_service->current_buffer->frame.image, save_service->current_buffer->frame.image_bytes, 1, fd);
 		}
 		break;
 #ifdef HAVE_FFMPEG
@@ -871,26 +854,26 @@ SaveThread(void* arg)
 #endif
     case SAVE_FORMAT_PVN:
       dc1394_framerate_as_float(cam->camera_info->framerate, &fps);
-      writePVNHeader(fd, save_service->current_buffer->color_mode,
-		     save_service->current_buffer->height,
-		     save_service->current_buffer->width,
-		     getDepth(info->bigbuffer_position, save_service->current_buffer->color_mode, 
-			      save_service->current_buffer->height, save_service->current_buffer->width),
-		     getConvertedBytesPerChannel(save_service->current_buffer->color_mode)*8,
+      writePVNHeader(fd, save_service->current_buffer->frame.color_coding,
+		     save_service->current_buffer->frame.size[1],
+		     save_service->current_buffer->frame.size[0],
+		     getDepth(info->bigbuffer_position, save_service->current_buffer->frame.color_coding, 
+			      save_service->current_buffer->frame.size[1], save_service->current_buffer->frame.size[0]),
+		     getConvertedBytesPerChannel(save_service->current_buffer->frame.color_coding)*8,
 		     fps);
       
-      if(needsConversionForPVN(save_service->current_buffer->color_mode)==FALSE) {
+      if(needsConversionForPVN(save_service->current_buffer->frame.color_coding)==FALSE) {
 	fwrite(info->bigbuffer, info->bigbuffer_position, 1, fd);
       }
       else {
 	// we assume that if it needs conversion, the output of the conversion is an 8bpp RGB
-	tmp_buf = (unsigned char*)malloc(3*save_service->current_buffer->width*save_service->current_buffer->height*sizeof(unsigned char));
+	tmp_buf = (unsigned char*)malloc(3*save_service->current_buffer->frame.size[0]*save_service->current_buffer->frame.size[1]*sizeof(unsigned char));
 	
-	for (i = 0; i < getDepth(info->bigbuffer_position, save_service->current_buffer->color_mode,
-				 save_service->current_buffer->height, save_service->current_buffer->width); i++) {
-	  convert_for_pvn(info->bigbuffer, save_service->current_buffer->width,
-			  save_service->current_buffer->height, i, save_service->current_buffer->color_mode, tmp_buf);
-	  fwrite(tmp_buf, 3*save_service->current_buffer->width*save_service->current_buffer->height, 1, fd);
+	for (i = 0; i < getDepth(info->bigbuffer_position, save_service->current_buffer->frame.color_coding,
+				 save_service->current_buffer->frame.size[1], save_service->current_buffer->frame.size[0]); i++) {
+	  convert_for_pvn(info->bigbuffer, save_service->current_buffer->frame.size[0],
+			  save_service->current_buffer->frame.size[1], i, save_service->current_buffer->frame.color_coding, tmp_buf);
+	  fwrite(tmp_buf, 3*save_service->current_buffer->frame.size[0]*save_service->current_buffer->frame.size[1], 1, fd);
 	}
 	free(tmp_buf);
 	tmp_buf=NULL;
@@ -1008,51 +991,25 @@ SaveThreadCheckParams(chain_t *save_service)
 {
 
   savethread_info_t *info;
-  int buffer_size_change=0;
   info=(savethread_info_t*)save_service->data;
 
-  // copy harmless parameters anyway:
-  save_service->local_param_copy.bpp=save_service->current_buffer->bpp;
-  save_service->local_param_copy.bayer_pattern=save_service->current_buffer->bayer_pattern;
-
   // if some parameters changed, we need to re-allocate the local buffers and restart the save
-  if ((save_service->current_buffer->width!=save_service->local_param_copy.width)||
-      (save_service->current_buffer->height!=save_service->local_param_copy.height)||
-      (save_service->current_buffer->bytes_per_frame!=save_service->local_param_copy.bytes_per_frame)||
-      (save_service->current_buffer->color_mode!=save_service->local_param_copy.color_mode)||
-      // check bayer and stereo decoding
-      (save_service->current_buffer->stereo_decoding!=save_service->local_param_copy.stereo_decoding)||
-      (save_service->current_buffer->bayer!=save_service->local_param_copy.bayer)
-      ) {
-    if (save_service->current_buffer->width*save_service->current_buffer->height!=
-	save_service->local_param_copy.width*save_service->local_param_copy.height) {
-      buffer_size_change=1;
-    }
-    else {
-      buffer_size_change=0;
-    }
-    
-    // copy all new parameters:
-    save_service->local_param_copy.width=save_service->current_buffer->width;
-    save_service->local_param_copy.height=save_service->current_buffer->height;
-    save_service->local_param_copy.bytes_per_frame=save_service->current_buffer->bytes_per_frame;
-    save_service->local_param_copy.stereo_decoding=save_service->current_buffer->stereo_decoding;
-    save_service->local_param_copy.bayer=save_service->current_buffer->bayer;
-    save_service->local_param_copy.color_mode=save_service->current_buffer->color_mode;
-    save_service->local_param_copy.buffer_image_bytes=save_service->current_buffer->buffer_image_bytes;
+  if ((save_service->current_buffer->frame.size[0]!=save_service->local_param_copy.frame.size[0])||
+      (save_service->current_buffer->frame.size[1]!=save_service->local_param_copy.frame.size[1])  ) {
     
     // DO SOMETHING
-    if (buffer_size_change!=0) {
-      
-      if (info->buffer!=NULL) {
-	free(info->buffer);
-	info->buffer=NULL;
-      }
-      info->buffer=(unsigned char*)malloc(save_service->current_buffer->width*save_service->current_buffer->height*3
-					       *sizeof(unsigned char));
-      if (info->buffer==NULL)
-	fprintf(stderr,"Can't allocate buffer! Aiiieee!\n");
+    if (info->buffer!=NULL) {
+      free(info->buffer);
+      info->buffer=NULL;
     }
+    info->buffer=(unsigned char*)malloc(save_service->current_buffer->frame.size[0]*save_service->current_buffer->frame.size[1]*3
+					*sizeof(unsigned char));
+    if (info->buffer==NULL)
+      fprintf(stderr,"Can't allocate buffer! Aiiieee!\n");
   }
+
+  // copy all new parameters:
+  memcpy(&save_service->local_param_copy, save_service->current_buffer,sizeof(buffer_t));
+  save_service->local_param_copy.frame.allocated_image_bytes=0;
   
 }

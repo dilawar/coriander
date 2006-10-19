@@ -59,9 +59,6 @@ gint
 FtpStartThread(camera_t* cam);
 
 void*
-FtpCleanupThread(void* arg);
-
-void*
 FtpThread(void* arg);
 
 gint

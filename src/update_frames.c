@@ -385,8 +385,8 @@ UpdateOptionFrame(void)
   }
 
   int cond= ((bpp16_ok) && 
-	     (camera->stereo==NO_STEREO_DECODING) && 
-	     (camera->bayer==NO_BAYER_DECODING));
+	     (camera->stereo==-1) && 
+	     (camera->bayer==-1));
 
   pthread_mutex_lock(&camera->uimutex);
   gtk_widget_set_sensitive(lookup_widget(main_window,"mono16_bpp"),cond);

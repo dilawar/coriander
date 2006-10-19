@@ -26,10 +26,10 @@
 #include <gnome.h>
 #include <libraw1394/raw1394.h>
 #include <libraw1394/csr.h>
-#include <dc1394/dc1394_control.h>
-#include <dc1394/dc1394_conversions.h>
-#include <dc1394/dc1394_utils.h>
-#include <dc1394/dc1394_register.h>
+#include <dc1394/control.h>
+#include <dc1394/conversions.h>
+#include <dc1394/utils.h>
+#include <dc1394/register.h>
 
 // FTP lib
 #ifdef HAVE_FTPLIB

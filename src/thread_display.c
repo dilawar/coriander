@@ -63,21 +63,6 @@ DisplayStartThread(camera_t* cam)
 
 
 void*
-DisplayCleanupThread(void* arg)
-{
-  chain_t* display_service;
-  displaythread_info_t *info;
-
-  display_service=(chain_t*)arg;
-  info=(displaythread_info_t*)display_service->data;
-
-  pthread_mutex_unlock(&display_service->mutex_data);
-
-  return(NULL);
-}
-
-
-void*
 DisplayThread(void* arg)
 {
   chain_t* display_service=NULL;
@@ -115,7 +100,7 @@ DisplayThread(void* arg)
 	// check params
 	DisplayThreadCheckParams(display_service);
 #endif
-	if (display_service->current_buffer->width!=-1) {
+	if (display_service->current_buffer->frame.size[0]!=-1) {
 	  if (skip_counter>=(cam->prefs.display_period-1)) {
 	    skip_counter=0;
 #ifdef HAVE_SDLLIB
@@ -179,7 +164,7 @@ ConditionalTimeoutRedraw(chain_t* service)
   float interval;
   info=(displaythread_info_t*)service->data;
 
-  if (service->current_buffer->width!=-1) {
+  if (service->current_buffer->frame.size[0]!=-1) {
     info->redraw_current_time=times(&info->redraw_tms_buf);
     interval=fabs((float)(info->redraw_current_time-info->redraw_prev_time)/sysconf(_SC_CLK_TCK));
     if (interval>(1.0/service->camera->prefs.display_redraw_rate)) { // redraw e.g. 4 times per second
@@ -253,8 +238,8 @@ SDLInit(chain_t *display_service)
   
   if ((xvinfo.max_width!=-1)&&(xvinfo.max_height!=-1)) {
     // if the XV area is too small, we use software accelleration
-    if ((xvinfo.max_width<display_service->current_buffer->width)||
-	(xvinfo.max_height<display_service->current_buffer->height)) {
+    if ((xvinfo.max_width<display_service->current_buffer->frame.size[0])||
+	(xvinfo.max_height<display_service->current_buffer->frame.size[1])) {
       //fprintf(stderr,"Using SW surface\n");
       info->sdlflags|= SDL_SWSURFACE;
       info->sdlflags&= ~SDL_HWSURFACE;
@@ -296,8 +281,8 @@ SDLInit(chain_t *display_service)
 
   info->sdlvideorect.x=0;
   info->sdlvideorect.y=0;
-  info->sdlvideorect.w=display_service->current_buffer->width;
-  info->sdlvideorect.h=display_service->current_buffer->height;
+  info->sdlvideorect.w=display_service->current_buffer->frame.size[0];
+  info->sdlvideorect.h=display_service->current_buffer->frame.size[1];
 
   // maximize display size to XV size if necessary
   if ((xvinfo.max_width!=-1)&&(xvinfo.max_height!=-1)) {
@@ -335,13 +320,13 @@ SDLInit(chain_t *display_service)
   // Create YUV Overlay
   switch(preferences.overlay_byte_order) {
   case DC1394_BYTE_ORDER_YUYV:
-    info->sdloverlay = SDL_CreateYUVOverlay(display_service->current_buffer->width,
-					    display_service->current_buffer->height,
+    info->sdloverlay = SDL_CreateYUVOverlay(display_service->current_buffer->frame.size[0],
+					    display_service->current_buffer->frame.size[1],
 					    SDL_YUY2_OVERLAY,info->sdlvideo);
     break;
   case DC1394_BYTE_ORDER_UYVY:
-    info->sdloverlay = SDL_CreateYUVOverlay(display_service->current_buffer->width,
-					    display_service->current_buffer->height,
+    info->sdloverlay = SDL_CreateYUVOverlay(display_service->current_buffer->frame.size[0],
+					    display_service->current_buffer->frame.size[1],
 					    SDL_UYVY_OVERLAY,info->sdlvideo);
     break;
   default:
@@ -381,7 +366,7 @@ SDLDisplayArea(chain_t *display_service)
     upper_left[1]=watchthread_info.pos[1];
     lower_right[0]=watchthread_info.pos[0]+watchthread_info.size[0]-1;
     lower_right[1]=watchthread_info.pos[1]+watchthread_info.size[1]-1;
-    width=display_service->current_buffer->width;
+    width=display_service->current_buffer->frame.size[0];
     
     if (lower_right[0]<upper_left[0]) {
       tmp=lower_right[0];
@@ -412,8 +397,8 @@ SDLDisplayPattern(chain_t *display_service)
 {
   displaythread_info_t *info=(displaythread_info_t*)display_service->data;
   unsigned char *pimage;
-  int sx = display_service->current_buffer->width;
-  int sy = display_service->current_buffer->height;
+  int sx = display_service->current_buffer->frame.size[0];
+  int sy = display_service->current_buffer->frame.size[1];
   int y,u,v,is,ie,js,je;
   unsigned char block[4];
   register int i;
@@ -681,7 +666,7 @@ SDLQuit(chain_t *display_service)
 
 #ifdef HAVE_SDLLIB
   // if width==-1, SDL was never initialized so we do nothing
-  if (display_service->current_buffer->width!=-1) {
+  if (display_service->current_buffer->frame.size[0]!=-1) {
     SDLEventStopThread(display_service);
     SDL_FreeYUVOverlay(info->sdloverlay);
     SDL_FreeSurface(info->sdlvideo);
@@ -701,51 +686,33 @@ DisplayThreadCheckParams(chain_t *display_service)
   int prev_overlay_size[2];
   info=(displaythread_info_t*)display_service->data;
   
-  // copy harmless parameters anyway:
-  display_service->local_param_copy.bpp=display_service->current_buffer->bpp;
-  display_service->local_param_copy.bayer_pattern=display_service->current_buffer->bayer_pattern;
-  if (display_service->current_buffer->width==-1)
+  if (display_service->current_buffer->frame.size[0]==-1)
     fprintf(stderr,"Error: display size: %dx%d\n",
-	    display_service->current_buffer->width,
-	    display_service->current_buffer->height);
-  /*
-  fprintf(stderr,"D:[%d %d] BPF:%lli ColMode:%d\n",
-	  display_service->current_buffer->width,
-	  display_service->current_buffer->height,
-	  display_service->current_buffer->bytes_per_frame,
-	  display_service->current_buffer->color_mode);
-  */
+	    display_service->current_buffer->frame.size[0],
+	    display_service->current_buffer->frame.size[1]);
+
+  //fprintf(stderr,"check params\n");
   // if some parameters changed, we need to restart the display
-  if ((display_service->current_buffer->width!=display_service->local_param_copy.width)||
-      (display_service->current_buffer->height!=display_service->local_param_copy.height)//||
-      //only a change in the image size requires to restart the display
-      //(display_service->current_buffer->color_mode!=display_service->local_param_copy.color_mode)||
-      //(display_service->current_buffer->bytes_per_frame!=display_service->local_param_copy.bytes_per_frame)||
-      // check bayer and stereo decoding
-      //(display_service->current_buffer->stereo_decoding!=display_service->local_param_copy.stereo_decoding)||
-      //(display_service->current_buffer->bayer!=display_service->local_param_copy.bayer)
-      ) {
+  if ((display_service->current_buffer->frame.size[0]!=display_service->local_param_copy.frame.size[0] )||
+      (display_service->current_buffer->frame.size[1]!=display_service->local_param_copy.frame.size[1])   ) {
 
     //fprintf(stderr,"Parameters changed...\n");
-    first_time=((display_service->local_param_copy.width==-1)&&(display_service->current_buffer->width!=-1));
-    //size_change=((display_service->current_buffer->width!=display_service->local_param_copy.width)||
-    //		 (display_service->current_buffer->height!=display_service->local_param_copy.height));
-    
-    prev_image_size[0]=display_service->local_param_copy.width;
-    prev_image_size[1]=display_service->local_param_copy.height;
+    first_time=((display_service->local_param_copy.frame.size[0]==-1)&&(display_service->current_buffer->frame.size[0]!=-1));
+    if (first_time>0)
+      //fprintf(stderr,"  first frame...\n");
+      
+    prev_image_size[0]=display_service->local_param_copy.frame.size[0];
+    prev_image_size[1]=display_service->local_param_copy.frame.size[1];
 
-    // copy all new parameters:
-    display_service->local_param_copy.width=display_service->current_buffer->width;
-    display_service->local_param_copy.height=display_service->current_buffer->height;
-    display_service->local_param_copy.bytes_per_frame=display_service->current_buffer->bytes_per_frame;
-    display_service->local_param_copy.stereo_decoding=display_service->current_buffer->stereo_decoding;
-    display_service->local_param_copy.bayer=display_service->current_buffer->bayer;
-    display_service->local_param_copy.color_mode=display_service->current_buffer->color_mode;
-    display_service->local_param_copy.buffer_image_bytes=display_service->current_buffer->buffer_image_bytes;
-    
+    // do this because we check the size after. other parameters will wait for the memcpy:
+    display_service->local_param_copy.frame.size[0]=display_service->current_buffer->frame.size[0];
+    display_service->local_param_copy.frame.size[1]=display_service->current_buffer->frame.size[1];
+
     // DO SOMETHING
+    //fprintf(stderr,"  fs: %d\n",display_service->local_param_copy.frame.size[0]);
     // if the width is not -1, that is if some image has already reached the thread and the size has changed
-    if (display_service->local_param_copy.width!=-1) { //&&(size_change!=0)) {
+    if (display_service->local_param_copy.frame.size[0]!=-1) { //&&(size_change!=0)) {
+      //fprintf(stderr,"   do something...\n");
       if (first_time) {
 	SDLInit(display_service);
       } else {
@@ -756,14 +723,17 @@ DisplayThreadCheckParams(chain_t *display_service)
 	watchthread_info.draw=0;
 	//SDLEventStopThread(display_service);
 	SDLResizeDisplay(display_service,
-			 display_service->current_buffer->width*prev_overlay_size[0]/prev_image_size[0],
-			 display_service->current_buffer->height*prev_overlay_size[1]/prev_image_size[1]);
+			 display_service->current_buffer->frame.size[0]*prev_overlay_size[0]/prev_image_size[0],
+			 display_service->current_buffer->frame.size[1]*prev_overlay_size[1]/prev_image_size[1]);
 	//SDLEventStartThread(display_service);
       }
     }
     //fprintf(stderr,"SDL updated.\n");
   }
 
+  // copy all new parameters:
+  memcpy(&display_service->local_param_copy,display_service->current_buffer,sizeof(buffer_t));
+  display_service->local_param_copy.frame.allocated_image_bytes=0;
 }
 
 #endif

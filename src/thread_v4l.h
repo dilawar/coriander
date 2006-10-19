@@ -39,9 +39,6 @@ gint
 V4lStartThread(camera_t* cam);
 
 void*
-V4lCleanupThread(void* arg);
-
-void*
 V4lThread(void* arg);
 
 gint

@@ -37,6 +37,13 @@ gint IsoStartThread(camera_t* cam)
     pthread_mutex_init(&iso_service->mutex_data, NULL);
     
     info=(isothread_info_t*)iso_service->data;
+
+    /* if you want a clean-interrupt thread:*/
+    pthread_mutex_init(&info->mutex_cancel, NULL);
+    pthread_mutex_lock(&info->mutex_cancel);
+    info->cancel_req=0;
+    pthread_mutex_unlock(&info->mutex_cancel);
+    
     
     /* currently FORMAT_STILL_IMAGE is not supported*/
     if (dc1394_is_video_mode_still_image(cam->camera_info->video_mode)==DC1394_TRUE) {
@@ -123,8 +130,7 @@ gint IsoStartThread(camera_t* cam)
 
     switch(cam->prefs.receive_method) {
     case RECEIVE_METHOD_VIDEO1394:
-      err=dc1394_capture_setup_dma(cam->camera_info, cam->prefs.dma_buffer_size,
-				   cam->prefs.video1394_dropframes);
+      err=dc1394_capture_setup_dma(cam->camera_info, cam->prefs.dma_buffer_size);
       if (err!=DC1394_SUCCESS){
 	eprint("Failed to setup DMA capture. Error code %d\n",err);
 	FreeChain(iso_service);
@@ -148,9 +154,8 @@ gint IsoStartThread(camera_t* cam)
     pthread_mutex_lock(&iso_service->mutex_data);
     CommonChainSetup(cam, iso_service, SERVICE_ISO);
     // init image buffers structs
-    info->temp=NULL;
-    info->temp_size=0;
-    info->temp_allocated=0;
+    info->tempframe.allocated_image_bytes=0;
+    info->tempframe.image=NULL;
 
     pthread_mutex_lock(&iso_service->mutex_struct);
     InsertChain(cam,iso_service);
@@ -174,49 +179,27 @@ gint IsoStartThread(camera_t* cam)
 }
 
 void*
-IsoCleanupThread(void* arg) 
-{
-  chain_t* iso_service;
-  isothread_info_t *info;
-
-  iso_service=(chain_t*)arg;
-  info=(isothread_info_t*)iso_service->data;
-
-  camera_t *cam=iso_service->camera;
-
-  if ((cam->prefs.receive_method == RECEIVE_METHOD_VIDEO1394)) {
-    //dc1394_dma_done_with_buffer(&info->capture);
-    // this should be done at the condition it has not been executed before or
-    // else we get an ioctl error from libdc1394. How to do this, I don't know...
-    //fprintf(stderr,"dma done with buffer\n");
-  }
-  
-  // clear timing info on GUI...
-  pthread_mutex_unlock(&iso_service->mutex_data);
-  
-  return(NULL);
-
-}
- 
-void*
 IsoThread(void* arg)
 {
   chain_t *iso_service;
   isothread_info_t *info;
-  int dma_ok=DC1394_FAILURE;
   float tmp;
   dc1394camera_t *camptr;
-  // we should only use mutex_data in this function
+  struct tm captime;
 
   iso_service=(chain_t*)arg;
 
   pthread_mutex_lock(&iso_service->mutex_data);
   info=(isothread_info_t*)iso_service->data;
-  pthread_setcancelstate(PTHREAD_CANCEL_ENABLE,NULL);
-  pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS,NULL);
+  pthread_setcancelstate(PTHREAD_CANCEL_DISABLE,NULL);
+  pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED,NULL);
   pthread_mutex_unlock(&iso_service->mutex_data);
 
   camera_t *cam=iso_service->camera;
+
+  dc1394video_frame_t *frame=NULL;
+  uint8_t *backup_ptr;
+  uint64_t backup_alloc;
 
   // time inits:
   iso_service->prev_time = times(&iso_service->tms_buf);
@@ -224,103 +207,128 @@ IsoThread(void* arg)
   iso_service->processed_frames=0;
 
   while (1) {
-    pthread_testcancel();
-    pthread_cleanup_push((void*)IsoCleanupThread, (void*)iso_service);
-
-    // IF FRAME USED (and we use no-drop mode)
-    if (((iso_service->ready>0)&&(cam->prefs.iso_nodrop>0))||
-	(cam->prefs.iso_nodrop==0)) {
-    
-      camptr=iso_service->camera->camera_info;
-
-      if (cam->prefs.receive_method == RECEIVE_METHOD_RAW1394)
-	dc1394_capture(&camptr, 1);
-      else
-	dma_ok=dc1394_capture_dma(&camptr, 1, DC1394_VIDEO1394_WAIT);
-    
-      //printf("Got frame\n");
-  
-      info->rawtime.tv_sec=(dc1394_capture_get_dma_filltime(camptr))->tv_sec;
-      info->rawtime.tv_usec=(dc1394_capture_get_dma_filltime(camptr))->tv_usec;
-      //gettimeofday(&info->rawtime, NULL);
-      localtime_r(&info->rawtime.tv_sec, &(iso_service->current_buffer->captime));
-      iso_service->current_buffer->captime_usec=info->rawtime.tv_usec;
-      sprintf(iso_service->current_buffer->captime_string,"%04d%02d%02d-%02d%02d%02d-%03d",
-	      iso_service->current_buffer->captime.tm_year+1900,
-	      iso_service->current_buffer->captime.tm_mon+1,
-	      iso_service->current_buffer->captime.tm_mday,
-	      iso_service->current_buffer->captime.tm_hour,
-	      iso_service->current_buffer->captime.tm_min,
-	      iso_service->current_buffer->captime.tm_sec,
-	      iso_service->current_buffer->captime_usec/1000);
-      
+    /* Clean cancel handlers */
+    pthread_mutex_lock(&info->mutex_cancel);
+    if (info->cancel_req>0) {
+      //fprintf(stderr,"Cancel request found, breaking...\n");
+      break;
+    }
+    else {
+      pthread_mutex_unlock(&info->mutex_cancel);
       pthread_mutex_lock(&iso_service->mutex_data);
-      
-      // check current buffer status
-      IsoThreadCheckParams(iso_service);
-      
-      // Stereo decoding
-      switch (iso_service->current_buffer->stereo_decoding) {
-      case STEREO_DECODING_INTERLACED:
-	dc1394_deinterlace_stereo(dc1394_capture_get_dma_buffer(camptr),info->temp,
-				  info->orig_sizex,info->orig_sizey*2);
-	break;
-      case STEREO_DECODING_FIELD:
-	memcpy(info->temp,dc1394_capture_get_dma_buffer(camptr),info->orig_sizex*info->orig_sizey*2);
-	break;
-      case NO_STEREO_DECODING:
-	if ((iso_service->current_buffer->bayer!=NO_BAYER_DECODING)&&(info->cond16bit!=0)) {
-	  dc1394_convert_to_MONO8(dc1394_capture_get_dma_buffer(camptr),info->temp,
-				  info->orig_sizex, info->orig_sizey,
-				  DC1394_BYTE_ORDER_YUYV, DC1394_COLOR_CODING_MONO16, iso_service->current_buffer->bpp);
+
+      // IF FRAME USED (and we use no-drop mode)
+      if (((iso_service->ready>0)&&(cam->prefs.iso_nodrop>0))||
+	  (cam->prefs.iso_nodrop==0)) {
+	
+	camptr=iso_service->camera->camera_info;
+	
+	if (cam->prefs.receive_method == RECEIVE_METHOD_RAW1394)
+	  dc1394_capture(&camptr, 1);
+	else {
+	  frame=dc1394_capture_dequeue_dma(camptr, DC1394_VIDEO1394_POLL);
+	}
+	//printf("Got frame\n");
+	if (frame!=NULL) {  
+	  info->rawtime.tv_sec=frame->timestamp/1000000;
+	  info->rawtime.tv_usec=frame->timestamp%1000000;
+	  //gettimeofday(&info->rawtime, NULL);
+	  localtime_r(&info->rawtime.tv_sec, &captime);
+	  sprintf(iso_service->current_buffer->captime_string,"%04d%02d%02d-%02d%02d%02d-%03d",
+		  captime.tm_year+1900,
+		  captime.tm_mon+1,
+		  captime.tm_mday,
+		  captime.tm_hour,
+		  captime.tm_min,
+		  captime.tm_sec,
+		  (int)info->rawtime.tv_usec/1000);
+	  
+	  // check current buffer status
+	  // IsoThreadCheckParams(iso_service); // THIS IS AUTOMATIC NOW!!
+	  
+	  // copy the buffer data, but only copy the pointer to the image
+	  //fprintf(stderr,"just after capture: %lld\n",frame->total_bytes);
+	  memcpy(&info->tempframe,frame,sizeof(dc1394video_frame_t));
+	  //fprintf(stderr,"just after copy: %lld\n",info->tempframe.total_bytes);
+	  // we don't allocate the image buffer of tempframe (pointer copy from the DMA ring buffer)
+	  // so the alloc should be zero
+	  info->tempframe.allocated_image_bytes=0;
+	  
+	  // stereo decoding -> tempframe
+	  switch (iso_service->current_buffer->stereo) {
+	  case -1:
+	    // nothing to do at this time, the picture is already in tempframe.
+	    break;
+	  default:
+	    dc1394_deinterlace_stereo_frames(frame,&info->tempframe,(dc1394stereo_method_t)iso_service->current_buffer->stereo_method);
+	    break;
+	  }
+	  
+	  // bayer decoding
+	  switch (iso_service->current_buffer->bayer) {
+	  case -1:
+	    // this is only necessary if no stereo was performed
+	    if (iso_service->current_buffer->stereo==-1) {
+	      //fprintf(stderr,"allocated buffer size: %lld  incoming buffer size: %lld\n",
+	      //      iso_service->current_buffer->frame.allocated_image_bytes,
+	      //      info->tempframe.total_bytes);
+	      if (iso_service->current_buffer->frame.allocated_image_bytes<info->tempframe.total_bytes) {
+		//fprintf(stderr,"low image bytes, alloc struct\n");
+		if (iso_service->current_buffer->frame.allocated_image_bytes!=0)
+		  free(iso_service->current_buffer->frame.image);
+		iso_service->current_buffer->frame.image=(uint8_t*)malloc(info->tempframe.total_bytes*sizeof(uint8_t));
+		iso_service->current_buffer->frame.allocated_image_bytes=info->tempframe.total_bytes;
+	      }
+	      // copy all info, but don't overwrite the (newly allocated) image field pointer and the allocated size
+	      backup_ptr=iso_service->current_buffer->frame.image;
+	      backup_alloc=iso_service->current_buffer->frame.allocated_image_bytes;
+	      memcpy(&iso_service->current_buffer->frame,&info->tempframe,sizeof(dc1394video_frame_t));
+	      iso_service->current_buffer->frame.image=backup_ptr;
+	      iso_service->current_buffer->frame.allocated_image_bytes=backup_alloc;
+	      //fprintf(stderr,"buffer alloc'ed: %lld   incomin buffer size: %lld\n",
+	      //	    iso_service->current_buffer->frame.allocated_image_bytes,
+	      //   	    info->tempframe.total_bytes);
+	      memcpy(iso_service->current_buffer->frame.image,info->tempframe.image,info->tempframe.total_bytes*sizeof(uint8_t));  
+	    }
+	    break;
+	  default:
+	    dc1394_debayer_frames(&info->tempframe, &iso_service->current_buffer->frame,iso_service->current_buffer->bayer_method);
+	    break;
+	  }
+	  
+	  // FPS computation:
+	  iso_service->current_time=times(&iso_service->tms_buf);
+	  iso_service->fps_frames++;
+	  iso_service->processed_frames++;
+	  
+	  tmp=(float)(iso_service->current_time-iso_service->prev_time)/sysconf(_SC_CLK_TCK);
+	  if (tmp==0)
+	    iso_service->fps=fabs(0.0);
+	  else
+	    iso_service->fps=fabs((float)iso_service->fps_frames/tmp);
+	  
+	  if (cam->prefs.receive_method == RECEIVE_METHOD_VIDEO1394) {
+	    //fprintf(stderr,"DMA buffer returned to pool\n");
+	    dc1394_capture_enqueue_dma(camptr,frame);
+	  }
+	  
+	  PublishBufferForNext(iso_service);
+	  //fprintf(stderr,"Buffer soon rolled in ISO\n");
+	  pthread_mutex_unlock(&iso_service->mutex_data);
 	}
 	else {
-	  // it is necessary to put this here and not in the thread init or IsoThreadCheckParams function because
-	  // the buffer might change at every capture (typically when capture is too slow and buffering is performed)
-	  info->temp=dc1394_capture_get_dma_buffer(camptr);
+	  pthread_mutex_unlock(&iso_service->mutex_data); // NOTE: mutex unlocks should be done BEFORE usleep()!!!
+	  usleep(0);
 	}
-	break;
-      }
-      
-      // Bayer decoding
-      // TO BE UPGRADED FOR 16bit...
-      if (iso_service->current_buffer->bayer!=NO_BAYER_DECODING) {
-	dc1394_bayer_decoding_8bit(info->temp, iso_service->current_buffer->image,
-				   iso_service->current_buffer->width, iso_service->current_buffer->height,
-				   iso_service->current_buffer->bayer_pattern,iso_service->current_buffer->bayer);
       }
       else {
-	// this is only necessary if no stereo was performed
-	if (iso_service->current_buffer->stereo_decoding==NO_STEREO_DECODING) {
-	  memcpy(iso_service->current_buffer->image, info->temp,
-		 iso_service->current_buffer->bytes_per_frame);
-	}
+	pthread_mutex_unlock(&iso_service->mutex_data);
+	usleep(0);
       }
-      
-      // FPS computation:
-      iso_service->current_time=times(&iso_service->tms_buf);
-      iso_service->fps_frames++;
-      iso_service->processed_frames++;
-      
-      tmp=(float)(iso_service->current_time-iso_service->prev_time)/sysconf(_SC_CLK_TCK);
-      if (tmp==0)
-	iso_service->fps=fabs(0.0);
-      else
-	iso_service->fps=fabs((float)iso_service->fps_frames/tmp);
-      
-      if ((cam->prefs.receive_method == RECEIVE_METHOD_VIDEO1394)&&(dma_ok==DC1394_SUCCESS))
-	dc1394_capture_dma_done_with_buffer(camptr);
-      
-      PublishBufferForNext(iso_service);
-      //fprintf(stderr,"Buffer soon rolled in ISO\n");
-      pthread_mutex_unlock(&iso_service->mutex_data);
+      //fprintf(stderr,"got frame %.7f\n",iso_service->fps);
     }
-    else
-      usleep(0);
-    //fprintf(stderr,"got frame %.7f\n",iso_service->fps);
-
-    pthread_cleanup_pop(0);
   }
+  return ((void*)1);
   
 }
 
@@ -331,9 +339,15 @@ gint IsoStopThread(camera_t* cam)
   chain_t *iso_service;
   iso_service=GetService(cam,SERVICE_ISO);  
 
+  //fprintf(stderr,"Cancel requested\n");
+
   if (iso_service!=NULL) { // if ISO service running...
+    //fprintf(stderr,"Preforming thread removal\n");
     info=(isothread_info_t*)iso_service->data;
-    pthread_cancel(iso_service->thread);
+    pthread_mutex_lock(&info->mutex_cancel);
+    info->cancel_req=1;
+    //fprintf(stderr,"done\n");
+    pthread_mutex_unlock(&info->mutex_cancel);
     pthread_join(iso_service->thread, NULL);
     pthread_mutex_lock(&iso_service->mutex_data);
     pthread_mutex_lock(&iso_service->mutex_struct);
@@ -342,11 +356,10 @@ gint IsoStopThread(camera_t* cam)
 
     RemoveChain(cam,iso_service);
     
-    if ((info->temp!=NULL)&&(info->temp_allocated>0)) {
-      free(info->temp);
-      info->temp=NULL;
-      info->temp_allocated=0;
-      info->temp_size=0;
+    if ((info->tempframe.image!=NULL)&&(info->tempframe.allocated_image_bytes>0)) {
+      free(&info->tempframe.image);
+      info->tempframe.image=NULL;
+      info->tempframe.allocated_image_bytes=0;
     }
     //eprint("test2\n");
 
@@ -365,7 +378,7 @@ gint IsoStopThread(camera_t* cam)
   return (1);
 }
 
-
+/*
 void
 IsoThreadCheckParams(chain_t *iso_service)
 {
@@ -597,3 +610,4 @@ SetColorMode(int mode, buffer_t *buffer, int f7_color)
 
   //fprintf(stderr,"%d\n",buffer->color_mode);
 }
+*/

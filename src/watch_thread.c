@@ -172,10 +172,10 @@ GetValidF7Crop(watchthread_info_t *wtinfo, chain_t* display_service) {
       wtinfo->pos[0]=0;
     if (wtinfo->pos[1]<0)
       wtinfo->pos[1]=0;
-    if (wtinfo->pos[0]+wtinfo->size[0]-1>display_service->current_buffer->width)
-      wtinfo->pos[0]-=wtinfo->pos[0]+wtinfo->size[0]-display_service->current_buffer->width; // there was a +1 here
-    if (wtinfo->pos[1]+wtinfo->size[1]-1>display_service->current_buffer->height)
-      wtinfo->pos[1]-=wtinfo->pos[1]+wtinfo->size[1]-display_service->current_buffer->height; // there was a +1 here
+    if (wtinfo->pos[0]+wtinfo->size[0]-1>display_service->current_buffer->frame.size[0])
+      wtinfo->pos[0]-=wtinfo->pos[0]+wtinfo->size[0]-display_service->current_buffer->frame.size[0]; // there was a +1 here
+    if (wtinfo->pos[1]+wtinfo->size[1]-1>display_service->current_buffer->frame.size[1])
+      wtinfo->pos[1]-=wtinfo->pos[1]+wtinfo->size[1]-display_service->current_buffer->frame.size[1]; // there was a +1 here
 
   }
   else {

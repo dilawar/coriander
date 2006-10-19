@@ -95,23 +95,6 @@ V4lStartThread(camera_t* cam)
 
 
 void*
-V4lCleanupThread(void* arg) 
-{
-  chain_t* v4l_service;
-  v4lthread_info_t *info;
-
-  v4l_service=(chain_t*)arg;
-  info=(v4lthread_info_t*)v4l_service->data;
-  /* Specific cleanups: */
-
-  /* Mendatory cleanups: */
-  pthread_mutex_unlock(&v4l_service->mutex_data);
-
-  return(NULL);
-}
-
-
-void*
 V4lThread(void* arg)
 {
   chain_t* v4l_service=NULL;
@@ -153,8 +136,8 @@ V4lThread(void* arg)
 	
 	/* IF we have mono data then set V4L for mono(grey) output */
 	/* Only do this ONCE before writing the first frame */
-	if (((v4l_service->current_buffer->color_mode == DC1394_COLOR_CODING_MONO8) ||
-	     (v4l_service->current_buffer->color_mode == DC1394_COLOR_CODING_RAW8)) && v4l_service->processed_frames==0) {
+	if (((v4l_service->current_buffer->frame.color_coding == DC1394_COLOR_CODING_MONO8) ||
+	     (v4l_service->current_buffer->frame.color_coding == DC1394_COLOR_CODING_RAW8)) && v4l_service->processed_frames==0) {
 	  Warning("Setting V4L device to GREY palette");
 	  if (ioctl(info->v4l_dev,VIDIOCGPICT,&p) < 0) 
 	    Error("ioctl(VIDIOCGPICT) error");
@@ -166,20 +149,20 @@ V4lThread(void* arg)
 	}
 
 	// Convert to RGB unless we are using direct GREY palette
-	if ((v4l_service->current_buffer->color_mode != DC1394_COLOR_CODING_MONO8) &&
-	    (v4l_service->current_buffer->color_mode != DC1394_COLOR_CODING_RAW8)) {
+	if ((v4l_service->current_buffer->frame.color_coding != DC1394_COLOR_CODING_MONO8) &&
+	    (v4l_service->current_buffer->frame.color_coding != DC1394_COLOR_CODING_RAW8)) {
 	  convert_to_rgb(v4l_service->current_buffer, info->v4l_buffer);
-	  swap_rb(info->v4l_buffer, v4l_service->current_buffer->width*v4l_service->current_buffer->height*3);
+	  swap_rb(info->v4l_buffer, v4l_service->current_buffer->frame.size[0]*v4l_service->current_buffer->frame.size[1]*3);
 	}
 
-	if (v4l_service->current_buffer->width!=-1) {
+	if (v4l_service->current_buffer->frame.size[0]!=-1) {
 	  if (skip_counter>=(cam->prefs.v4l_period-1)) {
 	    skip_counter=0;
-	    if ((v4l_service->current_buffer->color_mode != DC1394_COLOR_CODING_MONO8) &&
-		(v4l_service->current_buffer->color_mode != DC1394_COLOR_CODING_RAW8))
-	      write(info->v4l_dev,info->v4l_buffer,v4l_service->current_buffer->width*v4l_service->current_buffer->height*3);
+	    if ((v4l_service->current_buffer->frame.color_coding != DC1394_COLOR_CODING_MONO8) &&
+		(v4l_service->current_buffer->frame.color_coding != DC1394_COLOR_CODING_RAW8))
+	      write(info->v4l_dev,info->v4l_buffer,v4l_service->current_buffer->frame.size[0]*v4l_service->current_buffer->frame.size[1]*3);
 	    else
-	      write(info->v4l_dev,v4l_service->current_buffer->image,v4l_service->current_buffer->width*v4l_service->current_buffer->height);
+	      write(info->v4l_dev,v4l_service->current_buffer->frame.image,v4l_service->current_buffer->frame.size[0]*v4l_service->current_buffer->frame.size[1]);
 	    v4l_service->fps_frames++;
 	    v4l_service->processed_frames++;
 	  }
@@ -255,78 +238,54 @@ V4lThreadCheckParams(chain_t *v4l_service)
 {
 
   v4lthread_info_t *info;
-  int buffer_size_change=0;
   info=(v4lthread_info_t*)v4l_service->data;
 
-  // copy harmless parameters anyway:
-  v4l_service->local_param_copy.bpp=v4l_service->current_buffer->bpp;
-  v4l_service->local_param_copy.bayer_pattern=v4l_service->current_buffer->bayer_pattern;
-
   // if some parameters changed, we need to re-allocate the local buffers and restart the v4l
-  if ((v4l_service->current_buffer->width!=v4l_service->local_param_copy.width)||
-      (v4l_service->current_buffer->height!=v4l_service->local_param_copy.height)||
-      (v4l_service->current_buffer->bytes_per_frame!=v4l_service->local_param_copy.bytes_per_frame)||
-      (v4l_service->current_buffer->color_mode!=v4l_service->local_param_copy.color_mode)||
-      // check bayer and stereo decoding
-      (v4l_service->current_buffer->stereo_decoding!=v4l_service->local_param_copy.stereo_decoding)||
-      (v4l_service->current_buffer->bayer!=v4l_service->local_param_copy.bayer)
-      ) {
-    if (v4l_service->current_buffer->width*v4l_service->current_buffer->height!=
-	v4l_service->local_param_copy.width*v4l_service->local_param_copy.height) {
-      buffer_size_change=1;
-    }
-    else {
-      buffer_size_change=0;
-    }
-    
-    // copy all new parameters:
-    v4l_service->local_param_copy.width=v4l_service->current_buffer->width;
-    v4l_service->local_param_copy.height=v4l_service->current_buffer->height;
-    v4l_service->local_param_copy.bytes_per_frame=v4l_service->current_buffer->bytes_per_frame;
-    v4l_service->local_param_copy.stereo_decoding=v4l_service->current_buffer->stereo_decoding;
-    v4l_service->local_param_copy.bayer=v4l_service->current_buffer->bayer;
-    v4l_service->local_param_copy.color_mode=v4l_service->current_buffer->color_mode;
-    v4l_service->local_param_copy.buffer_image_bytes=v4l_service->current_buffer->buffer_image_bytes;
+  if ((v4l_service->current_buffer->frame.size[0]!=v4l_service->local_param_copy.frame.size[0])||
+      (v4l_service->current_buffer->frame.size[1]!=v4l_service->local_param_copy.frame.size[1]) ) {
     
     // DO SOMETHING
-    if (buffer_size_change!=0) {
-      
-      // clear buffer
-      if (info->v4l_buffer!=NULL) {
-	free(info->v4l_buffer);
-	info->v4l_buffer=NULL;
-      }
 
-      // create buffer
-      info->v4l_buffer=(unsigned char*)malloc(v4l_service->current_buffer->width*v4l_service->current_buffer->height
-					      *3*sizeof(unsigned char));
-      if (info->v4l_buffer==NULL) {
-	fprintf(stderr,"Can't allocate buffer! Aiiieee!\n");
-      }
-      
-      // STOPING THE PIPE MIGHT BE NECESSARY HERE
+    // clear buffer
+    if (info->v4l_buffer!=NULL) {
+      free(info->v4l_buffer);
+      info->v4l_buffer=NULL;
+    }
 
-      // "start pipe"      
-      if (ioctl (info->v4l_dev, VIDIOCGCAP, &info->vid_caps) == -1) {
-	perror ("ioctl (VIDIOCGCAP)");
-      }
-      if (ioctl (info->v4l_dev, VIDIOCGPICT, &info->vid_pic)== -1) {
-	perror ("ioctl VIDIOCGPICT");
-      }
-      info->vid_pic.palette = VIDEO_PALETTE_RGB24;
-      if (ioctl (info->v4l_dev, VIDIOCSPICT, &info->vid_pic)== -1) {
-	perror ("ioctl VIDIOCSPICT");
-      }
-      if (ioctl (info->v4l_dev, VIDIOCGWIN, &info->vid_win)== -1) {
-	perror ("ioctl VIDIOCGWIN");
-      }
-      info->vid_win.width=v4l_service->current_buffer->width;
-      info->vid_win.height=v4l_service->current_buffer->height;
-      if (ioctl (info->v4l_dev, VIDIOCSWIN, &info->vid_win)== -1) {
-	perror ("ioctl VIDIOCSWIN");
-      }
+    // create buffer
+    info->v4l_buffer=(unsigned char*)malloc(v4l_service->current_buffer->frame.size[0]*v4l_service->current_buffer->frame.size[1]
+					    *3*sizeof(unsigned char));
+    if (info->v4l_buffer==NULL) {
+      fprintf(stderr,"Can't allocate buffer! Aiiieee!\n");
+    }
+    
+    // STOPING THE PIPE MIGHT BE NECESSARY HERE
+    
+    // "start pipe"      
+    if (ioctl (info->v4l_dev, VIDIOCGCAP, &info->vid_caps) == -1) {
+      perror ("ioctl (VIDIOCGCAP)");
+    }
+    if (ioctl (info->v4l_dev, VIDIOCGPICT, &info->vid_pic)== -1) {
+      perror ("ioctl VIDIOCGPICT");
+    }
+    info->vid_pic.palette = VIDEO_PALETTE_RGB24;
+    if (ioctl (info->v4l_dev, VIDIOCSPICT, &info->vid_pic)== -1) {
+      perror ("ioctl VIDIOCSPICT");
+    }
+    if (ioctl (info->v4l_dev, VIDIOCGWIN, &info->vid_win)== -1) {
+      perror ("ioctl VIDIOCGWIN");
+    }
+    info->vid_win.width=v4l_service->current_buffer->frame.size[0];
+    info->vid_win.height=v4l_service->current_buffer->frame.size[1];
+    if (ioctl (info->v4l_dev, VIDIOCSWIN, &info->vid_win)== -1) {
+      perror ("ioctl VIDIOCSWIN");
     }
   }
+
+  // copy all new parameters:
+  memcpy(&v4l_service->local_param_copy, v4l_service->current_buffer,sizeof(buffer_t));
+  v4l_service->local_param_copy.frame.allocated_image_bytes=0;
+  
 }
 
 void

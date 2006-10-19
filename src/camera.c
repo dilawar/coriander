@@ -102,8 +102,8 @@ GetCameraData(camera_t* cam) {
   cam->image_pipe=NULL;
   pthread_mutex_lock(&cam->uimutex);
   cam->want_to_display=0;
-  cam->bayer=NO_BAYER_DECODING;
-  cam->stereo=NO_STEREO_DECODING;
+  cam->bayer=-1;
+  cam->stereo=-1;
   cam->bpp=8;
   CopyCameraPrefs(cam);
   pthread_mutex_unlock(&cam->uimutex);

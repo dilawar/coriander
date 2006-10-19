@@ -27,10 +27,10 @@ typedef enum
 
 typedef struct
 { 
-  unsigned char *temp;
-  long long unsigned int temp_size;
-  int temp_allocated;
+  pthread_mutex_t    mutex_cancel;
+  int                cancel_req;
 
+  dc1394video_frame_t tempframe;
   int orig_sizex;
   int orig_sizey;
   int cond16bit;
@@ -41,9 +41,6 @@ typedef struct
 
 gint
 IsoStartThread(camera_t* cam);
-
-void*
-IsoCleanupThread(void* arg);
 
 void*
 IsoThread(void* arg);

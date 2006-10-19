@@ -28,8 +28,8 @@
 void
 convert_to_rgb(buffer_t *buffer, unsigned char *dest)
 {
-  dc1394_convert_to_RGB8(buffer->image, dest, buffer->width, buffer->height,
-			 DC1394_BYTE_ORDER_YUYV, buffer->color_mode, buffer->bpp);
+  dc1394_convert_to_RGB8(buffer->frame.image, dest, buffer->frame.size[0], buffer->frame.size[1],
+			 DC1394_BYTE_ORDER_YUYV, buffer->frame.color_coding, buffer->frame.bit_depth);
 }
 
 // we should optimize this for RGB too: RGB modes could use RGB-SDL instead of YUV overlay
@@ -43,8 +43,8 @@ convert_to_yuv_for_SDL(buffer_t *buffer, SDL_Overlay *sdloverlay, unsigned int o
 	  buffer->bytes_per_frame,
 	  buffer->color_mode);
   */
-  dc1394_convert_to_YUV422(buffer->image, dest, buffer->width, buffer->height,
-			   overlay_byte_order, buffer->color_mode, buffer->bpp);
+  dc1394_convert_to_YUV422(buffer->frame.image, dest, buffer->frame.size[0], buffer->frame.size[1],
+			   overlay_byte_order, buffer->frame.color_coding, buffer->frame.bit_depth);
 }
 
 void

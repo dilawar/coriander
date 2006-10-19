@@ -77,9 +77,6 @@ gint
 SaveStartThread(camera_t* cam);
 
 void*
-SaveCleanupThread(void* arg);
-
-void*
 SaveThread(void* arg);
 
 gint
