@@ -209,9 +209,8 @@ IsoThread(void* arg)
 	
 	camptr=iso_service->camera->camera_info;
 	
-	err=dc1394_capture_dequeue(camptr, DC1394_CAPTURE_POLICY_POLL, frame);
+	err=dc1394_capture_dequeue(camptr, DC1394_CAPTURE_POLICY_POLL, &frame);
 
-	//printf("Got frame\n");
 	if (err==DC1394_SUCCESS) { // should check for more errors here  
 	  info->rawtime.tv_sec=frame->timestamp/1000000;
 	  info->rawtime.tv_usec=frame->timestamp%1000000;
