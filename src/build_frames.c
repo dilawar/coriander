@@ -280,54 +280,6 @@ BuildPrefsDisplayFrame(void)
 void
 BuildPrefsReceiveFrame(void)
 {
-  GtkWidget* new_option_menu;
-  GtkWidget* new_menu;
-  GtkWidget* glade_menuitem;
-  int k=0;
-
-  // BUILD A NEW  OPTION_MENU:
-  gtk_widget_destroy(GTK_WIDGET(lookup_widget(main_window,"prefs_receive_method_menu"))); // remove previous menu
-  
-  new_option_menu = gtk_option_menu_new ();
-  gtk_widget_ref (new_option_menu);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "prefs_receive_method_menu", new_option_menu,
-			    (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (new_option_menu);
-  gtk_table_attach (GTK_TABLE (lookup_widget(main_window,"table45")),
-		    new_option_menu, 0, 1, 0, 1,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (new_option_menu), 1);
-  
-  new_menu = gtk_menu_new ();
-
-  // always add a raw1394 item
-  glade_menuitem = gtk_menu_item_new_with_label (_("RAW1394"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-  g_signal_connect ((gpointer) glade_menuitem, "activate",
-		    G_CALLBACK (on_prefs_receive_method_activate),
-		    (int*)RECEIVE_METHOD_RAW1394); 
-  camera->prefs.receive_method2index[RECEIVE_METHOD_RAW1394]=k;
-  k++;
-
-  // 'video1394' menuitem optional addition:
-  glade_menuitem = gtk_menu_item_new_with_label (_("VIDEO1394"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-  g_signal_connect ((gpointer) glade_menuitem, "activate",
-		    G_CALLBACK (on_prefs_receive_method_activate),
-		    (int*)RECEIVE_METHOD_VIDEO1394); 
-  camera->prefs.receive_method2index[RECEIVE_METHOD_VIDEO1394]=k;
-  k++;
-  
-  gtk_option_menu_set_menu (GTK_OPTION_MENU (new_option_menu), new_menu);
-
-  // menu history
-  gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(main_window, "prefs_receive_method_menu")),
-			      camera->prefs.receive_method2index[camera->prefs.receive_method]);
-  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window, "prefs_receive_dropframes")), camera->prefs.video1394_dropframes);
-
   gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(main_window, "dma_buffer_size"), camera->prefs.dma_buffer_size);
 }
 

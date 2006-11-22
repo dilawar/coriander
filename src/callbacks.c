@@ -1177,17 +1177,6 @@ on_prefs_ftp_mode_toggled           (GtkToggleButton *togglebutton,
 
 
 void
-on_prefs_receive_method_activate      (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-  camera->prefs.receive_method=(int)(unsigned long)user_data;
-  gnome_config_set_int("coriander/receive/method",camera->prefs.receive_method);
-  gnome_config_sync();
-  UpdatePrefsReceiveFrame();
-}
-
-
-void
 on_prefs_display_keep_ratio_toggled    (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
@@ -1207,16 +1196,6 @@ on_prefs_v4l_dev_name_changed      (GtkEditable     *editable,
   gnome_config_set_string("coriander/v4l/v4l_dev_name",camera->prefs.v4l_dev_name);
   gnome_config_sync();
 
-}
-
-
-void
-on_prefs_receive_drop_frames_toggled   (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-  camera->prefs.video1394_dropframes=togglebutton->active;
-  gnome_config_set_int("coriander/receive/video1394_dropframes",camera->prefs.video1394_dropframes);
-  gnome_config_sync();
 }
 
 

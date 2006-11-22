@@ -1,7 +1,10 @@
 Coriander, (c) 2000-2006 Damien Douxchamps <ddouxchamps@users.sf.net>
 
-Changes towards version 2.0.0-rc2
+Changes in version 2.0.0-rc2
 
+   November 22, 2006, by Damien Douxchamps
+   - sync with libdc1394-2 (SVN 327)
+	
    October 19, 2006, by Damien Douxchamps
    - move to the new capture API
 	

@@ -51,16 +51,6 @@ UpdatePrefsReceiveFrame(void)
   // thread presence blanking: default some to ON
   gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_receive_frame"), TRUE);
 
-  // normal:
-  gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_receive_dropframes"),
-			   camera->prefs.receive_method==RECEIVE_METHOD_VIDEO1394);
-  gtk_widget_set_sensitive(lookup_widget(main_window,"label153"),
-			   camera->prefs.receive_method==RECEIVE_METHOD_VIDEO1394);
-  gtk_widget_set_sensitive(lookup_widget(main_window,"label154"),
-			   camera->prefs.receive_method==RECEIVE_METHOD_VIDEO1394);
-  gtk_widget_set_sensitive(lookup_widget(main_window,"dma_buffer_size"),
-			   camera->prefs.receive_method==RECEIVE_METHOD_VIDEO1394);
-
   // thread presence blanking:
   if (GetService(camera,SERVICE_ISO)!=NULL)
     gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_receive_frame"), FALSE);

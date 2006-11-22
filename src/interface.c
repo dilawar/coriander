@@ -75,11 +75,6 @@ static GnomeUIInfo convertwidget4_uiinfo[] =
   GNOMEUIINFO_END
 };
 
-static GnomeUIInfo convertwidget5_uiinfo[] =
-{
-  GNOMEUIINFO_END
-};
-
 static GnomeUIInfo convertwidget6_uiinfo[] =
 {
   {
@@ -556,9 +551,6 @@ create_main_window (void)
   GtkWidget *label96;
   GtkWidget *prefs_receive_frame;
   GtkWidget *table45;
-  GtkWidget *prefs_receive_method_menu;
-  GtkWidget *convertwidget5;
-  GtkWidget *prefs_receive_dropframes;
   GtkWidget *hbox68;
   GtkWidget *label153;
   GtkObject *dma_buffer_size_adj;
@@ -861,7 +853,7 @@ create_main_window (void)
 
   main_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_widget_set_name (main_window, "main_window");
-  gtk_window_set_title (GTK_WINDOW (main_window), _("Coriander 2.0.0-rc1"));
+  gtk_window_set_title (GTK_WINDOW (main_window), _("Coriander 2.0.0-20060113"));
   main_window_icon_pixbuf = create_pixbuf ("coriander/coriander-icon.png");
   if (main_window_icon_pixbuf)
     {
@@ -1785,43 +1777,19 @@ create_main_window (void)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (prefs_receive_frame), 5);
 
-  table45 = gtk_table_new (2, 2, FALSE);
+  table45 = gtk_table_new (1, 2, FALSE);
   gtk_widget_set_name (table45, "table45");
   gtk_widget_show (table45);
   gtk_container_add (GTK_CONTAINER (prefs_receive_frame), table45);
 
-  prefs_receive_method_menu = gtk_option_menu_new ();
-  gtk_widget_set_name (prefs_receive_method_menu, "prefs_receive_method_menu");
-  gtk_widget_show (prefs_receive_method_menu);
-  gtk_table_attach (GTK_TABLE (table45), prefs_receive_method_menu, 0, 1, 0, 1,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (GTK_EXPAND), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (prefs_receive_method_menu), 1);
-  gtk_tooltips_set_tip (tooltips, prefs_receive_method_menu, _("Choose between normal slow RAW1394 transfer of fast and efficient VIDEO1394 DMA transfer"), NULL);
-
-  convertwidget5 = gtk_menu_new ();
-  gtk_widget_set_name (convertwidget5, "convertwidget5");
-  gnome_app_fill_menu (GTK_MENU_SHELL (convertwidget5), convertwidget5_uiinfo,
-                       accel_group, FALSE, 0);
-
-  gtk_option_menu_set_menu (GTK_OPTION_MENU (prefs_receive_method_menu), convertwidget5);
-
-  prefs_receive_dropframes = gtk_check_button_new_with_mnemonic (_("Frame dropping"));
-  gtk_widget_set_name (prefs_receive_dropframes, "prefs_receive_dropframes");
-  gtk_widget_show (prefs_receive_dropframes);
-  gtk_table_attach (GTK_TABLE (table45), prefs_receive_dropframes, 1, 2, 0, 1,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_tooltips_set_tip (tooltips, prefs_receive_dropframes, _("Allow the low-level driver to drop frames. Enable this to reduce delay"), NULL);
-
   hbox68 = gtk_hbox_new (FALSE, 0);
   gtk_widget_set_name (hbox68, "hbox68");
   gtk_widget_show (hbox68);
-  gtk_table_attach (GTK_TABLE (table45), hbox68, 1, 2, 1, 2,
+  gtk_table_attach (GTK_TABLE (table45), hbox68, 0, 1, 0, 1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
 
-  label153 = gtk_label_new (_("DMA buffer size: "));
+  label153 = gtk_label_new (_("DMA ring buffer size: "));
   gtk_widget_set_name (label153, "label153");
   gtk_widget_show (label153);
   gtk_box_pack_start (GTK_BOX (hbox68), label153, FALSE, FALSE, 0);
@@ -1842,7 +1810,7 @@ create_main_window (void)
   gtk_box_pack_start (GTK_BOX (hbox68), label154, FALSE, FALSE, 0);
   gtk_misc_set_padding (GTK_MISC (label154), 5, 0);
 
-  label97 = gtk_label_new (_("<b>Method</b>"));
+  label97 = gtk_label_new (_("<b>Capture options</b>"));
   gtk_widget_set_name (label97, "label97");
   gtk_widget_show (label97);
   gtk_frame_set_label_widget (GTK_FRAME (prefs_receive_frame), label97);
@@ -3907,9 +3875,6 @@ create_main_window (void)
   g_signal_connect ((gpointer) service_ftp, "toggled",
                     G_CALLBACK (on_service_ftp_toggled),
                     NULL);
-  g_signal_connect ((gpointer) prefs_receive_dropframes, "toggled",
-                    G_CALLBACK (on_prefs_receive_drop_frames_toggled),
-                    NULL);
   g_signal_connect ((gpointer) dma_buffer_size, "changed",
                     G_CALLBACK (on_dma_buffer_size_changed),
                     NULL);
@@ -4167,9 +4132,6 @@ create_main_window (void)
   GLADE_HOOKUP_OBJECT (main_window, label96, "label96");
   GLADE_HOOKUP_OBJECT (main_window, prefs_receive_frame, "prefs_receive_frame");
   GLADE_HOOKUP_OBJECT (main_window, table45, "table45");
-  GLADE_HOOKUP_OBJECT (main_window, prefs_receive_method_menu, "prefs_receive_method_menu");
-  GLADE_HOOKUP_OBJECT (main_window, convertwidget5, "convertwidget5");
-  GLADE_HOOKUP_OBJECT (main_window, prefs_receive_dropframes, "prefs_receive_dropframes");
   GLADE_HOOKUP_OBJECT (main_window, hbox68, "hbox68");
   GLADE_HOOKUP_OBJECT (main_window, label153, "label153");
   GLADE_HOOKUP_OBJECT (main_window, dma_buffer_size, "dma_buffer_size");
@@ -4513,8 +4475,8 @@ create_about_window (void)
 
   about_window_logo_pixbuf = create_pixbuf ("coriander/coriander-logo.png");
   about_window = gnome_about_new ("Coriander", VERSION,
-                        _("Copyright 2000-2006 Damien Douxchamps"),
-                        _("Coriander home page is\nhttp://damien.douxchamps.net/ieee1394/coriander/\n \nCoriander received equipment donations/leases from the following companies:\n- Hamamatsu Corporation     http://www.hpk.co.jp\n- The Imaging Source     http://www.1394imaging.com\n- Point Grey Research     http://www.ptgrey.com\n- Basler GmbH     http://www.balserweb.com\n \nMany thanks to our sponsors!"),
+                        _("Copyright 2000-2005 Damien Douxchamps"),
+                        _("Coriander home page is http://coriander.sourceforge.net\n \nCoriander received equipment donations/leases from the following companies:\n- Hamamatsu Corporation     http://www.hpk.co.jp\n- The Imaging Source     http://www.1394imaging.com\n- Point Grey Research     http://www.ptgrey.com\n- Basler GmbH     http://www.balserweb.com\n \nMany thanks to our sponsors!"),
                         authors,
                         documenters,
                         translators,

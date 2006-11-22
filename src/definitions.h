@@ -73,9 +73,7 @@ typedef struct _CamPrefs
   int display_period;
   int display_redraw;
   float display_redraw_rate;
-  int receive_method;
   int iso_nodrop;
-  int video1394_dropframes;
   int dma_buffer_size;
   char *save_filename;
   char *save_filename_ext;

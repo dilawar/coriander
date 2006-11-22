@@ -128,27 +128,12 @@ gint IsoStartThread(camera_t* cam)
 
     } // end if iso_state is on.
 
-    switch(cam->prefs.receive_method) {
-    case RECEIVE_METHOD_VIDEO1394:
-      err=dc1394_capture_setup_dma(cam->camera_info, cam->prefs.dma_buffer_size);
-      if (err!=DC1394_SUCCESS){
-	eprint("Failed to setup DMA capture. Error code %d\n",err);
-	FreeChain(iso_service);
-	iso_service=NULL;
-	return(-1);
-      }
-      cam->prefs.receive_method=RECEIVE_METHOD_VIDEO1394;
-      break;
-    case RECEIVE_METHOD_RAW1394:
-      err=dc1394_capture_setup(cam->camera_info);
-      if (err!=DC1394_SUCCESS){
-	eprint("Failed to setup RAW1394 capture. Error code %d\n",err);
-	FreeChain(iso_service);
-	iso_service=NULL;
-	return(-1);
-      }
-      cam->prefs.receive_method=RECEIVE_METHOD_RAW1394;
-      break;
+    err=dc1394_capture_setup(cam->camera_info, cam->prefs.dma_buffer_size);
+    if (err!=DC1394_SUCCESS){
+      eprint("Failed to setup capture. Error code %d\n",err);
+      FreeChain(iso_service);
+      iso_service=NULL;
+      return(-1);
     }
     
     pthread_mutex_lock(&iso_service->mutex_data);
@@ -186,6 +171,7 @@ IsoThread(void* arg)
   float tmp;
   dc1394camera_t *camptr;
   struct tm captime;
+  dc1394error_t err;
 
   iso_service=(chain_t*)arg;
 
@@ -223,13 +209,10 @@ IsoThread(void* arg)
 	
 	camptr=iso_service->camera->camera_info;
 	
-	if (cam->prefs.receive_method == RECEIVE_METHOD_RAW1394)
-	  dc1394_capture(&camptr, 1);
-	else {
-	  frame=dc1394_capture_dequeue_dma(camptr, DC1394_VIDEO1394_POLL);
-	}
+	err=dc1394_capture_dequeue(camptr, DC1394_CAPTURE_POLICY_POLL, frame);
+
 	//printf("Got frame\n");
-	if (frame!=NULL) {  
+	if (err==DC1394_SUCCESS) { // should check for more errors here  
 	  info->rawtime.tv_sec=frame->timestamp/1000000;
 	  info->rawtime.tv_usec=frame->timestamp%1000000;
 	  //gettimeofday(&info->rawtime, NULL);
@@ -307,10 +290,9 @@ IsoThread(void* arg)
 	  else
 	    iso_service->fps=fabs((float)iso_service->fps_frames/tmp);
 	  
-	  if (cam->prefs.receive_method == RECEIVE_METHOD_VIDEO1394) {
-	    //fprintf(stderr,"DMA buffer returned to pool\n");
-	    dc1394_capture_enqueue_dma(camptr,frame);
-	  }
+	  // return the frame to the DMA ring buffer
+	  dc1394_capture_enqueue(camptr,frame);
+	  
 	  
 	  PublishBufferForNext(iso_service);
 	  //fprintf(stderr,"Buffer soon rolled in ISO\n");

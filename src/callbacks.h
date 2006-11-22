@@ -187,10 +187,6 @@ on_range_menu_activate                 (GtkMenuItem     *menuitem,
 				        gpointer         user_data);
 
 void
-on_prefs_receive_method_activate       (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
-
-void
 on_prefs_display_keep_ratio_toggled    (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
 
@@ -256,10 +252,6 @@ on_prefs_op_timeout_scale_changed      (GtkEditable     *editable,
 
 void
 on_prefs_update_scale_changed          (GtkEditable     *editable,
-                                        gpointer         user_data);
-
-void
-on_prefs_receive_drop_frames_toggled   (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
 
 void
