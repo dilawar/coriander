@@ -2,6 +2,9 @@ Coriander, (c) 2000-2006 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes in version 2.0.0-rc2
 
+   December 08, 2006, by Daniel Drake
+   - fix ffmpeg detection scripts in configure.in
+	
    November 22, 2006, by Damien Douxchamps
    - sync with libdc1394-2 (SVN 327)
    - sync with libdc1394-2 (SVN 329)
