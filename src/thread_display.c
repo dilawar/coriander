@@ -105,8 +105,9 @@ DisplayThread(void* arg)
 	    skip_counter=0;
 #ifdef HAVE_SDLLIB
 	    if (info->sdloverlay!=NULL) {
+	      /*
 	      if (SDL_LockYUVOverlay(info->sdloverlay) == 0) {
-		convert_to_yuv_for_SDL(display_service->current_buffer, info->sdloverlay, preferences.overlay_byte_order);
+		convert_to_yuv_for_SDL(&display_service->current_buffer->frame, info->sdloverlay, preferences.overlay_byte_order);
 		
 		// informative overlays
 		SDLDisplayPattern(display_service);
@@ -117,6 +118,7 @@ DisplayThread(void* arg)
 		
 		info->redraw_prev_time=times(&info->redraw_tms_buf);
 	      }
+	    */
 	    }
 #endif
 	    display_service->fps_frames++;
@@ -169,13 +171,15 @@ ConditionalTimeoutRedraw(chain_t* service)
     interval=fabs((float)(info->redraw_current_time-info->redraw_prev_time)/sysconf(_SC_CLK_TCK));
     if (interval>(1.0/service->camera->prefs.display_redraw_rate)) { // redraw e.g. 4 times per second
 #ifdef HAVE_SDLLIB
+      /*
       if (SDL_LockYUVOverlay(info->sdloverlay) == 0) {
 	//MainWarning("Conditional display redraw");
-	convert_to_yuv_for_SDL(service->current_buffer, info->sdloverlay, preferences.overlay_byte_order);
+	convert_to_yuv_for_SDL(&service->current_buffer->frame, info->sdloverlay, preferences.overlay_byte_order);
 	SDLDisplayArea(service);
 	SDL_UnlockYUVOverlay(info->sdloverlay);
 	SDL_DisplayYUVOverlay(info->sdloverlay, &info->sdlvideorect);
       }
+      */
 #endif
       info->redraw_prev_time=times(&info->redraw_tms_buf);
     }
@@ -273,11 +277,11 @@ SDLInit(chain_t *display_service)
     }
   }
 
-  /*
+  
   // set coriander icon
-  icon_surface=SDL_CreateRGBSurfaceFrom((void*)coriander_logo_xpm)
-  SDL_WM_SetIcon(icon_surface,NULL);
-  */
+  //icon_surface=SDL_CreateRGBSurfaceFrom((void*)coriander_logo_xpm)
+  //SDL_WM_SetIcon(icon_surface,NULL);
+  
 
   info->sdlvideorect.x=0;
   info->sdlvideorect.y=0;
@@ -693,20 +697,23 @@ DisplayThreadCheckParams(chain_t *display_service)
 
   //fprintf(stderr,"check params\n");
   // if some parameters changed, we need to restart the display
-  if ((display_service->current_buffer->frame.size[0]!=display_service->local_param_copy.frame.size[0] )||
+  //fprintf(stderr,"Before: [%d %d] After: [%d %d]\n",
+  //	  display_service->local_param_copy.frame.size[0],display_service->local_param_copy.frame.size[1],
+  //	  display_service->current_buffer->frame.size[0],display_service->current_buffer->frame.size[1]);
+  if ((display_service->current_buffer->frame.size[0]!=display_service->local_param_copy.frame.size[0])||
       (display_service->current_buffer->frame.size[1]!=display_service->local_param_copy.frame.size[1])   ) {
 
-    //fprintf(stderr,"Parameters changed...\n");
     first_time=((display_service->local_param_copy.frame.size[0]==-1)&&(display_service->current_buffer->frame.size[0]!=-1));
-    if (first_time>0)
-      //fprintf(stderr,"  first frame...\n");
+    //if (first_time>0)
+    //fprintf(stderr,"  first frame...\n");
       
     prev_image_size[0]=display_service->local_param_copy.frame.size[0];
     prev_image_size[1]=display_service->local_param_copy.frame.size[1];
 
-    // do this because we check the size after. other parameters will wait for the memcpy:
-    display_service->local_param_copy.frame.size[0]=display_service->current_buffer->frame.size[0];
-    display_service->local_param_copy.frame.size[1]=display_service->current_buffer->frame.size[1];
+    // alternating between thos two methods may give a clue (don't forget deal with the 'else memcpy' below) ///////////////////////////////////////////
+    memcpy(&display_service->local_param_copy,display_service->current_buffer,sizeof(buffer_t));
+    //display_service->local_param_copy.frame.size[0]=display_service->current_buffer->frame.size[0];
+    //display_service->local_param_copy.frame.size[1]=display_service->current_buffer->frame.size[1];
 
     // DO SOMETHING
     //fprintf(stderr,"  fs: %d\n",display_service->local_param_copy.frame.size[0]);
@@ -716,6 +723,9 @@ DisplayThreadCheckParams(chain_t *display_service)
       if (first_time) {
 	SDLInit(display_service);
       } else {
+
+	//usleep(1000000);
+
 	// note: in order to preserve the previous scaling and ratio, the previous parameters are used to
 	// determine the new size of the display area
 	prev_overlay_size[0]=info->sdlvideorect.w;
@@ -728,10 +738,9 @@ DisplayThreadCheckParams(chain_t *display_service)
 	//SDLEventStartThread(display_service);
       }
     }
-    //fprintf(stderr,"SDL updated.\n");
+    fprintf(stderr,"SDL updated.\n");
   }
 
-  // copy all new parameters:
   memcpy(&display_service->local_param_copy,display_service->current_buffer,sizeof(buffer_t));
   display_service->local_param_copy.frame.allocated_image_bytes=0;
 }

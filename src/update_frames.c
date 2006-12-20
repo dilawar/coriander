@@ -356,9 +356,7 @@ UpdateOptionFrame(void)
   dc1394color_filter_t filter;
   // if we have a valid color filter, use that:
   if (dc1394_is_video_mode_scalable(camera->camera_info->video_mode)==DC1394_TRUE) {
-    if (dc1394_format7_get_color_filter(camera->camera_info, camera->camera_info->video_mode, &filter)!=DC1394_SUCCESS)
-      fprintf(stderr,"Could not get color filter!\n");
-    else {
+    if (dc1394_format7_get_color_filter(camera->camera_info, camera->camera_info->video_mode, &filter)==DC1394_SUCCESS) {
       if (filter!=0) { // we have a valid filter: use it.
 	//fprintf(stderr,"Valid filter!\n");
 	camera->format7_info.modeset.mode[camera->camera_info->video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].color_filter=filter;

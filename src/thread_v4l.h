@@ -27,7 +27,8 @@ typedef struct
   int                     cancel_req;
 
   int v4l_dev;
-  unsigned char *v4l_buffer;
+  dc1394video_frame_t frame;
+  //unsigned char *v4l_buffer;
 
   struct video_capability vid_caps;
   struct video_window vid_win;

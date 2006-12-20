@@ -400,9 +400,9 @@ SDLResizeDisplay(chain_t *display_service, int width, int height)
     //fprintf(stderr,"done\n");
 
     // new video mode
-    //fprintf(stderr,"create new video mode with size [%d %d], bpp %d and flags 0x%lx...\n",info->sdlvideorect.w, info->sdlvideorect.h, info->sdlbpp, info->sdlflags);
-    //info->sdlbpp = SDL_VideoModeOK(info->sdlvideorect.w, info->sdlvideorect.h, info->sdlbpp, info->sdlflags); // not necessary
-    info->sdlvideo = SDL_SetVideoMode(info->sdlvideorect.w, info->sdlvideorect.h, info->sdlbpp, info->sdlflags); // THIS LINE SOMETIME SUCKS WHEN CHANGING FORMAT W/H
+    info->sdlbpp = SDL_VideoModeOK(info->sdlvideorect.w, info->sdlvideorect.h, info->sdlbpp, info->sdlflags); 
+    fprintf(stderr,"create new video mode with size [%d %d], bpp %d and flags 0x%lx...\n",info->sdlvideorect.w, info->sdlvideorect.h, info->sdlbpp, info->sdlflags);
+    info->sdlvideo = SDL_SetVideoMode(info->sdlvideorect.w, info->sdlvideorect.h, info->sdlbpp, info->sdlflags); // THIS LINE SOMETIMES SUCKS WHEN CHANGING FORMAT W/H
     if (info->sdlvideo == NULL) {
       Error(SDL_GetError());
       SDL_Quit();
@@ -413,7 +413,7 @@ SDLResizeDisplay(chain_t *display_service, int width, int height)
     //  Error(SDL_GetError());
     //}
     
-    //fprintf(stderr,"create overlay with size [%d %d]...\n",display_service->current_buffer->frame.size[0],display_service->current_buffer->frame.size[1]);
+    fprintf(stderr,"create overlay with size [%d %d]...\n",display_service->current_buffer->frame.size[0],display_service->current_buffer->frame.size[1]);
     
     // Create YUV Overlay  
     switch(preferences.overlay_byte_order) {

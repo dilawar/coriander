@@ -45,8 +45,8 @@ typedef struct
   //char               user[STRING_SIZE];
   //char               path[STRING_SIZE];
   //long int           period;
-  long int           imlib_buffer_size;
-  unsigned char*     buffer;
+  //long int           imlib_buffer_size;
+  dc1394video_frame_t frame;
   //int                mode;
   //int                datenum;
 #ifdef HAVE_FTPLIB

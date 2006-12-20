@@ -26,25 +26,32 @@
  **********************************************************************/
 
 void
-convert_to_rgb(buffer_t *buffer, unsigned char *dest)
+convert_to_rgb(dc1394video_frame_t *in, dc1394video_frame_t *out)
 {
-  dc1394_convert_to_RGB8(buffer->frame.image, dest, buffer->frame.size[0], buffer->frame.size[1],
-			 DC1394_BYTE_ORDER_YUYV, buffer->frame.color_coding, buffer->frame.bit_depth);
+  out->color_coding=DC1394_COLOR_CODING_RGB8;
+  dc1394_convert_frames(in, out);
 }
 
 // we should optimize this for RGB too: RGB modes could use RGB-SDL instead of YUV overlay
 void
-convert_to_yuv_for_SDL(buffer_t *buffer, SDL_Overlay *sdloverlay, unsigned int overlay_byte_order)
+convert_to_yuv_for_SDL(dc1394video_frame_t *in, SDL_Overlay *sdloverlay, unsigned int overlay_byte_order)
 {
-  unsigned char *dest=sdloverlay->pixels[0];
-  /*
-  fprintf(stderr,"C:[%d %d] BPF:%lli ColMode:%d\n",
-	  buffer->width, buffer->height,
-	  buffer->bytes_per_frame,
-	  buffer->color_mode);
-  */
-  dc1394_convert_to_YUV422(buffer->frame.image, dest, buffer->frame.size[0], buffer->frame.size[1],
-			   overlay_byte_order, buffer->frame.color_coding, buffer->frame.bit_depth);
+  
+  dc1394video_frame_t out;
+  unsigned int padding=in->padding_bytes;
+  in->padding_bytes=0;
+  in->total_bytes=in->image_bytes;
+  out.color_coding=DC1394_COLOR_CODING_YUV422;
+  out.yuv_byte_order=overlay_byte_order;
+  out.image=sdloverlay->pixels[0];
+  // very large value to avoid re-allocation. In reality, this buffer is allocated by SDL functions so
+  // we don't want to touch it here.
+  out.allocated_image_bytes=1e12;
+
+  dc1394_convert_frames(in, &out);
+
+  in->padding_bytes=padding;
+  in->total_bytes=in->image_bytes+padding;
 }
 
 void

@@ -50,7 +50,8 @@ V4lStartThread(camera_t* cam)
     
     CommonChainSetup(cam, v4l_service,SERVICE_V4L);
     
-    info->v4l_buffer=NULL;
+    info->frame.image=NULL;
+    info->frame.allocated_image_bytes=0;
 
     // open V4L device
     info->v4l_dev=-1;
@@ -76,7 +77,10 @@ V4lStartThread(camera_t* cam)
       RemoveChain(cam, v4l_service);
       pthread_mutex_unlock(&v4l_service->mutex_struct);
       pthread_mutex_unlock(&v4l_service->mutex_data);
-      free(info->v4l_buffer);
+      if ((info->frame.image!=NULL)&&(info->frame.allocated_image_bytes>0)) {
+	free(info->frame.image);
+	info->frame.allocated_image_bytes=0;
+      }
       free(stemp);
       stemp=NULL;
       FreeChain(v4l_service);
@@ -151,8 +155,8 @@ V4lThread(void* arg)
 	// Convert to RGB unless we are using direct GREY palette
 	if ((v4l_service->current_buffer->frame.color_coding != DC1394_COLOR_CODING_MONO8) &&
 	    (v4l_service->current_buffer->frame.color_coding != DC1394_COLOR_CODING_RAW8)) {
-	  convert_to_rgb(v4l_service->current_buffer, info->v4l_buffer);
-	  swap_rb(info->v4l_buffer, v4l_service->current_buffer->frame.size[0]*v4l_service->current_buffer->frame.size[1]*3);
+	  convert_to_rgb(&v4l_service->current_buffer->frame, &info->frame);
+	  swap_rb(info->frame.image, v4l_service->current_buffer->frame.size[0]*v4l_service->current_buffer->frame.size[1]*3);
 	}
 
 	if (v4l_service->current_buffer->frame.size[0]!=-1) {
@@ -160,7 +164,7 @@ V4lThread(void* arg)
 	    skip_counter=0;
 	    if ((v4l_service->current_buffer->frame.color_coding != DC1394_COLOR_CODING_MONO8) &&
 		(v4l_service->current_buffer->frame.color_coding != DC1394_COLOR_CODING_RAW8))
-	      write(info->v4l_dev,info->v4l_buffer,v4l_service->current_buffer->frame.size[0]*v4l_service->current_buffer->frame.size[1]*3);
+	      write(info->v4l_dev,info->frame.image,v4l_service->current_buffer->frame.size[0]*v4l_service->current_buffer->frame.size[1]*3);
 	    else
 	      write(info->v4l_dev,v4l_service->current_buffer->frame.image,v4l_service->current_buffer->frame.size[0]*v4l_service->current_buffer->frame.size[1]);
 	    v4l_service->fps_frames++;
@@ -216,10 +220,11 @@ V4lStopThread(camera_t* cam)
     RemoveChain(cam,v4l_service);
     
     /* Do custom cleanups here...*/
-    if (info->v4l_buffer!=NULL) {
-      free(info->v4l_buffer);
-      info->v4l_buffer=NULL;
+    if ((info->frame.image!=NULL)&&(info->frame.allocated_image_bytes>0)) {
+      free(info->frame.image);
+      info->frame.allocated_image_bytes=0;
     }
+
     close(info->v4l_dev);
 
     /* Mendatory cleanups: */
@@ -243,22 +248,7 @@ V4lThreadCheckParams(chain_t *v4l_service)
   // if some parameters changed, we need to re-allocate the local buffers and restart the v4l
   if ((v4l_service->current_buffer->frame.size[0]!=v4l_service->local_param_copy.frame.size[0])||
       (v4l_service->current_buffer->frame.size[1]!=v4l_service->local_param_copy.frame.size[1]) ) {
-    
-    // DO SOMETHING
 
-    // clear buffer
-    if (info->v4l_buffer!=NULL) {
-      free(info->v4l_buffer);
-      info->v4l_buffer=NULL;
-    }
-
-    // create buffer
-    info->v4l_buffer=(unsigned char*)malloc(v4l_service->current_buffer->frame.size[0]*v4l_service->current_buffer->frame.size[1]
-					    *3*sizeof(unsigned char));
-    if (info->v4l_buffer==NULL) {
-      fprintf(stderr,"Can't allocate buffer! Aiiieee!\n");
-    }
-    
     // STOPING THE PIPE MIGHT BE NECESSARY HERE
     
     // "start pipe"      
@@ -284,7 +274,7 @@ V4lThreadCheckParams(chain_t *v4l_service)
 
   // copy all new parameters:
   memcpy(&v4l_service->local_param_copy, v4l_service->current_buffer,sizeof(buffer_t));
-  v4l_service->local_param_copy.frame.allocated_image_bytes=0;
+  v4l_service->local_param_copy.frame.allocated_image_bytes=0; // to avoid bad free...
   
 }
 

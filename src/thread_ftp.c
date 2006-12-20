@@ -64,8 +64,8 @@ FtpStartThread(camera_t* cam)
     
     CommonChainSetup(cam,ftp_service,SERVICE_FTP);
     
-    info->buffer=NULL;
-    info->imlib_buffer_size=0;
+    info->frame.allocated_image_bytes=0;
+    info->frame.image=NULL;
     
     //info->mode=cam->prefs.ftp_mode;
     
@@ -95,8 +95,8 @@ FtpStartThread(camera_t* cam)
       RemoveChain(cam, ftp_service);
       pthread_mutex_unlock(&ftp_service->mutex_struct);
       pthread_mutex_unlock(&ftp_service->mutex_data);
-      free(info->buffer);
-      info->buffer=NULL;
+      //free(info->buffer);
+      //info->buffer=NULL;
       FreeChain(ftp_service);
       ftp_service=NULL;
       return(-1);
@@ -152,7 +152,7 @@ FtpThread(void* arg)
 	if (ftp_service->current_buffer->frame.size[0]!=-1) {
 	  if (skip_counter>=(cam->prefs.ftp_period-1)) {
 	    skip_counter=0;
-	    convert_to_rgb(ftp_service->current_buffer, info->buffer);
+	    convert_to_rgb(&ftp_service->current_buffer->frame, &info->frame);
 	    switch (cam->prefs.ftp_mode) {
 	    case FTP_MODE_OVERWRITE:
 	      sprintf(filename_out, "%s%s", cam->prefs.ftp_filename,cam->prefs.ftp_filename_ext);
@@ -243,9 +243,10 @@ FtpStopThread(camera_t* cam)
     RemoveChain(cam,ftp_service);
     
     /* Do custom cleanups here...*/
-    if (info->buffer!=NULL) {
-      free(info->buffer);
-      info->buffer=NULL;
+    if ((info->frame.image!=NULL)&&(info->frame.allocated_image_bytes!=0)) {
+      free(info->frame.image);
+      info->frame.image=NULL;
+      info->frame.allocated_image_bytes=0;
     }
 #ifdef HAVE_FTPLIB
     CloseFtpConnection(info->ftp_handle);
@@ -268,7 +269,10 @@ FtpThreadCheckParams(chain_t *ftp_service)
   ftpthread_info_t *info;
   info=(ftpthread_info_t*)ftp_service->data;
 
+  // THIS IS ALL AUTOMATIC NOW
+
   // if some parameters changed, we need to re-allocate the local buffers and restart the ftp
+  /*
   if ((ftp_service->current_buffer->frame.size[0]!=ftp_service->local_param_copy.frame.size[0]  )||
       (ftp_service->current_buffer->frame.size[1]!=ftp_service->local_param_copy.frame.size[1])) {
     
@@ -279,6 +283,7 @@ FtpThreadCheckParams(chain_t *ftp_service)
     info->imlib_buffer_size=ftp_service->current_buffer->frame.size[0]*ftp_service->current_buffer->frame.size[1]*3;
     info->buffer=(unsigned char*)malloc(info->imlib_buffer_size*sizeof(unsigned char));
   }
+  */
   // copy all new parameters:
   memcpy(&ftp_service->local_param_copy, ftp_service->current_buffer,sizeof(buffer_t));
   ftp_service->local_param_copy.frame.allocated_image_bytes=0;

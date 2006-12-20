@@ -346,7 +346,7 @@ void IsoFlowResume(int *state)
 	while ((!camera->camera_info->is_iso_on)&&(timeout<5000)) {
 	  usleep(DELAY);
 	  timeout+=DELAY/1000;
-	  fprintf(stderr,"%d ",timeout);
+	  //fprintf(stderr,"%d ",timeout);
 	  if (dc1394_video_set_transmission(camera->camera_info,DC1394_ON)!=DC1394_SUCCESS)
 	    // ... (if not done, restarting is no more possible)
 	    Error("Could not start ISO transmission");

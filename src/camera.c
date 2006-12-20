@@ -80,7 +80,7 @@ NewCamera(void) {
   cam->prefs.ftp_filename_ext = (char*)malloc(STRING_SIZE*sizeof(char));
   cam->prefs.ftp_filename_base = (char*)malloc(STRING_SIZE*sizeof(char));
   cam->prefs.overlay_filename = (char*)malloc(STRING_SIZE*sizeof(char));
-  cam->bayer_pattern=DC1394_COLOR_FILTER_BGGR;
+  cam->bayer_pattern=DC1394_COLOR_FILTER_RGGB;
   pthread_mutex_init(&cam->uimutex, NULL);
   //fprintf(stderr,"new camera allocated\n");
   return cam;
@@ -103,6 +103,7 @@ GetCameraData(camera_t* cam) {
   pthread_mutex_lock(&cam->uimutex);
   cam->want_to_display=0;
   cam->bayer=-1;
+  //cam->bayer_pattern=DC1394_COLOR_FILTER_RGGB
   cam->stereo=-1;
   cam->bpp=8;
   CopyCameraPrefs(cam);

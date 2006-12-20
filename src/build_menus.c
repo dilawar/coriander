@@ -538,13 +538,20 @@ BuildBayerMenu(void)
   g_signal_connect ((gpointer) glade_menuitem, "activate",
 		      G_CALLBACK (on_bayer_menu_activate),
 		      (int*)DC1394_BAYER_METHOD_HQLINEAR); 
-  // add VNG linear option
+  // add VNG option
   glade_menuitem = gtk_menu_item_new_with_label (_("VNG"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
   g_signal_connect ((gpointer) glade_menuitem, "activate",
 		      G_CALLBACK (on_bayer_menu_activate),
 		      (int*)DC1394_BAYER_METHOD_VNG); 
+  // add AHD option
+  glade_menuitem = gtk_menu_item_new_with_label (_("AHD"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+  g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (on_bayer_menu_activate),
+		      (int*)DC1394_BAYER_METHOD_AHD); 
   
   gtk_option_menu_set_menu (GTK_OPTION_MENU (new_option_menu), new_menu);
 

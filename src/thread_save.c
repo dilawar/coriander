@@ -47,7 +47,8 @@ SaveStartThread(camera_t* cam)
     pthread_mutex_lock(&save_service->mutex_data);
     CommonChainSetup(cam, save_service,SERVICE_SAVE);
     
-    info->buffer=NULL;
+    info->frame.image=NULL;
+    info->frame.allocated_image_bytes=0;
     info->bigbuffer=NULL;
 
     if ((cam->prefs.use_ram_buffer==TRUE)&&
@@ -78,8 +79,10 @@ SaveStartThread(camera_t* cam)
       RemoveChain(cam,save_service);
       pthread_mutex_unlock(&save_service->mutex_struct);
       pthread_mutex_unlock(&save_service->mutex_data);
-      free(info->buffer);
-      info->buffer=NULL;
+      if ((info->frame.image!=NULL)&&(info->frame.allocated_image_bytes>0)) {
+	free(info->frame.image);
+	info->frame.allocated_image_bytes=0;
+      }
       FreeChain(save_service);
       save_service=NULL;
       return(-1);
@@ -551,11 +554,11 @@ SavePPMPGM(chain_t *save_service, FILE *fd)
   case DC1394_COLOR_CODING_YUV411:
   case DC1394_COLOR_CODING_YUV422:
   case DC1394_COLOR_CODING_YUV444:
-    convert_to_rgb(save_service->current_buffer, info->buffer);
+    convert_to_rgb(&save_service->current_buffer->frame, &info->frame);
     P_value=6;
     bytes=save_service->current_buffer->frame.size[0]*save_service->current_buffer->frame.size[1]*3;
     maxlevels=255;
-    src=info->buffer;
+    src=info->frame.image;
     break;
   case DC1394_COLOR_CODING_RGB8:
     P_value=6;
@@ -969,9 +972,9 @@ SaveStopThread(camera_t* cam)
     //fprintf(stderr,"done\n");
     //fprintf(stderr,"free...");
     /* Do custom cleanups here...*/
-    if (info->buffer!=NULL) {
-      free(info->buffer);
-      info->buffer=NULL;
+    if ((info->frame.image!=NULL)&&(info->frame.allocated_image_bytes>0)) {
+      free(info->frame.image);
+      info->frame.allocated_image_bytes=0;
     }
     //fprintf(stderr,"done\n");
     
@@ -993,6 +996,8 @@ SaveThreadCheckParams(chain_t *save_service)
   savethread_info_t *info;
   info=(savethread_info_t*)save_service->data;
 
+  // THIS IS ALL AUTOMATIC NOW!!
+  /*
   // if some parameters changed, we need to re-allocate the local buffers and restart the save
   if ((save_service->current_buffer->frame.size[0]!=save_service->local_param_copy.frame.size[0])||
       (save_service->current_buffer->frame.size[1]!=save_service->local_param_copy.frame.size[1])  ) {
@@ -1007,9 +1012,9 @@ SaveThreadCheckParams(chain_t *save_service)
     if (info->buffer==NULL)
       fprintf(stderr,"Can't allocate buffer! Aiiieee!\n");
   }
-
+  */
   // copy all new parameters:
   memcpy(&save_service->local_param_copy, save_service->current_buffer,sizeof(buffer_t));
   save_service->local_param_copy.frame.allocated_image_bytes=0;
-  
+ 
 }

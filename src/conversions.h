@@ -20,10 +20,10 @@
 #define __CONVERSIONS_H__
 
 void
-convert_to_rgb(buffer_t *buffer, unsigned char *dest);
+convert_to_rgb(dc1394video_frame_t *in, dc1394video_frame_t *out);
 
 void
-convert_to_yuv_for_SDL(buffer_t *buffer, SDL_Overlay *sdloverlay, unsigned int overlay_byte_order);
+convert_to_yuv_for_SDL(dc1394video_frame_t *in, SDL_Overlay *sdloverlay, unsigned int overlay_byte_order);
 
 void
 convert_for_pvn(unsigned char *buffer, unsigned int width, unsigned int height,

@@ -55,7 +55,7 @@ typedef struct
   pthread_mutex_t    mutex_cancel;
   int                cancel_req;
   char               destdir[STRING_SIZE];
-  unsigned char*     buffer;
+  dc1394video_frame_t frame;
   unsigned char*     bigbuffer;
   unsigned long int  bigbuffer_position;
   int                mpeg_color_mode;
