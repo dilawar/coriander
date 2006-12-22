@@ -105,7 +105,6 @@ DisplayThread(void* arg)
 	    skip_counter=0;
 #ifdef HAVE_SDLLIB
 	    if (info->sdloverlay!=NULL) {
-	      /*
 	      if (SDL_LockYUVOverlay(info->sdloverlay) == 0) {
 		convert_to_yuv_for_SDL(&display_service->current_buffer->frame, info->sdloverlay, preferences.overlay_byte_order);
 		
@@ -118,7 +117,6 @@ DisplayThread(void* arg)
 		
 		info->redraw_prev_time=times(&info->redraw_tms_buf);
 	      }
-	    */
 	    }
 #endif
 	    display_service->fps_frames++;
@@ -171,7 +169,6 @@ ConditionalTimeoutRedraw(chain_t* service)
     interval=fabs((float)(info->redraw_current_time-info->redraw_prev_time)/sysconf(_SC_CLK_TCK));
     if (interval>(1.0/service->camera->prefs.display_redraw_rate)) { // redraw e.g. 4 times per second
 #ifdef HAVE_SDLLIB
-      /*
       if (SDL_LockYUVOverlay(info->sdloverlay) == 0) {
 	//MainWarning("Conditional display redraw");
 	convert_to_yuv_for_SDL(&service->current_buffer->frame, info->sdloverlay, preferences.overlay_byte_order);
@@ -179,7 +176,6 @@ ConditionalTimeoutRedraw(chain_t* service)
 	SDL_UnlockYUVOverlay(info->sdloverlay);
 	SDL_DisplayYUVOverlay(info->sdloverlay, &info->sdlvideorect);
       }
-      */
 #endif
       info->redraw_prev_time=times(&info->redraw_tms_buf);
     }

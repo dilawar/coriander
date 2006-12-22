@@ -6,7 +6,7 @@
 
 <widget class="GtkWindow" id="main_window">
   <property name="visible">True</property>
-  <property name="title" translatable="yes">Coriander 2.0.0-rc2</property>
+  <property name="title" translatable="yes">Coriander 2.0.0-rc3</property>
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
   <property name="window_position">GTK_WIN_POS_NONE</property>
   <property name="modal">False</property>
@@ -8016,14 +8016,14 @@ for something to take effect here.</property>
   <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
   <property name="focus_on_map">True</property>
   <property name="logo">coriander-logo.png</property>
-  <property name="copyright" translatable="yes">Copyright 2000-2005 Damien Douxchamps</property>
-  <property name="comments" translatable="yes">Coriander home page is http://coriander.sourceforge.net
+  <property name="copyright" translatable="yes">Copyright 2000-2006 Damien Douxchamps</property>
+  <property name="comments" translatable="yes">Coriander home page is http://damien.douxchamps.net/ieee1394/coriander
  
-Coriander received equipment donations/leases from the following companies:
-- Hamamatsu Corporation     http://www.hpk.co.jp
-- The Imaging Source     http://www.1394imaging.com
-- Point Grey Research     http://www.ptgrey.com
-- Basler GmbH     http://www.balserweb.com
+Coriander received equipment donations from the following companies:
+Hamamatsu Corporation     http://www.hpk.co.jp
+The Imaging Source     http://www.1394imaging.com
+Point Grey Research     http://www.ptgrey.com
+Basler GmbH     http://www.balserweb.com
  
 Many thanks to our sponsors!</property>
   <property name="authors">Damien Douxchamps &lt;ddouxchamps@users.sf.net&gt;
