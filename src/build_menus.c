@@ -30,7 +30,7 @@ void
 BuildTriggerModeMenu(void)
 {
   int f;
-  int index[DC1394_TRIGGER_MODE_NUM];
+  int index;
   unsigned int current_trigger_mode;
   GtkWidget* trigger_mode;
   GtkWidget* trigger_mode_menu;
@@ -52,8 +52,18 @@ BuildTriggerModeMenu(void)
   // offset 0x530h. Thus we can't probe anything there without producing an error
   if (camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].available!=0) {
     if (camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].trigger_modes.num>0) { // at least one mode present
+      // get current trigger mode
+      if (dc1394_external_trigger_get_mode(camera->camera_info, &current_trigger_mode)!=DC1394_SUCCESS) {
+	Error("Could not query current trigger mode");
+	current_trigger_mode=DC1394_TRIGGER_MODE_MIN;
+      }
+
       // external trigger available:
       for (f=0;f<camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].trigger_modes.num;f++) {
+	// memorize the position of the current mode
+	if (camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].trigger_modes.modes[f]==current_trigger_mode)
+	  index=f;
+
 	glade_menuitem = gtk_menu_item_new_with_label (_(trigger_mode_list[camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].trigger_modes.modes[f]-DC1394_TRIGGER_MODE_MIN]));
 	gtk_widget_show (glade_menuitem);
 	gtk_menu_append (GTK_MENU (trigger_mode_menu), glade_menuitem);
@@ -61,15 +71,11 @@ BuildTriggerModeMenu(void)
 			  (gpointer)(unsigned long)camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].trigger_modes.modes[f]);
       }
       
+      // sets the active menu item:
       gtk_option_menu_set_menu (GTK_OPTION_MENU (trigger_mode), trigger_mode_menu);
       
-      // sets the active menu item:
-      if (dc1394_external_trigger_get_mode(camera->camera_info, &current_trigger_mode)!=DC1394_SUCCESS) {
-	Error("Could not query current trigger mode");
-	current_trigger_mode=DC1394_TRIGGER_MODE_MIN;
-      }
       //fprintf(stderr,"current trigger mode: %d\n", current_trigger_mode - TRIGGER_MODE_MIN);
-      gtk_option_menu_set_history (GTK_OPTION_MENU (trigger_mode), index[current_trigger_mode - DC1394_TRIGGER_MODE_MIN]);
+      gtk_option_menu_set_history (GTK_OPTION_MENU (trigger_mode), f);
     
     }
     else {
@@ -97,7 +103,7 @@ void
 BuildTriggerSourceMenu(void)
 {
   int f;
-  int index[DC1394_TRIGGER_SOURCE_NUM];
+  int index=0;
   unsigned int current_trigger_source;
   GtkWidget* trigger_source;
   GtkWidget* trigger_source_menu;
@@ -119,8 +125,16 @@ BuildTriggerSourceMenu(void)
   // offset 0x530h. Thus we can't probe anything there without producing an error
   if (camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].available!=0) {
     if (camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].trigger_sources.num>0) { // at least one mode present
+      // get current trigger source
+      if (dc1394_external_trigger_get_source(camera->camera_info, &current_trigger_source)!=DC1394_SUCCESS) {
+	Error("Could not query current trigger source");
+	current_trigger_source=DC1394_TRIGGER_SOURCE_MIN;
+      }
       // external trigger available:
       for (f=0;f<camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].trigger_sources.num;f++) {
+	// memorize the position of the current mode
+	if (camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].trigger_sources.sources[f]==current_trigger_source)
+	  index=f;
 	glade_menuitem = gtk_menu_item_new_with_label (_(trigger_source_list[camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].trigger_sources.sources[f]-DC1394_TRIGGER_SOURCE_MIN]));
 	gtk_widget_show (glade_menuitem);
 	gtk_menu_append (GTK_MENU (trigger_source_menu), glade_menuitem);
@@ -131,12 +145,7 @@ BuildTriggerSourceMenu(void)
       gtk_option_menu_set_menu (GTK_OPTION_MENU (trigger_source), trigger_source_menu);
       
       // sets the active menu item:
-      if (dc1394_external_trigger_get_source(camera->camera_info, &current_trigger_source)!=DC1394_SUCCESS) {
-	Error("Could not query current trigger source");
-	current_trigger_source=DC1394_TRIGGER_SOURCE_MIN;
-      }
-      //fprintf(stderr,"current trigger mode: %d\n", current_trigger_mode - TRIGGER_MODE_MIN);
-      gtk_option_menu_set_history (GTK_OPTION_MENU (trigger_source), index[current_trigger_source - DC1394_TRIGGER_SOURCE_MIN]);
+      gtk_option_menu_set_history (GTK_OPTION_MENU (trigger_source), index);
     
     }
     else {

@@ -1,5 +1,11 @@
 Coriander, (c) 2000-2006 Damien Douxchamps <ddouxchamps@users.sf.net>
 
+Changes in version 2.0.0-rc4
+
+   January 5, 2007, by Damien Douxchamps
+   - proper use of indexes when building trigger menus. Fixes bug 230171 at
+     bugzilla.novell.com. Thanks to Olaf Hering for the patch.
+	
 Changes in version 2.0.0-rc3
 
    December 22, 2006, by Damien Douxchamps
