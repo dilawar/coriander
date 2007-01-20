@@ -642,6 +642,21 @@ on_offset_menu_activate             (GtkMenuItem     *menuitem,
   camera->register_offset=offset;
 }
 
+void
+on_isospeed_menu_activate             (GtkMenuItem     *menuitem,
+			   	       gpointer         user_data)
+{
+  dc1394speed_t speed;
+
+  speed=(dc1394speed_t)user_data;
+  //fprintf(stderr,"Asking for speed %d\n",speed);
+  dc1394_video_set_iso_speed(camera->camera_info, speed);
+
+  BuildAllWindows();
+  UpdateAllWindows();
+  
+}
+
 
 void
 on_register_write_button_clicked      (GtkButton       *button,
@@ -1779,5 +1794,27 @@ on_prefs_auto_iso_toggled              (GtkToggleButton *togglebutton,
   preferences.automate_iso=togglebutton->active;
   gnome_config_set_float("coriander/global/automate_iso",preferences.automate_iso);
   gnome_config_sync();
+}
+
+
+void
+on_bmode_button_toggled                (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+
+  if (togglebutton->active){
+    //fprintf(stderr,"setting 1394b\n");
+    dc1394_video_set_operation_mode(camera->camera_info, DC1394_OPERATION_MODE_1394B);
+    BuildIsoSpeedMenu();
+  }
+  else {
+    if (camera->camera_info->iso_speed>DC1394_ISO_SPEED_400)
+      dc1394_video_set_iso_speed(camera->camera_info,DC1394_ISO_SPEED_400);
+
+    //fprintf(stderr,"setting legacy\n");
+    dc1394_video_set_operation_mode(camera->camera_info, DC1394_OPERATION_MODE_LEGACY);
+    BuildIsoSpeedMenu();
+  }
+
 }
 

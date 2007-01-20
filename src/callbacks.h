@@ -443,4 +443,11 @@ void
 on_prefs_auto_iso_toggled              (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
 
+void
+on_isospeed_menu_activate             (GtkMenuItem     *menuitem,
+			   	       gpointer         user_data);
 #endif // __CALLBACKS_H__
+
+void
+on_bmode_button_toggled                (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);

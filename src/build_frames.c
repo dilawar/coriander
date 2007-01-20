@@ -94,9 +94,15 @@ BuildIsoFrame(void)
   gtk_widget_set_sensitive(lookup_widget(main_window,"iso_start"),!camera->camera_info->is_iso_on);
   gtk_widget_set_sensitive(lookup_widget(main_window,"iso_restart"),camera->camera_info->is_iso_on);
   gtk_widget_set_sensitive(lookup_widget(main_window,"iso_stop"),camera->camera_info->is_iso_on);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"bmode_button"),camera->camera_info->bmode_capable);
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window,"broadcast_button")),camera->prefs.broadcast);
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window,"iso_nodrop")),camera->prefs.iso_nodrop);
-
+  dc1394operation_mode_t mode;
+  if (dc1394_video_get_operation_mode(camera->camera_info, &mode)!=DC1394_SUCCESS)
+    Error("Can't get ISO status");
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window,"bmode_button")),(mode==DC1394_OPERATION_MODE_1394B));
+    
+  BuildIsoSpeedMenu();
 }
 
 void

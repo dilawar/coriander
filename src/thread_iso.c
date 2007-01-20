@@ -20,7 +20,7 @@
 
 gint IsoStartThread(camera_t* cam)
 {
-  int maxspeed, err;
+  int err;
   //int channel, speed;
   chain_t* iso_service=NULL;
   isothread_info_t *info=NULL;
@@ -60,8 +60,11 @@ gint IsoStartThread(camera_t* cam)
       iso_service=NULL;
       return(-1);
     }
-    if (iso_state!=DC1394_ON) {
+
     
+    if (iso_state!=DC1394_ON) {
+      /*
+    int maxspeed;
     // ONLY IF LEGACY. OTHERWISE S800.
     switch (cam->camera_info->phy_speed) {
     case 0: maxspeed=DC1394_ISO_SPEED_100;break;
@@ -93,7 +96,8 @@ gint IsoStartThread(camera_t* cam)
       iso_service=NULL;
       return(-1);
     }
-    
+      */
+
     // set format and other stuff
     err=dc1394_video_set_mode(cam->camera_info, cam->camera_info->video_mode);
     if (err!=DC1394_SUCCESS){

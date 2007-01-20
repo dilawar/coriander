@@ -38,6 +38,9 @@ void
 BuildFormat7ModeMenu(void);
 
 void
+BuildIsoSpeedMenu(void);
+
+void
 BuildFpsMenu(void);
 
 void

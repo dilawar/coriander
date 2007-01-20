@@ -75,6 +75,18 @@ static GnomeUIInfo convertwidget4_uiinfo[] =
   GNOMEUIINFO_END
 };
 
+static GnomeUIInfo menu3_uiinfo[] =
+{
+  {
+    GNOME_APP_UI_ITEM, N_("N/A"),
+    NULL,
+    (gpointer) NULL, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    0, (GdkModifierType) 0, NULL
+  },
+  GNOMEUIINFO_END
+};
+
 static GnomeUIInfo convertwidget6_uiinfo[] =
 {
   {
@@ -560,7 +572,6 @@ create_main_window (void)
   GtkWidget *hbox59;
   GtkWidget *iso_frame;
   GtkWidget *table62;
-  GtkWidget *iso_nodrop;
   GtkWidget *iso_stop;
   GtkWidget *alignment7;
   GtkWidget *hbox78;
@@ -576,6 +587,10 @@ create_main_window (void)
   GtkWidget *hbox79;
   GtkWidget *image9;
   GtkWidget *label206;
+  GtkWidget *isospeed_menu;
+  GtkWidget *menu3;
+  GtkWidget *iso_nodrop;
+  GtkWidget *bmode_button;
   GtkWidget *label155;
   GtkWidget *trigger_frame;
   GtkWidget *table17;
@@ -1835,15 +1850,6 @@ create_main_window (void)
   gtk_widget_show (table62);
   gtk_container_add (GTK_CONTAINER (iso_frame), table62);
 
-  iso_nodrop = gtk_check_button_new_with_mnemonic (_("Sync'ed pipe"));
-  gtk_widget_set_name (iso_nodrop, "iso_nodrop");
-  gtk_widget_show (iso_nodrop);
-  gtk_table_attach (GTK_TABLE (table62), iso_nodrop, 0, 2, 2, 3,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (iso_nodrop), 2);
-  gtk_tooltips_set_tip (tooltips, iso_nodrop, _("Use a fully synchronous image pipe to avoid frame dropping."), NULL);
-
   iso_stop = gtk_button_new ();
   gtk_widget_set_name (iso_stop, "iso_stop");
   gtk_widget_show (iso_stop);
@@ -1933,6 +1939,42 @@ create_main_window (void)
   gtk_widget_set_name (label206, "label206");
   gtk_widget_show (label206);
   gtk_box_pack_start (GTK_BOX (hbox79), label206, FALSE, FALSE, 0);
+
+  isospeed_menu = gtk_option_menu_new ();
+  gtk_widget_set_name (isospeed_menu, "isospeed_menu");
+  gtk_widget_show (isospeed_menu);
+  gtk_table_attach (GTK_TABLE (table62), isospeed_menu, 0, 2, 2, 3,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (isospeed_menu), 1);
+  gtk_tooltips_set_tip (tooltips, isospeed_menu, _("Select a transmission speed"), NULL);
+
+  menu3 = gtk_menu_new ();
+  gtk_widget_set_name (menu3, "menu3");
+  gnome_app_fill_menu (GTK_MENU_SHELL (menu3), menu3_uiinfo,
+                       accel_group, FALSE, 0);
+
+  gtk_widget_set_name (menu3_uiinfo[0].widget, "menuitem2");
+
+  gtk_option_menu_set_menu (GTK_OPTION_MENU (isospeed_menu), menu3);
+
+  iso_nodrop = gtk_check_button_new_with_mnemonic (_("Sync'ed pipe"));
+  gtk_widget_set_name (iso_nodrop, "iso_nodrop");
+  gtk_widget_show (iso_nodrop);
+  gtk_table_attach (GTK_TABLE (table62), iso_nodrop, 0, 2, 4, 5,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (iso_nodrop), 2);
+  gtk_tooltips_set_tip (tooltips, iso_nodrop, _("Use a fully synchronous image pipe to avoid frame dropping."), NULL);
+
+  bmode_button = gtk_check_button_new_with_mnemonic (_("B mode"));
+  gtk_widget_set_name (bmode_button, "bmode_button");
+  gtk_widget_show (bmode_button);
+  gtk_table_attach (GTK_TABLE (table62), bmode_button, 0, 2, 3, 4,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (bmode_button), 2);
+  gtk_tooltips_set_tip (tooltips, bmode_button, _("Switches the camera to 1394b mode for higher speeds (>400Mbps)"), NULL);
 
   label155 = gtk_label_new (_("<b>ISO Control</b>"));
   gtk_widget_set_name (label155, "label155");
@@ -3878,9 +3920,6 @@ create_main_window (void)
   g_signal_connect ((gpointer) dma_buffer_size, "changed",
                     G_CALLBACK (on_dma_buffer_size_changed),
                     NULL);
-  g_signal_connect ((gpointer) iso_nodrop, "toggled",
-                    G_CALLBACK (on_iso_nodrop_toggled),
-                    NULL);
   g_signal_connect ((gpointer) iso_stop, "clicked",
                     G_CALLBACK (on_iso_stop_clicked),
                     NULL);
@@ -3889,6 +3928,12 @@ create_main_window (void)
                     NULL);
   g_signal_connect ((gpointer) iso_restart, "clicked",
                     G_CALLBACK (on_iso_restart_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) iso_nodrop, "toggled",
+                    G_CALLBACK (on_iso_nodrop_toggled),
+                    NULL);
+  g_signal_connect ((gpointer) bmode_button, "toggled",
+                    G_CALLBACK (on_bmode_button_toggled),
                     NULL);
   g_signal_connect ((gpointer) trigger_external, "toggled",
                     G_CALLBACK (on_trigger_external_toggled),
@@ -4140,7 +4185,6 @@ create_main_window (void)
   GLADE_HOOKUP_OBJECT (main_window, hbox59, "hbox59");
   GLADE_HOOKUP_OBJECT (main_window, iso_frame, "iso_frame");
   GLADE_HOOKUP_OBJECT (main_window, table62, "table62");
-  GLADE_HOOKUP_OBJECT (main_window, iso_nodrop, "iso_nodrop");
   GLADE_HOOKUP_OBJECT (main_window, iso_stop, "iso_stop");
   GLADE_HOOKUP_OBJECT (main_window, alignment7, "alignment7");
   GLADE_HOOKUP_OBJECT (main_window, hbox78, "hbox78");
@@ -4156,6 +4200,11 @@ create_main_window (void)
   GLADE_HOOKUP_OBJECT (main_window, hbox79, "hbox79");
   GLADE_HOOKUP_OBJECT (main_window, image9, "image9");
   GLADE_HOOKUP_OBJECT (main_window, label206, "label206");
+  GLADE_HOOKUP_OBJECT (main_window, isospeed_menu, "isospeed_menu");
+  GLADE_HOOKUP_OBJECT (main_window, menu3, "menu3");
+  GLADE_HOOKUP_OBJECT (main_window, menu3_uiinfo[0].widget, "menuitem2");
+  GLADE_HOOKUP_OBJECT (main_window, iso_nodrop, "iso_nodrop");
+  GLADE_HOOKUP_OBJECT (main_window, bmode_button, "bmode_button");
   GLADE_HOOKUP_OBJECT (main_window, label155, "label155");
   GLADE_HOOKUP_OBJECT (main_window, trigger_frame, "trigger_frame");
   GLADE_HOOKUP_OBJECT (main_window, table17, "table17");

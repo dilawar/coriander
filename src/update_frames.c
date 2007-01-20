@@ -195,6 +195,8 @@ UpdateIsoFrame(void)
   gtk_widget_set_sensitive(lookup_widget(main_window,"iso_start"),!camera->camera_info->is_iso_on);
   gtk_widget_set_sensitive(lookup_widget(main_window,"iso_restart"),camera->camera_info->is_iso_on);
   gtk_widget_set_sensitive(lookup_widget(main_window,"iso_stop"),camera->camera_info->is_iso_on);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"bmode_button"),camera->camera_info->bmode_capable&&!camera->camera_info->is_iso_on);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"isospeed_menu"),!camera->camera_info->is_iso_on);
 }
 
 void

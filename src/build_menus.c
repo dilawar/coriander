@@ -25,6 +25,7 @@ extern char* channel_num_list[16];
 extern char* trigger_mode_list[DC1394_TRIGGER_MODE_NUM];
 extern char* trigger_source_list[DC1394_TRIGGER_SOURCE_NUM];
 extern char* video_mode_list[DC1394_VIDEO_MODE_NUM];
+extern char* phy_speed_list[DC1394_ISO_SPEED_NUM];
 
 void
 BuildTriggerModeMenu(void)
@@ -684,6 +685,59 @@ BuildStereoMenu(void)
   // menu history
   pthread_mutex_lock(&camera->uimutex);
   gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(main_window, "stereo_menu")),camera->stereo);
+  pthread_mutex_unlock(&camera->uimutex);
+
+}
+
+void
+BuildIsoSpeedMenu(void)
+{
+  int i;
+  GtkWidget* new_option_menu;
+  GtkWidget* new_menu;
+  GtkWidget* glade_menuitem;
+
+  // build bayer option menu:
+  gtk_widget_destroy(GTK_WIDGET(lookup_widget(main_window,"isospeed_menu"))); // remove previous menu
+  
+  new_option_menu = gtk_option_menu_new ();
+  gtk_widget_ref (new_option_menu);
+  gtk_object_set_data_full ((gpointer) main_window, "isospeed_menu", new_option_menu,
+			    (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (new_option_menu);
+  gtk_table_attach (GTK_TABLE (lookup_widget(main_window,"table62")),
+		    new_option_menu, 0, 2, 2, 3,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (new_option_menu), 1);
+  
+  new_menu = gtk_menu_new ();
+
+  // for each supported speed:
+  //fprintf(stderr,"PHY: %d   CURRENT: %d\n",camera->camera_info->phy_speed,camera->camera_info->iso_speed);
+  dc1394speed_t max;
+  dc1394operation_mode_t mode;
+  dc1394_video_get_operation_mode(camera->camera_info, &mode);
+  if ((camera->camera_info->bmode_capable>0) && (mode==DC1394_OPERATION_MODE_1394B)) {
+    max=camera->camera_info->phy_speed;
+  }
+  else {
+    max=DC1394_ISO_SPEED_400;
+  }
+  for (i=DC1394_ISO_SPEED_MIN;i<=max;i++) {
+    glade_menuitem = gtk_menu_item_new_with_label (_(phy_speed_list[i-DC1394_ISO_SPEED_MIN]));
+    gtk_widget_show (glade_menuitem);
+    gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+    g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (on_isospeed_menu_activate),
+		      (int*)i);
+  }
+  gtk_option_menu_set_menu (GTK_OPTION_MENU (new_option_menu), new_menu);
+
+  // menu history
+  pthread_mutex_lock(&camera->uimutex);
+  gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(main_window, "isospeed_menu")),
+			      camera->camera_info->iso_speed-DC1394_ISO_SPEED_MIN);
   pthread_mutex_unlock(&camera->uimutex);
 
 }
