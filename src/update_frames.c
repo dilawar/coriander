@@ -181,7 +181,7 @@ UpdateMemoryFrame(void)
 
   // save not activated by default (it is not avail. for factory defaults channel):
   gtk_widget_set_sensitive(GTK_WIDGET (lookup_widget(main_window,"save_mem")),
-			   ((camera->camera_info->mem_channel_number>0)&&(camera->camera_info->save_channel>0)));
+			   ((camera->camera_info->mem_channel_number>0)&&(camera->memory_channel>0)));
 
   // load always present, so we can activate it:
   gtk_widget_set_sensitive(lookup_widget(main_window,"memory_frame"),TRUE);

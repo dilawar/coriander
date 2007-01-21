@@ -1,7 +1,10 @@
-Coriander, (c) 2000-2006 Damien Douxchamps <ddouxchamps@users.sf.net>
+Coriander, (c) 2000-2007 Damien Douxchamps <ddouxchamps@users.sf.net>
 
 Changes in version 2.0.0-rc4
 
+   January 21, 2007, by Damien Douxchamps
+   - version 2.0.0-rc4
+	
    January 20, 2007, by Damien Douxchamps
    - allow the user to manually control ISO speed (100...3200Mbps) and
      operation mode (legacy/1394b). Before this change it was not possible

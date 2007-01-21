@@ -150,8 +150,7 @@ void
 on_memory_channel_activate              (GtkMenuItem     *menuitem,
 					 gpointer         user_data)
 {
-  camera->camera_info->save_channel=(int)(unsigned long)user_data; // user data is an int.
-  camera->camera_info->load_channel=(int)(unsigned long)user_data; // user data is an int.
+  camera->memory_channel=(int)(unsigned long)user_data; // user data is an int.
   UpdateMemoryFrame();
 }
 
@@ -161,7 +160,7 @@ void
 on_load_mem_clicked                    (GtkButton       *button,
                                         gpointer         user_data)
 {
-  if (dc1394_memory_load(camera->camera_info, camera->camera_info->load_channel)!=DC1394_SUCCESS)
+  if (dc1394_memory_load(camera->camera_info, camera->memory_channel)!=DC1394_SUCCESS)
     Error("Cannot load memory channel");
   UpdateAllWindows();
 
@@ -176,7 +175,7 @@ on_save_mem_clicked                    (GtkButton       *button,
   dc1394bool_t value=TRUE;
   step=(unsigned long int)(1000000.0/preferences.auto_update_frequency);
 
-  if (dc1394_memory_save(camera->camera_info, camera->camera_info->save_channel)!=DC1394_SUCCESS)
+  if (dc1394_memory_save(camera->camera_info, camera->memory_channel)!=DC1394_SUCCESS)
     Error("Could not save setup to memory channel");
   else {
     while ((value==DC1394_TRUE) &&(timeout_bin<(unsigned long int)(preferences.op_timeout*1000000.0)) ) {

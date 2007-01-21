@@ -166,6 +166,7 @@ typedef struct _CameraInfo_T {
   int stereo;
   int bpp;
   int register_offset;
+  int memory_channel;
 
   // structure information
   struct _CameraInfo_T* prev;

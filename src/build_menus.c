@@ -180,8 +180,6 @@ BuildMemoryChannelMenu(void)
   GtkWidget* channel_num_menu;
   GtkWidget* glade_menuitem;
 
-  camera->camera_info->save_channel=camera->camera_info->load_channel;
-
   gtk_widget_destroy(GTK_WIDGET (lookup_widget(main_window,"memory_channel"))); // remove previous menu
 
   channel_num = gtk_option_menu_new ();
@@ -206,7 +204,7 @@ BuildMemoryChannelMenu(void)
   gtk_option_menu_set_menu (GTK_OPTION_MENU (channel_num), channel_num_menu);
 
   // sets the active menu item:
-  gtk_option_menu_set_history (GTK_OPTION_MENU (channel_num), camera->camera_info->load_channel);
+  gtk_option_menu_set_history (GTK_OPTION_MENU (channel_num), camera->memory_channel);
 }
 
 void
