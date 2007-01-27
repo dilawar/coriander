@@ -207,8 +207,6 @@ CreateSettingsFile(camera_t *cam, char *destdir)
   char *fname = NULL;
   FILE *fd = NULL;
   int i;
-  extern char* fps_label_list[DC1394_FRAMERATE_NUM];
-  extern char* feature_name_list[DC1394_FEATURE_NUM];
   extern Prefs_t preferences;
   
   fname = (char*)malloc(STRING_SIZE*sizeof(char));

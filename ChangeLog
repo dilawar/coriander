@@ -1,5 +1,10 @@
 Coriander, (c) 2000-2007 Damien Douxchamps <ddouxchamps@users.sf.net>
 
+   January 25, 2007, by Philippe De Muyter
+   - move and fix `extern' declarations of string arrays from build_menus.c,
+     build_ranges.c, thread_save.c, tools.c, update_frames.c and
+     update_ranges.c to coriander.h
+
 Changes in version 2.0.0-rc4
 
    January 21, 2007, by Damien Douxchamps

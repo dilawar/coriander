@@ -134,4 +134,21 @@ watchthread_info_t watchthread_info;
 
 mainthread_info_t mainthread_info;
 
+extern const char *feature_name_list[DC1394_FEATURE_NUM];
+extern const char *feature_abs_switch_list[DC1394_FEATURE_NUM];
+extern const char *feature_abs_label_list[DC1394_FEATURE_NUM];
+extern const char *trigger_mode_list[DC1394_TRIGGER_MODE_NUM];
+extern const char *trigger_source_list[DC1394_TRIGGER_SOURCE_NUM];
+extern const char *channel_num_list[16];
+extern const char *fps_label_list[DC1394_FRAMERATE_NUM];
+extern const char *format7_mode_list[DC1394_VIDEO_MODE_FORMAT7_NUM];
+extern const char *format7_color_list[DC1394_COLOR_CODING_NUM];
+extern const char *phy_speed_list[7];
+extern const char *power_class_list[8];
+extern const char *phy_delay_list[4];
+extern const char *video_mode_list[DC1394_VIDEO_MODE_NUM];
+extern const char *feature_menu_items_list[5];
+extern const char *help_key_bindings_keys[KEY_BINDINGS_NUM];
+extern const char *help_key_bindings_functions[KEY_BINDINGS_NUM];
+
 #endif // __CORIANDER_H__

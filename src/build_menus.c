@@ -18,15 +18,6 @@
 
 #include "coriander.h"
 
-extern char* fps_label_list[DC1394_FRAMERATE_NUM];
-extern char* format7_color_list[DC1394_VIDEO_MODE_FORMAT7_NUM];
-extern char* format7_mode_list[DC1394_VIDEO_MODE_FORMAT7_NUM];
-extern char* channel_num_list[16];
-extern char* trigger_mode_list[DC1394_TRIGGER_MODE_NUM];
-extern char* trigger_source_list[DC1394_TRIGGER_SOURCE_NUM];
-extern char* video_mode_list[DC1394_VIDEO_MODE_NUM];
-extern char* phy_speed_list[DC1394_ISO_SPEED_NUM];
-
 void
 BuildTriggerModeMenu(void)
 {

@@ -18,9 +18,6 @@
 
 #include "coriander.h"
 
-extern char* feature_menu_table_list[DC1394_FEATURE_NUM]; 
-extern char* feature_menu_items_list[DC1394_FEATURE_NUM];
-
 void
 UpdateRange(int feature)
 {

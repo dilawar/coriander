@@ -18,10 +18,6 @@
 
 #include "coriander.h"
 
-extern char* phy_speed_list[7];
-extern char* phy_delay_list[4];
-extern char* power_class_list[8];
-
 #ifdef HAVE_SDLLIB
 extern cursor_info_t cursor_info;
 #endif

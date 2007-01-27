@@ -20,11 +20,6 @@
 
 #define RANGE_TABLE_WIDTH 5
 
-extern char* feature_menu_table_list[DC1394_FEATURE_NUM];
-extern char* feature_menu_items_list[DC1394_FEATURE_NUM];
-extern char* feature_name_list[DC1394_FEATURE_NUM];
-extern char* feature_abs_label_list[DC1394_FEATURE_NUM];
-
 void
 BuildEmptyRange(int feature)
 {
