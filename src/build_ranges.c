@@ -216,7 +216,7 @@ void BuildRange(int feature)
   
   new_menu = gtk_menu_new ();
 
-  
+  /*
   fprintf(stderr,"feature %d: avail: %d, onoff: %d, man: %d, auto: %d, abs: %d, op: %d, min:%d, max:%d\n",feature-DC1394_FEATURE_MIN,
 	  camera->feature_set.feature[feature-DC1394_FEATURE_MIN].available,
 	  camera->feature_set.feature[feature-DC1394_FEATURE_MIN].on_off_capable,
@@ -226,7 +226,7 @@ void BuildRange(int feature)
 	  camera->feature_set.feature[feature-DC1394_FEATURE_MIN].one_push,
 	  camera->feature_set.feature[feature-DC1394_FEATURE_MIN].min,
 	  camera->feature_set.feature[feature-DC1394_FEATURE_MIN].max);
-  
+  */
   
   // point grey flea 2 sometimes has features that cannot be controlled in any way (in F7)
   // disable such features

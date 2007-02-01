@@ -734,7 +734,7 @@ DisplayThreadCheckParams(chain_t *display_service)
 	//SDLEventStartThread(display_service);
       }
     }
-    fprintf(stderr,"SDL updated.\n");
+    //fprintf(stderr,"SDL updated.\n");
   }
 
   memcpy(&display_service->local_param_copy,display_service->current_buffer,sizeof(buffer_t));

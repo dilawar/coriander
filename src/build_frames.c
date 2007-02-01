@@ -89,6 +89,11 @@ BuildIsoFrame(void)
   // TODO: only if ISO capable
   if (dc1394_video_get_transmission(camera->camera_info, &camera->camera_info->is_iso_on)!=DC1394_SUCCESS)
     Error("Can't get ISO status");
+  dc1394operation_mode_t mode;
+  if (dc1394_video_get_operation_mode(camera->camera_info, &mode)!=DC1394_SUCCESS)
+    Error("Can't get operation mode");
+  //fprintf(stderr,"bmode: %d, 1394b: %d, capable: %d\n",mode,DC1394_OPERATION_MODE_1394B,camera->camera_info->bmode_capable);
+
   //fprintf(stderr,"sync: %d\n",preferences.sync_control);
   gtk_widget_set_sensitive(lookup_widget(main_window,"iso_frame"),TRUE);
   gtk_widget_set_sensitive(lookup_widget(main_window,"iso_start"),!camera->camera_info->is_iso_on);
@@ -97,10 +102,8 @@ BuildIsoFrame(void)
   gtk_widget_set_sensitive(lookup_widget(main_window,"bmode_button"),camera->camera_info->bmode_capable);
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window,"broadcast_button")),camera->prefs.broadcast);
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window,"iso_nodrop")),camera->prefs.iso_nodrop);
-  dc1394operation_mode_t mode;
-  if (dc1394_video_get_operation_mode(camera->camera_info, &mode)!=DC1394_SUCCESS)
-    Error("Can't get ISO status");
-  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window,"bmode_button")),(mode==DC1394_OPERATION_MODE_1394B));
+
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window,"bmode_button")),camera->camera_info->bmode_capable&&(mode==DC1394_OPERATION_MODE_1394B));
     
   BuildIsoSpeedMenu();
 }

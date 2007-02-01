@@ -90,10 +90,13 @@ NewCamera(void) {
 void
 GetCameraData(camera_t* cam) {
 
+  // this segment is handled manually now...
+  /*
   if (cam->camera_info->bmode_capable>0) {
     // set b-mode and reprobe modes,... (higher fps formats might not be reported as available in legacy mode)
     dc1394_video_set_operation_mode(cam->camera_info, DC1394_OPERATION_MODE_1394B);
   }
+  */
   if (dc1394_get_camera_feature_set(cam->camera_info, &cam->feature_set)!=DC1394_SUCCESS)
     Error("Could not get camera feature information!");
 
