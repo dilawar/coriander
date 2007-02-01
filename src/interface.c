@@ -4517,7 +4517,7 @@ create_about_window (void)
   };
   const gchar *documenters[] = { NULL };
   /* TRANSLATORS: Replace this string with your names, one name per line. */
-  gchar *translators = "No translation available yet.";
+  gchar *translators = "No translation is available yet.\nSubmissions are welcome.";
   GdkPixbuf *about_window_logo_pixbuf;
   GtkWidget *about_window;
   GdkPixbuf *about_window_icon_pixbuf;
@@ -4525,7 +4525,7 @@ create_about_window (void)
   about_window_logo_pixbuf = create_pixbuf ("coriander/coriander-logo.png");
   about_window = gnome_about_new ("Coriander", VERSION,
                         _("Copyright 2000-2006 Damien Douxchamps"),
-                        _("Coriander home page is http://damien.douxchamps.net/ieee1394/coriander\n \nCoriander received equipment donations from the following companies:\nHamamatsu Corporation     http://www.hpk.co.jp\nThe Imaging Source     http://www.1394imaging.com\nPoint Grey Research     http://www.ptgrey.com\nBasler GmbH     http://www.balserweb.com\n \nMany thanks to our sponsors!"),
+                        _("Coriander home page is\nhttp://damien.douxchamps.net/ieee1394/coriander\n \nCoriander received equipment donations from the following companies:\nHamamatsu Corporation     http://www.hpk.co.jp\nThe Imaging Source     http://www.1394imaging.com\nPoint Grey Research     http://www.ptgrey.com\nBasler GmbH     http://www.balserweb.com\n \nMany thanks to our sponsors!"),
                         authors,
                         documenters,
                         translators,

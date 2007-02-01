@@ -1,5 +1,11 @@
 Coriander, (c) 2000-2007 Damien Douxchamps <ddouxchamps@users.sf.net>
 
+   February 1st, 2007, by Damien Douxchamps
+   - Disable features if they don't support any control mode or if they are
+     OFF and their power can't be controlled. This solves a few issues we had
+     with the Flea 2 from Point Grey.
+   - little update of the "About" window
+	
    January 25, 2007, by Philippe De Muyter
    - move and fix `extern' declarations of string arrays from build_menus.c,
      build_ranges.c, thread_save.c, tools.c, update_frames.c and

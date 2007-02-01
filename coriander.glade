@@ -8074,7 +8074,8 @@ for something to take effect here.</property>
   <property name="focus_on_map">True</property>
   <property name="logo">coriander-logo.png</property>
   <property name="copyright" translatable="yes">Copyright 2000-2006 Damien Douxchamps</property>
-  <property name="comments" translatable="yes">Coriander home page is http://damien.douxchamps.net/ieee1394/coriander
+  <property name="comments" translatable="yes">Coriander home page is
+http://damien.douxchamps.net/ieee1394/coriander
  
 Coriander received equipment donations from the following companies:
 Hamamatsu Corporation     http://www.hpk.co.jp
@@ -8087,7 +8088,8 @@ Many thanks to our sponsors!</property>
 See the AUTHORS file for more authors and
 contributors
 </property>
-  <property name="translator_credits" translatable="yes" comments="TRANSLATORS: Replace this string with your names, one name per line.">No translation available yet.</property>
+  <property name="translator_credits" translatable="yes" comments="TRANSLATORS: Replace this string with your names, one name per line.">No translation is available yet.
+Submissions are welcome.</property>
 </widget>
 
 <widget class="GnomeMessageBox" id="no_handle_window">

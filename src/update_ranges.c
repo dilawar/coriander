@@ -70,7 +70,7 @@ UpdateRange(int feature)
   
   range_is_active=((!(camera->feature_set.feature[feature-DC1394_FEATURE_MIN].auto_capable&& // auto not on
 		      camera->feature_set.feature[feature-DC1394_FEATURE_MIN].auto_active))&&
-                   (!(camera->feature_set.feature[feature-DC1394_FEATURE_MIN].one_push&& // one-push auto not active
+		   (!(camera->feature_set.feature[feature-DC1394_FEATURE_MIN].one_push&& // one-push auto not active
 		      camera->feature_set.feature[feature-DC1394_FEATURE_MIN].one_push_active))&&
 		   (!(camera->feature_set.feature[feature-DC1394_FEATURE_MIN].absolute_capable&& // abs control not on
 		      camera->feature_set.feature[feature-DC1394_FEATURE_MIN].abs_control))&&
@@ -106,7 +106,7 @@ UpdateRange(int feature)
   // all features: set absolute range sensitivity:
   abs_is_on=((camera->feature_set.feature[feature-DC1394_FEATURE_MIN].absolute_capable&& // abs control is on
 	      camera->feature_set.feature[feature-DC1394_FEATURE_MIN].abs_control) &&
-	     camera->feature_set.feature[feature-DC1394_FEATURE_MIN].is_on);
+	      camera->feature_set.feature[feature-DC1394_FEATURE_MIN].is_on);
   if (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].absolute_capable) {
     sprintf(stemp,"feature_%d_abs_entry",feature);
     gtk_widget_set_sensitive(lookup_widget(main_window, stemp), abs_is_on);

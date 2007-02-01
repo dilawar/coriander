@@ -547,6 +547,7 @@ on_service_iso_toggled                 (GtkToggleButton *togglebutton,
       IsoStopThread(camera);
   }
   UpdatePrefsReceiveFrame();
+  UpdateIsoFrame();
 }
 
 

@@ -56,10 +56,27 @@ UpdateFeatureWindow(void)
 {
   int i;
 
+  char stemp[256];
+
   for (i=DC1394_FEATURE_MIN;i<=DC1394_FEATURE_MAX;i++) {
     if ((camera->feature_set.feature[i-DC1394_FEATURE_MIN].available>0)&&
 	(i!=DC1394_FEATURE_TRIGGER)) {
       UpdateRange(i);
+
+      // if there is no control mode available for the feature, disable it.
+      if ((!camera->feature_set.feature[i-DC1394_FEATURE_MIN].on_off_capable  && // disable feature if there is no way to control it
+	   !camera->feature_set.feature[i-DC1394_FEATURE_MIN].manual_capable  &&
+	   !camera->feature_set.feature[i-DC1394_FEATURE_MIN].auto_capable    &&
+	   !camera->feature_set.feature[i-DC1394_FEATURE_MIN].one_push        &&
+	   !camera->feature_set.feature[i-DC1394_FEATURE_MIN].absolute_capable ) ||
+	  (!camera->feature_set.feature[i-DC1394_FEATURE_MIN].is_on  && // disable feature if feature is OFF and can't be switched ON
+	   !camera->feature_set.feature[i-DC1394_FEATURE_MIN].on_off_capable)
+	  ) {
+	
+	sprintf(stemp,"feature_%d_frame",i);
+	gtk_widget_set_sensitive(lookup_widget(main_window, stemp), 0);
+	
+      }
     }
   }
 }
