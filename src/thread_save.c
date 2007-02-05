@@ -181,7 +181,7 @@ getDepth(unsigned long bufsize, int mode, unsigned int height, unsigned int widt
 
 // (JG) note: depth/# of pages is calculated from bufsize by dividing by # of bytes per image
 void
-writePVNHeader(FILE *fd, unsigned int mode, unsigned int height, unsigned int width,
+writePVNHeader(FILE *fd, unsigned int mode, unsigned int width, unsigned int height,
 	       unsigned int depth, unsigned int bpp, double framerate)
 {
   char magic[6];
@@ -856,8 +856,8 @@ SaveThread(void* arg)
     case SAVE_FORMAT_PVN:
       dc1394_framerate_as_float(cam->camera_info->framerate, &fps);
       writePVNHeader(fd, save_service->current_buffer->frame.color_coding,
-		     save_service->current_buffer->frame.size[1],
 		     save_service->current_buffer->frame.size[0],
+		     save_service->current_buffer->frame.size[1],
 		     getDepth(info->bigbuffer_position, save_service->current_buffer->frame.color_coding, 
 			      save_service->current_buffer->frame.size[1], save_service->current_buffer->frame.size[0]),
 		     getConvertedBytesPerChannel(save_service->current_buffer->frame.color_coding)*8,

@@ -1,5 +1,8 @@
 Coriander, (c) 2000-2007 Damien Douxchamps <ddouxchamps@users.sf.net>
 
+   February 5, 2007, by Damien Douxchamps
+   - fixed wrong argument order of WritePVNHeader(). Thanks to John Shen.
+	
    February 1st, 2007, by Damien Douxchamps
    - Disable features if they don't support any control mode or if they are
      OFF and their power can't be controlled. This solves a few issues we had

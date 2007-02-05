@@ -110,7 +110,7 @@ int
 InitVideoFile(chain_t *save_service, FILE *fd, char *filename_out);
 
 void
-writePVNHeader(FILE *fd, unsigned int mode, unsigned int height, unsigned int width,
+writePVNHeader(FILE *fd, unsigned int mode, unsigned int width, unsigned int height,
 	       unsigned int depth, unsigned int bpp, double framerate);
 
 int
