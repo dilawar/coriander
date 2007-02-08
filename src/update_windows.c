@@ -68,9 +68,12 @@ UpdateFeatureWindow(void)
 	   !camera->feature_set.feature[i-DC1394_FEATURE_MIN].manual_capable  &&
 	   !camera->feature_set.feature[i-DC1394_FEATURE_MIN].auto_capable    &&
 	   !camera->feature_set.feature[i-DC1394_FEATURE_MIN].one_push        &&
-	   !camera->feature_set.feature[i-DC1394_FEATURE_MIN].absolute_capable ) ||
+	   !camera->feature_set.feature[i-DC1394_FEATURE_MIN].absolute_capable )
+	  /* can't do this: it would help point grey cameras but other cameras fail this test
+	    ||
 	  (!camera->feature_set.feature[i-DC1394_FEATURE_MIN].is_on  && // disable feature if feature is OFF and can't be switched ON
 	   !camera->feature_set.feature[i-DC1394_FEATURE_MIN].on_off_capable)
+	  */
 	  ) {
 	
 	sprintf(stemp,"feature_%d_frame",i);

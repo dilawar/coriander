@@ -36,11 +36,11 @@ convert_to_rgb(dc1394video_frame_t *in, dc1394video_frame_t *out)
 void
 convert_to_yuv_for_SDL(dc1394video_frame_t *in, SDL_Overlay *sdloverlay, unsigned int overlay_byte_order)
 {
-  
   dc1394video_frame_t out;
   unsigned int padding=in->padding_bytes;
-  in->padding_bytes=0;
-  in->total_bytes=in->image_bytes;
+  in->padding_bytes=0;             // don't print padding in YUV video buffer
+  in->total_bytes=in->image_bytes; // don't print padding in YUV video buffer
+  //fprintf(stderr,"%d ",in->color_coding);
   out.color_coding=DC1394_COLOR_CODING_YUV422;
   out.yuv_byte_order=overlay_byte_order;
   out.image=sdloverlay->pixels[0];
@@ -50,6 +50,7 @@ convert_to_yuv_for_SDL(dc1394video_frame_t *in, SDL_Overlay *sdloverlay, unsigne
 
   dc1394_convert_frames(in, &out);
 
+  // revert to true values:
   in->padding_bytes=padding;
   in->total_bytes=in->image_bytes+padding;
 }

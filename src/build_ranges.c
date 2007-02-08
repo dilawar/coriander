@@ -217,7 +217,7 @@ void BuildRange(int feature)
   new_menu = gtk_menu_new ();
 
   /*
-  fprintf(stderr,"feature %d: avail: %d, onoff: %d, man: %d, auto: %d, abs: %d, op: %d, min:%d, max:%d\n",feature-DC1394_FEATURE_MIN,
+  fprintf(stderr,"feature %d: avail: %d, onoff: %d, man: %d, auto: %d, abs: %d, op: %d, min:%d, max:%d, ison:%d\n",feature-DC1394_FEATURE_MIN,
 	  camera->feature_set.feature[feature-DC1394_FEATURE_MIN].available,
 	  camera->feature_set.feature[feature-DC1394_FEATURE_MIN].on_off_capable,
 	  camera->feature_set.feature[feature-DC1394_FEATURE_MIN].manual_capable,
@@ -225,7 +225,8 @@ void BuildRange(int feature)
 	  camera->feature_set.feature[feature-DC1394_FEATURE_MIN].absolute_capable,
 	  camera->feature_set.feature[feature-DC1394_FEATURE_MIN].one_push,
 	  camera->feature_set.feature[feature-DC1394_FEATURE_MIN].min,
-	  camera->feature_set.feature[feature-DC1394_FEATURE_MIN].max);
+	  camera->feature_set.feature[feature-DC1394_FEATURE_MIN].max,
+	  camera->feature_set.feature[feature-DC1394_FEATURE_MIN].is_on);
   */
   
   // point grey flea 2 sometimes has features that cannot be controlled in any way (in F7)
@@ -234,9 +235,15 @@ void BuildRange(int feature)
        camera->feature_set.feature[feature-DC1394_FEATURE_MIN].manual_capable  ||
        camera->feature_set.feature[feature-DC1394_FEATURE_MIN].auto_capable    ||
        camera->feature_set.feature[feature-DC1394_FEATURE_MIN].one_push        ||
-       camera->feature_set.feature[feature-DC1394_FEATURE_MIN].absolute_capable ) &&
+       camera->feature_set.feature[feature-DC1394_FEATURE_MIN].absolute_capable )
+    /*
+      // can't do this check: other cameras' features fail this test.
+      // Point Grey cameras (at least the Flea 2) will show a feature that is not controllable in some cases.
+      // see update_windows.c for a similar check done for range sensitivity.
+    &&
       !(!camera->feature_set.feature[feature-DC1394_FEATURE_MIN].is_on  && // disable feature if feature is OFF and can't be switched ON
         !camera->feature_set.feature[feature-DC1394_FEATURE_MIN].on_off_capable)
+    */
       ) {
 
     // BUILD MENU ITEMS ====================================================================================

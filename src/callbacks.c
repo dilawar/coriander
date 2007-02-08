@@ -359,12 +359,11 @@ on_edit_format7_color_activate             (GtkMenuItem     *menuitem,
 
   if (dc1394_format7_set_color_coding(camera->camera_info, camera->format7_info.edit_mode, (int)(unsigned long)user_data)!=DC1394_SUCCESS)
     Error("Could not change Format7 color coding");
-  else
-    camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].color_coding=(int)(unsigned long)user_data;
-
-  if (dc1394_format7_get_mode_info(camera->camera_info, camera->format7_info.edit_mode, 
-				   &camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_VIDEO_MODE_FORMAT7_MIN])!=DC1394_SUCCESS)
-    Error("Could not get format7 mode information");
+  else {
+    if (dc1394_format7_get_mode_info(camera->camera_info, camera->format7_info.edit_mode, 
+				     &camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_VIDEO_MODE_FORMAT7_MIN])!=DC1394_SUCCESS)
+      Error("Could not get format7 mode information");
+  }
 
   UpdateOptionFrame();
   UpdateFormat7Window();

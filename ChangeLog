@@ -1,5 +1,9 @@
 Coriander, (c) 2000-2007 Damien Douxchamps <ddouxchamps@users.sf.net>
 
+   February 8, 2007, by Damien Douxchamps
+   - revert part of the change of Feb. 1st regarding the Flea 2 because some
+     other manufacturer's implementation systematically fail one of the tests.
+	
    February 5, 2007, by Damien Douxchamps
    - fixed wrong argument order of WritePVNHeader(). Thanks to John Shen.
 	
