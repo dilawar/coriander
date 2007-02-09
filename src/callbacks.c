@@ -695,6 +695,15 @@ on_register_write_button_clicked      (GtkButton       *button,
   case DC1394_VIDEO_MODE_FORMAT7_7:
     err=SetCameraFormat7Register(camera->camera_info, camera->register_offset, offset, value);
     break;
+  case REGISTER_OFFSET_PIO:
+    err=SetCameraPIOControlRegister(camera->camera_info, offset, value);
+    break;
+  case REGISTER_OFFSET_SIO:
+    err=SetCameraSIOControlRegister(camera->camera_info, offset, value);
+    break;
+  case REGISTER_OFFSET_STROBE:
+    err=SetCameraStrobeControlRegister(camera->camera_info, offset, value);
+    break;
   default:
     fprintf(stderr,"Unrecognized offset!\n");
     break;
@@ -746,6 +755,15 @@ on_register_read_button_clicked       (GtkButton       *button,
   case DC1394_VIDEO_MODE_FORMAT7_6:
   case DC1394_VIDEO_MODE_FORMAT7_7:
     err=GetCameraFormat7Register(camera->camera_info, camera->register_offset, offset, &value);
+    break;
+  case REGISTER_OFFSET_PIO:
+    err=GetCameraPIOControlRegister(camera->camera_info, offset, &value);
+    break;
+  case REGISTER_OFFSET_SIO:
+    err=GetCameraSIOControlRegister(camera->camera_info, offset, &value);
+    break;
+  case REGISTER_OFFSET_STROBE:
+    err=GetCameraStrobeControlRegister(camera->camera_info, offset, &value);
     break;
   default:
     fprintf(stderr,"Unrecognized offset!\n");

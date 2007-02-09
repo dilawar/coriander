@@ -1107,6 +1107,34 @@ BuildRegisterAccessOffsetMenu(void)
 		      G_CALLBACK (on_offset_menu_activate),
 		      (int*)REGISTER_OFFSET_UDD);
 
+  if (camera->camera_info->PIO_control_csr>0) {
+    // PIO
+    glade_menuitem = gtk_menu_item_new_with_label (_("PIO"));
+    gtk_widget_show (glade_menuitem);
+    gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+    g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (on_offset_menu_activate),
+		      (int*)REGISTER_OFFSET_PIO);
+  }
+  if (camera->camera_info->SIO_control_csr>0) {
+    // PIO
+    glade_menuitem = gtk_menu_item_new_with_label (_("SIO"));
+    gtk_widget_show (glade_menuitem);
+    gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+    g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (on_offset_menu_activate),
+		      (int*)REGISTER_OFFSET_SIO);
+  }
+  if (camera->camera_info->strobe_control_csr>0) {
+    // Strobe
+    glade_menuitem = gtk_menu_item_new_with_label (_("Strobe"));
+    gtk_widget_show (glade_menuitem);
+    gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+    g_signal_connect ((gpointer) glade_menuitem, "activate",
+		      G_CALLBACK (on_offset_menu_activate),
+		      (int*)REGISTER_OFFSET_STROBE);
+  }
+
   // format7 modes
   int i,f;
   char string[STRING_SIZE];
