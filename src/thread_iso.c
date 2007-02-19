@@ -132,7 +132,7 @@ gint IsoStartThread(camera_t* cam)
 
     } // end if iso_state is on.
 
-    err=dc1394_capture_setup(cam->camera_info, cam->prefs.dma_buffer_size);
+    err=dc1394_capture_setup(cam->camera_info, cam->prefs.dma_buffer_size, DC1394_CAPTURE_FLAGS_DEFAULT);
     if (err!=DC1394_SUCCESS){
       eprint("Failed to setup capture. Error code %d\n",err);
       FreeChain(iso_service);

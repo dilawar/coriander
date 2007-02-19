@@ -60,7 +60,7 @@ AC_DEFUN([AC_CHECK_LIBDC],[
 	    int main(void) {
 	    dc1394video_frame_t *frame;
 	    dc1394camera_t *camera;
-	    dc1394_capture_setup(camera, 4);
+	    dc1394_capture_setup(camera, 4, DC1394_CAPTURE_FLAGS_DEFAULT);
 	    return 0;
 	    }
 	    ],libdc1394=ok,libdc1394=outdated);
@@ -289,8 +289,10 @@ AC_DEFUN([AC_CHECK_XV],[
 	else
           AC_ERROR([The XV overlay libraries were not found 
 **************************************************************************
-**   Please correct your X11 installation. Run 'xvinfo' to check if     **
-**   your system has overlay capabilities.                              **
+**   Please install xv overlay libraries and development packages.      **
+**   On Debian-based distributions this would be somthing like          **
+**   libxv-dev. Also, run 'xvinfo' to check if your system has overlay  **
+**   capabilities. If not you will need to update your display drivers. **
 **************************************************************************])
  	fi
 ])
