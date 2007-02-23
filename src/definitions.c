@@ -108,7 +108,8 @@ const char * trigger_source_list[DC1394_TRIGGER_SOURCE_NUM] = {
   "Input 0",
   "Input 1",
   "Input 2",
-  "Input 3"
+  "Input 3",
+  "Software"
 };
 
 const char * channel_num_list[16] = {

@@ -1,5 +1,8 @@
 Coriander, (c) 2000-2007 Damien Douxchamps <ddouxchamps@users.sf.net>
 
+   February 23, 2007, by Damien Douxchamps
+   - fixed missing string in trigger_source_list
+
    February 19, 2007, by Damien Douxchamps
    - sync with libdc1394
    - add more details to configure messages

@@ -94,6 +94,7 @@ BuildTriggerModeMenu(void)
 void
 BuildTriggerSourceMenu(void)
 {
+  
   int f;
   int index=0;
   unsigned int current_trigger_source;
@@ -133,7 +134,6 @@ BuildTriggerSourceMenu(void)
 	g_signal_connect ((gpointer) glade_menuitem, "activate", G_CALLBACK (on_trigger_source_activate),
 			  (gpointer)(unsigned long)camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].trigger_sources.sources[f]);
       }
-      
       gtk_option_menu_set_menu (GTK_OPTION_MENU (trigger_source), trigger_source_menu);
       
       // sets the active menu item:
@@ -158,7 +158,7 @@ BuildTriggerSourceMenu(void)
     gtk_option_menu_set_menu (GTK_OPTION_MENU (trigger_source), trigger_source_menu);
     gtk_option_menu_set_history (GTK_OPTION_MENU (trigger_source), 0);
   }
- 
+  
 }
 
 
