@@ -59,11 +59,12 @@ void
 convert_for_pvn(unsigned char *buffer, unsigned int width, unsigned int height,
 		unsigned int page, int color_mode, unsigned char *dest)
 {
-  float bpp;
+  unsigned int bpp;
   unsigned char *buf_loc;
 
-  dc1394_get_bytes_per_pixel(color_mode, &bpp);
-  buf_loc=buffer+(int)(page*bpp*width*height);
+  dc1394_get_bits_per_pixel(color_mode, &bpp);
+  buf_loc=buffer+(page*bpp*width*height)/8;
+
   if(dest==NULL)
     return;
 

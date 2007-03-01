@@ -174,9 +174,9 @@ getConvertedBytesPerChannel(int color_mode)
 unsigned int
 getDepth(unsigned long bufsize, int mode, unsigned int height, unsigned int width)
 {
-  float bytes_per_pixel;
-  dc1394_get_bytes_per_pixel(mode, &bytes_per_pixel);
-  return((unsigned int)(bufsize/(bytes_per_pixel*height*width)));
+  unsigned int bits_per_pixel;
+  dc1394_get_bits_per_pixel(mode, &bits_per_pixel);
+  return 8*bufsize/(bits_per_pixel*height*width);
 }
 
 // (JG) note: depth/# of pages is calculated from bufsize by dividing by # of bytes per image

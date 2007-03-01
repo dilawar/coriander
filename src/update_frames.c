@@ -411,7 +411,7 @@ UpdateFormat7InfoFrame(void)
 
   char *temp;
   dc1394format7mode_t *mode;
-  float bpp;
+  unsigned int bpp;
   int bytesize, grandtotal;
   
   temp=(char*)malloc(STRING_SIZE*sizeof(char));
@@ -420,9 +420,9 @@ UpdateFormat7InfoFrame(void)
 
     mode = &camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_VIDEO_MODE_FORMAT7_MIN];
 
-    dc1394_get_bytes_per_pixel(mode->color_coding, &bpp);
+    dc1394_get_bits_per_pixel(mode->color_coding, &bpp);
 
-    bytesize=(int) ((float)mode->size_x*(float)mode->size_y*bpp);
+    bytesize=(mode->size_x*mode->size_y*bpp)/8;
     /*
       // this appears to be meaningless as some cameras take padding into account
       if (bytesize!=mode->total_bytes) {
