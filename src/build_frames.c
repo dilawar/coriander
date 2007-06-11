@@ -295,6 +295,9 @@ BuildPrefsReceiveFrame(void)
 void
 BuildOptionFrame(void)
 {
+  
+  dc1394_video_get_data_depth(camera->camera_info, &camera->bpp);
+
   pthread_mutex_lock(&camera->uimutex);
   gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(main_window, "mono16_bpp"),camera->bpp);
   pthread_mutex_unlock(&camera->uimutex);
@@ -402,7 +405,7 @@ BuildSeviceTreeFrame(void)
 
   // --- Second column ---
   col = gtk_tree_view_column_new();
-  gtk_tree_view_column_set_title(col, "FPS");
+  gtk_tree_view_column_set_title(col, "Framerate");
 
   // pack tree view column into tree view
   gtk_tree_view_append_column(tree_view, col);
@@ -428,8 +431,22 @@ BuildSeviceTreeFrame(void)
   // connect 'text' property of the cell renderer to model column that contains the camera
   gtk_tree_view_column_add_attribute(col, renderer, "text", 2);
 
+  // --- Fourth column ---
+  col = gtk_tree_view_column_new();
+  gtk_tree_view_column_set_title(col, "Drop warnings");
+
+  // pack tree view column into tree view
+  gtk_tree_view_append_column(tree_view, col);
+  renderer = gtk_cell_renderer_text_new();
+
+  // pack cell renderer into tree view column
+  gtk_tree_view_column_pack_start(col, renderer, TRUE);
+
+  // connect 'text' property of the cell renderer to model column that contains the camera
+  gtk_tree_view_column_add_attribute(col, renderer, "text", 3);
+
   // --- create model and fill with camera names ---
-  treestore = gtk_tree_store_new(4, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INT); 
+  treestore = gtk_tree_store_new(5, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INT); 
   // last value is hidden but used for deletion, etc.
   // It stores the service type (e.g. SERVICE_ISO) or the camera number
 
@@ -438,7 +455,7 @@ BuildSeviceTreeFrame(void)
   i=0;
   while (camera_ptr!=NULL) {
     gtk_tree_store_append(treestore, &toplevel, NULL);
-    gtk_tree_store_set(treestore, &toplevel, 0, camera_ptr->prefs.name, 1, "", 2, "", 3, i++, -1);
+    gtk_tree_store_set(treestore, &toplevel, 0, camera_ptr->prefs.name, 1, "", 2, "", 3, "", 4, i++, -1);
     camera_ptr=camera_ptr->next;
   }
 

@@ -167,7 +167,7 @@ typedef struct _CameraInfo_T {
   int bayer;
   int bayer_pattern;
   int stereo;
-  int bpp;
+  unsigned int bpp;
   int register_offset;
   int memory_channel;
 
@@ -210,12 +210,12 @@ typedef struct _Chain_T
   buffer_t        local_param_copy; // not pointer: it remains in the chain.
 
   // timing data:
-  struct tms tms_buf;
-  clock_t prev_time;
-  clock_t current_time;
-  //int timeout_func_id;
-  int fps_frames;
+
   float fps;
+
+  uint64_t prev_time;
+  float prev_period;
+  uint32_t drop_warning;
 
   unsigned long long int processed_frames;
 

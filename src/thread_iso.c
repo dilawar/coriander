@@ -176,6 +176,7 @@ IsoThread(void* arg)
   dc1394camera_t *camptr;
   struct tm captime;
   dc1394error_t err;
+  struct timeval rawtime;
 
   iso_service=(chain_t*)arg;
 
@@ -192,8 +193,9 @@ IsoThread(void* arg)
   uint64_t backup_alloc;
 
   // time inits:
-  iso_service->prev_time = times(&iso_service->tms_buf);
-  iso_service->fps_frames=0;
+  iso_service->prev_time = 0;
+  iso_service->prev_period = 0;
+  iso_service->drop_warning = 0;
   iso_service->processed_frames=0;
 
   while (1) {
@@ -218,10 +220,9 @@ IsoThread(void* arg)
 	if (err==DC1394_SUCCESS) { // should check for more errors here  
 	  //fprintf(stderr,"size: %d %d\n",frame->size[0],frame->size[1]);
 	
-	  info->rawtime.tv_sec=frame->timestamp/1000000;
-	  info->rawtime.tv_usec=frame->timestamp%1000000;
-	  //gettimeofday(&info->rawtime, NULL);
-	  localtime_r(&info->rawtime.tv_sec, &captime);
+	  rawtime.tv_sec=frame->timestamp/1000000;
+	  rawtime.tv_usec=frame->timestamp%1000000;
+	  localtime_r(&rawtime.tv_sec, &captime);
 	  sprintf(iso_service->current_buffer->captime_string,"%04d%02d%02d-%02d%02d%02d-%03d",
 		  captime.tm_year+1900,
 		  captime.tm_mon+1,
@@ -229,11 +230,15 @@ IsoThread(void* arg)
 		  captime.tm_hour,
 		  captime.tm_min,
 		  captime.tm_sec,
-		  (int)info->rawtime.tv_usec/1000);
+		  (int)rawtime.tv_usec/1000);
 	  
 	  // check current buffer status
 	  // IsoThreadCheckParams(iso_service); // THIS IS AUTOMATIC NOW!!
 	  
+	  // if the manually set bpp is different from the bpp found in the frame, set the frame bpp to the manual bpp:
+	  if (frame->bit_depth!=iso_service->camera->bpp)
+	    frame->bit_depth=iso_service->camera->bpp;
+
 	  // copy the buffer data, but only copy the pointer to the image
 	  //fprintf(stderr,"just after capture: %lld\n",frame->total_bytes);
 	  memcpy(&info->tempframe,frame,sizeof(dc1394video_frame_t));
@@ -289,19 +294,31 @@ IsoThread(void* arg)
 	  //fprintf(stderr,"size: %d %d\n",iso_service->current_buffer->frame.size[0],iso_service->current_buffer->frame.size[1]);
 	  
 	  // FPS computation:
-	  iso_service->current_time=times(&iso_service->tms_buf);
-	  iso_service->fps_frames++;
 	  iso_service->processed_frames++;
 	  
-	  tmp=(float)(iso_service->current_time-iso_service->prev_time)/sysconf(_SC_CLK_TCK);
-	  if (tmp==0)
+	  tmp=((float)(frame->timestamp-iso_service->prev_time))/1000000.0;
+	  if (iso_service->prev_time==0) {
 	    iso_service->fps=fabs(0.0);
-	  else
-	    iso_service->fps=fabs((float)iso_service->fps_frames/tmp);
-	  
+	  }
+	  else {
+	    if (tmp==0)
+	      iso_service->fps=fabs(0.0);
+	    else
+	      iso_service->fps=fabs(1/tmp);
+	  }
+	  if (iso_service->prev_time!=0) {
+	    iso_service->prev_period=tmp;
+	  }
+	  // produce a drop warning if the period difference is over 50%
+	  if (iso_service->prev_period!=0) {
+	    if (fabs(iso_service->prev_period-tmp)/(iso_service->prev_period/2+tmp/2)>=.5)
+	      iso_service->drop_warning++;
+	  }
+	  iso_service->prev_time=frame->timestamp;
+
 	  // return the frame to the DMA ring buffer
 	  dc1394_capture_enqueue(camptr,frame);
-	  
+
 	  PublishBufferForNext(iso_service);
 	  //fprintf(stderr,"Buffer soon rolled in ISO\n");
 	  pthread_mutex_unlock(&iso_service->mutex_data);

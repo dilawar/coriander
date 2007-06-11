@@ -35,8 +35,6 @@ typedef struct
   int orig_sizey;
   int cond16bit;
 
-  struct timeval rawtime;
-
 } isothread_info_t;
 
 gint

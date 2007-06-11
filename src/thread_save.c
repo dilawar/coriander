@@ -706,8 +706,9 @@ SaveThread(void* arg)
   pthread_mutex_unlock(&save_service->mutex_data);
 
   // time inits:
-  save_service->prev_time = times(&save_service->tms_buf);
-  save_service->fps_frames=0;
+  save_service->prev_time = 0;
+  save_service->prev_period = 0;
+  save_service->drop_warning = 0;
   save_service->processed_frames=0;
 
   while (1) { 
@@ -811,20 +812,31 @@ SaveThread(void* arg)
 		fprintf(stderr,"Unsupported file format\n");
 	      } // end save format switch
 	    } // end ram buffer if
-	    save_service->fps_frames++;
 	    save_service->processed_frames++;
 	  }
 	  else
 	    skip_counter++;
 	  
-	  // FPS display
-	  save_service->current_time=times(&save_service->tms_buf);
-	  tmp=(float)(save_service->current_time-save_service->prev_time)/sysconf(_SC_CLK_TCK);
-	  if (tmp==0)
+	  // FPS computation:
+	  tmp=((float)(save_service->current_buffer->frame.timestamp-save_service->prev_time))/1000000.0;
+	  if (save_service->prev_time==0) {
 	    save_service->fps=fabs(0.0);
-	  else
-	    save_service->fps=fabs((float)save_service->fps_frames/tmp);
-
+	  }
+	  else {
+	    if (tmp==0)
+	      save_service->fps=fabs(0.0);
+	    else
+	      save_service->fps=fabs(1/tmp);
+	  }
+	  if (save_service->prev_time!=0) {
+	    save_service->prev_period=tmp;
+	  }
+	  // produce a drop warning if the period difference is over 50%
+	  if (save_service->prev_period!=0) {
+	    if (fabs(save_service->prev_period-tmp)/(save_service->prev_period/2+tmp/2)>=.5)
+	      save_service->drop_warning++;
+	  }
+	  save_service->prev_time=save_service->current_buffer->frame.timestamp;
 	}
 	//usleep(200000);////////////////////////////////////////////
 	PublishBufferForNext(save_service);

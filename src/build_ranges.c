@@ -216,7 +216,7 @@ void BuildRange(int feature)
   
   new_menu = gtk_menu_new ();
 
-  /*
+  /* 
   fprintf(stderr,"feature %d: avail: %d, onoff: %d, man: %d, auto: %d, abs: %d, op: %d, min:%d, max:%d, ison:%d\n",feature-DC1394_FEATURE_MIN,
 	  camera->feature_set.feature[feature-DC1394_FEATURE_MIN].available,
 	  camera->feature_set.feature[feature-DC1394_FEATURE_MIN].on_off_capable,

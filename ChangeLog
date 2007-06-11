@@ -1,5 +1,17 @@
 Coriander, (c) 2000-2007 Damien Douxchamps <ddouxchamps@users.sf.net>
 
+   June 11, 2007, by Damien Douxchamps
+   - Upgrade the framerate calculation to use the timestamps sent by the kernel
+     (through libdc1394)
+   - Add a counter that shows dropped frames warnings. A warning is issued when
+     the difference between a pervious period and a new period is larger than
+     50%.
+   - fixed the bit depth. If the bit depth is available in the camera, it will
+     be used. Otherwise the manual control will be available. I still have
+     problems with my Basler 602f though. It has 10bits but the image is not
+     good: saturated regions appear mid-grey (128) and the other regions are
+     noise.
+
    March 1st, 2007, by Damien Douxchamps
    - sync with libdc1394 (SVN 391)
 

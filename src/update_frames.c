@@ -376,11 +376,15 @@ UpdateOptionFrame(void)
     }
   }
 
+  dc1394_video_get_data_depth(camera->camera_info, &camera->bpp);
+
   int cond= ((bpp16_ok) && 
 	     (camera->stereo==-1) && 
-	     (camera->bayer==-1));
+	     (camera->bayer==-1) &&
+	     (camera->bpp==16));
 
   pthread_mutex_lock(&camera->uimutex);
+  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(main_window, "mono16_bpp"),camera->bpp);
   gtk_widget_set_sensitive(lookup_widget(main_window,"mono16_bpp"),cond);
   gtk_widget_set_sensitive(lookup_widget(main_window,"label114"), cond);
   pthread_mutex_unlock(&camera->uimutex);
@@ -583,8 +587,8 @@ UpdateServiceTree(void)
   model = gtk_tree_view_get_model(view);
   store = GTK_TREE_STORE(model);
 
-  temp=(char**)malloc(3*sizeof(char*));
-  for (i=0;i<3;i++) {
+  temp=(char**)malloc(4*sizeof(char*));
+  for (i=0;i<4;i++) {
     temp[i]=(char*)malloc(STRING_SIZE*sizeof(char));
   }
 
@@ -600,7 +604,7 @@ UpdateServiceTree(void)
       gtk_tree_model_iter_children(model, &service_leaf, &cam_leaf);
       // check that each existing service is alive
       for (i=0;i<n;i++) {
-	gtk_tree_model_get (model, &service_leaf, 3, &service_id, -1);
+	gtk_tree_model_get (model, &service_leaf, 4, &service_id, -1);
 	if (GetService(cam,service_id)==NULL) {
 	  // remove this service row
 	  //fprintf(stderr,"Service dead, removing\n");
@@ -619,7 +623,7 @@ UpdateServiceTree(void)
       if (service!=NULL) {
 
 	// update volatile data in all cases
-	if (service->fps_frames>0) {
+	if (service->fps>0) {
 	  sprintf(tmp_string," %.3f",service->fps);
 	  sprintf(temp[1],"%.5f", service->fps);
 	}
@@ -628,12 +632,8 @@ UpdateServiceTree(void)
 	  sprintf(temp[1],"%.5f", fabs(0.0));
 	}
 
-	pthread_mutex_lock(&service->mutex_data);
-	service->prev_time=service->current_time;
-	service->fps_frames=0;
-	pthread_mutex_unlock(&service->mutex_data);
-
 	sprintf(temp[2],"%llu", service->processed_frames);
+	sprintf(temp[3],"%d", service->drop_warning);
 
 	// update main window FPS counters
 	switch(s) {
@@ -692,7 +692,7 @@ UpdateServiceTree(void)
 	if (n>0) {
 	  gtk_tree_model_iter_children(model, &service_leaf, &cam_leaf);
 	  for (j=0;j<n;j++) {
-	    gtk_tree_model_get(model, &service_leaf, 3, &service_id, -1);
+	    gtk_tree_model_get(model, &service_leaf, 4, &service_id, -1);
 	    //fprintf(stderr,"service_id of node %d: %d\n",j,service_id);
 	    if (service_id==s) {
 	      //fprintf(stderr,"  service found\n");
@@ -710,9 +710,9 @@ UpdateServiceTree(void)
 	if (service_id!=s) {
 	  //fprintf(stderr,"Add service id %d\n",s);
 	  gtk_tree_store_append(store, &service_leaf, &cam_leaf);
-	  gtk_tree_store_set(store, &service_leaf, 0, temp[0], 3, s, -1);
+	  gtk_tree_store_set(store, &service_leaf, 0, temp[0], 4, s, -1);
 	}
-	gtk_tree_store_set(store, &service_leaf, 1, temp[1], 2, temp[2], -1);
+	gtk_tree_store_set(store, &service_leaf, 1, temp[1], 2, temp[2], 3, temp[3], -1);
 
       }
       else {
@@ -772,7 +772,7 @@ UpdateServiceTree(void)
     gtk_tree_model_iter_next(model, &cam_leaf);
   }
 
-  for (i=0;i<3;i++) {
+  for (i=0;i<4;i++) {
     free(temp[i]);
   }
   free(temp);

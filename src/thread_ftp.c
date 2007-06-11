@@ -134,8 +134,9 @@ FtpThread(void* arg)
  
 
   // time inits:
-  ftp_service->prev_time = times(&ftp_service->tms_buf);
-  ftp_service->fps_frames=0;
+  ftp_service->prev_time = 0;
+  ftp_service->prev_period = 0;
+  ftp_service->drop_warning = 0;
   ftp_service->processed_frames=0;
 
   while (1) { 
@@ -185,7 +186,6 @@ FtpThread(void* arg)
 	      //FtpPutFrame(filename_out, im, info);
 	    }
 #endif
-	    ftp_service->fps_frames++;
 	    ftp_service->processed_frames++;
 
 	    // V20***
@@ -195,13 +195,26 @@ FtpThread(void* arg)
 	  else
 	    skip_counter++;
 	  
-	  // FPS display:
-	  ftp_service->current_time=times(&ftp_service->tms_buf);
-	  tmp=(float)(ftp_service->current_time-ftp_service->prev_time)/sysconf(_SC_CLK_TCK);
-	  if (tmp==0)
+	  // FPS computation:
+	  tmp=((float)(ftp_service->current_buffer->frame.timestamp-ftp_service->prev_time))/1000000.0;
+	  if (ftp_service->prev_time==0) {
 	    ftp_service->fps=fabs(0.0);
-	  else
-	    ftp_service->fps=fabs((float)ftp_service->fps_frames/tmp);
+	  }
+	  else {
+	    if (tmp==0)
+	      ftp_service->fps=fabs(0.0);
+	    else
+	      ftp_service->fps=fabs(1/tmp);
+	  }
+	  if (ftp_service->prev_time!=0) {
+	    ftp_service->prev_period=tmp;
+	  }
+	  // produce a drop warning if the period difference is over 50%
+	  if (ftp_service->prev_period!=0) {
+	    if (fabs(ftp_service->prev_period-tmp)/(ftp_service->prev_period/2+tmp/2)>=.5)
+	      ftp_service->drop_warning++;
+	  }
+	  ftp_service->prev_time=ftp_service->current_buffer->frame.timestamp;
 
 	}
 	

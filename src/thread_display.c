@@ -82,8 +82,9 @@ DisplayThread(void* arg)
   camera_t *cam=display_service->camera;
 
   // time inits:
-  display_service->prev_time = times(&display_service->tms_buf);
-  display_service->fps_frames=0;
+  display_service->prev_time = 0;
+  display_service->prev_period = 0;
+  display_service->drop_warning = 0;
   display_service->processed_frames=0;
 
   while (1) {
@@ -119,7 +120,6 @@ DisplayThread(void* arg)
 	      }
 	    }
 #endif
-	    display_service->fps_frames++;
 	    display_service->processed_frames++;
 	  }
 	  else { //
@@ -128,14 +128,26 @@ DisplayThread(void* arg)
 	    }
 	    skip_counter++;
 	  }
-	  // FPS display:
-	  display_service->current_time=times(&display_service->tms_buf);
-	  
-	  tmp=(float)(display_service->current_time-display_service->prev_time)/sysconf(_SC_CLK_TCK);
-	  if (tmp==0)
+	  // FPS computation:
+	  tmp=((float)(display_service->current_buffer->frame.timestamp-display_service->prev_time))/1000000.0;
+	  if (display_service->prev_time==0) {
 	    display_service->fps=fabs(0.0);
-	  else
-	    display_service->fps=fabs((float)display_service->fps_frames/tmp);
+	  }
+	  else {
+	    if (tmp==0)
+	      display_service->fps=fabs(0.0);
+	    else
+	      display_service->fps=fabs(1/tmp);
+	  }
+	  if (display_service->prev_time!=0) {
+	    display_service->prev_period=tmp;
+	  }
+	  // produce a drop warning if the period difference is over 50%
+	  if (display_service->prev_period!=0) {
+	    if (fabs(display_service->prev_period-tmp)/(display_service->prev_period/2+tmp/2)>=.5)
+	      display_service->drop_warning++;
+	  }
+	  display_service->prev_time=display_service->current_buffer->frame.timestamp;
 	}
 
 	PublishBufferForNext(display_service);
