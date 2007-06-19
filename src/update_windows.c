@@ -64,20 +64,16 @@ UpdateFeatureWindow(void)
       UpdateRange(i);
 
       // if there is no control mode available for the feature, disable it.
-      if ((!camera->feature_set.feature[i-DC1394_FEATURE_MIN].on_off_capable  && // disable feature if there is no way to control it
-	   !camera->feature_set.feature[i-DC1394_FEATURE_MIN].manual_capable  &&
-	   !camera->feature_set.feature[i-DC1394_FEATURE_MIN].auto_capable    &&
-	   !camera->feature_set.feature[i-DC1394_FEATURE_MIN].one_push        &&
-	   !camera->feature_set.feature[i-DC1394_FEATURE_MIN].absolute_capable )
-	  /* can't do this: it would help point grey cameras but other cameras fail this test
-	    ||
-	  (!camera->feature_set.feature[i-DC1394_FEATURE_MIN].is_on  && // disable feature if feature is OFF and can't be switched ON
-	   !camera->feature_set.feature[i-DC1394_FEATURE_MIN].on_off_capable)
-	  */
-	  ) {
-	
+      if (!((camera->feature_set.feature[i-DC1394_FEATURE_MIN].on_off_capable  || // disable feature if there is no way to control it
+	     camera->feature_set.feature[i-DC1394_FEATURE_MIN].manual_capable  ||
+	     camera->feature_set.feature[i-DC1394_FEATURE_MIN].auto_capable    ||
+	     camera->feature_set.feature[i-DC1394_FEATURE_MIN].one_push_capable||
+	     camera->feature_set.feature[i-DC1394_FEATURE_MIN].absolute_capable ) &&
+	    (camera->feature_set.feature[i-DC1394_FEATURE_MIN].on_off_capable ||  // disable features that are OFF and not ON-settable
+	     camera->feature_set.feature[i-DC1394_FEATURE_MIN].is_on )
+	    )) {
 	sprintf(stemp,"feature_%d_frame",i);
-	gtk_widget_set_sensitive(lookup_widget(main_window, stemp), 0);
+        gtk_widget_set_sensitive(lookup_widget(main_window, stemp), 0);
 	
       }
     }

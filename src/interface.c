@@ -868,7 +868,7 @@ create_main_window (void)
 
   main_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_widget_set_name (main_window, "main_window");
-  gtk_window_set_title (GTK_WINDOW (main_window), _("Coriander 2.0.0-rc4"));
+  gtk_window_set_title (GTK_WINDOW (main_window), _("Coriander 2.0.0-rc5"));
   main_window_icon_pixbuf = create_pixbuf ("coriander/coriander-icon.png");
   if (main_window_icon_pixbuf)
     {
@@ -4525,7 +4525,7 @@ create_about_window (void)
   about_window_logo_pixbuf = create_pixbuf ("coriander/coriander-logo.png");
   about_window = gnome_about_new ("Coriander", VERSION,
                         _("Copyright 2000-2006 Damien Douxchamps"),
-                        _("Coriander home page is\nhttp://damien.douxchamps.net/ieee1394/coriander\n \nCoriander received equipment donations from the following companies:\nHamamatsu Corporation     http://www.hpk.co.jp\nThe Imaging Source     http://www.1394imaging.com\nPoint Grey Research     http://www.ptgrey.com\nBasler GmbH     http://www.balserweb.com\n \nMany thanks to our sponsors!"),
+                        _("Coriander home page is\nhttp://damien.douxchamps.net/ieee1394/coriander\n \nCoriander received equipment and/or donations\nfrom the following companies:\n\nHamamatsu Corporation           http://www.hpk.co.jp\nThe Imaging Source    http://www.1394imaging.com\nPoint Grey Research              http://www.ptgrey.com\nBasler GmbH                    http://www.balserweb.com\nDage MTI\t\t                   http://www.dagemti.com\n\nMany thanks to our sponsors!"),
                         authors,
                         documenters,
                         translators,

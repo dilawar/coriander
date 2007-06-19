@@ -57,7 +57,7 @@ UpdateRange(int feature)
 	  index=1*(camera->feature_set.feature[feature-DC1394_FEATURE_MIN].on_off_capable)+ // absolute
 	    1*(camera->feature_set.feature[feature-DC1394_FEATURE_MIN].manual_capable)+
 	    1*(camera->feature_set.feature[feature-DC1394_FEATURE_MIN].auto_capable)+
-	    1*(camera->feature_set.feature[feature-DC1394_FEATURE_MIN].one_push);
+	    1*(camera->feature_set.feature[feature-DC1394_FEATURE_MIN].one_push_capable);
 	  
 	}
       }
@@ -70,7 +70,7 @@ UpdateRange(int feature)
   
   range_is_active=((!(camera->feature_set.feature[feature-DC1394_FEATURE_MIN].auto_capable&& // auto not on
 		      camera->feature_set.feature[feature-DC1394_FEATURE_MIN].auto_active))&&
-		   (!(camera->feature_set.feature[feature-DC1394_FEATURE_MIN].one_push&& // one-push auto not active
+		   (!(camera->feature_set.feature[feature-DC1394_FEATURE_MIN].one_push_capable&& // one-push auto not active
 		      camera->feature_set.feature[feature-DC1394_FEATURE_MIN].one_push_active))&&
 		   (!(camera->feature_set.feature[feature-DC1394_FEATURE_MIN].absolute_capable&& // abs control not on
 		      camera->feature_set.feature[feature-DC1394_FEATURE_MIN].abs_control))&&

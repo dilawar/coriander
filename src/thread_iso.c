@@ -240,9 +240,7 @@ IsoThread(void* arg)
 	    frame->bit_depth=iso_service->camera->bpp;
 
 	  // copy the buffer data, but only copy the pointer to the image
-	  //fprintf(stderr,"just after capture: %lld\n",frame->total_bytes);
 	  memcpy(&info->tempframe,frame,sizeof(dc1394video_frame_t));
-	  //fprintf(stderr,"just after copy: %lld\n",info->tempframe.total_bytes);
 	  // we don't allocate the image buffer of tempframe (pointer copy from the DMA ring buffer)
 	  // so the alloc should be zero
 	  info->tempframe.allocated_image_bytes=0;
@@ -256,18 +254,23 @@ IsoThread(void* arg)
 	    dc1394_deinterlace_stereo_frames(frame,&info->tempframe,(dc1394stereo_method_t)iso_service->current_buffer->stereo_method);
 	    break;
 	  }
-	  //fprintf(stderr,"size: %d %d\n",info->tempframe.size[0],info->tempframe.size[1]);
 	  
 	  // bayer decoding
-	  switch (iso_service->camera->bayer) {
+
+	  // we want to keep the UI at the same setting, but we ignore the UI value if the color mode is clearly not bayer type
+	  int bayer=iso_service->camera->bayer;
+	  if ((info->tempframe.color_coding!=DC1394_COLOR_CODING_RAW8) &&
+	      (info->tempframe.color_coding!=DC1394_COLOR_CODING_RAW16) &&
+	      (info->tempframe.color_coding!=DC1394_COLOR_CODING_MONO8) &&
+	      (info->tempframe.color_coding!=DC1394_COLOR_CODING_MONO16)) {
+	    bayer=-1;
+	  }
+
+	  switch (bayer) {
 	  case -1:
 	    // this is only necessary if no stereo was performed
 	    if (iso_service->current_buffer->stereo==-1) {
-	      //fprintf(stderr,"allocated buffer size: %lld  incoming buffer size: %lld\n",
-	      //      iso_service->current_buffer->frame.allocated_image_bytes,
-	      //      info->tempframe.total_bytes);
 	      if (iso_service->current_buffer->frame.allocated_image_bytes<info->tempframe.total_bytes) {
-		//fprintf(stderr,"low image bytes, alloc struct\n");
 		if (iso_service->current_buffer->frame.allocated_image_bytes!=0)
 		  free(iso_service->current_buffer->frame.image);
 		iso_service->current_buffer->frame.image=(uint8_t*)malloc(info->tempframe.total_bytes*sizeof(uint8_t));
@@ -279,10 +282,7 @@ IsoThread(void* arg)
 	      memcpy(&iso_service->current_buffer->frame,&info->tempframe,sizeof(dc1394video_frame_t));
 	      iso_service->current_buffer->frame.image=backup_ptr;
 	      iso_service->current_buffer->frame.allocated_image_bytes=backup_alloc;
-	      //fprintf(stderr,"buffer alloc'ed: %lld   incomin buffer size: %lld\n",
-	      //    iso_service->current_buffer->frame.allocated_image_bytes,
-	      // 	    info->tempframe.total_bytes);
-	      memcpy(iso_service->current_buffer->frame.image,info->tempframe.image,info->tempframe.total_bytes*sizeof(uint8_t));  
+	      memcpy(iso_service->current_buffer->frame.image,info->tempframe.image,info->tempframe.total_bytes*sizeof(uint8_t));
 	    }
 	    break;
 	  default:
@@ -291,7 +291,6 @@ IsoThread(void* arg)
 	    dc1394_debayer_frames(&info->tempframe, &iso_service->current_buffer->frame,iso_service->camera->bayer);
 	    break;
 	  }
-	  //fprintf(stderr,"size: %d %d\n",iso_service->current_buffer->frame.size[0],iso_service->current_buffer->frame.size[1]);
 	  
 	  // FPS computation:
 	  iso_service->processed_frames++;
@@ -320,7 +319,6 @@ IsoThread(void* arg)
 	  dc1394_capture_enqueue(camptr,frame);
 
 	  PublishBufferForNext(iso_service);
-	  //fprintf(stderr,"Buffer soon rolled in ISO\n");
 	  pthread_mutex_unlock(&iso_service->mutex_data);
 	}
 	else {
