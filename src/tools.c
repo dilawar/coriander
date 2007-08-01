@@ -787,8 +787,8 @@ main_timeout_handler(gpointer* tmp)
   if (!(main_timeout_ticker%1000)) { // every 1/2 second
     for (i=0;i<port_num;i++) {
       //eprint("bus reset detection for port %d\n",i);
-      cooked1394_read(handles[i], 0xffc0 | raw1394_get_local_id(handles[i]),
-		      CSR_REGISTER_BASE + CSR_CYCLE_TIME, 4, (quadlet_t *) &quadlet);
+      raw1394_read(handles[i], 0xffc0 | raw1394_get_local_id(handles[i]),
+		   CSR_REGISTER_BASE + CSR_CYCLE_TIME, 4, (quadlet_t *) &quadlet);
     }
   }
 

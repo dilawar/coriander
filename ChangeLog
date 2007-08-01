@@ -1,5 +1,10 @@
 Coriander, (c) 2000-2007 Damien Douxchamps <ddouxchamps@users.sf.net>
 
+   August 1st, 2007, by Damien Douxchamps
+   - removed references to cooked1394read
+   - removed topology.c/h (it's in libdc1394 now)
+   - some 'smarter' feature presence checks should be done for Point Grey only
+
    June 19, 2007, by Damien Douxchamps
    - libdc1394 sync
    - fix bayer processing that was sometimes badly taken into account
