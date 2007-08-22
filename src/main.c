@@ -76,6 +76,8 @@ main (int argc, char *argv[])
   raw1394_destroy_handle(tmp_handle);
   //eprint("port OK\n");
 
+  dc1394=dc1394_new();
+
   err=GetCameraNodes();
   //eprint("nodes OK\n");
 
@@ -158,5 +160,7 @@ main (int argc, char *argv[])
 
   free(handles);
   
+  dc1394_free(dc1394);
+
   return 0;
 }

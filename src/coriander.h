@@ -26,6 +26,9 @@
 #include <gnome.h>
 #include <libraw1394/raw1394.h>
 #include <libraw1394/csr.h>
+#include <sys/types.h>
+#include <stddef.h>
+#include <stdint.h>
 #include <dc1394/control.h>
 #include <dc1394/conversions.h>
 #include <dc1394/utils.h>
@@ -112,6 +115,7 @@ Prefs_t preferences;
 int silent_ui_update;
 camera_t* camera;
 camera_t* cameras;
+dc1394_t *dc1394;
 
 xvinfo_t xvinfo;
 int port_num;

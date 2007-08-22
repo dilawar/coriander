@@ -22,28 +22,24 @@ int
 GetCameraNodes(void) {
 
   int err;
-  dc1394camera_t **dccameras=NULL;
-  unsigned int camnum=0;
   camera_t* camera_ptr;
+  dc1394camera_list_t *camera_list;
   int i;
-  //fprintf(stderr,"found %d cameras\n",camnum);
 
-  // find the cameras using classic libdc functions:
-  err=dc1394_find_cameras(&dccameras,&camnum);
+  err=dc1394_enumerate_cameras(dc1394,&camera_list);
 
-  //fprintf(stderr,"found %d cameras\n",camnum);
+  if (err==DC1394_NO_CAMERA) {
+    dc1394_free_camera_list(camera_list);
+    return err;
+  }
+    
+    
 
-  /*
-  fprintf(stderr,"error code: %d-%d\n",err,DC1394_NO_CAMERA);
-  
-  if (err!=DC1394_NO_CAMERA)
-    DC1394_ERR_CHK(err,"Error getting the cameras");
-  */
   // create a list of cameras with coriander's camera type camera_t
-  for (i=0;i<camnum;i++) {
+  for (i=0;i<camera_list->num;i++) {
     camera_ptr=NewCamera();
     // copy the info in the dc structure into the coriander struct.
-    camera_ptr->camera_info=dccameras[i];
+    camera_ptr->camera_info=dc1394_camera_new(dc1394,camera_list->guids[i]);
 
     //fprintf(stderr,"0x%llx - 0x%llx\n",dccameras[i]->euid_64,camera_ptr->camera_info->euid_64);
 
@@ -54,12 +50,12 @@ GetCameraNodes(void) {
     AppendCamera(camera_ptr);
   }
 
-  // free the temp dccameras:
-  free(dccameras);
+  // free camera list:
+  dc1394_free_camera_list(camera_list);
 
   //fprintf(stderr,"Done getting nodes\n");
 
-  return err;;
+  return err;
 }
 
 camera_t*
