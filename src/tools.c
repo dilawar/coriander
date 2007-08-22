@@ -575,12 +575,9 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation)
   camera_t *camera_ptr, *cp2;
   camera_t* new_camera;
   dc1394switch_t iso_status;
-  //dc1394camera_t **newcams;
-  //unsigned int newcamnum;
-  //int *nodelete=NULL;
   dc1394camera_list_t *new_camera_list;
 
-  Warning("Bus reset detected");
+  //Warning("Bus reset detected");
 
   //eprint("bus reset detected\n");
 
@@ -591,19 +588,10 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation)
   raw1394_update_generation(handle, generation);
   // Now we have to deal with this bus reset...
 
-  // get camera nodes:
+  // get camera guids:
   dc1394_enumerate_cameras(dc1394,&new_camera_list);
-  //dc1394_find_cameras(&newcams,&newcamnum);
-  /*
-  eprint("found %d cameras. Handles:\n",newcamnum);
-  for (i=0;i<newcamnum;i++) {
-    eprint("\t#%d @ 0x%x\n",i,newcams[i]->handle);
-  }
-  */
-  // ADD NEW CAMERAS AND UPDATE PREVIOUS ONES ---------------------------------
 
-  //if (new_camera_list->num>0)
-  //  nodelete=(int*)calloc(new_camera_list->num,sizeof(int));
+  // ADD NEW CAMERAS AND UPDATE PREVIOUS ONES ---------------------------------
 
   // try to match the GUID with previous cameras
   for (i=0;i<new_camera_list->num;i++) {
@@ -611,24 +599,20 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation)
     camera_ptr=cameras;
     while(camera_ptr!=NULL) {
       if (camera_ptr->camera_info->euid_64==new_camera_list->guids[i]) { // yes, the camera was there
-	//eprint("  camera was already there\n");
-	//if (dc1394_get_camera_info(camera_ptr->camera_info)!=DC1394_SUCCESS)
-	//  Error("Could not update camera basic information in bus reset handler");
 	break;
       }
       camera_ptr=camera_ptr->next;
     }
-    if (camera_ptr==NULL) { // the camera is new
+
+    if (camera_ptr==NULL) { // the camera is new, add it
       new_camera=NewCamera();
       new_camera->camera_info=dc1394_camera_new(dc1394,new_camera_list->guids[i]);
       GetCameraData(new_camera);
-      //nodelete[i]=1;
 
       AppendCamera(new_camera);
       if (cameras==NULL) {
 	SetCurrentCamera(new_camera->camera_info->euid_64);
       }
-      //eprint("  A new camera has been added\n");
     }
   }
 
@@ -642,11 +626,8 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation)
 	break;
     }
     if (camera_ptr->camera_info->euid_64!=new_camera_list->guids[i]) { // the camera "camera_ptr" was unplugged
-      //eprint("found a camera to remove\n");
-      if (camera->camera_info->euid_64==camera_ptr->camera_info->euid_64) {
-	//eprint(" The current camera was unplugged\n");
-	if ((camera->next==NULL)&&(cameras==camera)) { // the only camera was removed. Close GUI and revert to camera wait prompt
-	  //eprint(" ... and it was the only camera!\n");
+      if (camera->camera_info->euid_64==camera_ptr->camera_info->euid_64) { // it was the current camera
+	if ((camera->next==NULL)&&(cameras==camera)) { // it was also the only camera. Close GUI and revert to camera wait prompt
 	  waiting_camera_window=create_waiting_camera_window();
 	  gtk_widget_show(waiting_camera_window);
 
@@ -656,7 +637,6 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation)
 	  camera=NULL;
 	}
 	else {
-	  //eprint("  Selecting the first non-removed camera as current camera\n");
 	  if (cameras->camera_info->euid_64==camera_ptr->camera_info->euid_64) { // is the first camera the one to be removed?
 	    // use second cam as current cam
 	    SetCurrentCamera(cameras->next->camera_info->euid_64);
@@ -714,22 +694,13 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation)
     watchthread_info.crop=0;
 #endif
     
-    //if (new_camera!=NULL)
-    //  eprint(" handle: 0x%x\n",new_camera->camera_info.handle);
-    
-    //if (camera!=NULL)
-    //  eprint(" handle: 0x%x\n",camera->camera_info.handle);
-    //eprint("camera: 0x%x\n",camera);
-    
     //eprint("Want to display: %d\n",camera->want_to_display);
     if (camera!=NULL) {
       if (camera->want_to_display>0)
 	DisplayStartThread(camera);
 
       BuildAllWindows();
-      //eprint("finished building GUI\n");
       UpdateAllWindows();
-      //eprint("finished updating GUI\n");
 
       gtk_widget_set_sensitive(main_window,TRUE);
     }
@@ -738,25 +709,6 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation)
   // TODO: ISO should be restarted for the cameras that were streaming. 
   // set ISO channels
   // SetIsoChannels();
-  /*
-  if (new_camera_list->num>0) {
-    //eprint("free %d newcameras\n",newcamnum);
-    for (i=0;i<newcamnum;i++) {
-      if (nodelete[i]!=1) {
-	//eprint("deleting new camera struct member #%d @ handle 0x%x\n",i,newcams[i]->handle);
-	dc1394_free_camera(newcams[i]);
-	//eprint("cam deleted to 0x%x\n",newcams[i]);
-      }
-    }
-    //eprint("freeing newcams\n");
-    //free(newcams);
-    //free(nodelete);
-    //newcams=NULL;
-  }
-  */
-  //eprint("resumed fps display\n");
-
-  //eprint("Finished handling bus reset\n");
 
   dc1394_free_camera_list(new_camera_list);
 

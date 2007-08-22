@@ -2,6 +2,7 @@ Coriander, (c) 2000-2007 Damien Douxchamps <ddouxchamps@users.sf.net>
 
    August 22nd, 2007, by Damien Douxchamps
    - use the new camera detection API. Hotplug doesn't work yet (segfault).
+   - misc cleanups
 	
    August 1st, 2007, by Damien Douxchamps
    - removed references to cooked1394read
