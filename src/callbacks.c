@@ -261,7 +261,7 @@ on_camera_select_activate              (GtkMenuItem     *menuitem,
   //fprintf(stderr,"new camera: %s\n",camera_ptr->prefs.name);
 
   // set current camera pointers:
-  SetCurrentCamera(camera_ptr->camera_info->euid_64);
+  SetCurrentCamera(camera_ptr->camera_info->guid);
   //fprintf(stderr,"new camera: %s\n",camera_ptr->prefs.name);
 
 #ifdef HAVE_SDLLIB
@@ -909,7 +909,7 @@ on_camera_name_text_changed            (GtkEditable     *editable,
   const char *camera_name_str =  "coriander/camera_names/";
   tmp=(char*)malloc(STRING_SIZE*sizeof(char));
   tmp_ptr=(char*)gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window, "camera_name_text")));
-  sprintf(tmp,"%s%llx",camera_name_str, camera->camera_info->euid_64);
+  sprintf(tmp,"%s%llx",camera_name_str, camera->camera_info->guid);
   gnome_config_set_string(tmp,tmp_ptr);
   gnome_config_sync();
   strcpy(camera->prefs.name,tmp_ptr);

@@ -102,7 +102,7 @@ main (int argc, char *argv[])
   //eprint("ISO channels are set\n");
 
   // current camera is the first camera:
-  SetCurrentCamera(cameras->camera_info->euid_64);
+  SetCurrentCamera(cameras->camera_info->guid);
   //eprint("current camera set\n");
   
   preferences_window= create_preferences_window();
@@ -155,7 +155,7 @@ main (int argc, char *argv[])
 #endif
 
   while (cameras!=NULL) {
-    RemoveCamera(cameras->camera_info->euid_64);
+    RemoveCamera(cameras->camera_info->guid);
   }
 
   free(handles);

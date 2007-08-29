@@ -218,9 +218,9 @@ UpdateCameraStatusFrame(void)
 
   temp=(char*)malloc(STRING_SIZE*sizeof(char));
 
-  value[0]= camera->camera_info->euid_64 & 0xffffffff;
-  value[1]= (camera->camera_info->euid_64 >>32) & 0x000000ff;
-  value[2]= (camera->camera_info->euid_64 >>40) & 0xfffff;
+  value[0]= camera->camera_info->guid & 0xffffffff;
+  value[1]= (camera->camera_info->guid >>32) & 0x000000ff;
+  value[2]= (camera->camera_info->guid >>40) & 0xfffff;
 
   // vendor:
   sprintf(temp," %s",camera->camera_info->vendor);

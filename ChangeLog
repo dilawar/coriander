@@ -1,5 +1,8 @@
 Coriander, (c) 2000-2007 Damien Douxchamps <ddouxchamps@users.sf.net>
 
+   August 29, 2007, by Damien Douxchamps
+   - sync with libdc1394 v2 SVN 425
+
    August 22nd, 2007, by Damien Douxchamps
    - use the new camera detection API. Hotplug doesn't work yet (segfault).
    - misc cleanups
@@ -40,7 +43,7 @@ Changes in version 2.0.0-rc5
    February 9, 2007, by Damien Douxchamps
    - added PIO, SIO and strobe direct register read/write
    - remove spurious debug messages
-	
+
    February 8, 2007, by Damien Douxchamps
    - revert part of the change of Feb. 1st regarding the Flea 2 because some
      other manufacturer's implementation systematically fail one of the tests.

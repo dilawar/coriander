@@ -225,7 +225,7 @@ void BuildRange(int feature)
 	  camera->feature_set.feature[feature-DC1394_FEATURE_MIN].manual_capable,
 	  camera->feature_set.feature[feature-DC1394_FEATURE_MIN].auto_capable,
 	  camera->feature_set.feature[feature-DC1394_FEATURE_MIN].one_push_capable,
-	  camera->feature_set.feature[feature-DC1394_FEATURE_MIN].absolute_capable,camera->camera_info->euid_64>>40);
+	  camera->feature_set.feature[feature-DC1394_FEATURE_MIN].absolute_capable,camera->camera_info->guid>>40);
   */
   if ((camera->feature_set.feature[feature-DC1394_FEATURE_MIN].on_off_capable  || // disable feature if there is no way to control it
        camera->feature_set.feature[feature-DC1394_FEATURE_MIN].manual_capable  ||
@@ -234,7 +234,7 @@ void BuildRange(int feature)
        camera->feature_set.feature[feature-DC1394_FEATURE_MIN].absolute_capable ) &&
       (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].on_off_capable ||  // disable features that are OFF and not ON-settable
        camera->feature_set.feature[feature-DC1394_FEATURE_MIN].is_on||
-       ((camera->camera_info->euid_64>>40)!=0xb09d)) // ptgrey only
+       ((camera->camera_info->guid>>40)!=0xb09d)) // ptgrey only
       ) {
 
     // BUILD MENU ITEMS ====================================================================================

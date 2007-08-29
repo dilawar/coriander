@@ -106,7 +106,7 @@ CopyCameraPrefs(camera_t* cam) {
   //fprintf(stderr,"Buffer size copied to: %d\n",cam->prefs.ram_buffer_size);
   
   tmp=(char*)malloc(STRING_SIZE*sizeof(char));
-  sprintf(tmp,"coriander/camera_names/%llx=%s %s",cam->camera_info->euid_64,
+  sprintf(tmp,"coriander/camera_names/%llx=%s %s",cam->camera_info->guid,
 	  cam->camera_info->vendor, cam->camera_info->model);
   tmp_ptr=gnome_config_get_string(tmp);
   strcpy(cam->prefs.name,tmp_ptr);

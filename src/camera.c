@@ -41,7 +41,7 @@ GetCameraNodes(void) {
     // copy the info in the dc structure into the coriander struct.
     camera_ptr->camera_info=dc1394_camera_new(dc1394,camera_list->guids[i]);
 
-    //fprintf(stderr,"0x%llx - 0x%llx\n",dccameras[i]->euid_64,camera_ptr->camera_info->euid_64);
+    //fprintf(stderr,"0x%llx - 0x%llx\n",dccameras[i]->guid,camera_ptr->camera_info->guid);
 
     //fprintf(stderr,"Getting camera data\n");
     GetCameraData(camera_ptr);
@@ -138,10 +138,10 @@ SetCurrentCamera(u_int64_t guid) {
   camera_t* ptr;
   ptr=cameras;
 
-  while ((ptr->camera_info->euid_64!=guid)&&(ptr->next!=NULL)) {
+  while ((ptr->camera_info->guid!=guid)&&(ptr->next!=NULL)) {
     ptr=ptr->next;
   }
-  if (ptr->camera_info->euid_64!=guid)
+  if (ptr->camera_info->guid!=guid)
     fprintf(stderr,"Kaai! Can't find camera GUID in the camera stack!\n");
   else
     camera=ptr;
@@ -152,7 +152,7 @@ RemoveCamera(u_int64_t guid) {
 
   camera_t* ptr;
   ptr=cameras;
-  while (ptr->camera_info->euid_64!=guid) {
+  while (ptr->camera_info->guid!=guid) {
     ptr=ptr->next;
   }
 

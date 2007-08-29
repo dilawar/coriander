@@ -78,7 +78,7 @@ UpdateFeatureWindow(void)
 	     camera->feature_set.feature[i-DC1394_FEATURE_MIN].absolute_capable ) &&
 	    (camera->feature_set.feature[i-DC1394_FEATURE_MIN].on_off_capable ||  // disable features that are OFF and not ON-settable
 	     camera->feature_set.feature[i-DC1394_FEATURE_MIN].is_on ||
-	     ((camera->camera_info->euid_64>>40)!=0xb09d)) // ptgrey only
+	     ((camera->camera_info->guid>>40)!=0xb09d)) // ptgrey only
 	    )) {
 	sprintf(stemp,"feature_%d_frame",i);
         gtk_widget_set_sensitive(lookup_widget(main_window, stemp), 0);
