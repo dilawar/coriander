@@ -1372,7 +1372,7 @@ create_main_window (void)
   gtk_container_set_border_width (GTK_CONTAINER (camera_node_status), 1);
   gtk_statusbar_set_has_resize_grip (GTK_STATUSBAR (camera_node_status), FALSE);
 
-  label31 = gtk_label_new (_("GUID:"));
+  label31 = gtk_label_new (_("GUID  /  unit:"));
   gtk_widget_set_name (label31, "label31");
   gtk_widget_show (label31);
   gtk_table_attach (GTK_TABLE (table48), label31, 0, 1, 2, 3,

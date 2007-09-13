@@ -245,8 +245,8 @@ UpdateCameraStatusFrame(void)
   gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"camera_handle_status"), ctxt.handle_ctxt, ctxt.handle_id);
   ctxt.handle_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"camera_handle_status"), ctxt.handle_ctxt, temp);
 
-  // camera GUID:
-  sprintf(temp," 0x%06x-%02x%08x", value[2], value[1], value[0]);
+  // camera GUID / unit:
+  sprintf(temp," 0x%06x-%02x%08x  /  %d", value[2], value[1], value[0], camera->camera_info->unit);
   gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"camera_guid_status"), ctxt.guid_ctxt, ctxt.guid_id);
   ctxt.guid_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"camera_guid_status"), ctxt.guid_ctxt, temp);
 

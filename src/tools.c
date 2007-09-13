@@ -606,12 +606,12 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation)
 
     if (camera_ptr==NULL) { // the camera is new, add it
       new_camera=NewCamera();
-      new_camera->camera_info=dc1394_camera_new(dc1394,new_camera_list->guids[i]);
+      new_camera->camera_info=dc1394_camera_new(dc1394,new_camera_list->guids[i],new_camera_list->units[i]);
       GetCameraData(new_camera);
 
       AppendCamera(new_camera);
       if (cameras==NULL) {
-	SetCurrentCamera(new_camera->camera_info->guid);
+	SetCurrentCamera(new_camera->camera_info->guid,new_camera->camera_info->unit);
       }
     }
   }
@@ -632,26 +632,26 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation)
 	  gtk_widget_show(waiting_camera_window);
 
 	  // delete structs:
-	  RemoveCamera(camera_ptr->camera_info->guid);
+	  RemoveCamera(camera_ptr->camera_info->guid,camera_ptr->camera_info->unit);
 	  cameras=NULL;
 	  camera=NULL;
 	}
 	else {
 	  if (cameras->camera_info->guid==camera_ptr->camera_info->guid) { // is the first camera the one to be removed?
 	    // use second cam as current cam
-	    SetCurrentCamera(cameras->next->camera_info->guid);
+	    SetCurrentCamera(cameras->next->camera_info->guid,cameras->next->camera_info->unit);
 	  }
 	  else {
 	    // use first cam as current cam
-	    SetCurrentCamera(cameras->camera_info->guid);
+	    SetCurrentCamera(cameras->camera_info->guid,cameras->camera_info->unit);
 	  }
 	  // close and remove dead camera
-	  RemoveCamera(camera_ptr->camera_info->guid);
+	  RemoveCamera(camera_ptr->camera_info->guid,camera_ptr->camera_info->unit);
 	}
 	//eprint(" removed dead camera\n");
       } // end if we are deleting the current camera
       else { // we delete another camera. This is easy.
-	RemoveCamera(camera_ptr->camera_info->guid);
+	RemoveCamera(camera_ptr->camera_info->guid,camera_ptr->camera_info->unit);
       }
       // rescan from the beginning.
       camera_ptr=cameras;

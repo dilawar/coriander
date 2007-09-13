@@ -261,7 +261,7 @@ on_camera_select_activate              (GtkMenuItem     *menuitem,
   //fprintf(stderr,"new camera: %s\n",camera_ptr->prefs.name);
 
   // set current camera pointers:
-  SetCurrentCamera(camera_ptr->camera_info->guid);
+  SetCurrentCamera(camera_ptr->camera_info->guid,camera_ptr->camera_info->unit);
   //fprintf(stderr,"new camera: %s\n",camera_ptr->prefs.name);
 
 #ifdef HAVE_SDLLIB

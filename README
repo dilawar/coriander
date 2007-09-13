@@ -134,6 +134,11 @@ checked.
 In order to have Xv support within SDL, you will maybe need some custom
 drivers, e.g. for Nvidia chipsets [10] or for ATI Rage chipsets [6].
 
+Debian-based distribution packages:
+If you are using a Debian-based distribution, you can easily choose to
+install the following packages that will allow you to compile the code:
+libgnome-dev libgnomeui-dev libxv-dev libsdl-image1.2-dev
+
 References:
 _______________________
 
