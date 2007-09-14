@@ -1,7 +1,10 @@
 Coriander, (c) 2000-2007 Damien Douxchamps <ddouxchamps@users.sf.net>
 
+   September 14, 2007, by Damien Douxchamps
+   - sync with libdc1394 rev 429 (new type dc1394id_t)
+	
    September 13, 2007, by Damien Douxchamps
-   - sync with libdc1394 rev 427 (multi-unit patch)
+   - sync with libdc1394 rev 428 (multi-unit patch)
 
    August 29, 2007, by Damien Douxchamps
    - sync with libdc1394 v2 SVN 425

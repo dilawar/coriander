@@ -598,7 +598,7 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation)
     // was the current GUID already there?
     camera_ptr=cameras;
     while(camera_ptr!=NULL) {
-      if (camera_ptr->camera_info->guid==new_camera_list->guids[i]) { // yes, the camera was there
+      if (dc1394_is_same_camera(camera_ptr->camera_info->id,new_camera_list->ids[i])) { // yes, the camera was there
 	break;
       }
       camera_ptr=camera_ptr->next;
@@ -606,12 +606,12 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation)
 
     if (camera_ptr==NULL) { // the camera is new, add it
       new_camera=NewCamera();
-      new_camera->camera_info=dc1394_camera_new(dc1394,new_camera_list->guids[i],new_camera_list->units[i]);
+      new_camera->camera_info=dc1394_camera_new(dc1394,new_camera_list->ids[i]);
       GetCameraData(new_camera);
 
       AppendCamera(new_camera);
       if (cameras==NULL) {
-	SetCurrentCamera(new_camera->camera_info->guid,new_camera->camera_info->unit);
+	SetCurrentCamera(new_camera->camera_info->id);
       }
     }
   }
@@ -622,36 +622,36 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation)
   camera_ptr=cameras;
   while (camera_ptr!=NULL) {
     for (i=0;i<new_camera_list->num;i++) {
-      if (camera_ptr->camera_info->guid==new_camera_list->guids[i])
+      if (dc1394_is_same_camera(camera_ptr->camera_info->id,new_camera_list->ids[i]))
 	break;
     }
-    if (camera_ptr->camera_info->guid!=new_camera_list->guids[i]) { // the camera "camera_ptr" was unplugged
-      if (camera->camera_info->guid==camera_ptr->camera_info->guid) { // it was the current camera
+    if (!dc1394_is_same_camera(camera_ptr->camera_info->id,new_camera_list->ids[i])) { // the camera "camera_ptr" was unplugged
+      if (dc1394_is_same_camera(camera->camera_info->id,camera_ptr->camera_info->id)) { // it was the current camera
 	if ((camera->next==NULL)&&(cameras==camera)) { // it was also the only camera. Close GUI and revert to camera wait prompt
 	  waiting_camera_window=create_waiting_camera_window();
 	  gtk_widget_show(waiting_camera_window);
 
 	  // delete structs:
-	  RemoveCamera(camera_ptr->camera_info->guid,camera_ptr->camera_info->unit);
+	  RemoveCamera(camera_ptr->camera_info->id);
 	  cameras=NULL;
 	  camera=NULL;
 	}
 	else {
-	  if (cameras->camera_info->guid==camera_ptr->camera_info->guid) { // is the first camera the one to be removed?
+	  if (dc1394_is_same_camera(cameras->camera_info->id, camera_ptr->camera_info->id)) { // is the first camera the one to be removed?
 	    // use second cam as current cam
-	    SetCurrentCamera(cameras->next->camera_info->guid,cameras->next->camera_info->unit);
+	    SetCurrentCamera(cameras->next->camera_info->id);
 	  }
 	  else {
 	    // use first cam as current cam
-	    SetCurrentCamera(cameras->camera_info->guid,cameras->camera_info->unit);
+	    SetCurrentCamera(cameras->camera_info->id);
 	  }
 	  // close and remove dead camera
-	  RemoveCamera(camera_ptr->camera_info->guid,camera_ptr->camera_info->unit);
+	  RemoveCamera(camera_ptr->camera_info->id);
 	}
 	//eprint(" removed dead camera\n");
       } // end if we are deleting the current camera
       else { // we delete another camera. This is easy.
-	RemoveCamera(camera_ptr->camera_info->guid,camera_ptr->camera_info->unit);
+	RemoveCamera(camera_ptr->camera_info->id);
       }
       // rescan from the beginning.
       camera_ptr=cameras;

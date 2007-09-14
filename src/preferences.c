@@ -105,8 +105,10 @@ CopyCameraPrefs(camera_t* cam) {
   preferences.camprefs.ftp_password = "";
   //fprintf(stderr,"Buffer size copied to: %d\n",cam->prefs.ram_buffer_size);
   
+
+  //FIXME: update for multi-unit cameras
   tmp=(char*)malloc(STRING_SIZE*sizeof(char));
-  sprintf(tmp,"coriander/camera_names/%llx=%s %s",cam->camera_info->guid,
+  sprintf(tmp,"coriander/camera_names/%llx=%s %s",cam->camera_info->id.guid,
 	  cam->camera_info->vendor, cam->camera_info->model);
   tmp_ptr=gnome_config_get_string(tmp);
   strcpy(cam->prefs.name,tmp_ptr);

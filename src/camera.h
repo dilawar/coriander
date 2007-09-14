@@ -32,10 +32,10 @@ void
 AppendCamera(camera_t* camera);
 
 void
-SetCurrentCamera(u_int64_t guid, u_int16_t unit);
+SetCurrentCamera(dc1394id_t id);
 
 void
-RemoveCamera(u_int64_t guid, u_int16_t unit);
+RemoveCamera(dc1394id_t id);
 
 void
 FreeCamera(camera_t* camera);

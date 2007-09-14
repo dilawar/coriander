@@ -218,9 +218,9 @@ UpdateCameraStatusFrame(void)
 
   temp=(char*)malloc(STRING_SIZE*sizeof(char));
 
-  value[0]= camera->camera_info->guid & 0xffffffff;
-  value[1]= (camera->camera_info->guid >>32) & 0x000000ff;
-  value[2]= (camera->camera_info->guid >>40) & 0xfffff;
+  value[0]= camera->camera_info->id.guid & 0xffffffff;
+  value[1]= (camera->camera_info->id.guid >>32) & 0x000000ff;
+  value[2]= (camera->camera_info->id.guid >>40) & 0xfffff;
 
   // vendor:
   sprintf(temp," %s",camera->camera_info->vendor);
@@ -246,12 +246,13 @@ UpdateCameraStatusFrame(void)
   ctxt.handle_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"camera_handle_status"), ctxt.handle_ctxt, temp);
 
   // camera GUID / unit:
-  sprintf(temp," 0x%06x-%02x%08x  /  %d", value[2], value[1], value[0], camera->camera_info->unit);
+  sprintf(temp," 0x%06x-%02x%08x  /  %d", value[2], value[1], value[0], camera->camera_info->id.unit);
   gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"camera_guid_status"), ctxt.guid_ctxt, ctxt.guid_id);
   ctxt.guid_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"camera_guid_status"), ctxt.guid_ctxt, temp);
 
   // camera maximal PHY speed:
-  sprintf(temp," %s",phy_speed_list[camera->camera_info->phy_speed-DC1394_ISO_SPEED_MIN]);
+  sprintf(temp," N/A");
+  //sprintf(temp," %s",phy_speed_list[camera->camera_info->phy_speed-DC1394_ISO_SPEED_MIN]);
   gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"camera_maxiso_status"), ctxt.max_iso_ctxt, ctxt.max_iso_id);
   ctxt.max_iso_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"camera_maxiso_status"), ctxt.max_iso_ctxt, temp);
 

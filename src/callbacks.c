@@ -261,7 +261,7 @@ on_camera_select_activate              (GtkMenuItem     *menuitem,
   //fprintf(stderr,"new camera: %s\n",camera_ptr->prefs.name);
 
   // set current camera pointers:
-  SetCurrentCamera(camera_ptr->camera_info->guid,camera_ptr->camera_info->unit);
+  SetCurrentCamera(camera_ptr->camera_info->id);
   //fprintf(stderr,"new camera: %s\n",camera_ptr->prefs.name);
 
 #ifdef HAVE_SDLLIB
@@ -904,12 +904,13 @@ void
 on_camera_name_text_changed            (GtkEditable     *editable,
                                         gpointer         user_data)
 {
+  // FIXME: update for multi-unit cameras
   char *tmp, *tmp_ptr;
   GtkWidget *item;
   const char *camera_name_str =  "coriander/camera_names/";
   tmp=(char*)malloc(STRING_SIZE*sizeof(char));
   tmp_ptr=(char*)gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window, "camera_name_text")));
-  sprintf(tmp,"%s%llx",camera_name_str, camera->camera_info->guid);
+  sprintf(tmp,"%s%llx",camera_name_str, camera->camera_info->id.guid);
   gnome_config_set_string(tmp,tmp_ptr);
   gnome_config_sync();
   strcpy(camera->prefs.name,tmp_ptr);

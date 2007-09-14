@@ -39,7 +39,7 @@ GetCameraNodes(void) {
   for (i=0;i<camera_list->num;i++) {
     camera_ptr=NewCamera();
     // copy the info in the dc structure into the coriander struct.
-    camera_ptr->camera_info=dc1394_camera_new(dc1394,camera_list->guids[i],camera_list->units[i]);
+    camera_ptr->camera_info=dc1394_camera_new(dc1394,camera_list->ids[i]);
 
     //fprintf(stderr,"0x%llx - 0x%llx\n",dccameras[i]->guid,camera_ptr->camera_info->guid);
 
@@ -133,26 +133,27 @@ AppendCamera(camera_t* cam) {
 }
 
 void
-SetCurrentCamera(u_int64_t guid, u_int16_t unit) {
+SetCurrentCamera(dc1394id_t id) {
 
   camera_t* ptr;
   ptr=cameras;
 
-  while (((ptr->camera_info->guid!=guid)||(ptr->camera_info->unit!=unit))&&(ptr->next!=NULL)) {
+  while (!dc1394_is_same_camera(ptr->camera_info->id,id)&&(ptr->next!=NULL)) {
     ptr=ptr->next;
   }
-  if ((ptr->camera_info->guid!=guid)||(ptr->camera_info->unit!=unit))
+  if (!dc1394_is_same_camera(ptr->camera_info->id,id))
     fprintf(stderr,"Kaai! Can't find camera GUID in the camera stack!\n");
   else
     camera=ptr;
 }
 
 void
-RemoveCamera(u_int64_t guid, u_int16_t unit) {
+RemoveCamera(dc1394id_t id) {
 
   camera_t* ptr;
   ptr=cameras;
-  while ((ptr->camera_info->guid!=guid)||(ptr->camera_info->unit!=unit)) {
+
+  while (!dc1394_is_same_camera(ptr->camera_info->id,id)&&(ptr->next!=NULL)) {
     ptr=ptr->next;
   }
 
