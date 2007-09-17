@@ -133,7 +133,7 @@ AppendCamera(camera_t* cam) {
 }
 
 void
-SetCurrentCamera(dc1394id_t id) {
+SetCurrentCamera(dc1394camera_id_t id) {
 
   camera_t* ptr;
   ptr=cameras;
@@ -148,7 +148,7 @@ SetCurrentCamera(dc1394id_t id) {
 }
 
 void
-RemoveCamera(dc1394id_t id) {
+RemoveCamera(dc1394camera_id_t id) {
 
   camera_t* ptr;
   ptr=cameras;
