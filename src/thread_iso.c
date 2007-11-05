@@ -323,12 +323,12 @@ IsoThread(void* arg)
 	}
 	else {
 	  pthread_mutex_unlock(&iso_service->mutex_data); // NOTE: mutex unlocks should be done BEFORE usleep()!!!
-	  usleep(0);
+	  usleep(100);
 	}
       }
       else {
 	pthread_mutex_unlock(&iso_service->mutex_data);
-	usleep(0);
+	usleep(100);
       }
       //fprintf(stderr,"got frame %.7f\n",iso_service->fps);
     }

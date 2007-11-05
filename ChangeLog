@@ -1,5 +1,11 @@
 Coriander, (c) 2000-2007 Damien Douxchamps <ddouxchamps@users.sf.net>
 
+   November 5th, 2007, by Damien Douxchamps
+   - usleep(0) doesn't seem to work anymore, either with recent kernels of
+     recent GCCs. I've bumped it to usleep(100). The symptom of this problem is
+     a receive service that uses 100% of the processor even when no images are
+     coming (ISO off).
+	
    September 17, 2007, by Damien Douxchamps
    - sync with libdc1394 rev 430
 	

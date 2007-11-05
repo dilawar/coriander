@@ -850,7 +850,7 @@ SaveThread(void* arg)
       //fprintf(stderr,"??");
     }
     //fprintf(stderr,"??");
-    usleep(0);
+    usleep(100);
   }
 
   // we now have to close the video file properly and handle ram buffer operation

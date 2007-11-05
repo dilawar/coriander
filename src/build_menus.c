@@ -704,16 +704,16 @@ BuildIsoSpeedMenu(void)
 
   // for each supported speed:
   //fprintf(stderr,"PHY: %d   CURRENT: %d\n",camera->camera_info->phy_speed,camera->camera_info->iso_speed);
-  dc1394speed_t max;
+  dc1394speed_t maxi;
   dc1394operation_mode_t mode;
   dc1394_video_get_operation_mode(camera->camera_info, &mode);
   if ((camera->camera_info->bmode_capable>0) && (mode==DC1394_OPERATION_MODE_1394B)) {
-    max=camera->camera_info->phy_speed;
+    maxi=DC1394_ISO_SPEED_800;//camera->camera_info->phy_speed;
   }
   else {
-    max=DC1394_ISO_SPEED_400;
+    maxi=DC1394_ISO_SPEED_400;
   }
-  for (i=DC1394_ISO_SPEED_MIN;i<=max;i++) {
+  for (i=DC1394_ISO_SPEED_MIN;i<=maxi;i++) {
     glade_menuitem = gtk_menu_item_new_with_label (_(phy_speed_list[i-DC1394_ISO_SPEED_MIN]));
     gtk_widget_show (glade_menuitem);
     gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
@@ -728,7 +728,6 @@ BuildIsoSpeedMenu(void)
   gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(main_window, "isospeed_menu")),
 			      camera->camera_info->iso_speed-DC1394_ISO_SPEED_MIN);
   pthread_mutex_unlock(&camera->uimutex);
-
 }
 
 void
