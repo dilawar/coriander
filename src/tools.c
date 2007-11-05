@@ -862,11 +862,11 @@ int
 NearestValue(int value, int step, int min, int max) {
 
   int low, high;
-
+  /*
   if (((max-min)%step) !=0) {
     Error("Stange values entered in NearestValue...");
   }
-
+  */
   low=value-(value%step);
   high=value-(value%step)+step;
   if (low<min)

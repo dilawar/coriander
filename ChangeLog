@@ -5,6 +5,10 @@ Coriander, (c) 2000-2007 Damien Douxchamps <ddouxchamps@users.sf.net>
      recent GCCs. I've bumped it to usleep(100). The symptom of this problem is
      a receive service that uses 100% of the processor even when no images are
      coming (ISO off).
+   - fixed a bug in build_menus: phy_speed is not defined anymore and cannot be
+     used.
+   - remove the verbose warning about "Stange values". An "r" was missing
+     anyway ;)
 	
    September 17, 2007, by Damien Douxchamps
    - sync with libdc1394 rev 430
