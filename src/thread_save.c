@@ -202,7 +202,7 @@ writePVNHeader(FILE *fd, unsigned int mode, unsigned int width, unsigned int hei
 }
 
 static gint
-CreateSettingsFile(camera_t *cam, char *destdir)
+CreateSettingsFile(camera_t *cam, char *destdir, dc1394framerate_t framerate)
 {
   char *fname = NULL;
   FILE *fd = NULL;
@@ -219,7 +219,7 @@ CreateSettingsFile(camera_t *cam, char *destdir)
     return(0);
   }
   
-  fprintf(fd,"fps=%s\n", fps_label_list[cam->camera_info->framerate-DC1394_FRAMERATE_MIN]);
+  fprintf(fd,"fps=%s\n", fps_label_list[framerate-DC1394_FRAMERATE_MIN]);
   fprintf(fd,"sync_control=%d\n",cam->prefs.broadcast);
   
   for(i=DC1394_FEATURE_MIN; i<=DC1394_FEATURE_MAX; ++i) {
@@ -282,7 +282,9 @@ GetSaveFD(chain_t *save_service, FILE **fd, char *filename_out)
 	  return DC1394_FAILURE;
 	}
 	// Create a file with camera settings
-	CreateSettingsFile(cam,info->destdir);
+	dc1394framerate_t framerate;
+	dc1394_video_get_framerate(cam->camera_info,&framerate);
+	CreateSettingsFile(cam,info->destdir, framerate);
       }
 
       // 2. build the filename
@@ -368,6 +370,9 @@ InitVideoFile(chain_t *save_service, FILE *fd, char *filename_out)
   float fps;
   camera_t *cam=save_service->camera;
 
+  dc1394framerate_t framerate;
+  dc1394_video_get_framerate(cam->camera_info,&framerate);
+
 #ifdef HAVE_FFMPEG
   info->fmt = NULL;
   info->oc = NULL;
@@ -381,7 +386,7 @@ InitVideoFile(chain_t *save_service, FILE *fd, char *filename_out)
   // (JG) if extension is PVN, write PVN header here
   if ((cam->prefs.save_format==SAVE_FORMAT_PVN) && (cam->prefs.use_ram_buffer==FALSE)) {//-----------------------------------
     //fprintf(stderr,"pvn header write\n");
-    dc1394_framerate_as_float(camera->camera_info->framerate, &fps);
+    dc1394_framerate_as_float(framerate, &fps);
     writePVNHeader(fd, save_service->current_buffer->frame.color_coding,
 		   save_service->current_buffer->frame.size[0],
 		   save_service->current_buffer->frame.size[1],
@@ -857,6 +862,7 @@ SaveThread(void* arg)
 
   //fprintf(stderr,"Break completed\n");
 
+  dc1394framerate_t framerate;
   if (cam->prefs.use_ram_buffer==TRUE) {
     switch(cam->prefs.save_format) {
     case SAVE_FORMAT_RAW_VIDEO:
@@ -866,7 +872,8 @@ SaveThread(void* arg)
       break;
 #endif
     case SAVE_FORMAT_PVN:
-      dc1394_framerate_as_float(cam->camera_info->framerate, &fps);
+      dc1394_video_get_framerate(cam->camera_info,&framerate);
+      dc1394_framerate_as_float(framerate, &fps);
       writePVNHeader(fd, save_service->current_buffer->frame.color_coding,
 		     save_service->current_buffer->frame.size[0],
 		     save_service->current_buffer->frame.size[1],

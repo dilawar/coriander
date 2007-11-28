@@ -56,7 +56,7 @@ WatchThread(void *arg)
 {
   watchthread_info_t *info;
   info=(watchthread_info_t*)arg;
- 
+  dc1394video_mode_t video_mode;
   
   pthread_mutex_lock(&info->mutex_area);
   pthread_setcancelstate(PTHREAD_CANCEL_DISABLE,NULL);
@@ -73,27 +73,29 @@ WatchThread(void *arg)
       pthread_mutex_unlock(&info->mutex_cancel_watch);
       pthread_mutex_lock(&info->mutex_area);
       
+      dc1394_video_get_mode(camera->camera_info, &video_mode);
+
       if (info->crop>0) {
-	if ((camera->camera_info->video_mode >= DC1394_VIDEO_MODE_FORMAT7_MIN) &&
-	    (camera->camera_info->video_mode <= DC1394_VIDEO_MODE_FORMAT7_MAX)) {
-	  if (dc1394_format7_get_image_position(camera->camera_info, camera->camera_info->video_mode,
-						  &camera->format7_info.modeset.mode[camera->camera_info->video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].pos_x,
-						  &camera->format7_info.modeset.mode[camera->camera_info->video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].pos_y)!=DC1394_SUCCESS)
+	if ((video_mode >= DC1394_VIDEO_MODE_FORMAT7_MIN) &&
+	    (video_mode <= DC1394_VIDEO_MODE_FORMAT7_MAX)) {
+	  if (dc1394_format7_get_image_position(camera->camera_info, video_mode,
+						  &camera->format7_info.modeset.mode[video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].pos_x,
+						  &camera->format7_info.modeset.mode[video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].pos_y)!=DC1394_SUCCESS)
 	    Error("Could not get format7 image position");
 	  // if we did reset to max size, don't do the addition:
-	  if ((info->size[0]==camera->format7_info.modeset.mode[camera->camera_info->video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].max_size_x)&&
-	      (info->size[1]==camera->format7_info.modeset.mode[camera->camera_info->video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].max_size_y))
-	    SetFormat7Crop(info->size[0],info->size[1],info->pos[0],info->pos[1],camera->camera_info->video_mode);
+	  if ((info->size[0]==camera->format7_info.modeset.mode[video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].max_size_x)&&
+	      (info->size[1]==camera->format7_info.modeset.mode[video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].max_size_y))
+	    SetFormat7Crop(info->size[0],info->size[1],info->pos[0],info->pos[1],video_mode);
 	  else {
 	    SetFormat7Crop(info->size[0],info->size[1],
-			   info->pos[0]+camera->format7_info.modeset.mode[camera->camera_info->video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].pos_x,
-			   info->pos[1]+camera->format7_info.modeset.mode[camera->camera_info->video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].pos_y,
-			   camera->camera_info->video_mode);
+			   info->pos[0]+camera->format7_info.modeset.mode[video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].pos_x,
+			   info->pos[1]+camera->format7_info.modeset.mode[video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].pos_y,
+			   video_mode);
 	  }
 	  UpdateFormat7BppRange();
 	}
 	else {
-	  SetFormat7Crop(info->size[0],info->size[1],info->pos[0],info->pos[1],camera->camera_info->video_mode);
+	  SetFormat7Crop(info->size[0],info->size[1],info->pos[0],info->pos[1],video_mode);
 	}
 	info->crop=0;
       }
@@ -126,11 +128,13 @@ void
 GetValidF7Crop(watchthread_info_t *wtinfo, chain_t* display_service) {
 
   dc1394format7mode_t* f7info;
+  dc1394video_mode_t video_mode;
   int mov[2];
+  dc1394_video_get_mode(camera->camera_info, &video_mode);
   
-  if ((camera->camera_info->video_mode >= DC1394_VIDEO_MODE_FORMAT7_MIN) &&
-      (camera->camera_info->video_mode <= DC1394_VIDEO_MODE_FORMAT7_MAX)) {
-    f7info=&camera->format7_info.modeset.mode[camera->camera_info->video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN];
+  if ((video_mode >= DC1394_VIDEO_MODE_FORMAT7_MIN) &&
+      (video_mode <= DC1394_VIDEO_MODE_FORMAT7_MAX)) {
+    f7info=&camera->format7_info.modeset.mode[video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN];
 
     // step_pos=step if no step_pos is supported.
     wtinfo->pos[0]=wtinfo->upper_left[0]-wtinfo->upper_left[0]%f7info->unit_pos_x;

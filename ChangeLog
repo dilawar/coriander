@@ -1,5 +1,8 @@
 Coriander, (c) 2000-2007 Damien Douxchamps <ddouxchamps@users.sf.net>
 
+   November 28th, 2007, by Damien Douxchamps
+   - big update after the important changes in libdc1394.
+
    November 5th, 2007, by Damien Douxchamps
    - usleep(0) doesn't seem to work anymore, either with recent kernels of
      recent GCCs. I've bumped it to usleep(100). The symptom of this problem is

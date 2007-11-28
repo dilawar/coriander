@@ -182,8 +182,7 @@ BuildMemoryChannelMenu(void)
   gtk_container_set_border_width (GTK_CONTAINER (channel_num), 1);
 
   channel_num_menu = gtk_menu_new ();
-
-  for (i=0;i<=camera->camera_info->mem_channel_number;i++) {
+  for (i=0;i<=camera->camera_info->max_mem_channel;i++) {
     glade_menuitem = gtk_menu_item_new_with_label (_(channel_num_list[i]));
     gtk_widget_show (glade_menuitem);
     gtk_menu_append (GTK_MENU (channel_num_menu), glade_menuitem);
@@ -191,7 +190,6 @@ BuildMemoryChannelMenu(void)
 			G_CALLBACK (on_memory_channel_activate),
 			(gpointer)(unsigned long)i); // i is an int passed in a pointer variable. This is 'normal'.
   }
-
   gtk_option_menu_set_menu (GTK_OPTION_MENU (channel_num), channel_num_menu);
 
   // sets the active menu item:
@@ -361,14 +359,20 @@ BuildFpsMenu(void)
   dc1394framerates_t framerates;
   //eprint("building framerates menu\n");
 
-  if (dc1394_is_video_mode_scalable(camera->camera_info->video_mode)) {
+  dc1394video_mode_t video_mode;
+  dc1394_video_get_mode(camera->camera_info,&video_mode);
+  dc1394framerate_t framerate;
+  dc1394_video_get_framerate(camera->camera_info,&framerate);
+
+  if (dc1394_is_video_mode_scalable(video_mode)) {
     value = 0; /* format 7 has no fixed framerates */
     gtk_widget_set_sensitive(lookup_widget(main_window,"fps_menu"),FALSE);
   }
   else {
     gtk_widget_set_sensitive(lookup_widget(main_window,"fps_menu"),TRUE);
+    //eprint("%d\n",video_mode);
 
-    if (dc1394_video_get_supported_framerates(camera->camera_info, camera->camera_info->video_mode, &framerates)!=DC1394_SUCCESS)
+    if (dc1394_video_get_supported_framerates(camera->camera_info, video_mode, &framerates)!=DC1394_SUCCESS)
       Error("Could not query supported framerates");
     gtk_widget_destroy(GTK_WIDGET (lookup_widget(main_window,"fps_menu"))); // remove previous menu
     
@@ -398,11 +402,11 @@ BuildFpsMenu(void)
     
     // switch to nearest FPS if the previous value is not valid anymore
     for (i=0;i<framerates.num;i++) {
-      if (camera->camera_info->framerate==framerates.framerates[i])
+      if (framerate==framerates.framerates[i])
 	break;
     }
-    if (camera->camera_info->framerate!=framerates.framerates[i]) {
-      i=SwitchToNearestFPS(&framerates, camera->camera_info->framerate);
+    if (framerate!=framerates.framerates[i]) {
+      i=SwitchToNearestFPS(&framerates, framerate);
     }
     // sets the active menu item:
     gtk_option_menu_set_history (GTK_OPTION_MENU (fps), i);
@@ -422,6 +426,9 @@ BuildFormatMenu(void)
   dc1394video_modes_t modes;
 
   //eprint("building format menu\n");
+
+  dc1394video_mode_t video_mode;
+  dc1394_video_get_mode(camera->camera_info,&video_mode);
 
   gtk_widget_destroy(GTK_WIDGET (lookup_widget(main_window,"format_select"))); // remove previous menu
 
@@ -453,7 +460,7 @@ BuildFormatMenu(void)
 		      (gpointer)(unsigned long)modes.modes[i]);
   }
   for (i=0;i<modes.num;i++) {
-    if (camera->camera_info->video_mode==modes.modes[i])
+    if (video_mode==modes.modes[i])
       break;
   }
   gtk_option_menu_set_menu (GTK_OPTION_MENU (mode_num), mode_num_menu);

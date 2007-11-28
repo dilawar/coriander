@@ -25,6 +25,8 @@ gint IsoStartThread(camera_t* cam)
   chain_t* iso_service=NULL;
   isothread_info_t *info=NULL;
   dc1394switch_t iso_state;
+  dc1394video_mode_t video_mode;
+  dc1394framerate_t framerate;
 
   iso_service=GetService(cam, SERVICE_ISO);
 
@@ -44,9 +46,10 @@ gint IsoStartThread(camera_t* cam)
     info->cancel_req=0;
     pthread_mutex_unlock(&info->mutex_cancel);
     
+    dc1394_video_get_mode(cam->camera_info, &video_mode);
     
     /* currently FORMAT_STILL_IMAGE is not supported*/
-    if (dc1394_is_video_mode_still_image(cam->camera_info->video_mode)==DC1394_TRUE) {
+    if (dc1394_is_video_mode_still_image(video_mode)==DC1394_TRUE) {
       FreeChain(iso_service);
       iso_service=NULL;
       return(-1);
@@ -99,7 +102,7 @@ gint IsoStartThread(camera_t* cam)
       */
 
     // set format and other stuff
-    err=dc1394_video_set_mode(cam->camera_info, cam->camera_info->video_mode);
+    err=dc1394_video_set_mode(cam->camera_info, video_mode);
     if (err!=DC1394_SUCCESS){
       eprint("Failed to set current video mode. Error code %d\n",err);
       FreeChain(iso_service);
@@ -108,8 +111,8 @@ gint IsoStartThread(camera_t* cam)
     }
     
     // set framerate or ROI:
-    if (dc1394_is_video_mode_scalable(cam->camera_info->video_mode)==DC1394_TRUE) {
-      err=dc1394_format7_set_roi(cam->camera_info, cam->camera_info->video_mode,
+    if (dc1394_is_video_mode_scalable(video_mode)==DC1394_TRUE) {
+      err=dc1394_format7_set_roi(cam->camera_info, video_mode,
 				 DC1394_QUERY_FROM_CAMERA, DC1394_QUERY_FROM_CAMERA, 
 				 DC1394_QUERY_FROM_CAMERA, DC1394_QUERY_FROM_CAMERA, 
 				 DC1394_QUERY_FROM_CAMERA, DC1394_QUERY_FROM_CAMERA);
@@ -121,7 +124,8 @@ gint IsoStartThread(camera_t* cam)
       }
     }
     else {
-      err=dc1394_video_set_framerate(cam->camera_info, cam->camera_info->framerate);
+      dc1394_video_get_framerate(cam->camera_info, &framerate);
+      err=dc1394_video_set_framerate(cam->camera_info, framerate);
       if (err!=DC1394_SUCCESS){
 	eprint("Failed to set framerate. Error code %d\n",err);
 	FreeChain(iso_service);

@@ -48,9 +48,13 @@ BuildTriggerFrame(void)
   // the following line is necessary in order not to have unsensitive menu items:
   gtk_widget_set_sensitive(lookup_widget(main_window,"trigger_frame"),TRUE);
 
+  //eprint("test1\n");
   BuildTriggerModeMenu();
+  //eprint("test2\n");
   BuildFpsMenu();
+  //eprint("test3\n");
   BuildTriggerSourceMenu();
+  //eprint("test4\n");
   
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window,"trigger_external")),
 			       camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].is_on);
@@ -87,7 +91,8 @@ void
 BuildIsoFrame(void)
 {
   // TODO: only if ISO capable
-  if (dc1394_video_get_transmission(camera->camera_info, &camera->camera_info->is_iso_on)!=DC1394_SUCCESS)
+  dc1394switch_t is_iso_on;
+  if (dc1394_video_get_transmission(camera->camera_info, &is_iso_on)!=DC1394_SUCCESS)
     Error("Can't get ISO status");
   dc1394operation_mode_t mode;
   if (dc1394_video_get_operation_mode(camera->camera_info, &mode)!=DC1394_SUCCESS)
@@ -96,11 +101,18 @@ BuildIsoFrame(void)
 
   //fprintf(stderr,"sync: %d\n",preferences.sync_control);
   gtk_widget_set_sensitive(lookup_widget(main_window,"iso_frame"),TRUE);
-  gtk_widget_set_sensitive(lookup_widget(main_window,"iso_start"),!camera->camera_info->is_iso_on);
-  gtk_widget_set_sensitive(lookup_widget(main_window,"iso_restart"),camera->camera_info->is_iso_on);
-  gtk_widget_set_sensitive(lookup_widget(main_window,"iso_stop"),camera->camera_info->is_iso_on);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"iso_start"),!is_iso_on);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"iso_restart"),is_iso_on);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"iso_stop"),is_iso_on);
   gtk_widget_set_sensitive(lookup_widget(main_window,"bmode_button"),camera->camera_info->bmode_capable);
-  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window,"broadcast_button")),camera->prefs.broadcast);
+
+
+  // FIXME: Not available with latest API
+  //gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window,"broadcast_button")),camera->prefs.broadcast);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window,"broadcast_button")),0);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"broadcast_button"),0);
+
+
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window,"iso_nodrop")),camera->prefs.iso_nodrop);
 
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window,"bmode_button")),camera->camera_info->bmode_capable&&(mode==DC1394_OPERATION_MODE_1394B));

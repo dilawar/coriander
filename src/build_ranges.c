@@ -234,7 +234,7 @@ void BuildRange(int feature)
        camera->feature_set.feature[feature-DC1394_FEATURE_MIN].absolute_capable ) &&
       (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].on_off_capable ||  // disable features that are OFF and not ON-settable
        camera->feature_set.feature[feature-DC1394_FEATURE_MIN].is_on||
-       ((camera->camera_info->id.guid>>40)!=0xb09d)) // ptgrey only
+       ((camera->camera_info->guid>>40)!=0xb09d)) // ptgrey only
       ) {
 
     // BUILD MENU ITEMS ====================================================================================

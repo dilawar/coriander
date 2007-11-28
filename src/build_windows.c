@@ -52,9 +52,12 @@ BuildFormat7Window(void)
   // the default edit mode is either the currently selected mode (F7 active) or
   // the first available mode (F7 inactive)
 
+  dc1394video_mode_t video_mode;
+  dc1394_video_get_mode(camera->camera_info,&video_mode);
+
   // if we are using F7, choose current F7 mode as default
-  if (dc1394_is_video_mode_scalable(camera->camera_info->video_mode)) {
-    camera->format7_info.edit_mode=camera->camera_info->video_mode;
+  if (dc1394_is_video_mode_scalable(video_mode)) {
+    camera->format7_info.edit_mode=video_mode;
   }
   // if we are NOT using F7, check if an F7 mode is supported and use the first one as default
   else { 
@@ -447,7 +450,9 @@ BuildMainWindow(void)
 
   gtk_menu_item_right_justify(GTK_MENU_ITEM (lookup_widget(main_window,"help")));
   BuildPowerFrame();
+  //eprint("testoutdd\n");
   BuildServiceFrame();
+  //eprint("testoutddd\n");
   BuildTriggerFrame();
   //eprint("testout\n");
   BuildIsoFrame();
