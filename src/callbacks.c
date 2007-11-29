@@ -817,7 +817,7 @@ on_range_menu_activate             (GtkMenuItem     *menuitem,
       if (dc1394_feature_set_mode(camera->camera_info, feature, DC1394_FEATURE_MODE_MANUAL)!=DC1394_SUCCESS)
 	Error("Could not set manual mode");
       else {
-	camera->feature_set.feature[feature-DC1394_FEATURE_MIN].auto_active=FALSE;
+	camera->feature_set.feature[feature-DC1394_FEATURE_MIN].current_mode=DC1394_FEATURE_MODE_MANUAL;
 	if (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].absolute_capable)
 	  SetAbsoluteControl(feature, FALSE);
 	UpdateRange(feature);
@@ -835,7 +835,7 @@ on_range_menu_activate             (GtkMenuItem     *menuitem,
     if (dc1394_feature_set_mode(camera->camera_info, feature, DC1394_FEATURE_MODE_AUTO)!=DC1394_SUCCESS)
       Error("Could not set auto mode");
     else {
-      camera->feature_set.feature[feature-DC1394_FEATURE_MIN].auto_active=TRUE;
+      camera->feature_set.feature[feature-DC1394_FEATURE_MIN].current_mode=DC1394_FEATURE_MODE_AUTO;
       if (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].absolute_capable)
 	SetAbsoluteControl(feature, FALSE);
       UpdateRange(feature);

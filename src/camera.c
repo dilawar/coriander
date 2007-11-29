@@ -29,11 +29,6 @@ GetCameraNodes(void) {
   //fprintf(stderr,"Get camera list\n");
   err=dc1394_enumerate_cameras(dc1394,&camera_list);
 
-  if (err==DC1394_NO_CAMERA) {
-    dc1394_free_camera_list(camera_list);
-    return err;
-  }
-
   // create a list of cameras with coriander's camera type camera_t
   for (i=0;i<camera_list->num;i++) {
     camera_ptr=NewCamera();

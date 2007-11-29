@@ -227,13 +227,30 @@ void BuildRange(int feature)
 	  camera->feature_set.feature[feature-DC1394_FEATURE_MIN].one_push_capable,
 	  camera->feature_set.feature[feature-DC1394_FEATURE_MIN].absolute_capable,camera->camera_info->guid>>40);
   */
+
+  int auto_capable=0;
+  int manual_capable=0;
+  int one_push_capable=0;
+  int i;
+  for (i=0;i<camera->feature_set.feature[feature-DC1394_FEATURE_MIN].modes.num;i++) {
+    switch (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].modes.modes[i]) {
+    case DC1394_FEATURE_MODE_MANUAL:
+      manual_capable=1;
+      break;
+    case DC1394_FEATURE_MODE_AUTO:
+      auto_capable=1;
+      break;
+    case DC1394_FEATURE_MODE_ONE_PUSH_AUTO:
+      one_push_capable=1;
+      break;
+    }
+  }
+      
   if ((camera->feature_set.feature[feature-DC1394_FEATURE_MIN].on_off_capable  || // disable feature if there is no way to control it
-       camera->feature_set.feature[feature-DC1394_FEATURE_MIN].manual_capable  ||
-       camera->feature_set.feature[feature-DC1394_FEATURE_MIN].auto_capable    ||
-       camera->feature_set.feature[feature-DC1394_FEATURE_MIN].one_push_capable||
+       (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].modes.num>0) ||   
        camera->feature_set.feature[feature-DC1394_FEATURE_MIN].absolute_capable ) &&
-      (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].on_off_capable ||  // disable features that are OFF and not ON-settable
-       camera->feature_set.feature[feature-DC1394_FEATURE_MIN].is_on||
+      ((camera->feature_set.feature[feature-DC1394_FEATURE_MIN].on_off_capable &&  // disable features that are OFF and not ON-settable
+        camera->feature_set.feature[feature-DC1394_FEATURE_MIN].is_on) ||
        ((camera->camera_info->guid>>40)!=0xb09d)) // ptgrey only
       ) {
 
@@ -248,7 +265,7 @@ void BuildRange(int feature)
 			(gpointer)(unsigned long)(feature*1000+RANGE_MENU_OFF)); // i is an int passed in a pointer variable. This is 'normal'.
     }
     // 'man' menuitem optional addition:
-    if (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].manual_capable>0) {
+    if (manual_capable>0) {
       glade_menuitem = gtk_menu_item_new_with_label (_(feature_menu_items_list[RANGE_MENU_MAN]));
       gtk_widget_show (glade_menuitem);
       gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
@@ -257,7 +274,7 @@ void BuildRange(int feature)
 			(gpointer)(unsigned long)(feature*1000+RANGE_MENU_MAN));
     }
     // 'auto' menuitem optional addition:
-    if (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].auto_capable>0) {
+    if (auto_capable>0) {
       glade_menuitem = gtk_menu_item_new_with_label (_(feature_menu_items_list[RANGE_MENU_AUTO]));
       gtk_widget_show (glade_menuitem);
       gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
@@ -266,7 +283,7 @@ void BuildRange(int feature)
 			(gpointer)(unsigned long)(feature*1000+RANGE_MENU_AUTO));
     }
     // 'single' menuitem optional addition:
-    if (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].one_push_capable>0) {
+    if (one_push_capable>0) {
       glade_menuitem = gtk_menu_item_new_with_label (_(feature_menu_items_list[RANGE_MENU_SINGLE]));
       gtk_widget_show (glade_menuitem);
       gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);

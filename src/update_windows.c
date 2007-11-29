@@ -72,9 +72,7 @@ UpdateFeatureWindow(void)
       */
       // if there is no control mode available for the feature, disable it.
       if (!((camera->feature_set.feature[i-DC1394_FEATURE_MIN].on_off_capable  || // disable feature if there is no way to control it
-	     camera->feature_set.feature[i-DC1394_FEATURE_MIN].manual_capable  ||
-	     camera->feature_set.feature[i-DC1394_FEATURE_MIN].auto_capable    ||
-	     camera->feature_set.feature[i-DC1394_FEATURE_MIN].one_push_capable||
+	     (camera->feature_set.feature[i-DC1394_FEATURE_MIN].modes.num>0)  ||
 	     camera->feature_set.feature[i-DC1394_FEATURE_MIN].absolute_capable ) &&
 	    (camera->feature_set.feature[i-DC1394_FEATURE_MIN].on_off_capable ||  // disable features that are OFF and not ON-settable
 	     camera->feature_set.feature[i-DC1394_FEATURE_MIN].is_on ||

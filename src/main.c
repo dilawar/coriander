@@ -81,7 +81,7 @@ main (int argc, char *argv[])
   err=GetCameraNodes();
   //eprint("nodes OK\n");
 
-  if (err==DC1394_NO_CAMERA) {
+  if (cameras==NULL) {
     err_window=create_no_camera_window();
     gtk_widget_show(err_window);
     gtk_main();
