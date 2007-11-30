@@ -63,6 +63,7 @@ WatchThread(void *arg)
   pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED,NULL);
   pthread_mutex_unlock(&info->mutex_area);
 
+  dc1394_video_get_mode(camera->camera_info, &video_mode);
   while (1) {
     pthread_mutex_lock(&info->mutex_cancel_watch);
     if (info->cancel_watch_req>0) {
@@ -73,8 +74,6 @@ WatchThread(void *arg)
       pthread_mutex_unlock(&info->mutex_cancel_watch);
       pthread_mutex_lock(&info->mutex_area);
       
-      dc1394_video_get_mode(camera->camera_info, &video_mode);
-
       if (info->crop>0) {
 	if ((video_mode >= DC1394_VIDEO_MODE_FORMAT7_MIN) &&
 	    (video_mode <= DC1394_VIDEO_MODE_FORMAT7_MAX)) {

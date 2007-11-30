@@ -108,11 +108,9 @@ DisplayThread(void* arg)
 	    if (info->sdloverlay!=NULL) {
 	      if (SDL_LockYUVOverlay(info->sdloverlay) == 0) {
 		convert_to_yuv_for_SDL(&display_service->current_buffer->frame, info->sdloverlay, preferences.overlay_byte_order);
-		
 		// informative overlays
 		SDLDisplayPattern(display_service);
 		SDLDisplayArea(display_service);
-		
 		SDL_UnlockYUVOverlay(info->sdloverlay);
 		SDL_DisplayYUVOverlay(info->sdloverlay, &info->sdlvideorect);
 		
