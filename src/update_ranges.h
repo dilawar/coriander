@@ -26,7 +26,7 @@ void
 UpdateRangeValue(GtkWidget* widget, int feature);
  
 void
-UpdateFormat7BppRange(void);
+UpdateFormat7PacketSizeRange(void);
 
 void
 UpdateFormat7Ranges(void);

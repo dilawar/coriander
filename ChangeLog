@@ -2,6 +2,7 @@ Coriander, (c) 2000-2007 Damien Douxchamps <ddouxchamps@users.sf.net>
 
    November 30th, 2007, by Damien Douxchamps
    - Fixed mutex conflict
+   - sync with libdc SVN 469
 	
    November 29th, 2007, by Damien Douxchamps
    - Update for libdc SVN 362

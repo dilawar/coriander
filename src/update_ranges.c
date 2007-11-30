@@ -281,33 +281,33 @@ UpdateRangeValue(GtkWidget* widget, int feature)
 }
 
 void
-UpdateFormat7BppRange(void)
+UpdateFormat7PacketSizeRange(void)
 {
   GtkAdjustment* adj;
   dc1394format7mode_t *info;
   info=&camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_VIDEO_MODE_FORMAT7_MIN];
 
-  if (dc1394_format7_get_byte_per_packet(camera->camera_info,
-					   camera->format7_info.edit_mode, &info->bpp)==DC1394_SUCCESS) {
-    if (dc1394_format7_get_packet_para(camera->camera_info,
-					 camera->format7_info.edit_mode, &info->min_bpp,&info->max_bpp)==DC1394_SUCCESS) {
-      if (info->bpp>info->max_bpp)
-	info->bpp=info->max_bpp;
-      //if (info->bpp==0)
-      //  fprintf(stderr,"BPP is zero in %s at line %d\n",__FUNCTION__,__LINE__);
+  if (dc1394_format7_get_packet_size(camera->camera_info,
+				     camera->format7_info.edit_mode, &info->packet_size)==DC1394_SUCCESS) {
+    if (dc1394_format7_get_packet_parameters(camera->camera_info,
+				       camera->format7_info.edit_mode, &info->unit_packet_size,&info->max_packet_size)==DC1394_SUCCESS) {
+      if (info->packet_size>info->max_packet_size)
+	info->packet_size=info->max_packet_size;
+      //if (info->packet_size==0)
+      //  fprintf(stderr,"PACKET_SIZE is zero in %s at line %d\n",__FUNCTION__,__LINE__);
       adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_packet_size")));
-      adj->upper=info->max_bpp;
-      adj->lower=info->min_bpp;
-      adj->value=info->bpp;
+      adj->upper=info->max_packet_size;
+      adj->lower=info->unit_packet_size;
+      adj->value=info->packet_size;
       adj->step_increment=1;
-      adj->page_increment=(info->max_bpp-info->min_bpp)/16;
+      adj->page_increment=(info->max_packet_size-info->unit_packet_size)/16;
       g_signal_emit_by_name((gpointer) adj, "changed");
     }
     else
-      Error("Can't get bpp info from camera");
+      Error("Can't get packet_size info from camera");
   }
   else
-    Error("Can't get bpp info from camera");
+    Error("Can't get packet_size info from camera");
 }
 
 void

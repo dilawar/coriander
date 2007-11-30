@@ -22,7 +22,7 @@ void
 UpdateFormat7Window(void)
 {
   UpdateFormat7Ranges();
-  UpdateFormat7BppRange();
+  UpdateFormat7PacketSizeRange();
   BuildFormat7ColorMenu();
   UpdateFormat7InfoFrame();
 }

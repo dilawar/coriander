@@ -290,32 +290,32 @@ void
 on_format7_packet_size_changed               (GtkAdjustment    *adj,
 					      gpointer         user_data)
 { 
-  unsigned int bpp;
+  unsigned int packet_size;
   int state;
   int value;
 
   value=(int)adj->value;
 
-  value=NearestValue(value,camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].min_bpp,
-		     camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].min_bpp,
-		     camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].max_bpp);
+  value=NearestValue(value,camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].unit_packet_size,
+		     camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].unit_packet_size,
+		     camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].max_packet_size);
 
   IsoFlowCheck(&state);
   
-  if (dc1394_format7_set_byte_per_packet(camera->camera_info, 
-					 camera->format7_info.edit_mode, value)!=DC1394_SUCCESS)
+  if (dc1394_format7_set_packet_size(camera->camera_info, 
+				     camera->format7_info.edit_mode, value)!=DC1394_SUCCESS)
     Error("Could not change Format7 bytes per packet");
   
-  if (dc1394_format7_get_byte_per_packet(camera->camera_info,
-					   camera->format7_info.edit_mode,&bpp)!=DC1394_SUCCESS) 
+  if (dc1394_format7_get_packet_size(camera->camera_info,
+				     camera->format7_info.edit_mode,&packet_size)!=DC1394_SUCCESS) 
     Error("Could not query Format7 bytes per packet");
   else {
-    camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].bpp=bpp;
-    if (bpp==0)
-      fprintf(stderr,"BPP is zero in %s at line %d\n",__FUNCTION__,__LINE__);
+    camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].packet_size=packet_size;
+    if (packet_size==0)
+      fprintf(stderr,"Packet size is zero in %s at line %d\n",__FUNCTION__,__LINE__);
     
     // tell the range to change its setting
-    adj->value=bpp;
+    adj->value=packet_size;
     g_signal_emit_by_name((gpointer) adj, "changed");
     
     usleep(DELAY);
@@ -366,7 +366,7 @@ on_edit_format7_color_activate             (GtkMenuItem     *menuitem,
 
   UpdateOptionFrame();
   UpdateFormat7Window();
-  /*UpdateFormat7BppRange();
+  /*UpdateFormat7PacketSizeRange();
     UpdateFormat7Ranges();
     UpdateFormat7InfoFrame();*/
 
@@ -517,7 +517,7 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
       Error("Could not get format7 mode information");
     //fprintf(stderr,"after %d\n",info->max_bpp);
 
-    UpdateFormat7BppRange();
+    UpdateFormat7PacketSizeRange();
     UpdateFormat7InfoFrame();
     UpdateFeatureWindow(); // because several controls may change, especially exposure, gamma, shutter,... since the framerate changes.
   }

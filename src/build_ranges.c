@@ -561,14 +561,14 @@ BuildFormat7Ranges(void)
 }
 
 void
-BuildFormat7BppRange(void)
+BuildFormat7PacketSizeRange(void)
 { 
   GtkAdjustment *adjustment_packet;
   dc1394format7mode_t *info;
   info=&camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_VIDEO_MODE_FORMAT7_MIN];
 
   // define adjustment for packet size:
-  adjustment_packet=(GtkAdjustment*)gtk_adjustment_new(info->bpp,info->min_bpp,info->max_bpp,1,(info->max_bpp-info->min_bpp)/16,0);
+  adjustment_packet=(GtkAdjustment*)gtk_adjustment_new(info->packet_size,info->unit_packet_size,info->max_packet_size,1,(info->max_packet_size-info->unit_packet_size)/16,0);
   // min_bpp is the minimum bpp, but also the 'unit' bpp.
   gtk_range_set_adjustment((GtkRange*)lookup_widget(main_window, "format7_packet_size"),adjustment_packet);
   g_signal_connect((gpointer) adjustment_packet, "value_changed", G_CALLBACK (on_format7_packet_size_changed),(int*)0);

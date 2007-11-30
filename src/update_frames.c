@@ -428,7 +428,7 @@ UpdateFormat7InfoFrame(void)
 
   char *temp;
   dc1394format7mode_t *mode;
-  unsigned int bpp;
+  unsigned int packet_size;
   int bytesize, grandtotal;
   
   temp=(char*)malloc(STRING_SIZE*sizeof(char));
@@ -437,9 +437,9 @@ UpdateFormat7InfoFrame(void)
 
     mode = &camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_VIDEO_MODE_FORMAT7_MIN];
 
-    dc1394_get_bits_per_pixel(mode->color_coding, &bpp);
+    dc1394_get_bits_per_pixel(mode->color_coding, &packet_size);
 
-    bytesize=(mode->size_x*mode->size_y*bpp)/8;
+    bytesize=(mode->size_x*mode->size_y*packet_size)/8;
     /*
       // this appears to be meaningless as some cameras take padding into account
       if (bytesize!=mode->total_bytes) {
@@ -448,54 +448,54 @@ UpdateFormat7InfoFrame(void)
       }
     */
     //fprintf(stderr,"total bytes: %d\n",mode->total_bytes);
-    if (mode->bpp==0) {
-      //Error("BPP is zero! This should not happen.");
+    if (mode->packet_size==0) {
+      //Error("PACKET_SIZE is zero! This should not happen.");
 
       // do something about it:
-      // - first wait a bit and try to get the BPP again
+      // - first wait a bit and try to get the PACKET_SIZE again
       // (what follows only if ISO is not running)
-      // - then, if it's not ok, do a set_roi with all current values, wait and get BPP again
-      // - at last, do a set_roi with all max values, wait and get BPP again
-      // if all else fails, set the temp string to "Invalid BPP"
+      // - then, if it's not ok, do a set_roi with all current values, wait and get PACKET_SIZE again
+      // - at last, do a set_roi with all max values, wait and get PACKET_SIZE again
+      // if all else fails, set the temp string to "Invalid PACKET_SIZE"
       
       // note: this obviously happen mostly (if not only) at camera boot time. So maybe the F7
       // mode probing function could carry the function of setting a valid F7 by default.
       // definitely better... (and in libdc1394 so everyone enjoys the modification)
       grandtotal=0;
-      sprintf(temp,"Invalid BPP");
+      sprintf(temp,"Invalid PACKET_SIZE");
     }
     else {
       // if there is packet padding, take it into account
-      if (mode->total_bytes%mode->bpp!=0) {
-	grandtotal=(mode->total_bytes/mode->bpp+1)*mode->bpp;
+      if (mode->total_bytes%mode->packet_size!=0) {
+	grandtotal=(mode->total_bytes/mode->packet_size+1)*mode->packet_size;
       }
       else {
 	grandtotal=mode->total_bytes;
       }
     }
 
-    if (mode->bpp>0)
+    if (mode->packet_size>0)
       sprintf(temp," %d", bytesize);
     gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"format7_imagebytes"), 
 			 ctxt.format7_imagebytes_ctxt, ctxt.format7_imagebytes_id);
     ctxt.format7_imagebytes_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"format7_imagebytes"), 
 						  ctxt.format7_imagebytes_ctxt,temp);
     
-    if (mode->bpp>0)
+    if (mode->packet_size>0)
       sprintf(temp," %d", mode->size_x*mode->size_y);
     gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"format7_imagepixels"), 
 			 ctxt.format7_imagepixels_ctxt, ctxt.format7_imagepixels_id);
     ctxt.format7_imagepixels_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"format7_imagepixels"), 
 						   ctxt.format7_imagepixels_ctxt,temp);
     
-    if (mode->bpp>0)
+    if (mode->packet_size>0)
       sprintf(temp," %d", grandtotal);
     gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"format7_totalbytes"), 
 			 ctxt.format7_totalbytes_ctxt, ctxt.format7_totalbytes_id);
     ctxt.format7_totalbytes_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"format7_totalbytes"), 
 						  ctxt.format7_totalbytes_ctxt,temp);
     
-    if (mode->bpp>0)
+    if (mode->packet_size>0)
       sprintf(temp," %d", grandtotal - bytesize);
     gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"format7_padding"), 
 			 ctxt.format7_padding_ctxt, ctxt.format7_padding_id);
@@ -553,7 +553,7 @@ UpdateBandwidthFrame(void)
 	&&(iso_service!=NULL)){
       //fprintf(stderr,"better estimate can be found\n");
       // use the fractions of packets needed:
-      theobps=8000*cam->format7_info.modeset.mode[cam->format7_info.edit_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].bpp;
+      theobps=8000*cam->format7_info.modeset.mode[cam->format7_info.edit_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].packet_size;
       truebps=iso_service->fps*cam->format7_info.modeset.mode[cam->format7_info.edit_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].total_bytes;
       ratio=(float)truebps/(float)theobps;
       //fprintf(stderr,"truebps: %d, theobps: %d, ratio: %.2f\n",truebps, theobps, ratio);

@@ -29,6 +29,6 @@ void
 BuildFormat7Ranges(void);
 
 void
-BuildFormat7BppRange(void);
+BuildFormat7PacketSizeRange(void);
 
 #endif // __BUILDRANGES_H__
