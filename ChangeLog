@@ -1,5 +1,9 @@
 Coriander, (c) 2000-2007 Damien Douxchamps <ddouxchamps@users.sf.net>
 
+   December 1st, 2007, by Damien Douxchamps
+   - fixed trigger issues caused by changes in the latest libdc SVN
+     (thanks to Chris Rankin)
+	
    November 30th, 2007, by Damien Douxchamps
    - Fixed mutex conflict
    - sync with libdc SVN 469

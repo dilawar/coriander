@@ -103,10 +103,18 @@ void
 on_trigger_polarity_toggled            (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-  if (dc1394_external_trigger_set_polarity(camera->camera_info,togglebutton->active)!=DC1394_SUCCESS)
-    Error("Cannot set trigger polarity");
-  else
-    camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].trigger_polarity=(int)togglebutton->active;
+  if (togglebutton->active) {
+    if (dc1394_external_trigger_set_polarity(camera->camera_info,DC1394_TRIGGER_ACTIVE_HIGH)!=DC1394_SUCCESS)
+      Error("Cannot set trigger polarity");
+    else
+      camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].trigger_polarity=DC1394_TRIGGER_ACTIVE_HIGH;
+  }
+  else {
+    if (dc1394_external_trigger_set_polarity(camera->camera_info,DC1394_TRIGGER_ACTIVE_LOW)!=DC1394_SUCCESS)
+      Error("Cannot set trigger polarity");
+    else
+      camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].trigger_polarity=DC1394_TRIGGER_ACTIVE_LOW;
+  }
 }
 
 
