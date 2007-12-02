@@ -45,7 +45,11 @@ LoadConfigFile(void)
   preferences.camprefs.ftp_datenum          = gnome_config_get_int("coriander/ftp/datenum=1");
   preferences.camprefs.v4l_period           = gnome_config_get_int("coriander/v4l/period=1");
   preferences.camprefs.broadcast            = gnome_config_get_int("coriander/global/broadcast=0");
-
+  if (preferences.camprefs.broadcast>0) {
+    preferences.camprefs.broadcast=0;
+    fprintf(stderr,"FIXME: broadcast not supported in recent libdc versions\n");
+  }
+    
   preferences.camprefs.save_filename    = gnome_config_get_string("coriander/save/filename=test");
   preferences.camprefs.overlay_filename = gnome_config_get_string("coriander/display/overlay_filename=test.png");
   preferences.camprefs.ftp_filename     = gnome_config_get_string("coriander/ftp/filename=");
@@ -58,7 +62,12 @@ LoadConfigFile(void)
   preferences.op_timeout                = gnome_config_get_float("coriander/global/one_push_timeout=10.0");
   preferences.auto_update               = gnome_config_get_int("coriander/global/auto_update=1");
   preferences.auto_update_frequency     = gnome_config_get_float("coriander/global/auto_update_frequency=2.0");
-  preferences.overlay_byte_order        = gnome_config_get_int("coriander/global/overlay_byte_order=0");
+  preferences.overlay_byte_order        = gnome_config_get_int("coriander/global/overlay_byte_order=800");
+  // for compatibilty with older libdc
+  if (preferences.overlay_byte_order==0)
+    preferences.overlay_byte_order=DC1394_BYTE_ORDER_UYVY;
+  if (preferences.overlay_byte_order==1)
+    preferences.overlay_byte_order=DC1394_BYTE_ORDER_YUYV;
   preferences.no_overwrite              = gnome_config_get_int("coriander/global/no_overwrite=1");
   preferences.warning_in_popup          = gnome_config_get_int("coriander/global/warning_in_popup=0");
   preferences.error_in_popup            = gnome_config_get_int("coriander/global/error_in_popup=1");

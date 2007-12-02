@@ -92,11 +92,13 @@ main (int argc, char *argv[])
     exit(1);
   }
 
+  /*
   camera_t *cam_tmp=cameras;
   while (cam_tmp!=NULL) {
     dc1394_cleanup_iso_channels_and_bandwidth(cam_tmp->camera_info);
     cam_tmp=cam_tmp->next;
   }
+  */
   //eprint("Starting to set ISO channels\n");
   //SetIsoChannels();
   //eprint("ISO channels are set\n");

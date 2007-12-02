@@ -1,5 +1,8 @@
 Coriander, (c) 2000-2007 Damien Douxchamps <ddouxchamps@users.sf.net>
 
+   2007-12-02, by Damien Douxchamps
+   - update to work with older config files (thanks to Chris Rankin)
+
    December 1st, 2007, by Damien Douxchamps
    - fixed trigger issues caused by changes in the latest libdc SVN
      (thanks to Chris Rankin)
