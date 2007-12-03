@@ -731,9 +731,11 @@ BuildIsoSpeedMenu(void)
   gtk_option_menu_set_menu (GTK_OPTION_MENU (new_option_menu), new_menu);
 
   // menu history
+  dc1394speed_t iso_speed;
+  dc1394_video_get_iso_speed(camera->camera_info, &iso_speed);
   pthread_mutex_lock(&camera->uimutex);
   gtk_option_menu_set_history(GTK_OPTION_MENU(lookup_widget(main_window, "isospeed_menu")),
-			      camera->camera_info->iso_speed-DC1394_ISO_SPEED_MIN);
+			      iso_speed-DC1394_ISO_SPEED_MIN);
   pthread_mutex_unlock(&camera->uimutex);
 }
 

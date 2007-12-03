@@ -202,11 +202,13 @@ UpdateIsoFrame(void)
   //fprintf(stderr,"bmode_capable: %d\n",camera->camera_info->bmode_capable);
   gtk_widget_set_sensitive(lookup_widget(main_window,"bmode_button"),
 			   camera->camera_info->bmode_capable &&
-			   !is_iso_on    &&
-			   !camera->camera_info->capture_is_set);
+			   !is_iso_on );//    &&
+                           // FIXME: capture_is_set not available anymore!
+                           // !camera->camera_info->capture_is_set);
   gtk_widget_set_sensitive(lookup_widget(main_window,"isospeed_menu"),
-			   !is_iso_on    &&
-			   !camera->camera_info->capture_is_set);
+			   !is_iso_on);//    &&
+                           // FIXME: capture_is_set not available anymore!
+			   // !camera->camera_info->capture_is_set);
 }
 
 void
@@ -311,13 +313,16 @@ UpdateTransferStatusFrame(void)
 {
   char *temp;
   temp=(char*)malloc(STRING_SIZE*sizeof(char));
-
-  if (camera->camera_info->iso_channel>=0) {
-    sprintf(temp," %d",camera->camera_info->iso_channel);
-  }
-  else {
-    sprintf(temp," N/A");
-  }
+  // FIXME: ISO Channel not available anymore
+  /*
+    if (camera->camera_info->iso_channel>=0) {
+      sprintf(temp," %d",camera->camera_info->iso_channel);
+    }
+    else {
+      sprintf(temp," N/A");
+    }
+  */
+  sprintf(temp," N/A");
   gtk_statusbar_remove( (GtkStatusbar*) lookup_widget(main_window,"iso_channel_status"), ctxt.iso_channel_ctxt, ctxt.iso_channel_id);
   ctxt.iso_channel_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(main_window,"iso_channel_status"), ctxt.iso_channel_ctxt, temp);
 

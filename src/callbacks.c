@@ -1837,7 +1837,9 @@ on_bmode_button_toggled                (GtkToggleButton *togglebutton,
     BuildIsoSpeedMenu();
   }
   else {
-    if (camera->camera_info->iso_speed>DC1394_ISO_SPEED_400)
+    dc1394speed_t isospeed;
+    dc1394_video_get_iso_speed(camera->camera_info,&isospeed);
+    if (isospeed>DC1394_ISO_SPEED_400)
       dc1394_video_set_iso_speed(camera->camera_info,DC1394_ISO_SPEED_400);
 
     //fprintf(stderr,"setting legacy\n");

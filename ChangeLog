@@ -1,5 +1,10 @@
 Coriander, (c) 2000-2007 Damien Douxchamps <ddouxchamps@users.sf.net>
 
+   2007-12-03, by Damien Douxchamps
+   - sync with libdc SVN 477. Note that a few things don't work anymore due to
+     API limitations: broadcast, bandwidth display, port/node display and a few
+     other things.
+	
    2007-12-02, by Damien Douxchamps
    - update to work with older config files (thanks to Chris Rankin)
 
