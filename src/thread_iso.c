@@ -221,7 +221,7 @@ IsoThread(void* arg)
 	
 	err=dc1394_capture_dequeue(camptr, DC1394_CAPTURE_POLICY_POLL, &frame);
 
-	if (err==DC1394_SUCCESS) { // should check for more errors here  
+	if ((err==DC1394_SUCCESS)&&(frame!=NULL)) { // should check for more errors here  
 	  //fprintf(stderr,"size: %d %d\n",frame->size[0],frame->size[1]);
 	
 	  rawtime.tv_sec=frame->timestamp/1000000;
