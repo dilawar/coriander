@@ -263,7 +263,7 @@ ChangeModeAndFormat         (GtkMenuItem     *menuitem,
   //if (dc1394_update_camera_info(camera->camera_info)!=DC1394_SUCCESS)
   //  Error("Could not get camera basic information!");
 
-  if (dc1394_get_camera_feature_set(camera->camera_info, &camera->feature_set)!=DC1394_SUCCESS)
+  if (dc1394_feature_get_all(camera->camera_info, &camera->feature_set)!=DC1394_SUCCESS)
     Error("Could not get camera feature information!");
   
   if (dc1394_is_video_mode_scalable(mode)) {
@@ -590,7 +590,7 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation)
   // Now we have to deal with this bus reset...
 
   // get camera guids:
-  dc1394_enumerate_cameras(dc1394,&new_camera_list);
+  dc1394_camera_enumerate(dc1394,&new_camera_list);
 
   // ADD NEW CAMERAS AND UPDATE PREVIOUS ONES ---------------------------------
 
@@ -717,7 +717,7 @@ bus_reset_handler(raw1394handle_t handle, unsigned int generation)
   // set ISO channels
   // SetIsoChannels();
 
-  dc1394_free_camera_list(new_camera_list);
+  dc1394_camera_free_list(new_camera_list);
 
   return(1);
 }

@@ -77,7 +77,7 @@ void
 on_power_on_clicked                    (GtkButton       *button,
                                         gpointer         user_data)
 {
-  if(dc1394_set_camera_power(camera->camera_info, DC1394_ON)!=DC1394_SUCCESS)
+  if(dc1394_camera_set_power(camera->camera_info, DC1394_ON)!=DC1394_SUCCESS)
     Error("Could not set camera 'on'");
 }
 
@@ -86,7 +86,7 @@ void
 on_power_off_clicked                   (GtkButton       *button,
                                         gpointer         user_data)
 {
-  if(dc1394_set_camera_power(camera->camera_info, DC1394_OFF)!=DC1394_SUCCESS)
+  if(dc1394_camera_set_power(camera->camera_info, DC1394_OFF)!=DC1394_SUCCESS)
     Error("Could not set camera 'off'");
 }
 
@@ -95,7 +95,7 @@ void
 on_power_reset_clicked                 (GtkButton       *button,
                                         gpointer         user_data)
 {
-  if (dc1394_reset_camera(camera->camera_info)!=DC1394_SUCCESS)
+  if (dc1394_camera_reset(camera->camera_info)!=DC1394_SUCCESS)
     Error("Could not initilize camera");
 }
 

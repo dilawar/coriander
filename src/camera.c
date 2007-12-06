@@ -27,7 +27,7 @@ GetCameraNodes(void) {
   int i;
   
   //fprintf(stderr,"Get camera list\n");
-  err=dc1394_enumerate_cameras(dc1394,&camera_list);
+  err=dc1394_camera_enumerate(dc1394,&camera_list);
 
   // create a list of cameras with coriander's camera type camera_t
   for (i=0;i<camera_list->num;i++) {
@@ -45,7 +45,7 @@ GetCameraNodes(void) {
   }
 
   // free camera list:
-  dc1394_free_camera_list(camera_list);
+  dc1394_camera_free_list(camera_list);
 
   //fprintf(stderr,"Done getting cameras\n");
 
@@ -87,7 +87,7 @@ GetCameraData(camera_t* cam) {
     dc1394_video_set_operation_mode(cam->camera_info, DC1394_OPERATION_MODE_1394B);
   }
   */
-  if (dc1394_get_camera_feature_set(cam->camera_info, &cam->feature_set)!=DC1394_SUCCESS)
+  if (dc1394_feature_get_all(cam->camera_info, &cam->feature_set)!=DC1394_SUCCESS)
     Error("Could not get camera feature information!");
 
   //fprintf(stderr,"Grabbing F7 stuff\n");
