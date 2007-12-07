@@ -1,5 +1,9 @@
 Coriander, (c) 2000-2007 Damien Douxchamps <ddouxchamps@users.sf.net>
 
+   2007-12-07, by Damien Douxchamps
+   - protect external trigger and trigger polarity buttons to avoid spurious
+     warnings.
+
    2007-12-06, by Damien Douxchamps
    - sync with libdc1394 SVN 492.
 	

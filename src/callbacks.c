@@ -103,17 +103,20 @@ void
 on_trigger_polarity_toggled            (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-  if (togglebutton->active) {
-    if (dc1394_external_trigger_set_polarity(camera->camera_info,DC1394_TRIGGER_ACTIVE_HIGH)!=DC1394_SUCCESS)
-      Error("Cannot set trigger polarity");
-    else
-      camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].trigger_polarity=DC1394_TRIGGER_ACTIVE_HIGH;
-  }
-  else {
-    if (dc1394_external_trigger_set_polarity(camera->camera_info,DC1394_TRIGGER_ACTIVE_LOW)!=DC1394_SUCCESS)
-      Error("Cannot set trigger polarity");
-    else
-      camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].trigger_polarity=DC1394_TRIGGER_ACTIVE_LOW;
+  if  ( (camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].available == DC1394_TRUE) &&
+	(camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].polarity_capable == DC1394_TRUE)) {
+    if (togglebutton->active) {
+      if (dc1394_external_trigger_set_polarity(camera->camera_info,DC1394_TRIGGER_ACTIVE_HIGH)!=DC1394_SUCCESS)
+	Error("Cannot set trigger polarity");
+      else
+	camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].trigger_polarity=DC1394_TRIGGER_ACTIVE_HIGH;
+    }
+    else {
+      if (dc1394_external_trigger_set_polarity(camera->camera_info,DC1394_TRIGGER_ACTIVE_LOW)!=DC1394_SUCCESS)
+	Error("Cannot set trigger polarity");
+      else
+	camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].trigger_polarity=DC1394_TRIGGER_ACTIVE_LOW;
+    }
   }
 }
 
@@ -144,11 +147,13 @@ void
 on_trigger_external_toggled            (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-  if (dc1394_feature_set_power(camera->camera_info, DC1394_FEATURE_TRIGGER, togglebutton->active)!=DC1394_SUCCESS)
-    Error("Could not set external trigger source");
-  else
-    camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].is_on=togglebutton->active;
-  UpdateTriggerFrame();
+  if  (camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].available == DC1394_TRUE) {
+    if (dc1394_feature_set_power(camera->camera_info, DC1394_FEATURE_TRIGGER, togglebutton->active)!=DC1394_SUCCESS)
+      Error("Could not set external trigger source");
+    else
+      camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].is_on=togglebutton->active;
+    UpdateTriggerFrame();
+  }
 }
 
 
