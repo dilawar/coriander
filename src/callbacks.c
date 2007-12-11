@@ -1542,8 +1542,6 @@ void
 on_broadcast_button_toggled            (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-  // FIXME BIGPATCH
-  /*
   if(togglebutton->active>0) {
     dc1394_camera_set_broadcast(camera->camera_info, DC1394_ON);
   }
@@ -1553,7 +1551,6 @@ on_broadcast_button_toggled            (GtkToggleButton *togglebutton,
   camera->prefs.broadcast=togglebutton->active;
   gnome_config_set_int("coriander/global/broadcast",camera->prefs.broadcast);
   gnome_config_sync();
-  */
 }
 
 

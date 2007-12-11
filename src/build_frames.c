@@ -106,12 +106,7 @@ BuildIsoFrame(void)
   gtk_widget_set_sensitive(lookup_widget(main_window,"iso_stop"),is_iso_on);
   gtk_widget_set_sensitive(lookup_widget(main_window,"bmode_button"),camera->camera_info->bmode_capable);
 
-
-  // FIXME: Not available with latest API
-  //gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window,"broadcast_button")),camera->prefs.broadcast);
-  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window,"broadcast_button")),0);
-  gtk_widget_set_sensitive(lookup_widget(main_window,"broadcast_button"),0);
-
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window,"broadcast_button")),camera->prefs.broadcast);
 
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window,"iso_nodrop")),camera->prefs.iso_nodrop);
 

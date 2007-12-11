@@ -45,10 +45,6 @@ LoadConfigFile(void)
   preferences.camprefs.ftp_datenum          = gnome_config_get_int("coriander/ftp/datenum=1");
   preferences.camprefs.v4l_period           = gnome_config_get_int("coriander/v4l/period=1");
   preferences.camprefs.broadcast            = gnome_config_get_int("coriander/global/broadcast=0");
-  if (preferences.camprefs.broadcast>0) {
-    preferences.camprefs.broadcast=0;
-    fprintf(stderr,"FIXME: broadcast not supported in recent libdc versions\n");
-  }
     
   preferences.camprefs.save_filename    = gnome_config_get_string("coriander/save/filename=test");
   preferences.camprefs.overlay_filename = gnome_config_get_string("coriander/display/overlay_filename=test.png");
