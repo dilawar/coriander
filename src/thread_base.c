@@ -316,7 +316,7 @@ InitBuffer(buffer_t *buffer)
   buffer->frame.size[1]=-1;
   buffer->frame.total_bytes=-1;
   buffer->bayer=-1;
-  buffer->frame.bit_depth=-1;
+  buffer->frame.data_depth=-1;
   buffer->frame.color_filter=-1; //COLOR_FILTER_FORMAT7_BGGR
   buffer->stereo=-1;
   buffer->frame.color_coding=-1;

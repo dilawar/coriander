@@ -39,23 +39,23 @@ AC_DEFUN([AC_CHECK_LIBDC],[
  	if test x$libdc1394 = xno; then
           AC_ERROR([libdc1394 is not installed.  
 **************************************************************************
-**   Please install the current libdc1394 version 2.0.0-rc7             **
-**   Source tarball and CVS at:  http://www.sf.net/projects/libdc1394   **
+**   Please install the current libdc1394 version 2.0.0-rc8             **
+**   Source tarball and SVN at:  http://www.sf.net/projects/libdc1394   **
 **************************************************************************])
         else
  	  AC_CHECK_LIB(dc1394,dc1394_pio_set,libdc1394=ok,libdc1394=old,-lraw1394)
  	  if test x$libdc1394 = xold; then
             AC_ERROR([libdc1394 is too old.
 **************************************************************************
-**   Please install the current libdc1394 version 2.0.0-rc7             **
-**   Source tarball and CVS at:  http://www.sf.net/projects/libdc1394   **
+**   Please install the current libdc1394 version 2.0.0-rc8             **
+**   Source tarball and SVN at:  http://www.sf.net/projects/libdc1394   **
 **************************************************************************])
           else
   	    AC_SUBST(LIBDC_CFLAGS)
 	    AC_SUBST(LIBDC_LIBS)
-	    AC_MSG_CHECKING(libdc1394-2 definitions)
+	    AC_MSG_CHECKING(libdc1394-2 headers)
 	    AC_TRY_COMPILE([
-            #include <dc1394/control.h>
+            #include <dc1394/dc1394.h>
 	    ],[
 	    int main(void) {
 	    dc1394video_frame_t *frame;
@@ -73,8 +73,8 @@ AC_DEFUN([AC_CHECK_LIBDC],[
 	    else
               AC_ERROR([libdc1394 is too old. 
 **************************************************************************
-**   Please install the current libdc1394 version 2.0.0-rc7             **
-**   Source tarball and CVS at:  http://www.sf.net/projects/libdc1394   **
+**   Please install the current libdc1394 version 2.0.0-rc8             **
+**   Source tarball and SVN at:  http://www.sf.net/projects/libdc1394   **
 **************************************************************************])
  	    fi
 	  fi

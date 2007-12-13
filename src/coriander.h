@@ -29,10 +29,7 @@
 #include <sys/types.h>
 #include <stddef.h>
 #include <stdint.h>
-#include <dc1394/control.h>
-#include <dc1394/conversions.h>
-#include <dc1394/utils.h>
-#include <dc1394/register.h>
+#include <dc1394/dc1394.h>
 
 // FTP lib
 #ifdef HAVE_FTPLIB

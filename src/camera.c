@@ -96,7 +96,6 @@ GetCameraData(camera_t* cam) {
   pthread_mutex_lock(&cam->uimutex);
   cam->want_to_display=0;
   cam->bayer=-1;
-  //cam->bayer_pattern=DC1394_COLOR_FILTER_RGGB
   cam->stereo=-1;
   cam->bpp=8;
   CopyCameraPrefs(cam);
