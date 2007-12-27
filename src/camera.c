@@ -25,29 +25,43 @@ GetCameraNodes(void) {
   camera_t* camera_ptr;
   dc1394camera_list_t *camera_list;
   int i;
-  
-  //fprintf(stderr,"Get camera list\n");
+
+  struct timeval t1;
+  struct timeval t2;
+
+  gettimeofday(&t1,NULL);
+
   err=dc1394_camera_enumerate(dc1394,&camera_list);
+
+  gettimeofday(&t2,NULL);
+
+  fprintf(stderr,"dc1394_camera_enumerate :   %ld ms\n", 
+	  ( t2.tv_sec - t1.tv_sec )*1000 + ( t2.tv_usec - t1.tv_usec )/1000);
+  t1.tv_sec=t2.tv_sec;
+  t1.tv_usec=t2.tv_usec;
 
   // create a list of cameras with coriander's camera type camera_t
   for (i=0;i<camera_list->num;i++) {
     camera_ptr=NewCamera();
+    
     // copy the info in the dc structure into the coriander struct.
     camera_ptr->camera_info=dc1394_camera_new(dc1394,camera_list->ids[i].guid);
 
-    //fprintf(stderr,"0x%llx - 0x%llx\n",dccameras[i]->guid,camera_ptr->camera_info->guid);
+    gettimeofday(&t2,NULL);
+    fprintf(stderr,"%s %s :   %ld ms\n", 
+	    camera_ptr->camera_info->vendor, camera_ptr->camera_info->model,
+	    ( t2.tv_sec - t1.tv_sec )*1000 + ( t2.tv_usec - t1.tv_usec )/1000);
+    t1.tv_sec=t2.tv_sec;
+    t1.tv_usec=t2.tv_usec;
+    
 
-    //fprintf(stderr,"Getting camera data\n");
     GetCameraData(camera_ptr);
-    //fprintf(stderr,"Adding camera\n");
 
     AppendCamera(camera_ptr);
   }
 
   // free camera list:
   dc1394_camera_free_list(camera_list);
-
-  //fprintf(stderr,"Done getting cameras\n");
 
   return err;
 }

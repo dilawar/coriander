@@ -1,5 +1,8 @@
 Coriander, (c) 2000-2007 Damien Douxchamps <ddouxchamps@users.sf.net>
 
+   2007-12-27, by Damien Douxchamps
+   - Sync with libdc1394 SVN 526
+
    2007-12-13, by Damien Douxchamps
    - Sync with libdc1394 2.0.0-rc8
 

@@ -443,7 +443,7 @@ UpdateFormat7InfoFrame(void)
 
     mode = &camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_VIDEO_MODE_FORMAT7_MIN];
 
-    dc1394_get_bits_per_pixel(mode->color_coding, &packet_size);
+    dc1394_get_color_coding_bit_size(mode->color_coding, &packet_size);
 
     bytesize=(mode->size_x*mode->size_y*packet_size)/8;
     /*

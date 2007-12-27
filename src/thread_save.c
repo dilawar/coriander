@@ -175,7 +175,7 @@ unsigned int
 getDepth(unsigned long bufsize, int mode, unsigned int height, unsigned int width)
 {
   unsigned int bits_per_pixel;
-  dc1394_get_bits_per_pixel(mode, &bits_per_pixel);
+  dc1394_get_color_coding_bit_size(mode, &bits_per_pixel);
   return 8*bufsize/(bits_per_pixel*height*width);
 }
 

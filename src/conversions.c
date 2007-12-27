@@ -62,7 +62,7 @@ convert_for_pvn(unsigned char *buffer, unsigned int width, unsigned int height,
   unsigned int bpp;
   unsigned char *buf_loc;
 
-  dc1394_get_bits_per_pixel(color_mode, &bpp);
+  dc1394_get_color_coding_bit_size(color_mode, &bpp);
   buf_loc=buffer+(page*bpp*width*height)/8;
 
   if(dest==NULL)
