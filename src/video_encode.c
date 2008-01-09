@@ -242,12 +242,22 @@ int close_video(AVFormatContext *oc, AVStream *st) {
  * Encode an image to JPEG using FFMPEG
  */
 
-int jpeg_write(AVFrame *jpeg_picture, unsigned int width, unsigned int height, int fmt, char *filename, float quality, char *comment) {
+int
+jpeg_write(AVFrame *jpeg_picture, unsigned int width, unsigned int height, int fmt, char *filename, float quality, char *comment)
+{
+  AVCodec *encoder;
   AVCodecContext *jpeg_c = NULL;
   uint8_t *jpeg_outbuf   = NULL;
   unsigned int jpeg_outbuf_size, jpeg_size;
   FILE *jpeg_fd;
   
+  avcodec_register_all();
+  encoder=avcodec_find_encoder(CODEC_ID_MJPEG);
+  if (!encoder) {
+      fprintf(stderr,"************\n");
+      return -1;
+  }
+
   jpeg_c = avcodec_alloc_context();
 
   //jpeg_c->bit_rate = 10000000; // heuristic...
@@ -264,7 +274,8 @@ int jpeg_write(AVFrame *jpeg_picture, unsigned int width, unsigned int height, i
  
   //sprintf(jpeg_c->comment, comment);
 
-  if (avcodec_open(jpeg_c, &mjpeg_encoder) < 0) {
+  if (avcodec_open(jpeg_c, encoder) < 0) {
+    fprintf(stderr,"************\n");
     av_free(jpeg_c);
     jpeg_c=NULL;
     return -1;

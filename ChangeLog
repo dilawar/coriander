@@ -1,5 +1,8 @@
 Coriander, (c) 2000-2007 Damien Douxchamps <ddouxchamps@users.sf.net>
 
+   2008-01-09, by Damien Douxchamps
+   - FFMPEG patch from Stephan Richter. Not supposed to work yet, but it compiles.
+
    2007-12-27, by Damien Douxchamps
    - remove the timing-related debug statements
    - Sync with libdc1394 SVN 526
