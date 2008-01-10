@@ -80,7 +80,6 @@ typedef struct _CamPrefs
   int dma_buffer_size;
   char *save_filename;
   char *save_filename_ext;
-  char *save_filename_base;
   int save_format;
   int save_append;
   int save_period;

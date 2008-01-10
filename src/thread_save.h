@@ -24,7 +24,7 @@
 typedef enum
 {
   SAVE_FORMAT_RAW=0,
-  SAVE_FORMAT_PPMPGM,
+  SAVE_FORMAT_PPM,
 #ifdef HAVE_FFMPEG
   SAVE_FORMAT_JPEG,
 #endif

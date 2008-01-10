@@ -1,5 +1,10 @@
 Coriander, (c) 2000-2007 Damien Douxchamps <ddouxchamps@users.sf.net>
 
+   2008-01-10, by Damien Douxchamps
+   - temporarily disable FFMPEG support since it's seriously broken. I'd like to
+     replace this by a mencoder service instead.
+   - fix broken name generation when saving files.
+
    2008-01-09, by Damien Douxchamps
    - FFMPEG patch from Stephan Richter. Not supposed to work yet, but it compiles.
 

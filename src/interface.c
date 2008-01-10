@@ -492,24 +492,14 @@ create_main_window (void)
   GtkWidget *label2a;
   GtkWidget *camera_model_status;
   GtkWidget *camera_vendor_status;
-  GtkWidget *camera_dc_status;
-  GtkWidget *camera_maxiso_status;
-  GtkWidget *camera_handle_status;
-  GtkWidget *camera_pwclass_status;
-  GtkWidget *camera_delay_status;
-  GtkWidget *camera_node_status;
   GtkWidget *label31;
   GtkWidget *label93;
-  GtkWidget *iso_channel_status;
-  GtkWidget *label34;
-  GtkWidget *label32;
-  GtkWidget *label3a;
-  GtkWidget *label18;
-  GtkWidget *label35;
-  GtkWidget *label33;
-  GtkWidget *label17;
   GtkWidget *camera_guid_status;
   GtkWidget *camera_name_text;
+  GtkWidget *label34;
+  GtkWidget *camera_dc_status;
+  GtkWidget *iso_channel_status;
+  GtkWidget *label18;
   GtkWidget *label5;
   GtkWidget *extras_frame;
   GtkWidget *alignment23;
@@ -1278,7 +1268,7 @@ create_main_window (void)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (frame2), 5);
 
-  table48 = gtk_table_new (8, 4, TRUE);
+  table48 = gtk_table_new (5, 4, TRUE);
   gtk_widget_set_name (table48, "table48");
   gtk_widget_show (table48);
   gtk_container_add (GTK_CONTAINER (frame2), table48);
@@ -1318,61 +1308,7 @@ create_main_window (void)
   gtk_container_set_border_width (GTK_CONTAINER (camera_vendor_status), 1);
   gtk_statusbar_set_has_resize_grip (GTK_STATUSBAR (camera_vendor_status), FALSE);
 
-  camera_dc_status = gtk_statusbar_new ();
-  gtk_widget_set_name (camera_dc_status, "camera_dc_status");
-  gtk_widget_show (camera_dc_status);
-  gtk_table_attach (GTK_TABLE (table48), camera_dc_status, 1, 2, 6, 7,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (camera_dc_status), 1);
-  gtk_statusbar_set_has_resize_grip (GTK_STATUSBAR (camera_dc_status), FALSE);
-
-  camera_maxiso_status = gtk_statusbar_new ();
-  gtk_widget_set_name (camera_maxiso_status, "camera_maxiso_status");
-  gtk_widget_show (camera_maxiso_status);
-  gtk_table_attach (GTK_TABLE (table48), camera_maxiso_status, 1, 2, 5, 6,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (camera_maxiso_status), 1);
-  gtk_statusbar_set_has_resize_grip (GTK_STATUSBAR (camera_maxiso_status), FALSE);
-
-  camera_handle_status = gtk_statusbar_new ();
-  gtk_widget_set_name (camera_handle_status, "camera_handle_status");
-  gtk_widget_show (camera_handle_status);
-  gtk_table_attach (GTK_TABLE (table48), camera_handle_status, 1, 2, 4, 5,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (camera_handle_status), 1);
-  gtk_statusbar_set_has_resize_grip (GTK_STATUSBAR (camera_handle_status), FALSE);
-
-  camera_pwclass_status = gtk_statusbar_new ();
-  gtk_widget_set_name (camera_pwclass_status, "camera_pwclass_status");
-  gtk_widget_show (camera_pwclass_status);
-  gtk_table_attach (GTK_TABLE (table48), camera_pwclass_status, 3, 4, 6, 7,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (camera_pwclass_status), 1);
-  gtk_statusbar_set_has_resize_grip (GTK_STATUSBAR (camera_pwclass_status), FALSE);
-
-  camera_delay_status = gtk_statusbar_new ();
-  gtk_widget_set_name (camera_delay_status, "camera_delay_status");
-  gtk_widget_show (camera_delay_status);
-  gtk_table_attach (GTK_TABLE (table48), camera_delay_status, 3, 4, 5, 6,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (camera_delay_status), 1);
-  gtk_statusbar_set_has_resize_grip (GTK_STATUSBAR (camera_delay_status), FALSE);
-
-  camera_node_status = gtk_statusbar_new ();
-  gtk_widget_set_name (camera_node_status, "camera_node_status");
-  gtk_widget_show (camera_node_status);
-  gtk_table_attach (GTK_TABLE (table48), camera_node_status, 3, 4, 4, 5,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (camera_node_status), 1);
-  gtk_statusbar_set_has_resize_grip (GTK_STATUSBAR (camera_node_status), FALSE);
-
-  label31 = gtk_label_new (_("GUID  /  unit:"));
+  label31 = gtk_label_new (_("GUID:"));
   gtk_widget_set_name (label31, "label31");
   gtk_widget_show (label31);
   gtk_table_attach (GTK_TABLE (table48), label31, 0, 1, 2, 3,
@@ -1387,71 +1323,6 @@ create_main_window (void)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_padding (GTK_MISC (label93), 2, 2);
-
-  iso_channel_status = gtk_statusbar_new ();
-  gtk_widget_set_name (iso_channel_status, "iso_channel_status");
-  gtk_widget_show (iso_channel_status);
-  gtk_table_attach (GTK_TABLE (table48), iso_channel_status, 1, 2, 7, 8,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (iso_channel_status), 1);
-  gtk_statusbar_set_has_resize_grip (GTK_STATUSBAR (iso_channel_status), FALSE);
-
-  label34 = gtk_label_new (_("IIDC specs:"));
-  gtk_widget_set_name (label34, "label34");
-  gtk_widget_show (label34);
-  gtk_table_attach (GTK_TABLE (table48), label34, 0, 1, 6, 7,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_misc_set_padding (GTK_MISC (label34), 2, 2);
-
-  label32 = gtk_label_new (_("PHY speed:"));
-  gtk_widget_set_name (label32, "label32");
-  gtk_widget_show (label32);
-  gtk_table_attach (GTK_TABLE (table48), label32, 0, 1, 5, 6,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_misc_set_padding (GTK_MISC (label32), 2, 2);
-
-  label3a = gtk_label_new (_("Handle:"));
-  gtk_widget_set_name (label3a, "label3a");
-  gtk_widget_show (label3a);
-  gtk_table_attach (GTK_TABLE (table48), label3a, 0, 1, 4, 5,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_misc_set_padding (GTK_MISC (label3a), 2, 2);
-
-  label18 = gtk_label_new (_("ISO Channel:"));
-  gtk_widget_set_name (label18, "label18");
-  gtk_widget_show (label18);
-  gtk_table_attach (GTK_TABLE (table48), label18, 0, 1, 7, 8,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_misc_set_padding (GTK_MISC (label18), 2, 2);
-
-  label35 = gtk_label_new (_("Power:"));
-  gtk_widget_set_name (label35, "label35");
-  gtk_widget_show (label35);
-  gtk_table_attach (GTK_TABLE (table48), label35, 2, 3, 6, 7,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_misc_set_padding (GTK_MISC (label35), 2, 2);
-
-  label33 = gtk_label_new (_("PHY delay:"));
-  gtk_widget_set_name (label33, "label33");
-  gtk_widget_show (label33);
-  gtk_table_attach (GTK_TABLE (table48), label33, 2, 3, 5, 6,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_misc_set_padding (GTK_MISC (label33), 2, 2);
-
-  label17 = gtk_label_new (_("Node  /  Port:"));
-  gtk_widget_set_name (label17, "label17");
-  gtk_widget_show (label17);
-  gtk_table_attach (GTK_TABLE (table48), label17, 2, 3, 4, 5,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_misc_set_padding (GTK_MISC (label17), 2, 2);
 
   camera_guid_status = gtk_statusbar_new ();
   gtk_widget_set_name (camera_guid_status, "camera_guid_status");
@@ -1469,6 +1340,40 @@ create_main_window (void)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 1, 0);
   gtk_tooltips_set_tip (tooltips, camera_name_text, _("Enter a nickname for this camera. This information is based on the unique ID of the camera."), NULL);
+
+  label34 = gtk_label_new (_("IIDC specs:"));
+  gtk_widget_set_name (label34, "label34");
+  gtk_widget_show (label34);
+  gtk_table_attach (GTK_TABLE (table48), label34, 0, 1, 4, 5,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_padding (GTK_MISC (label34), 2, 2);
+
+  camera_dc_status = gtk_statusbar_new ();
+  gtk_widget_set_name (camera_dc_status, "camera_dc_status");
+  gtk_widget_show (camera_dc_status);
+  gtk_table_attach (GTK_TABLE (table48), camera_dc_status, 1, 2, 4, 5,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (camera_dc_status), 1);
+  gtk_statusbar_set_has_resize_grip (GTK_STATUSBAR (camera_dc_status), FALSE);
+
+  iso_channel_status = gtk_statusbar_new ();
+  gtk_widget_set_name (iso_channel_status, "iso_channel_status");
+  gtk_widget_show (iso_channel_status);
+  gtk_table_attach (GTK_TABLE (table48), iso_channel_status, 3, 4, 4, 5,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (iso_channel_status), 1);
+  gtk_statusbar_set_has_resize_grip (GTK_STATUSBAR (iso_channel_status), FALSE);
+
+  label18 = gtk_label_new (_("ISO Channel:"));
+  gtk_widget_set_name (label18, "label18");
+  gtk_widget_show (label18);
+  gtk_table_attach (GTK_TABLE (table48), label18, 2, 3, 4, 5,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_padding (GTK_MISC (label18), 2, 2);
 
   label5 = gtk_label_new (_("<b>Camera information</b>"));
   gtk_widget_set_name (label5, "label5");
@@ -4106,24 +4011,14 @@ create_main_window (void)
   GLADE_HOOKUP_OBJECT (main_window, label2a, "label2a");
   GLADE_HOOKUP_OBJECT (main_window, camera_model_status, "camera_model_status");
   GLADE_HOOKUP_OBJECT (main_window, camera_vendor_status, "camera_vendor_status");
-  GLADE_HOOKUP_OBJECT (main_window, camera_dc_status, "camera_dc_status");
-  GLADE_HOOKUP_OBJECT (main_window, camera_maxiso_status, "camera_maxiso_status");
-  GLADE_HOOKUP_OBJECT (main_window, camera_handle_status, "camera_handle_status");
-  GLADE_HOOKUP_OBJECT (main_window, camera_pwclass_status, "camera_pwclass_status");
-  GLADE_HOOKUP_OBJECT (main_window, camera_delay_status, "camera_delay_status");
-  GLADE_HOOKUP_OBJECT (main_window, camera_node_status, "camera_node_status");
   GLADE_HOOKUP_OBJECT (main_window, label31, "label31");
   GLADE_HOOKUP_OBJECT (main_window, label93, "label93");
-  GLADE_HOOKUP_OBJECT (main_window, iso_channel_status, "iso_channel_status");
-  GLADE_HOOKUP_OBJECT (main_window, label34, "label34");
-  GLADE_HOOKUP_OBJECT (main_window, label32, "label32");
-  GLADE_HOOKUP_OBJECT (main_window, label3a, "label3a");
-  GLADE_HOOKUP_OBJECT (main_window, label18, "label18");
-  GLADE_HOOKUP_OBJECT (main_window, label35, "label35");
-  GLADE_HOOKUP_OBJECT (main_window, label33, "label33");
-  GLADE_HOOKUP_OBJECT (main_window, label17, "label17");
   GLADE_HOOKUP_OBJECT (main_window, camera_guid_status, "camera_guid_status");
   GLADE_HOOKUP_OBJECT (main_window, camera_name_text, "camera_name_text");
+  GLADE_HOOKUP_OBJECT (main_window, label34, "label34");
+  GLADE_HOOKUP_OBJECT (main_window, camera_dc_status, "camera_dc_status");
+  GLADE_HOOKUP_OBJECT (main_window, iso_channel_status, "iso_channel_status");
+  GLADE_HOOKUP_OBJECT (main_window, label18, "label18");
   GLADE_HOOKUP_OBJECT (main_window, label5, "label5");
   GLADE_HOOKUP_OBJECT (main_window, extras_frame, "extras_frame");
   GLADE_HOOKUP_OBJECT (main_window, alignment23, "alignment23");

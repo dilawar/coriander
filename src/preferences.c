@@ -70,6 +70,7 @@ LoadConfigFile(void)
   preferences.automate_receive          = gnome_config_get_int("coriander/global/automate_receive=1");
   preferences.automate_iso              = gnome_config_get_int("coriander/global/automate_iso=1");
   //fprintf(stderr,"Buffer size read as: %d\n",preferences.camprefs.ram_buffer_size);
+
 }
 
 void

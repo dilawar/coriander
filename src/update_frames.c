@@ -242,16 +242,16 @@ UpdateCameraStatusFrame(void)
   ctxt.model_id=gtk_statusbar_push( (GtkStatusbar*)lookup_widget(main_window,"camera_model_status"), ctxt.model_ctxt, temp);
 
   // camera node/bus:
-  sprintf(temp," N/A  /  N/A"); // FIXME camera->camera_info->node and camera->camera_info->port not available at this time
-  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"camera_node_status"), ctxt.node_ctxt, ctxt.node_id);
-  ctxt.node_id=gtk_statusbar_push( (GtkStatusbar*)lookup_widget(main_window,"camera_node_status"), ctxt.node_ctxt, temp);
+  //sprintf(temp," N/A  /  N/A"); // FIXME camera->camera_info->node and camera->camera_info->port not available at this time
+  //gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"camera_node_status"), ctxt.node_ctxt, ctxt.node_id);
+  //ctxt.node_id=gtk_statusbar_push( (GtkStatusbar*)lookup_widget(main_window,"camera_node_status"), ctxt.node_ctxt, temp);
 
   // camera handle:
   // TODO TODO TODO
   // sprintf(temp," %p",camera->camera_info.handle);
-  sprintf(temp," N/A");
-  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"camera_handle_status"), ctxt.handle_ctxt, ctxt.handle_id);
-  ctxt.handle_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"camera_handle_status"), ctxt.handle_ctxt, temp);
+  //sprintf(temp," N/A");
+  //gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"camera_handle_status"), ctxt.handle_ctxt, ctxt.handle_id);
+  //ctxt.handle_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"camera_handle_status"), ctxt.handle_ctxt, temp);
 
   // camera GUID / unit:
   sprintf(temp," 0x%06x-%02x%08x  /  %d", value[2], value[1], value[0], camera->camera_info->unit);
@@ -259,17 +259,17 @@ UpdateCameraStatusFrame(void)
   ctxt.guid_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"camera_guid_status"), ctxt.guid_ctxt, temp);
 
   // camera maximal PHY speed:
-  sprintf(temp," N/A");
+  //sprintf(temp," N/A");
   //sprintf(temp," %s",phy_speed_list[camera->camera_info->phy_speed-DC1394_ISO_SPEED_MIN]);
-  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"camera_maxiso_status"), ctxt.max_iso_ctxt, ctxt.max_iso_id);
-  ctxt.max_iso_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"camera_maxiso_status"), ctxt.max_iso_ctxt, temp);
+  //gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"camera_maxiso_status"), ctxt.max_iso_ctxt, ctxt.max_iso_id);
+  //ctxt.max_iso_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"camera_maxiso_status"), ctxt.max_iso_ctxt, temp);
 
   // camera maximal PHY delay:
   // FIXME: not available with latest API
   //sprintf(temp," %s",phy_delay_list[camera->camera_info->phy_delay-DC1394_PHY_DELAY_MIN]);
-  sprintf(temp," N/A");
-  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"camera_delay_status"), ctxt.delay_ctxt, ctxt.delay_id);
-  ctxt.delay_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"camera_delay_status"), ctxt.delay_ctxt, temp);
+  //sprintf(temp," N/A");
+  //gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"camera_delay_status"), ctxt.delay_ctxt, ctxt.delay_id);
+  //ctxt.delay_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"camera_delay_status"), ctxt.delay_ctxt, temp);
 
   // IIDC software revision:
   switch (camera->camera_info->iidc_version) {
@@ -294,9 +294,9 @@ UpdateCameraStatusFrame(void)
   // power class:
   // FIXME: not available with latest API
   //sprintf(temp," %s",power_class_list[camera->camera_info->power_class-DC1394_POWER_CLASS_MIN]);
-  sprintf(temp," N/A");
-  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"camera_pwclass_status"), ctxt.pwclass_ctxt, ctxt.pwclass_id);
-  ctxt.pwclass_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"camera_pwclass_status"), ctxt.pwclass_ctxt,temp);
+  //sprintf(temp," N/A");
+  //gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"camera_pwclass_status"), ctxt.pwclass_ctxt, ctxt.pwclass_id);
+  //ctxt.pwclass_id=gtk_statusbar_push((GtkStatusbar*)lookup_widget(main_window,"camera_pwclass_status"), ctxt.pwclass_ctxt,temp);
 
   // camera name:
   //eprint("UpdateFrame: Entry was '%s', ",gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"camera_name_text"))));
@@ -312,17 +312,18 @@ void
 UpdateTransferStatusFrame(void)
 {
   char *temp;
+  uint32_t channel;
+  dc1394switch_t iso;
   temp=(char*)malloc(STRING_SIZE*sizeof(char));
-  // FIXME: ISO Channel not available anymore
-  /*
-    if (camera->camera_info->iso_channel>=0) {
-      sprintf(temp," %d",camera->camera_info->iso_channel);
-    }
-    else {
+
+  dc1394_video_get_iso_channel(camera->camera_info, &channel);
+  dc1394_video_get_transmission(camera->camera_info, &iso);
+  if ((channel>=0)&&(iso==DC1394_ON)) {
+      sprintf(temp," %d",channel);
+  }
+  else {
       sprintf(temp," N/A");
-    }
-  */
-  sprintf(temp," N/A");
+  }
   gtk_statusbar_remove( (GtkStatusbar*) lookup_widget(main_window,"iso_channel_status"), ctxt.iso_channel_ctxt, ctxt.iso_channel_id);
   ctxt.iso_channel_id=gtk_statusbar_push( (GtkStatusbar*) lookup_widget(main_window,"iso_channel_status"), ctxt.iso_channel_ctxt, temp);
 
@@ -833,19 +834,19 @@ UpdateSaveFilenameFrame(void)
 #ifdef HAVE_FFMPEG
   case SAVE_FORMAT_JPEG:
 #endif
-  case SAVE_FORMAT_PPMPGM:
+  case SAVE_FORMAT_PPM:
   case SAVE_FORMAT_RAW:
     // first handle the case of save-to-dir
     if (camera->prefs.save_to_dir==0) {
       switch (camera->prefs.save_append) {
       case SAVE_APPEND_NONE:
-	sprintf(filename_out, "%s.%s", camera->prefs.save_filename_base,camera->prefs.save_filename_ext);
+	sprintf(filename_out, "%s.%s", camera->prefs.save_filename, camera->prefs.save_filename_ext);
 	break;
       case SAVE_APPEND_DATE_TIME:
-	sprintf(filename_out, "%s-date-time-ms.%s", camera->prefs.save_filename_base, camera->prefs.save_filename_ext);
+	sprintf(filename_out, "%s-date-time-ms.%s", camera->prefs.save_filename, camera->prefs.save_filename_ext);
 	break;
       case SAVE_APPEND_NUMBER:
-	sprintf(filename_out,"%s-frame_number.%s", camera->prefs.save_filename_base, camera->prefs.save_filename_ext);
+	sprintf(filename_out,"%s-frame_number.%s", camera->prefs.save_filename, camera->prefs.save_filename_ext);
 	break;
       }
     }
@@ -855,10 +856,10 @@ UpdateSaveFilenameFrame(void)
         sprintf(filename_out, "time or number should have been selected");
 	break;
       case SAVE_APPEND_DATE_TIME:
-	sprintf(filename_out, "%s-date-time-ms/date-time-ms.%s", camera->prefs.save_filename_base, camera->prefs.save_filename_ext);
+	sprintf(filename_out, "%s-date-time-ms/date-time-ms.%s", camera->prefs.save_filename, camera->prefs.save_filename_ext);
 	break;
       case SAVE_APPEND_NUMBER:
-	sprintf(filename_out,"%s-date-time-ms/frame_number.%s", camera->prefs.save_filename_base, camera->prefs.save_filename_ext);
+	sprintf(filename_out,"%s-date-time-ms/frame_number.%s", camera->prefs.save_filename, camera->prefs.save_filename_ext);
 	break;
       }
       // 3. done!
@@ -871,13 +872,13 @@ UpdateSaveFilenameFrame(void)
 #endif
     switch (camera->prefs.save_append) {
     case SAVE_APPEND_NONE:
-      sprintf(filename_out, "%s.%s", camera->prefs.save_filename_base,camera->prefs.save_filename_ext);
+      sprintf(filename_out, "%s.%s", camera->prefs.save_filename, camera->prefs.save_filename_ext);
       break;
     case SAVE_APPEND_DATE_TIME:
-      sprintf(filename_out, "%s-date-time-ms.%s", camera->prefs.save_filename_base, camera->prefs.save_filename_ext);
+      sprintf(filename_out, "%s-date-time-ms.%s", camera->prefs.save_filename, camera->prefs.save_filename_ext);
       break;
     case SAVE_APPEND_NUMBER:
-      sprintf(filename_out,"%s-frame_number.%s", camera->prefs.save_filename_base, camera->prefs.save_filename_ext);
+      sprintf(filename_out,"%s-frame_number.%s", camera->prefs.save_filename, camera->prefs.save_filename_ext);
       break;
     }
     break;

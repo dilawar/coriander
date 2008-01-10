@@ -1491,14 +1491,11 @@ on_malloc_test_clicked                 (GtkButton       *button,
   temp=(unsigned char*)malloc(camera->prefs.ram_buffer_size*1024*1024*sizeof(unsigned char));
   
   if (temp==NULL)
-    //ErrorPopup("\tFailed to allocate memory",0);
     Warning("\tFailed to allocate memory");
   else {
-    //ErrorPopup("\tAllocation of succeeded",0);
-    Warning("\tAllocation of succeeded");
+    Warning("\tAllocation succeeded");
     free(temp);
   }
-  //fprintf(stderr,"exit\n");
 }
 
 
@@ -1635,54 +1632,9 @@ void
 on_save_filename_subentry_changed      (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  char *tmp_ptr;
-  gchar *tmp;
-
-  tmp_ptr=(char*)gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"save_filename_subentry")));
-  strcpy(camera->prefs.save_filename,tmp_ptr);
-  strcpy(camera->prefs.save_filename_base,tmp_ptr);
+  strcpy(camera->prefs.save_filename,(char*)gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,"save_filename_subentry"))));
   gnome_config_set_string("coriander/save/filename",camera->prefs.save_filename);
   gnome_config_sync();
-
-  // extract extension and basename
-  tmp = strrchr(camera->prefs.save_filename_base, '.');
-  if(tmp != NULL) {
-    tmp[0] = '\0';// cut filename before point
-    strcpy(camera->prefs.save_filename_ext, strrchr(camera->prefs.save_filename,'.')+1);
-  }
-  else {
-    // error: no extension provided
-    // The following message should go in the SAVE thread setup functions //////////////////////////
-    // Error("You should provide an extension for the save filename. Default extension is RAW");
-  }
-  
-  //fprintf(stderr,"filename: %s\n",camera->prefs.save_filename);
-  //fprintf(stderr,"   ext: %s\n",camera->prefs.save_filename_ext);
-  //fprintf(stderr,"  base: %s\n",camera->prefs.save_filename_base);
-  
-  // autodetect file format
-  if (strncasecmp(camera->prefs.save_filename_ext, "pvn",3)==0) {
-    camera->prefs.save_format=SAVE_FORMAT_PVN;
-  }
-#ifdef HAVE_FFMPEG
-  else if ((strncasecmp(camera->prefs.save_filename_ext, "mpg",3)==0)||
-	   (strncasecmp(camera->prefs.save_filename_ext, "mpeg",4)==0)) {
-    camera->prefs.save_format=SAVE_FORMAT_MPEG;
-  }
-  else if ((strncasecmp(camera->prefs.save_filename_ext, "jpg",3)==0)||
-	   (strncasecmp(camera->prefs.save_filename_ext, "jpeg",4)==0)) {
-    camera->prefs.save_format=SAVE_FORMAT_JPEG;
-  }
-#endif
-  else if ((strncasecmp(camera->prefs.save_filename_ext, "pgm",3)==0)||
-	   (strncasecmp(camera->prefs.save_filename_ext, "ppm",3)==0)) {
-    camera->prefs.save_format=SAVE_FORMAT_PPMPGM;
-  }
-  else if (strncasecmp(camera->prefs.save_filename_ext, "raw",3)==0) {
-    // don't switch to still if we were in video mode
-    if (camera->prefs.save_format!=SAVE_FORMAT_RAW_VIDEO)
-      camera->prefs.save_format=SAVE_FORMAT_RAW;
-  }
 
   //BuildSaveModeMenu();
   UpdateSaveFilenameFrame();
@@ -1711,6 +1663,33 @@ on_save_format_menu_activate             (GtkEditable     *editable,
   else
     camera->prefs.save_format=(int)(unsigned long)user_data;
 
+  switch (camera->prefs.save_format) {
+  case SAVE_FORMAT_PPM:
+      sprintf(camera->prefs.save_filename_ext,"ppm");
+      break;
+  case SAVE_FORMAT_RAW:
+      sprintf(camera->prefs.save_filename_ext,"raw");
+      break;
+#ifdef HAVE_FFMPEG
+  case SAVE_FORMAT_JPEG:
+      sprintf(camera->prefs.save_filename_ext,"jpeg");
+      break;
+#endif
+  case SAVE_FORMAT_RAW_VIDEO:
+      sprintf(camera->prefs.save_filename_ext,"raw");
+      break;
+  case SAVE_FORMAT_PVN:
+      sprintf(camera->prefs.save_filename_ext,"pvn");
+      break;
+#ifdef HAVE_FFMPEG
+  case SAVE_FORMAT_MPEG:
+      sprintf(camera->prefs.save_filename_ext,"mpeg");
+      break;
+#endif
+  default:
+      sprintf(camera->prefs.save_filename_ext,"unknown");
+      break;
+  }
   gnome_config_set_int("coriander/save/format",camera->prefs.save_format);
   gnome_config_sync();
   UpdatePrefsSaveFrame();

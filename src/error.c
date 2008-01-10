@@ -97,7 +97,6 @@ ErrorPopup(char * string, int is_error)
 inline void
 Error(char *string)
 {
-  fprintf(stderr,"ERROR: %s\n",string);
  
   if (preferences.error_in_popup>0) {
     //fprintf(stderr,"err trying to lock\n");
@@ -123,13 +122,14 @@ Error(char *string)
     pthread_mutex_unlock(&mainthread_info.dialog_mutex);
   
   }
+  else
+      fprintf(stderr,"ERROR: %s\n",string);
  
 }
 
 void
 Warning(char *string)
 {
-  fprintf(stderr,"WARNING: %s\n",string);
   
   if (preferences.error_in_popup>0) {
     pthread_mutex_lock(&mainthread_info.dialog_mutex);
@@ -154,6 +154,8 @@ Warning(char *string)
     pthread_mutex_unlock(&mainthread_info.dialog_mutex);
   
   }
+  else
+      fprintf(stderr,"WARNING: %s\n",string);
   
 }
 

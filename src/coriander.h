@@ -73,6 +73,8 @@
 
 #ifdef HAVE_FFMPEG
 #include <ffmpeg/avformat.h>
+#include <ffmpeg/avcodec.h>
+#include <ffmpeg/swscale.h>
 #endif
 
 #include "video_encode.h"

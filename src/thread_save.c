@@ -237,7 +237,6 @@ int
 GetSaveFD(chain_t *save_service, FILE **fd, char *filename_out)
 {
   savethread_info_t *info=save_service->data;
-  // NOTE: the jpeg format is now joined with other imlib formats, but will have to be handled separately by ffmpeg (patch pending)
   camera_t *cam=save_service->camera;
 
   if (cam->prefs.save_to_stdout>0) {
@@ -247,7 +246,7 @@ GetSaveFD(chain_t *save_service, FILE **fd, char *filename_out)
 
   // get filename
   switch (cam->prefs.save_format) {
-  case SAVE_FORMAT_PPMPGM:
+  case SAVE_FORMAT_PPM:
   case SAVE_FORMAT_RAW:
 #ifdef HAVE_FFMPEG
   case SAVE_FORMAT_JPEG:
@@ -256,13 +255,13 @@ GetSaveFD(chain_t *save_service, FILE **fd, char *filename_out)
     if (cam->prefs.save_to_dir==0) {
       switch (cam->prefs.save_append) {
       case SAVE_APPEND_NONE:
-	sprintf(filename_out, "%s.%s", cam->prefs.save_filename_base,cam->prefs.save_filename_ext);
+	sprintf(filename_out, "%s.%s", cam->prefs.save_filename, cam->prefs.save_filename_ext);
 	break;
       case SAVE_APPEND_DATE_TIME:
-	sprintf(filename_out, "%s-%s.%s", cam->prefs.save_filename_base, save_service->current_buffer->captime_string, cam->prefs.save_filename_ext);
+	sprintf(filename_out, "%s-%s.%s", cam->prefs.save_filename, save_service->current_buffer->captime_string, cam->prefs.save_filename_ext);
 	break;
       case SAVE_APPEND_NUMBER:
-	sprintf(filename_out,"%s-%10.10lli.%s", cam->prefs.save_filename_base, save_service->processed_frames, cam->prefs.save_filename_ext);
+	sprintf(filename_out,"%s-%10.10lli.%s", cam->prefs.save_filename, save_service->processed_frames, cam->prefs.save_filename_ext);
 	break;
       }
     }
@@ -271,7 +270,7 @@ GetSaveFD(chain_t *save_service, FILE **fd, char *filename_out)
       if (save_service->processed_frames==0) {
 	// note that we append a time tag to allow safe re-launch of the thread (it will prevent overwriting
 	// previous results)
-	sprintf(info->destdir,"%s-%s",cam->prefs.save_filename_base,save_service->current_buffer->captime_string);
+	sprintf(info->destdir,"%s-%s",cam->prefs.save_filename, save_service->current_buffer->captime_string);
 
 	// Optional: get rid of "-mmm" ms 
 	//if (strlen(destdir) > 4)
@@ -310,13 +309,13 @@ GetSaveFD(chain_t *save_service, FILE **fd, char *filename_out)
 #endif
     switch (cam->prefs.save_append) {
     case SAVE_APPEND_NONE:
-      sprintf(filename_out, "%s.%s", cam->prefs.save_filename_base,cam->prefs.save_filename_ext);
+      sprintf(filename_out, "%s.%s", cam->prefs.save_filename, cam->prefs.save_filename_ext);
       break;
     case SAVE_APPEND_DATE_TIME:
-      sprintf(filename_out, "%s-%s.%s", cam->prefs.save_filename_base, save_service->current_buffer->captime_string, cam->prefs.save_filename_ext);
+      sprintf(filename_out, "%s-%s.%s", cam->prefs.save_filename, save_service->current_buffer->captime_string, cam->prefs.save_filename_ext);
       break;
     case SAVE_APPEND_NUMBER:
-      sprintf(filename_out,"%s-%10.10lli.%s", cam->prefs.save_filename_base, save_service->processed_frames, cam->prefs.save_filename_ext);
+      sprintf(filename_out,"%s-%10.10lli.%s", cam->prefs.save_filename, save_service->processed_frames, cam->prefs.save_filename_ext);
       break;
     }
     break;
@@ -339,7 +338,7 @@ GetSaveFD(chain_t *save_service, FILE **fd, char *filename_out)
       }
     }
     break;
-  case SAVE_FORMAT_PPMPGM:
+  case SAVE_FORMAT_PPM:
   case SAVE_FORMAT_RAW:
     ProtectFilename(filename_out);
     *fd=fopen(filename_out,"w");
@@ -347,12 +346,13 @@ GetSaveFD(chain_t *save_service, FILE **fd, char *filename_out)
       fprintf(stderr,"Can't create sequence file for saving\n");
       return DC1394_FAILURE;
     }
+    break;
 #ifdef HAVE_FFMPEG
   case SAVE_FORMAT_MPEG:
   case SAVE_FORMAT_JPEG:
-#endif
     // do nothing
     break;
+#endif
   default:
     fprintf(stderr,"unsupported format!\n");
     break;
@@ -530,7 +530,7 @@ FillRamBuffer(chain_t *save_service)
 }
 
 void
-SavePPMPGM(chain_t *save_service, FILE *fd)
+SavePPM(chain_t *save_service, FILE *fd)
 {
   unsigned int maxlevels, P_value;
   long long unsigned int bytes;
@@ -636,9 +636,9 @@ SaveJPEGFrame(chain_t *save_service, char *filename_out)
   //unsigned int pix_fmt;
   //int err=0;
   info=(savethread_info_t*)save_service->data;
-
   //if (save_service->current_buffer->frame.color_coding!=DC1394_COLOR_CODING_YUV411)&&(
 
+  fprintf(stderr,"Trying to save a JPEG frame...\n");
   
   info->picture = alloc_picture(PIX_FMT_YUVJ420P, save_service->current_buffer->frame.size[0], save_service->current_buffer->frame.size[1]);
   if (!info->picture) {
@@ -808,8 +808,8 @@ SaveThread(void* arg)
 		SaveJPEGFrame(save_service, filename_out);
 		break;
 #endif
-	      case SAVE_FORMAT_PPMPGM:
-		SavePPMPGM(save_service,fd);
+	      case SAVE_FORMAT_PPM:
+		SavePPM(save_service,fd);
 		fclose(fd);
 		fd=NULL;
 		break;

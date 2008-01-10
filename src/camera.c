@@ -79,12 +79,12 @@ NewCamera(void) {
   cam->prefs.name = (char*)malloc(STRING_SIZE*sizeof(char));
   cam->prefs.save_filename = (char*)malloc(STRING_SIZE*sizeof(char));
   cam->prefs.save_filename_ext = (char*)malloc(STRING_SIZE*sizeof(char));
-  cam->prefs.save_filename_base = (char*)malloc(STRING_SIZE*sizeof(char));
   cam->prefs.ftp_filename = (char*)malloc(STRING_SIZE*sizeof(char));
   cam->prefs.ftp_filename_ext = (char*)malloc(STRING_SIZE*sizeof(char));
   cam->prefs.ftp_filename_base = (char*)malloc(STRING_SIZE*sizeof(char));
   cam->prefs.overlay_filename = (char*)malloc(STRING_SIZE*sizeof(char));
   cam->bayer_pattern=DC1394_COLOR_FILTER_RGGB;
+
   pthread_mutex_init(&cam->uimutex, NULL);
   //fprintf(stderr,"new camera allocated\n");
   return cam;
@@ -113,6 +113,35 @@ GetCameraData(camera_t* cam) {
   cam->stereo=-1;
   cam->bpp=8;
   CopyCameraPrefs(cam);
+
+  switch (cam->prefs.save_format) {
+  case SAVE_FORMAT_PPM:
+      sprintf(cam->prefs.save_filename_ext,"ppm");
+      break;
+  case SAVE_FORMAT_RAW:
+      sprintf(cam->prefs.save_filename_ext,"raw");
+      break;
+#ifdef HAVE_FFMPEG
+  case SAVE_FORMAT_JPEG:
+      sprintf(cam->prefs.save_filename_ext,"jpeg");
+      break;
+#endif
+  case SAVE_FORMAT_RAW_VIDEO:
+      sprintf(cam->prefs.save_filename_ext,"raw");
+      break;
+  case SAVE_FORMAT_PVN:
+      sprintf(cam->prefs.save_filename_ext,"pvn");
+      break;
+#ifdef HAVE_FFMPEG
+  case SAVE_FORMAT_MPEG:
+      sprintf(cam->prefs.save_filename_ext,"mpeg");
+      break;
+#endif
+  default:
+      sprintf(cam->prefs.save_filename_ext,"unknown");
+      break;
+  }
+
   pthread_mutex_unlock(&cam->uimutex);
 
 }
@@ -201,7 +230,6 @@ FreeCamera(camera_t* cam)
   free(cam->prefs.name);
   free(cam->prefs.save_filename);
   free(cam->prefs.save_filename_ext);
-  free(cam->prefs.save_filename_base);
   free(cam->prefs.overlay_filename);
   free(cam->camera_info);
   free(cam);

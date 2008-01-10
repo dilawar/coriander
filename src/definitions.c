@@ -264,3 +264,5 @@ const char *help_key_bindings_functions[KEY_BINDINGS_NUM]= {
   "Display the current pixel value & coordinates",
   "Select WOI region"
 }; 
+
+
