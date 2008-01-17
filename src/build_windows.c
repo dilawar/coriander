@@ -21,6 +21,8 @@
 extern const char *help_key_bindings_keys[KEY_BINDINGS_NUM];
 extern const char *help_key_bindings_functions[KEY_BINDINGS_NUM];
 
+#define FORMAT7_TABLE_WIDTH 7
+
 void
 BuildPreferencesWindow(void)
 {
@@ -38,7 +40,7 @@ BuildFormat7Window(void)
   int f;
   GtkWidget* notebook2;
   GtkWidget* vbox;
-  GtkWidget* hbox;
+  GtkWidget* spin;
   GtkWidget* table;
   GtkWidget* frame;
   GtkWidget* label;
@@ -92,7 +94,7 @@ BuildFormat7Window(void)
   if (camera->format7_info.edit_mode>=0) {
 
     //eprint("check 0b\n");
-    label = gtk_label_new (_("Format 7"));
+    label = gtk_label_new (_("ROI"));
     gtk_widget_ref (label);
     gtk_object_set_data_full (GTK_OBJECT (main_window), "label_format7_page", label,
 			      (GtkDestroyNotify) gtk_widget_unref);
@@ -141,167 +143,144 @@ BuildFormat7Window(void)
     gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_RIGHT);
     gtk_misc_set_padding (GTK_MISC (label), 6, 0);
 
-    //eprint("check 2\n");
-    // bytes_per_packet tab
+    //frame
     frame = gtk_frame_new (NULL);
     gtk_widget_ref (frame);
-    gtk_object_set_data_full (GTK_OBJECT (main_window), "format7_packet_frame", frame,
-			      (GtkDestroyNotify) gtk_widget_unref);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), "format7_setup_frame", frame, (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (frame);
     gtk_box_pack_start (GTK_BOX (vbox), frame, FALSE, TRUE, 0);
     gtk_container_set_border_width (GTK_CONTAINER (frame), 5);
-
-    frame_title = gtk_label_new (_("<b>Packet size</b>"));
+    frame_title = gtk_label_new (_("<b>Mode Setup</b>"));
     gtk_widget_show (frame_title);
     gtk_frame_set_label_widget (GTK_FRAME (frame), frame_title);
     gtk_label_set_use_markup (GTK_LABEL (frame_title), TRUE);
 
-    hbox = gtk_hbox_new (FALSE, 0);
-    gtk_widget_ref (hbox);
-    gtk_object_set_data_full (GTK_OBJECT (main_window), "hbox57", hbox,
-			      (GtkDestroyNotify) gtk_widget_unref);
-    gtk_widget_show (hbox);
-    gtk_container_add (GTK_CONTAINER (frame), hbox);
+    // table
+    table = gtk_table_new (2, 2, FALSE);
+    gtk_table_set_col_spacings(GTK_TABLE (table),5);
+    gtk_container_set_border_width(GTK_CONTAINER (table),5);
+    gtk_table_set_row_spacings(GTK_TABLE (table),5);
+    gtk_table_set_homogeneous (GTK_TABLE(table),TRUE);
+    gtk_widget_ref (table);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), "f7setup_table", table, (GtkDestroyNotify) gtk_widget_unref);
+    gtk_widget_show (table);
+    gtk_container_add (GTK_CONTAINER (frame), table);
+
+    // packet size
+    label = gtk_label_new (_("Packet Size"));
+    gtk_widget_ref (label);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), "label_psize", label, (GtkDestroyNotify) gtk_widget_unref);
+    gtk_widget_show (label);
+    gtk_table_attach (GTK_TABLE (table), label, 0, 2, 0, 1, (GtkAttachOptions) (GTK_FILL), (GtkAttachOptions) (0), 0, 0);
+    gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
+    gtk_misc_set_padding (GTK_MISC (label), 2, 2);
 
     scale = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 0, 0, 0, 0)));
     gtk_widget_ref (scale);
-    gtk_object_set_data_full (GTK_OBJECT (main_window), "format7_packet_size", scale,
-			      (GtkDestroyNotify) gtk_widget_unref);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), "format7_psize", scale, (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (scale);
-    gtk_box_pack_start (GTK_BOX (hbox), scale, TRUE, TRUE, 0);
-    gtk_scale_set_digits (GTK_SCALE (scale), 0);
+    gtk_table_attach (GTK_TABLE (table), scale, 2, FORMAT7_TABLE_WIDTH-1, 0, 1, (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), (GtkAttachOptions) (GTK_FILL), 0, 0);
+    gtk_scale_set_draw_value (GTK_SCALE (scale), 0);
 
-    //eprint("check 3\n");
-    // horizontal setup
-    frame = gtk_frame_new (NULL);
-    gtk_widget_ref (frame);
-    gtk_object_set_data_full (GTK_OBJECT (main_window), "format7_horizontal_frame", frame,
-			      (GtkDestroyNotify) gtk_widget_unref);
-    gtk_widget_show (frame);
-    gtk_box_pack_start (GTK_BOX (vbox), frame, FALSE, TRUE, 0);
-    gtk_container_set_border_width (GTK_CONTAINER (frame), 5);
-    
-    frame_title = gtk_label_new (_("<b>Horizontal setup</b>"));
-    gtk_widget_show (frame_title);
-    gtk_frame_set_label_widget (GTK_FRAME (frame), frame_title);
-    gtk_label_set_use_markup (GTK_LABEL (frame_title), TRUE);
+    spin = gtk_spin_button_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 0, 0, 0, 0)), 1, 0);
+    gtk_widget_ref (spin);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), "format7_psize_spin", spin, (GtkDestroyNotify) gtk_widget_unref);
+    gtk_widget_show (spin);
+    gtk_table_attach (GTK_TABLE (table), spin, FORMAT7_TABLE_WIDTH-1, FORMAT7_TABLE_WIDTH, 0, 1, (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), (GtkAttachOptions) (GTK_FILL), 0, 0);
+    gtk_widget_set_sensitive (spin, TRUE);
 
-    table = gtk_table_new (2, 2, FALSE);
-    gtk_widget_ref (table);
-    gtk_object_set_data_full (GTK_OBJECT (main_window), "table70", table,
-			      (GtkDestroyNotify) gtk_widget_unref);
-    gtk_widget_show (table);
-    gtk_container_add (GTK_CONTAINER (frame), table);
-
-    label = gtk_label_new (_("Size"));
+    // horizontal size
+    label = gtk_label_new (_("Horizontal Size"));
     gtk_widget_ref (label);
-    gtk_object_set_data_full (GTK_OBJECT (main_window), "label139", label,
-			      (GtkDestroyNotify) gtk_widget_unref);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), "label_hsize", label, (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (label);
-    gtk_table_attach (GTK_TABLE (table), label, 0, 1, 0, 1,
-		      (GtkAttachOptions) (GTK_FILL),
-		      (GtkAttachOptions) (0), 0, 0);
-    gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
-    gtk_misc_set_padding (GTK_MISC (label), 2, 2);
-
-    //eprint("check 4\n");
-    label = gtk_label_new (_("Position"));
-    gtk_widget_ref (label);
-    gtk_object_set_data_full (GTK_OBJECT (main_window), "label140", label,
-			      (GtkDestroyNotify) gtk_widget_unref);
-    gtk_widget_show (label);
-    gtk_table_attach (GTK_TABLE (table), label, 0, 1, 1, 2,
-		      (GtkAttachOptions) (GTK_FILL),
-		      (GtkAttachOptions) (0), 0, 0);
+    gtk_table_attach (GTK_TABLE (table), label, 0, 2, 1, 2, (GtkAttachOptions) (GTK_FILL), (GtkAttachOptions) (0), 0, 0);
     gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
     gtk_misc_set_padding (GTK_MISC (label), 2, 2);
 
     scale = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (1, 1, 255, 10, 0, 0)));
     gtk_widget_ref (scale);
-    gtk_object_set_data_full (GTK_OBJECT (main_window), "format7_hsize_scale", scale,
-			      (GtkDestroyNotify) gtk_widget_unref);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), "format7_hsize_scale", scale, (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (scale);
-    gtk_table_attach (GTK_TABLE (table), scale, 1, 2, 0, 1,
-		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-		      (GtkAttachOptions) (GTK_FILL), 0, 0);
-    gtk_scale_set_digits (GTK_SCALE (scale), 0);
-    
-    scale = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (1, 1, 255, 10, 0, 0)));
-    gtk_widget_ref (scale);
-    gtk_object_set_data_full (GTK_OBJECT (main_window), "format7_hposition_scale", scale,
-			      (GtkDestroyNotify) gtk_widget_unref);
-    gtk_widget_show (scale);
-    gtk_table_attach (GTK_TABLE (table), scale, 1, 2, 1, 2,
-		      (GtkAttachOptions) (GTK_FILL),
-		      (GtkAttachOptions) (GTK_FILL), 0, 0);
-    gtk_scale_set_digits (GTK_SCALE (scale), 0);
+    gtk_table_attach (GTK_TABLE (table), scale, 2, FORMAT7_TABLE_WIDTH-1, 1, 2, (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), (GtkAttachOptions) (GTK_FILL), 0, 0);
+    gtk_scale_set_draw_value (GTK_SCALE (scale), 0);
 
-    //eprint("check 5\n");
-    // vertical setup
-    frame = gtk_frame_new (NULL);
-    gtk_widget_ref (frame);
-    gtk_object_set_data_full (GTK_OBJECT (main_window), "format7_vertical_frame", frame,
-			      (GtkDestroyNotify) gtk_widget_unref);
-    gtk_widget_show (frame);
-    gtk_box_pack_start (GTK_BOX (vbox), frame, FALSE, TRUE, 0);
-    gtk_container_set_border_width (GTK_CONTAINER (frame), 5);
+    spin = gtk_spin_button_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 0, 0, 0, 0)), 1, 0);
+    gtk_widget_ref (spin);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), "format7_hsize_spin", spin, (GtkDestroyNotify) gtk_widget_unref);
+    gtk_widget_show (spin);
+    gtk_table_attach (GTK_TABLE (table), spin, FORMAT7_TABLE_WIDTH-1, FORMAT7_TABLE_WIDTH, 1, 2, (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), (GtkAttachOptions) (GTK_FILL), 0, 0);
+    gtk_widget_set_sensitive (spin, TRUE);
 
-    frame_title = gtk_label_new (_("<b>Vertical setup</b>"));
-    gtk_widget_show (frame_title);
-    gtk_frame_set_label_widget (GTK_FRAME (frame), frame_title);
-    gtk_label_set_use_markup (GTK_LABEL (frame_title), TRUE);
-
-    table = gtk_table_new (2, 2, FALSE);
-    gtk_widget_ref (table);
-    gtk_object_set_data_full (GTK_OBJECT (main_window), "table71", table,
-			      (GtkDestroyNotify) gtk_widget_unref);
-    gtk_widget_show (table);
-    gtk_container_add (GTK_CONTAINER (frame), table);
-
-    label = gtk_label_new (_("Size"));
+    // horizontal position
+    label = gtk_label_new (_("Horizontal Position"));
     gtk_widget_ref (label);
-    gtk_object_set_data_full (GTK_OBJECT (main_window), "label141", label,
-			      (GtkDestroyNotify) gtk_widget_unref);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), "label_hpos", label, (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (label);
-    gtk_table_attach (GTK_TABLE (table), label, 0, 1, 0, 1,
-		      (GtkAttachOptions) (GTK_FILL),
-		      (GtkAttachOptions) (0), 0, 0);
-    gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
-    gtk_misc_set_padding (GTK_MISC (label), 2, 2);
-    
-    label = gtk_label_new (_("Position"));
-    gtk_widget_ref (label);
-    gtk_object_set_data_full (GTK_OBJECT (main_window), "label142", label,
-			      (GtkDestroyNotify) gtk_widget_unref);
-    gtk_widget_show (label);
-    gtk_table_attach (GTK_TABLE (table), label, 0, 1, 1, 2,
-		      (GtkAttachOptions) (GTK_FILL),
-		      (GtkAttachOptions) (0), 0, 0);
+    gtk_table_attach (GTK_TABLE (table), label, 0, 2, 2, 3, (GtkAttachOptions) (GTK_FILL), (GtkAttachOptions) (0), 0, 0);
     gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
     gtk_misc_set_padding (GTK_MISC (label), 2, 2);
 
     scale = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (1, 1, 255, 10, 0, 0)));
     gtk_widget_ref (scale);
-    gtk_object_set_data_full (GTK_OBJECT (main_window), "format7_vsize_scale", scale,
-			      (GtkDestroyNotify) gtk_widget_unref);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), "format7_hpos_scale", scale, (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (scale);
-    gtk_table_attach (GTK_TABLE (table), scale, 1, 2, 0, 1,
-		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-		      (GtkAttachOptions) (GTK_FILL), 0, 0);
-    gtk_scale_set_digits (GTK_SCALE (scale), 0);
-    
+    gtk_table_attach (GTK_TABLE (table), scale, 2, FORMAT7_TABLE_WIDTH-1, 2, 3, (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), (GtkAttachOptions) (GTK_FILL), 0, 0);
+    gtk_scale_set_draw_value (GTK_SCALE (scale), 0);
+
+    spin = gtk_spin_button_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 0, 0, 0, 0)), 1, 0);
+    gtk_widget_ref (spin);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), "format7_hpos_spin", spin, (GtkDestroyNotify) gtk_widget_unref);
+    gtk_widget_show (spin);
+    gtk_table_attach (GTK_TABLE (table), spin, FORMAT7_TABLE_WIDTH-1, FORMAT7_TABLE_WIDTH, 2, 3, (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), (GtkAttachOptions) (GTK_FILL), 0, 0);
+    gtk_widget_set_sensitive (spin, TRUE);
+
+    // vertical size
+    label = gtk_label_new (_("Vertical Size"));
+    gtk_widget_ref (label);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), "label_vsize", label, (GtkDestroyNotify) gtk_widget_unref);
+    gtk_widget_show (label);
+    gtk_table_attach (GTK_TABLE (table), label, 0, 2, 3, 4, (GtkAttachOptions) (GTK_FILL), (GtkAttachOptions) (0), 0, 0);
+    gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
+    gtk_misc_set_padding (GTK_MISC (label), 2, 2);
+
     scale = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (1, 1, 255, 10, 0, 0)));
     gtk_widget_ref (scale);
-    gtk_object_set_data_full (GTK_OBJECT (main_window), "format7_vposition_scale", scale,
-			      (GtkDestroyNotify) gtk_widget_unref);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), "format7_vsize_scale", scale, (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (scale);
-    gtk_table_attach (GTK_TABLE (table), scale, 1, 2, 1, 2,
-		      (GtkAttachOptions) (GTK_FILL),
-		      (GtkAttachOptions) (GTK_FILL), 0, 0);
-    gtk_scale_set_digits (GTK_SCALE (scale), 0);
+    gtk_table_attach (GTK_TABLE (table), scale, 2, FORMAT7_TABLE_WIDTH-1, 3, 4, (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), (GtkAttachOptions) (GTK_FILL), 0, 0);
+    gtk_scale_set_draw_value (GTK_SCALE (scale), 0);
 
+    spin = gtk_spin_button_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 0, 0, 0, 0)), 1, 0);
+    gtk_widget_ref (spin);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), "format7_vsize_spin", spin, (GtkDestroyNotify) gtk_widget_unref);
+    gtk_widget_show (spin);
+    gtk_table_attach (GTK_TABLE (table), spin, FORMAT7_TABLE_WIDTH-1, FORMAT7_TABLE_WIDTH, 3, 4, (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), (GtkAttachOptions) (GTK_FILL), 0, 0);
+    gtk_widget_set_sensitive (spin, TRUE);
 
-    //eprint("check 6\n");
+    // vertical position
+    label = gtk_label_new (_("Vertical Position"));
+    gtk_widget_ref (label);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), "label_vpos", label, (GtkDestroyNotify) gtk_widget_unref);
+    gtk_widget_show (label);
+    gtk_table_attach (GTK_TABLE (table), label, 0, 2, 4, 5, (GtkAttachOptions) (GTK_FILL), (GtkAttachOptions) (0), 0, 0);
+    gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
+    gtk_misc_set_padding (GTK_MISC (label), 2, 2);
+
+    scale = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (1, 1, 255, 10, 0, 0)));
+    gtk_widget_ref (scale);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), "format7_vpos_scale", scale, (GtkDestroyNotify) gtk_widget_unref);
+    gtk_widget_show (scale);
+    gtk_table_attach (GTK_TABLE (table), scale, 2, FORMAT7_TABLE_WIDTH-1, 4, 5, (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), (GtkAttachOptions) (GTK_FILL), 0, 0);
+    gtk_scale_set_draw_value (GTK_SCALE (scale), 0);
+
+    spin = gtk_spin_button_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 0, 0, 0, 0)), 1, 0);
+    gtk_widget_ref (spin);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), "format7_vpos_spin", spin, (GtkDestroyNotify) gtk_widget_unref);
+    gtk_widget_show (spin);
+    gtk_table_attach (GTK_TABLE (table), spin, FORMAT7_TABLE_WIDTH-1, FORMAT7_TABLE_WIDTH, 4, 5, (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), (GtkAttachOptions) (GTK_FILL), 0, 0);
+    gtk_widget_set_sensitive (spin, TRUE);
+
     // information frame
     frame = gtk_frame_new (NULL);
     gtk_widget_ref (frame);

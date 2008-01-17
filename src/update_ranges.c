@@ -106,6 +106,10 @@ UpdateRange(int feature)
     gtk_widget_set_sensitive(lookup_widget(main_window, stemp), range_is_active);
     sprintf(stemp,"feature_%d_rv_scale",feature);
     gtk_widget_set_sensitive(lookup_widget(main_window, stemp), range_is_active);
+    sprintf(stemp,"feature_%d_bu_spin",feature);
+    gtk_widget_set_sensitive(lookup_widget(main_window, stemp), range_is_active);
+    sprintf(stemp,"feature_%d_rv_spin",feature);
+    gtk_widget_set_sensitive(lookup_widget(main_window, stemp), range_is_active);
     break;
   case DC1394_FEATURE_WHITE_SHADING:
     sprintf(stemp,"feature_%d_r_scale",feature);
@@ -114,6 +118,12 @@ UpdateRange(int feature)
     gtk_widget_set_sensitive(lookup_widget(main_window, stemp), range_is_active);
     sprintf(stemp,"feature_%d_b_scale",feature);
     gtk_widget_set_sensitive(lookup_widget(main_window, stemp), range_is_active);
+    sprintf(stemp,"feature_%d_r_spin",feature);
+    gtk_widget_set_sensitive(lookup_widget(main_window, stemp), range_is_active);
+    sprintf(stemp,"feature_%d_g_spin",feature);
+    gtk_widget_set_sensitive(lookup_widget(main_window, stemp), range_is_active);
+    sprintf(stemp,"feature_%d_b_spin",feature);
+    gtk_widget_set_sensitive(lookup_widget(main_window, stemp), range_is_active);
     break;
   case DC1394_FEATURE_TEMPERATURE:
     // the only changeable range is the target one, the other is just an indicator.
@@ -121,8 +131,14 @@ UpdateRange(int feature)
     gtk_widget_set_sensitive(lookup_widget(main_window, stemp), range_is_active);
     sprintf(stemp,"feature_%d_current_scale",feature);
     gtk_widget_set_sensitive(lookup_widget(main_window, stemp),FALSE);break;
+    sprintf(stemp,"feature_%d_target_spin",feature);
+    gtk_widget_set_sensitive(lookup_widget(main_window, stemp), range_is_active);
+    sprintf(stemp,"feature_%d_current_spin",feature);
+    gtk_widget_set_sensitive(lookup_widget(main_window, stemp),FALSE);break;
   default:
     sprintf(stemp,"feature_%d_scale",feature);
+    gtk_widget_set_sensitive(lookup_widget(main_window, stemp), range_is_active);
+    sprintf(stemp,"feature_%d_spin",feature);
     gtk_widget_set_sensitive(lookup_widget(main_window, stemp), range_is_active);
     break;
   }
@@ -152,39 +168,16 @@ UpdateRangeValue(GtkWidget* widget, int feature)
 
   int  err;
   unsigned int value, valueBU, valueRV, valuegoal, valuecurrent, valueR, valueG, valueB;
-  //int stable;
-  //int prec_value, prec_valuegoal, prec_valueBU, prec_valuecurrent, prec_valueRV;
   char *stemp;
   GtkAdjustment* adj;
   stemp=(char*)malloc(STRING_SIZE*sizeof(char));
 
-  //stable=0;
   err=0;
-  /*
-  prec_value=-1e7;// out of range data
-  prec_valuegoal=-1e7;
-  prec_valuecurrent=-1e7;
-  prec_valueBU=-1e7;
-  prec_valueRV=-1e7;
-  prec_valueR=-1e7;
-  prec_valueG=-1e7;
-  prec_valueB=-1e7;
-  */
   // grab&set range value if readable:
   if (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].readout_capable) {
     switch(feature) {
     case DC1394_FEATURE_WHITE_BALANCE:
-      //      while(!stable) {
 	err=dc1394_feature_whitebalance_get_value(camera->camera_info,&valueBU,&valueRV);
-	/*	if (((valueBU==prec_valueBU)&&(valueRV==prec_valueRV))||(err<0))
-	  stable=1;
-	else {
-	  prec_valueBU=valueBU;
-	  prec_valueRV=valueRV;
-	  usleep(DELAY);// wait 1/20 sec
-	  //fprintf(stderr,"values: %u %u\n",valueBU,valueRV);
-	  }
-	  }*/
       if (err!=DC1394_SUCCESS)
 	Error("Could not get white balance value");
       else {
@@ -196,21 +189,10 @@ UpdateRangeValue(GtkWidget* widget, int feature)
 	adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(widget, stemp)));
 	adj->value=valueRV;
 	g_signal_emit_by_name((gpointer) adj, "changed");
-	//fprintf(stderr,"white balance updated\n");
       }
       break;
     case DC1394_FEATURE_WHITE_SHADING:
-      //      while(!stable) {
 	err=dc1394_feature_whiteshading_get_value(camera->camera_info,&valueR,&valueG, &valueB);
-	/*	if (((valueBU==prec_valueBU)&&(valueRV==prec_valueRV))||(err<0))
-	  stable=1;
-	else {
-	  prec_valueBU=valueBU;
-	  prec_valueRV=valueRV;
-	  usleep(DELAY);// wait 1/20 sec
-	  //fprintf(stderr,"values: %u %u\n",valueBU,valueRV);
-	  }
-	  }*/
       if (err!=DC1394_SUCCESS)
 	Error("Could not get white balance value");
       else {
@@ -226,20 +208,10 @@ UpdateRangeValue(GtkWidget* widget, int feature)
 	adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(widget, stemp)));
 	adj->value=valueB;
 	g_signal_emit_by_name((gpointer) adj, "changed");
-	//fprintf(stderr,"white balance updated\n");
       }
       break;
     case DC1394_FEATURE_TEMPERATURE:
-      //while(!stable) {
 	err=dc1394_feature_temperature_get_value(camera->camera_info, &valuegoal, &valuecurrent);
-	/*if (((valuegoal==prec_valuegoal)&&(valuecurrent==prec_valuecurrent))||(err<0))
-	  stable=1;
-	else {
-	  prec_valuegoal=valuegoal;
-	  prec_valuecurrent=valuecurrent;
-	  usleep(DELAY);// wait 1/20 sec
-	}
-	}*/
       if (err<0)
 	Error("Could not get temperature value");
       else {
@@ -254,15 +226,7 @@ UpdateRangeValue(GtkWidget* widget, int feature)
       }
       break;
     default:
-      //while(!stable) {
 	err=dc1394_feature_get_value(camera->camera_info,feature,&value);
-	/*if ((value==prec_value)||(err<0))
-	  stable=1;
-	else {
-	  prec_value=value;
-	  usleep(DELAY);// wait 1/20 sec
-	}
-	}*/
       if (err<0) Error("Could not get feature value");
       else {
 	sprintf(stemp,"feature_%d_scale",feature);
@@ -299,7 +263,7 @@ UpdateFormat7PacketSizeRange(void)
       adj->upper=info->max_packet_size;
       adj->lower=info->unit_packet_size;
       adj->value=info->packet_size;
-      adj->step_increment=1;
+      adj->step_increment=info->unit_packet_size;
       adj->page_increment=(info->max_packet_size-info->unit_packet_size)/16;
       g_signal_emit_by_name((gpointer) adj, "changed");
     }

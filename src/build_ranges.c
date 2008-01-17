@@ -18,7 +18,7 @@
 
 #include "coriander.h"
 
-#define RANGE_TABLE_WIDTH 5
+#define RANGE_TABLE_WIDTH 6
 
 void
 BuildEmptyRange(int feature)
@@ -50,6 +50,8 @@ BuildEmptyRange(int feature)
   case DC1394_FEATURE_TEMPERATURE:
     table = gtk_table_new (3, RANGE_TABLE_WIDTH, FALSE);
     gtk_table_set_homogeneous (GTK_TABLE(table),TRUE);
+    gtk_table_set_col_spacings(GTK_TABLE (table),5);
+    gtk_container_set_border_width(GTK_CONTAINER (table),5);
     gtk_widget_ref (table);
     sprintf(stemp,"feature_%d_table",feature);
     gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, table,
@@ -85,6 +87,8 @@ BuildEmptyRange(int feature)
   case DC1394_FEATURE_WHITE_BALANCE:
     table = gtk_table_new (3, RANGE_TABLE_WIDTH, FALSE);
     gtk_table_set_homogeneous (GTK_TABLE(table),TRUE);
+    gtk_table_set_col_spacings(GTK_TABLE (table),5);
+    gtk_container_set_border_width(GTK_CONTAINER (table),5);
     gtk_widget_ref (table);
     sprintf(stemp,"feature_%d_table",feature);
     gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, table,
@@ -120,6 +124,8 @@ BuildEmptyRange(int feature)
   case DC1394_FEATURE_WHITE_SHADING:
     table = gtk_table_new (3, RANGE_TABLE_WIDTH, FALSE);
     gtk_table_set_homogeneous (GTK_TABLE(table),TRUE);
+    gtk_table_set_col_spacings(GTK_TABLE (table),5);
+    gtk_container_set_border_width(GTK_CONTAINER (table),5);
     gtk_widget_ref (table);
     sprintf(stemp,"feature_%d_table",feature);
     gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, table,
@@ -172,6 +178,8 @@ BuildEmptyRange(int feature)
       table = gtk_table_new (1, RANGE_TABLE_WIDTH, FALSE);
     }
     gtk_table_set_homogeneous (GTK_TABLE(table),TRUE);
+    gtk_table_set_col_spacings(GTK_TABLE (table),5);
+    gtk_container_set_border_width(GTK_CONTAINER (table),5);
     gtk_widget_ref (table);
     sprintf(stemp,"feature_%d_table",feature);
     gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, table,
@@ -190,6 +198,7 @@ void BuildRange(int feature)
   GtkWidget* new_menu;
   GtkWidget* glade_menuitem;
   GtkWidget* scale, *scale2, *scale3;
+  GtkWidget* spin, *spin2, *spin3;
   GtkWidget* abs_entry;
   GtkWidget* label;
   
@@ -326,11 +335,11 @@ void BuildRange(int feature)
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (scale);
     sprintf(stemp,"feature_%d_table",feature);
-    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale, 1, RANGE_TABLE_WIDTH, 1, 2,
+    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale, 1, RANGE_TABLE_WIDTH-1, 1, 2,
 		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 		      (GtkAttachOptions) (GTK_FILL), 0, 0);
     gtk_widget_set_sensitive (scale, TRUE);
-    gtk_scale_set_digits (GTK_SCALE (scale), 0);
+    gtk_scale_set_draw_value (GTK_SCALE (scale), 0);
 
     scale2 = gtk_hscale_new (adjustment);
     gtk_widget_ref (scale2);
@@ -339,14 +348,35 @@ void BuildRange(int feature)
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (scale2);
     sprintf(stemp,"feature_%d_table",feature);
-    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale2, 1, RANGE_TABLE_WIDTH, 2, 3,
+    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale2, 1, RANGE_TABLE_WIDTH-1, 2, 3,
 		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 		      (GtkAttachOptions) (GTK_FILL), 0, 0);
     gtk_widget_set_sensitive (scale2, TRUE);
-    gtk_scale_set_digits (GTK_SCALE (scale2), 0);
+    gtk_scale_set_draw_value (GTK_SCALE (scale2), 0);
 
     gtk_range_set_adjustment((GtkRange*)scale,adjustment);
     gtk_range_set_adjustment((GtkRange*)scale2,adjustment2);
+
+    // additional spinbuttons
+    spin = gtk_spin_button_new (adjustment, 1, 0); // two lasts: step, decimal places. To be changed for absolute settings
+    gtk_widget_ref (spin);
+    sprintf(stemp,"feature_%d_bu_spin",feature);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, spin, (GtkDestroyNotify) gtk_widget_unref);
+    gtk_widget_show (spin);
+    sprintf(stemp,"feature_%d_table",feature);
+    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), spin, RANGE_TABLE_WIDTH-1, RANGE_TABLE_WIDTH, 1, 2,
+		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), (GtkAttachOptions) (GTK_FILL), 0, 0);
+    gtk_widget_set_sensitive (spin, TRUE);
+
+    spin2 = gtk_spin_button_new (adjustment2, 1, 0); // two lasts: step, decimal places. To be changed for absolute settings
+    gtk_widget_ref (spin2);
+    sprintf(stemp,"feature_%d_rv_spin",feature);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, spin2, (GtkDestroyNotify) gtk_widget_unref);
+    gtk_widget_show (spin2);
+    sprintf(stemp,"feature_%d_table",feature);
+    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), spin2, RANGE_TABLE_WIDTH-1, RANGE_TABLE_WIDTH, 2, 3,
+		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), (GtkAttachOptions) (GTK_FILL), 0, 0);
+    gtk_widget_set_sensitive (spin2, TRUE);
 
     // connect:
     g_signal_connect ((gpointer) adjustment, "value_changed", G_CALLBACK (on_scale_value_changed), (gpointer)(unsigned long) DC1394_FEATURE_WHITE_BALANCE+BU);
@@ -366,11 +396,11 @@ void BuildRange(int feature)
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (scale);
     sprintf(stemp,"feature_%d_table",feature);
-    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale, 1, RANGE_TABLE_WIDTH, 1, 2,
+    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale, 1, RANGE_TABLE_WIDTH-1, 1, 2,
 		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 		      (GtkAttachOptions) (GTK_FILL), 0, 0);
-    gtk_widget_set_sensitive (scale, TRUE);
-    gtk_scale_set_digits (GTK_SCALE (scale), 0);
+    gtk_widget_set_sensitive (scale, FALSE);
+    gtk_scale_set_draw_value (GTK_SCALE (scale), 0);
 
     scale2 = gtk_hscale_new (adjustment);
     gtk_widget_ref (scale2);
@@ -379,11 +409,32 @@ void BuildRange(int feature)
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (scale2);
     sprintf(stemp,"feature_%d_table",feature);
-    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale2, 1, RANGE_TABLE_WIDTH, 2, 3,
+    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale2, 1, RANGE_TABLE_WIDTH-1, 2, 3,
 		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 		      (GtkAttachOptions) (GTK_FILL), 0, 0);
     gtk_widget_set_sensitive (scale2, TRUE);
-    gtk_scale_set_digits (GTK_SCALE (scale2), 0);
+    gtk_scale_set_draw_value (GTK_SCALE (scale2), 0);
+
+    // additional spinbuttons
+    spin = gtk_spin_button_new (adjustment, 1, 0); // two lasts: step, decimal places. To be changed for absolute settings
+    gtk_widget_ref (spin);
+    sprintf(stemp,"feature_%d_current_spin",feature);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, spin, (GtkDestroyNotify) gtk_widget_unref);
+    gtk_widget_show (spin);
+    sprintf(stemp,"feature_%d_table",feature);
+    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), spin, RANGE_TABLE_WIDTH-1, RANGE_TABLE_WIDTH, 1, 2,
+		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), (GtkAttachOptions) (GTK_FILL), 0, 0);
+    gtk_widget_set_sensitive (spin, FALSE);
+
+    spin2 = gtk_spin_button_new (adjustment2, 1, 0); // two lasts: step, decimal places. To be changed for absolute settings
+    gtk_widget_ref (spin2);
+    sprintf(stemp,"feature_%d_target_spin",feature);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, spin2, (GtkDestroyNotify) gtk_widget_unref);
+    gtk_widget_show (spin2);
+    sprintf(stemp,"feature_%d_table",feature);
+    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), spin2, RANGE_TABLE_WIDTH-1, RANGE_TABLE_WIDTH, 2, 3,
+		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), (GtkAttachOptions) (GTK_FILL), 0, 0);
+    gtk_widget_set_sensitive (spin2, TRUE);
 
     gtk_range_set_adjustment((GtkRange*)scale,adjustment);
     gtk_range_set_adjustment((GtkRange*)scale2,adjustment2);
@@ -407,11 +458,11 @@ void BuildRange(int feature)
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (scale);
     sprintf(stemp,"feature_%d_table",feature);
-    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale, 1, RANGE_TABLE_WIDTH, 1, 2,
+    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale, 1, RANGE_TABLE_WIDTH-1, 1, 2,
 		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 		      (GtkAttachOptions) (GTK_FILL), 0, 0);
     gtk_widget_set_sensitive (scale, TRUE);
-    gtk_scale_set_digits (GTK_SCALE (scale), 0);
+    gtk_scale_set_draw_value (GTK_SCALE (scale), 0);
 
     scale2 = gtk_hscale_new (adjustment);
     gtk_widget_ref (scale2);
@@ -420,11 +471,11 @@ void BuildRange(int feature)
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (scale2);
     sprintf(stemp,"feature_%d_table",feature);
-    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale2, 1, RANGE_TABLE_WIDTH, 2, 3,
+    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale2, 1, RANGE_TABLE_WIDTH-1, 2, 3,
 		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 		      (GtkAttachOptions) (GTK_FILL), 0, 0);
     gtk_widget_set_sensitive (scale2, TRUE);
-    gtk_scale_set_digits (GTK_SCALE (scale2), 0);
+    gtk_scale_set_draw_value (GTK_SCALE (scale2), 0);
 
     scale3 = gtk_hscale_new (adjustment);
     gtk_widget_ref (scale3);
@@ -433,11 +484,45 @@ void BuildRange(int feature)
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (scale3);
     sprintf(stemp,"feature_%d_table",feature);
-    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale3, 1, RANGE_TABLE_WIDTH, 3, 4,
+    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale3, 1, RANGE_TABLE_WIDTH-1, 3, 4,
 		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 		      (GtkAttachOptions) (GTK_FILL), 0, 0);
     gtk_widget_set_sensitive (scale3, TRUE);
-    gtk_scale_set_digits (GTK_SCALE (scale3), 0);
+    gtk_scale_set_draw_value (GTK_SCALE (scale3), 0);
+
+
+    // additional spinbuttons
+    spin = gtk_spin_button_new (adjustment, 1, 0); // two lasts: step, decimal places. To be changed for absolute settings
+    gtk_widget_ref (spin);
+    sprintf(stemp,"feature_%d_r_spin",feature);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, spin, (GtkDestroyNotify) gtk_widget_unref);
+    gtk_widget_show (spin);
+    sprintf(stemp,"feature_%d_table",feature);
+    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), spin, RANGE_TABLE_WIDTH-1, RANGE_TABLE_WIDTH, 1, 2,
+		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), (GtkAttachOptions) (GTK_FILL), 0, 0);
+    gtk_widget_set_sensitive (spin, TRUE);
+
+    spin2 = gtk_spin_button_new (adjustment2, 1, 0); // two lasts: step, decimal places. To be changed for absolute settings
+    gtk_widget_ref (spin2);
+    sprintf(stemp,"feature_%d_g_spin",feature);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, spin2, (GtkDestroyNotify) gtk_widget_unref);
+    gtk_widget_show (spin2);
+    sprintf(stemp,"feature_%d_table",feature);
+    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), spin2, RANGE_TABLE_WIDTH-1, RANGE_TABLE_WIDTH, 2, 3,
+		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), (GtkAttachOptions) (GTK_FILL), 0, 0);
+    gtk_widget_set_sensitive (spin2, TRUE);
+
+    spin3 = gtk_spin_button_new (adjustment3, 1, 0); // two lasts: step, decimal places. To be changed for absolute settings
+    gtk_widget_ref (spin3);
+    sprintf(stemp,"feature_%d_b_spin",feature);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, spin3, (GtkDestroyNotify) gtk_widget_unref);
+    gtk_widget_show (spin3);
+    sprintf(stemp,"feature_%d_table",feature);
+    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), spin3, RANGE_TABLE_WIDTH-1, RANGE_TABLE_WIDTH, 3, 4,
+		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), (GtkAttachOptions) (GTK_FILL), 0, 0);
+    gtk_widget_set_sensitive (spin3, TRUE);
+
+
 
     gtk_range_set_adjustment((GtkRange*)scale,adjustment);
     gtk_range_set_adjustment((GtkRange*)scale2,adjustment2);
@@ -453,6 +538,8 @@ void BuildRange(int feature)
     adjustment=(GtkAdjustment*)gtk_adjustment_new(camera->feature_set.feature[feature-DC1394_FEATURE_MIN].min,
 						  camera->feature_set.feature[feature-DC1394_FEATURE_MIN].min,
 						  camera->feature_set.feature[feature-DC1394_FEATURE_MIN].max,1,10,0);
+
+    // scale
     scale = gtk_hscale_new (adjustment);
     gtk_widget_ref (scale);
     sprintf(stemp,"feature_%d_scale",feature);
@@ -461,23 +548,47 @@ void BuildRange(int feature)
     gtk_widget_show (scale);
     sprintf(stemp,"feature_%d_table",feature);
     if (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].absolute_capable!=0) {
-      gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale, 0, RANGE_TABLE_WIDTH, 1, 2,
+      gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale, 0, RANGE_TABLE_WIDTH-1, 1, 2,
 			(GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 			(GtkAttachOptions) (GTK_FILL), 0, 0);
     }
     else {
-      gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale, 1, RANGE_TABLE_WIDTH, 0, 1,
+      gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale, 1, RANGE_TABLE_WIDTH-1, 0, 1,
 			(GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 			(GtkAttachOptions) (GTK_FILL), 0, 0);
     }
     gtk_widget_set_sensitive (scale, TRUE);
-    gtk_scale_set_digits (GTK_SCALE (scale), 0);
+    gtk_scale_set_draw_value (GTK_SCALE (scale), 0);
+
+    // additional spinbutton
+    spin = gtk_spin_button_new (adjustment, 1, 0); // two lasts: step, decimal places. To be changed for absolute settings
+    gtk_widget_ref (spin);
+    sprintf(stemp,"feature_%d_spin",feature);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, spin,
+			      (GtkDestroyNotify) gtk_widget_unref);
+    gtk_widget_show (spin);
+    sprintf(stemp,"feature_%d_table",feature);
+
+    if (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].absolute_capable!=0) {
+      gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), spin, RANGE_TABLE_WIDTH-1, RANGE_TABLE_WIDTH, 1, 2,
+			(GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+			(GtkAttachOptions) (GTK_FILL), 0, 0);
+    }
+    else {
+      gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), spin, RANGE_TABLE_WIDTH-1, RANGE_TABLE_WIDTH, 0, 1,
+			(GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+			(GtkAttachOptions) (GTK_FILL), 0, 0);
+    }
+    gtk_widget_set_sensitive (spin, TRUE);
+
+
 
     gtk_range_set_adjustment((GtkRange*)scale,adjustment);
     // connect:
     g_signal_connect ((gpointer) adjustment, "value_changed", G_CALLBACK (on_scale_value_changed), (gpointer)(unsigned long) feature);
     
   }
+
   // common action for absolute settings:
   if (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].absolute_capable!=0) {
     // entry
@@ -488,7 +599,7 @@ void BuildRange(int feature)
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (abs_entry);
     sprintf(stemp,"feature_%d_table",feature);
-    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), abs_entry, 2, RANGE_TABLE_WIDTH-1, 0, 1,
+    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), abs_entry, 2, RANGE_TABLE_WIDTH-2, 0, 1,
 		      (GtkAttachOptions) (GTK_EXPAND|GTK_FILL),
 		      (GtkAttachOptions) (0), 0, 0);
     g_signal_connect ((gpointer) abs_entry, "activate",
@@ -503,7 +614,7 @@ void BuildRange(int feature)
     gtk_label_set_justify(GTK_LABEL(label),GTK_JUSTIFY_LEFT);
     gtk_widget_show (label);
     sprintf(stemp,"feature_%d_table",feature);
-    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), label, RANGE_TABLE_WIDTH-1, RANGE_TABLE_WIDTH, 0, 1,
+    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), label, RANGE_TABLE_WIDTH-2, RANGE_TABLE_WIDTH-1, 0, 1,
 		      (GtkAttachOptions) (GTK_FILL|GTK_FILL),
 		      (GtkAttachOptions) (0), 10, 0);
     gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
@@ -527,30 +638,30 @@ BuildFormat7Ranges(void)
 
   // define adjustement for X-position
   adjustment_px=(GtkAdjustment*)gtk_adjustment_new(info->pos_x,0,info->max_size_x-info->size_x,info->unit_pos_x,info->unit_pos_x*4,0);
-  gtk_range_set_adjustment((GtkRange*)lookup_widget(main_window, "format7_hposition_scale"),adjustment_px);
-  camera->format7_info.scale_posx_handle=g_signal_connect((gpointer) adjustment_px, "value_changed", 
-							    G_CALLBACK (on_format7_value_changed), (int*) FORMAT7_POS_X);
-  gtk_range_set_update_policy ((GtkRange*)lookup_widget(main_window, "format7_hposition_scale"), GTK_UPDATE_DELAYED);
+  gtk_range_set_adjustment((GtkRange*)lookup_widget(main_window, "format7_hpos_scale"),adjustment_px);
+  gtk_spin_button_configure(GTK_SPIN_BUTTON(lookup_widget(main_window, "format7_hpos_spin")),adjustment_px, info->unit_pos_x, 0);
+  camera->format7_info.scale_posx_handle=g_signal_connect((gpointer) adjustment_px, "value_changed", G_CALLBACK (on_format7_value_changed), (int*) FORMAT7_POS_X);
+  gtk_range_set_update_policy ((GtkRange*)lookup_widget(main_window, "format7_hpos_scale"), GTK_UPDATE_DELAYED);
   
   // define adjustement for Y-position 
   adjustment_py=(GtkAdjustment*)gtk_adjustment_new(info->pos_y,0,info->max_size_y-info->size_y,info->unit_pos_y,info->unit_pos_y*4,0);
-  gtk_range_set_adjustment((GtkRange*)lookup_widget(main_window, "format7_vposition_scale"),adjustment_py);
-  camera->format7_info.scale_posy_handle=g_signal_connect((gpointer) adjustment_py, "value_changed", 
-							    G_CALLBACK (on_format7_value_changed), (int*) FORMAT7_POS_Y);
-  gtk_range_set_update_policy ((GtkRange*)lookup_widget(main_window, "format7_vposition_scale"), GTK_UPDATE_DELAYED);
+  gtk_range_set_adjustment((GtkRange*)lookup_widget(main_window, "format7_vpos_scale"),adjustment_py);
+  gtk_spin_button_configure(GTK_SPIN_BUTTON(lookup_widget(main_window, "format7_vpos_spin")),adjustment_py, info->unit_pos_y, 0);
+  camera->format7_info.scale_posy_handle=g_signal_connect((gpointer) adjustment_py, "value_changed", G_CALLBACK (on_format7_value_changed), (int*) FORMAT7_POS_Y);
+  gtk_range_set_update_policy ((GtkRange*)lookup_widget(main_window, "format7_vpos_scale"), GTK_UPDATE_DELAYED);
 
   // define adjustement for X-size
   adjustment_sx=(GtkAdjustment*)gtk_adjustment_new(info->size_x,info->unit_size_x,info->max_size_x-info->pos_x,info->unit_size_x,info->unit_size_x*4,0);
   gtk_range_set_adjustment((GtkRange*)lookup_widget(main_window, "format7_hsize_scale"),adjustment_sx);
-  camera->format7_info.scale_sizex_handle=g_signal_connect((gpointer) adjustment_sx, "value_changed", 
-							     G_CALLBACK (on_format7_value_changed), (int*) FORMAT7_SIZE_X);
+  gtk_spin_button_configure(GTK_SPIN_BUTTON(lookup_widget(main_window, "format7_hsize_spin")),adjustment_sx, info->unit_size_x, 0);
+  camera->format7_info.scale_sizex_handle=g_signal_connect((gpointer) adjustment_sx, "value_changed", G_CALLBACK (on_format7_value_changed), (int*) FORMAT7_SIZE_X);
   gtk_range_set_update_policy ((GtkRange*)lookup_widget(main_window, "format7_hsize_scale"), GTK_UPDATE_DELAYED);
 
   // define adjustement for X-size
   adjustment_sy=(GtkAdjustment*)gtk_adjustment_new(info->size_y,info->unit_size_y,info->max_size_y-info->pos_y,info->unit_size_y,info->unit_size_y*4,0);
   gtk_range_set_adjustment((GtkRange*)lookup_widget(main_window, "format7_vsize_scale"),adjustment_sy);
-  camera->format7_info.scale_sizey_handle=g_signal_connect((gpointer) adjustment_sy, "value_changed", 
-							     G_CALLBACK (on_format7_value_changed), (int*) FORMAT7_SIZE_Y);
+  gtk_spin_button_configure(GTK_SPIN_BUTTON(lookup_widget(main_window, "format7_vsize_spin")),adjustment_sy, info->unit_size_y, 0);
+  camera->format7_info.scale_sizey_handle=g_signal_connect((gpointer) adjustment_sy, "value_changed", G_CALLBACK (on_format7_value_changed), (int*) FORMAT7_SIZE_Y);
   gtk_range_set_update_policy ((GtkRange*)lookup_widget(main_window, "format7_vsize_scale"), GTK_UPDATE_DELAYED);
 
   g_signal_emit_by_name((gpointer) adjustment_sx, "changed");
@@ -568,10 +679,11 @@ BuildFormat7PacketSizeRange(void)
   info=&camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_VIDEO_MODE_FORMAT7_MIN];
 
   // define adjustment for packet size:
-  adjustment_packet=(GtkAdjustment*)gtk_adjustment_new(info->packet_size,info->unit_packet_size,info->max_packet_size,1,(info->max_packet_size-info->unit_packet_size)/16,0);
+  adjustment_packet=(GtkAdjustment*)gtk_adjustment_new(info->packet_size,info->unit_packet_size,info->max_packet_size,info->unit_packet_size,(info->max_packet_size-info->unit_packet_size)/16,0);
   // min_bpp is the minimum bpp, but also the 'unit' bpp.
-  gtk_range_set_adjustment((GtkRange*)lookup_widget(main_window, "format7_packet_size"),adjustment_packet);
+  gtk_range_set_adjustment((GtkRange*)lookup_widget(main_window, "format7_psize"),adjustment_packet);
+  gtk_spin_button_configure(GTK_SPIN_BUTTON(lookup_widget(main_window, "format7_psize_spin")),adjustment_packet, info->unit_packet_size, 0);
   g_signal_connect((gpointer) adjustment_packet, "value_changed", G_CALLBACK (on_format7_packet_size_changed),(int*)0);
-  gtk_range_set_update_policy ((GtkRange*)lookup_widget(main_window, "format7_packet_size"), GTK_UPDATE_DELAYED);
+  gtk_range_set_update_policy ((GtkRange*)lookup_widget(main_window, "format7_psize"), GTK_UPDATE_DELAYED);
   
 }

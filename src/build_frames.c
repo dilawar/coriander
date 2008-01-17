@@ -316,6 +316,7 @@ BuildOptionFrame(void)
 void
 BuildBandwidthFrame(void)
 {
+
   GtkWidget *bandwidth_table;
   GtkWidget *label;
   GtkWidget *bandwidth_bar;
@@ -336,8 +337,9 @@ BuildBandwidthFrame(void)
   gtk_object_set_data_full (GTK_OBJECT (main_window), "bandwidth_table", bandwidth_table,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (bandwidth_table);
-  gtk_container_add (GTK_CONTAINER (lookup_widget(main_window,"bandwidth_frame")), bandwidth_table);
-  gtk_container_set_border_width (GTK_CONTAINER (bandwidth_table), 2);
+    
+  gtk_container_add (GTK_CONTAINER (gtk_notebook_get_nth_page(GTK_NOTEBOOK(lookup_widget(main_window,"notebook7")),1)), bandwidth_table);
+  gtk_container_set_border_width (GTK_CONTAINER (bandwidth_table), 5);
   gtk_table_set_row_spacings (GTK_TABLE (bandwidth_table), 2);
   gtk_table_set_col_spacings (GTK_TABLE (bandwidth_table), 2);
 
@@ -370,6 +372,7 @@ BuildBandwidthFrame(void)
   }
 
   free(temp);
+
 }
 
 
