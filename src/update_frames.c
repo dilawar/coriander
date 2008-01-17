@@ -67,7 +67,7 @@ UpdatePrefsSaveFrame(void)
   gtk_widget_set_sensitive(lookup_widget(main_window,"grab_now_frame"), TRUE);
 
   // normal:
-  gtk_widget_set_sensitive(lookup_widget(main_window,"save_to_dir"), !is_video);
+  gtk_widget_set_sensitive(lookup_widget(main_window,"save_to_dir"), (!is_video)&&(!camera->prefs.save_to_stdout));
   gtk_widget_set_sensitive(lookup_widget(main_window,"ram_buffer_frame"), is_video);
   gtk_widget_set_sensitive(lookup_widget(main_window,"use_ram_buffer"), is_video);
 
@@ -86,7 +86,7 @@ UpdatePrefsSaveFrame(void)
   gtk_widget_set_sensitive(lookup_widget(main_window,"save_filename_status"), !camera->prefs.save_to_stdout);
   gtk_widget_set_sensitive(lookup_widget(main_window,"save_append_menu"), !camera->prefs.save_to_stdout);
   gtk_widget_set_sensitive(lookup_widget(main_window,"save_filename_entry"), !camera->prefs.save_to_stdout);
-  gtk_widget_set_sensitive(lookup_widget(main_window,"save_to_dir"), !camera->prefs.save_to_stdout);
+  //gtk_widget_set_sensitive(lookup_widget(main_window,"save_to_dir"), !camera->prefs.save_to_stdout);
 
   // not working yet
   gtk_widget_set_sensitive(lookup_widget(main_window,"grab_now_frame"), 0);

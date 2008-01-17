@@ -515,14 +515,20 @@ BuildBayerMenu(void)
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
   g_signal_connect ((gpointer) glade_menuitem, "activate",
 		      G_CALLBACK (on_bayer_menu_activate),
-		      (int*)DC1394_BAYER_METHOD_SIMPLE); 
-  // add edge sense option
-  glade_menuitem = gtk_menu_item_new_with_label (_("Edge Sense"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
-  g_signal_connect ((gpointer) glade_menuitem, "activate",
-		      G_CALLBACK (on_bayer_menu_activate),
-		      (int*)DC1394_BAYER_METHOD_EDGESENSE); 
+		      (int*)DC1394_BAYER_METHOD_SIMPLE);
+
+  // verify the availability of the edgesense algorithm, since it was neutralised in 2.0.1 for patent reasons.
+  unsigned char temp[3];
+  if (dc1394_bayer_decoding_8bit(temp, temp, 0, 0, DC1394_COLOR_FILTER_RGGB, DC1394_BAYER_METHOD_EDGESENSE)!=DC1394_FUNCTION_NOT_SUPPORTED) {
+      // add edge sense option
+      glade_menuitem = gtk_menu_item_new_with_label (_("Edge Sense"));
+      gtk_widget_show (glade_menuitem);
+      gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+      g_signal_connect ((gpointer) glade_menuitem, "activate",
+			G_CALLBACK (on_bayer_menu_activate),
+			(int*)DC1394_BAYER_METHOD_EDGESENSE);
+  }
+ 
   // add downsample option
   glade_menuitem = gtk_menu_item_new_with_label (_("Downsample"));
   gtk_widget_show (glade_menuitem);
