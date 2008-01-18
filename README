@@ -2,11 +2,11 @@
 
   		    C   O   R   I   A   N   D   E   R
 
-			     version 2.0.0-rc4
+			     version 2.0.0-rc6
 
 	      The Gnome IEEE-1394 Digital Camera Controller
 
-     (C) 2000-2005 by Damien Douxchamps <ddouxchamps@users.sf.net>
+     (C) 2000-2008 by Damien Douxchamps <ddouxchamps@users.sf.net>
 
 	    http://damien.douxchamps.net/ieee1394/coriander/
 
@@ -71,6 +71,7 @@ lease and technical help from the following companies:
 - The Imaging Source  http://www.1394imaging.com
 - Point Grey Research http://www.ptgrey.com
 - Basler GmbH         http://www.balserweb.com
+- Dage-MTI	      http://www.dagemti.com
 
 Many thanks for their support!
 
@@ -118,7 +119,7 @@ checked.
 - XFree 3.3.6 (XFree 4.1.0 recommended for video overlay)
 - Gtk 1.2 & Gtk-devel
 - libraw1394 [5] and libdc1394 [2] installed. You need at least libdc1394
-  1.0.0.
+  2.0.0.
 - ftplib installed for FTP support [9]
 - SDL installed for display support [11]
 - Glade (for development only)
