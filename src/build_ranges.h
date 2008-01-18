@@ -20,10 +20,10 @@
 #define __BUILDRANGES_H__
 
 void
-BuildRange(int feature);
+BuildRange(int feature, int *pos);
 
 void
-BuildEmptyRange(int feature);
+BuildEmptyRange(int feature, int pos);
 
 void 
 BuildFormat7Ranges(void);

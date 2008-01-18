@@ -401,7 +401,7 @@ BuildFormat7Window(void)
 void
 BuildFeatureWindow(void)
 {
-  GtkWidget* vbox_features;
+  GtkWidget* vbox_features, *table;
   int i;
   // destroy previous feature vbox
   gtk_widget_destroy(lookup_widget(main_window,"vbox_features"));
@@ -414,10 +414,20 @@ BuildFeatureWindow(void)
   gtk_widget_show (vbox_features);
   gtk_container_add (GTK_CONTAINER (lookup_widget(main_window,"viewport1")), vbox_features);
 
+  table = gtk_table_new (10, 6, FALSE);
+  //gtk_table_set_homogeneous (GTK_TABLE(table),TRUE);
+  gtk_table_set_col_spacings(GTK_TABLE (table),5);
+  gtk_container_set_border_width(GTK_CONTAINER (table),5);
+  gtk_widget_ref (table);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "feature_table", table, (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (table);
+  gtk_box_pack_start (GTK_BOX(vbox_features), table, FALSE, TRUE, 0);
+
+  int pos=0;
   for (i=DC1394_FEATURE_MIN;i<=DC1394_FEATURE_MAX;i++) {
     if ((camera->feature_set.feature[i-DC1394_FEATURE_MIN].available>0)&&
 	(i!=DC1394_FEATURE_TRIGGER)) {
-      BuildRange(i);
+      BuildRange(i,&pos);
     }
   }
 }

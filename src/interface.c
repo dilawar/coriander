@@ -3499,7 +3499,7 @@ create_main_window (void)
   gtk_box_pack_start (GTK_BOX (vbox80), frame1112, FALSE, FALSE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (frame1112), 5);
 
-  label227 = gtk_label_new (_("Although it is unlikely, direct register access can create <b><u>permanent</u></b> damage to your camera. It will also most probably void your warranty in case of troubles. Before using this interface you should have read and understood the IIDC specifications as well as any manufacturer documantation. Use at your own risk."));
+  label227 = gtk_label_new (_("Although unlikely, direct register access can <b>permanently</b> damage to your camera (e.g brick it). It may also void your warranty. Before using this interface you should have read and understood the IIDC specifications as well as any manufacturer documantation. Use at your own risk."));
   gtk_widget_set_name (label227, "label227");
   gtk_widget_show (label227);
   gtk_container_add (GTK_CONTAINER (frame1112), label227);
@@ -3743,7 +3743,7 @@ create_main_window (void)
   gtk_frame_set_label_widget (GTK_FRAME (frame4), label195);
   gtk_label_set_use_markup (GTK_LABEL (label195), TRUE);
 
-  label151 = gtk_label_new (_("Misc"));
+  label151 = gtk_label_new (_("Tools"));
   gtk_widget_set_name (label151, "label151");
   gtk_widget_show (label151);
   gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook2), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook2), 4), label151);

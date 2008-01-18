@@ -100,6 +100,9 @@ UpdateRange(int feature)
 	  range_is_active);
   */
 
+  sprintf(stemp,"feature_%d_label",feature);
+  gtk_widget_set_sensitive(lookup_widget(main_window, stemp), range_is_active);
+
   switch(feature) {
   case DC1394_FEATURE_WHITE_BALANCE:
     sprintf(stemp,"feature_%d_bu_scale",feature);
@@ -189,6 +192,17 @@ UpdateRangeValue(GtkWidget* widget, int feature)
 	adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(widget, stemp)));
 	adj->value=valueRV;
 	g_signal_emit_by_name((gpointer) adj, "changed");
+	/*
+        // FIXME: spin buttons don't update
+	sprintf(stemp,"feature_%d_bu_spin",feature);
+	adj=gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON (lookup_widget(widget, stemp)));
+	adj->value=valueBU;
+	g_signal_emit_by_name((gpointer) adj, "changed");
+	sprintf(stemp,"feature_%d_rv_spin",feature);
+	adj=gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON (lookup_widget(widget, stemp)));
+	adj->value=valueRV;
+	g_signal_emit_by_name((gpointer) adj, "changed");
+	*/
       }
       break;
     case DC1394_FEATURE_WHITE_SHADING:

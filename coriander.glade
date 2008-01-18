@@ -7059,7 +7059,7 @@ for something to take effect here.</property>
 			  <child>
 			    <widget class="GtkLabel" id="label227">
 			      <property name="visible">True</property>
-			      <property name="label" translatable="yes">Although it is unlikely, direct register access can create &lt;b&gt;&lt;u&gt;permanent&lt;/u&gt;&lt;/b&gt; damage to your camera. It will also most probably void your warranty in case of troubles. Before using this interface you should have read and understood the IIDC specifications as well as any manufacturer documantation. Use at your own risk.</property>
+			      <property name="label" translatable="yes">Although unlikely, direct register access can &lt;b&gt;permanently&lt;/b&gt; damage to your camera (e.g brick it). It may also void your warranty. Before using this interface you should have read and understood the IIDC specifications as well as any manufacturer documantation. Use at your own risk.</property>
 			      <property name="use_underline">False</property>
 			      <property name="use_markup">True</property>
 			      <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -7736,7 +7736,7 @@ for something to take effect here.</property>
 	  <child>
 	    <widget class="GtkLabel" id="label151">
 	      <property name="visible">True</property>
-	      <property name="label" translatable="yes">Misc</property>
+	      <property name="label" translatable="yes">Tools</property>
 	      <property name="use_underline">False</property>
 	      <property name="use_markup">False</property>
 	      <property name="justify">GTK_JUSTIFY_CENTER</property>

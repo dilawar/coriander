@@ -20,178 +20,118 @@
 
 #define RANGE_TABLE_WIDTH 6
 
+#define LABEL_SIZE  1
+#define MENU_SIZE   1
+#define ELABEL_SIZE 1
+#define SPIN_SIZE   1
+
+#define LM LABEL_SIZE
+#define MR (LABEL_SIZE+MENU_SIZE) 
+#define ER (LABEL_SIZE+MENU_SIZE+ELABEL_SIZE)
+#define RS (RANGE_TABLE_WIDTH-SPIN_SIZE)
+
 void
-BuildEmptyRange(int feature)
+BuildEmptyRange(int feature, int pos)
 {
-  GtkWidget *table, *frame, *label1, *label2, *label3, *frame_title;
+    GtkWidget *table, *label1, *label2, *label3;
   char *stemp;
 
   stemp=(char*)malloc(STRING_SIZE*sizeof(char));
-
-  frame = gtk_frame_new (NULL);
-  gtk_widget_ref (frame);
-  sprintf(stemp,"feature_%d_frame",feature);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, frame,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (frame);
-  gtk_box_pack_start (GTK_BOX (lookup_widget(main_window,"vbox_features")), frame, FALSE, TRUE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (frame), 5);
-  gtk_widget_set_sensitive (frame, TRUE);
-
-  sprintf(stemp,"<b>%s</b>",feature_name_list[feature-DC1394_FEATURE_MIN]);
-  frame_title = gtk_label_new (_(stemp));
-  sprintf(stemp,"feature_%d_frame_label",feature);
-  gtk_widget_set_name (frame_title, stemp);
-  gtk_widget_show (frame_title);
-  gtk_frame_set_label_widget (GTK_FRAME (frame), frame_title);
-  gtk_label_set_use_markup (GTK_LABEL (frame_title), TRUE);
+  table=lookup_widget(main_window, "feature_table");
 
   switch (feature) {
   case DC1394_FEATURE_TEMPERATURE:
-    table = gtk_table_new (3, RANGE_TABLE_WIDTH, FALSE);
-    gtk_table_set_homogeneous (GTK_TABLE(table),TRUE);
-    gtk_table_set_col_spacings(GTK_TABLE (table),5);
-    gtk_container_set_border_width(GTK_CONTAINER (table),5);
-    gtk_widget_ref (table);
-    sprintf(stemp,"feature_%d_table",feature);
-    gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, table,
-			      (GtkDestroyNotify) gtk_widget_unref);
-    gtk_widget_show (table);
-    gtk_container_add (GTK_CONTAINER (frame), table);
 
-    label1 = gtk_label_new (_("Current:"));
+    label1 = gtk_label_new (_("Current"));
     gtk_widget_ref (label1);
-    gtk_object_set_data_full (GTK_OBJECT (main_window), "label_temp_scale_current", label1,
-			      (GtkDestroyNotify) gtk_widget_unref);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), "label_temp_scale_current", label1, (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (label1);
-    gtk_table_attach (GTK_TABLE (table), label1, 0, 1, 1, 2,
-		      (GtkAttachOptions) (GTK_FILL),
-		      (GtkAttachOptions) (0), 0, 0);
+    gtk_table_attach (GTK_TABLE (table), label1, MR, ER, pos, pos+1, (GtkAttachOptions) (GTK_FILL), (GtkAttachOptions) (0), 0, 0);
     gtk_label_set_justify (GTK_LABEL (label1), GTK_JUSTIFY_RIGHT);
     gtk_misc_set_alignment (GTK_MISC (label1), 0, 0.5);
     gtk_misc_set_padding (GTK_MISC (label1), 2, 2);
     
-    label2 = gtk_label_new (_("Target:"));
+    label2 = gtk_label_new (_("Target"));
     gtk_widget_ref (label2);
-    gtk_object_set_data_full (GTK_OBJECT (main_window), "label_temp_scale_target", label2,
-			      (GtkDestroyNotify) gtk_widget_unref);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), "label_temp_scale_target", label2, (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (label2);
-    gtk_table_attach (GTK_TABLE (table), label2, 0, 1, 2, 3,
-		      (GtkAttachOptions) (GTK_FILL),
-		      (GtkAttachOptions) (0), 0, 0);
+    gtk_table_attach (GTK_TABLE (table), label2, MR, ER, pos+1, pos+2, (GtkAttachOptions) (GTK_FILL), (GtkAttachOptions) (0), 0, 0);
     gtk_label_set_justify (GTK_LABEL (label2), GTK_JUSTIFY_RIGHT);
     gtk_misc_set_alignment (GTK_MISC (label2), 0, 0.5);
     gtk_misc_set_padding (GTK_MISC (label2), 2, 2);
 
     break;
   case DC1394_FEATURE_WHITE_BALANCE:
-    table = gtk_table_new (3, RANGE_TABLE_WIDTH, FALSE);
-    gtk_table_set_homogeneous (GTK_TABLE(table),TRUE);
-    gtk_table_set_col_spacings(GTK_TABLE (table),5);
-    gtk_container_set_border_width(GTK_CONTAINER (table),5);
-    gtk_widget_ref (table);
-    sprintf(stemp,"feature_%d_table",feature);
-    gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, table,
-			      (GtkDestroyNotify) gtk_widget_unref);
-    gtk_widget_show (table);
-    gtk_container_add (GTK_CONTAINER (frame), table);
 
-    label1 = gtk_label_new (_("Blue/U:"));
+    label1 = gtk_label_new (_("Blue/U"));
     gtk_widget_ref (label1);
-    gtk_object_set_data_full (GTK_OBJECT (main_window), "label_wb_scale_bu", label1,
-			      (GtkDestroyNotify) gtk_widget_unref);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), "label_wb_scale_bu", label1, (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (label1);
-    gtk_table_attach (GTK_TABLE (table), label1, 0, 1, 1, 2,
-		      (GtkAttachOptions) (GTK_FILL),
-		      (GtkAttachOptions) (0), 0, 0);
+    gtk_table_attach (GTK_TABLE (table), label1, MR, ER, pos, pos+1, (GtkAttachOptions) (GTK_FILL), (GtkAttachOptions) (0), 0, 0);
     gtk_label_set_justify (GTK_LABEL (label1), GTK_JUSTIFY_RIGHT);
     gtk_misc_set_alignment (GTK_MISC (label1), 0, 0.5);
     gtk_misc_set_padding (GTK_MISC (label1), 2, 2);
 
-    label2 = gtk_label_new (_("Red/V:"));
+    label2 = gtk_label_new (_("Red/V"));
     gtk_widget_ref (label2);
-    gtk_object_set_data_full (GTK_OBJECT (main_window), "label_wb_scale_rv", label2,
-			      (GtkDestroyNotify) gtk_widget_unref);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), "label_wb_scale_rv", label2, (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (label2);
-    gtk_table_attach (GTK_TABLE (table), label2, 0, 1, 2, 3,
-		      (GtkAttachOptions) (GTK_FILL),
-		      (GtkAttachOptions) (0), 0, 0);
+    gtk_table_attach (GTK_TABLE (table), label2, MR, ER, pos+1, pos+2, (GtkAttachOptions) (GTK_FILL), (GtkAttachOptions) (0), 0, 0);
     gtk_label_set_justify (GTK_LABEL (label2), GTK_JUSTIFY_RIGHT);
     gtk_misc_set_alignment (GTK_MISC (label2), 0, 0.5);
     gtk_misc_set_padding (GTK_MISC (label2), 2, 2);
 
     break;
   case DC1394_FEATURE_WHITE_SHADING:
-    table = gtk_table_new (3, RANGE_TABLE_WIDTH, FALSE);
-    gtk_table_set_homogeneous (GTK_TABLE(table),TRUE);
-    gtk_table_set_col_spacings(GTK_TABLE (table),5);
-    gtk_container_set_border_width(GTK_CONTAINER (table),5);
-    gtk_widget_ref (table);
-    sprintf(stemp,"feature_%d_table",feature);
-    gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, table,
-			      (GtkDestroyNotify) gtk_widget_unref);
-    gtk_widget_show (table);
-    gtk_container_add (GTK_CONTAINER (frame), table);
 
-    label1 = gtk_label_new (_("Red:"));
+    label1 = gtk_label_new (_("Red"));
     gtk_widget_ref (label1);
-    gtk_object_set_data_full (GTK_OBJECT (main_window), "label_ws_scale_r", label1,
-			      (GtkDestroyNotify) gtk_widget_unref);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), "label_ws_scale_r", label1, (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (label1);
-    gtk_table_attach (GTK_TABLE (table), label1, 0, 1, 1, 2,
-		      (GtkAttachOptions) (GTK_FILL),
-		      (GtkAttachOptions) (0), 0, 0);
+    gtk_table_attach (GTK_TABLE (table), label1, MR, ER, pos, pos+1, (GtkAttachOptions) (GTK_FILL), (GtkAttachOptions) (0), 0, 0);
     gtk_label_set_justify (GTK_LABEL (label1), GTK_JUSTIFY_RIGHT);
     gtk_misc_set_alignment (GTK_MISC (label1), 0, 0.5);
     gtk_misc_set_padding (GTK_MISC (label1), 2, 2);
 
-    label2 = gtk_label_new (_("Green:"));
+    label2 = gtk_label_new (_("Green"));
     gtk_widget_ref (label2);
-    gtk_object_set_data_full (GTK_OBJECT (main_window), "label_ws_scale_g", label2,
-			      (GtkDestroyNotify) gtk_widget_unref);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), "label_ws_scale_g", label2, (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (label2);
-    gtk_table_attach (GTK_TABLE (table), label2, 0, 1, 2, 3,
-		      (GtkAttachOptions) (GTK_FILL),
-		      (GtkAttachOptions) (0), 0, 0);
+    gtk_table_attach (GTK_TABLE (table), label2, MR, ER, pos+1, pos+2, (GtkAttachOptions) (GTK_FILL), (GtkAttachOptions) (0), 0, 0);
     gtk_label_set_justify (GTK_LABEL (label2), GTK_JUSTIFY_RIGHT);
     gtk_misc_set_alignment (GTK_MISC (label2), 0, 0.5);
     gtk_misc_set_padding (GTK_MISC (label2), 2, 2);
 
-    label3 = gtk_label_new (_("Blue:"));
+    label3 = gtk_label_new (_("Blue"));
     gtk_widget_ref (label3);
-    gtk_object_set_data_full (GTK_OBJECT (main_window), "label_ws_scale_g", label3,
-			      (GtkDestroyNotify) gtk_widget_unref);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), "label_ws_scale_g", label3, (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (label3);
-    gtk_table_attach (GTK_TABLE (table), label3, 0, 1, 3, 4,
-		      (GtkAttachOptions) (GTK_FILL),
-		      (GtkAttachOptions) (0), 0, 0);
+    gtk_table_attach (GTK_TABLE (table), label3, MR, ER, pos+2, pos+3, (GtkAttachOptions) (GTK_FILL), (GtkAttachOptions) (0), 0, 0);
     gtk_label_set_justify (GTK_LABEL (label3), GTK_JUSTIFY_RIGHT);
     gtk_misc_set_alignment (GTK_MISC (label3), 0, 0.5);
     gtk_misc_set_padding (GTK_MISC (label3), 2, 2);
     break;
 
   default:
-    if (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].absolute_capable!=0) {
-      table = gtk_table_new (2, RANGE_TABLE_WIDTH, FALSE);
-    }
-    else {
-      table = gtk_table_new (1, RANGE_TABLE_WIDTH, FALSE);
-    }
-    gtk_table_set_homogeneous (GTK_TABLE(table),TRUE);
-    gtk_table_set_col_spacings(GTK_TABLE (table),5);
-    gtk_container_set_border_width(GTK_CONTAINER (table),5);
-    gtk_widget_ref (table);
-    sprintf(stemp,"feature_%d_table",feature);
-    gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, table,
-			      (GtkDestroyNotify) gtk_widget_unref);
-    gtk_widget_show (table);
-    gtk_container_add (GTK_CONTAINER (frame), table);
+
     break;
   }
+
+  // label
+  sprintf(stemp,"<b>%s</b>",feature_name_list[feature-DC1394_FEATURE_MIN]);
+  label1 = gtk_label_new (_(stemp));
+  gtk_label_set_use_markup (GTK_LABEL (label1), TRUE);
+  gtk_widget_ref (label1);
+  sprintf(stemp,"feature_%d_label",feature);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, label1, (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label1);
+  gtk_table_attach (GTK_TABLE(table), label1, 0, LM, pos, pos+1, (GtkAttachOptions) (GTK_FILL), (GtkAttachOptions) (GTK_FILL), 0, 0);
+
   free(stemp);
 }
 
-void BuildRange(int feature)
+void
+BuildRange(int feature, int *pos)
 {
   GtkAdjustment *adjustment, *adjustment2, *adjustment3;
   GtkWidget* new_option_menu;
@@ -201,11 +141,14 @@ void BuildRange(int feature)
   GtkWidget* spin, *spin2, *spin3;
   GtkWidget* abs_entry;
   GtkWidget* label;
-  
+  GtkTable* table;
+
   char *stemp;
   stemp=(char*)malloc(STRING_SIZE*sizeof(char));
 
-  BuildEmptyRange(feature);
+  BuildEmptyRange(feature,*pos);
+
+  table=GTK_TABLE (lookup_widget(main_window, "feature_table"));
 
   // BUILD A NEW OPTION_MENU:
 
@@ -213,14 +156,9 @@ void BuildRange(int feature)
   
   new_option_menu = gtk_option_menu_new ();
   gtk_widget_ref (new_option_menu);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, new_option_menu,
-			    (GtkDestroyNotify) gtk_widget_unref);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, new_option_menu, (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (new_option_menu);
-  sprintf(stemp,"feature_%d_table",feature);
-  gtk_table_attach (GTK_TABLE (lookup_widget(main_window, stemp)),
-		    new_option_menu, 0, 1, 0, 1,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
+  gtk_table_attach (table, new_option_menu, LM, MR, *pos, *pos+1, (GtkAttachOptions) (GTK_FILL), (GtkAttachOptions) (0), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (new_option_menu), 1);
   
   new_menu = gtk_menu_new ();
@@ -331,30 +269,21 @@ void BuildRange(int feature)
     scale = gtk_hscale_new (adjustment);
     gtk_widget_ref (scale);
     sprintf(stemp,"feature_%d_bu_scale",feature);
-    gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, scale,
-			      (GtkDestroyNotify) gtk_widget_unref);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, scale, (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (scale);
-    sprintf(stemp,"feature_%d_table",feature);
-    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale, 1, RANGE_TABLE_WIDTH-1, 1, 2,
-		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-		      (GtkAttachOptions) (GTK_FILL), 0, 0);
+    gtk_table_attach (table, scale, ER, RS, *pos, *pos+1, (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), (GtkAttachOptions) (GTK_FILL), 0, 0);
     gtk_widget_set_sensitive (scale, TRUE);
     gtk_scale_set_draw_value (GTK_SCALE (scale), 0);
+    gtk_range_set_adjustment((GtkRange*)scale,adjustment);
 
-    scale2 = gtk_hscale_new (adjustment);
+    scale2 = gtk_hscale_new (adjustment2);
     gtk_widget_ref (scale2);
     sprintf(stemp,"feature_%d_rv_scale",feature);
-    gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, scale2,
-			      (GtkDestroyNotify) gtk_widget_unref);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, scale2, (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (scale2);
-    sprintf(stemp,"feature_%d_table",feature);
-    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale2, 1, RANGE_TABLE_WIDTH-1, 2, 3,
-		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-		      (GtkAttachOptions) (GTK_FILL), 0, 0);
+    gtk_table_attach (table, scale2, ER, RS, *pos+1, *pos+2, (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), (GtkAttachOptions) (GTK_FILL), 0, 0);
     gtk_widget_set_sensitive (scale2, TRUE);
     gtk_scale_set_draw_value (GTK_SCALE (scale2), 0);
-
-    gtk_range_set_adjustment((GtkRange*)scale,adjustment);
     gtk_range_set_adjustment((GtkRange*)scale2,adjustment2);
 
     // additional spinbuttons
@@ -363,9 +292,7 @@ void BuildRange(int feature)
     sprintf(stemp,"feature_%d_bu_spin",feature);
     gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, spin, (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (spin);
-    sprintf(stemp,"feature_%d_table",feature);
-    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), spin, RANGE_TABLE_WIDTH-1, RANGE_TABLE_WIDTH, 1, 2,
-		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), (GtkAttachOptions) (GTK_FILL), 0, 0);
+    gtk_table_attach (table, spin, RS, RANGE_TABLE_WIDTH, *pos, *pos+1, (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), (GtkAttachOptions) (GTK_FILL), 0, 0);
     gtk_widget_set_sensitive (spin, TRUE);
 
     spin2 = gtk_spin_button_new (adjustment2, 1, 0); // two lasts: step, decimal places. To be changed for absolute settings
@@ -373,9 +300,7 @@ void BuildRange(int feature)
     sprintf(stemp,"feature_%d_rv_spin",feature);
     gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, spin2, (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (spin2);
-    sprintf(stemp,"feature_%d_table",feature);
-    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), spin2, RANGE_TABLE_WIDTH-1, RANGE_TABLE_WIDTH, 2, 3,
-		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), (GtkAttachOptions) (GTK_FILL), 0, 0);
+    gtk_table_attach (table, spin2, RS, RANGE_TABLE_WIDTH, *pos+1, *pos+2, (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), (GtkAttachOptions) (GTK_FILL), 0, 0);
     gtk_widget_set_sensitive (spin2, TRUE);
 
     // connect:
@@ -386,34 +311,28 @@ void BuildRange(int feature)
     adjustment=(GtkAdjustment*)gtk_adjustment_new(camera->feature_set.feature[feature-DC1394_FEATURE_MIN].min,
 						  camera->feature_set.feature[feature-DC1394_FEATURE_MIN].min,
 						  camera->feature_set.feature[feature-DC1394_FEATURE_MIN].max,1,10,0);
-    adjustment2=(GtkAdjustment*)gtk_adjustment_new(camera->feature_set.feature[feature-DC1394_FEATURE_MIN].min,
-						   camera->feature_set.feature[feature-DC1394_FEATURE_MIN].min,
-						   camera->feature_set.feature[feature-DC1394_FEATURE_MIN].max,1,10,0);
     scale = gtk_hscale_new (adjustment);
     gtk_widget_ref (scale);
     sprintf(stemp,"feature_%d_current_scale",feature);
-    gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, scale,
-			      (GtkDestroyNotify) gtk_widget_unref);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, scale, (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (scale);
-    sprintf(stemp,"feature_%d_table",feature);
-    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale, 1, RANGE_TABLE_WIDTH-1, 1, 2,
-		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-		      (GtkAttachOptions) (GTK_FILL), 0, 0);
+    gtk_table_attach (table, scale, ER, RS, *pos, *pos+1, (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), (GtkAttachOptions) (GTK_FILL), 0, 0);
     gtk_widget_set_sensitive (scale, FALSE);
     gtk_scale_set_draw_value (GTK_SCALE (scale), 0);
+    gtk_range_set_adjustment((GtkRange*)scale,adjustment);
 
-    scale2 = gtk_hscale_new (adjustment);
+    adjustment2=(GtkAdjustment*)gtk_adjustment_new(camera->feature_set.feature[feature-DC1394_FEATURE_MIN].min,
+						   camera->feature_set.feature[feature-DC1394_FEATURE_MIN].min,
+						   camera->feature_set.feature[feature-DC1394_FEATURE_MIN].max,1,10,0);
+    scale2 = gtk_hscale_new (adjustment2);
     gtk_widget_ref (scale2);
     sprintf(stemp,"feature_%d_target_scale",feature);
-    gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, scale2,
-			      (GtkDestroyNotify) gtk_widget_unref);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, scale2,  (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (scale2);
-    sprintf(stemp,"feature_%d_table",feature);
-    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale2, 1, RANGE_TABLE_WIDTH-1, 2, 3,
-		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-		      (GtkAttachOptions) (GTK_FILL), 0, 0);
+    gtk_table_attach (table, scale2, ER, RS, *pos+1, *pos+2, (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),(GtkAttachOptions) (GTK_FILL), 0, 0);
     gtk_widget_set_sensitive (scale2, TRUE);
     gtk_scale_set_draw_value (GTK_SCALE (scale2), 0);
+    gtk_range_set_adjustment((GtkRange*)scale2,adjustment2);
 
     // additional spinbuttons
     spin = gtk_spin_button_new (adjustment, 1, 0); // two lasts: step, decimal places. To be changed for absolute settings
@@ -421,9 +340,7 @@ void BuildRange(int feature)
     sprintf(stemp,"feature_%d_current_spin",feature);
     gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, spin, (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (spin);
-    sprintf(stemp,"feature_%d_table",feature);
-    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), spin, RANGE_TABLE_WIDTH-1, RANGE_TABLE_WIDTH, 1, 2,
-		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), (GtkAttachOptions) (GTK_FILL), 0, 0);
+    gtk_table_attach (table, spin, RS, RANGE_TABLE_WIDTH, *pos, *pos+1, (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), (GtkAttachOptions) (GTK_FILL), 0, 0);
     gtk_widget_set_sensitive (spin, FALSE);
 
     spin2 = gtk_spin_button_new (adjustment2, 1, 0); // two lasts: step, decimal places. To be changed for absolute settings
@@ -431,13 +348,9 @@ void BuildRange(int feature)
     sprintf(stemp,"feature_%d_target_spin",feature);
     gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, spin2, (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (spin2);
-    sprintf(stemp,"feature_%d_table",feature);
-    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), spin2, RANGE_TABLE_WIDTH-1, RANGE_TABLE_WIDTH, 2, 3,
-		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), (GtkAttachOptions) (GTK_FILL), 0, 0);
+    gtk_table_attach (table, spin2, RS, RANGE_TABLE_WIDTH, *pos+1, *pos+2, (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), (GtkAttachOptions) (GTK_FILL), 0, 0);
     gtk_widget_set_sensitive (spin2, TRUE);
 
-    gtk_range_set_adjustment((GtkRange*)scale,adjustment);
-    gtk_range_set_adjustment((GtkRange*)scale2,adjustment2);
     // connect:
     g_signal_connect ((gpointer) adjustment, "value_changed", G_CALLBACK (on_scale_value_changed), (gpointer)(unsigned long) DC1394_FEATURE_TEMPERATURE);
     break;
@@ -454,42 +367,32 @@ void BuildRange(int feature)
     scale = gtk_hscale_new (adjustment);
     gtk_widget_ref (scale);
     sprintf(stemp,"feature_%d_r_scale",feature);
-    gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, scale,
-			      (GtkDestroyNotify) gtk_widget_unref);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, scale, (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (scale);
-    sprintf(stemp,"feature_%d_table",feature);
-    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale, 1, RANGE_TABLE_WIDTH-1, 1, 2,
-		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-		      (GtkAttachOptions) (GTK_FILL), 0, 0);
+    gtk_table_attach (table, scale, ER, RS, *pos, *pos+1, (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), (GtkAttachOptions) (GTK_FILL), 0, 0);
     gtk_widget_set_sensitive (scale, TRUE);
     gtk_scale_set_draw_value (GTK_SCALE (scale), 0);
+    gtk_range_set_adjustment((GtkRange*)scale,adjustment);
 
-    scale2 = gtk_hscale_new (adjustment);
+    scale2 = gtk_hscale_new (adjustment2);
     gtk_widget_ref (scale2);
     sprintf(stemp,"feature_%d_g_scale",feature);
-    gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, scale2,
-			      (GtkDestroyNotify) gtk_widget_unref);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, scale2, (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (scale2);
-    sprintf(stemp,"feature_%d_table",feature);
-    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale2, 1, RANGE_TABLE_WIDTH-1, 2, 3,
-		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-		      (GtkAttachOptions) (GTK_FILL), 0, 0);
+    gtk_table_attach (table, scale2, ER, RS, *pos+1, *pos+2, (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), (GtkAttachOptions) (GTK_FILL), 0, 0);
     gtk_widget_set_sensitive (scale2, TRUE);
     gtk_scale_set_draw_value (GTK_SCALE (scale2), 0);
+    gtk_range_set_adjustment((GtkRange*)scale2,adjustment2);
 
-    scale3 = gtk_hscale_new (adjustment);
+    scale3 = gtk_hscale_new (adjustment3);
     gtk_widget_ref (scale3);
     sprintf(stemp,"feature_%d_b_scale",feature);
-    gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, scale3,
-			      (GtkDestroyNotify) gtk_widget_unref);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, scale3, (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (scale3);
-    sprintf(stemp,"feature_%d_table",feature);
-    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale3, 1, RANGE_TABLE_WIDTH-1, 3, 4,
-		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-		      (GtkAttachOptions) (GTK_FILL), 0, 0);
+    gtk_table_attach (table, scale3, ER, RS, *pos+2, *pos+3, (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), (GtkAttachOptions) (GTK_FILL), 0, 0);
     gtk_widget_set_sensitive (scale3, TRUE);
     gtk_scale_set_draw_value (GTK_SCALE (scale3), 0);
-
+    gtk_range_set_adjustment((GtkRange*)scale3,adjustment3);
 
     // additional spinbuttons
     spin = gtk_spin_button_new (adjustment, 1, 0); // two lasts: step, decimal places. To be changed for absolute settings
@@ -497,9 +400,7 @@ void BuildRange(int feature)
     sprintf(stemp,"feature_%d_r_spin",feature);
     gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, spin, (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (spin);
-    sprintf(stemp,"feature_%d_table",feature);
-    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), spin, RANGE_TABLE_WIDTH-1, RANGE_TABLE_WIDTH, 1, 2,
-		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), (GtkAttachOptions) (GTK_FILL), 0, 0);
+    gtk_table_attach (table, spin, RS, RANGE_TABLE_WIDTH, *pos, *pos+1, (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), (GtkAttachOptions) (GTK_FILL), 0, 0);
     gtk_widget_set_sensitive (spin, TRUE);
 
     spin2 = gtk_spin_button_new (adjustment2, 1, 0); // two lasts: step, decimal places. To be changed for absolute settings
@@ -507,9 +408,7 @@ void BuildRange(int feature)
     sprintf(stemp,"feature_%d_g_spin",feature);
     gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, spin2, (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (spin2);
-    sprintf(stemp,"feature_%d_table",feature);
-    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), spin2, RANGE_TABLE_WIDTH-1, RANGE_TABLE_WIDTH, 2, 3,
-		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), (GtkAttachOptions) (GTK_FILL), 0, 0);
+    gtk_table_attach (table, spin2, RS, RANGE_TABLE_WIDTH, *pos+1, *pos+2, (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), (GtkAttachOptions) (GTK_FILL), 0, 0);
     gtk_widget_set_sensitive (spin2, TRUE);
 
     spin3 = gtk_spin_button_new (adjustment3, 1, 0); // two lasts: step, decimal places. To be changed for absolute settings
@@ -517,16 +416,8 @@ void BuildRange(int feature)
     sprintf(stemp,"feature_%d_b_spin",feature);
     gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, spin3, (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (spin3);
-    sprintf(stemp,"feature_%d_table",feature);
-    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), spin3, RANGE_TABLE_WIDTH-1, RANGE_TABLE_WIDTH, 3, 4,
-		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), (GtkAttachOptions) (GTK_FILL), 0, 0);
+    gtk_table_attach (table, spin3, RS, RANGE_TABLE_WIDTH, *pos+2, *pos+3, (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), (GtkAttachOptions) (GTK_FILL), 0, 0);
     gtk_widget_set_sensitive (spin3, TRUE);
-
-
-
-    gtk_range_set_adjustment((GtkRange*)scale,adjustment);
-    gtk_range_set_adjustment((GtkRange*)scale2,adjustment2);
-    gtk_range_set_adjustment((GtkRange*)scale3,adjustment3);
 
     // connect:
     g_signal_connect ((gpointer) adjustment, "value_changed", G_CALLBACK (on_scale_value_changed), (gpointer)(unsigned long) DC1394_FEATURE_WHITE_SHADING+SHADINGR);
@@ -535,55 +426,41 @@ void BuildRange(int feature)
     break;
     
   default:
+    // scale
     adjustment=(GtkAdjustment*)gtk_adjustment_new(camera->feature_set.feature[feature-DC1394_FEATURE_MIN].min,
 						  camera->feature_set.feature[feature-DC1394_FEATURE_MIN].min,
 						  camera->feature_set.feature[feature-DC1394_FEATURE_MIN].max,1,10,0);
-
-    // scale
     scale = gtk_hscale_new (adjustment);
     gtk_widget_ref (scale);
     sprintf(stemp,"feature_%d_scale",feature);
-    gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, scale,
-			      (GtkDestroyNotify) gtk_widget_unref);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, scale, (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (scale);
-    sprintf(stemp,"feature_%d_table",feature);
     if (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].absolute_capable!=0) {
-      gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale, 0, RANGE_TABLE_WIDTH-1, 1, 2,
-			(GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			(GtkAttachOptions) (GTK_FILL), 0, 0);
+      gtk_table_attach (table, scale, MR, RS, *pos+1, *pos+2, (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), (GtkAttachOptions) (GTK_FILL), 0, 0);
     }
     else {
-      gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), scale, 1, RANGE_TABLE_WIDTH-1, 0, 1,
-			(GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			(GtkAttachOptions) (GTK_FILL), 0, 0);
+      gtk_table_attach (table, scale, MR, RS, *pos, *pos+1, (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), (GtkAttachOptions) (GTK_FILL), 0, 0);
     }
     gtk_widget_set_sensitive (scale, TRUE);
     gtk_scale_set_draw_value (GTK_SCALE (scale), 0);
+    gtk_range_set_adjustment((GtkRange*)scale,adjustment);
 
     // additional spinbutton
     spin = gtk_spin_button_new (adjustment, 1, 0); // two lasts: step, decimal places. To be changed for absolute settings
     gtk_widget_ref (spin);
     sprintf(stemp,"feature_%d_spin",feature);
-    gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, spin,
-			      (GtkDestroyNotify) gtk_widget_unref);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, spin, (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (spin);
     sprintf(stemp,"feature_%d_table",feature);
 
     if (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].absolute_capable!=0) {
-      gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), spin, RANGE_TABLE_WIDTH-1, RANGE_TABLE_WIDTH, 1, 2,
-			(GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			(GtkAttachOptions) (GTK_FILL), 0, 0);
+      gtk_table_attach (table, spin, RS, RANGE_TABLE_WIDTH, *pos+1, *pos+2, (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), (GtkAttachOptions) (GTK_FILL), 0, 0);
     }
     else {
-      gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), spin, RANGE_TABLE_WIDTH-1, RANGE_TABLE_WIDTH, 0, 1,
-			(GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			(GtkAttachOptions) (GTK_FILL), 0, 0);
+      gtk_table_attach (table, spin, RS, RANGE_TABLE_WIDTH, *pos, *pos+1, (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), (GtkAttachOptions) (GTK_FILL), 0, 0);
     }
     gtk_widget_set_sensitive (spin, TRUE);
 
-
-
-    gtk_range_set_adjustment((GtkRange*)scale,adjustment);
     // connect:
     g_signal_connect ((gpointer) adjustment, "value_changed", G_CALLBACK (on_scale_value_changed), (gpointer)(unsigned long) feature);
     
@@ -598,8 +475,7 @@ void BuildRange(int feature)
     gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, abs_entry,
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (abs_entry);
-    sprintf(stemp,"feature_%d_table",feature);
-    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), abs_entry, 2, RANGE_TABLE_WIDTH-2, 0, 1,
+    gtk_table_attach (table, abs_entry, RS-2, RS-1, *pos, *pos+1,
 		      (GtkAttachOptions) (GTK_EXPAND|GTK_FILL),
 		      (GtkAttachOptions) (0), 0, 0);
     g_signal_connect ((gpointer) abs_entry, "activate",
@@ -613,14 +489,28 @@ void BuildRange(int feature)
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_label_set_justify(GTK_LABEL(label),GTK_JUSTIFY_LEFT);
     gtk_widget_show (label);
-    sprintf(stemp,"feature_%d_table",feature);
-    gtk_table_attach (GTK_TABLE (lookup_widget(main_window,stemp)), label, RANGE_TABLE_WIDTH-2, RANGE_TABLE_WIDTH-1, 0, 1,
+    gtk_table_attach (table, label, RS-1, RS, *pos, *pos+1,
 		      (GtkAttachOptions) (GTK_FILL|GTK_FILL),
 		      (GtkAttachOptions) (0), 10, 0);
     gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
   }
 
   free(stemp);
+
+  switch(feature) {
+  case DC1394_FEATURE_WHITE_BALANCE:
+  case DC1394_FEATURE_TEMPERATURE:
+      *pos+=2;
+      break;
+  case DC1394_FEATURE_WHITE_SHADING:
+      *pos+=3;
+      break;
+  default:
+    if (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].absolute_capable==DC1394_TRUE)
+	*pos+=2;
+    else
+	*pos+=1;
+  }
 }
 
 void
