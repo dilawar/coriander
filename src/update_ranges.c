@@ -133,11 +133,12 @@ UpdateRange(int feature)
     sprintf(stemp,"feature_%d_target_scale",feature);
     gtk_widget_set_sensitive(lookup_widget(main_window, stemp), range_is_active);
     sprintf(stemp,"feature_%d_current_scale",feature);
-    gtk_widget_set_sensitive(lookup_widget(main_window, stemp),FALSE);break;
+    gtk_widget_set_sensitive(lookup_widget(main_window, stemp),FALSE);
     sprintf(stemp,"feature_%d_target_spin",feature);
     gtk_widget_set_sensitive(lookup_widget(main_window, stemp), range_is_active);
     sprintf(stemp,"feature_%d_current_spin",feature);
-    gtk_widget_set_sensitive(lookup_widget(main_window, stemp),FALSE);break;
+    gtk_widget_set_sensitive(lookup_widget(main_window, stemp),FALSE);
+    break;
   default:
     sprintf(stemp,"feature_%d_scale",feature);
     gtk_widget_set_sensitive(lookup_widget(main_window, stemp), range_is_active);
@@ -241,7 +242,8 @@ UpdateRangeValue(GtkWidget* widget, int feature)
       break;
     default:
 	err=dc1394_feature_get_value(camera->camera_info,feature,&value);
-      if (err<0) Error("Could not get feature value");
+      if (err<0)
+	  Error("Could not get feature value");
       else {
 	sprintf(stemp,"feature_%d_scale",feature);
 	adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(widget, stemp)));

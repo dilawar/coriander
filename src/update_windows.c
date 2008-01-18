@@ -78,8 +78,9 @@ UpdateFeatureWindow(void)
 	     camera->feature_set.feature[i-DC1394_FEATURE_MIN].is_on ||
 	     ((camera->camera_info->guid>>40)!=0xb09d)) // ptgrey only
 	    )) {
-	sprintf(stemp,"feature_%d_frame",i);
-        gtk_widget_set_sensitive(lookup_widget(main_window, stemp), 0);
+	  // FIXME: should set each of the feature components off individually
+	  //sprintf(stemp,"feature_%d_frame",i);
+	  //gtk_widget_set_sensitive(lookup_widget(main_window, stemp), 0);
 	
       }
     }
