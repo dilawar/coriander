@@ -517,21 +517,22 @@ void
 BuildFormat7Ranges(void)
 {
   
-  GtkAdjustment  *adjustment_px, *adjustment_py, *adjustment_sx, *adjustment_sy;
+  GtkAdjustment  *adjustment_px, *adjustment_py, *adjustment_sx, *adjustment_sy, *adjustment_packet;
   dc1394format7mode_t *info;
   
   info=&camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_VIDEO_MODE_FORMAT7_MIN];
 
-  //fprintf(stderr,"size: %d %d\n",info->max_size_x,info->max_size_y);
+  if (dc1394_format7_get_mode_info(camera->camera_info, camera->format7_info.edit_mode, info)!=DC1394_SUCCESS)
+      Error("Could not get format7 mode information");
 
-  // define the adjustments for the 4 format7 controls. Note that (pos_x+size_x)<=max_size_x which yields some inter-dependencies
-
+  // define the adjustments for the 5 format7 controls. Note that (pos_x+size_x)<=max_size_x which yields some inter-dependencies
   // define adjustement for X-position
   adjustment_px=(GtkAdjustment*)gtk_adjustment_new(info->pos_x,0,info->max_size_x-info->size_x,info->unit_pos_x,info->unit_pos_x*4,0);
   gtk_range_set_adjustment((GtkRange*)lookup_widget(main_window, "format7_hpos_scale"),adjustment_px);
   gtk_spin_button_configure(GTK_SPIN_BUTTON(lookup_widget(main_window, "format7_hpos_spin")),adjustment_px, info->unit_pos_x, 0);
   camera->format7_info.scale_posx_handle=g_signal_connect((gpointer) adjustment_px, "value_changed", G_CALLBACK (on_format7_value_changed), (int*) FORMAT7_POS_X);
   gtk_range_set_update_policy ((GtkRange*)lookup_widget(main_window, "format7_hpos_scale"), GTK_UPDATE_DELAYED);
+  gtk_adjustment_changed (adjustment_px);
   
   // define adjustement for Y-position 
   adjustment_py=(GtkAdjustment*)gtk_adjustment_new(info->pos_y,0,info->max_size_y-info->size_y,info->unit_pos_y,info->unit_pos_y*4,0);
@@ -539,6 +540,7 @@ BuildFormat7Ranges(void)
   gtk_spin_button_configure(GTK_SPIN_BUTTON(lookup_widget(main_window, "format7_vpos_spin")),adjustment_py, info->unit_pos_y, 0);
   camera->format7_info.scale_posy_handle=g_signal_connect((gpointer) adjustment_py, "value_changed", G_CALLBACK (on_format7_value_changed), (int*) FORMAT7_POS_Y);
   gtk_range_set_update_policy ((GtkRange*)lookup_widget(main_window, "format7_vpos_scale"), GTK_UPDATE_DELAYED);
+  gtk_adjustment_changed (adjustment_py);
 
   // define adjustement for X-size
   adjustment_sx=(GtkAdjustment*)gtk_adjustment_new(info->size_x,info->unit_size_x,info->max_size_x-info->pos_x,info->unit_size_x,info->unit_size_x*4,0);
@@ -546,34 +548,23 @@ BuildFormat7Ranges(void)
   gtk_spin_button_configure(GTK_SPIN_BUTTON(lookup_widget(main_window, "format7_hsize_spin")),adjustment_sx, info->unit_size_x, 0);
   camera->format7_info.scale_sizex_handle=g_signal_connect((gpointer) adjustment_sx, "value_changed", G_CALLBACK (on_format7_value_changed), (int*) FORMAT7_SIZE_X);
   gtk_range_set_update_policy ((GtkRange*)lookup_widget(main_window, "format7_hsize_scale"), GTK_UPDATE_DELAYED);
+  gtk_adjustment_changed (adjustment_sx);
 
-  // define adjustement for X-size
+  // define adjustement for Y-size
   adjustment_sy=(GtkAdjustment*)gtk_adjustment_new(info->size_y,info->unit_size_y,info->max_size_y-info->pos_y,info->unit_size_y,info->unit_size_y*4,0);
   gtk_range_set_adjustment((GtkRange*)lookup_widget(main_window, "format7_vsize_scale"),adjustment_sy);
   gtk_spin_button_configure(GTK_SPIN_BUTTON(lookup_widget(main_window, "format7_vsize_spin")),adjustment_sy, info->unit_size_y, 0);
   camera->format7_info.scale_sizey_handle=g_signal_connect((gpointer) adjustment_sy, "value_changed", G_CALLBACK (on_format7_value_changed), (int*) FORMAT7_SIZE_Y);
   gtk_range_set_update_policy ((GtkRange*)lookup_widget(main_window, "format7_vsize_scale"), GTK_UPDATE_DELAYED);
-
-  g_signal_emit_by_name((gpointer) adjustment_sx, "changed");
-  g_signal_emit_by_name((gpointer) adjustment_sy, "changed");
-  g_signal_emit_by_name((gpointer) adjustment_px, "changed");
-  g_signal_emit_by_name((gpointer) adjustment_py, "changed");
-
-}
-
-void
-BuildFormat7PacketSizeRange(void)
-{ 
-  GtkAdjustment *adjustment_packet;
-  dc1394format7mode_t *info;
-  info=&camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_VIDEO_MODE_FORMAT7_MIN];
+  gtk_adjustment_changed (adjustment_sy);
 
   // define adjustment for packet size:
   adjustment_packet=(GtkAdjustment*)gtk_adjustment_new(info->packet_size,info->unit_packet_size,info->max_packet_size,info->unit_packet_size,(info->max_packet_size-info->unit_packet_size)/16,0);
-  // min_bpp is the minimum bpp, but also the 'unit' bpp.
   gtk_range_set_adjustment((GtkRange*)lookup_widget(main_window, "format7_psize"),adjustment_packet);
   gtk_spin_button_configure(GTK_SPIN_BUTTON(lookup_widget(main_window, "format7_psize_spin")),adjustment_packet, info->unit_packet_size, 0);
-  g_signal_connect((gpointer) adjustment_packet, "value_changed", G_CALLBACK (on_format7_packet_size_changed),(int*)0);
+  g_signal_connect((gpointer) adjustment_packet, "value_changed", G_CALLBACK (on_format7_value_changed),(int*) FORMAT7_PACKET);
   gtk_range_set_update_policy ((GtkRange*)lookup_widget(main_window, "format7_psize"), GTK_UPDATE_DELAYED);
-  
+  gtk_adjustment_changed (adjustment_packet);
+
 }
+

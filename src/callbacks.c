@@ -300,50 +300,6 @@ on_camera_select_activate              (GtkMenuItem     *menuitem,
 }
 
 void
-on_format7_packet_size_changed               (GtkAdjustment    *adj,
-					      gpointer         user_data)
-{ 
-  unsigned int packet_size;
-  int state;
-  int value;
-
-  value=(int)adj->value;
-
-  value=NearestValue(value,camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].unit_packet_size,
-		     camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].unit_packet_size,
-		     camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].max_packet_size);
-
-  IsoFlowCheck(&state);
-  
-  if (dc1394_format7_set_packet_size(camera->camera_info, 
-				     camera->format7_info.edit_mode, value)!=DC1394_SUCCESS)
-    Error("Could not change Format7 bytes per packet");
-  
-  if (dc1394_format7_get_packet_size(camera->camera_info,
-				     camera->format7_info.edit_mode,&packet_size)!=DC1394_SUCCESS) 
-    Error("Could not query Format7 bytes per packet");
-  else {
-    camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].packet_size=packet_size;
-    if (packet_size==0)
-      fprintf(stderr,"Packet size is zero in %s at line %d\n",__FUNCTION__,__LINE__);
-    
-    // tell the range to change its setting
-    adj->value=packet_size;
-    g_signal_emit_by_name((gpointer) adj, "changed");
-    
-    usleep(DELAY);
-  }
-  
-  if (dc1394_format7_get_mode_info(camera->camera_info, camera->format7_info.edit_mode, 
-				   &camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_VIDEO_MODE_FORMAT7_MIN])!=DC1394_SUCCESS)
-    Error("Could not get format7 mode information");
-
-  UpdateFormat7InfoFrame();
-  IsoFlowResume(&state);
-  UpdateFeatureWindow(); // because several controls may change, especially exposure, gamma, shutter,... since the framerate changes.
-} 
-
-void
 on_edit_format7_mode_activate             (GtkMenuItem     *menuitem,
 					   gpointer         user_data)
 {
@@ -379,9 +335,6 @@ on_edit_format7_color_activate             (GtkMenuItem     *menuitem,
 
   UpdateOptionFrame();
   UpdateFormat7Window();
-  /*UpdateFormat7PacketSizeRange();
-    UpdateFormat7Ranges();
-    UpdateFormat7InfoFrame();*/
 
   // if the mode is the 'live' mode:
   if (camera->format7_info.edit_mode==video_mode) {
@@ -498,42 +451,60 @@ on_format7_value_changed             ( GtkAdjustment    *adj,
     sy=info->size_y;
     px=info->pos_x;
     py=info->pos_y;
-    /*
-    fprintf(stderr,"%d %d %d %d %d %d\n",info->max_size_x, info->max_size_y,
-	    info->step_x, info->step_y, 
-	    info->step_pos_x, info->step_pos_y);
-    */
-    switch((int)user_data) {
-    case FORMAT7_SIZE_X:
-      sx=adj->value;
-      sx=NearestValue(sx,info->unit_size_x, info->unit_size_x, info->max_size_x - px);
-      break;
-    case FORMAT7_SIZE_Y:
-      sy=adj->value;
-      sy=NearestValue(sy,info->unit_size_y, info->unit_size_y, info->max_size_y - py);
-      break;
-    case FORMAT7_POS_X:
-      px=adj->value;
-      px=NearestValue(px,info->unit_pos_x, 0, info->max_size_x - info->unit_pos_x);
-      break;
-    case FORMAT7_POS_Y:
-      py=adj->value;
-      py=NearestValue(py,info->unit_pos_y, 0, info->max_size_y - info->unit_pos_y);
-      break;
-    }
-    SetFormat7Crop(sx,sy,px,py, camera->format7_info.edit_mode);
-    
-    //fprintf(stderr,"Size: %d %d  Position: %d %d\n",info->size_x, info->size_y, info->pos_x, info->pos_y);
-    // update bpp range here.
-    //fprintf(stderr,"max bpp before: %d  ",info->max_bpp);
-    if (dc1394_format7_get_mode_info(camera->camera_info, camera->format7_info.edit_mode, info)!=DC1394_SUCCESS)
-      Error("Could not get format7 mode information");
-    //fprintf(stderr,"after %d\n",info->max_bpp);
 
-    UpdateFormat7PacketSizeRange();
-    UpdateFormat7InfoFrame();
+    if ((int)user_data==FORMAT7_PACKET) {
+	unsigned int packet_size;
+	int state;
+	adj->value=NearestValue(adj->value,camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].unit_packet_size,
+				camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].unit_packet_size,
+				camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].max_packet_size);
+	IsoFlowCheck(&state);
+	
+	if (dc1394_format7_set_packet_size(camera->camera_info, 
+				     camera->format7_info.edit_mode, adj->value)!=DC1394_SUCCESS)
+	    Error("Could not change Format7 bytes per packet");
+	
+	if (dc1394_format7_get_packet_size(camera->camera_info,
+					   camera->format7_info.edit_mode,&packet_size)!=DC1394_SUCCESS) 
+	    Error("Could not query Format7 bytes per packet");
+	else {
+	    camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].packet_size=packet_size;
+	    if (packet_size==0)
+		fprintf(stderr,"Packet size is zero in %s at line %d\n",__FUNCTION__,__LINE__);
+	    
+	    // tell the range to change its setting
+	    adj->value=packet_size;
+	}
+	IsoFlowResume(&state);
+
+	UpdateFormat7Ranges();
+	
+    }
+    else {
+	switch((int)user_data) {
+	case FORMAT7_SIZE_X:
+	    sx=NearestValue(adj->value,info->unit_size_x, info->unit_size_x, info->max_size_x - px);
+	    adj->value=sx;
+	    break;
+	case FORMAT7_SIZE_Y:
+	    sy=NearestValue(adj->value,info->unit_size_y, info->unit_size_y, info->max_size_y - py);
+	    adj->value=sy;
+	    break;
+	case FORMAT7_POS_X:
+	    px=NearestValue(adj->value,info->unit_pos_x, 0, info->max_size_x - info->unit_pos_x);
+	    adj->value=px;
+	    break;
+	case FORMAT7_POS_Y:
+	    py=NearestValue(adj->value,info->unit_pos_y, 0, info->max_size_y - info->unit_pos_y);
+	    adj->value=py;
+	    break;
+	}
+	SetFormat7Crop(sx,sy,px,py, camera->format7_info.edit_mode); // this includes re-building the ranges
+    }
+
     UpdateFeatureWindow(); // because several controls may change, especially exposure, gamma, shutter,... since the framerate changes.
   }
+
 }
 
 

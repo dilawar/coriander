@@ -811,19 +811,12 @@ SetFormat7Crop(int sx, int sy, int px, int py, int mode) {
 	
   int state;
   dc1394format7mode_t *info;
-  GtkAdjustment *adjsx, *adjsy, *adjpx, *adjpy, *adj_bpp;
 
   dc1394video_mode_t video_mode;
   dc1394_video_get_mode(camera->camera_info, &video_mode);
 
   info=&(camera->format7_info.modeset.mode[mode-DC1394_VIDEO_MODE_FORMAT7_MIN]);
-  
-  adjpx=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_hposition_scale")));
-  adjpy=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_vposition_scale")));
-  adjsx=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_hsize_scale")));
-  adjsy=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_vsize_scale")));
-  adj_bpp=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_packet_size")));
-  
+
   if (mode==video_mode) {
     IsoFlowCheck(&state);
   }
@@ -841,26 +834,7 @@ SetFormat7Crop(int sx, int sy, int px, int py, int mode) {
     info->pos_y=py;
   }
   
-  // tell the ranges to change their settings
-  adjpx->upper=info->max_size_x-sx;
-  adjpx->value=px;
-  g_signal_emit_by_name((gpointer) adjpx, "changed");
-  
-  adjpy->upper=info->max_size_y-sy;
-  adjpy->value=py;
-  g_signal_emit_by_name((gpointer) adjpy, "changed");
-  
-  adjsx->upper=info->max_size_x-px;
-  adjsx->value=sx;
-  g_signal_emit_by_name((gpointer) adjsx, "changed");
-  
-  adjsy->upper=info->max_size_y-py;
-  adjsy->value=sy;
-  g_signal_emit_by_name((gpointer) adjsy, "changed");
-  
-  g_signal_emit_by_name((gpointer) adj_bpp, "changed"); // not needed??
-  
-  usleep(DELAY);
+  UpdateFormat7Ranges();
   
   if (mode==video_mode) {
     IsoFlowResume(&state);

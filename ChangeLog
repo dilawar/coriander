@@ -1,5 +1,8 @@
 Coriander, (c) 2000-2007 Damien Douxchamps <ddouxchamps@users.sf.net>
 	
+   2008-02-06, by Damien Douxchamps
+   - fix a bug in format7 controls (interdependency / update)
+	
    2008-01-18, by Damien Douxchamps
    - more updates regarding the feature frame, which is now more compact than ever.
    - release 2.0.0-rc6

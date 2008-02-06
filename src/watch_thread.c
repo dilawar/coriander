@@ -91,7 +91,8 @@ WatchThread(void *arg)
 			   info->pos[1]+camera->format7_info.modeset.mode[video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN].pos_y,
 			   video_mode);
 	  }
-	  UpdateFormat7PacketSizeRange();
+	  //UpdateFormat7Ranges();
+	  // no need to rebuild at all: setformat7crop includes rebuilding 
 	}
 	else {
 	  SetFormat7Crop(info->size[0],info->size[1],info->pos[0],info->pos[1],video_mode);

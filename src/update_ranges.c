@@ -261,79 +261,65 @@ UpdateRangeValue(GtkWidget* widget, int feature)
 }
 
 void
-UpdateFormat7PacketSizeRange(void)
-{
-  GtkAdjustment* adj;
-  dc1394format7mode_t *info;
-  info=&camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_VIDEO_MODE_FORMAT7_MIN];
-
-  if (dc1394_format7_get_packet_size(camera->camera_info,
-				     camera->format7_info.edit_mode, &info->packet_size)==DC1394_SUCCESS) {
-    if (dc1394_format7_get_packet_parameters(camera->camera_info,
-				       camera->format7_info.edit_mode, &info->unit_packet_size,&info->max_packet_size)==DC1394_SUCCESS) {
-      if (info->packet_size>info->max_packet_size)
-	info->packet_size=info->max_packet_size;
-      //if (info->packet_size==0)
-      //  fprintf(stderr,"PACKET_SIZE is zero in %s at line %d\n",__FUNCTION__,__LINE__);
-      adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_packet_size")));
-      adj->upper=info->max_packet_size;
-      adj->lower=info->unit_packet_size;
-      adj->value=info->packet_size;
-      adj->step_increment=info->unit_packet_size;
-      adj->page_increment=(info->max_packet_size-info->unit_packet_size)/16;
-      g_signal_emit_by_name((gpointer) adj, "changed");
-    }
-    else
-      Error("Can't get packet_size info from camera");
-  }
-  else
-    Error("Can't get packet_size info from camera");
-}
-
-void
 UpdateFormat7Ranges(void)
 {
-  GtkAdjustment  *adj;
+  GtkAdjustment  *adjpx, *adjpy, *adjsx, *adjsy, *adjps;
   dc1394format7mode_t *info;
   info=&camera->format7_info.modeset.mode[camera->format7_info.edit_mode-DC1394_VIDEO_MODE_FORMAT7_MIN];
 
+  // get new format7 data ( we do it elsewhere)
+  if (dc1394_format7_get_mode_info(camera->camera_info, camera->format7_info.edit_mode, info)!=DC1394_SUCCESS)
+      Error("Could not get format7 mode information");
+
   // define the adjustments for the 4 format7 controls. Note that (pos_x+size_x)<=max_size_x which yields some inter-dependencies
-
+  
   // define adjustement for X-position
-  adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_hposition_scale")));
-  adj->value=info->pos_x;
-  adj->upper=info->max_size_x-info->size_x;
-  adj->lower=0;
-  adj->step_increment=info->unit_pos_x;
-  adj->page_increment=adj->step_increment*4;
-  g_signal_emit_by_name((gpointer) adj, "changed");
-
-  // define adjustement for Y-position 
-  adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_vposition_scale")));
-  adj->value=info->pos_y;
-  adj->upper=info->max_size_y-info->size_y;
-  adj->lower=0;
-  adj->step_increment=info->unit_pos_y;
-  adj->page_increment=adj->step_increment*4;
-  g_signal_emit_by_name((gpointer) adj, "changed");
+  adjpx=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_hpos_scale")));
+  adjpx->value=info->pos_x;
+  adjpx->upper=info->max_size_x-info->size_x;
+  adjpx->lower=0;
+  adjpx->step_increment=info->unit_pos_x;
+  adjpx->page_increment=adjpx->step_increment*4;
 
   // define adjustement for X-size
-  adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_hsize_scale")));
-  adj->value=info->size_x;
-  adj->upper=info->max_size_x-info->pos_x;
-  adj->lower=info->unit_size_x;
-  adj->step_increment=info->unit_size_x;
-  adj->page_increment=adj->step_increment*4;
-  g_signal_emit_by_name((gpointer) adj, "changed");
+  adjsx=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_hsize_scale")));
+  adjsx->value=info->size_x;
+  adjsx->upper=info->max_size_x-info->pos_x;
+  adjsx->lower=info->unit_size_x;
+  adjsx->step_increment=info->unit_size_x;
+  adjsx->page_increment=adjsx->step_increment*4;
+
+  // define adjustement for Y-position 
+  adjpy=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_vpos_scale")));
+  adjpy->value=info->pos_y;
+  adjpy->upper=info->max_size_y-info->size_y;
+  adjpy->lower=0;
+  adjpy->step_increment=info->unit_pos_y;
+  adjpy->page_increment=adjpy->step_increment*4;
 
   // define adjustement for Y-size
-  adj=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_vsize_scale")));
-  adj->value=info->size_y;
-  adj->upper=info->max_size_y-info->pos_y;
-  adj->lower=info->unit_size_y;
-  adj->step_increment=info->unit_size_y;
-  adj->page_increment=adj->step_increment*4;
-  g_signal_emit_by_name((gpointer) adj, "changed");
+  adjsy=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_vsize_scale")));
+  adjsy->value=info->size_y;
+  adjsy->upper=info->max_size_y-info->pos_y;
+  adjsy->lower=info->unit_size_y;
+  adjsy->step_increment=info->unit_size_y;
+  adjsy->page_increment=adjsy->step_increment*4;
+
+  // packet size
+  adjps=gtk_range_get_adjustment(GTK_RANGE (lookup_widget(main_window, "format7_psize")));
+  if (info->packet_size>info->max_packet_size)
+      info->packet_size=info->max_packet_size;
+  adjps->upper=info->max_packet_size;
+  adjps->lower=info->unit_packet_size;
+  adjps->value=info->packet_size;
+  adjps->step_increment=info->unit_packet_size;
+  adjps->page_increment=(info->max_packet_size-info->unit_packet_size)/16;
+
+  gtk_adjustment_changed (adjpx);
+  gtk_adjustment_changed (adjpy);
+  gtk_adjustment_changed (adjsx);
+  gtk_adjustment_changed (adjsy);
+  gtk_adjustment_changed (adjps);
 
 }
 

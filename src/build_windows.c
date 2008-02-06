@@ -390,8 +390,6 @@ BuildFormat7Window(void)
     //eprint("check 9\n");
     BuildFormat7Ranges();
     //eprint("check 10\n");
-    BuildFormat7PacketSizeRange();
-    //eprint("check 11\n");
     format7_tab_presence=1;
   }
   //eprint("finished building F7 window\n");

@@ -22,7 +22,6 @@ void
 UpdateFormat7Window(void)
 {
   UpdateFormat7Ranges();
-  UpdateFormat7PacketSizeRange();
   BuildFormat7ColorMenu();
   UpdateFormat7InfoFrame();
 }
@@ -56,7 +55,7 @@ UpdateFeatureWindow(void)
 {
   int i;
 
-  char stemp[256];
+  //char stemp[256];
 
   for (i=DC1394_FEATURE_MIN;i<=DC1394_FEATURE_MAX;i++) {
     if ((camera->feature_set.feature[i-DC1394_FEATURE_MIN].available>0)&&
