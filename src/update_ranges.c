@@ -158,6 +158,8 @@ UpdateRange(int feature)
     gtk_widget_set_sensitive(lookup_widget(main_window, stemp), range_is_active);
     sprintf(stemp,"feature_%d_current_spin",feature);
     gtk_widget_set_sensitive(lookup_widget(main_window, stemp),FALSE);
+    gtk_widget_set_sensitive(lookup_widget(main_window, "label_temp_scale_target"), range_is_active);
+    gtk_widget_set_sensitive(lookup_widget(main_window, "label_temp_scale_current"), range_is_active);
     break;
   default:
     sprintf(stemp,"feature_%d_scale",feature);

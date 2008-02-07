@@ -142,6 +142,7 @@ BuildRange(int feature, int *pos)
   GtkWidget* abs_entry;
   GtkWidget* label;
   GtkTable* table;
+  int nlines=0;
 
   char *stemp;
   stemp=(char*)malloc(STRING_SIZE*sizeof(char));
@@ -290,6 +291,7 @@ BuildRange(int feature, int *pos)
     // connect:
     g_signal_connect ((gpointer) adjustment, "value_changed", G_CALLBACK (on_scale_value_changed), (gpointer)(unsigned long) DC1394_FEATURE_WHITE_BALANCE+BU);
     g_signal_connect ((gpointer) (adjustment2), "value_changed", G_CALLBACK (on_scale_value_changed), (gpointer)(unsigned long) DC1394_FEATURE_WHITE_BALANCE+RV);
+    nlines=2;
     break;
   case DC1394_FEATURE_TEMPERATURE:
     adjustment=(GtkAdjustment*)gtk_adjustment_new(camera->feature_set.feature[feature-DC1394_FEATURE_MIN].min,
@@ -337,6 +339,7 @@ BuildRange(int feature, int *pos)
 
     // connect:
     g_signal_connect ((gpointer) adjustment, "value_changed", G_CALLBACK (on_scale_value_changed), (gpointer)(unsigned long) DC1394_FEATURE_TEMPERATURE);
+    nlines=2;
     break;
   case DC1394_FEATURE_WHITE_SHADING:
     adjustment=(GtkAdjustment*)gtk_adjustment_new(camera->feature_set.feature[feature-DC1394_FEATURE_MIN].min,
@@ -407,6 +410,7 @@ BuildRange(int feature, int *pos)
     g_signal_connect ((gpointer) adjustment, "value_changed", G_CALLBACK (on_scale_value_changed), (gpointer)(unsigned long) DC1394_FEATURE_WHITE_SHADING+SHADINGR);
     g_signal_connect ((gpointer) (adjustment2), "value_changed", G_CALLBACK (on_scale_value_changed), (gpointer)(unsigned long) DC1394_FEATURE_WHITE_BALANCE+SHADINGG);
     g_signal_connect ((gpointer) (adjustment3), "value_changed", G_CALLBACK (on_scale_value_changed), (gpointer)(unsigned long) DC1394_FEATURE_WHITE_BALANCE+SHADINGB);
+    nlines=3;
     break;
     
   default:
@@ -419,12 +423,7 @@ BuildRange(int feature, int *pos)
     sprintf(stemp,"feature_%d_scale",feature);
     gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, scale, (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (scale);
-    if (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].absolute_capable!=0) {
-      gtk_table_attach (table, scale, MR, RS, *pos+1, *pos+2, (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), (GtkAttachOptions) (GTK_FILL), 0, 0);
-    }
-    else {
-      gtk_table_attach (table, scale, MR, RS, *pos, *pos+1, (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), (GtkAttachOptions) (GTK_FILL), 0, 0);
-    }
+    gtk_table_attach (table, scale, MR, RS, *pos, *pos+1, (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), (GtkAttachOptions) (GTK_FILL), 0, 0);
     gtk_widget_set_sensitive (scale, TRUE);
     gtk_scale_set_draw_value (GTK_SCALE (scale), 0);
     gtk_range_set_adjustment((GtkRange*)scale,adjustment);
@@ -437,16 +436,14 @@ BuildRange(int feature, int *pos)
     gtk_widget_show (spin);
     sprintf(stemp,"feature_%d_table",feature);
 
-    if (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].absolute_capable!=0) {
-      gtk_table_attach (table, spin, RS, RANGE_TABLE_WIDTH, *pos+1, *pos+2, (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), (GtkAttachOptions) (GTK_FILL), 0, 0);
-    }
-    else {
-      gtk_table_attach (table, spin, RS, RANGE_TABLE_WIDTH, *pos, *pos+1, (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), (GtkAttachOptions) (GTK_FILL), 0, 0);
-    }
+    gtk_table_attach (table, spin, RS, RANGE_TABLE_WIDTH, *pos, *pos+1, (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), (GtkAttachOptions) (GTK_FILL), 0, 0);
+
     gtk_widget_set_sensitive (spin, TRUE);
 
     // connect:
     g_signal_connect ((gpointer) adjustment, "value_changed", G_CALLBACK (on_scale_value_changed), (gpointer)(unsigned long) feature);
+    nlines=1;
+    break;
     
   }
 
@@ -459,7 +456,7 @@ BuildRange(int feature, int *pos)
     gtk_object_set_data_full (GTK_OBJECT (main_window), stemp, abs_entry,
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (abs_entry);
-    gtk_table_attach (table, abs_entry, RS-2, RS-1, *pos, *pos+1,
+    gtk_table_attach (table, abs_entry, RS-2, RS-1, *pos+nlines, *pos+nlines+1,
 		      (GtkAttachOptions) (GTK_EXPAND|GTK_FILL),
 		      (GtkAttachOptions) (0), 0, 0);
     g_signal_connect ((gpointer) abs_entry, "activate",
@@ -473,7 +470,7 @@ BuildRange(int feature, int *pos)
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_label_set_justify(GTK_LABEL(label),GTK_JUSTIFY_LEFT);
     gtk_widget_show (label);
-    gtk_table_attach (table, label, RS-1, RS, *pos, *pos+1,
+    gtk_table_attach (table, label, RS-1, RS, *pos+nlines, *pos+nlines+1,
 		      (GtkAttachOptions) (GTK_FILL|GTK_FILL),
 		      (GtkAttachOptions) (0), 10, 0);
     gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
@@ -490,11 +487,12 @@ BuildRange(int feature, int *pos)
       *pos+=3;
       break;
   default:
-    if (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].absolute_capable==DC1394_TRUE)
-	*pos+=2;
-    else
-	*pos+=1;
+      *pos+=1;
+      break;
   }
+
+  if (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].absolute_capable==DC1394_TRUE)
+      *pos+=1;
 }
 
 void
