@@ -248,62 +248,62 @@ typedef struct _StatusInfo
 
 typedef struct _CtxtInfo
 {
-  int model_ctxt;
-  int node_ctxt;
-  int guid_ctxt;
-  int handle_ctxt;
-  int vendor_ctxt;
-  int max_iso_ctxt;
-  int delay_ctxt;
-  int dc_ctxt;
-  int pwclass_ctxt;
-  int iso_channel_ctxt;
-  int iso_status_ctxt;
-  int main_ctxt;
-
-  int max_iso_id;
-  int model_id;
-  int node_id;
-  int guid_id;
-  int handle_id;
-  int vendor_id;
-  int delay_id;
-  int dc_id;
-  int pwclass_id;
-  int iso_channel_id;
-  int iso_status_id;
-  int main_id;
-
-  int cursor_pos_ctxt;
-  int cursor_yuv_ctxt;
-  int cursor_rgb_ctxt;
-
-  int cursor_pos_id;
-  int cursor_rgb_id;
-  int cursor_yuv_id;
-
-  int fps_receive_ctxt;
-  int fps_receive_id;
-  int fps_display_ctxt;
-  int fps_display_id;
-  int fps_save_ctxt;
-  int fps_save_id;
-  int fps_ftp_ctxt;
-  int fps_ftp_id;
-  int fps_v4l_ctxt;
-  int fps_v4l_id;
-
-  int save_filename_ctxt;
-  int save_filename_id;
-
-  int format7_imagebytes_id;
-  int format7_totalbytes_id;
-  int format7_imagepixels_id;
-  int format7_padding_id;
-  int format7_imagebytes_ctxt;
-  int format7_totalbytes_ctxt;
-  int format7_imagepixels_ctxt;
-  int format7_padding_ctxt;
+    int model_ctxt;
+    int port_node_ctxt;
+    int guid_ctxt;
+    //int handle_ctxt;
+    int vendor_ctxt;
+    int max_iso_ctxt;
+    //int delay_ctxt;
+    int dc_ctxt;
+    //int pwclass_ctxt;
+    int iso_channel_ctxt;
+    int iso_status_ctxt;
+    int main_ctxt;
+    
+    int model_id;
+    int port_node_id;
+    int guid_id;
+    //int handle_id;
+    int vendor_id;
+    int max_iso_id;
+    //int delay_id;
+    int dc_id;
+    //int pwclass_id;
+    int iso_channel_id;
+    int iso_status_id;
+    int main_id;
+    
+    int cursor_pos_ctxt;
+    int cursor_yuv_ctxt;
+    int cursor_rgb_ctxt;
+    
+    int cursor_pos_id;
+    int cursor_rgb_id;
+    int cursor_yuv_id;
+    
+    int fps_receive_ctxt;
+    int fps_receive_id;
+    int fps_display_ctxt;
+    int fps_display_id;
+    int fps_save_ctxt;
+    int fps_save_id;
+    int fps_ftp_ctxt;
+    int fps_ftp_id;
+    int fps_v4l_ctxt;
+    int fps_v4l_id;
+    
+    int save_filename_ctxt;
+    int save_filename_id;
+    
+    int format7_imagebytes_id;
+    int format7_totalbytes_id;
+    int format7_imagepixels_id;
+    int format7_padding_id;
+    int format7_imagebytes_ctxt;
+    int format7_totalbytes_ctxt;
+    int format7_imagepixels_ctxt;
+    int format7_padding_ctxt;
 
 } CtxtInfo_t;
 

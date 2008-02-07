@@ -255,8 +255,6 @@ BuildPrefsDisplayFrame(void)
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window,"display_redraw")), camera->prefs.display_redraw==DISPLAY_REDRAW_ON);
   gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(main_window,"display_redraw_rate"), camera->prefs.display_redraw_rate);
 
-  gtk_entry_set_text(GTK_ENTRY(gnome_file_entry_gtk_entry(GNOME_FILE_ENTRY(lookup_widget(main_window, "overlay_file_entry")))), camera->prefs.overlay_filename);
-
   BuildOverlayPatternMenu();
   BuildOverlayTypeMenu();
 

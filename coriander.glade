@@ -290,7 +290,7 @@
 					    <widget class="GtkImage" id="image13">
 					      <property name="visible">True</property>
 					      <property name="stock">gtk-refresh</property>
-					      <property name="icon_size">2</property>
+					      <property name="icon_size">1</property>
 					      <property name="xalign">0.5</property>
 					      <property name="yalign">0.5</property>
 					      <property name="xpad">0</property>
@@ -373,7 +373,7 @@
 					    <widget class="GtkImage" id="image12">
 					      <property name="visible">True</property>
 					      <property name="stock">gtk-disconnect</property>
-					      <property name="icon_size">2</property>
+					      <property name="icon_size">1</property>
 					      <property name="xalign">0.5</property>
 					      <property name="yalign">0.5</property>
 					      <property name="xpad">0</property>
@@ -456,7 +456,7 @@
 					    <widget class="GtkImage" id="image11">
 					      <property name="visible">True</property>
 					      <property name="stock">gtk-connect</property>
-					      <property name="icon_size">2</property>
+					      <property name="icon_size">1</property>
 					      <property name="xalign">0.5</property>
 					      <property name="yalign">0.5</property>
 					      <property name="xpad">0</property>
@@ -612,7 +612,7 @@
 					    <widget class="GtkImage" id="image2">
 					      <property name="visible">True</property>
 					      <property name="stock">gtk-save</property>
-					      <property name="icon_size">2</property>
+					      <property name="icon_size">1</property>
 					      <property name="xalign">0.5</property>
 					      <property name="yalign">0.5</property>
 					      <property name="xpad">0</property>
@@ -694,7 +694,7 @@
 					    <widget class="GtkImage" id="image3">
 					      <property name="visible">True</property>
 					      <property name="stock">gtk-goto-bottom</property>
-					      <property name="icon_size">2</property>
+					      <property name="icon_size">1</property>
 					      <property name="xalign">0.5</property>
 					      <property name="yalign">0.5</property>
 					      <property name="xpad">0</property>
@@ -826,7 +826,7 @@
 					    <widget class="GtkImage" id="image6">
 					      <property name="visible">True</property>
 					      <property name="stock">gtk-refresh</property>
-					      <property name="icon_size">2</property>
+					      <property name="icon_size">1</property>
 					      <property name="xalign">0.5</property>
 					      <property name="yalign">0.5</property>
 					      <property name="xpad">0</property>
@@ -909,7 +909,7 @@
 					    <widget class="GtkImage" id="image5">
 					      <property name="visible">True</property>
 					      <property name="stock">gtk-media-play</property>
-					      <property name="icon_size">2</property>
+					      <property name="icon_size">1</property>
 					      <property name="xalign">0.5</property>
 					      <property name="yalign">0.5</property>
 					      <property name="xpad">0</property>
@@ -991,8 +991,8 @@
 					  <child>
 					    <widget class="GtkImage" id="image14">
 					      <property name="visible">True</property>
-					      <property name="stock">gtk-stop</property>
-					      <property name="icon_size">2</property>
+					      <property name="stock">gtk-media-stop</property>
+					      <property name="icon_size">1</property>
 					      <property name="xalign">0.5</property>
 					      <property name="yalign">0.5</property>
 					      <property name="xpad">0</property>
@@ -1095,7 +1095,7 @@
 		      <child>
 			<widget class="GtkTable" id="table48">
 			  <property name="visible">True</property>
-			  <property name="n_rows">5</property>
+			  <property name="n_rows">6</property>
 			  <property name="n_columns">4</property>
 			  <property name="homogeneous">True</property>
 			  <property name="row_spacing">0</property>
@@ -1367,6 +1367,49 @@
 			      <property name="y_options"></property>
 			    </packing>
 			  </child>
+
+			  <child>
+			    <widget class="GtkLabel" id="label238">
+			      <property name="visible">True</property>
+			      <property name="label" translatable="yes">Port / Node:</property>
+			      <property name="use_underline">False</property>
+			      <property name="use_markup">False</property>
+			      <property name="justify">GTK_JUSTIFY_CENTER</property>
+			      <property name="wrap">False</property>
+			      <property name="selectable">False</property>
+			      <property name="xalign">0.5</property>
+			      <property name="yalign">0.5</property>
+			      <property name="xpad">2</property>
+			      <property name="ypad">2</property>
+			      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+			      <property name="width_chars">-1</property>
+			      <property name="single_line_mode">False</property>
+			      <property name="angle">0</property>
+			    </widget>
+			    <packing>
+			      <property name="left_attach">0</property>
+			      <property name="right_attach">1</property>
+			      <property name="top_attach">5</property>
+			      <property name="bottom_attach">6</property>
+			      <property name="x_options">fill</property>
+			      <property name="y_options"></property>
+			    </packing>
+			  </child>
+
+			  <child>
+			    <widget class="GtkStatusbar" id="camera_port_node_status">
+			      <property name="border_width">1</property>
+			      <property name="visible">True</property>
+			      <property name="has_resize_grip">False</property>
+			    </widget>
+			    <packing>
+			      <property name="left_attach">1</property>
+			      <property name="right_attach">2</property>
+			      <property name="top_attach">5</property>
+			      <property name="bottom_attach">6</property>
+			      <property name="y_options"></property>
+			    </packing>
+			  </child>
 			</widget>
 		      </child>
 
@@ -1631,7 +1674,7 @@
 					<widget class="GtkImage" id="image15">
 					  <property name="visible">True</property>
 					  <property name="stock">gtk-goto-bottom</property>
-					  <property name="icon_size">2</property>
+					  <property name="icon_size">1</property>
 					  <property name="xalign">0.5</property>
 					  <property name="yalign">0.5</property>
 					  <property name="xpad">0</property>
@@ -1713,8 +1756,8 @@
 				      <child>
 					<widget class="GtkImage" id="image20">
 					  <property name="visible">True</property>
-					  <property name="stock">gnome-stock-table-fill</property>
-					  <property name="icon_size">2</property>
+					  <property name="stock">gtk-missing-image</property>
+					  <property name="icon_size">1</property>
 					  <property name="xalign">0.5</property>
 					  <property name="yalign">0.5</property>
 					  <property name="xpad">0</property>
@@ -1797,7 +1840,7 @@
 					<widget class="GtkImage" id="image16">
 					  <property name="visible">True</property>
 					  <property name="stock">gtk-floppy</property>
-					  <property name="icon_size">2</property>
+					  <property name="icon_size">1</property>
 					  <property name="xalign">0.5</property>
 					  <property name="yalign">0.5</property>
 					  <property name="xpad">0</property>
@@ -1910,7 +1953,7 @@
 					<widget class="GtkImage" id="image19">
 					  <property name="visible">True</property>
 					  <property name="stock">gtk-network</property>
-					  <property name="icon_size">2</property>
+					  <property name="icon_size">1</property>
 					  <property name="xalign">0.5</property>
 					  <property name="yalign">0.5</property>
 					  <property name="xpad">0</property>
@@ -1993,7 +2036,7 @@
 					<widget class="GtkImage" id="image18">
 					  <property name="visible">True</property>
 					  <property name="stock">gnome-stock-mail-fwd</property>
-					  <property name="icon_size">2</property>
+					  <property name="icon_size">1</property>
 					  <property name="xalign">0.5</property>
 					  <property name="yalign">0.5</property>
 					  <property name="xpad">0</property>
@@ -2344,8 +2387,8 @@
 						  <child>
 						    <widget class="GtkImage" id="image8">
 						      <property name="visible">True</property>
-						      <property name="stock">gtk-stop</property>
-						      <property name="icon_size">2</property>
+						      <property name="stock">gtk-media-stop</property>
+						      <property name="icon_size">1</property>
 						      <property name="xalign">0.5</property>
 						      <property name="yalign">0.5</property>
 						      <property name="xpad">0</property>
@@ -2428,7 +2471,7 @@
 						    <widget class="GtkImage" id="image7">
 						      <property name="visible">True</property>
 						      <property name="stock">gtk-media-play</property>
-						      <property name="icon_size">2</property>
+						      <property name="icon_size">1</property>
 						      <property name="xalign">0.5</property>
 						      <property name="yalign">0.5</property>
 						      <property name="xpad">0</property>
@@ -2511,7 +2554,7 @@
 						    <widget class="GtkImage" id="image9">
 						      <property name="visible">True</property>
 						      <property name="stock">gtk-refresh</property>
-						      <property name="icon_size">2</property>
+						      <property name="icon_size">1</property>
 						      <property name="xalign">0.5</property>
 						      <property name="yalign">0.5</property>
 						      <property name="xpad">0</property>
@@ -3463,7 +3506,7 @@
 			      <child>
 				<widget class="GtkTable" id="table80">
 				  <property name="visible">True</property>
-				  <property name="n_rows">2</property>
+				  <property name="n_rows">1</property>
 				  <property name="n_columns">3</property>
 				  <property name="homogeneous">False</property>
 				  <property name="row_spacing">0</property>
@@ -3617,42 +3660,6 @@
 				      <property name="top_attach">0</property>
 				      <property name="bottom_attach">1</property>
 				      <property name="x_options">fill</property>
-				    </packing>
-				  </child>
-
-				  <child>
-				    <widget class="GnomeFileEntry" id="overlay_file_entry">
-				      <property name="border_width">3</property>
-				      <property name="visible">True</property>
-				      <property name="max_saved">10</property>
-				      <property name="browse_dialog_title">Choose a overlay image</property>
-				      <property name="directory_entry">False</property>
-				      <property name="modal">False</property>
-				      <property name="use_filechooser">False</property>
-				      <property name="filechooser_action">GTK_FILE_CHOOSER_ACTION_OPEN</property>
-
-				      <child internal-child="entry">
-					<widget class="GtkEntry" id="overlay_file_subentry">
-					  <property name="visible">True</property>
-					  <property name="tooltip" translatable="yes">NOT WORKING YET</property>
-					  <property name="can_focus">True</property>
-					  <property name="editable">True</property>
-					  <property name="visibility">True</property>
-					  <property name="max_length">0</property>
-					  <property name="text" translatable="yes"></property>
-					  <property name="has_frame">True</property>
-					  <property name="invisible_char">*</property>
-					  <property name="activates_default">False</property>
-					  <signal name="changed" handler="on_overlay_file_subentry_changed"/>
-					</widget>
-				      </child>
-				    </widget>
-				    <packing>
-				      <property name="left_attach">0</property>
-				      <property name="right_attach">3</property>
-				      <property name="top_attach">1</property>
-				      <property name="bottom_attach">2</property>
-				      <property name="y_options"></property>
 				    </packing>
 				  </child>
 				</widget>
@@ -4278,117 +4285,7 @@
 			      </child>
 
 			      <child>
-				<widget class="GtkFrame" id="grab_now_frame">
-				  <property name="border_width">5</property>
-				  <property name="visible">True</property>
-				  <property name="label_xalign">0</property>
-				  <property name="label_yalign">0.5</property>
-				  <property name="shadow_type">GTK_SHADOW_ETCHED_IN</property>
-
-				  <child>
-				    <widget class="GtkButton" id="grab_now">
-				      <property name="border_width">2</property>
-				      <property name="visible">True</property>
-				      <property name="tooltip" translatable="yes">NOT WORKING YET</property>
-				      <property name="can_focus">True</property>
-				      <property name="relief">GTK_RELIEF_NORMAL</property>
-				      <property name="focus_on_click">True</property>
-				      <signal name="clicked" handler="on_grab_now_clicked"/>
-
-				      <child>
-					<widget class="GtkAlignment" id="alignment9">
-					  <property name="visible">True</property>
-					  <property name="xalign">0.5</property>
-					  <property name="yalign">0.5</property>
-					  <property name="xscale">0</property>
-					  <property name="yscale">0</property>
-					  <property name="top_padding">0</property>
-					  <property name="bottom_padding">0</property>
-					  <property name="left_padding">0</property>
-					  <property name="right_padding">0</property>
-
-					  <child>
-					    <widget class="GtkHBox" id="hbox80">
-					      <property name="visible">True</property>
-					      <property name="homogeneous">False</property>
-					      <property name="spacing">2</property>
-
-					      <child>
-						<widget class="GtkImage" id="image10">
-						  <property name="visible">True</property>
-						  <property name="stock">gtk-save</property>
-						  <property name="icon_size">2</property>
-						  <property name="xalign">0.5</property>
-						  <property name="yalign">0.5</property>
-						  <property name="xpad">0</property>
-						  <property name="ypad">0</property>
-						</widget>
-						<packing>
-						  <property name="padding">0</property>
-						  <property name="expand">False</property>
-						  <property name="fill">False</property>
-						</packing>
-					      </child>
-
-					      <child>
-						<widget class="GtkLabel" id="label207">
-						  <property name="visible">True</property>
-						  <property name="label" translatable="yes">NOW!</property>
-						  <property name="use_underline">True</property>
-						  <property name="use_markup">False</property>
-						  <property name="justify">GTK_JUSTIFY_LEFT</property>
-						  <property name="wrap">False</property>
-						  <property name="selectable">False</property>
-						  <property name="xalign">0.5</property>
-						  <property name="yalign">0.5</property>
-						  <property name="xpad">0</property>
-						  <property name="ypad">0</property>
-						  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
-						  <property name="width_chars">-1</property>
-						  <property name="single_line_mode">False</property>
-						  <property name="angle">0</property>
-						</widget>
-						<packing>
-						  <property name="padding">0</property>
-						  <property name="expand">False</property>
-						  <property name="fill">False</property>
-						</packing>
-					      </child>
-					    </widget>
-					  </child>
-					</widget>
-				      </child>
-				    </widget>
-				  </child>
-
-				  <child>
-				    <widget class="GtkLabel" id="label179">
-				      <property name="visible">True</property>
-				      <property name="label" translatable="yes">&lt;b&gt;Grab single image&lt;/b&gt;</property>
-				      <property name="use_underline">False</property>
-				      <property name="use_markup">True</property>
-				      <property name="justify">GTK_JUSTIFY_LEFT</property>
-				      <property name="wrap">False</property>
-				      <property name="selectable">False</property>
-				      <property name="xalign">0.5</property>
-				      <property name="yalign">0.5</property>
-				      <property name="xpad">0</property>
-				      <property name="ypad">0</property>
-				      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
-				      <property name="width_chars">-1</property>
-				      <property name="single_line_mode">False</property>
-				      <property name="angle">0</property>
-				    </widget>
-				    <packing>
-				      <property name="type">label_item</property>
-				    </packing>
-				  </child>
-				</widget>
-				<packing>
-				  <property name="padding">0</property>
-				  <property name="expand">True</property>
-				  <property name="fill">True</property>
-				</packing>
+				<placeholder/>
 			      </child>
 			    </widget>
 			    <packing>
@@ -7190,7 +7087,7 @@ for something to take effect here.</property>
 				      <child>
 					<widget class="GtkImage" id="image25">
 					  <property name="visible">True</property>
-					  <property name="stock">gtk-media-previous</property>
+					  <property name="stock">gtk-media-rewind</property>
 					  <property name="icon_size">2</property>
 					  <property name="xalign">0.5</property>
 					  <property name="yalign">0.5</property>
@@ -7298,7 +7195,7 @@ for something to take effect here.</property>
 				      <child>
 					<widget class="GtkImage" id="image26">
 					  <property name="visible">True</property>
-					  <property name="stock">gtk-media-next</property>
+					  <property name="stock">gtk-media-forward</property>
 					  <property name="icon_size">2</property>
 					  <property name="xalign">0.5</property>
 					  <property name="yalign">0.5</property>

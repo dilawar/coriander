@@ -1,4 +1,12 @@
 Coriander, (c) 2000-2007 Damien Douxchamps <ddouxchamps@users.sf.net>
+
+   2008-02-07, by Damien Douxchamps
+   - re-instate the bus usage functionality now that libdc includes functions to
+     get port and node.
+   - show port/node in information frame
+   - remove "grab now" and "overlay file entry"
+   - update icons
+   - update configure script for laters libdc1394
 	
    2008-02-06, by Damien Douxchamps
    - fix a bug in format7 controls (interdependency / update)

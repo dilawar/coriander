@@ -64,7 +64,6 @@ UpdatePrefsSaveFrame(void)
   // thread presence blanking: default some to ON
   gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_save_filename_frame"), TRUE);
   gtk_widget_set_sensitive(lookup_widget(main_window,"ram_buffer_frame"), TRUE);
-  gtk_widget_set_sensitive(lookup_widget(main_window,"grab_now_frame"), TRUE);
 
   // normal:
   gtk_widget_set_sensitive(lookup_widget(main_window,"save_to_dir"), (!is_video)&&(!camera->prefs.save_to_stdout));
@@ -75,7 +74,6 @@ UpdatePrefsSaveFrame(void)
   if (GetService(camera,SERVICE_SAVE)!=NULL) {
     gtk_widget_set_sensitive(lookup_widget(main_window,"prefs_save_filename_frame"), FALSE);
     gtk_widget_set_sensitive(lookup_widget(main_window,"ram_buffer_frame"), FALSE);
-    gtk_widget_set_sensitive(lookup_widget(main_window,"grab_now_frame"), FALSE);
   }
   UpdateSaveFilenameFrame();
 
@@ -88,8 +86,6 @@ UpdatePrefsSaveFrame(void)
   gtk_widget_set_sensitive(lookup_widget(main_window,"save_filename_entry"), !camera->prefs.save_to_stdout);
   //gtk_widget_set_sensitive(lookup_widget(main_window,"save_to_dir"), !camera->prefs.save_to_stdout);
 
-  // not working yet
-  gtk_widget_set_sensitive(lookup_widget(main_window,"grab_now_frame"), 0);
 }
 
 
@@ -224,6 +220,7 @@ UpdateCameraStatusFrame(void)
 {
   char *temp;
   quadlet_t value[3];
+  unsigned int node, port;
 
   temp=(char*)malloc(STRING_SIZE*sizeof(char));
 
@@ -242,9 +239,11 @@ UpdateCameraStatusFrame(void)
   ctxt.model_id=gtk_statusbar_push( (GtkStatusbar*)lookup_widget(main_window,"camera_model_status"), ctxt.model_ctxt, temp);
 
   // camera node/bus:
-  //sprintf(temp," N/A  /  N/A"); // FIXME camera->camera_info->node and camera->camera_info->port not available at this time
-  //gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"camera_node_status"), ctxt.node_ctxt, ctxt.node_id);
-  //ctxt.node_id=gtk_statusbar_push( (GtkStatusbar*)lookup_widget(main_window,"camera_node_status"), ctxt.node_ctxt, temp);
+  dc1394_camera_get_port(camera->camera_info, &port);
+  dc1394_camera_get_node(camera->camera_info, &node);
+  sprintf(temp," %d  /  %d", port, node); 
+  gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"camera_port_node_status"), ctxt.port_node_ctxt, ctxt.port_node_id);
+  ctxt.port_node_id=gtk_statusbar_push( (GtkStatusbar*)lookup_widget(main_window,"camera_port_node_status"), ctxt.port_node_ctxt, temp);
 
   // camera handle:
   // TODO TODO TODO
@@ -526,6 +525,7 @@ UpdateBandwidthFrame(void)
   chain_t* iso_service;
   GtkProgressBar *bar;
   dc1394video_mode_t video_mode;
+  unsigned int port;
   
   temp=(char*)malloc(STRING_SIZE*sizeof(char));
 
@@ -570,9 +570,9 @@ UpdateBandwidthFrame(void)
     }
     // sum the values of the bandwidths
     // FIXME BIGPATCH
-    /*
-    ports[cam->camera_info->port]+=bandwidth;
-    */
+    dc1394_camera_get_port(cam->camera_info, &port);
+    ports[port]+=bandwidth;
+   
     cam=cam->next;
   }
 
@@ -811,7 +811,6 @@ UpdatePrefsDisplayOverlayFrame(void)
   //fprintf(stderr,"updated: %d %d\n",camera->prefs.overlay_pattern,camera->prefs.overlay_type);
   gtk_widget_set_sensitive(lookup_widget(main_window,"overlay_type_menu"), camera->prefs.overlay_pattern!=OVERLAY_PATTERN_OFF);
   gtk_widget_set_sensitive(lookup_widget(main_window,"overlay_color_picker"), (camera->prefs.overlay_pattern!=OVERLAY_PATTERN_OFF) && (camera->prefs.overlay_type==OVERLAY_TYPE_REPLACE));
-  gtk_widget_set_sensitive(lookup_widget(main_window,"overlay_file_entry"), (camera->prefs.overlay_pattern==OVERLAY_PATTERN_IMAGE));
 }
 
 void

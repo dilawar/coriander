@@ -30,6 +30,7 @@ AC_DEFUN([AC_CHECK_LIBDC],[
 	#include <dc1394/control.h>
 	#include <dc1394/utils.h>
 	#include <dc1394/conversions.h>
+	#include <dc1394/linux/control.h>
 	],[
  	libdc1394=yes
  	],[
@@ -39,15 +40,15 @@ AC_DEFUN([AC_CHECK_LIBDC],[
  	if test x$libdc1394 = xno; then
           AC_ERROR([libdc1394 is not installed.  
 **************************************************************************
-**   Please install the current libdc1394 version 2.0.0-rc8             **
+**   Please install libdc1394 version 2.0.2 or later                    **
 **   Source tarball and SVN at:  http://www.sf.net/projects/libdc1394   **
 **************************************************************************])
         else
- 	  AC_CHECK_LIB(dc1394,dc1394_pio_set,libdc1394=ok,libdc1394=old,-lraw1394)
+ 	  AC_CHECK_LIB(dc1394,dc1394_camera_get_port,libdc1394=ok,libdc1394=old,-lraw1394)
  	  if test x$libdc1394 = xold; then
             AC_ERROR([libdc1394 is too old.
 **************************************************************************
-**   Please install the current libdc1394 version 2.0.0-rc8             **
+**   Please install libdc1394 version 2.0.2 or later                    **
 **   Source tarball and SVN at:  http://www.sf.net/projects/libdc1394   **
 **************************************************************************])
           else
@@ -56,6 +57,7 @@ AC_DEFUN([AC_CHECK_LIBDC],[
 	    AC_MSG_CHECKING(libdc1394-2 headers)
 	    AC_TRY_COMPILE([
             #include <dc1394/dc1394.h>
+            #include <dc1394/linux/control.h>
 	    ],[
 	    int main(void) {
 	    dc1394video_frame_t *frame;
@@ -63,6 +65,7 @@ AC_DEFUN([AC_CHECK_LIBDC],[
             uint32_t depth;
 	    dc1394_capture_setup(camera, 4, DC1394_CAPTURE_FLAGS_DEFAULT);
             dc1394_video_get_data_depth(camera, &depth);
+	    dc1394_camera_get_port(camera, &depth);
 	    return 0;
 	    }
 	    ],libdc1394=ok,libdc1394=outdated);
@@ -73,7 +76,7 @@ AC_DEFUN([AC_CHECK_LIBDC],[
 	    else
               AC_ERROR([libdc1394 is too old. 
 **************************************************************************
-**   Please install the current libdc1394 version 2.0.0-rc8             **
+**   Please install libdc1394 version 2.0.2 or later                    **
 **   Source tarball and SVN at:  http://www.sf.net/projects/libdc1394   **
 **************************************************************************])
  	    fi
