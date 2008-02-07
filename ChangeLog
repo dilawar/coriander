@@ -7,6 +7,7 @@ Coriander, (c) 2000-2007 Damien Douxchamps <ddouxchamps@users.sf.net>
    - remove "grab now" and "overlay file entry"
    - update icons
    - update configure script for laters libdc1394
+   - fix feature presence and menus.
 	
    2008-02-06, by Damien Douxchamps
    - fix a bug in format7 controls (interdependency / update)
@@ -66,7 +67,7 @@ Coriander, (c) 2000-2007 Damien Douxchamps <ddouxchamps@users.sf.net>
    - sync with libdc SVN 469
 
    November 29th, 2007, by Damien Douxchamps
-   - Update for libdc SVN 362
+   - Update for libdc SVN 462
 	
    November 28th, 2007, by Damien Douxchamps
    - big update after the important changes in libdc1394.

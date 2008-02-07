@@ -104,7 +104,7 @@ BuildEmptyRange(int feature, int pos)
 
     label3 = gtk_label_new (_("Blue"));
     gtk_widget_ref (label3);
-    gtk_object_set_data_full (GTK_OBJECT (main_window), "label_ws_scale_g", label3, (GtkDestroyNotify) gtk_widget_unref);
+    gtk_object_set_data_full (GTK_OBJECT (main_window), "label_ws_scale_b", label3, (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (label3);
     gtk_table_attach (GTK_TABLE (table), label3, MR, ER, pos+2, pos+3, (GtkAttachOptions) (GTK_FILL), (GtkAttachOptions) (0), 0, 0);
     gtk_label_set_justify (GTK_LABEL (label3), GTK_JUSTIFY_RIGHT);
@@ -163,18 +163,6 @@ BuildRange(int feature, int *pos)
   
   new_menu = gtk_menu_new ();
 
-  // point grey flea 2 sometimes has features that cannot be controlled in any way (in F7)
-  // disable such features
-  /*
-  fprintf(stderr,"%d : %d(%d) %d %d %d %d 0x%llx\n",feature,
-	  camera->feature_set.feature[feature-DC1394_FEATURE_MIN].on_off_capable,
-	  camera->feature_set.feature[feature-DC1394_FEATURE_MIN].is_on,
-	  camera->feature_set.feature[feature-DC1394_FEATURE_MIN].manual_capable,
-	  camera->feature_set.feature[feature-DC1394_FEATURE_MIN].auto_capable,
-	  camera->feature_set.feature[feature-DC1394_FEATURE_MIN].one_push_capable,
-	  camera->feature_set.feature[feature-DC1394_FEATURE_MIN].absolute_capable,camera->camera_info->guid>>40);
-  */
-
   int auto_capable=0;
   int manual_capable=0;
   int one_push_capable=0;
@@ -193,69 +181,65 @@ BuildRange(int feature, int *pos)
     }
   }
       
-  if ((camera->feature_set.feature[feature-DC1394_FEATURE_MIN].on_off_capable  || // disable feature if there is no way to control it
-       (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].modes.num>0) ||   
-       camera->feature_set.feature[feature-DC1394_FEATURE_MIN].absolute_capable ) &&
-      ((camera->feature_set.feature[feature-DC1394_FEATURE_MIN].on_off_capable &&  // disable features that are OFF and not ON-settable
-        camera->feature_set.feature[feature-DC1394_FEATURE_MIN].is_on) ||
-       ((camera->camera_info->guid>>40)!=0xb09d)) // ptgrey only
-      ) {
+  int no_control= ( ( camera->feature_set.feature[feature-DC1394_FEATURE_MIN].on_off_capable   == DC1394_FALSE ) && // disable feature if there is no way to control it
+		    ( camera->feature_set.feature[feature-DC1394_FEATURE_MIN].modes.num        == 0            ) );
 
-    // BUILD MENU ITEMS ====================================================================================
-    // 'off' menuitem optional addition:
-    if (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].on_off_capable>0) {
+  if (no_control==1) { // set menu to N/A
+      glade_menuitem = gtk_menu_item_new_with_label (_("N/A"));
+      gtk_widget_show (glade_menuitem);
+      gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+  }
+  else {
+  // BUILD MENU ITEMS ====================================================================================
+  // 'off' menuitem optional addition:
+  if (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].on_off_capable>0) {
       glade_menuitem = gtk_menu_item_new_with_label (_(feature_menu_items_list[RANGE_MENU_OFF]));
       gtk_widget_show (glade_menuitem);
       gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
       g_signal_connect ((gpointer) glade_menuitem, "activate",
 			G_CALLBACK (on_range_menu_activate),
 			(gpointer)(unsigned long)(feature*1000+RANGE_MENU_OFF)); // i is an int passed in a pointer variable. This is 'normal'.
-    }
-    // 'man' menuitem optional addition:
-    if (manual_capable>0) {
+  }
+  // 'man' menuitem optional addition:
+  if (manual_capable>0) {
       glade_menuitem = gtk_menu_item_new_with_label (_(feature_menu_items_list[RANGE_MENU_MAN]));
       gtk_widget_show (glade_menuitem);
       gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
       g_signal_connect ((gpointer) glade_menuitem, "activate",
 			G_CALLBACK (on_range_menu_activate),
 			(gpointer)(unsigned long)(feature*1000+RANGE_MENU_MAN));
-    }
-    // 'auto' menuitem optional addition:
-    if (auto_capable>0) {
+  }
+  // 'auto' menuitem optional addition:
+  if (auto_capable>0) {
       glade_menuitem = gtk_menu_item_new_with_label (_(feature_menu_items_list[RANGE_MENU_AUTO]));
       gtk_widget_show (glade_menuitem);
       gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
       g_signal_connect ((gpointer) glade_menuitem, "activate",
 			G_CALLBACK (on_range_menu_activate),
 			(gpointer)(unsigned long)(feature*1000+RANGE_MENU_AUTO));
-    }
-    // 'single' menuitem optional addition:
-    if (one_push_capable>0) {
+  }
+  // 'single' menuitem optional addition:
+  if (one_push_capable>0) {
       glade_menuitem = gtk_menu_item_new_with_label (_(feature_menu_items_list[RANGE_MENU_SINGLE]));
       gtk_widget_show (glade_menuitem);
       gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
       g_signal_connect ((gpointer) glade_menuitem, "activate",
 			G_CALLBACK (on_range_menu_activate),
 			(gpointer)(unsigned long)(feature*1000+RANGE_MENU_SINGLE));
-    }
-    // 'absolute' menuitem optional addition:
-    if (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].absolute_capable>0) {
+  }
+  // 'absolute' menuitem optional addition:
+  if (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].absolute_capable>0) {
       glade_menuitem = gtk_menu_item_new_with_label (_(feature_menu_items_list[RANGE_MENU_ABSOLUTE]));
       gtk_widget_show (glade_menuitem);
       gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
       g_signal_connect ((gpointer) glade_menuitem, "activate",
 			G_CALLBACK (on_range_menu_activate),
 			(gpointer)(unsigned long)(feature*1000+RANGE_MENU_ABSOLUTE));
-    }
   }
-  else { // note really available (no control)
-    // 'absolute' menuitem optional addition:
-    glade_menuitem = gtk_menu_item_new_with_label (_("N/A"));
-    gtk_widget_show (glade_menuitem);
-    gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
+  
   }
   gtk_option_menu_set_menu (GTK_OPTION_MENU (new_option_menu), new_menu);
-  
+
   // BUILD SCALE: ====================================================================================
 
   switch(feature) {

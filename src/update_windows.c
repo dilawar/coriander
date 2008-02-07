@@ -61,27 +61,6 @@ UpdateFeatureWindow(void)
     if ((camera->feature_set.feature[i-DC1394_FEATURE_MIN].available>0)&&
 	(i!=DC1394_FEATURE_TRIGGER)) {
       UpdateRange(i);
-      /*
-	fprintf(stderr,"%d  : %d %d %d %d %d\n",i,
-	camera->feature_set.feature[i-DC1394_FEATURE_MIN].on_off_capable,
-	camera->feature_set.feature[i-DC1394_FEATURE_MIN].manual_capable,
-	camera->feature_set.feature[i-DC1394_FEATURE_MIN].auto_capable,
-	camera->feature_set.feature[i-DC1394_FEATURE_MIN].one_push_capable,
-	camera->feature_set.feature[i-DC1394_FEATURE_MIN].absolute_capable);
-      */
-      // if there is no control mode available for the feature, disable it.
-      if (!((camera->feature_set.feature[i-DC1394_FEATURE_MIN].on_off_capable  || // disable feature if there is no way to control it
-	     (camera->feature_set.feature[i-DC1394_FEATURE_MIN].modes.num>0)  ||
-	     camera->feature_set.feature[i-DC1394_FEATURE_MIN].absolute_capable ) &&
-	    (camera->feature_set.feature[i-DC1394_FEATURE_MIN].on_off_capable ||  // disable features that are OFF and not ON-settable
-	     camera->feature_set.feature[i-DC1394_FEATURE_MIN].is_on ||
-	     ((camera->camera_info->guid>>40)!=0xb09d)) // ptgrey only
-	    )) {
-	  // FIXME: should set each of the feature components off individually
-	  //sprintf(stemp,"feature_%d_frame",i);
-	  //gtk_widget_set_sensitive(lookup_widget(main_window, stemp), 0);
-	
-      }
     }
   }
 }

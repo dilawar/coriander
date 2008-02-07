@@ -24,6 +24,7 @@ UpdateRange(int feature)
   int index,i;
   char *stemp;
   dc1394bool_t range_is_active, abs_is_on;
+  int no_control;
 
   stemp=(char*)malloc(STRING_SIZE*sizeof(char));
 
@@ -44,6 +45,26 @@ UpdateRange(int feature)
       break;
     }
   }
+
+  no_control= ( ( camera->feature_set.feature[feature-DC1394_FEATURE_MIN].on_off_capable   == DC1394_FALSE ) && // disable feature if there is no way to control it
+		( camera->feature_set.feature[feature-DC1394_FEATURE_MIN].modes.num        == 0            ) );
+
+  if (no_control == 1) {
+      sprintf(stemp,"feature_%d_menu",feature);
+      gtk_widget_set_sensitive(lookup_widget(main_window, stemp), 0);
+      sprintf(stemp,"feature_%d_label",feature);
+      gtk_widget_set_sensitive(lookup_widget(main_window, stemp), 0);
+  }
+  
+  
+  fprintf(stderr,"%d (%d) : %d %d %d %d %d -> %d\n",feature, camera->feature_set.feature[feature-DC1394_FEATURE_MIN].is_on,
+	  camera->feature_set.feature[feature-DC1394_FEATURE_MIN].on_off_capable,
+	  manual_capable,
+	  auto_capable,
+	  one_push_capable,
+	  camera->feature_set.feature[feature-DC1394_FEATURE_MIN].absolute_capable,
+	  no_control);
+  
 
   // select the current menuitem:
   if ((!camera->feature_set.feature[feature-DC1394_FEATURE_MIN].is_on)&& // off
@@ -86,22 +107,16 @@ UpdateRange(int feature)
   sprintf(stemp,"feature_%d_menu",feature);
   gtk_option_menu_set_history (GTK_OPTION_MENU (lookup_widget(main_window,stemp)), index);
   
+
+  // set range activity:
   range_is_active=((!(auto_capable && (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].current_mode==DC1394_FEATURE_MODE_AUTO)))&& // auto not on
 		   (!(one_push_capable&& (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].current_mode==DC1394_FEATURE_MODE_ONE_PUSH_AUTO)))&& // one push not on
 		   (!(camera->feature_set.feature[feature-DC1394_FEATURE_MIN].absolute_capable&& // abs control not on
 		      camera->feature_set.feature[feature-DC1394_FEATURE_MIN].abs_control))&&
 		   (!(camera->feature_set.feature[feature-DC1394_FEATURE_MIN].on_off_capable&& // feature is on
 		      !camera->feature_set.feature[feature-DC1394_FEATURE_MIN].is_on)));
-  /*
-  fprintf(stderr,"%d : %d %d %d %d %d : r=%d\n",
-	  camera->feature_set.feature[feature-DC1394_FEATURE_MIN].on_off_capable,
-	  feature,manual_capable,auto_capable, one_push_capable,
-	  camera->feature_set.feature[feature-DC1394_FEATURE_MIN].absolute_capable,
-	  range_is_active);
-  */
 
-  sprintf(stemp,"feature_%d_label",feature);
-  gtk_widget_set_sensitive(lookup_widget(main_window, stemp), range_is_active);
+  range_is_active = range_is_active && !no_control;
 
   switch(feature) {
   case DC1394_FEATURE_WHITE_BALANCE:
@@ -113,6 +128,8 @@ UpdateRange(int feature)
     gtk_widget_set_sensitive(lookup_widget(main_window, stemp), range_is_active);
     sprintf(stemp,"feature_%d_rv_spin",feature);
     gtk_widget_set_sensitive(lookup_widget(main_window, stemp), range_is_active);
+    gtk_widget_set_sensitive(lookup_widget(main_window, "label_wb_scale_bu"), range_is_active);
+    gtk_widget_set_sensitive(lookup_widget(main_window, "label_wb_scale_rv"), range_is_active);
     break;
   case DC1394_FEATURE_WHITE_SHADING:
     sprintf(stemp,"feature_%d_r_scale",feature);
@@ -127,6 +144,9 @@ UpdateRange(int feature)
     gtk_widget_set_sensitive(lookup_widget(main_window, stemp), range_is_active);
     sprintf(stemp,"feature_%d_b_spin",feature);
     gtk_widget_set_sensitive(lookup_widget(main_window, stemp), range_is_active);
+    gtk_widget_set_sensitive(lookup_widget(main_window, "label_ws_scale_r"), range_is_active);
+    gtk_widget_set_sensitive(lookup_widget(main_window, "label_ws_scale_g"), range_is_active);
+    gtk_widget_set_sensitive(lookup_widget(main_window, "label_ws_scale_b"), range_is_active);
     break;
   case DC1394_FEATURE_TEMPERATURE:
     // the only changeable range is the target one, the other is just an indicator.
@@ -146,6 +166,7 @@ UpdateRange(int feature)
     gtk_widget_set_sensitive(lookup_widget(main_window, stemp), range_is_active);
     break;
   }
+
   // all features: set absolute range sensitivity:
   abs_is_on=((camera->feature_set.feature[feature-DC1394_FEATURE_MIN].absolute_capable&& // abs control is on
 	      camera->feature_set.feature[feature-DC1394_FEATURE_MIN].abs_control) &&
@@ -158,8 +179,9 @@ UpdateRange(int feature)
   }
   // grab&set range value if readable:
   UpdateRangeValue(main_window,feature);
-
+  
   free(stemp);
+
 }
 
 void
