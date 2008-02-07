@@ -56,7 +56,7 @@ UpdateRange(int feature)
       gtk_widget_set_sensitive(lookup_widget(main_window, stemp), 0);
   }
   
-  
+  /*
   fprintf(stderr,"%d (%d) : %d %d %d %d %d -> %d\n",feature, camera->feature_set.feature[feature-DC1394_FEATURE_MIN].is_on,
 	  camera->feature_set.feature[feature-DC1394_FEATURE_MIN].on_off_capable,
 	  manual_capable,
@@ -64,7 +64,7 @@ UpdateRange(int feature)
 	  one_push_capable,
 	  camera->feature_set.feature[feature-DC1394_FEATURE_MIN].absolute_capable,
 	  no_control);
-  
+  */
 
   // select the current menuitem:
   if ((!camera->feature_set.feature[feature-DC1394_FEATURE_MIN].is_on)&& // off

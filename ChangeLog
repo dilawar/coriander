@@ -8,6 +8,7 @@ Coriander, (c) 2000-2007 Damien Douxchamps <ddouxchamps@users.sf.net>
    - update icons
    - update configure script for laters libdc1394
    - fix feature presence and menus.
+   - remove spurious debug message
 	
    2008-02-06, by Damien Douxchamps
    - fix a bug in format7 controls (interdependency / update)
