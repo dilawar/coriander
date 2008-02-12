@@ -806,8 +806,6 @@ create_main_window (void)
   GtkWidget *label227;
   GtkWidget *label226;
   GtkWidget *table83;
-  GtkWidget *register_data_entry;
-  GtkWidget *register_address_entry;
   GtkWidget *register_write_button;
   GtkWidget *alignment21;
   GtkWidget *hbox92;
@@ -823,6 +821,8 @@ create_main_window (void)
   GtkWidget *label222;
   GtkWidget *offset_menu;
   GtkWidget *menu1;
+  GtkWidget *register_data_entry;
+  GtkWidget *register_address_entry;
   GtkWidget *label219;
   GtkWidget *frame4;
   GtkWidget *hbox62;
@@ -3473,31 +3473,11 @@ create_main_window (void)
   gtk_label_set_use_markup (GTK_LABEL (label226), TRUE);
   gtk_label_set_justify (GTK_LABEL (label226), GTK_JUSTIFY_CENTER);
 
-  table83 = gtk_table_new (4, 6, FALSE);
+  table83 = gtk_table_new (4, 6, TRUE);
   gtk_widget_set_name (table83, "table83");
   gtk_widget_show (table83);
   gtk_box_pack_start (GTK_BOX (vbox80), table83, FALSE, FALSE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (table83), 5);
-  gtk_table_set_row_spacings (GTK_TABLE (table83), 3);
-  gtk_table_set_col_spacings (GTK_TABLE (table83), 3);
-
-  register_data_entry = gtk_entry_new ();
-  gtk_widget_set_name (register_data_entry, "register_data_entry");
-  gtk_widget_show (register_data_entry);
-  gtk_table_attach (GTK_TABLE (table83), register_data_entry, 4, 6, 1, 2,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_tooltips_set_tip (tooltips, register_data_entry, _("Data I/O"), NULL);
-  gtk_entry_set_max_length (GTK_ENTRY (register_data_entry), 16);
-
-  register_address_entry = gtk_entry_new ();
-  gtk_widget_set_name (register_address_entry, "register_address_entry");
-  gtk_widget_show (register_address_entry);
-  gtk_table_attach (GTK_TABLE (table83), register_address_entry, 0, 2, 1, 2,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_tooltips_set_tip (tooltips, register_address_entry, _("Address I/O"), NULL);
-  gtk_entry_set_max_length (GTK_ENTRY (register_address_entry), 16);
 
   register_write_button = gtk_button_new ();
   gtk_widget_set_name (register_write_button, "register_write_button");
@@ -3505,6 +3485,7 @@ create_main_window (void)
   gtk_table_attach (GTK_TABLE (table83), register_write_button, 2, 3, 1, 2,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (register_write_button), 1);
   gtk_tooltips_set_tip (tooltips, register_write_button, _("Write data to the register address"), NULL);
 
   alignment21 = gtk_alignment_new (0.5, 0.5, 0, 0);
@@ -3517,7 +3498,7 @@ create_main_window (void)
   gtk_widget_show (hbox92);
   gtk_container_add (GTK_CONTAINER (alignment21), hbox92);
 
-  image25 = gtk_image_new_from_stock ("gtk-media-rewind", GTK_ICON_SIZE_SMALL_TOOLBAR);
+  image25 = gtk_image_new_from_stock ("gtk-media-rewind", GTK_ICON_SIZE_MENU);
   gtk_widget_set_name (image25, "image25");
   gtk_widget_show (image25);
   gtk_box_pack_start (GTK_BOX (hbox92), image25, FALSE, FALSE, 0);
@@ -3533,6 +3514,7 @@ create_main_window (void)
   gtk_table_attach (GTK_TABLE (table83), register_read_button, 3, 4, 1, 2,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (register_read_button), 1);
   gtk_tooltips_set_tip (tooltips, register_read_button, _("Read data from the register address"), NULL);
 
   alignment22 = gtk_alignment_new (0.5, 0.5, 0, 0);
@@ -3550,7 +3532,7 @@ create_main_window (void)
   gtk_widget_show (label225);
   gtk_box_pack_start (GTK_BOX (hbox93), label225, FALSE, FALSE, 0);
 
-  image26 = gtk_image_new_from_stock ("gtk-media-forward", GTK_ICON_SIZE_SMALL_TOOLBAR);
+  image26 = gtk_image_new_from_stock ("gtk-media-forward", GTK_ICON_SIZE_MENU);
   gtk_widget_set_name (image26, "image26");
   gtk_widget_show (image26);
   gtk_box_pack_start (GTK_BOX (hbox93), image26, FALSE, FALSE, 0);
@@ -3595,6 +3577,24 @@ create_main_window (void)
                        accel_group, FALSE, 0);
 
   gtk_option_menu_set_menu (GTK_OPTION_MENU (offset_menu), menu1);
+
+  register_data_entry = gtk_entry_new ();
+  gtk_widget_set_name (register_data_entry, "register_data_entry");
+  gtk_widget_show (register_data_entry);
+  gtk_table_attach (GTK_TABLE (table83), register_data_entry, 4, 6, 1, 2,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 1, 0);
+  gtk_tooltips_set_tip (tooltips, register_data_entry, _("Data I/O"), NULL);
+  gtk_entry_set_max_length (GTK_ENTRY (register_data_entry), 16);
+
+  register_address_entry = gtk_entry_new ();
+  gtk_widget_set_name (register_address_entry, "register_address_entry");
+  gtk_widget_show (register_address_entry);
+  gtk_table_attach (GTK_TABLE (table83), register_address_entry, 0, 2, 1, 2,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 1, 0);
+  gtk_tooltips_set_tip (tooltips, register_address_entry, _("Address I/O"), NULL);
+  gtk_entry_set_max_length (GTK_ENTRY (register_address_entry), 16);
 
   label219 = gtk_label_new (_("Direct Register Access"));
   gtk_widget_set_name (label219, "label219");
@@ -4278,8 +4278,6 @@ create_main_window (void)
   GLADE_HOOKUP_OBJECT (main_window, label227, "label227");
   GLADE_HOOKUP_OBJECT (main_window, label226, "label226");
   GLADE_HOOKUP_OBJECT (main_window, table83, "table83");
-  GLADE_HOOKUP_OBJECT (main_window, register_data_entry, "register_data_entry");
-  GLADE_HOOKUP_OBJECT (main_window, register_address_entry, "register_address_entry");
   GLADE_HOOKUP_OBJECT (main_window, register_write_button, "register_write_button");
   GLADE_HOOKUP_OBJECT (main_window, alignment21, "alignment21");
   GLADE_HOOKUP_OBJECT (main_window, hbox92, "hbox92");
@@ -4295,6 +4293,8 @@ create_main_window (void)
   GLADE_HOOKUP_OBJECT (main_window, label222, "label222");
   GLADE_HOOKUP_OBJECT (main_window, offset_menu, "offset_menu");
   GLADE_HOOKUP_OBJECT (main_window, menu1, "menu1");
+  GLADE_HOOKUP_OBJECT (main_window, register_data_entry, "register_data_entry");
+  GLADE_HOOKUP_OBJECT (main_window, register_address_entry, "register_address_entry");
   GLADE_HOOKUP_OBJECT (main_window, label219, "label219");
   GLADE_HOOKUP_OBJECT (main_window, frame4, "frame4");
   GLADE_HOOKUP_OBJECT (main_window, hbox62, "hbox62");

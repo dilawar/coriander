@@ -1082,7 +1082,7 @@ BuildRegisterAccessOffsetMenu(void)
 			    (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (new_option_menu);
   gtk_table_attach (GTK_TABLE (lookup_widget(main_window,"table83")),
-		    new_option_menu, 0, 4, 3, 4,
+		    new_option_menu, 0, 3, 3, 4,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (new_option_menu), 1);

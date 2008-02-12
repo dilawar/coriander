@@ -22,7 +22,7 @@ const char * feature_name_list[DC1394_FEATURE_NUM] = {
   "Brightness",
   "Auto exposure",
   "Sharpness",
-  "White Balance",
+  "White balance",
   "Hue",
   "Saturation",
   "Gamma",
@@ -32,15 +32,15 @@ const char * feature_name_list[DC1394_FEATURE_NUM] = {
   "Focus",
   "Temperature",
   "Trigger",
-  "Trigger Delay",
-  "White Shading",
-  "Frame Rate",
+  "Trigger delay",
+  "White shading",
+  "Frame rate",
   "Zoom",
   "Pan",
   "Tilt",
   "Filter",
-  "Capture Size",
-  "Capture Quality"
+  "Capture size",
+  "Capture quality"
 };
 
 const char *feature_abs_switch_list[DC1394_FEATURE_NUM] = {

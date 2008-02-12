@@ -7009,56 +7009,13 @@ for something to take effect here.</property>
 			  <property name="visible">True</property>
 			  <property name="n_rows">4</property>
 			  <property name="n_columns">6</property>
-			  <property name="homogeneous">False</property>
-			  <property name="row_spacing">3</property>
-			  <property name="column_spacing">3</property>
-
-			  <child>
-			    <widget class="GtkEntry" id="register_data_entry">
-			      <property name="visible">True</property>
-			      <property name="tooltip" translatable="yes">Data I/O</property>
-			      <property name="can_focus">True</property>
-			      <property name="editable">True</property>
-			      <property name="visibility">True</property>
-			      <property name="max_length">16</property>
-			      <property name="text" translatable="yes"></property>
-			      <property name="has_frame">True</property>
-			      <property name="invisible_char">*</property>
-			      <property name="activates_default">False</property>
-			    </widget>
-			    <packing>
-			      <property name="left_attach">4</property>
-			      <property name="right_attach">6</property>
-			      <property name="top_attach">1</property>
-			      <property name="bottom_attach">2</property>
-			      <property name="y_options"></property>
-			    </packing>
-			  </child>
-
-			  <child>
-			    <widget class="GtkEntry" id="register_address_entry">
-			      <property name="visible">True</property>
-			      <property name="tooltip" translatable="yes">Address I/O</property>
-			      <property name="can_focus">True</property>
-			      <property name="editable">True</property>
-			      <property name="visibility">True</property>
-			      <property name="max_length">16</property>
-			      <property name="text" translatable="yes"></property>
-			      <property name="has_frame">True</property>
-			      <property name="invisible_char">*</property>
-			      <property name="activates_default">False</property>
-			    </widget>
-			    <packing>
-			      <property name="left_attach">0</property>
-			      <property name="right_attach">2</property>
-			      <property name="top_attach">1</property>
-			      <property name="bottom_attach">2</property>
-			      <property name="y_options"></property>
-			    </packing>
-			  </child>
+			  <property name="homogeneous">True</property>
+			  <property name="row_spacing">0</property>
+			  <property name="column_spacing">0</property>
 
 			  <child>
 			    <widget class="GtkButton" id="register_write_button">
+			      <property name="border_width">1</property>
 			      <property name="visible">True</property>
 			      <property name="tooltip" translatable="yes">Write data to the register address</property>
 			      <property name="can_focus">True</property>
@@ -7088,7 +7045,7 @@ for something to take effect here.</property>
 					<widget class="GtkImage" id="image25">
 					  <property name="visible">True</property>
 					  <property name="stock">gtk-media-rewind</property>
-					  <property name="icon_size">2</property>
+					  <property name="icon_size">1</property>
 					  <property name="xalign">0.5</property>
 					  <property name="yalign">0.5</property>
 					  <property name="xpad">0</property>
@@ -7142,6 +7099,7 @@ for something to take effect here.</property>
 
 			  <child>
 			    <widget class="GtkButton" id="register_read_button">
+			      <property name="border_width">1</property>
 			      <property name="visible">True</property>
 			      <property name="tooltip" translatable="yes">Read data from the register address</property>
 			      <property name="can_focus">True</property>
@@ -7196,7 +7154,7 @@ for something to take effect here.</property>
 					<widget class="GtkImage" id="image26">
 					  <property name="visible">True</property>
 					  <property name="stock">gtk-media-forward</property>
-					  <property name="icon_size">2</property>
+					  <property name="icon_size">1</property>
 					  <property name="xalign">0.5</property>
 					  <property name="yalign">0.5</property>
 					  <property name="xpad">0</property>
@@ -7328,6 +7286,52 @@ for something to take effect here.</property>
 			      <property name="top_attach">3</property>
 			      <property name="bottom_attach">4</property>
 			      <property name="x_options">fill</property>
+			      <property name="y_options"></property>
+			    </packing>
+			  </child>
+
+			  <child>
+			    <widget class="GtkEntry" id="register_data_entry">
+			      <property name="visible">True</property>
+			      <property name="tooltip" translatable="yes">Data I/O</property>
+			      <property name="can_focus">True</property>
+			      <property name="editable">True</property>
+			      <property name="visibility">True</property>
+			      <property name="max_length">16</property>
+			      <property name="text" translatable="yes"></property>
+			      <property name="has_frame">True</property>
+			      <property name="invisible_char">*</property>
+			      <property name="activates_default">False</property>
+			    </widget>
+			    <packing>
+			      <property name="left_attach">4</property>
+			      <property name="right_attach">6</property>
+			      <property name="top_attach">1</property>
+			      <property name="bottom_attach">2</property>
+			      <property name="x_padding">1</property>
+			      <property name="y_options"></property>
+			    </packing>
+			  </child>
+
+			  <child>
+			    <widget class="GtkEntry" id="register_address_entry">
+			      <property name="visible">True</property>
+			      <property name="tooltip" translatable="yes">Address I/O</property>
+			      <property name="can_focus">True</property>
+			      <property name="editable">True</property>
+			      <property name="visibility">True</property>
+			      <property name="max_length">16</property>
+			      <property name="text" translatable="yes"></property>
+			      <property name="has_frame">True</property>
+			      <property name="invisible_char">*</property>
+			      <property name="activates_default">False</property>
+			    </widget>
+			    <packing>
+			      <property name="left_attach">0</property>
+			      <property name="right_attach">2</property>
+			      <property name="top_attach">1</property>
+			      <property name="bottom_attach">2</property>
+			      <property name="x_padding">1</property>
 			      <property name="y_options"></property>
 			    </packing>
 			  </child>
