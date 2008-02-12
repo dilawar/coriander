@@ -25,7 +25,7 @@ ALL_LINGUAS=""
 AM_GLIB_GNU_GETTEXT
 
 AC_DEFUN([AC_CHECK_LIBDC],[
-	AC_MSG_CHECKING(for libdc1394)
+	AC_MSG_CHECKING(for libdc1394 headers)
  	AC_TRY_CPP([
 	#include <dc1394/control.h>
 	#include <dc1394/utils.h>
@@ -43,45 +43,42 @@ AC_DEFUN([AC_CHECK_LIBDC],[
 **   Please install libdc1394 version 2.0.2 or later                    **
 **   Source tarball and SVN at:  http://www.sf.net/projects/libdc1394   **
 **************************************************************************])
-        else
- 	  AC_CHECK_LIB(dc1394,dc1394_camera_get_port,libdc1394=ok,libdc1394=old,-lraw1394)
- 	  if test x$libdc1394 = xold; then
-            AC_ERROR([libdc1394 is too old.
+        fi
+	
+
+	AC_SUBST(LIBDC_CFLAGS)
+	AC_SUBST(LIBDC_LIBS)
+	AC_MSG_CHECKING(libdc1394-2 headers)
+	AC_TRY_COMPILE([
+        #include <dc1394/dc1394.h>
+        #include <dc1394/linux/control.h>
+	],[
+	int main(void) {
+	dc1394video_frame_t *frame;
+	dc1394camera_t *camera;
+	int depth;
+	dc1394_capture_setup(camera, 4, DC1394_CAPTURE_FLAGS_DEFAULT);
+        dc1394_video_get_data_depth(camera, &depth);
+	return 0;
+	}
+	],libdc1394=ok,libdc1394=outdated);
+	AC_MSG_RESULT($libdc1394)
+ 	if test x$libdc1394 = xoutdated; then
+          AC_ERROR([libdc1394 is too old. 
 **************************************************************************
 **   Please install libdc1394 version 2.0.2 or later                    **
 **   Source tarball and SVN at:  http://www.sf.net/projects/libdc1394   **
 **************************************************************************])
-          else
-  	    AC_SUBST(LIBDC_CFLAGS)
-	    AC_SUBST(LIBDC_LIBS)
-	    AC_MSG_CHECKING(libdc1394-2 headers)
-	    AC_TRY_COMPILE([
-            #include <dc1394/dc1394.h>
-            #include <dc1394/linux/control.h>
-	    ],[
-	    int main(void) {
-	    dc1394video_frame_t *frame;
-	    dc1394camera_t *camera;
-            uint32_t depth;
-	    dc1394_capture_setup(camera, 4, DC1394_CAPTURE_FLAGS_DEFAULT);
-            dc1394_video_get_data_depth(camera, &depth);
-	    dc1394_camera_get_port(camera, &depth);
-	    return 0;
-	    }
-	    ],libdc1394=ok,libdc1394=outdated);
-	    AC_MSG_RESULT($libdc1394)
- 	    if test x$libdc1394 = xok; then
-               LIBDC_LIBS="-ldc1394"
-               LIBDC_CFLAGS=""
-	    else
-              AC_ERROR([libdc1394 is too old. 
-**************************************************************************
-**   Please install libdc1394 version 2.0.2 or later                    **
-**   Source tarball and SVN at:  http://www.sf.net/projects/libdc1394   **
-**************************************************************************])
- 	    fi
-	  fi
- 	fi
+        fi
+
+
+	AC_CHECK_LIB(dc1394,dc1394_camera_get_port,libdc1394=yes,libdc1394=no,-lraw1394)
+	if test x$libdc1394 = xyes; then
+          AC_DEFINE(HAVE_PORT_NODE,1,[defined if port/node functions are available])
+        fi
+
+        LIBDC_LIBS="-ldc1394"
+        LIBDC_CFLAGS=""
 ]) 
 
 AC_DEFUN([AC_CHECK_LIBDC_VERSION_FUNCTION],[

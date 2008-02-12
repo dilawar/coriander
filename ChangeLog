@@ -1,5 +1,8 @@
 Coriander, (c) 2000-2007 Damien Douxchamps <ddouxchamps@users.sf.net>
 
+   2008-02-12, by Damien Douxchamps
+   - fix compilation with juju stack and older libdc1394.
+
    2008-02-07, by Damien Douxchamps
    - re-instate the bus usage functionality now that libdc includes functions to
      get port and node.

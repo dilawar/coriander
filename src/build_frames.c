@@ -317,9 +317,8 @@ BuildBandwidthFrame(void)
 
   GtkWidget *bandwidth_table;
   GtkWidget *label;
-  GtkWidget *bandwidth_bar;
   char* temp;
-  int nports, i;
+  int nports;
 
   temp=(char*)malloc(STRING_SIZE*sizeof(char));
 
@@ -340,6 +339,10 @@ BuildBandwidthFrame(void)
   gtk_container_set_border_width (GTK_CONTAINER (bandwidth_table), 5);
   gtk_table_set_row_spacings (GTK_TABLE (bandwidth_table), 2);
   gtk_table_set_col_spacings (GTK_TABLE (bandwidth_table), 2);
+
+#ifdef HAVE_PORT_NODE
+  int i;
+  GtkWidget *bandwidth_bar;
 
   // build each bandwidth bar:
   for (i=0;i<nports;i++) {
@@ -368,6 +371,23 @@ BuildBandwidthFrame(void)
     gtk_progress_set_text_alignment(GTK_PROGRESS (bandwidth_bar), .5, .5);
     gtk_progress_set_format_string(GTK_PROGRESS (bandwidth_bar),"%p %%");
   }
+
+#else
+
+    sprintf(temp,"Bandwidth information not available with your version of libdc1394");
+    label = gtk_label_new (_(temp));
+    gtk_widget_ref (label);
+    sprintf(temp,"label_bandwidth");
+    gtk_object_set_data_full (GTK_OBJECT (main_window), temp, label,
+			      (GtkDestroyNotify) gtk_widget_unref);
+    gtk_widget_show (label);
+    gtk_table_attach (GTK_TABLE (bandwidth_table), label, 0, 5, 0, 1,
+		      (GtkAttachOptions) (GTK_FILL),
+		      (GtkAttachOptions) (0), 0, 0);
+    gtk_misc_set_padding (GTK_MISC (label), 2, 2);
+
+#endif
+
 
   free(temp);
 

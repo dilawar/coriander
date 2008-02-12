@@ -220,7 +220,6 @@ UpdateCameraStatusFrame(void)
 {
   char *temp;
   quadlet_t value[3];
-  unsigned int node, port;
 
   temp=(char*)malloc(STRING_SIZE*sizeof(char));
 
@@ -239,9 +238,14 @@ UpdateCameraStatusFrame(void)
   ctxt.model_id=gtk_statusbar_push( (GtkStatusbar*)lookup_widget(main_window,"camera_model_status"), ctxt.model_ctxt, temp);
 
   // camera node/bus:
+#ifdef HAVE_PORT_NODE
+  unsigned int node, port;
   dc1394_camera_get_port(camera->camera_info, &port);
   dc1394_camera_get_node(camera->camera_info, &node);
   sprintf(temp," %d  /  %d", port, node); 
+#else
+  sprintf(temp," N/A ");
+#endif
   gtk_statusbar_remove((GtkStatusbar*)lookup_widget(main_window,"camera_port_node_status"), ctxt.port_node_ctxt, ctxt.port_node_id);
   ctxt.port_node_id=gtk_statusbar_push( (GtkStatusbar*)lookup_widget(main_window,"camera_port_node_status"), ctxt.port_node_ctxt, temp);
 
@@ -515,6 +519,9 @@ UpdateFormat7InfoFrame(void)
 void
 UpdateBandwidthFrame(void)
 {
+
+#ifdef HAVE_PORT_NODE
+
   camera_t* cam;
   unsigned int bandwidth;
   float *ports;
@@ -590,7 +597,9 @@ UpdateBandwidthFrame(void)
   free(ports);
   free(temp);
   //fprintf(stderr,"test 3\n");
- 
+
+#endif
+
   UpdateServiceTree();
   //fprintf(stderr,"ee\n");
 
