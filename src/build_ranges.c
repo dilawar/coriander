@@ -130,23 +130,6 @@ BuildEmptyRange(int feature, int pos)
   free(stemp);
 }
 
-GtkAdjustment*
-MakeNewAdjustment(int feature)
-{
-    if (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].abs_control==DC1394_OFF)
-	return (GtkAdjustment*)gtk_adjustment_new(camera->feature_set.feature[feature-DC1394_FEATURE_MIN].min, // current value, will be erased by update later.
-				  camera->feature_set.feature[feature-DC1394_FEATURE_MIN].min,
-				  camera->feature_set.feature[feature-DC1394_FEATURE_MIN].max,1,10,0);
-    else
-	return (GtkAdjustment*)gtk_adjustment_new(camera->feature_set.feature[feature-DC1394_FEATURE_MIN].abs_min, // current value, will be erased by update later.
-				  camera->feature_set.feature[feature-DC1394_FEATURE_MIN].abs_min,
-				  camera->feature_set.feature[feature-DC1394_FEATURE_MIN].abs_max,
-				  (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].abs_max-
-				   camera->feature_set.feature[feature-DC1394_FEATURE_MIN].abs_min)/100,
-				  (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].abs_max-
-				   camera->feature_set.feature[feature-DC1394_FEATURE_MIN].abs_min)/10,0);
-}
-
 void
 BuildRange(int feature, int *pos)
 {
@@ -156,6 +139,8 @@ BuildRange(int feature, int *pos)
   GtkWidget* glade_menuitem;
   GtkWidget* scale, *scale2, *scale3;
   GtkWidget* spin, *spin2, *spin3;
+  GtkWidget* abs_entry;
+  GtkWidget* label;
   GtkTable* table;
   int nlines=0;
 
@@ -422,7 +407,7 @@ BuildRange(int feature, int *pos)
     gtk_widget_set_sensitive (spin3, TRUE);
 
     // connect:
-    g_signal_connect ((gpointer) (adjustment ), "value_changed", G_CALLBACK (on_scale_value_changed), (gpointer)(unsigned long) DC1394_FEATURE_WHITE_SHADING+SHADINGR);
+    g_signal_connect ((gpointer) adjustment, "value_changed", G_CALLBACK (on_scale_value_changed), (gpointer)(unsigned long) DC1394_FEATURE_WHITE_SHADING+SHADINGR);
     g_signal_connect ((gpointer) (adjustment2), "value_changed", G_CALLBACK (on_scale_value_changed), (gpointer)(unsigned long) DC1394_FEATURE_WHITE_BALANCE+SHADINGG);
     g_signal_connect ((gpointer) (adjustment3), "value_changed", G_CALLBACK (on_scale_value_changed), (gpointer)(unsigned long) DC1394_FEATURE_WHITE_BALANCE+SHADINGB);
     nlines=3;
@@ -463,9 +448,6 @@ BuildRange(int feature, int *pos)
   }
 
   // common action for absolute settings:
-  /*
-  GtkWidget* abs_entry;
-  GtkWidget* label;
   if (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].absolute_capable!=0) {
     // entry
     abs_entry = gtk_entry_new ();
@@ -493,7 +475,7 @@ BuildRange(int feature, int *pos)
 		      (GtkAttachOptions) (0), 10, 0);
     gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
   }
-  */
+
   free(stemp);
 
   switch(feature) {
@@ -509,128 +491,9 @@ BuildRange(int feature, int *pos)
       break;
   }
 
-  //if (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].absolute_capable==DC1394_TRUE)
-  //    *pos+=1;
+  if (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].absolute_capable==DC1394_TRUE)
+      *pos+=1;
 }
-
-void
-ReInstallRangeAdjustment(int feature)
-{
-
-    GtkAdjustment *adjustment;
-    
-    char *stemp;
-    stemp=(char*)malloc(STRING_SIZE*sizeof(char));
-    
-    switch(feature) {
-    case DC1394_FEATURE_WHITE_BALANCE:
-	//BU
-	adjustment=MakeNewAdjustment(feature);
-	sprintf(stemp,"feature_%d_bu_scale",feature);
-	gtk_range_set_adjustment((GtkRange*)lookup_widget(main_window,stemp),adjustment);
-	sprintf(stemp,"feature_%d_bu_spin",feature);
-	if (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].abs_control==DC1394_OFF)
-	    gtk_spin_button_configure((GtkSpinButton*)lookup_widget(main_window,stemp), adjustment, 1, 0);
-	else
-	    gtk_spin_button_configure((GtkSpinButton*)lookup_widget(main_window,stemp), adjustment,
-				      (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].abs_max-
-				       camera->feature_set.feature[feature-DC1394_FEATURE_MIN].abs_min)/100, 6);
-	g_signal_connect ((gpointer) adjustment, "value_changed", G_CALLBACK (on_scale_value_changed), (gpointer)(unsigned long) DC1394_FEATURE_WHITE_BALANCE+BU);
-	//RV
-	adjustment=MakeNewAdjustment(feature);
-	sprintf(stemp,"feature_%d_rv_scale",feature);
-	gtk_range_set_adjustment((GtkRange*)lookup_widget(main_window,stemp),adjustment);
-	sprintf(stemp,"feature_%d_rv_spin",feature);
-	if (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].abs_control==DC1394_OFF)
-	    gtk_spin_button_configure((GtkSpinButton*)lookup_widget(main_window,stemp), adjustment, 1, 0);
-	else
-	    gtk_spin_button_configure((GtkSpinButton*)lookup_widget(main_window,stemp), adjustment,
-				      (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].abs_max-
-				       camera->feature_set.feature[feature-DC1394_FEATURE_MIN].abs_min)/100, 6);
-	g_signal_connect ((gpointer) adjustment, "value_changed", G_CALLBACK (on_scale_value_changed), (gpointer)(unsigned long) DC1394_FEATURE_WHITE_BALANCE+RV);
-	break;
-    case DC1394_FEATURE_TEMPERATURE:
-	// CURRENT (no signal connection)
-	adjustment=MakeNewAdjustment(feature);
-	sprintf(stemp,"feature_%d_current_scale",feature);
-	gtk_range_set_adjustment((GtkRange*)lookup_widget(main_window,stemp),adjustment);
-	sprintf(stemp,"feature_%d_current_spin",feature);
-	if (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].abs_control==DC1394_OFF)
-	    gtk_spin_button_configure((GtkSpinButton*)lookup_widget(main_window,stemp), adjustment, 1, 0);
-	else
-	    gtk_spin_button_configure((GtkSpinButton*)lookup_widget(main_window,stemp), adjustment,
-				      (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].abs_max-
-				       camera->feature_set.feature[feature-DC1394_FEATURE_MIN].abs_min)/100, 6);
-	// TARGET
-	adjustment=MakeNewAdjustment(feature);
-	sprintf(stemp,"feature_%d_target_scale",feature);
-	gtk_range_set_adjustment((GtkRange*)lookup_widget(main_window,stemp),adjustment);
-	sprintf(stemp,"feature_%d_target_spin",feature);
-	if (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].abs_control==DC1394_OFF)
-	    gtk_spin_button_configure((GtkSpinButton*)lookup_widget(main_window,stemp), adjustment, 1, 0);
-	else
-	    gtk_spin_button_configure((GtkSpinButton*)lookup_widget(main_window,stemp), adjustment,
-				      (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].abs_max-
-				       camera->feature_set.feature[feature-DC1394_FEATURE_MIN].abs_min)/100, 6);
-	g_signal_connect ((gpointer) adjustment, "value_changed", G_CALLBACK (on_scale_value_changed), (gpointer)(unsigned long) DC1394_FEATURE_TEMPERATURE);
-	break;
-    case DC1394_FEATURE_WHITE_SHADING:
-	//R
-	adjustment=MakeNewAdjustment(feature);
-	sprintf(stemp,"feature_%d_r_scale",feature);
-	gtk_range_set_adjustment((GtkRange*)lookup_widget(main_window,stemp),adjustment);
-	sprintf(stemp,"feature_%d_r_spin",feature);
-	if (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].abs_control==DC1394_OFF)
-	    gtk_spin_button_configure((GtkSpinButton*)lookup_widget(main_window,stemp), adjustment, 1, 0);
-	else
-	    gtk_spin_button_configure((GtkSpinButton*)lookup_widget(main_window,stemp), adjustment,
-				      (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].abs_max-
-				       camera->feature_set.feature[feature-DC1394_FEATURE_MIN].abs_min)/100, 6);
-	g_signal_connect ((gpointer) adjustment, "value_changed", G_CALLBACK (on_scale_value_changed), (gpointer)(unsigned long) DC1394_FEATURE_WHITE_SHADING+SHADINGR);
-	//G
-	adjustment=MakeNewAdjustment(feature);
-	sprintf(stemp,"feature_%d_g_scale",feature);
-	gtk_range_set_adjustment((GtkRange*)lookup_widget(main_window,stemp),adjustment);
-	sprintf(stemp,"feature_%d_g_spin",feature);
-	if (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].abs_control==DC1394_OFF)
-	    gtk_spin_button_configure((GtkSpinButton*)lookup_widget(main_window,stemp), adjustment, 1, 0);
-	else
-	    gtk_spin_button_configure((GtkSpinButton*)lookup_widget(main_window,stemp), adjustment,
-				      (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].abs_max-
-				       camera->feature_set.feature[feature-DC1394_FEATURE_MIN].abs_min)/100, 6);
-	g_signal_connect ((gpointer) adjustment, "value_changed", G_CALLBACK (on_scale_value_changed), (gpointer)(unsigned long) DC1394_FEATURE_WHITE_SHADING+SHADINGG);
-	//B
-	adjustment=MakeNewAdjustment(feature);
-	sprintf(stemp,"feature_%d_b_scale",feature);
-	gtk_range_set_adjustment((GtkRange*)lookup_widget(main_window,stemp),adjustment);
-	sprintf(stemp,"feature_%d_b_spin",feature);
-	if (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].abs_control==DC1394_OFF)
-	    gtk_spin_button_configure((GtkSpinButton*)lookup_widget(main_window,stemp), adjustment, 1, 0);
-	else
-	    gtk_spin_button_configure((GtkSpinButton*)lookup_widget(main_window,stemp), adjustment,
-				      (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].abs_max-
-				       camera->feature_set.feature[feature-DC1394_FEATURE_MIN].abs_min)/100, 6);
-	g_signal_connect ((gpointer) adjustment, "value_changed", G_CALLBACK (on_scale_value_changed), (gpointer)(unsigned long) DC1394_FEATURE_WHITE_SHADING+SHADINGB);
-	break;
-    default:
-	adjustment=MakeNewAdjustment(feature);
-	sprintf(stemp,"feature_%d_scale",feature);
-	gtk_range_set_adjustment((GtkRange*)lookup_widget(main_window,stemp),adjustment);
-	sprintf(stemp,"feature_%d_spin",feature);
-	if (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].abs_control==DC1394_OFF)
-	    gtk_spin_button_configure((GtkSpinButton*)lookup_widget(main_window,stemp), adjustment, 1, 0);
-	else
-	    gtk_spin_button_configure((GtkSpinButton*)lookup_widget(main_window,stemp), adjustment,
-				      (camera->feature_set.feature[feature-DC1394_FEATURE_MIN].abs_max-
-				       camera->feature_set.feature[feature-DC1394_FEATURE_MIN].abs_min)/100, 6);
-	g_signal_connect ((gpointer) adjustment, "value_changed", G_CALLBACK (on_scale_value_changed), (gpointer)(unsigned long) feature);
-	break;
-    }
-
-    free(stemp);
-
-}
-
 
 void
 BuildFormat7Ranges(void)
@@ -686,4 +549,3 @@ BuildFormat7Ranges(void)
   gtk_adjustment_changed (adjustment_packet);
 
 }
-
