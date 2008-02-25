@@ -524,7 +524,7 @@ SetAbsValue(int feature)
   string=(char*)malloc(STRING_SIZE*sizeof(char));
 
  
-  sprintf(stemp,"feature_%d_abs_entry",feature);
+  sprintf(stemp,"feature_%d_spin",feature);
   stringp=(char*)gtk_entry_get_text(GTK_ENTRY(lookup_widget(main_window,stemp)));
   value=atof(stringp);
   if (dc1394_feature_set_absolute_value(camera->camera_info, feature, value)!=DC1394_SUCCESS) {
@@ -557,7 +557,7 @@ GetAbsValue(int feature)
   }
   else {
     sprintf(string,"%.8f",value);
-    sprintf(stemp,"feature_%d_abs_entry",feature);
+    sprintf(stemp,"feature_%d_spin",feature);
     gtk_entry_set_text(GTK_ENTRY(lookup_widget(main_window,stemp)),string);
   }
   free(stemp);

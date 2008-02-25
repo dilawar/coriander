@@ -169,6 +169,7 @@ UpdateRange(int feature)
     break;
   }
 
+  /*
   // all features: set absolute range sensitivity:
   abs_is_on=((camera->feature_set.feature[feature-DC1394_FEATURE_MIN].absolute_capable&& // abs control is on
 	      camera->feature_set.feature[feature-DC1394_FEATURE_MIN].abs_control) &&
@@ -179,6 +180,7 @@ UpdateRange(int feature)
     sprintf(stemp,"feature_%d_abs_label",feature);
     gtk_widget_set_sensitive(lookup_widget(main_window, stemp), abs_is_on);
   }
+  */
   // grab&set range value if readable:
   UpdateRangeValue(main_window,feature);
   

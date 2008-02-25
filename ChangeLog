@@ -1,5 +1,8 @@
-Coriander, (c) 2000-2007 Damien Douxchamps <ddouxchamps@users.sf.net>
+Coriander, (c) 2000-2008 Damien Douxchamps <ddouxchamps@users.sf.net>
 
+   2008-02-25, by Damien Douxchamps
+   - Release 2.0.0
+	
    2008-02-12, by Damien Douxchamps
    - fix compilation with juju stack and older libdc1394.
    - misc cosmetic changes
