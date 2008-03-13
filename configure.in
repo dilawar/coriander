@@ -27,10 +27,10 @@ AM_GLIB_GNU_GETTEXT
 AC_DEFUN([AC_CHECK_LIBDC],[
 	AC_MSG_CHECKING(for libdc1394 headers)
  	AC_TRY_CPP([
+        #include <dc1394/dc1394.h>
 	#include <dc1394/control.h>
 	#include <dc1394/utils.h>
 	#include <dc1394/conversions.h>
-	#include <dc1394/linux/control.h>
 	],[
  	libdc1394=yes
  	],[
@@ -51,14 +51,14 @@ AC_DEFUN([AC_CHECK_LIBDC],[
 	AC_MSG_CHECKING(libdc1394-2 headers)
 	AC_TRY_COMPILE([
         #include <dc1394/dc1394.h>
-        #include <dc1394/linux/control.h>
 	],[
 	int main(void) {
 	dc1394video_frame_t *frame;
 	dc1394camera_t *camera;
-	int depth;
+	int depth, node, gen;
 	dc1394_capture_setup(camera, 4, DC1394_CAPTURE_FLAGS_DEFAULT);
         dc1394_video_get_data_depth(camera, &depth);
+	dc1394_camera_get_node(camera,&node,&gen);
 	return 0;
 	}
 	],libdc1394=ok,libdc1394=outdated);
@@ -72,9 +72,9 @@ AC_DEFUN([AC_CHECK_LIBDC],[
         fi
 
 
-	AC_CHECK_LIB(dc1394,dc1394_camera_get_port,libdc1394=yes,libdc1394=no,-lraw1394)
+	AC_CHECK_LIB(dc1394,dc1394_camera_get_linux_port,libdc1394=yes,libdc1394=no,-lraw1394)
 	if test x$libdc1394 = xyes; then
-          AC_DEFINE(HAVE_PORT_NODE,1,[defined if port/node functions are available])
+          AC_DEFINE(HAVE_GET_PORT,1,[defined if port function is available])
         fi
 
         LIBDC_LIBS="-ldc1394"
@@ -100,7 +100,7 @@ AC_DEFUN([AC_CHECK_LIBRAW],[
           AC_ERROR([libraw1394 is not installed.
 **************************************************************************
 **   Please install version >= 1.2.0                                    **
-**   Source tarball and CVS at:  http://www.sf.net/projects/libraw1394  **
+**   Source tarball and SVN at:  http://www.linux1394.org/              **
 **************************************************************************])
         else
 	  AC_SUBST(LIBRAW_CFLAGS)
@@ -113,7 +113,7 @@ AC_DEFUN([AC_CHECK_LIBRAW],[
             AC_ERROR([libraw1394 is too old.
 **************************************************************************
 **   Please upgrade to a version >= 1.2.0                               **
-**   Source tarball and CVS at:  http://www.sf.net/projects/libraw1394  **
+**   Source tarball and SVN at:  http://www.linux1394.org/              **
 **************************************************************************])
 	  fi
 
@@ -131,7 +131,7 @@ AC_DEFUN([AC_CHECK_LIBRAW_VERSION],[
           AC_ERROR([libraw1394 is too old.
 **************************************************************************
 **   Please upgrade to a version >= 1.2.0                               **
-**   Source tarball and CVS at:  http://www.sf.net/projects/libraw1394  **
+**   Source tarball and SVN at:  http://www.linux1394.org/              **
 **************************************************************************])
 	fi
 ])
@@ -167,112 +167,6 @@ AC_DEFUN([AC_CHECK_SDLLIB],[
 **************************************************************************])
 	fi
 ])
-
-AC_DEFUN([AC_CHECK_MMX],[
-	AC_SUBST(MMX_CFLAGS)
-	AC_MSG_CHECKING(for MMX support)
- 	mmx=no
- 	AC_TRY_RUN([
-	int
-	main (int argc, char **argv)
-	{
-	asm("movq %mm0, %mm1");// check basic MMX functions
-  	asm("emms");
-	exit(0);
-	}	
- 	],[
- 	mmx=yes
- 	],[
- 	mmx=no
- 	],[
- 	mmx=no
- 	])
- 	AC_MSG_RESULT($mmx)
- 	if test x$mmx = xyes; then
-  	   AC_DEFINE(MMX_SUPPORT,1,[defined if MMX is available])
-	   MMX_CFLAGS="-mmmx"
-	else
-	   MMX_CFLAGS=""
- 	fi
-
-])
-
-AC_DEFUN([AC_CHECK_SSE],[
-	AC_SUBST(SSE_CFLAGS)
-	AC_MSG_CHECKING(for SSE support)
- 	sse=no
- 	AC_TRY_RUN([
-	int
-	main (int argc, char **argv)
-	{
-	asm("xorps %xmm0, %xmm0");// check SSE floating point
-	asm("pmulhuw %mm1, %mm0");// check SSE additional integer ('MMX+')
-	exit(0);
-	}
- 	],[
-	sse=yes
- 	],[
-	sse=no
- 	],[
-	sse=no
- 	])
- 	AC_MSG_RESULT($sse)
- 	if test x$sse = xyes; then
-  	   AC_DEFINE(SSE_SUPPORT,1,[defined if SSE is available])
-	   SSE_CFLAGS="-msse -march=i686"
-	else
-	   SSE_CFLAGS=""
- 	fi
-
-])
-
-
-AC_DEFUN([AC_CHECK_SSE2],[
-	AC_SUBST(SSE2_CFLAGS)
-	AC_MSG_CHECKING(for SSE2 support)
- 	sse2=no
- 	AC_TRY_RUN([
-	int
-	main (int argc, char **argv)
-	{
-	asm("movapd %xmm0, %xmm1");// check SSE double-precision floating point
-	asm("pmuludq %xmm0, %xmm1");
-	asm("pand %xmm0, %xmm1");// check SSE 128-bit MMX extension
-	exit(0);
-	}
- 	],[
- 	sse2=yes
- 	],[
- 	sse2=no
- 	],[
- 	sse2=no
- 	])
- 	AC_MSG_RESULT($sse2)
- 	if test x$sse2 = xyes; then
-  	   AC_DEFINE(SSE2_SUPPORT,1,[defined if SSE2 is available])
-	   SSE2_CFLAGS="-msse2"
-	else
-	   SSE2_CFLAGS=""
- 	fi
-
-])
-
-dnl AC_DEFUN([AC_CHECK_GDK_PIXBUF],[
-dnl 	AC_SUBST(GDK_PIXBUF_CFLAGS)
-dnl 	AC_SUBST(GDK_PIXBUF_LIBS)
-dnl 	AC_CHECK_PROG(have_gdk_pixbuf_config, gdk-pixbuf-config, "found", "no")
-dnl 	if test x$have_gdk_pixbuf_config = xfound; then
-dnl 	  GDK_PIXBUF_LIBS=`gdk-pixbuf-config --libs`
-dnl 	  GDK_PIXBUF_CFLAGS=`gdk-pixbuf-config --cflags`
-dnl 	  AC_DEFINE(HAVE_GDK_PIXBUF,1,[defined if gdk-pixbuf is available])
-dnl 	else
-dnl 	  AC_MSG_RESULT([GDK-pixbuf is required for WM icons.
-dnl **************************************************************************
-dnl **   Install gdk-pixbuf libraries (including development files) to      **
-dnl **   enjoy nice little icons in menus, tasklist,...                     **
-dnl **************************************************************************])
-dnl 	fi
-dnl ])
 
 AC_DEFUN([AC_CHECK_XV],[
 	AC_SUBST(XV_CFLAGS)

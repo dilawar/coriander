@@ -1,7 +1,10 @@
 Coriander, (c) 2000-2008 Damien Douxchamps <ddouxchamps@users.sf.net>
 
+   2008-03-13, by Damien Douxchamps
+   - updates for libdc 2.0.2
+
    2008-02-25, by Damien Douxchamps
-   - Release 2.0.0
+   - Prepared release 2.0.0
 	
    2008-02-12, by Damien Douxchamps
    - fix compilation with juju stack and older libdc1394.

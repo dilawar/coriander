@@ -1371,7 +1371,7 @@
 			  <child>
 			    <widget class="GtkLabel" id="label238">
 			      <property name="visible">True</property>
-			      <property name="label" translatable="yes">Port / Node:</property>
+			      <property name="label" translatable="yes">Port / Node / Gen:</property>
 			      <property name="use_underline">False</property>
 			      <property name="use_markup">False</property>
 			      <property name="justify">GTK_JUSTIFY_CENTER</property>
@@ -1407,6 +1407,7 @@
 			      <property name="right_attach">2</property>
 			      <property name="top_attach">5</property>
 			      <property name="bottom_attach">6</property>
+			      <property name="x_options">fill</property>
 			      <property name="y_options"></property>
 			    </packing>
 			  </child>

@@ -1364,7 +1364,7 @@ create_main_window (void)
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_padding (GTK_MISC (label18), 2, 2);
 
-  label238 = gtk_label_new (_("Port / Node:"));
+  label238 = gtk_label_new (_("Port / Node / Gen:"));
   gtk_widget_set_name (label238, "label238");
   gtk_widget_show (label238);
   gtk_table_attach (GTK_TABLE (table48), label238, 0, 1, 5, 6,
@@ -1377,7 +1377,7 @@ create_main_window (void)
   gtk_widget_set_name (camera_port_node_status, "camera_port_node_status");
   gtk_widget_show (camera_port_node_status);
   gtk_table_attach (GTK_TABLE (table48), camera_port_node_status, 1, 2, 5, 6,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (camera_port_node_status), 1);
   gtk_statusbar_set_has_resize_grip (GTK_STATUSBAR (camera_port_node_status), FALSE);
