@@ -30,7 +30,9 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <dc1394/dc1394.h>
+#ifdef HAVE_GET_PORT
 #include <dc1394/linux/control.h>
+#endif
 
 // FTP lib
 #ifdef HAVE_FTPLIB

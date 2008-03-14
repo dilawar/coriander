@@ -1,5 +1,8 @@
 Coriander, (c) 2000-2008 Damien Douxchamps <ddouxchamps@users.sf.net>
 
+   2008-03-14, by Damien Douxchamps
+   - Fix for juju (thanks to Chris Rankin)
+
    2008-03-13, by Damien Douxchamps
    - updates for libdc 2.0.2
 
