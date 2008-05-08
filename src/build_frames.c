@@ -340,7 +340,7 @@ BuildBandwidthFrame(void)
   gtk_table_set_row_spacings (GTK_TABLE (bandwidth_table), 2);
   gtk_table_set_col_spacings (GTK_TABLE (bandwidth_table), 2);
 
-#ifdef HAVE_PORT_NODE
+#ifdef HAVE_GET_PORT
   int i;
   GtkWidget *bandwidth_bar;
 

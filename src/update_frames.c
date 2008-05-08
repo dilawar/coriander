@@ -520,7 +520,7 @@ void
 UpdateBandwidthFrame(void)
 {
 
-#ifdef HAVE_PORT_NODE
+#ifdef HAVE_GET_PORT
 
   camera_t* cam;
   unsigned int bandwidth;
@@ -577,7 +577,7 @@ UpdateBandwidthFrame(void)
     }
     // sum the values of the bandwidths
     // FIXME BIGPATCH
-    dc1394_camera_get_port(cam->camera_info, &port);
+    dc1394_camera_get_linux_port(cam->camera_info, &port);
     ports[port]+=bandwidth;
    
     cam=cam->next;
