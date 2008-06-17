@@ -547,12 +547,15 @@ on_service_display_toggled             (GtkToggleButton *togglebutton,
 	gtk_toggle_button_set_active(togglebutton,0);
 	camera->want_to_display=0;
       }
+      else
+          AutoIsoReceive(DC1394_ON);
     } 
     else {
       DisplayStopThread(camera);
       pthread_mutex_lock(&camera->uimutex);
       camera->want_to_display=0;
       pthread_mutex_unlock(&camera->uimutex);
+      AutoIsoReceive(DC1394_OFF);
     } 
   }
   UpdatePrefsDisplayFrame();

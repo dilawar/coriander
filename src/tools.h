@@ -94,5 +94,8 @@ window_set_icon(GtkWidget* window);
 void
 GetXvInfo(xvinfo_t *xvinfo);
 
+void
+AutoIsoReceive(dc1394switch_t pwr);
+
 #endif // __TOOLS_H__
 

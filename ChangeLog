@@ -1,5 +1,8 @@
 Coriander, (c) 2000-2008 Damien Douxchamps <ddouxchamps@users.sf.net>
 
+   2008-06-17, by Damien Douxchamps
+   - Implement automatic iso control and RECEIVE service. ON by default.
+	
    2008-05-08, by Damien Douxchamps
    - Fix bad calls to dc1394_camera_get_linux_port 
 	

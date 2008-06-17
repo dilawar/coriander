@@ -1013,3 +1013,39 @@ IsOptionAvailableWithFormat(camera_t *cam,int* bayer, int* stereo, int* bpp16)
   *stereo = (cond16||cond422);
   *bpp16 = cond16;
 }
+
+void
+AutoIsoReceive(dc1394switch_t pwr)
+{
+    dc1394switch_t tmp;
+    switch (pwr) {
+    case DC1394_ON:
+        if ( (preferences.automate_receive>0)&&(GetService(camera,SERVICE_ISO)==NULL) )
+            gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window,"service_iso")), 1);
+        
+        dc1394_video_get_transmission(camera->camera_info, &tmp);
+        if ( (preferences.automate_iso>0)&&(tmp==DC1394_OFF) ) {
+            fprintf(stderr,"Pressing ON\n");
+            gtk_button_clicked(GTK_BUTTON(lookup_widget(main_window,"iso_start")));
+        }
+            
+        break;
+    case DC1394_OFF:
+        if ( (preferences.automate_receive>0)&&(GetService(camera,SERVICE_ISO)!=NULL)&&
+             ((GetService(camera,SERVICE_DISPLAY)==NULL)&&(GetService(camera,SERVICE_SAVE)==NULL)&&
+              (GetService(camera,SERVICE_FTP)==NULL)&&(GetService(camera,SERVICE_V4L)==NULL)) ) // no other service present
+            gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(main_window,"service_iso")), 0);
+
+        dc1394_video_get_transmission(camera->camera_info, &tmp);
+        if ( (preferences.automate_iso>0)&&(tmp==DC1394_ON) &&
+             ((GetService(camera,SERVICE_DISPLAY)==NULL)&&(GetService(camera,SERVICE_SAVE)==NULL)&&(GetService(camera,SERVICE_ISO)==NULL)&&
+              (GetService(camera,SERVICE_FTP)==NULL)&&(GetService(camera,SERVICE_V4L)==NULL)) ) { // no other service present
+                fprintf(stderr,"Pressing OFF\n");
+                gtk_button_clicked(GTK_BUTTON(lookup_widget(main_window,"iso_stop")));
+            }
+        break;
+    default:
+        fprintf(stderr,"Invalid power code\n");
+    }
+
+}
