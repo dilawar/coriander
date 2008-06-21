@@ -25,7 +25,7 @@ ALL_LINGUAS=""
 AM_GLIB_GNU_GETTEXT
 
 AC_DEFUN([AC_CHECK_LIBDC],[
-	AC_MSG_CHECKING(for libdc1394 headers)
+	AC_MSG_CHECKING(for libdc1394-2 headers)
  	AC_TRY_CPP([
         #include <dc1394/dc1394.h>
 	#include <dc1394/control.h>
@@ -48,7 +48,7 @@ AC_DEFUN([AC_CHECK_LIBDC],[
 
 	AC_SUBST(LIBDC_CFLAGS)
 	AC_SUBST(LIBDC_LIBS)
-	AC_MSG_CHECKING(libdc1394-2 headers)
+	AC_MSG_CHECKING(libdc1394-2 version)
 	AC_TRY_COMPILE([
         #include <dc1394/dc1394.h>
 	],[

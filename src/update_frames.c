@@ -238,9 +238,10 @@ UpdateCameraStatusFrame(void)
   ctxt.model_id=gtk_statusbar_push( (GtkStatusbar*)lookup_widget(main_window,"camera_model_status"), ctxt.model_ctxt, temp);
 
   // camera node/bus:
-  unsigned int node, port, gen;
+  unsigned int node, gen;
   dc1394_camera_get_node(camera->camera_info, &node, &gen);
 #ifdef HAVE_GET_PORT
+  unsigned int port;
   dc1394_camera_get_linux_port(camera->camera_info, &port);
   sprintf(temp," %d  /  %d /  %d ", port, node, gen); 
 #else

@@ -1,5 +1,9 @@
 Coriander, (c) 2000-2008 Damien Douxchamps <ddouxchamps@users.sf.net>
 
+   2008-06-21, by Damien Douxchamps
+   - little compilation fix and...
+   - RELEASE 2.0.0!
+
    2008-06-17, by Damien Douxchamps
    - Implement automatic iso control and RECEIVE service. ON by default.
 	
