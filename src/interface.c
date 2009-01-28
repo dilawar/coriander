@@ -1707,7 +1707,7 @@ create_main_window (void)
   gtk_label_set_justify (GTK_LABEL (label153), GTK_JUSTIFY_CENTER);
   gtk_misc_set_padding (GTK_MISC (label153), 5, 0);
 
-  dma_buffer_size_adj = gtk_adjustment_new (5, 2, 999999, 1, 10, 10);
+  dma_buffer_size_adj = gtk_adjustment_new (5, 2, 999999, 1, 10, 0);
   dma_buffer_size = gtk_spin_button_new (GTK_ADJUSTMENT (dma_buffer_size_adj), 1, 0);
   gtk_widget_set_name (dma_buffer_size, "dma_buffer_size");
   gtk_widget_show (dma_buffer_size);
@@ -1956,7 +1956,7 @@ create_main_window (void)
   gtk_widget_set_sensitive (trigger_polarity, FALSE);
   gtk_tooltips_set_tip (tooltips, trigger_polarity, _("Choose reversed polarity for the external trigger input"), NULL);
 
-  trigger_count_adj = gtk_adjustment_new (0, 0, 65535, 1, 10, 10);
+  trigger_count_adj = gtk_adjustment_new (0, 0, 65535, 1, 10, 0);
   trigger_count = gtk_spin_button_new (GTK_ADJUSTMENT (trigger_count_adj), 1, 0);
   gtk_widget_set_name (trigger_count, "trigger_count");
   gtk_widget_show (trigger_count);
@@ -2076,7 +2076,7 @@ create_main_window (void)
 
   gtk_option_menu_set_menu (GTK_OPTION_MENU (stereo_menu), convertwidget17);
 
-  mono16_bpp_adj = gtk_adjustment_new (8, 8, 16, 1, 2, 2);
+  mono16_bpp_adj = gtk_adjustment_new (8, 8, 16, 1, 2, 0);
   mono16_bpp = gtk_spin_button_new (GTK_ADJUSTMENT (mono16_bpp_adj), 1, 0);
   gtk_widget_set_name (mono16_bpp, "mono16_bpp");
   gtk_widget_show (mono16_bpp);
@@ -2125,7 +2125,7 @@ create_main_window (void)
   gtk_label_set_justify (GTK_LABEL (label77), GTK_JUSTIFY_CENTER);
   gtk_misc_set_padding (GTK_MISC (label77), 5, 8);
 
-  prefs_display_period_adj = gtk_adjustment_new (1, 1, 9999, 1, 10, 10);
+  prefs_display_period_adj = gtk_adjustment_new (1, 1, 9999, 1, 10, 0);
   prefs_display_period = gtk_spin_button_new (GTK_ADJUSTMENT (prefs_display_period_adj), 1, 0);
   gtk_widget_set_name (prefs_display_period, "prefs_display_period");
   gtk_widget_show (prefs_display_period);
@@ -2176,7 +2176,7 @@ create_main_window (void)
   gtk_box_pack_start (GTK_BOX (hbox69), display_redraw, FALSE, FALSE, 0);
   gtk_tooltips_set_tip (tooltips, display_redraw, _("Force a minimum display redraw rate. Useful when you drag the display window and the transmission is stopped.."), NULL);
 
-  display_redraw_rate_adj = gtk_adjustment_new (1, 1, 9999, 0.10000000149, 10, 10);
+  display_redraw_rate_adj = gtk_adjustment_new (1, 1, 9999, 0.10000000149, 10, 0);
   display_redraw_rate = gtk_spin_button_new (GTK_ADJUSTMENT (display_redraw_rate_adj), 1, 1);
   gtk_widget_set_name (display_redraw_rate, "display_redraw_rate");
   gtk_widget_show (display_redraw_rate);
@@ -2466,7 +2466,7 @@ create_main_window (void)
   gtk_label_set_justify (GTK_LABEL (label76), GTK_JUSTIFY_CENTER);
   gtk_misc_set_padding (GTK_MISC (label76), 5, 8);
 
-  prefs_save_period_adj = gtk_adjustment_new (1, 1, 9999, 1, 10, 10);
+  prefs_save_period_adj = gtk_adjustment_new (1, 1, 9999, 1, 10, 0);
   prefs_save_period = gtk_spin_button_new (GTK_ADJUSTMENT (prefs_save_period_adj), 1, 0);
   gtk_widget_set_name (prefs_save_period, "prefs_save_period");
   gtk_widget_show (prefs_save_period);
@@ -2499,7 +2499,7 @@ create_main_window (void)
   gtk_widget_show (table75);
   gtk_container_add (GTK_CONTAINER (ram_buffer_frame), table75);
 
-  ram_buffer_size_adj = gtk_adjustment_new (1, 1, 10000, 1, 10, 10);
+  ram_buffer_size_adj = gtk_adjustment_new (1, 1, 10000, 1, 10, 0);
   ram_buffer_size = gtk_spin_button_new (GTK_ADJUSTMENT (ram_buffer_size_adj), 1, 0);
   gtk_widget_set_name (ram_buffer_size, "ram_buffer_size");
   gtk_widget_show (ram_buffer_size);
@@ -2573,7 +2573,7 @@ create_main_window (void)
   gtk_label_set_justify (GTK_LABEL (label149), GTK_JUSTIFY_CENTER);
   gtk_misc_set_padding (GTK_MISC (label149), 5, 0);
 
-  prefs_v4l_period_adj = gtk_adjustment_new (1, 1, 9999, 1, 10, 10);
+  prefs_v4l_period_adj = gtk_adjustment_new (1, 1, 9999, 1, 10, 0);
   prefs_v4l_period = gtk_spin_button_new (GTK_ADJUSTMENT (prefs_v4l_period_adj), 1, 0);
   gtk_widget_set_name (prefs_v4l_period, "prefs_v4l_period");
   gtk_widget_show (prefs_v4l_period);
@@ -2757,7 +2757,7 @@ create_main_window (void)
   gtk_label_set_justify (GTK_LABEL (label75), GTK_JUSTIFY_CENTER);
   gtk_misc_set_padding (GTK_MISC (label75), 5, 0);
 
-  prefs_ftp_period_adj = gtk_adjustment_new (1, 1, 9999, 1, 10, 10);
+  prefs_ftp_period_adj = gtk_adjustment_new (1, 1, 9999, 1, 10, 0);
   prefs_ftp_period = gtk_spin_button_new (GTK_ADJUSTMENT (prefs_ftp_period_adj), 1, 0);
   gtk_widget_set_name (prefs_ftp_period, "prefs_ftp_period");
   gtk_widget_show (prefs_ftp_period);
@@ -2881,7 +2881,7 @@ create_main_window (void)
   gtk_widget_show (table33);
   gtk_container_add (GTK_CONTAINER (auto_exposure_frame), table33);
 
-  spinbutton1_adj = gtk_adjustment_new (0, 0, 100, 1, 10, 10);
+  spinbutton1_adj = gtk_adjustment_new (0, 0, 100, 1, 10, 0);
   spinbutton1 = gtk_spin_button_new (GTK_ADJUSTMENT (spinbutton1_adj), 1, 0);
   gtk_widget_set_name (spinbutton1, "spinbutton1");
   gtk_widget_show (spinbutton1);
@@ -4525,7 +4525,7 @@ create_preferences_window (void)
   gtk_widget_show (hbox56);
   gtk_container_add (GTK_CONTAINER (timeout_frame), hbox56);
 
-  prefs_op_timeout_scale_adj = gtk_adjustment_new (10, 0, 100, 1, 10, 10);
+  prefs_op_timeout_scale_adj = gtk_adjustment_new (10, 0, 100, 1, 10, 0);
   prefs_op_timeout_scale = gtk_spin_button_new (GTK_ADJUSTMENT (prefs_op_timeout_scale_adj), 1, 1);
   gtk_widget_set_name (prefs_op_timeout_scale, "prefs_op_timeout_scale");
   gtk_widget_show (prefs_op_timeout_scale);
@@ -4569,7 +4569,7 @@ create_preferences_window (void)
   gtk_label_set_justify (GTK_LABEL (label79), GTK_JUSTIFY_CENTER);
   gtk_misc_set_padding (GTK_MISC (label79), 5, 0);
 
-  prefs_update_scale_adj = gtk_adjustment_new (5, 0.10000000149, 100, 1, 10, 5);
+  prefs_update_scale_adj = gtk_adjustment_new (5, 0.10000000149, 100, 1, 10, 0);
   prefs_update_scale = gtk_spin_button_new (GTK_ADJUSTMENT (prefs_update_scale_adj), 1, 1);
   gtk_widget_set_name (prefs_update_scale, "prefs_update_scale");
   gtk_widget_show (prefs_update_scale);
