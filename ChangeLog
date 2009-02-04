@@ -1,5 +1,8 @@
 Coriander, (c) 2000-2008 Damien Douxchamps <ddouxchamps@users.sf.net>
 
+   2009-02-04, by Damien Douxchamps
+   - fix verbose gtk warnings (thanks to Chris Rankin)
+	
    2008-06-21, by Damien Douxchamps
    - little compilation fix and...
    - RELEASE 2.0.0!

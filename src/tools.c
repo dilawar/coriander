@@ -1025,7 +1025,7 @@ AutoIsoReceive(dc1394switch_t pwr)
         
         dc1394_video_get_transmission(camera->camera_info, &tmp);
         if ( (preferences.automate_iso>0)&&(tmp==DC1394_OFF) ) {
-            fprintf(stderr,"Pressing ON\n");
+            //fprintf(stderr,"Pressing ON\n");
             gtk_button_clicked(GTK_BUTTON(lookup_widget(main_window,"iso_start")));
         }
             
@@ -1040,7 +1040,7 @@ AutoIsoReceive(dc1394switch_t pwr)
         if ( (preferences.automate_iso>0)&&(tmp==DC1394_ON) &&
              ((GetService(camera,SERVICE_DISPLAY)==NULL)&&(GetService(camera,SERVICE_SAVE)==NULL)&&(GetService(camera,SERVICE_ISO)==NULL)&&
               (GetService(camera,SERVICE_FTP)==NULL)&&(GetService(camera,SERVICE_V4L)==NULL)) ) { // no other service present
-                fprintf(stderr,"Pressing OFF\n");
+	    //fprintf(stderr,"Pressing OFF\n");
                 gtk_button_clicked(GTK_BUTTON(lookup_widget(main_window,"iso_stop")));
             }
         break;

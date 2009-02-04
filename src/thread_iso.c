@@ -296,7 +296,7 @@ IsoThread(void* arg)
 	    DC1394_WRN(err,"oops\n");
 	    break;
 	  }
-	  
+
 	  // FPS computation:
 	  iso_service->processed_frames++;
 	  
@@ -335,7 +335,7 @@ IsoThread(void* arg)
 	pthread_mutex_unlock(&iso_service->mutex_data);
 	usleep(100);
       }
-      //fprintf(stderr,"got frame %.7f\n",iso_service->fps);
+      //fprintf(stderr,"got frame %.7f %d\n",iso_service->fps, rand());
     }
   }
   return ((void*)1);
