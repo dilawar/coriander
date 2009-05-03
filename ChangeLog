@@ -1,5 +1,8 @@
 Coriander, (c) 2000-2008 Damien Douxchamps <ddouxchamps@users.sf.net>
 
+   2009-05-03, by Damien Douxchamps
+   - Apply patches from Martin Herrmann (stereo deinterlacing problems)
+	
    2009-02-04, by Damien Douxchamps
    - fix verbose gtk warnings (thanks to Chris Rankin)
 	

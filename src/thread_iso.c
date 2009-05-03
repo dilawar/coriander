@@ -255,7 +255,12 @@ IsoThread(void* arg)
 	    // nothing to do at this time, the picture is already in tempframe.
 	    break;
 	  default:
-	    dc1394_deinterlace_stereo_frames(frame,&info->tempframe,(dc1394stereo_method_t)iso_service->current_buffer->stereo_method);
+		// tempframe.image currently points to the DMA ring buffer. However, it
+		// will be reallocated by the deinterlacing function. In order not to
+		// free the DMA buffer, set it to NULL now. We will have to free it
+		// later, or else we will leak memory.
+		info->tempframe.image=NULL;
+	    dc1394_deinterlace_stereo_frames(frame,&info->tempframe,(dc1394stereo_method_t)iso_service->camera->stereo);
 	    break;
 	  }
 	  
@@ -270,10 +275,11 @@ IsoThread(void* arg)
 	    bayer=-1;
 	  }
 
+	  // If a bayer pattern is used, the debayer function will copy the data to
+	  // iso_service->current_buffer. If not, it is copied using memcpy. We
+	  // do that regardless of whether stereo deinterlacing was applied.
 	  switch (bayer) {
 	  case -1:
-	    // this is only necessary if no stereo was performed
-	    if (iso_service->current_buffer->stereo==-1) {
 	      if (iso_service->current_buffer->frame.allocated_image_bytes<info->tempframe.total_bytes) {
 		if (iso_service->current_buffer->frame.allocated_image_bytes!=0)
 		  free(iso_service->current_buffer->frame.image);
@@ -287,7 +293,6 @@ IsoThread(void* arg)
 	      iso_service->current_buffer->frame.image=backup_ptr;
 	      iso_service->current_buffer->frame.allocated_image_bytes=backup_alloc;
 	      memcpy(iso_service->current_buffer->frame.image,info->tempframe.image,info->tempframe.total_bytes*sizeof(uint8_t));
-	    }
 	    break;
 	  default:
 	    if (info->tempframe.color_filter==0)
@@ -297,6 +302,19 @@ IsoThread(void* arg)
 	    break;
 	  }
 
+	  // Free tempframe.image if stereo interlacing was performed.
+	  if (iso_service->camera->stereo!=-1)
+	  {
+		  // Stereo deinterlacing was performed. During stereo interlacing,
+		  // tempframe.image is allocated new memory by the dc1394 library.
+		  // The tempframe was copied to current_buffer->frame above, either by
+		  // dc1394_debayer_frames or by memcpy if no debayering is performed.
+		  // So we can free tempframe.image at this point.
+		  free (info->tempframe.image);
+		  info->tempframe.image=NULL;
+		  info->tempframe.allocated_image_bytes=0;
+	  }
+	  
 	  // FPS computation:
 	  iso_service->processed_frames++;
 	  

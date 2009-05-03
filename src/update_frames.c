@@ -576,8 +576,8 @@ UpdateBandwidthFrame(void)
       if ((ratio<.95)&&(ratio>0))
 	bandwidth=(int)((float)bandwidth*ratio);
     }
+
     // sum the values of the bandwidths
-    // FIXME BIGPATCH
     dc1394_camera_get_linux_port(cam->camera_info, &port);
     ports[port]+=bandwidth;
    
