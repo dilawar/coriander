@@ -78,9 +78,14 @@ void
 UpdateAllWindows(void)
 {
   UpdatePreferencesWindow();
+  //eprint("1\n")
   UpdateFeatureWindow();
+  //eprint("2\n")
   UpdateStatusWindow();
+  //eprint("3\n")
   UpdateCommanderWindow();
+  //eprint("4\n")
   if ((camera->format7_info.edit_mode!=-1)&&(format7_tab_presence==1))
     UpdateFormat7Window();
+  //eprint("5\n")
 }

@@ -242,8 +242,11 @@ UpdateCameraStatusFrame(void)
   dc1394_camera_get_node(camera->camera_info, &node, &gen);
 #ifdef HAVE_GET_PORT
   unsigned int port;
-  dc1394_camera_get_linux_port(camera->camera_info, &port);
-  sprintf(temp," %d  /  %d /  %d ", port, node, gen); 
+  if (dc1394_camera_get_linux_port(camera->camera_info, &port)==DC1394_SUCCESS && port<port_num)
+      sprintf(temp," %d  /  %d /  %d ", port, node, gen); 
+  else
+      sprintf(temp," - /  %d /  %d ", node, gen); 
+
 #else
   sprintf(temp," - /  %d /  %d ", node, gen); 
 #endif
@@ -578,9 +581,9 @@ UpdateBandwidthFrame(void)
     }
 
     // sum the values of the bandwidths
-    dc1394_camera_get_linux_port(cam->camera_info, &port);
-    ports[port]+=bandwidth;
-   
+    if (dc1394_camera_get_linux_port(cam->camera_info, &port)==DC1394_SUCCESS && port<port_num)
+	ports[port]+=bandwidth;
+
     cam=cam->next;
   }
 
@@ -645,9 +648,10 @@ UpdateServiceTree(void)
 	  // remove this service row
 	  //fprintf(stderr,"Service dead, removing\n");
 	  gtk_tree_store_remove(store, &service_leaf);
+	  n-=1;
 	}
 	// go to next service
-	if (service_leaf.user_data!=NULL)
+	if (service_leaf.user_data!=NULL && n>=1)
 	  gtk_tree_model_iter_next(model, &service_leaf);
       }
     }
