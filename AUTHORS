@@ -31,5 +31,6 @@ Richard Cunningham			-- LFS support
 Will Shackleford			-- bug fix
 Olaf Hering				-- patch
 Sergio					-- MPEG/libjpeg save
+Tim Niemueller				-- Fix implicit DSO linking (Fedora fix)
 
 If you contributed and your name is not included please let me know! :-)
