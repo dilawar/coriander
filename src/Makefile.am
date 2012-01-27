@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-INCLUDES = -Wall -DPACKAGE_DATA_DIR=\""$(datadir)"\" -DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" @PACKAGE_CFLAGS@ $(SDLLIB_CFLAGS) $(LIBRAW_CFLAGS) $(LIBDC_CFLAGS) $(COR_LFS_CFLAGS) $(FFMPEG_CFLAGS) $(X11_CFLAGS)
+AM_CFLAGS = -Wall -DPACKAGE_DATA_DIR=\""$(datadir)"\" -DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" @PACKAGE_CFLAGS@ $(SDLLIB_CFLAGS) $(LIBRAW_CFLAGS) $(LIBDC_CFLAGS) $(COR_LFS_CFLAGS) $(FFMPEG_CFLAGS) $(X11_CFLAGS)
 
 bin_PROGRAMS = coriander
 
