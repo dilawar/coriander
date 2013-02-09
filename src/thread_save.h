@@ -28,6 +28,9 @@ typedef enum
 #ifdef HAVE_FFMPEG
   SAVE_FORMAT_JPEG,
 #endif
+#ifdef HAVE_LIBTIFF
+  SAVE_FORMAT_TIFF,
+#endif
   SAVE_FORMAT_RAW_VIDEO,
 #ifdef HAVE_FFMPEG
   SAVE_FORMAT_PVN,

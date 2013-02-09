@@ -80,6 +80,10 @@
 #include <ffmpeg/swscale.h>
 #endif
 
+#ifdef HAVE_LIBTIFF
+#include "tiffio.h"
+#endif
+
 #include "video_encode.h"
 
 #include "error.h"

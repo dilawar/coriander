@@ -1649,6 +1649,11 @@ on_save_format_menu_activate             (GtkEditable     *editable,
       sprintf(camera->prefs.save_filename_ext,"jpeg");
       break;
 #endif
+#ifdef HAVE_LIBTIFF
+  case SAVE_FORMAT_TIFF:
+      sprintf(camera->prefs.save_filename_ext,"tiff");
+      break;
+#endif
   case SAVE_FORMAT_RAW_VIDEO:
       sprintf(camera->prefs.save_filename_ext,"raw");
       break;

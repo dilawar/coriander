@@ -126,6 +126,11 @@ GetCameraData(camera_t* cam) {
       sprintf(cam->prefs.save_filename_ext,"jpeg");
       break;
 #endif
+#ifdef HAVE_LIBTIFF
+  case SAVE_FORMAT_TIFF:
+      sprintf(cam->prefs.save_filename_ext,"tiff");
+      break;
+#endif
   case SAVE_FORMAT_RAW_VIDEO:
       sprintf(cam->prefs.save_filename_ext,"raw");
       break;

@@ -1,4 +1,7 @@
-Coriander, (c) 2000-2008 Damien Douxchamps <ddouxchamps@users.sf.net>
+Coriander, (c) 2000-2013 Damien Douxchamps <ddouxchamps@users.sf.net>
+
+   2013-02-08, by Damien Douxchamps
+   - add TIFF support (8 and 16 bits)
 
    2010-05-27, by Damien Douxchamps
    - Version 2.0.1

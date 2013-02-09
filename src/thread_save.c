@@ -251,6 +251,9 @@ GetSaveFD(chain_t *save_service, FILE **fd, char *filename_out)
 #ifdef HAVE_FFMPEG
   case SAVE_FORMAT_JPEG:
 #endif
+#ifdef HAVE_LIBTIFF
+  case SAVE_FORMAT_TIFF:
+#endif
     // first handle the case of save-to-dir
     if (cam->prefs.save_to_dir==0) {
       switch (cam->prefs.save_append) {
@@ -351,6 +354,16 @@ GetSaveFD(chain_t *save_service, FILE **fd, char *filename_out)
   case SAVE_FORMAT_MPEG:
   case SAVE_FORMAT_JPEG:
     // do nothing
+    break;
+#endif
+#ifdef HAVE_LIBTIFF // note that we return a TIFF* disguised as a FILE* here. Ugly.
+  case SAVE_FORMAT_TIFF:
+    ProtectFilename(filename_out);
+    *fd=(FILE*)((void*)TIFFOpen(filename_out,"w"));
+    if (!fd) {
+      fprintf(stderr,"Can't create sequence file for saving\n");
+      return DC1394_FAILURE;
+    }
     break;
 #endif
   default:
@@ -638,7 +651,7 @@ SaveJPEGFrame(chain_t *save_service, char *filename_out)
   info=(savethread_info_t*)save_service->data;
   //if (save_service->current_buffer->frame.color_coding!=DC1394_COLOR_CODING_YUV411)&&(
 
-  fprintf(stderr,"Trying to save a JPEG frame...\n");
+  //fprintf(stderr,"Trying to save a JPEG frame...\n");
   
   info->picture = alloc_picture(PIX_FMT_YUVJ420P, save_service->current_buffer->frame.size[0], save_service->current_buffer->frame.size[1]);
   if (!info->picture) {
@@ -681,6 +694,88 @@ SaveJPEGFrame(chain_t *save_service, char *filename_out)
 }
 #endif
 
+#ifdef HAVE_LIBTIFF
+
+void
+SaveTIFF(chain_t *save_service, TIFF* tif)
+{
+    unsigned int bpp, spp, i,w,h,depth;
+    savethread_info_t *info;
+    unsigned char *src;
+    info=(savethread_info_t*)save_service->data;
+
+    w=save_service->current_buffer->frame.size[0];
+    h=save_service->current_buffer->frame.size[1];
+    depth=save_service->current_buffer->frame.data_depth;
+
+    switch (save_service->current_buffer->frame.color_coding) {
+    case DC1394_COLOR_CODING_MONO8:
+    case DC1394_COLOR_CODING_RAW8:
+        bpp=1; spp=1;
+        src=save_service->current_buffer->frame.image;
+        break;
+    case DC1394_COLOR_CODING_MONO16:
+    case DC1394_COLOR_CODING_RAW16:
+    case DC1394_COLOR_CODING_MONO16S:
+        bpp=2; spp=1;
+        src=save_service->current_buffer->frame.image;
+        break;
+    case DC1394_COLOR_CODING_YUV411:
+    case DC1394_COLOR_CODING_YUV422:
+    case DC1394_COLOR_CODING_YUV444:
+        bpp=1; spp=3;
+        convert_to_rgb(&save_service->current_buffer->frame, &info->frame);
+        src=info->frame.image;
+        break;
+    case DC1394_COLOR_CODING_RGB8:
+        bpp=1; spp=3;
+        src=save_service->current_buffer->frame.image;
+        break;
+    case DC1394_COLOR_CODING_RGB16:
+        bpp=2; spp=3;
+        src=save_service->current_buffer->frame.image;
+        break;
+    default:
+        fprintf(stderr, "Unknown buffer format!\n");
+        return;
+    }
+    TIFFSetField(tif, TIFFTAG_IMAGEWIDTH, w);
+    TIFFSetField(tif, TIFFTAG_IMAGELENGTH, h);
+    TIFFSetField(tif, TIFFTAG_ORIENTATION, ORIENTATION_TOPLEFT);
+    TIFFSetField(tif, TIFFTAG_SAMPLESPERPIXEL, spp);
+    TIFFSetField(tif, TIFFTAG_BITSPERSAMPLE, depth);
+    TIFFSetField(tif, TIFFTAG_SOFTWARE, "Coriander");
+    TIFFSetField(tif, TIFFTAG_COMPRESSION, COMPRESSION_NONE);
+    TIFFSetField(tif, TIFFTAG_MINSAMPLEVALUE, 0);
+    TIFFSetField(tif, TIFFTAG_MAXSAMPLEVALUE, (2^depth)-1);
+    TIFFSetField(tif, TIFFTAG_FILLORDER, FILLORDER_MSB2LSB);
+    switch (spp) {
+    case 1: 
+        TIFFSetField(tif, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_MINISBLACK);
+        break;
+    case 3:
+        TIFFSetField(tif, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_RGB);
+        TIFFSetField(tif, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG);
+        break;
+    default:
+        fprintf(stderr,"Invalid number of TIFF fields\n");
+    }
+    // byte swap, 'cause TIFF doesn't seem to do this right.
+    if (bpp==2) {
+        uint8_t a;
+        for (i=0;i<h*spp*w;i++) {
+            a=src[2*i];
+            src[2*i]=src[2*i+1];
+            src[2*i+1]=a;
+        }
+    }
+    for (i=0;i<h;i++)
+        if (TIFFWriteScanline(tif, &src[i*w*bpp*spp], i, 0)<0)
+            fprintf(stderr,"Error writing TIFF line %d\n",i);
+
+    TIFFClose(tif);
+}
+#endif
 
 void*
 SaveThread(void* arg)
@@ -813,6 +908,10 @@ SaveThread(void* arg)
 		fclose(fd);
 		fd=NULL;
 		break;
+	      case SAVE_FORMAT_TIFF:
+                  SaveTIFF(save_service, (TIFF*)((void*)(fd)));
+                  fd=NULL;
+                  break;
 	      default:
 		fprintf(stderr,"Unsupported file format\n");
 	      } // end save format switch

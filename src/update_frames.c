@@ -849,6 +849,7 @@ UpdateSaveFilenameFrame(void)
 #endif
   case SAVE_FORMAT_PPM:
   case SAVE_FORMAT_RAW:
+  case SAVE_FORMAT_TIFF:
     // first handle the case of save-to-dir
     if (camera->prefs.save_to_dir==0) {
       switch (camera->prefs.save_append) {
