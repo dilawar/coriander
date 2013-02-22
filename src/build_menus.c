@@ -263,6 +263,7 @@ BuildFormat7ModeMenu(void)
   GtkWidget* mode_num;
   GtkWidget* mode_num_menu;
   GtkWidget* glade_menuitem;
+  char string[256];
 
   gtk_widget_destroy(GTK_WIDGET (lookup_widget(main_window,"format7_mode"))); // remove previous menu
 
@@ -280,7 +281,11 @@ BuildFormat7ModeMenu(void)
     if (camera->format7_info.modeset.mode[f-DC1394_VIDEO_MODE_FORMAT7_MIN].present>0) {
       index[i]=k;
       k++;
-      glade_menuitem = gtk_menu_item_new_with_label (_(format7_mode_list[i]));
+      sprintf(string, "Mode %d: %dx%d",f-DC1394_VIDEO_MODE_FORMAT7_MIN,
+              camera->format7_info.modeset.mode[f-DC1394_VIDEO_MODE_FORMAT7_MIN].max_size_x,
+              camera->format7_info.modeset.mode[f-DC1394_VIDEO_MODE_FORMAT7_MIN].max_size_y);
+      glade_menuitem = gtk_menu_item_new_with_label (_(string));
+
       gtk_widget_show (glade_menuitem);
       gtk_menu_append (GTK_MENU (mode_num_menu), glade_menuitem);
       g_signal_connect ((gpointer) glade_menuitem, "activate",
@@ -451,14 +456,16 @@ BuildFormatMenu(void)
     return;
   }
 
+  int roi=0;
   for (i=0;i<modes.num;i++) {
       if (!dc1394_is_video_mode_scalable(modes.modes[i]))
           glade_menuitem = gtk_menu_item_new_with_label (_(video_mode_list[modes.modes[i]-DC1394_VIDEO_MODE_MIN]));
       else {
-          sprintf(string, "%s, %dx%d",video_mode_list[modes.modes[i]-DC1394_VIDEO_MODE_MIN],
+          sprintf(string, "%s %d: %dx%d",video_mode_list[modes.modes[i]-DC1394_VIDEO_MODE_MIN], roi,
                   camera->format7_info.modeset.mode[modes.modes[i]-DC1394_VIDEO_MODE_FORMAT7_MIN].max_size_x,
                   camera->format7_info.modeset.mode[modes.modes[i]-DC1394_VIDEO_MODE_FORMAT7_MIN].max_size_y);
           glade_menuitem = gtk_menu_item_new_with_label (_(string));
+          roi++;
       }
       gtk_widget_show (glade_menuitem);
       gtk_menu_append (GTK_MENU (mode_num_menu), glade_menuitem);
