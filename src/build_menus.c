@@ -455,7 +455,7 @@ BuildFormatMenu(void)
       if (!dc1394_is_video_mode_scalable(modes.modes[i]))
           glade_menuitem = gtk_menu_item_new_with_label (_(video_mode_list[modes.modes[i]-DC1394_VIDEO_MODE_MIN]));
       else {
-          sprintf(string, "%s: %dx%d (max)",video_mode_list[modes.modes[i]-DC1394_VIDEO_MODE_MIN],
+          sprintf(string, "%s, %dx%d",video_mode_list[modes.modes[i]-DC1394_VIDEO_MODE_MIN],
                   camera->format7_info.modeset.mode[modes.modes[i]-DC1394_VIDEO_MODE_FORMAT7_MIN].max_size_x,
                   camera->format7_info.modeset.mode[modes.modes[i]-DC1394_VIDEO_MODE_FORMAT7_MIN].max_size_y);
           glade_menuitem = gtk_menu_item_new_with_label (_(string));
