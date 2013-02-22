@@ -660,14 +660,6 @@ create_main_window (void)
   GtkWidget *prefs_save_period;
   GtkWidget *label42;
   GtkWidget *label178;
-  GtkWidget *ram_buffer_frame;
-  GtkWidget *table75;
-  GtkObject *ram_buffer_size_adj;
-  GtkWidget *ram_buffer_size;
-  GtkWidget *label152;
-  GtkWidget *use_ram_buffer;
-  GtkWidget *malloc_test;
-  GtkWidget *label180;
   GtkWidget *label145;
   GtkWidget *vbox79;
   GtkWidget *frame9;
@@ -2464,7 +2456,7 @@ create_main_window (void)
   gtk_widget_show (label76);
   gtk_box_pack_start (GTK_BOX (hbox_capture_freq_periodic), label76, FALSE, FALSE, 0);
   gtk_label_set_justify (GTK_LABEL (label76), GTK_JUSTIFY_CENTER);
-  gtk_misc_set_padding (GTK_MISC (label76), 5, 8);
+  gtk_misc_set_padding (GTK_MISC (label76), 5, 0);
 
   prefs_save_period_adj = gtk_adjustment_new (1, 1, 9999, 1, 10, 0);
   prefs_save_period = gtk_spin_button_new (GTK_ADJUSTMENT (prefs_save_period_adj), 1, 0);
@@ -2482,65 +2474,15 @@ create_main_window (void)
   gtk_label_set_justify (GTK_LABEL (label42), GTK_JUSTIFY_CENTER);
   gtk_misc_set_padding (GTK_MISC (label42), 5, 8);
 
+  gtk_box_pack_start (GTK_BOX (hbox55), label74, FALSE, FALSE, 2);
+  gtk_label_set_justify (GTK_LABEL (label74), GTK_JUSTIFY_CENTER);
+  gtk_misc_set_padding (GTK_MISC (label74), 5, 8);
+
   label178 = gtk_label_new (_("<b>Frame drop</b>"));
   gtk_widget_set_name (label178, "label178");
   gtk_widget_show (label178);
   gtk_frame_set_label_widget (GTK_FRAME (prefs_save_framedrop), label178);
   gtk_label_set_use_markup (GTK_LABEL (label178), TRUE);
-
-  ram_buffer_frame = gtk_frame_new (NULL);
-  gtk_widget_set_name (ram_buffer_frame, "ram_buffer_frame");
-  gtk_widget_show (ram_buffer_frame);
-  gtk_box_pack_start (GTK_BOX (vbox54), ram_buffer_frame, FALSE, FALSE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (ram_buffer_frame), 5);
-
-  table75 = gtk_table_new (1, 4, FALSE);
-  gtk_widget_set_name (table75, "table75");
-  gtk_widget_show (table75);
-  gtk_container_add (GTK_CONTAINER (ram_buffer_frame), table75);
-
-  ram_buffer_size_adj = gtk_adjustment_new (1, 1, 10000, 1, 10, 0);
-  ram_buffer_size = gtk_spin_button_new (GTK_ADJUSTMENT (ram_buffer_size_adj), 1, 0);
-  gtk_widget_set_name (ram_buffer_size, "ram_buffer_size");
-  gtk_widget_show (ram_buffer_size);
-  gtk_table_attach (GTK_TABLE (table75), ram_buffer_size, 2, 3, 0, 1,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_tooltips_set_tip (tooltips, ram_buffer_size, _("Type in the size of the RAM buffer in megabytes"), NULL);
-  gtk_spin_button_set_update_policy (GTK_SPIN_BUTTON (ram_buffer_size), GTK_UPDATE_IF_VALID);
-
-  label152 = gtk_label_new (_("Buffer size [MB]:"));
-  gtk_widget_set_name (label152, "label152");
-  gtk_widget_show (label152);
-  gtk_table_attach (GTK_TABLE (table75), label152, 1, 2, 0, 1,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_label_set_justify (GTK_LABEL (label152), GTK_JUSTIFY_CENTER);
-  gtk_misc_set_alignment (GTK_MISC (label152), 0, 0.5);
-  gtk_misc_set_padding (GTK_MISC (label152), 5, 0);
-
-  use_ram_buffer = gtk_check_button_new_with_mnemonic (_("Use RAM buffering"));
-  gtk_widget_set_name (use_ram_buffer, "use_ram_buffer");
-  gtk_widget_show (use_ram_buffer);
-  gtk_table_attach (GTK_TABLE (table75), use_ram_buffer, 0, 1, 0, 1,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_tooltips_set_tip (tooltips, use_ram_buffer, _("Enable this to put all images into a RAM buffer and dump everything to disk when the buffer is full (or the service is stopped). Useful for fast framerates, but limited by the buffer size."), NULL);
-
-  malloc_test = gtk_button_new_with_mnemonic (_("malloc test"));
-  gtk_widget_set_name (malloc_test, "malloc_test");
-  gtk_widget_show (malloc_test);
-  gtk_table_attach (GTK_TABLE (table75), malloc_test, 3, 4, 0, 1,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (malloc_test), 2);
-  gtk_tooltips_set_tip (tooltips, malloc_test, _("Try to allocate the buffer. IMPORTANT: this will report an error ONLY if ALL memory allocation schemes fail. In other words, this does not garantee that the allocated buffer is 100% in the RAM; some of it could be in swap."), NULL);
-
-  label180 = gtk_label_new (_("<b>RAM buffering</b>"));
-  gtk_widget_set_name (label180, "label180");
-  gtk_widget_show (label180);
-  gtk_frame_set_label_widget (GTK_FRAME (ram_buffer_frame), label180);
-  gtk_label_set_use_markup (GTK_LABEL (label180), TRUE);
 
   label145 = gtk_label_new (_("Save"));
   gtk_widget_set_name (label145, "label145");
@@ -3810,15 +3752,6 @@ create_main_window (void)
   g_signal_connect ((gpointer) prefs_save_period, "changed",
                     G_CALLBACK (on_prefs_save_period_changed),
                     NULL);
-  g_signal_connect ((gpointer) ram_buffer_size, "changed",
-                    G_CALLBACK (on_ram_buffer_size_changed),
-                    NULL);
-  g_signal_connect ((gpointer) use_ram_buffer, "toggled",
-                    G_CALLBACK (on_ram_buffer_toggled),
-                    NULL);
-  g_signal_connect ((gpointer) malloc_test, "clicked",
-                    G_CALLBACK (on_malloc_test_clicked),
-                    NULL);
   g_signal_connect ((gpointer) prefs_v4l_period, "changed",
                     G_CALLBACK (on_prefs_v4l_period_changed),
                     NULL);
@@ -4136,13 +4069,6 @@ create_main_window (void)
   GLADE_HOOKUP_OBJECT (main_window, prefs_save_period, "prefs_save_period");
   GLADE_HOOKUP_OBJECT (main_window, label42, "label42");
   GLADE_HOOKUP_OBJECT (main_window, label178, "label178");
-  GLADE_HOOKUP_OBJECT (main_window, ram_buffer_frame, "ram_buffer_frame");
-  GLADE_HOOKUP_OBJECT (main_window, table75, "table75");
-  GLADE_HOOKUP_OBJECT (main_window, ram_buffer_size, "ram_buffer_size");
-  GLADE_HOOKUP_OBJECT (main_window, label152, "label152");
-  GLADE_HOOKUP_OBJECT (main_window, use_ram_buffer, "use_ram_buffer");
-  GLADE_HOOKUP_OBJECT (main_window, malloc_test, "malloc_test");
-  GLADE_HOOKUP_OBJECT (main_window, label180, "label180");
   GLADE_HOOKUP_OBJECT (main_window, label145, "label145");
   GLADE_HOOKUP_OBJECT (main_window, vbox79, "vbox79");
   GLADE_HOOKUP_OBJECT (main_window, frame9, "frame9");

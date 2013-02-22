@@ -51,23 +51,6 @@ SaveStartThread(camera_t* cam)
     info->frame.allocated_image_bytes=0;
     info->bigbuffer=NULL;
 
-    if ((cam->prefs.use_ram_buffer==TRUE)&&
-	((cam->prefs.save_format==SAVE_FORMAT_RAW_VIDEO)||
-#ifdef HAVE_FFMPEG
-	 (cam->prefs.save_format==SAVE_FORMAT_MPEG)||
-#endif
-	 (cam->prefs.save_format==SAVE_FORMAT_PVN))) {
-      info->bigbuffer_position=0;
-      info->bigbuffer=(unsigned char*)malloc(cam->prefs.ram_buffer_size*1024*1024*sizeof(unsigned char));
-      if (info->bigbuffer==NULL) {
-	Error("Could not allocate memory for RAM buffer save service");
-	pthread_mutex_unlock(&save_service->mutex_data);
-	FreeChain(save_service);
-	save_service=NULL;
-	return(-1);
-      }
-    }
-
     /* Insert chain and start service*/
     pthread_mutex_lock(&save_service->mutex_struct);
     InsertChain(cam, save_service);
@@ -397,7 +380,7 @@ InitVideoFile(chain_t *save_service, FILE *fd, char *filename_out)
 #endif
 
   // (JG) if extension is PVN, write PVN header here
-  if ((cam->prefs.save_format==SAVE_FORMAT_PVN) && (cam->prefs.use_ram_buffer==FALSE)) {//-----------------------------------
+  if (cam->prefs.save_format==SAVE_FORMAT_PVN) {//-----------------------------------
     //fprintf(stderr,"pvn header write\n");
     dc1394_framerate_as_float(framerate, &fps);
     writePVNHeader(fd, save_service->current_buffer->frame.color_coding,
@@ -408,7 +391,7 @@ InitVideoFile(chain_t *save_service, FILE *fd, char *filename_out)
   }
 
 #ifdef HAVE_FFMPEG
-  if ((cam->prefs.save_format==SAVE_FORMAT_MPEG) && (cam->prefs.use_ram_buffer==FALSE)) {//-----------------------------------
+  if (cam->prefs.save_format==SAVE_FORMAT_MPEG) {//-----------------------------------
     // MPEG
     //fprintf(stderr,"setting up mpeg codec\n");
     //video_encode_init(save_service->current_buffer->width,
@@ -515,31 +498,6 @@ InitVideoFile(chain_t *save_service, FILE *fd, char *filename_out)
   
 
   return DC1394_SUCCESS;
-}
-
-void
-FillRamBuffer(chain_t *save_service)
-{
-  savethread_info_t *info;
-
-  info=(savethread_info_t*)save_service->data;
-  camera_t *cam=save_service->camera;
-
-
-  if ((cam->prefs.use_ram_buffer==TRUE)&&
-      ((cam->prefs.save_format==SAVE_FORMAT_RAW_VIDEO)||
-#ifdef HAVE_FFMPEG
-       (cam->prefs.save_format==SAVE_FORMAT_MPEG)||
-#endif
-       (cam->prefs.save_format==SAVE_FORMAT_PVN))) {
-    if (cam->prefs.ram_buffer_size*1024*1024-info->bigbuffer_position>=save_service->current_buffer->frame.image_bytes) {
-      memcpy(&info->bigbuffer[info->bigbuffer_position], save_service->current_buffer->frame.image, save_service->current_buffer->frame.image_bytes);
-      info->bigbuffer_position+=save_service->current_buffer->frame.image_bytes;
-    }
-    else { // buffer is full, exit thread
-      info->cancel_req=1;
-    }
-  }
 }
 
 void
@@ -786,8 +744,7 @@ SaveThread(void* arg)
   //GdkImlibImage *im=NULL; // V20***
   long int skip_counter;
   FILE *fd=NULL;
-  float tmp, fps;
-  int i;
+  float tmp;
   unsigned char* tmp_buf=NULL;
 
   filename_out=(char*)malloc(STRING_SIZE*sizeof(char));
@@ -855,18 +812,8 @@ SaveThread(void* arg)
 	      }
 	    }
 
-	    // rambuffer operation
-	    if ((cam->prefs.use_ram_buffer==TRUE)&&
-		((cam->prefs.save_format==SAVE_FORMAT_RAW_VIDEO)||
-#ifdef HAVE_FFMPEG
-		 (cam->prefs.save_format==SAVE_FORMAT_MPEG)||
-#endif
-		 (cam->prefs.save_format==SAVE_FORMAT_PVN))) {
-	      FillRamBuffer(save_service);
-	    }
-	    else { // normal operation (no RAM buffer)
-	      switch (cam->prefs.save_format) {
-	      case SAVE_FORMAT_RAW:
+            switch (cam->prefs.save_format) {
+            case SAVE_FORMAT_RAW:
 		//fprintf(stderr,"writing raw...");
 		fwrite(save_service->current_buffer->frame.image, save_service->current_buffer->frame.image_bytes, 1, fd);
 		//fprintf(stderr,"done. closing fd...");
@@ -874,48 +821,47 @@ SaveThread(void* arg)
 		fd=NULL;
 		//fprintf(stderr,"done\n");
 		break;
-	      case SAVE_FORMAT_RAW_VIDEO:
+            case SAVE_FORMAT_RAW_VIDEO:
 		fwrite(save_service->current_buffer->frame.image, save_service->current_buffer->frame.image_bytes, 1, fd);
 		break;
-	      case SAVE_FORMAT_PVN:
+            case SAVE_FORMAT_PVN:
 		if (needsConversionForPVN(save_service->current_buffer->frame.color_coding)>0) {
-		  // we assume that if it needs conversion, the output of the conversion is an 8bpp RGB
-		  tmp_buf = (unsigned char*)malloc(3*save_service->current_buffer->frame.size[0]*save_service->current_buffer->frame.size[1]*sizeof(unsigned char));
-		  convert_for_pvn(save_service->current_buffer->frame.image, save_service->current_buffer->frame.size[0],
-				  save_service->current_buffer->frame.size[1], 0, save_service->current_buffer->frame.color_coding, tmp_buf);
-		  fwrite(tmp_buf, 3*save_service->current_buffer->frame.size[0]*save_service->current_buffer->frame.size[1], 1, fd);
-		  free(tmp_buf);
-		  tmp_buf=NULL;
+                    // we assume that if it needs conversion, the output of the conversion is an 8bpp RGB
+                    tmp_buf = (unsigned char*)malloc(3*save_service->current_buffer->frame.size[0]*save_service->current_buffer->frame.size[1]*sizeof(unsigned char));
+                    convert_for_pvn(save_service->current_buffer->frame.image, save_service->current_buffer->frame.size[0],
+                                    save_service->current_buffer->frame.size[1], 0, save_service->current_buffer->frame.color_coding, tmp_buf);
+                    fwrite(tmp_buf, 3*save_service->current_buffer->frame.size[0]*save_service->current_buffer->frame.size[1], 1, fd);
+                    free(tmp_buf);
+                    tmp_buf=NULL;
 		}
 		else {
-		  // no conversion, we can dump the data
-		  fwrite(save_service->current_buffer->frame.image, save_service->current_buffer->frame.image_bytes, 1, fd);
+                    // no conversion, we can dump the data
+                    fwrite(save_service->current_buffer->frame.image, save_service->current_buffer->frame.image_bytes, 1, fd);
 		}
 		break;
 #ifdef HAVE_FFMPEG
-	      case SAVE_FORMAT_MPEG:
+            case SAVE_FORMAT_MPEG:
 		// video saving mode
 		//fprintf(stderr,"entering MPEG save and convert section\n");
 		SaveMPEGFrame(save_service);
 		break;
-	      case SAVE_FORMAT_JPEG:
+            case SAVE_FORMAT_JPEG:
 		/* Save JPEG file using FFMPEG... Much, much faster... There is no need for YUV->RGB color space conversions */
 		SaveJPEGFrame(save_service, filename_out);
 		break;
 #endif
-	      case SAVE_FORMAT_PPM:
+            case SAVE_FORMAT_PPM:
 		SavePPM(save_service,fd);
 		fclose(fd);
 		fd=NULL;
 		break;
-	      case SAVE_FORMAT_TIFF:
-                  SaveTIFF(save_service, (TIFF*)((void*)(fd)));
-                  fd=NULL;
-                  break;
-	      default:
+            case SAVE_FORMAT_TIFF:
+                SaveTIFF(save_service, (TIFF*)((void*)(fd)));
+                fd=NULL;
+                break;
+            default:
 		fprintf(stderr,"Unsupported file format\n");
-	      } // end save format switch
-	    } // end ram buffer if
+            } // end save format switch
 	    save_service->processed_frames++;
 	  }
 	  else
@@ -956,54 +902,6 @@ SaveThread(void* arg)
     //fprintf(stderr,"??");
     usleep(100);
   }
-
-  // we now have to close the video file properly and handle ram buffer operation
-
-  //fprintf(stderr,"Break completed\n");
-
-  dc1394framerate_t framerate;
-  if (cam->prefs.use_ram_buffer==TRUE) {
-    switch(cam->prefs.save_format) {
-    case SAVE_FORMAT_RAW_VIDEO:
-#ifdef HAVE_FFMPEG
-    case SAVE_FORMAT_MPEG:
-      fwrite(info->bigbuffer, info->bigbuffer_position, 1, fd);
-      break;
-#endif
-    case SAVE_FORMAT_PVN:
-      dc1394_video_get_framerate(cam->camera_info,&framerate);
-      dc1394_framerate_as_float(framerate, &fps);
-      writePVNHeader(fd, save_service->current_buffer->frame.color_coding,
-		     save_service->current_buffer->frame.size[0],
-		     save_service->current_buffer->frame.size[1],
-		     getDepth(info->bigbuffer_position, save_service->current_buffer->frame.color_coding, 
-			      save_service->current_buffer->frame.size[1], save_service->current_buffer->frame.size[0]),
-		     getConvertedBytesPerChannel(save_service->current_buffer->frame.color_coding)*8,
-		     fps);
-      
-      if(needsConversionForPVN(save_service->current_buffer->frame.color_coding)==FALSE) {
-	fwrite(info->bigbuffer, info->bigbuffer_position, 1, fd);
-      }
-      else {
-	// we assume that if it needs conversion, the output of the conversion is an 8bpp RGB
-	tmp_buf = (unsigned char*)malloc(3*save_service->current_buffer->frame.size[0]*save_service->current_buffer->frame.size[1]*sizeof(unsigned char));
-	
-	for (i = 0; i < getDepth(info->bigbuffer_position, save_service->current_buffer->frame.color_coding,
-				 save_service->current_buffer->frame.size[1], save_service->current_buffer->frame.size[0]); i++) {
-	  convert_for_pvn(info->bigbuffer, save_service->current_buffer->frame.size[0],
-			  save_service->current_buffer->frame.size[1], i, save_service->current_buffer->frame.color_coding, tmp_buf);
-	  fwrite(tmp_buf, 3*save_service->current_buffer->frame.size[0]*save_service->current_buffer->frame.size[1], 1, fd);
-	}
-	free(tmp_buf);
-	tmp_buf=NULL;
-      }
-      break;
-    default:
-      fprintf(stderr,"Error: Ram buffer should be accessible only in video mode\n");
-      break;
-    }
-  }
-  //fprintf(stderr,"handling FD\n");
   
   if (fd!=NULL) {
     fclose(fd);

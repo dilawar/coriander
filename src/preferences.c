@@ -38,8 +38,6 @@ LoadConfigFile(void)
   preferences.camprefs.save_append          = gnome_config_get_int("coriander/save/append=0");
   preferences.camprefs.save_to_dir          = gnome_config_get_int("coriander/save/save_to_dir=0");
   preferences.camprefs.save_to_stdout       = gnome_config_get_int("coriander/save/save_to_stdout=0");
-  preferences.camprefs.use_ram_buffer       = gnome_config_get_int("coriander/save/use_ram_buffer=0");
-  preferences.camprefs.ram_buffer_size      = gnome_config_get_int("coriander/save/ram_buffer_size=100");
   preferences.camprefs.ftp_mode             = gnome_config_get_int("coriander/ftp/mode=0");
   preferences.camprefs.ftp_period           = gnome_config_get_int("coriander/ftp/period=1");
   preferences.camprefs.ftp_datenum          = gnome_config_get_int("coriander/ftp/datenum=1");
@@ -69,7 +67,6 @@ LoadConfigFile(void)
   preferences.error_in_popup            = gnome_config_get_int("coriander/global/error_in_popup=1");
   preferences.automate_receive          = gnome_config_get_int("coriander/global/automate_receive=1");
   preferences.automate_iso              = gnome_config_get_int("coriander/global/automate_iso=1");
-  //fprintf(stderr,"Buffer size read as: %d\n",preferences.camprefs.ram_buffer_size);
 
 }
 
@@ -94,8 +91,6 @@ CopyCameraPrefs(camera_t* cam) {
   cam->prefs.save_append            = preferences.camprefs.save_append;
   cam->prefs.save_to_dir            = preferences.camprefs.save_to_dir;
   cam->prefs.save_to_stdout         = preferences.camprefs.save_to_stdout;
-  cam->prefs.use_ram_buffer         = preferences.camprefs.use_ram_buffer;
-  cam->prefs.ram_buffer_size        = preferences.camprefs.ram_buffer_size;
   cam->prefs.ftp_mode               = preferences.camprefs.ftp_mode;
   cam->prefs.ftp_period             = preferences.camprefs.ftp_period;
   cam->prefs.ftp_datenum            = preferences.camprefs.ftp_datenum;
@@ -109,8 +104,6 @@ CopyCameraPrefs(camera_t* cam) {
   strcpy(cam->prefs.ftp_user        , preferences.camprefs.ftp_user);
   strcpy(cam->prefs.v4l_dev_name    , preferences.camprefs.v4l_dev_name);
   preferences.camprefs.ftp_password = "";
-  //fprintf(stderr,"Buffer size copied to: %d\n",cam->prefs.ram_buffer_size);
-  
 
   //FIXME: update for multi-unit cameras
   tmp=(char*)malloc(STRING_SIZE*sizeof(char));
