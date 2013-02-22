@@ -245,6 +245,7 @@ BuildCameraMenu(void)
   //eprint("uioyiuyb\n");
   // sets the active menu item:
   gtk_option_menu_set_history (GTK_OPTION_MENU (camera_id) , current_camera_id);
+  gtk_widget_set_sensitive (GTK_WIDGET (camera_id) , i>1);
 
   //eprint("exit\n");
 }

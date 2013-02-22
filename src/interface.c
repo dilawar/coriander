@@ -2474,10 +2474,6 @@ create_main_window (void)
   gtk_label_set_justify (GTK_LABEL (label42), GTK_JUSTIFY_CENTER);
   gtk_misc_set_padding (GTK_MISC (label42), 5, 8);
 
-  gtk_box_pack_start (GTK_BOX (hbox55), label74, FALSE, FALSE, 2);
-  gtk_label_set_justify (GTK_LABEL (label74), GTK_JUSTIFY_CENTER);
-  gtk_misc_set_padding (GTK_MISC (label74), 5, 8);
-
   label178 = gtk_label_new (_("<b>Frame drop</b>"));
   gtk_widget_set_name (label178, "label178");
   gtk_widget_show (label178);
