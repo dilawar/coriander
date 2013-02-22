@@ -424,7 +424,7 @@ BuildFormatMenu(void)
   GtkWidget* mode_num_menu;
   GtkWidget* glade_menuitem;
   dc1394video_modes_t modes;
-
+  char string[256];
   //eprint("building format menu\n");
 
   dc1394video_mode_t video_mode;
@@ -451,13 +451,19 @@ BuildFormatMenu(void)
   }
 
   for (i=0;i<modes.num;i++) {
-    glade_menuitem = gtk_menu_item_new_with_label (_(video_mode_list[modes.modes[i]-DC1394_VIDEO_MODE_MIN]));
-
-    gtk_widget_show (glade_menuitem);
-    gtk_menu_append (GTK_MENU (mode_num_menu), glade_menuitem);
-    g_signal_connect ((gpointer) glade_menuitem, "activate",
-		      G_CALLBACK (ChangeModeAndFormat),
-		      (gpointer)(unsigned long)modes.modes[i]);
+      if (!dc1394_is_video_mode_scalable(modes.modes[i]))
+          glade_menuitem = gtk_menu_item_new_with_label (_(video_mode_list[modes.modes[i]-DC1394_VIDEO_MODE_MIN]));
+      else {
+          sprintf(string, "%s: %dx%d (max)",video_mode_list[modes.modes[i]-DC1394_VIDEO_MODE_MIN],
+                  camera->format7_info.modeset.mode[modes.modes[i]-DC1394_VIDEO_MODE_FORMAT7_MIN].max_size_x,
+                  camera->format7_info.modeset.mode[modes.modes[i]-DC1394_VIDEO_MODE_FORMAT7_MIN].max_size_y);
+          glade_menuitem = gtk_menu_item_new_with_label (_(string));
+      }
+      gtk_widget_show (glade_menuitem);
+      gtk_menu_append (GTK_MENU (mode_num_menu), glade_menuitem);
+      g_signal_connect ((gpointer) glade_menuitem, "activate",
+                        G_CALLBACK (ChangeModeAndFormat),
+                        (gpointer)(unsigned long)modes.modes[i]);
   }
   for (i=0;i<modes.num;i++) {
     if (video_mode==modes.modes[i])
