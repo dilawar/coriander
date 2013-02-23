@@ -2,18 +2,15 @@
 
   		    C   O   R   I   A   N   D   E   R
 
-		  	      version 2.0.1
+		  	      version 2.0.2
 
 	      The Gnome IEEE-1394 Digital Camera Controller
 
-     (C) 2000-2010 by Damien Douxchamps <ddouxchamps@users.sf.net>
+     (C) 2000-2013 by Damien Douxchamps <ddouxchamps@users.sf.net>
 
 	    http://damien.douxchamps.net/ieee1394/coriander/
 
-Mailing lists: - coriander-user@lists.sourceforge.net
-		 for user support (please RTFM)
-	       - coriander-devel@lists.sourceforge.net
-		 for bugs, feature requests,...
+          Mailing list: coriander-devel@lists.sourceforge.net
 
 ==========================================================================
 		
@@ -47,10 +44,8 @@ about the libdc1394 library [2]. However, it's a real problem when you
 need to quickly setup a demo or get some frames for testing. If, just
 like me, you also had this problem, Coriander is for you [4]!
 
-Please have a look at the TODO, ChangeLog and BUGS files to see the
-current status of the project. Contributors are most welcome so if
-you're interrested in making this program better don't hesitate to
-contact me.
+Contributors are most welcome so if you're interrested in making this
+program better don't hesitate to contact me.
 
 The latest version can be found on the SourceForge website:
 
@@ -72,6 +67,7 @@ lease and technical help from the following companies:
 - Point Grey Research http://www.ptgrey.com
 - Basler GmbH         http://www.balserweb.com
 - Dage-MTI	      http://www.dagemti.com
+- Viewplus            http://viewplus.jp
 
 Many thanks for their support!
 
@@ -87,9 +83,9 @@ Basically, you should just type:
 make
 make install
 
-If you got a CVS version you need to type
+If you got a GIT repo version you need to type
 
-./autogen.sh
+autoreconf -fi
 make
 make install
 
@@ -101,8 +97,7 @@ Hardware requirements:
 _______________________
 
 - A linux box,
-- an 1394 interface card (PCI, CardBus, whatever...). Try to get an
-  OHCI card as their support is better under Linux.
+- a 1394 card (OHCI)
 - a digital camera compatible with IIDC specs v1.04 or later.
 
 
@@ -131,6 +126,7 @@ checked.
   if you use videoN as v4l device in Coriander, the device other applications
   can use is video(N+1). V4l service works also well with Gnomemeeting [14].
   vloopback will only work with kernels 2.6 if you use the latest patch.
+- libtiff for TIFF image output (incl. 16 bit tiffs!)
 
 In order to have Xv support within SDL, you will maybe need some custom
 drivers, e.g. for Nvidia chipsets [10] or for ATI Rage chipsets [6].

@@ -825,6 +825,7 @@ SetFormat7Crop(int sx, int sy, int px, int py, int mode) {
   // example: from size=128x128, pos=128x128, we can't go to size=1280x1024 by just changing the size.
   // We need to set the position to 0x0 first.
   //eprint("Setting format7 to pos=[%d %d], size=[%d %d]\n",px,py,sx,sy);
+  
   if (dc1394_format7_set_roi(camera->camera_info,mode,info->color_coding, DC1394_QUERY_FROM_CAMERA, px,py,sx,sy)!=DC1394_SUCCESS)
     Error("Could not set Format7 image ROI");
   else {

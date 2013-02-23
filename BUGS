@@ -1,6 +1,0 @@
-- If the total DMA buffer size is larger than a certain threshold, coriander
-  will crash. The source of this problem is in a low-level kernel bug.
-
-- the TODO file contains a list of pending upgrades. It may be a good idea to
-  have a look at it.
-
