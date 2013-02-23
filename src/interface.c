@@ -652,7 +652,6 @@ create_main_window (void)
   GtkWidget *save_to_stdout;
   GtkWidget *save_filename_status;
   GtkWidget *label161;
-  GtkWidget *hbox71;
   GtkWidget *prefs_save_framedrop;
   GtkWidget *hbox_capture_freq_periodic;
   GtkWidget *label76;
@@ -2435,15 +2434,10 @@ create_main_window (void)
   gtk_frame_set_label_widget (GTK_FRAME (prefs_save_filename_frame), label161);
   gtk_label_set_use_markup (GTK_LABEL (label161), TRUE);
 
-  hbox71 = gtk_hbox_new (FALSE, 0);
-  gtk_widget_set_name (hbox71, "hbox71");
-  gtk_widget_show (hbox71);
-  gtk_box_pack_start (GTK_BOX (vbox54), hbox71, FALSE, TRUE, 0);
-
   prefs_save_framedrop = gtk_frame_new (NULL);
   gtk_widget_set_name (prefs_save_framedrop, "prefs_save_framedrop");
   gtk_widget_show (prefs_save_framedrop);
-  gtk_box_pack_start (GTK_BOX (hbox71), prefs_save_framedrop, FALSE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox54), prefs_save_framedrop, FALSE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (prefs_save_framedrop), 5);
 
   hbox_capture_freq_periodic = gtk_hbox_new (FALSE, 0);
@@ -4058,7 +4052,6 @@ create_main_window (void)
   GLADE_HOOKUP_OBJECT (main_window, save_to_stdout, "save_to_stdout");
   GLADE_HOOKUP_OBJECT (main_window, save_filename_status, "save_filename_status");
   GLADE_HOOKUP_OBJECT (main_window, label161, "label161");
-  GLADE_HOOKUP_OBJECT (main_window, hbox71, "hbox71");
   GLADE_HOOKUP_OBJECT (main_window, prefs_save_framedrop, "prefs_save_framedrop");
   GLADE_HOOKUP_OBJECT (main_window, hbox_capture_freq_periodic, "hbox_capture_freq_periodic");
   GLADE_HOOKUP_OBJECT (main_window, label76, "label76");
