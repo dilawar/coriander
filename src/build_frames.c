@@ -296,15 +296,24 @@ BuildPrefsReceiveFrame(void)
 void
 BuildOptionFrame(void)
 {
-  
-  dc1394_video_get_data_depth(camera->camera_info, &camera->bpp);
+    int bpp;
 
-  pthread_mutex_lock(&camera->uimutex);
-  gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(main_window, "mono16_bpp"),camera->bpp);
-  pthread_mutex_unlock(&camera->uimutex);
-  BuildBayerMenu();
-  BuildBayerPatternMenu();
-  BuildStereoMenu();
+    dc1394_video_get_data_depth(camera->camera_info, &camera->bpp);
+
+    if (camera->bpp>8) // we default to 16 and let the user select another bit-shift value if necessary.
+        // This is better than smart-guessing because some mfg report 12 bits and pack everything in MSBs so it's actually 16 bits.
+        // In fact, pretty much everyone packs data in the MSBs anyway.
+        // Ideally we could grab a random frame and check if all MSBs or all LSBs are zero, but that would interfere with the image flow.
+        bpp=16;
+    else
+        bpp=8;
+
+    pthread_mutex_lock(&camera->uimutex);
+    gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(main_window, "mono16_bpp"), bpp);
+    pthread_mutex_unlock(&camera->uimutex);
+    BuildBayerMenu();
+    BuildBayerPatternMenu();
+    BuildStereoMenu();
 }
 
 void

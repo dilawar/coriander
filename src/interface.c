@@ -1989,7 +1989,7 @@ create_main_window (void)
   gtk_box_pack_start (GTK_BOX (hbox59), image_options_frame, TRUE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (image_options_frame), 5);
 
-  table61 = gtk_table_new (5, 2, TRUE);
+  table61 = gtk_table_new (5, 3, TRUE);
   gtk_widget_set_name (table61, "table61");
   gtk_widget_show (table61);
   gtk_container_add (GTK_CONTAINER (image_options_frame), table61);
@@ -1997,7 +1997,7 @@ create_main_window (void)
   bayer_menu = gtk_option_menu_new ();
   gtk_widget_set_name (bayer_menu, "bayer_menu");
   gtk_widget_show (bayer_menu);
-  gtk_table_attach (GTK_TABLE (table61), bayer_menu, 0, 2, 0, 1,
+  gtk_table_attach (GTK_TABLE (table61), bayer_menu, 0, 3, 0, 1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (bayer_menu), 1);
@@ -2019,7 +2019,7 @@ create_main_window (void)
   pattern_menu = gtk_option_menu_new ();
   gtk_widget_set_name (pattern_menu, "pattern_menu");
   gtk_widget_show (pattern_menu);
-  gtk_table_attach (GTK_TABLE (table61), pattern_menu, 0, 2, 1, 2,
+  gtk_table_attach (GTK_TABLE (table61), pattern_menu, 0, 3, 1, 2,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (pattern_menu), 1);
@@ -2036,10 +2036,10 @@ create_main_window (void)
 
   gtk_option_menu_set_menu (GTK_OPTION_MENU (pattern_menu), convertwidget14);
 
-  label114 = gtk_label_new (_("BPP :"));
+  label114 = gtk_label_new (_("MSB position :"));
   gtk_widget_set_name (label114, "label114");
   gtk_widget_show (label114);
-  gtk_table_attach (GTK_TABLE (table61), label114, 0, 1, 3, 4,
+  gtk_table_attach (GTK_TABLE (table61), label114, 0, 2, 3, 4,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_label_set_justify (GTK_LABEL (label114), GTK_JUSTIFY_CENTER);
@@ -2048,7 +2048,7 @@ create_main_window (void)
   stereo_menu = gtk_option_menu_new ();
   gtk_widget_set_name (stereo_menu, "stereo_menu");
   gtk_widget_show (stereo_menu);
-  gtk_table_attach (GTK_TABLE (table61), stereo_menu, 0, 2, 2, 3,
+  gtk_table_attach (GTK_TABLE (table61), stereo_menu, 0, 3, 2, 3,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (stereo_menu), 1);
@@ -2071,11 +2071,11 @@ create_main_window (void)
   mono16_bpp = gtk_spin_button_new (GTK_ADJUSTMENT (mono16_bpp_adj), 1, 0);
   gtk_widget_set_name (mono16_bpp, "mono16_bpp");
   gtk_widget_show (mono16_bpp);
-  gtk_table_attach (GTK_TABLE (table61), mono16_bpp, 1, 2, 3, 4,
+  gtk_table_attach (GTK_TABLE (table61), mono16_bpp, 2, 3, 3, 4,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 1, 0);
   gtk_widget_set_sensitive (mono16_bpp, FALSE);
-  gtk_tooltips_set_tip (tooltips, mono16_bpp, _("Select the current bits per pixel"), NULL);
+  gtk_tooltips_set_tip (tooltips, mono16_bpp, _("Select the pixel MSB position"), NULL);
   gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (mono16_bpp), TRUE);
   gtk_spin_button_set_update_policy (GTK_SPIN_BUTTON (mono16_bpp), GTK_UPDATE_IF_VALID);
 

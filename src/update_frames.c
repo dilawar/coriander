@@ -403,7 +403,7 @@ UpdateOptionFrame(void)
 
   int cond= ((bpp16_ok) && 
 	     (camera->stereo==-1) && 
-	     (camera->bayer==-1) &&
+	     //(camera->bayer==-1) && // can de-bayer in 16 bits!
 	     (camera->bpp==16));
 
   pthread_mutex_lock(&camera->uimutex);
