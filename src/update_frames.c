@@ -402,9 +402,10 @@ UpdateOptionFrame(void)
   dc1394_video_get_data_depth(camera->camera_info, &camera->bpp);
 
   int cond= ((bpp16_ok) && 
-	     (camera->stereo==-1) && 
+	     (camera->stereo==-1) //&& 
 	     //(camera->bayer==-1) && // can de-bayer in 16 bits!
-	     (camera->bpp==16));
+	     //(camera->bpp==16)
+             );
 
   pthread_mutex_lock(&camera->uimutex);
   gtk_spin_button_set_value((GtkSpinButton*)lookup_widget(main_window, "mono16_bpp"),camera->bpp);
