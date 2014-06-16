@@ -843,7 +843,7 @@ create_main_window (void)
   if (main_window_icon_pixbuf)
     {
       gtk_window_set_icon (GTK_WINDOW (main_window), main_window_icon_pixbuf);
-      gdk_pixbuf_unref (main_window_icon_pixbuf);
+      g_object_unref (main_window_icon_pixbuf);
     }
 
   vbox26 = gtk_vbox_new (FALSE, 0);
@@ -4262,7 +4262,7 @@ create_about_window (void)
   if (about_window_icon_pixbuf)
     {
       gtk_window_set_icon (GTK_WINDOW (about_window), about_window_icon_pixbuf);
-      gdk_pixbuf_unref (about_window_icon_pixbuf);
+      g_object_unref (about_window_icon_pixbuf);
     }
   gtk_window_set_type_hint (GTK_WINDOW (about_window), GDK_WINDOW_TYPE_HINT_DIALOG);
 
@@ -4290,7 +4290,7 @@ create_no_handle_window (void)
   if (no_handle_window_icon_pixbuf)
     {
       gtk_window_set_icon (GTK_WINDOW (no_handle_window), no_handle_window_icon_pixbuf);
-      gdk_pixbuf_unref (no_handle_window_icon_pixbuf);
+      g_object_unref (no_handle_window_icon_pixbuf);
     }
   gtk_window_set_type_hint (GTK_WINDOW (no_handle_window), GDK_WINDOW_TYPE_HINT_DIALOG);
 
@@ -4340,7 +4340,7 @@ create_no_camera_window (void)
   if (no_camera_window_icon_pixbuf)
     {
       gtk_window_set_icon (GTK_WINDOW (no_camera_window), no_camera_window_icon_pixbuf);
-      gdk_pixbuf_unref (no_camera_window_icon_pixbuf);
+      g_object_unref (no_camera_window_icon_pixbuf);
     }
   gtk_window_set_type_hint (GTK_WINDOW (no_camera_window), GDK_WINDOW_TYPE_HINT_DIALOG);
 
@@ -4421,7 +4421,7 @@ create_preferences_window (void)
   if (preferences_window_icon_pixbuf)
     {
       gtk_window_set_icon (GTK_WINDOW (preferences_window), preferences_window_icon_pixbuf);
-      gdk_pixbuf_unref (preferences_window_icon_pixbuf);
+      g_object_unref (preferences_window_icon_pixbuf);
     }
 
   vbox46 = gtk_vbox_new (FALSE, 0);
@@ -4707,7 +4707,7 @@ create_help_window (void)
   if (help_window_icon_pixbuf)
     {
       gtk_window_set_icon (GTK_WINDOW (help_window), help_window_icon_pixbuf);
-      gdk_pixbuf_unref (help_window_icon_pixbuf);
+      g_object_unref (help_window_icon_pixbuf);
     }
 
   table47 = gtk_table_new (1, 1, FALSE);
@@ -4767,7 +4767,7 @@ create_v4l_failure_window (void)
   if (v4l_failure_window_icon_pixbuf)
     {
       gtk_window_set_icon (GTK_WINDOW (v4l_failure_window), v4l_failure_window_icon_pixbuf);
-      gdk_pixbuf_unref (v4l_failure_window_icon_pixbuf);
+      g_object_unref (v4l_failure_window_icon_pixbuf);
     }
   gtk_window_set_type_hint (GTK_WINDOW (v4l_failure_window), GDK_WINDOW_TYPE_HINT_DIALOG);
 
@@ -4813,7 +4813,7 @@ create_waiting_camera_window (void)
   if (waiting_camera_window_icon_pixbuf)
     {
       gtk_window_set_icon (GTK_WINDOW (waiting_camera_window), waiting_camera_window_icon_pixbuf);
-      gdk_pixbuf_unref (waiting_camera_window_icon_pixbuf);
+      g_object_unref (waiting_camera_window_icon_pixbuf);
     }
   gtk_window_set_type_hint (GTK_WINDOW (waiting_camera_window), GDK_WINDOW_TYPE_HINT_DIALOG);
 

@@ -107,7 +107,7 @@ CopyCameraPrefs(camera_t* cam) {
 
   //FIXME: update for multi-unit cameras
   tmp=(char*)malloc(STRING_SIZE*sizeof(char));
-  sprintf(tmp,"coriander/camera_names/%llx=%s %s",cam->camera_info->guid,
+  sprintf(tmp,"coriander/camera_names/%llx=%s %s",(long long unsigned int)cam->camera_info->guid,
 	  cam->camera_info->vendor, cam->camera_info->model);
   tmp_ptr=gnome_config_get_string(tmp);
   strcpy(cam->prefs.name,tmp_ptr);

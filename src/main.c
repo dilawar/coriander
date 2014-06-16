@@ -36,7 +36,6 @@ main (int argc, char *argv[])
   cameras=NULL;
   silent_ui_update=0;
 
-  
   // only the main thread is allowed to use gtk_ functions
   memset (&mainthread_info, 0, sizeof(mainthread_info));
   mainthread_info.thread=pthread_self();
@@ -54,10 +53,8 @@ main (int argc, char *argv[])
   bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
   textdomain (GETTEXT_PACKAGE);
 #endif
-  gnome_program_init (PACKAGE, VERSION, LIBGNOMEUI_MODULE,
-                      argc, argv,
-                      GNOME_PARAM_APP_DATADIR, PACKAGE_DATA_DIR,
-                      NULL);
+  gnome_program_init (PACKAGE, VERSION, LIBGNOMEUI_MODULE, argc, argv,
+                      GNOME_PARAM_APP_DATADIR, PACKAGE_DATA_DIR, NULL);
 
   GetXvInfo(&xvinfo);
   //eprint("%d %d\n", xvinfo.max_height, xvinfo.max_width);

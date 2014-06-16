@@ -279,28 +279,28 @@ void
 FtpThreadCheckParams(chain_t *ftp_service)
 {
 
-  ftpthread_info_t *info;
-  info=(ftpthread_info_t*)ftp_service->data;
-
-  // THIS IS ALL AUTOMATIC NOW
-
-  // if some parameters changed, we need to re-allocate the local buffers and restart the ftp
-  /*
-  if ((ftp_service->current_buffer->frame.size[0]!=ftp_service->local_param_copy.frame.size[0]  )||
-      (ftp_service->current_buffer->frame.size[1]!=ftp_service->local_param_copy.frame.size[1])) {
-    
-    if (info->buffer!=NULL) {
-      free(info->buffer);
-      info->buffer=NULL;
-    }
-    info->imlib_buffer_size=ftp_service->current_buffer->frame.size[0]*ftp_service->current_buffer->frame.size[1]*3;
-    info->buffer=(unsigned char*)malloc(info->imlib_buffer_size*sizeof(unsigned char));
-  }
-  */
-  // copy all new parameters:
-  memcpy(&ftp_service->local_param_copy, ftp_service->current_buffer,sizeof(buffer_t));
-  ftp_service->local_param_copy.frame.allocated_image_bytes=0;
-
+	//ftpthread_info_t *info;
+	//info=(ftpthread_info_t*)ftp_service->data;
+	
+	// THIS IS ALL AUTOMATIC NOW
+	
+	// if some parameters changed, we need to re-allocate the local buffers and restart the ftp
+	/*
+	if ((ftp_service->current_buffer->frame.size[0]!=ftp_service->local_param_copy.frame.size[0]  )||
+		(ftp_service->current_buffer->frame.size[1]!=ftp_service->local_param_copy.frame.size[1])) {
+		
+		if (info->buffer!=NULL) {
+			free(info->buffer);
+			info->buffer=NULL;
+		}
+		info->imlib_buffer_size=ftp_service->current_buffer->frame.size[0]*ftp_service->current_buffer->frame.size[1]*3;
+		info->buffer=(unsigned char*)malloc(info->imlib_buffer_size*sizeof(unsigned char));
+	}
+	*/
+	// copy all new parameters:
+	memcpy(&ftp_service->local_param_copy, ftp_service->current_buffer,sizeof(buffer_t));
+	ftp_service->local_param_copy.frame.allocated_image_bytes=0;
+	
 }
 
 #ifdef HAVE_FTPLIB

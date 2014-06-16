@@ -229,131 +229,131 @@ DisplayStopThread(camera_t* cam)
 int
 SDLInit(chain_t *display_service)
 {
-  displaythread_info_t *info;
-  const SDL_VideoInfo *sdl_videoinfo;
-  SDL_Rect** modes;
-  info=(displaythread_info_t*)display_service->data;
-  //SDL_Surface *icon_surface;
-
-  info->sdlbpp=16;
-  info->sdlflags=SDL_ANYFORMAT | SDL_RESIZABLE;
-
-  // Initialize the SDL library (video subsystem)
-  if ( SDL_Init(SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE) == -1) {
-    Error("Couldn't initialize SDL video subsystem");
-    return(0);
-  }
-  
-  sdl_videoinfo = SDL_GetVideoInfo();
-  
-  if ((xvinfo.max_width!=-1)&&(xvinfo.max_height!=-1)) {
-    // if the XV area is too small, we use software accelleration
-    if ((xvinfo.max_width<display_service->current_buffer->frame.size[0])||
-	(xvinfo.max_height<display_service->current_buffer->frame.size[1])) {
-      //fprintf(stderr,"Using SW surface\n");
-      info->sdlflags|= SDL_SWSURFACE;
-      info->sdlflags&= ~SDL_HWSURFACE;
-      info->sdlflags&= ~SDL_HWACCEL;
-    }
-    else {
-      //fprintf(stderr,"Using HW surface\n");
-      info->sdlflags|= SDL_HWSURFACE;
-      info->sdlflags|= SDL_HWACCEL;
-      info->sdlflags&= ~SDL_SWSURFACE;
-    }
-  }
-  else {
-    // try HW accel and pray...
-    info->sdlflags|= SDL_SWSURFACE;
-    info->sdlflags&= ~SDL_HWSURFACE;
-    info->sdlflags&= ~SDL_HWACCEL;
-  }
-
-  modes=SDL_ListModes(NULL,info->sdlflags);
-  if (modes!=(SDL_Rect**)-1) {
-    // not all resolutions are OK for this video card. For safety we switch to software accel
-    Warning("No SDL mode available with hardware accel. Trying without HWSURFACE");
-    info->sdlflags&= ~SDL_HWSURFACE;
-    info->sdlflags&= ~SDL_HWACCEL;
-    modes=SDL_ListModes(NULL,info->sdlflags);
-    if (modes!=(SDL_Rect**)-1) {
-      Error("No video modes available, even without hardware acceleration. Can't start SDL!");
-      SDL_Quit();
-      return(0);
-    }
-  }
-
-  
-  // set coriander icon
-  //icon_surface=SDL_CreateRGBSurfaceFrom((void*)coriander_logo_xpm)
-  //SDL_WM_SetIcon(icon_surface,NULL);
-  
-
-  info->sdlvideorect.x=0;
-  info->sdlvideorect.y=0;
-  info->sdlvideorect.w=display_service->current_buffer->frame.size[0];
-  info->sdlvideorect.h=display_service->current_buffer->frame.size[1];
-
-  // maximize display size to XV size if necessary
-  if ((xvinfo.max_width!=-1)&&(xvinfo.max_height!=-1)) {
-    if (info->sdlvideorect.w>xvinfo.max_width) {
-      info->sdlvideorect.w=xvinfo.max_width;
-    }
-    if (info->sdlvideorect.h>xvinfo.max_height) {
-      info->sdlvideorect.h=xvinfo.max_height;
-    }
-  }
-
-  // Set requested video mode
-  info->sdlbpp = SDL_VideoModeOK(info->sdlvideorect.w, info->sdlvideorect.h, info->sdlbpp, info->sdlflags);
-  info->sdlvideo = SDL_SetVideoMode(info->sdlvideorect.w, info->sdlvideorect.h, info->sdlbpp, info->sdlflags);
-
-  if (info->sdlvideo == NULL) {
-    Error(SDL_GetError());
-    SDL_Quit();
-    return(0);
-  }
-
-  if (SDL_SetColorKey( info->sdlvideo, SDL_SRCCOLORKEY, 0x0) < 0 ) {
-    Error(SDL_GetError());
-  }
-  
-  // Show cursor
-  SDL_ShowCursor(1);
-  
-  // set window title:
-  SDL_WM_SetCaption(display_service->camera->prefs.name,display_service->camera->prefs.name);
-
-  // this line broke everything for unknown reasons so I just remove it.
-  //info->sdlvideo->format->BytesPerPixel=2;
-
-  // Create YUV Overlay
-  switch(preferences.overlay_byte_order) {
-  case DC1394_BYTE_ORDER_YUYV:
-    info->sdloverlay = SDL_CreateYUVOverlay(display_service->current_buffer->frame.size[0],
-					    display_service->current_buffer->frame.size[1],
-					    SDL_YUY2_OVERLAY,info->sdlvideo);
-    break;
-  case DC1394_BYTE_ORDER_UYVY:
-    info->sdloverlay = SDL_CreateYUVOverlay(display_service->current_buffer->frame.size[0],
-					    display_service->current_buffer->frame.size[1],
-					    SDL_UYVY_OVERLAY,info->sdlvideo);
-    break;
-  default:
-    fprintf(stderr,"Invalid overlay byte order\n");
-    break;
-  }
-  
-
-  if (info->sdloverlay==NULL) {
-    Error(SDL_GetError());
-    SDL_Quit();
-    return(0);
-  }
-
-  SDLEventStartThread(display_service);
-
-  return(1);
+	displaythread_info_t *info;
+	//const SDL_VideoInfo *sdl_videoinfo;
+	SDL_Rect** modes;
+	info=(displaythread_info_t*)display_service->data;
+	//SDL_Surface *icon_surface;
+	
+	info->sdlbpp=16;
+	info->sdlflags=SDL_ANYFORMAT | SDL_RESIZABLE;
+	
+	// Initialize the SDL library (video subsystem)
+	if ( SDL_Init(SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE) == -1) {
+		Error("Couldn't initialize SDL video subsystem");
+		return(0);
+	}
+	
+	//sdl_videoinfo = SDL_GetVideoInfo();
+	
+	if ((xvinfo.max_width!=-1)&&(xvinfo.max_height!=-1)) {
+		// if the XV area is too small, we use software accelleration
+		if ((xvinfo.max_width<display_service->current_buffer->frame.size[0])||
+			(xvinfo.max_height<display_service->current_buffer->frame.size[1])) {
+			//fprintf(stderr,"Using SW surface\n");
+			info->sdlflags|= SDL_SWSURFACE;
+			info->sdlflags&= ~SDL_HWSURFACE;
+			info->sdlflags&= ~SDL_HWACCEL;
+		}
+		else {
+			//fprintf(stderr,"Using HW surface\n");
+			info->sdlflags|= SDL_HWSURFACE;
+			info->sdlflags|= SDL_HWACCEL;
+			info->sdlflags&= ~SDL_SWSURFACE;
+		}
+	}
+	else {
+		// try HW accel and pray...
+		info->sdlflags|= SDL_SWSURFACE;
+		info->sdlflags&= ~SDL_HWSURFACE;
+		info->sdlflags&= ~SDL_HWACCEL;
+	}
+	
+	modes=SDL_ListModes(NULL,info->sdlflags);
+	if (modes!=(SDL_Rect**)-1) {
+		// not all resolutions are OK for this video card. For safety we switch to software accel
+		Warning("No SDL mode available with hardware accel. Trying without HWSURFACE");
+		info->sdlflags&= ~SDL_HWSURFACE;
+		info->sdlflags&= ~SDL_HWACCEL;
+		modes=SDL_ListModes(NULL,info->sdlflags);
+		if (modes!=(SDL_Rect**)-1) {
+			Error("No video modes available, even without hardware acceleration. Can't start SDL!");
+			SDL_Quit();
+			return(0);
+		}
+	}
+	
+	
+	// set coriander icon
+	//icon_surface=SDL_CreateRGBSurfaceFrom((void*)coriander_logo_xpm)
+	//SDL_WM_SetIcon(icon_surface,NULL);
+	
+	
+	info->sdlvideorect.x=0;
+	info->sdlvideorect.y=0;
+	info->sdlvideorect.w=display_service->current_buffer->frame.size[0];
+	info->sdlvideorect.h=display_service->current_buffer->frame.size[1];
+	
+	// maximize display size to XV size if necessary
+	if ((xvinfo.max_width!=-1)&&(xvinfo.max_height!=-1)) {
+		if (info->sdlvideorect.w>xvinfo.max_width) {
+			info->sdlvideorect.w=xvinfo.max_width;
+		}
+		if (info->sdlvideorect.h>xvinfo.max_height) {
+			info->sdlvideorect.h=xvinfo.max_height;
+		}
+	}
+	
+	// Set requested video mode
+	info->sdlbpp = SDL_VideoModeOK(info->sdlvideorect.w, info->sdlvideorect.h, info->sdlbpp, info->sdlflags);
+	info->sdlvideo = SDL_SetVideoMode(info->sdlvideorect.w, info->sdlvideorect.h, info->sdlbpp, info->sdlflags);
+	
+	if (info->sdlvideo == NULL) {
+		Error(SDL_GetError());
+		SDL_Quit();
+		return(0);
+	}
+	
+	if (SDL_SetColorKey( info->sdlvideo, SDL_SRCCOLORKEY, 0x0) < 0 ) {
+		Error(SDL_GetError());
+	}
+	
+	// Show cursor
+	SDL_ShowCursor(1);
+	
+	// set window title:
+	SDL_WM_SetCaption(display_service->camera->prefs.name,display_service->camera->prefs.name);
+	
+	// this line broke everything for unknown reasons so I just remove it.
+	//info->sdlvideo->format->BytesPerPixel=2;
+	
+	// Create YUV Overlay
+	switch(preferences.overlay_byte_order) {
+	case DC1394_BYTE_ORDER_YUYV:
+		info->sdloverlay = SDL_CreateYUVOverlay(display_service->current_buffer->frame.size[0],
+												display_service->current_buffer->frame.size[1],
+												SDL_YUY2_OVERLAY,info->sdlvideo);
+		break;
+	case DC1394_BYTE_ORDER_UYVY:
+		info->sdloverlay = SDL_CreateYUVOverlay(display_service->current_buffer->frame.size[0],
+												display_service->current_buffer->frame.size[1],
+												SDL_UYVY_OVERLAY,info->sdlvideo);
+		break;
+	default:
+		fprintf(stderr,"Invalid overlay byte order\n");
+		break;
+	}
+	
+	
+	if (info->sdloverlay==NULL) {
+		Error(SDL_GetError());
+		SDL_Quit();
+		return(0);
+	}
+	
+	SDLEventStartThread(display_service);
+	
+	return(1);
 }
 
 

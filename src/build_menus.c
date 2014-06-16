@@ -21,73 +21,73 @@
 void
 BuildTriggerModeMenu(void)
 {
-  int f;
-  int index;
-  unsigned int current_trigger_mode;
-  GtkWidget* trigger_mode;
-  GtkWidget* trigger_mode_menu;
-  GtkWidget* glade_menuitem;
-
-  gtk_widget_destroy(GTK_WIDGET (lookup_widget(main_window,"trigger_mode"))); // remove previous menu
-
-  trigger_mode = gtk_option_menu_new ();
-  gtk_widget_ref (trigger_mode);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "trigger_mode", trigger_mode,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (trigger_mode);
-  gtk_table_attach_defaults (GTK_TABLE (lookup_widget(main_window,"table17")), trigger_mode, 0, 2, 1, 2);
-  gtk_container_set_border_width (GTK_CONTAINER (trigger_mode), 1);
-
-  trigger_mode_menu = gtk_menu_new ();
-
-  // the following 'if' was added because the iSight from Apple does not even implement the registers over
-  // offset 0x530h. Thus we can't probe anything there without producing an error
-  if (camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].available!=0) {
-    if (camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].trigger_modes.num>0) { // at least one mode present
-      // get current trigger mode
-      if (dc1394_external_trigger_get_mode(camera->camera_info, &current_trigger_mode)!=DC1394_SUCCESS) {
-	Error("Could not query current trigger mode");
-	current_trigger_mode=DC1394_TRIGGER_MODE_MIN;
-      }
-
-      // external trigger available:
-      for (f=0;f<camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].trigger_modes.num;f++) {
-	// memorize the position of the current mode
-	if (camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].trigger_modes.modes[f]==current_trigger_mode)
-	  index=f;
-
-	glade_menuitem = gtk_menu_item_new_with_label (_(trigger_mode_list[camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].trigger_modes.modes[f]-DC1394_TRIGGER_MODE_MIN]));
-	gtk_widget_show (glade_menuitem);
-	gtk_menu_append (GTK_MENU (trigger_mode_menu), glade_menuitem);
-	g_signal_connect ((gpointer) glade_menuitem, "activate", G_CALLBACK (on_trigger_mode_activate),
-			  (gpointer)(unsigned long)camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].trigger_modes.modes[f]);
-      }
-      
-      // sets the active menu item:
-      gtk_option_menu_set_menu (GTK_OPTION_MENU (trigger_mode), trigger_mode_menu);
-      
-      //fprintf(stderr,"current trigger mode: %d\n", current_trigger_mode - TRIGGER_MODE_MIN);
-      gtk_option_menu_set_history (GTK_OPTION_MENU (trigger_mode), f);
-    
-    }
-    else {
-      // add dummy menu item
-      glade_menuitem = gtk_menu_item_new_with_label (_("N/A"));
-      gtk_widget_show (glade_menuitem);
-      gtk_menu_append (GTK_MENU (trigger_mode_menu), glade_menuitem);
-      gtk_option_menu_set_menu (GTK_OPTION_MENU (trigger_mode), trigger_mode_menu);
-      gtk_option_menu_set_history (GTK_OPTION_MENU (trigger_mode), 0);
-    }
-    
-  }
-  else{
-    // add dummy menu item
-    glade_menuitem = gtk_menu_item_new_with_label (_("N/A"));
-    gtk_widget_show (glade_menuitem);
-    gtk_menu_append (GTK_MENU (trigger_mode_menu), glade_menuitem);
-    gtk_option_menu_set_menu (GTK_OPTION_MENU (trigger_mode), trigger_mode_menu);
-    gtk_option_menu_set_history (GTK_OPTION_MENU (trigger_mode), 0);
-  }
+	int f;
+	//int index;
+	unsigned int current_trigger_mode;
+	GtkWidget* trigger_mode;
+	GtkWidget* trigger_mode_menu;
+	GtkWidget* glade_menuitem;
+	
+	gtk_widget_destroy(GTK_WIDGET (lookup_widget(main_window,"trigger_mode"))); // remove previous menu
+	
+	trigger_mode = gtk_option_menu_new ();
+	gtk_widget_ref (trigger_mode);
+	gtk_object_set_data_full (GTK_OBJECT (main_window), "trigger_mode", trigger_mode,
+							  (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show (trigger_mode);
+	gtk_table_attach_defaults (GTK_TABLE (lookup_widget(main_window,"table17")), trigger_mode, 0, 2, 1, 2);
+	gtk_container_set_border_width (GTK_CONTAINER (trigger_mode), 1);
+	
+	trigger_mode_menu = gtk_menu_new ();
+	
+	// the following 'if' was added because the iSight from Apple does not even implement the registers over
+	// offset 0x530h. Thus we can't probe anything there without producing an error
+	if (camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].available!=0) {
+		if (camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].trigger_modes.num>0) { // at least one mode present
+			// get current trigger mode
+			if (dc1394_external_trigger_get_mode(camera->camera_info, &current_trigger_mode)!=DC1394_SUCCESS) {
+				Error("Could not query current trigger mode");
+				current_trigger_mode=DC1394_TRIGGER_MODE_MIN;
+			}
+			
+			// external trigger available:
+			for (f=0;f<camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].trigger_modes.num;f++) {
+				// memorize the position of the current mode
+				//if (camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].trigger_modes.modes[f]==current_trigger_mode)
+				//	index=f;
+				
+				glade_menuitem = gtk_menu_item_new_with_label (_(trigger_mode_list[camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].trigger_modes.modes[f]-DC1394_TRIGGER_MODE_MIN]));
+				gtk_widget_show (glade_menuitem);
+				gtk_menu_append (GTK_MENU (trigger_mode_menu), glade_menuitem);
+				g_signal_connect ((gpointer) glade_menuitem, "activate", G_CALLBACK (on_trigger_mode_activate),
+								  (gpointer)(unsigned long)camera->feature_set.feature[DC1394_FEATURE_TRIGGER-DC1394_FEATURE_MIN].trigger_modes.modes[f]);
+			}
+			
+			// sets the active menu item:
+			gtk_option_menu_set_menu (GTK_OPTION_MENU (trigger_mode), trigger_mode_menu);
+			
+			//fprintf(stderr,"current trigger mode: %d\n", current_trigger_mode - TRIGGER_MODE_MIN);
+			gtk_option_menu_set_history (GTK_OPTION_MENU (trigger_mode), f);
+			
+		}
+		else {
+			// add dummy menu item
+			glade_menuitem = gtk_menu_item_new_with_label (_("N/A"));
+			gtk_widget_show (glade_menuitem);
+			gtk_menu_append (GTK_MENU (trigger_mode_menu), glade_menuitem);
+			gtk_option_menu_set_menu (GTK_OPTION_MENU (trigger_mode), trigger_mode_menu);
+			gtk_option_menu_set_history (GTK_OPTION_MENU (trigger_mode), 0);
+		}
+		
+	}
+	else{
+		// add dummy menu item
+		glade_menuitem = gtk_menu_item_new_with_label (_("N/A"));
+		gtk_widget_show (glade_menuitem);
+		gtk_menu_append (GTK_MENU (trigger_mode_menu), glade_menuitem);
+		gtk_option_menu_set_menu (GTK_OPTION_MENU (trigger_mode), trigger_mode_menu);
+		gtk_option_menu_set_history (GTK_OPTION_MENU (trigger_mode), 0);
+	}
  
 }
 
@@ -357,68 +357,68 @@ BuildFormat7ColorMenu(void)
 void
 BuildFpsMenu(void)
 {
-  int i;
-  GtkWidget* fps;
-  GtkWidget* fps_menu;
-  GtkWidget* glade_menuitem;
-  quadlet_t value;
-  dc1394framerates_t framerates;
-  //eprint("building framerates menu\n");
-
-  dc1394video_mode_t video_mode;
-  dc1394_video_get_mode(camera->camera_info,&video_mode);
-  dc1394framerate_t framerate;
-  dc1394_video_get_framerate(camera->camera_info,&framerate);
-
-  if (dc1394_is_video_mode_scalable(video_mode)) {
-    value = 0; /* format 7 has no fixed framerates */
-    gtk_widget_set_sensitive(lookup_widget(main_window,"fps_menu"),FALSE);
-  }
-  else {
-    gtk_widget_set_sensitive(lookup_widget(main_window,"fps_menu"),TRUE);
-    //eprint("%d\n",video_mode);
-
-    if (dc1394_video_get_supported_framerates(camera->camera_info, video_mode, &framerates)!=DC1394_SUCCESS)
-      Error("Could not query supported framerates");
-    gtk_widget_destroy(GTK_WIDGET (lookup_widget(main_window,"fps_menu"))); // remove previous menu
-    
-    fps = gtk_option_menu_new ();
-    gtk_widget_ref (fps);
-    gtk_object_set_data_full ((gpointer) main_window, "fps_menu", fps,
-			      (GtkDestroyNotify) gtk_widget_unref);
-    gtk_widget_show (fps);
-    gtk_table_attach_defaults (GTK_TABLE (lookup_widget(main_window,"table17")), fps, 0, 2, 2, 3);
-    gtk_container_set_border_width (GTK_CONTAINER (fps), 1);
-    
-    fps_menu = gtk_menu_new ();
-    
-    for (i=0;i<framerates.num;i++) {
-	glade_menuitem = gtk_menu_item_new_with_label (_(fps_label_list[framerates.framerates[i]-DC1394_FRAMERATE_MIN]));
-	gtk_widget_show (glade_menuitem);
-	gtk_menu_append (GTK_MENU (fps_menu), glade_menuitem);
-	g_signal_connect ((gpointer) glade_menuitem, "activate",
-			    G_CALLBACK (on_fps_activate),
-			    (gpointer)(unsigned long)framerates.framerates[i]);
-    }
-    gtk_option_menu_set_menu (GTK_OPTION_MENU (fps), fps_menu);
-    
-    // here we set the sensitiveness, AFTER the 'gtk_option_menu_set_menu' command:
-    //gtk_widget_set_sensitive (lookup_widget(main_window,"fps_menu"),
-    //			    !(GTK_TOGGLE_BUTTON (lookup_widget(main_window,"trigger_external")))->active);
-    
-    // switch to nearest FPS if the previous value is not valid anymore
-    for (i=0;i<framerates.num;i++) {
-      if (framerate==framerates.framerates[i])
-	break;
-    }
-    if (framerate!=framerates.framerates[i]) {
-      i=SwitchToNearestFPS(&framerates, framerate);
-    }
-    // sets the active menu item:
-    gtk_option_menu_set_history (GTK_OPTION_MENU (fps), i);
-  }
-  
-  //eprint("finnished building framerates menu\n");
+	int i;
+	GtkWidget* fps;
+	GtkWidget* fps_menu;
+	GtkWidget* glade_menuitem;
+	//quadlet_t value;
+	dc1394framerates_t framerates;
+	//eprint("building framerates menu\n");
+	
+	dc1394video_mode_t video_mode;
+	dc1394_video_get_mode(camera->camera_info,&video_mode);
+	dc1394framerate_t framerate;
+	dc1394_video_get_framerate(camera->camera_info,&framerate);
+	
+	if (dc1394_is_video_mode_scalable(video_mode)) {
+		//value = 0; /* format 7 has no fixed framerates */
+		gtk_widget_set_sensitive(lookup_widget(main_window,"fps_menu"),FALSE);
+	}
+	else {
+		gtk_widget_set_sensitive(lookup_widget(main_window,"fps_menu"),TRUE);
+		//eprint("%d\n",video_mode);
+		
+		if (dc1394_video_get_supported_framerates(camera->camera_info, video_mode, &framerates)!=DC1394_SUCCESS)
+			Error("Could not query supported framerates");
+		gtk_widget_destroy(GTK_WIDGET (lookup_widget(main_window,"fps_menu"))); // remove previous menu
+		
+		fps = gtk_option_menu_new ();
+		gtk_widget_ref (fps);
+		gtk_object_set_data_full ((gpointer) main_window, "fps_menu", fps,
+								  (GtkDestroyNotify) gtk_widget_unref);
+		gtk_widget_show (fps);
+		gtk_table_attach_defaults (GTK_TABLE (lookup_widget(main_window,"table17")), fps, 0, 2, 2, 3);
+		gtk_container_set_border_width (GTK_CONTAINER (fps), 1);
+		
+		fps_menu = gtk_menu_new ();
+		
+		for (i=0;i<framerates.num;i++) {
+			glade_menuitem = gtk_menu_item_new_with_label (_(fps_label_list[framerates.framerates[i]-DC1394_FRAMERATE_MIN]));
+			gtk_widget_show (glade_menuitem);
+			gtk_menu_append (GTK_MENU (fps_menu), glade_menuitem);
+			g_signal_connect ((gpointer) glade_menuitem, "activate",
+							  G_CALLBACK (on_fps_activate),
+							  (gpointer)(unsigned long)framerates.framerates[i]);
+		}
+		gtk_option_menu_set_menu (GTK_OPTION_MENU (fps), fps_menu);
+		
+		// here we set the sensitiveness, AFTER the 'gtk_option_menu_set_menu' command:
+		//gtk_widget_set_sensitive (lookup_widget(main_window,"fps_menu"),
+		//			    !(GTK_TOGGLE_BUTTON (lookup_widget(main_window,"trigger_external")))->active);
+		
+		// switch to nearest FPS if the previous value is not valid anymore
+		for (i=0;i<framerates.num;i++) {
+			if (framerate==framerates.framerates[i])
+				break;
+		}
+		if (framerate!=framerates.framerates[i]) {
+			i=SwitchToNearestFPS(&framerates, framerate);
+		}
+		// sets the active menu item:
+		gtk_option_menu_set_history (GTK_OPTION_MENU (fps), i);
+	}
+	
+	//eprint("finnished building framerates menu\n");
 }
 
 
@@ -745,8 +745,7 @@ BuildIsoSpeedMenu(void)
     gtk_widget_show (glade_menuitem);
     gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
     g_signal_connect ((gpointer) glade_menuitem, "activate",
-		      G_CALLBACK (on_isospeed_menu_activate),
-		      (int*)i);
+					  G_CALLBACK (on_isospeed_menu_activate), (int*)(intptr_t)i);
   }
   gtk_option_menu_set_menu (GTK_OPTION_MENU (new_option_menu), new_menu);
 
@@ -1050,7 +1049,7 @@ BuildSaveAppendMenu(void)
     gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
     g_signal_connect ((gpointer) glade_menuitem, "activate",
 		      G_CALLBACK (on_save_append_menu_activate),
-		      (int*)SAVE_APPEND_NUMBER);
+		      (int*)(intptr_t)SAVE_APPEND_NUMBER);
   }
 
   // 
@@ -1059,7 +1058,7 @@ BuildSaveAppendMenu(void)
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
   g_signal_connect ((gpointer) glade_menuitem, "activate",
 		      G_CALLBACK (on_save_append_menu_activate),
-		      (int*)SAVE_APPEND_DATE_TIME);
+		      (int*)(intptr_t)SAVE_APPEND_DATE_TIME);
   
   // 
   if ((camera->prefs.save_to_dir==0)||(camera->prefs.save_format>=SAVE_FORMAT_RAW_VIDEO)) {
@@ -1068,7 +1067,7 @@ BuildSaveAppendMenu(void)
     gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
     g_signal_connect ((gpointer) glade_menuitem, "activate",
 			G_CALLBACK (on_save_append_menu_activate),
-			(int*)SAVE_APPEND_NONE);
+					  (int*)(intptr_t)SAVE_APPEND_NONE);
   }
   else {
     // if the mode is scratch we switch to something else because scratch is not allowed in save-to-dir mode
@@ -1118,7 +1117,7 @@ BuildRegisterAccessOffsetMenu(void)
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
   g_signal_connect ((gpointer) glade_menuitem, "activate",
 		      G_CALLBACK (on_offset_menu_activate),
-		      (int*)REGISTER_OFFSET_BASE);
+		      (int*)(intptr_t)REGISTER_OFFSET_BASE);
 
   // Command Register Base
   glade_menuitem = gtk_menu_item_new_with_label (_("Command Registers Base"));
@@ -1126,7 +1125,7 @@ BuildRegisterAccessOffsetMenu(void)
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
   g_signal_connect ((gpointer) glade_menuitem, "activate",
 		      G_CALLBACK (on_offset_menu_activate),
-		      (int*)REGISTER_OFFSET_CRB);
+		      (int*)(intptr_t)REGISTER_OFFSET_CRB);
 
   // Unit Directory
   glade_menuitem = gtk_menu_item_new_with_label (_("Unit Directory"));
@@ -1134,7 +1133,7 @@ BuildRegisterAccessOffsetMenu(void)
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
   g_signal_connect ((gpointer) glade_menuitem, "activate",
 		      G_CALLBACK (on_offset_menu_activate),
-		      (int*)REGISTER_OFFSET_UD);
+		      (int*)(intptr_t)REGISTER_OFFSET_UD);
 
   // Unit Dependent Directory
   glade_menuitem = gtk_menu_item_new_with_label (_("Unit Dependent Directory"));
@@ -1142,7 +1141,7 @@ BuildRegisterAccessOffsetMenu(void)
   gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
   g_signal_connect ((gpointer) glade_menuitem, "activate",
 		      G_CALLBACK (on_offset_menu_activate),
-		      (int*)REGISTER_OFFSET_UDD);
+		      (int*)(intptr_t)REGISTER_OFFSET_UDD);
 
   if (camera->camera_info->PIO_control_csr>0) {
     // PIO
@@ -1151,7 +1150,7 @@ BuildRegisterAccessOffsetMenu(void)
     gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
     g_signal_connect ((gpointer) glade_menuitem, "activate",
 		      G_CALLBACK (on_offset_menu_activate),
-		      (int*)REGISTER_OFFSET_PIO);
+		      (int*)(intptr_t)REGISTER_OFFSET_PIO);
   }
   if (camera->camera_info->SIO_control_csr>0) {
     // PIO
@@ -1160,7 +1159,7 @@ BuildRegisterAccessOffsetMenu(void)
     gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
     g_signal_connect ((gpointer) glade_menuitem, "activate",
 		      G_CALLBACK (on_offset_menu_activate),
-		      (int*)REGISTER_OFFSET_SIO);
+		      (int*)(intptr_t)REGISTER_OFFSET_SIO);
   }
   if (camera->camera_info->strobe_control_csr>0) {
     // Strobe
@@ -1169,7 +1168,7 @@ BuildRegisterAccessOffsetMenu(void)
     gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
     g_signal_connect ((gpointer) glade_menuitem, "activate",
 		      G_CALLBACK (on_offset_menu_activate),
-		      (int*)REGISTER_OFFSET_STROBE);
+		      (int*)(intptr_t)REGISTER_OFFSET_STROBE);
   }
 
   // format7 modes
@@ -1183,7 +1182,7 @@ BuildRegisterAccessOffsetMenu(void)
       gtk_menu_append (GTK_MENU (new_menu), glade_menuitem);
       g_signal_connect ((gpointer) glade_menuitem, "activate",
 			G_CALLBACK (on_offset_menu_activate),
-			(int*)f); // for format7 we pass the format7 id as argument 
+			(int*)(intptr_t)f); // for format7 we pass the format7 id as argument 
     }
   }
 

@@ -877,7 +877,7 @@ window_set_icon(GtkWidget* window) {
 
   pb = gdk_pixbuf_new_from_xpm_data((const gchar**)coriander_icon_xpm);
   gdk_pixbuf_render_pixmap_and_mask(pb, &pixmap, &mask, 128);
-  gdk_pixbuf_unref(pb);
+  g_object_unref(pb);
   gdk_window_set_icon(window->window, NULL, pixmap, mask);
 #endif
 

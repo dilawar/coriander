@@ -101,113 +101,114 @@ V4lStartThread(camera_t* cam)
 void*
 V4lThread(void* arg)
 {
-  chain_t* v4l_service=NULL;
-  v4lthread_info_t *info=NULL;
-  long int skip_counter;
-  float tmp;
-  struct video_picture p;
-  
-  v4l_service=(chain_t*)arg;
-  pthread_mutex_lock(&v4l_service->mutex_data);
-  info=(v4lthread_info_t*)v4l_service->data;
-  camera_t *cam=v4l_service->camera;
-
-  skip_counter=0;
-  v4l_service->processed_frames=0;
-
-  /* These settings depend on the thread. For 100% safe deferred-cancel
-   threads, I advise you use a custom thread cancel flag. See display thread.*/
-  pthread_setcancelstate(PTHREAD_CANCEL_DISABLE,NULL);
-  pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED,NULL);
-  pthread_mutex_unlock(&v4l_service->mutex_data);
-  
-  // time inits:
-  v4l_service->prev_time = 0;
-  v4l_service->prev_period = 0;
-  v4l_service->drop_warning = 0;
-  v4l_service->processed_frames=0;
-
-  while (1) { 
-    /* Clean cancel handlers */
-    pthread_mutex_lock(&info->mutex_cancel);
-    if (info->cancel_req>0) {
-      break;
-    }
-    else {
-      pthread_mutex_unlock(&info->mutex_cancel);
-      pthread_mutex_lock(&v4l_service->mutex_data);
-      if(GetBufferFromPrevious(v4l_service)) { // have buffers been rolled?
-	// check params
-	V4lThreadCheckParams(v4l_service);
+	chain_t* v4l_service=NULL;
+	v4lthread_info_t *info=NULL;
+	long int skip_counter;
+	float tmp;
+	struct video_picture p;
+	int32_t written=0;
 	
-	/* IF we have mono data then set V4L for mono(grey) output */
-	/* Only do this ONCE before writing the first frame */
-	if (((v4l_service->current_buffer->frame.color_coding == DC1394_COLOR_CODING_MONO8) ||
-	     (v4l_service->current_buffer->frame.color_coding == DC1394_COLOR_CODING_RAW8)) && v4l_service->processed_frames==0) {
-	  Warning("Setting V4L device to GREY palette");
-	  if (ioctl(info->v4l_dev,VIDIOCGPICT,&p) < 0) 
-	    Error("ioctl(VIDIOCGPICT) error");
-	  else {
-	    p.palette = VIDEO_PALETTE_GREY;
-	    if (ioctl(info->v4l_dev,VIDIOCSPICT,&p) < 0) 
-	      Error("ioctl(VIDIOCSPICT) Error");
-	  }
-	}
-
-	// Convert to RGB unless we are using direct GREY palette
-	if ((v4l_service->current_buffer->frame.color_coding != DC1394_COLOR_CODING_MONO8) &&
-	    (v4l_service->current_buffer->frame.color_coding != DC1394_COLOR_CODING_RAW8)) {
-	  convert_to_rgb(&v4l_service->current_buffer->frame, &info->frame);
-	  swap_rb(info->frame.image, v4l_service->current_buffer->frame.size[0]*v4l_service->current_buffer->frame.size[1]*3);
-	}
-
-	if (v4l_service->current_buffer->frame.size[0]!=-1) {
-	  if (skip_counter>=(cam->prefs.v4l_period-1)) {
-	    skip_counter=0;
-	    if ((v4l_service->current_buffer->frame.color_coding != DC1394_COLOR_CODING_MONO8) &&
-		(v4l_service->current_buffer->frame.color_coding != DC1394_COLOR_CODING_RAW8))
-	      write(info->v4l_dev,info->frame.image,v4l_service->current_buffer->frame.size[0]*v4l_service->current_buffer->frame.size[1]*3);
-	    else
-	      write(info->v4l_dev,v4l_service->current_buffer->frame.image,v4l_service->current_buffer->frame.size[0]*v4l_service->current_buffer->frame.size[1]);
-	    v4l_service->processed_frames++;
-	  }
-	  else
-	    skip_counter++;
-	  
-	  // FPS computation:
-	  tmp=((float)(v4l_service->current_buffer->frame.timestamp-v4l_service->prev_time))/1000000.0;
-	  if (v4l_service->prev_time==0) {
-	    v4l_service->fps=fabs(0.0);
-	  }
-	  else {
-	    if (tmp==0)
-	      v4l_service->fps=fabs(0.0);
-	    else
-	      v4l_service->fps=fabs(1/tmp);
-	  }
-	  if (v4l_service->prev_time!=0) {
-	    v4l_service->prev_period=tmp;
-	  }
-	  // produce a drop warning if the period difference is over 50%
-	  if (v4l_service->prev_period!=0) {
-	    if (fabs(v4l_service->prev_period-tmp)/(v4l_service->prev_period/2+tmp/2)>=.5)
-	      v4l_service->drop_warning++;
-	  }
-	  v4l_service->prev_time=v4l_service->current_buffer->frame.timestamp;
-
-	}
-	PublishBufferForNext(v4l_service);
+	v4l_service=(chain_t*)arg;
+	pthread_mutex_lock(&v4l_service->mutex_data);
+	info=(v4lthread_info_t*)v4l_service->data;
+	camera_t *cam=v4l_service->camera;
+	
+	skip_counter=0;
+	v4l_service->processed_frames=0;
+	
+	/* These settings depend on the thread. For 100% safe deferred-cancel
+	   threads, I advise you use a custom thread cancel flag. See display thread.*/
+	pthread_setcancelstate(PTHREAD_CANCEL_DISABLE,NULL);
+	pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED,NULL);
 	pthread_mutex_unlock(&v4l_service->mutex_data);
-      }
-      else {
-	pthread_mutex_unlock(&v4l_service->mutex_data);
-      }
-    }
-    usleep(100);
-  }
-
-  pthread_mutex_unlock(&info->mutex_cancel);
-  return ((void*)1);
+	
+	// time inits:
+	v4l_service->prev_time = 0;
+	v4l_service->prev_period = 0;
+	v4l_service->drop_warning = 0;
+	v4l_service->processed_frames=0;
+	
+	while (1) { 
+		/* Clean cancel handlers */
+		pthread_mutex_lock(&info->mutex_cancel);
+		if (info->cancel_req>0) {
+			break;
+		}
+		else {
+			pthread_mutex_unlock(&info->mutex_cancel);
+			pthread_mutex_lock(&v4l_service->mutex_data);
+			if(GetBufferFromPrevious(v4l_service)) { // have buffers been rolled?
+				// check params
+				V4lThreadCheckParams(v4l_service);
+				
+				/* IF we have mono data then set V4L for mono(grey) output */
+				/* Only do this ONCE before writing the first frame */
+				if (((v4l_service->current_buffer->frame.color_coding == DC1394_COLOR_CODING_MONO8) ||
+					 (v4l_service->current_buffer->frame.color_coding == DC1394_COLOR_CODING_RAW8)) && v4l_service->processed_frames==0) {
+					Warning("Setting V4L device to GREY palette");
+					if (ioctl(info->v4l_dev,VIDIOCGPICT,&p) < 0) 
+						Error("ioctl(VIDIOCGPICT) error");
+					else {
+						p.palette = VIDEO_PALETTE_GREY;
+						if (ioctl(info->v4l_dev,VIDIOCSPICT,&p) < 0) 
+							Error("ioctl(VIDIOCSPICT) Error");
+					}
+				}
+				
+				// Convert to RGB unless we are using direct GREY palette
+				if ((v4l_service->current_buffer->frame.color_coding != DC1394_COLOR_CODING_MONO8) &&
+					(v4l_service->current_buffer->frame.color_coding != DC1394_COLOR_CODING_RAW8)) {
+					convert_to_rgb(&v4l_service->current_buffer->frame, &info->frame);
+					swap_rb(info->frame.image, v4l_service->current_buffer->frame.size[0]*v4l_service->current_buffer->frame.size[1]*3);
+				}
+				
+				if (v4l_service->current_buffer->frame.size[0]!=-1) {
+					if (skip_counter>=(cam->prefs.v4l_period-1)) {
+						skip_counter=0;
+						if ((v4l_service->current_buffer->frame.color_coding != DC1394_COLOR_CODING_MONO8) &&
+							(v4l_service->current_buffer->frame.color_coding != DC1394_COLOR_CODING_RAW8))
+							written+=write(info->v4l_dev,info->frame.image,v4l_service->current_buffer->frame.size[0]*v4l_service->current_buffer->frame.size[1]*3);
+						else
+							written+=write(info->v4l_dev,v4l_service->current_buffer->frame.image,v4l_service->current_buffer->frame.size[0]*v4l_service->current_buffer->frame.size[1]);
+						v4l_service->processed_frames++;
+					}
+					else
+						skip_counter++;
+					
+					// FPS computation:
+					tmp=((float)(v4l_service->current_buffer->frame.timestamp-v4l_service->prev_time))/1000000.0;
+					if (v4l_service->prev_time==0) {
+						v4l_service->fps=fabs(0.0);
+					}
+					else {
+						if (tmp==0)
+							v4l_service->fps=fabs(0.0);
+						else
+							v4l_service->fps=fabs(1/tmp);
+					}
+					if (v4l_service->prev_time!=0) {
+						v4l_service->prev_period=tmp;
+					}
+					// produce a drop warning if the period difference is over 50%
+					if (v4l_service->prev_period!=0) {
+						if (fabs(v4l_service->prev_period-tmp)/(v4l_service->prev_period/2+tmp/2)>=.5)
+							v4l_service->drop_warning++;
+					}
+					v4l_service->prev_time=v4l_service->current_buffer->frame.timestamp;
+					
+				}
+				PublishBufferForNext(v4l_service);
+				pthread_mutex_unlock(&v4l_service->mutex_data);
+			}
+			else {
+				pthread_mutex_unlock(&v4l_service->mutex_data);
+			}
+		}
+		usleep(100);
+	}
+	written=0;
+	pthread_mutex_unlock(&info->mutex_cancel);
+	return ((void*)1);
 
 }
 

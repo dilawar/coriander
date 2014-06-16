@@ -101,40 +101,40 @@ SDLEventStopThread(chain_t *display_service)
 int
 SDLHandleEvent(chain_t *display_service)
 {
-  displaythread_info_t *info;
-  SDL_Event event;
-
-  info=(displaythread_info_t*)display_service->data;
-
-  while ( SDL_PollEvent(&event) ) {
-    pthread_mutex_lock(&display_service->mutex_data);
-    switch(event.type) {
-    case SDL_VIDEORESIZE:
-      SDLResizeDisplay(display_service, event.resize.w, event.resize.h);
-      break;
-    case SDL_KEYDOWN:
-      OnKeyPressed(display_service,event.key.keysym.sym, event.key.keysym.mod);
-      break;
-    case SDL_KEYUP:
-      OnKeyReleased(display_service,event.key.keysym.sym, event.key.keysym.mod);
-      break;
-    case SDL_MOUSEBUTTONDOWN:
-      OnMouseDown(display_service,event.button.button, event.button.x, event.button.y);
-      break;
-    case SDL_MOUSEBUTTONUP:
-      OnMouseUp(display_service,event.button.button, event.button.x, event.button.y);
-      break;
-    case SDL_MOUSEMOTION:
-      OnMouseMotion(display_service, event.motion.x, event.motion.y);
-      break;
-    case SDL_QUIT:
-      pthread_mutex_unlock(&display_service->mutex_data);
-      return(0);
-      break;
-    }
-    pthread_mutex_unlock(&display_service->mutex_data);
-  }
-  return(1);
+	//displaythread_info_t *info;
+	SDL_Event event;
+	
+	//info=(displaythread_info_t*)display_service->data;
+	
+	while ( SDL_PollEvent(&event) ) {
+		pthread_mutex_lock(&display_service->mutex_data);
+		switch(event.type) {
+		case SDL_VIDEORESIZE:
+			SDLResizeDisplay(display_service, event.resize.w, event.resize.h);
+			break;
+		case SDL_KEYDOWN:
+			OnKeyPressed(display_service,event.key.keysym.sym, event.key.keysym.mod);
+			break;
+		case SDL_KEYUP:
+			OnKeyReleased(display_service,event.key.keysym.sym, event.key.keysym.mod);
+			break;
+		case SDL_MOUSEBUTTONDOWN:
+			OnMouseDown(display_service,event.button.button, event.button.x, event.button.y);
+			break;
+		case SDL_MOUSEBUTTONUP:
+			OnMouseUp(display_service,event.button.button, event.button.x, event.button.y);
+			break;
+		case SDL_MOUSEMOTION:
+			OnMouseMotion(display_service, event.motion.x, event.motion.y);
+			break;
+		case SDL_QUIT:
+			pthread_mutex_unlock(&display_service->mutex_data);
+			return(0);
+			break;
+		}
+		pthread_mutex_unlock(&display_service->mutex_data);
+	}
+	return(1);
 }
 
 
@@ -208,100 +208,100 @@ OnKeyReleased(chain_t *display_service, int key, int mod)
 void
 OnMouseDown(chain_t *display_service, int button, int x, int y)
 {
-  displaythread_info_t *info;
-  dc1394format7mode_t* f7info;
-  info=(displaythread_info_t*)display_service->data;
-
-  dc1394video_mode_t video_mode;
-  dc1394_video_get_mode(camera->camera_info, &video_mode);
-
-  if (dc1394_is_video_mode_scalable(video_mode)) {
-    f7info=&camera->format7_info.modeset.mode[video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN];
-  }
-
-  switch (button) {
-  case SDL_BUTTON_LEFT:
-    pthread_mutex_lock(&watchthread_info.mutex_area);
-    watchthread_info.draw=1;
-    watchthread_info.mouse_down=1;
-    // there is some adaptation because the display size can be different
-    // from the real image size. (i.e. the image can be resized)
-    watchthread_info.first[0]= ((x*display_service->current_buffer->frame.size[0] /info->sdlvideorect.w));
-    watchthread_info.first[1]= ((y*display_service->current_buffer->frame.size[1]/info->sdlvideorect.h));
-
-    // zero size at first click, -> copy click coordinate to second corner
-    watchthread_info.second[0]=watchthread_info.first[0];
-    watchthread_info.second[1]=watchthread_info.first[1];
-    watchthread_info.upper_left[0]=watchthread_info.first[0];
-    watchthread_info.upper_left[1]=watchthread_info.first[1];
-    watchthread_info.lower_right[0]=watchthread_info.first[0];
-    watchthread_info.lower_right[1]=watchthread_info.first[1];
-
-    GetValidF7Crop(&watchthread_info, display_service);
-
-    pthread_mutex_unlock(&watchthread_info.mutex_area);
-    break;
-  case SDL_BUTTON_MIDDLE:
-    x=x*display_service->current_buffer->frame.size[0]/info->sdlvideorect.w; //rescaling
-    y=y*display_service->current_buffer->frame.size[1]/info->sdlvideorect.h;
-    switch(preferences.overlay_byte_order) {
-    case DC1394_BYTE_ORDER_YUYV:
-      cursor_info.col_y=info->sdloverlay->pixels[0][(y*display_service->current_buffer->frame.size[0]+x)*2];
-      cursor_info.col_u=info->sdloverlay->pixels[0][(((y*display_service->current_buffer->frame.size[0]+x)>>1)<<2)+1]-127;
-      cursor_info.col_v=info->sdloverlay->pixels[0][(((y*display_service->current_buffer->frame.size[0]+x)>>1)<<2)+3]-127;
-      break;
-    case DC1394_BYTE_ORDER_UYVY:
-      cursor_info.col_u=info->sdloverlay->pixels[0][(y*display_service->current_buffer->frame.size[0]+x)*2]-127;
-      cursor_info.col_y=info->sdloverlay->pixels[0][(((y*display_service->current_buffer->frame.size[0]+x)>>1)<<2)+1];
-      cursor_info.col_v=info->sdloverlay->pixels[0][(((y*display_service->current_buffer->frame.size[0]+x)>>1)<<2)+2]-127;
-      break;
-    default:
-      fprintf(stderr,"Invalid overlay byte order\n");
-      break;
+	displaythread_info_t *info;
+	//dc1394format7mode_t* f7info;
+	info=(displaythread_info_t*)display_service->data;
+	
+	dc1394video_mode_t video_mode;
+	dc1394_video_get_mode(camera->camera_info, &video_mode);
+/*
+    if (dc1394_is_video_mode_scalable(video_mode)) {
+        f7info=&camera->format7_info.modeset.mode[video_mode-DC1394_VIDEO_MODE_FORMAT7_MIN];
     }
-    YUV2RGB(cursor_info.col_y, cursor_info.col_u, cursor_info.col_v,
-	    cursor_info.col_r, cursor_info.col_g, cursor_info.col_b);
-    cursor_info.x=x;
-    cursor_info.y=y;
-    cursor_info.update_req=1;
-    break;
-  case SDL_BUTTON_RIGHT:
-    //whitebal_data->x=x*display_service->current_buffer->frame.size[0]/info->sdlvideorect.w; //rescaling
-    //whitebal_data->y=y*display_service->current_buffer->frame.size[1]/info->sdlvideorect.h;
-    //whitebal_data->service=display_service;
-    //pthread_create(&whitebal_data->thread, NULL, AutoWhiteBalance, (void*)&whitebal_data);
-    break;
-  default:
-    //fprintf(stderr,"Bad button ID in SDL!\n");
-    break;
-  }
+*/
+	switch (button) {
+	case SDL_BUTTON_LEFT:
+		pthread_mutex_lock(&watchthread_info.mutex_area);
+		watchthread_info.draw=1;
+		watchthread_info.mouse_down=1;
+		// there is some adaptation because the display size can be different
+		// from the real image size. (i.e. the image can be resized)
+		watchthread_info.first[0]= ((x*display_service->current_buffer->frame.size[0] /info->sdlvideorect.w));
+		watchthread_info.first[1]= ((y*display_service->current_buffer->frame.size[1]/info->sdlvideorect.h));
+		
+		// zero size at first click, -> copy click coordinate to second corner
+		watchthread_info.second[0]=watchthread_info.first[0];
+		watchthread_info.second[1]=watchthread_info.first[1];
+		watchthread_info.upper_left[0]=watchthread_info.first[0];
+		watchthread_info.upper_left[1]=watchthread_info.first[1];
+		watchthread_info.lower_right[0]=watchthread_info.first[0];
+		watchthread_info.lower_right[1]=watchthread_info.first[1];
+		
+		GetValidF7Crop(&watchthread_info, display_service);
+		
+		pthread_mutex_unlock(&watchthread_info.mutex_area);
+		break;
+	case SDL_BUTTON_MIDDLE:
+		x=x*display_service->current_buffer->frame.size[0]/info->sdlvideorect.w; //rescaling
+		y=y*display_service->current_buffer->frame.size[1]/info->sdlvideorect.h;
+		switch(preferences.overlay_byte_order) {
+		case DC1394_BYTE_ORDER_YUYV:
+			cursor_info.col_y=info->sdloverlay->pixels[0][(y*display_service->current_buffer->frame.size[0]+x)*2];
+			cursor_info.col_u=info->sdloverlay->pixels[0][(((y*display_service->current_buffer->frame.size[0]+x)>>1)<<2)+1]-127;
+			cursor_info.col_v=info->sdloverlay->pixels[0][(((y*display_service->current_buffer->frame.size[0]+x)>>1)<<2)+3]-127;
+			break;
+		case DC1394_BYTE_ORDER_UYVY:
+			cursor_info.col_u=info->sdloverlay->pixels[0][(y*display_service->current_buffer->frame.size[0]+x)*2]-127;
+			cursor_info.col_y=info->sdloverlay->pixels[0][(((y*display_service->current_buffer->frame.size[0]+x)>>1)<<2)+1];
+			cursor_info.col_v=info->sdloverlay->pixels[0][(((y*display_service->current_buffer->frame.size[0]+x)>>1)<<2)+2]-127;
+			break;
+		default:
+			fprintf(stderr,"Invalid overlay byte order\n");
+			break;
+		}
+		YUV2RGB(cursor_info.col_y, cursor_info.col_u, cursor_info.col_v,
+				cursor_info.col_r, cursor_info.col_g, cursor_info.col_b);
+		cursor_info.x=x;
+		cursor_info.y=y;
+		cursor_info.update_req=1;
+		break;
+	case SDL_BUTTON_RIGHT:
+		//whitebal_data->x=x*display_service->current_buffer->frame.size[0]/info->sdlvideorect.w; //rescaling
+		//whitebal_data->y=y*display_service->current_buffer->frame.size[1]/info->sdlvideorect.h;
+		//whitebal_data->service=display_service;
+		//pthread_create(&whitebal_data->thread, NULL, AutoWhiteBalance, (void*)&whitebal_data);
+		break;
+	default:
+		//fprintf(stderr,"Bad button ID in SDL!\n");
+		break;
+	}
 }
 
 void
 OnMouseUp(chain_t *display_service, int button, int x, int y)
 {
 
-  displaythread_info_t *info;
-  info=(displaythread_info_t*)display_service->data;
-
-  switch (button) {
-  case SDL_BUTTON_LEFT:
-    pthread_mutex_lock(&watchthread_info.mutex_area);
-    watchthread_info.mouse_down=0;
-    // there is some adaptation because the display size can be different
-    // from the real image size. (i.e. the image can be resized)
-    //info->lower_right[0]=x*display_service->current_buffer->frame.size[0]/info->sdlvideorect.w;
-    //info->lower_right[1]=y*display_service->current_buffer->frame.size[1]/info->sdlvideorect.h;
-    pthread_mutex_unlock(&watchthread_info.mutex_area);
-    break;
-  case SDL_BUTTON_MIDDLE:
-    break;
-  case SDL_BUTTON_RIGHT:
-    break;
-  default:
-    //fprintf(stderr,"Bad button ID in SDL!\n");
-    break;
-  }
+	//displaythread_info_t *info;
+	//info=(displaythread_info_t*)display_service->data;
+	
+	switch (button) {
+	case SDL_BUTTON_LEFT:
+		pthread_mutex_lock(&watchthread_info.mutex_area);
+		watchthread_info.mouse_down=0;
+		// there is some adaptation because the display size can be different
+		// from the real image size. (i.e. the image can be resized)
+		//info->lower_right[0]=x*display_service->current_buffer->frame.size[0]/info->sdlvideorect.w;
+		//info->lower_right[1]=y*display_service->current_buffer->frame.size[1]/info->sdlvideorect.h;
+		pthread_mutex_unlock(&watchthread_info.mutex_area);
+		break;
+	case SDL_BUTTON_MIDDLE:
+		break;
+	case SDL_BUTTON_RIGHT:
+		break;
+	default:
+		//fprintf(stderr,"Bad button ID in SDL!\n");
+		break;
+	}
 }
 
 

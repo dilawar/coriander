@@ -18,3 +18,4 @@ aclocal.m4
 compile
 autom4te.cache/
 m4/
+coriander-*.tar.gz

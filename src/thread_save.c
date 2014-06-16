@@ -361,143 +361,143 @@ GetSaveFD(chain_t *save_service, FILE **fd, char *filename_out)
 int
 InitVideoFile(chain_t *save_service, FILE *fd, char *filename_out)
 {
-  savethread_info_t *info;
-  info=(savethread_info_t*)save_service->data;
-  float fps;
-  camera_t *cam=save_service->camera;
-
-  dc1394framerate_t framerate;
-  dc1394_video_get_framerate(cam->camera_info,&framerate);
-
+	//savethread_info_t *info;
+	//info=(savethread_info_t*)save_service->data;
+	float fps;
+	camera_t *cam=save_service->camera;
+	
+	dc1394framerate_t framerate;
+	dc1394_video_get_framerate(cam->camera_info,&framerate);
+	
 #ifdef HAVE_FFMPEG
-  info->fmt = NULL;
-  info->oc = NULL;
-  info->video_st = NULL;
-  info->picture = NULL;
-  info->tmp_picture = NULL;
-  
-  info->fdts = 0;
+	info->fmt = NULL;
+	info->oc = NULL;
+	info->video_st = NULL;
+	info->picture = NULL;
+	info->tmp_picture = NULL;
+	
+	info->fdts = 0;
 #endif
-
-  // (JG) if extension is PVN, write PVN header here
-  if (cam->prefs.save_format==SAVE_FORMAT_PVN) {//-----------------------------------
-    //fprintf(stderr,"pvn header write\n");
-    dc1394_framerate_as_float(framerate, &fps);
-    writePVNHeader(fd, save_service->current_buffer->frame.color_coding,
-		   save_service->current_buffer->frame.size[0],
-		   save_service->current_buffer->frame.size[1],
-		   0, getConvertedBytesPerChannel(save_service->current_buffer->frame.color_coding)*8,
-		   fps);
-  }
-
+	
+	// (JG) if extension is PVN, write PVN header here
+	if (cam->prefs.save_format==SAVE_FORMAT_PVN) {//-----------------------------------
+		//fprintf(stderr,"pvn header write\n");
+		dc1394_framerate_as_float(framerate, &fps);
+		writePVNHeader(fd, save_service->current_buffer->frame.color_coding,
+					   save_service->current_buffer->frame.size[0],
+					   save_service->current_buffer->frame.size[1],
+					   0, getConvertedBytesPerChannel(save_service->current_buffer->frame.color_coding)*8,
+					   fps);
+	}
+	
 #ifdef HAVE_FFMPEG
-  if (cam->prefs.save_format==SAVE_FORMAT_MPEG) {//-----------------------------------
-    // MPEG
-    //fprintf(stderr,"setting up mpeg codec\n");
-    //video_encode_init(save_service->current_buffer->width,
-    //		      save_service->current_buffer->height, CODEC_ID_MPEG1VIDEO);
-
-    /* auto detect the output format from the name. default is mpeg. */
-    info->fmt = guess_format(NULL, filename_out, NULL);
-    if (!info->fmt) {
-      fprintf(stderr,"Could not deduce output format from file extension: using MPEG.\n");
-      info->fmt = guess_format("mpeg", NULL, NULL);
-    }
-    
-    if (!info->fmt) {
-      fprintf(stderr, "Could not find suitable output format\n");
-      return DC1394_FAILURE;
-    }
-
-    /* allocate the output media context */
-    info->oc = av_alloc_format_context();
-    if (!info->oc) {
-      fprintf(stderr, "Memory error\n");
-    }
-    info->oc->oformat = info->fmt;
-    snprintf(info->oc->filename, sizeof(info->oc->filename), "%s", filename_out);
-    
-    /* add the audio and video streams using the default format codecs
-       and initialize the codecs */
-    info->video_st = NULL;
-    if (info->fmt->video_codec != CODEC_ID_NONE) {
-      //video_st = add_video_stream(oc, fmt->video_codec);
-      info->video_st = add_video_stream(info->oc, CODEC_ID_MJPEG, 
-					save_service->current_buffer->frame.size[0],
-					save_service->current_buffer->frame.size[1]);
-    }
-    
-    /* set the output parameters (must be done even if no
-       parameters). */
-    if (av_set_parameters(info->oc, NULL) < 0) {
-      fprintf(stderr, "Invalid output format parameters\n");
-    }
-    
-    dump_format(info->oc, 0, filename_out, 1);
-    
-    /* now that all the parameters are set, we can open the
-       video codec and allocate the necessary encode buffers */
-    
-    if (info->video_st)
-      open_video(info->oc, info->video_st);
-    
-    /* open the output file, if needed */
-    if (!(info->fmt->flags & AVFMT_NOFILE)) {
-      ProtectFilename(filename_out);
-      if (url_fopen(&info->oc->pb, filename_out, URL_WRONLY) < 0) {
-	fprintf(stderr, "Could not open '%s'\n", filename_out);
-      }
-    }
-  
-    /* write the stream header, if any */
-    av_write_header(info->oc); 
-    
-    info->picture = alloc_picture(info->video_st->codec->pix_fmt, info->video_st->codec->width, info->video_st->codec->height);
-    if (!info->picture) {
-      fprintf(stderr, "Could not allocate picture\n");
-    }
-    
-    info->mpeg_color_mode=0;
-    switch (save_service->current_buffer->frame.color_coding) {
-    case DC1394_COLOR_CODING_MONO8:
-    case DC1394_COLOR_CODING_RAW8:
-      info->mpeg_color_mode=PIX_FMT_GRAY8;
-      break;
-    case DC1394_COLOR_CODING_YUV411:
-      info->mpeg_color_mode=PIX_FMT_YUV411P;
-      break;
-    case DC1394_COLOR_CODING_YUV422:
-      info->mpeg_color_mode=PIX_FMT_YUV422P;
-      break;
-    case DC1394_COLOR_CODING_YUV444:
-      info->mpeg_color_mode=PIX_FMT_YUV444P;
-      break;
-    case DC1394_COLOR_CODING_RGB8:
-      info->mpeg_color_mode=PIX_FMT_RGB24;
-      break;
-    default:
-      fprintf(stderr, "This format is not supported for MPEG save\n");
-      break;
-    }
-
-    info->tmp_picture = alloc_picture(info->mpeg_color_mode, info->video_st->codec->width, info->video_st->codec->height);
-    if (!info->tmp_picture) {
-      fprintf(stderr, "Could not allocate temporary picture\n");
-    }
-    
-    strcpy(info->subtitle, filename_out);
-    strcpy(strrchr(info->subtitle,'.'), ".sub");
-    fprintf(stderr, "Recording frame timestamps to: %s\n", info->subtitle);
-    info->fdts = open(info->subtitle, O_CREAT | O_WRONLY | O_SYNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
-
-  }
+	if (cam->prefs.save_format==SAVE_FORMAT_MPEG) {//-----------------------------------
+		// MPEG
+		//fprintf(stderr,"setting up mpeg codec\n");
+		//video_encode_init(save_service->current_buffer->width,
+		//		      save_service->current_buffer->height, CODEC_ID_MPEG1VIDEO);
+		
+		/* auto detect the output format from the name. default is mpeg. */
+		info->fmt = guess_format(NULL, filename_out, NULL);
+		if (!info->fmt) {
+			fprintf(stderr,"Could not deduce output format from file extension: using MPEG.\n");
+			info->fmt = guess_format("mpeg", NULL, NULL);
+		}
+		
+		if (!info->fmt) {
+			fprintf(stderr, "Could not find suitable output format\n");
+			return DC1394_FAILURE;
+		}
+		
+		/* allocate the output media context */
+		info->oc = av_alloc_format_context();
+		if (!info->oc) {
+			fprintf(stderr, "Memory error\n");
+		}
+		info->oc->oformat = info->fmt;
+		snprintf(info->oc->filename, sizeof(info->oc->filename), "%s", filename_out);
+		
+		/* add the audio and video streams using the default format codecs
+		   and initialize the codecs */
+		info->video_st = NULL;
+		if (info->fmt->video_codec != CODEC_ID_NONE) {
+			//video_st = add_video_stream(oc, fmt->video_codec);
+			info->video_st = add_video_stream(info->oc, CODEC_ID_MJPEG, 
+											  save_service->current_buffer->frame.size[0],
+											  save_service->current_buffer->frame.size[1]);
+		}
+		
+		/* set the output parameters (must be done even if no
+		   parameters). */
+		if (av_set_parameters(info->oc, NULL) < 0) {
+			fprintf(stderr, "Invalid output format parameters\n");
+		}
+		
+		dump_format(info->oc, 0, filename_out, 1);
+		
+		/* now that all the parameters are set, we can open the
+		   video codec and allocate the necessary encode buffers */
+		
+		if (info->video_st)
+			open_video(info->oc, info->video_st);
+		
+		/* open the output file, if needed */
+		if (!(info->fmt->flags & AVFMT_NOFILE)) {
+			ProtectFilename(filename_out);
+			if (url_fopen(&info->oc->pb, filename_out, URL_WRONLY) < 0) {
+				fprintf(stderr, "Could not open '%s'\n", filename_out);
+			}
+		}
+		
+		/* write the stream header, if any */
+		av_write_header(info->oc); 
+		
+		info->picture = alloc_picture(info->video_st->codec->pix_fmt, info->video_st->codec->width, info->video_st->codec->height);
+		if (!info->picture) {
+			fprintf(stderr, "Could not allocate picture\n");
+		}
+		
+		info->mpeg_color_mode=0;
+		switch (save_service->current_buffer->frame.color_coding) {
+		case DC1394_COLOR_CODING_MONO8:
+		case DC1394_COLOR_CODING_RAW8:
+			info->mpeg_color_mode=PIX_FMT_GRAY8;
+			break;
+		case DC1394_COLOR_CODING_YUV411:
+			info->mpeg_color_mode=PIX_FMT_YUV411P;
+			break;
+		case DC1394_COLOR_CODING_YUV422:
+			info->mpeg_color_mode=PIX_FMT_YUV422P;
+			break;
+		case DC1394_COLOR_CODING_YUV444:
+			info->mpeg_color_mode=PIX_FMT_YUV444P;
+			break;
+		case DC1394_COLOR_CODING_RGB8:
+			info->mpeg_color_mode=PIX_FMT_RGB24;
+			break;
+		default:
+			fprintf(stderr, "This format is not supported for MPEG save\n");
+			break;
+		}
+		
+		info->tmp_picture = alloc_picture(info->mpeg_color_mode, info->video_st->codec->width, info->video_st->codec->height);
+		if (!info->tmp_picture) {
+			fprintf(stderr, "Could not allocate temporary picture\n");
+		}
+		
+		strcpy(info->subtitle, filename_out);
+		strcpy(strrchr(info->subtitle,'.'), ".sub");
+		fprintf(stderr, "Recording frame timestamps to: %s\n", info->subtitle);
+		info->fdts = open(info->subtitle, O_CREAT | O_WRONLY | O_SYNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
+		
+	}
 #endif    // END MPEG
-
-  // other inits for other video formats come here...          ----------------------------------
-  // ...
-  
-
-  return DC1394_SUCCESS;
+	
+	// other inits for other video formats come here...          ----------------------------------
+	// ...
+	
+	
+	return DC1394_SUCCESS;
 }
 
 void
@@ -1007,28 +1007,28 @@ void
 SaveThreadCheckParams(chain_t *save_service)
 {
 
-  savethread_info_t *info;
-  info=(savethread_info_t*)save_service->data;
+	//savethread_info_t *info;
+	//info=(savethread_info_t*)save_service->data;
 
-  // THIS IS ALL AUTOMATIC NOW!!
-  /*
-  // if some parameters changed, we need to re-allocate the local buffers and restart the save
-  if ((save_service->current_buffer->frame.size[0]!=save_service->local_param_copy.frame.size[0])||
-      (save_service->current_buffer->frame.size[1]!=save_service->local_param_copy.frame.size[1])  ) {
-    
-    // DO SOMETHING
-    if (info->buffer!=NULL) {
-      free(info->buffer);
-      info->buffer=NULL;
-    }
-    info->buffer=(unsigned char*)malloc(save_service->current_buffer->frame.size[0]*save_service->current_buffer->frame.size[1]*3
-					*sizeof(unsigned char));
-    if (info->buffer==NULL)
-      fprintf(stderr,"Can't allocate buffer! Aiiieee!\n");
-  }
-  */
-  // copy all new parameters:
-  memcpy(&save_service->local_param_copy, save_service->current_buffer,sizeof(buffer_t));
-  save_service->local_param_copy.frame.allocated_image_bytes=0;
- 
+	// THIS IS ALL AUTOMATIC NOW!!
+	/*
+	// if some parameters changed, we need to re-allocate the local buffers and restart the save
+	if ((save_service->current_buffer->frame.size[0]!=save_service->local_param_copy.frame.size[0])||
+		(save_service->current_buffer->frame.size[1]!=save_service->local_param_copy.frame.size[1])  ) {
+		
+		// DO SOMETHING
+		if (info->buffer!=NULL) {
+			free(info->buffer);
+			info->buffer=NULL;
+		}
+		info->buffer=(unsigned char*)malloc(save_service->current_buffer->frame.size[0]*save_service->current_buffer->frame.size[1]*3
+											*sizeof(unsigned char));
+		if (info->buffer==NULL)
+			fprintf(stderr,"Can't allocate buffer! Aiiieee!\n");
+	}
+	*/
+	// copy all new parameters:
+	memcpy(&save_service->local_param_copy, save_service->current_buffer,sizeof(buffer_t));
+	save_service->local_param_copy.frame.allocated_image_bytes=0;
+	
 }
