@@ -21,71 +21,71 @@
 void
 UpdateFormat7Window(void)
 {
-  UpdateFormat7Ranges();
-  BuildFormat7ColorMenu();
-  UpdateFormat7InfoFrame();
+	UpdateFormat7Ranges();
+	BuildFormat7ColorMenu();
+	UpdateFormat7InfoFrame();
 }
 
 void
 UpdatePreferencesWindow(void)
 {
-  UpdatePrefsReceiveFrame();    
-  UpdatePrefsDisplayFrame();
-  UpdatePrefsGeneralFrame();    
-  UpdatePrefsSaveFrame();
-  UpdatePrefsFtpFrame();
-  UpdatePrefsV4lFrame();
+	UpdatePrefsReceiveFrame();    
+	UpdatePrefsDisplayFrame();
+	UpdatePrefsGeneralFrame();    
+	UpdatePrefsSaveFrame();
+	UpdatePrefsFtpFrame();
+	UpdatePrefsV4lFrame();
 }
 
 void
 UpdateCommanderWindow(void)
 {
-  UpdateCameraFrame();
-  UpdateTriggerFrame();
-  UpdatePowerFrame();
-  UpdateMemoryFrame();
-  //  UpdateFormatMenu();
-  UpdateIsoFrame();
-  UpdateOptionFrame();
-  UpdateServiceFrame();
+	UpdateCameraFrame();
+	UpdateTriggerFrame();
+	UpdatePowerFrame();
+	UpdateMemoryFrame();
+	//  UpdateFormatMenu();
+	UpdateIsoFrame();
+	UpdateOptionFrame();
+	UpdateServiceFrame();
 }
 
 void
 UpdateFeatureWindow(void)
 {
-  int i;
+	int i;
 
-  //char stemp[256];
+	//char stemp[256];
 
-  for (i=DC1394_FEATURE_MIN;i<=DC1394_FEATURE_MAX;i++) {
-    if ((camera->feature_set.feature[i-DC1394_FEATURE_MIN].available>0)&&
-	(i!=DC1394_FEATURE_TRIGGER)) {
-      UpdateRange(i);
-    }
-  }
+	for (i=DC1394_FEATURE_MIN;i<=DC1394_FEATURE_MAX;i++) {
+		if ((camera->feature_set.feature[i-DC1394_FEATURE_MIN].available>0)&&
+			(i!=DC1394_FEATURE_TRIGGER)) {
+			UpdateRange(i);
+		}
+	}
 }
 
 void
 UpdateStatusWindow(void)
 {
-  UpdateCameraStatusFrame();
-  UpdateTransferStatusFrame();
-  UpdateBandwidthFrame();
+	UpdateCameraStatusFrame();
+	UpdateTransferStatusFrame();
+	UpdateBandwidthFrame();
 }
 
 
 void
 UpdateAllWindows(void)
 {
-  UpdatePreferencesWindow();
-  //eprint("1\n")
-  UpdateFeatureWindow();
-  //eprint("2\n")
-  UpdateStatusWindow();
-  //eprint("3\n")
-  UpdateCommanderWindow();
-  //eprint("4\n")
-  if ((camera->format7_info.edit_mode!=-1)&&(format7_tab_presence==1))
-    UpdateFormat7Window();
-  //eprint("5\n")
+	UpdatePreferencesWindow();
+	//eprint("1\n")
+	UpdateFeatureWindow();
+	//eprint("2\n")
+	UpdateStatusWindow();
+	//eprint("3\n")
+	UpdateCommanderWindow();
+	//eprint("4\n")
+	if ((camera->format7_info.edit_mode!=-1)&&(format7_tab_presence==1))
+		UpdateFormat7Window();
+	//eprint("5\n")
 }

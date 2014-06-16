@@ -20,28 +20,28 @@
 
 // LIBDCV2: this file will be removed...
 /*
-extern char* format_list[5];
-extern char* format0_list[7];
-extern char* format1_list[8];
-extern char* format2_list[8];
-extern char* format6_list[1];
-extern char* format7_list[8];
+  extern char* format_list[5];
+  extern char* format0_list[7];
+  extern char* format1_list[8];
+  extern char* format2_list[8];
+  extern char* format6_list[1];
+  extern char* format7_list[8];
 
-void UpdateFormatMenu(void)
-{
+  void UpdateFormatMenu(void)
+  {
   quadlet_t formats;
 
   if (dc1394_query_supported_formats(&camera->camera_info, &formats)!=DC1394_SUCCESS) {
-    Error("Could not query supported formats");
-    formats=0x0;
+  Error("Could not query supported formats");
+  formats=0x0;
   }
 
   // also disable 'window menu' items (this should go in another function, I know...)
   gtk_widget_set_sensitive(lookup_widget(main_window,"vbox34"),formats & (0x1<<24) );
   gtk_widget_set_sensitive(lookup_widget(main_window,"temperature_frame"),
-			   camera->feature_set.feature[FEATURE_TEMPERATURE-FEATURE_MIN].available );
+  camera->feature_set.feature[FEATURE_TEMPERATURE-FEATURE_MIN].available );
   
-}
+  }
 */
 
 

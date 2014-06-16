@@ -22,12 +22,12 @@
 
 char * new_subtitle(int n, float fps, char *time_string, char * subtitle) {
 
-  sprintf(subtitle, "{%d}{%d} Frame : %d, FPS : %3.2f, Time stamp : %s\n",
-	  n,
-	  n+1,
-	  n,
-	  fps,
-	  time_string);
+	sprintf(subtitle, "{%d}{%d} Frame : %d, FPS : %3.2f, Time stamp : %s\n",
+			n,
+			n+1,
+			n,
+			fps,
+			time_string);
 
-  return subtitle;
+	return subtitle;
 }

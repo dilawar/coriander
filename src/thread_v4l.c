@@ -22,79 +22,79 @@
 gint
 V4lStartThread(camera_t* cam)
 {
-  chain_t* v4l_service=NULL;
-  v4lthread_info_t *info=NULL;
-  char *stemp;
+	chain_t* v4l_service=NULL;
+	v4lthread_info_t *info=NULL;
+	char *stemp;
 
-  stemp=(char*)malloc(STRING_SIZE*sizeof(char));
+	stemp=(char*)malloc(STRING_SIZE*sizeof(char));
 
-  v4l_service=GetService(cam, SERVICE_V4L);
+	v4l_service=GetService(cam, SERVICE_V4L);
 
-  if (v4l_service==NULL) { // if no V4L service running...
-    v4l_service=(chain_t*)malloc(sizeof(chain_t));
-    v4l_service->current_buffer=NULL;
-    v4l_service->next_buffer=NULL;
-    v4l_service->data=(void*)malloc(sizeof(v4lthread_info_t));
-    info=(v4lthread_info_t*)v4l_service->data;
-    pthread_mutex_init(&v4l_service->mutex_data, NULL);
-    pthread_mutex_init(&v4l_service->mutex_struct, NULL);
-    pthread_mutex_init(&info->mutex_cancel, NULL);
+	if (v4l_service==NULL) { // if no V4L service running...
+		v4l_service=(chain_t*)malloc(sizeof(chain_t));
+		v4l_service->current_buffer=NULL;
+		v4l_service->next_buffer=NULL;
+		v4l_service->data=(void*)malloc(sizeof(v4lthread_info_t));
+		info=(v4lthread_info_t*)v4l_service->data;
+		pthread_mutex_init(&v4l_service->mutex_data, NULL);
+		pthread_mutex_init(&v4l_service->mutex_struct, NULL);
+		pthread_mutex_init(&info->mutex_cancel, NULL);
     
-    /* if you want a clean-interrupt thread:*/
-    pthread_mutex_lock(&info->mutex_cancel);
-    info->cancel_req=0;
-    pthread_mutex_unlock(&info->mutex_cancel);
+		/* if you want a clean-interrupt thread:*/
+		pthread_mutex_lock(&info->mutex_cancel);
+		info->cancel_req=0;
+		pthread_mutex_unlock(&info->mutex_cancel);
     
-    /* setup v4l_thread: handles, ...*/
-    pthread_mutex_lock(&v4l_service->mutex_data);
+		/* setup v4l_thread: handles, ...*/
+		pthread_mutex_lock(&v4l_service->mutex_data);
     
-    CommonChainSetup(cam, v4l_service,SERVICE_V4L);
+		CommonChainSetup(cam, v4l_service,SERVICE_V4L);
     
-    info->frame.image=NULL;
-    info->frame.allocated_image_bytes=0;
+		info->frame.image=NULL;
+		info->frame.allocated_image_bytes=0;
 
-    // open V4L device
-    info->v4l_dev=-1;
-    info->v4l_dev = open(cam->prefs.v4l_dev_name, O_RDWR);
-    if (info->v4l_dev < 0) {
-      sprintf(stemp,"Failed to open V4L device %s",cam->prefs.v4l_dev_name);
-      Error(stemp);
-      free(stemp);
-      stemp=NULL;
-      FreeChain(v4l_service);
-      v4l_service=NULL;
-      return(-1);
-    }
+		// open V4L device
+		info->v4l_dev=-1;
+		info->v4l_dev = open(cam->prefs.v4l_dev_name, O_RDWR);
+		if (info->v4l_dev < 0) {
+			sprintf(stemp,"Failed to open V4L device %s",cam->prefs.v4l_dev_name);
+			Error(stemp);
+			free(stemp);
+			stemp=NULL;
+			FreeChain(v4l_service);
+			v4l_service=NULL;
+			return(-1);
+		}
 
-    /* Insert chain and start service*/
-    pthread_mutex_lock(&v4l_service->mutex_struct);
-    InsertChain(cam, v4l_service);
-    if (pthread_create(&v4l_service->thread, NULL, V4lThread,(void*) v4l_service)) {
-      /* error starting thread. You should cleanup here
-	 (free, unset global vars,...):*/
+		/* Insert chain and start service*/
+		pthread_mutex_lock(&v4l_service->mutex_struct);
+		InsertChain(cam, v4l_service);
+		if (pthread_create(&v4l_service->thread, NULL, V4lThread,(void*) v4l_service)) {
+			/* error starting thread. You should cleanup here
+			   (free, unset global vars,...):*/
       
-      /* Mendatory cleanups:*/
-      RemoveChain(cam, v4l_service);
-      pthread_mutex_unlock(&v4l_service->mutex_struct);
-      pthread_mutex_unlock(&v4l_service->mutex_data);
-      if ((info->frame.image!=NULL)&&(info->frame.allocated_image_bytes>0)) {
-	free(info->frame.image);
-	info->frame.allocated_image_bytes=0;
-      }
-      free(stemp);
-      stemp=NULL;
-      FreeChain(v4l_service);
-      v4l_service=NULL;
-      return(-1);
-    }
+			/* Mendatory cleanups:*/
+			RemoveChain(cam, v4l_service);
+			pthread_mutex_unlock(&v4l_service->mutex_struct);
+			pthread_mutex_unlock(&v4l_service->mutex_data);
+			if ((info->frame.image!=NULL)&&(info->frame.allocated_image_bytes>0)) {
+				free(info->frame.image);
+				info->frame.allocated_image_bytes=0;
+			}
+			free(stemp);
+			stemp=NULL;
+			FreeChain(v4l_service);
+			v4l_service=NULL;
+			return(-1);
+		}
 
-    pthread_mutex_unlock(&v4l_service->mutex_struct);
-    pthread_mutex_unlock(&v4l_service->mutex_data);
+		pthread_mutex_unlock(&v4l_service->mutex_struct);
+		pthread_mutex_unlock(&v4l_service->mutex_data);
     
-  }
-  free(stemp);
-  stemp=NULL;
-  return (1);
+	}
+	free(stemp);
+	stemp=NULL;
+	return (1);
 }
 
 
@@ -216,94 +216,94 @@ V4lThread(void* arg)
 gint
 V4lStopThread(camera_t* cam)
 {
-  v4lthread_info_t *info;
-  chain_t *v4l_service;
-  v4l_service=GetService(cam,SERVICE_V4L);
+	v4lthread_info_t *info;
+	chain_t *v4l_service;
+	v4l_service=GetService(cam,SERVICE_V4L);
 
-  if (v4l_service!=NULL) { // if V4L service running...
-    info=(v4lthread_info_t*)v4l_service->data;
-    /* Clean cancel handler: */
-    pthread_mutex_lock(&info->mutex_cancel);
-    info->cancel_req=1;
-    pthread_mutex_unlock(&info->mutex_cancel);
+	if (v4l_service!=NULL) { // if V4L service running...
+		info=(v4lthread_info_t*)v4l_service->data;
+		/* Clean cancel handler: */
+		pthread_mutex_lock(&info->mutex_cancel);
+		info->cancel_req=1;
+		pthread_mutex_unlock(&info->mutex_cancel);
     
-    /* common handlers...*/
-    pthread_join(v4l_service->thread, NULL);
+		/* common handlers...*/
+		pthread_join(v4l_service->thread, NULL);
     
-    pthread_mutex_lock(&v4l_service->mutex_data);
-    pthread_mutex_lock(&v4l_service->mutex_struct);
-    RemoveChain(cam,v4l_service);
+		pthread_mutex_lock(&v4l_service->mutex_data);
+		pthread_mutex_lock(&v4l_service->mutex_struct);
+		RemoveChain(cam,v4l_service);
     
-    /* Do custom cleanups here...*/
-    if ((info->frame.image!=NULL)&&(info->frame.allocated_image_bytes>0)) {
-      free(info->frame.image);
-      info->frame.allocated_image_bytes=0;
-    }
+		/* Do custom cleanups here...*/
+		if ((info->frame.image!=NULL)&&(info->frame.allocated_image_bytes>0)) {
+			free(info->frame.image);
+			info->frame.allocated_image_bytes=0;
+		}
 
-    close(info->v4l_dev);
+		close(info->v4l_dev);
 
-    /* Mendatory cleanups: */
-    pthread_mutex_unlock(&v4l_service->mutex_struct);
-    pthread_mutex_unlock(&v4l_service->mutex_data);
-    FreeChain(v4l_service);
-    v4l_service=NULL;
+		/* Mendatory cleanups: */
+		pthread_mutex_unlock(&v4l_service->mutex_struct);
+		pthread_mutex_unlock(&v4l_service->mutex_data);
+		FreeChain(v4l_service);
+		v4l_service=NULL;
     
-  }
+	}
   
-  return (1);
+	return (1);
 }
 
 void
 V4lThreadCheckParams(chain_t *v4l_service)
 {
 
-  v4lthread_info_t *info;
-  info=(v4lthread_info_t*)v4l_service->data;
+	v4lthread_info_t *info;
+	info=(v4lthread_info_t*)v4l_service->data;
 
-  // if some parameters changed, we need to re-allocate the local buffers and restart the v4l
-  if ((v4l_service->current_buffer->frame.size[0]!=v4l_service->local_param_copy.frame.size[0])||
-      (v4l_service->current_buffer->frame.size[1]!=v4l_service->local_param_copy.frame.size[1]) ) {
+	// if some parameters changed, we need to re-allocate the local buffers and restart the v4l
+	if ((v4l_service->current_buffer->frame.size[0]!=v4l_service->local_param_copy.frame.size[0])||
+		(v4l_service->current_buffer->frame.size[1]!=v4l_service->local_param_copy.frame.size[1]) ) {
 
-    // STOPING THE PIPE MIGHT BE NECESSARY HERE
+		// STOPING THE PIPE MIGHT BE NECESSARY HERE
     
-    // "start pipe"      
-    if (ioctl (info->v4l_dev, VIDIOCGCAP, &info->vid_caps) == -1) {
-      perror ("ioctl (VIDIOCGCAP)");
-    }
-    if (ioctl (info->v4l_dev, VIDIOCGPICT, &info->vid_pic)== -1) {
-      perror ("ioctl VIDIOCGPICT");
-    }
-    info->vid_pic.palette = VIDEO_PALETTE_RGB24;
-    if (ioctl (info->v4l_dev, VIDIOCSPICT, &info->vid_pic)== -1) {
-      perror ("ioctl VIDIOCSPICT");
-    }
-    if (ioctl (info->v4l_dev, VIDIOCGWIN, &info->vid_win)== -1) {
-      perror ("ioctl VIDIOCGWIN");
-    }
-    info->vid_win.width=v4l_service->current_buffer->frame.size[0];
-    info->vid_win.height=v4l_service->current_buffer->frame.size[1];
-    if (ioctl (info->v4l_dev, VIDIOCSWIN, &info->vid_win)== -1) {
-      perror ("ioctl VIDIOCSWIN");
-    }
-  }
+		// "start pipe"      
+		if (ioctl (info->v4l_dev, VIDIOCGCAP, &info->vid_caps) == -1) {
+			perror ("ioctl (VIDIOCGCAP)");
+		}
+		if (ioctl (info->v4l_dev, VIDIOCGPICT, &info->vid_pic)== -1) {
+			perror ("ioctl VIDIOCGPICT");
+		}
+		info->vid_pic.palette = VIDEO_PALETTE_RGB24;
+		if (ioctl (info->v4l_dev, VIDIOCSPICT, &info->vid_pic)== -1) {
+			perror ("ioctl VIDIOCSPICT");
+		}
+		if (ioctl (info->v4l_dev, VIDIOCGWIN, &info->vid_win)== -1) {
+			perror ("ioctl VIDIOCGWIN");
+		}
+		info->vid_win.width=v4l_service->current_buffer->frame.size[0];
+		info->vid_win.height=v4l_service->current_buffer->frame.size[1];
+		if (ioctl (info->v4l_dev, VIDIOCSWIN, &info->vid_win)== -1) {
+			perror ("ioctl VIDIOCSWIN");
+		}
+	}
 
-  // copy all new parameters:
-  memcpy(&v4l_service->local_param_copy, v4l_service->current_buffer,sizeof(buffer_t));
-  v4l_service->local_param_copy.frame.allocated_image_bytes=0; // to avoid bad free...
+	// copy all new parameters:
+	memcpy(&v4l_service->local_param_copy, v4l_service->current_buffer,sizeof(buffer_t));
+	v4l_service->local_param_copy.frame.allocated_image_bytes=0; // to avoid bad free...
   
 }
 
 void
 swap_rb(unsigned char *image, int i) {
 
-  unsigned char t;
-  i--;
+	unsigned char t;
+	i--;
 
-  while (i>0) {
-    t=image[i];
-    image[i]=image[i-2];
-    image[i-2]=t;
-    i-=3;
-  }
+	while (i>0) {
+		t=image[i];
+		image[i]=image[i-2];
+		image[i-2]=t;
+		i-=3;
+	}
 
 }
