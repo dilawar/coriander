@@ -51,8 +51,6 @@ include_directories( ${LIBDC_INCLUDE_DIRS} ${LIBRAW_INCLUDE_DIRS} )
 # Threads
 find_package( Threads REQUIRED )
 
-
-
 SET(CORIANDER_SOURCE_DIR ${CMAKE_SOURCE_DIR}/src)
 FILE( GLOB CORIANDER_SRC ${CORIANDER_SOURCE_DIR}/*.c)
 
@@ -66,6 +64,9 @@ target_link_libraries( coriander
     ${LIBDC_LIBRARIES}
     ${LIBRAW_LIBRARIES}
     )
+if( TIFF_FOUND )
+    target_link_libraries( coriander ${TIFF_LIBRARIES} )
+endif( TIFF_FOUND )
 
 ## install targets
 install( TARGETS coriander 
