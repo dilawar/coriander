@@ -846,6 +846,7 @@ UpdateSaveFilenameFrame(void)
 #endif
 	case SAVE_FORMAT_PPM:
 	case SAVE_FORMAT_RAW:
+#ifdef HAVE_LIBTIFF
 	case SAVE_FORMAT_TIFF:
 		// first handle the case of save-to-dir
 		if (camera->prefs.save_to_dir==0) {
@@ -876,6 +877,7 @@ UpdateSaveFilenameFrame(void)
 			// 3. done!
 		}
 		break;
+#endif
 	case SAVE_FORMAT_RAW_VIDEO:
 	case SAVE_FORMAT_PVN:
 #ifdef HAVE_FFMPEG

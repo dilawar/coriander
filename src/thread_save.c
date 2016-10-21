@@ -855,10 +855,12 @@ SaveThread(void* arg)
 							fclose(fd);
 							fd=NULL;
 							break;
+#ifdef HAVE_LIBTIFF
 						case SAVE_FORMAT_TIFF:
 							SaveTIFF(save_service, (TIFF*)((void*)(fd)));
 							fd=NULL;
 							break;
+#endif
 						default:
 							fprintf(stderr,"Unsupported file format\n");
 						} // end save format switch

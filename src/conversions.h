@@ -19,6 +19,8 @@
 #ifndef __CONVERSIONS_H__
 #define __CONVERSIONS_H__
 
+#include <SDL_video.h>
+
 void
 convert_to_rgb(dc1394video_frame_t *in, dc1394video_frame_t *out);
 
