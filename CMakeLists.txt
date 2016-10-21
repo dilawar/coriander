@@ -66,3 +66,12 @@ target_link_libraries( coriander
     ${LIBDC_LIBRARIES}
     ${LIBRAW_LIBRARIES}
     )
+
+## install targets
+install( TARGETS coriander 
+    DESTINATION bin 
+    )
+install( FILES pixmaps/coriander-icon.png pixmaps/coriander-logo.png
+    DESTINATION share/pixmaps/coriander/
+    )
+
