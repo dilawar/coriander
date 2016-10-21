@@ -18,10 +18,10 @@ add_definitions(
 
 find_package( PkgConfig )
 
-pkg_check_modules( LIBBONOBO libbonobo-2.0 )
-pkg_check_modules( LIBGNOMECANVAS libgnomecanvas-2.0 )
-pkg_check_modules( LIBGNOMEUI libgnomeui-2.0 )
-pkg_check_modules( LIBGNOME libgnome-2.0 )
+pkg_check_modules( LIBBONOBO REQUIRED libbonobo-2.0 )
+pkg_check_modules( LIBGNOMECANVAS REQUIRED libgnomecanvas-2.0 )
+pkg_check_modules( LIBGNOMEUI REQUIRED libgnomeui-2.0 )
+pkg_check_modules( LIBGNOME REQUIRED libgnome-2.0 )
 
 include_directories(
     ${LIBBONOBO_INCLUDE_DIRS} 
@@ -30,7 +30,7 @@ include_directories(
     ${LIBGNOME_INCLUDE_DIRS}
     )
 
-pkg_check_modules( SDL sdl<=2.0.0)
+pkg_check_modules( SDL REQUIRED sdl<=1.3.0)
 include_directories( ${SDL_INCLUDE_DIRS} )
 
 ## gtk
